@@ -4,11 +4,11 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Temelji (P0)
 - [ ] Prvo pokretanje: postavljanje admin računa, jezik (EN/HR), mapa za medije
-- [ ] Korisnici i uloge (admin, upravitelj, korisnik koji samo traži), sesije, odjava s uređaja
-- [ ] API ključevi (puni i samo za čitanje), 2FA (TOTP + kodovi za oporavak)
-- [ ] Zaštita prijave: ograničenje po adresi, zaključavanje računa, zabrana nakon ponovljenih neuspjeha
-- [ ] Postavke na jednom mjestu, šifrirane tajne vanjskih servisa (nikad se ne vraćaju klijentu)
-- [ ] Jedan Docker image (amd64 + arm64), `docker-compose.yml` s jednim servisom, healthcheck, PUID/PGID
+- [x] Korisnici i uloge (admin, upravitelj, korisnik koji samo traži), sesije, odjava s uređaja
+- [x] API ključevi (puni i samo za čitanje), 2FA (TOTP + kodovi za oporavak)
+- [x] Zaštita prijave: ograničenje po adresi, zaključavanje računa, zabrana nakon ponovljenih neuspjeha
+- [x] Postavke na jednom mjestu, šifrirane tajne vanjskih servisa (nikad se ne vraćaju klijentu)
+- [x] Jedan Docker image (amd64 + arm64), `docker-compose.yml` s jednim servisom, healthcheck, PUID/PGID
 - [ ] Backup i vraćanje (automatski i ručno), migracije baze pri pokretanju
 
 ## Indexeri (P1)

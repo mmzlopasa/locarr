@@ -1,0 +1,346 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "back": "Back",
+    "language": "Language",
+    "copy": "Copy",
+    "copied": "Copied",
+    "done": "Done",
+    "never": "Never",
+    "save": "Save",
+    "saved": "Saved.",
+    "close": "Close"
+  },
+  "languages": {
+    "en": "English",
+    "hr": "Hrvatski"
+  },
+  "errors": {
+    "invalid_credentials": "Wrong username or password.",
+    "totp_required": "Enter the code from your authenticator app.",
+    "invalid_totp": "That code is not valid. Check your device's clock and try again.",
+    "account_locked": "This account is locked after too many failed sign-ins. Try again later or ask an administrator.",
+    "rate_limited": "Too many attempts. Wait a moment and try again.",
+    "rate_limited_wait": "Too many attempts. Try again in {{seconds}} s.",
+    "setup_done": "Setup has already been completed. Sign in instead.",
+    "bad_setup_code": "The setup code is wrong. Copy it from the server log.",
+    "username_taken": "That username is already taken.",
+    "invalid_username": "Usernames may contain letters, digits, spaces and . _ - @ (up to 64 characters).",
+    "weak_password": "The password is too weak. Use at least 8 characters.",
+    "last_admin": "The last enabled administrator cannot be removed, demoted or disabled.",
+    "self_action": "You cannot do that to your own account.",
+    "not_found": "It no longer exists.",
+    "forbidden": "You don't have permission to do that.",
+    "unauthorized": "Your session has ended. Sign in again.",
+    "session_required": "This needs a signed-in session, not an API key.",
+    "validation": "Some of the values are not valid.",
+    "starting": "The server is starting. Try again in a few seconds.",
+    "request_too_large": "The request is too large.",
+    "internal": "Something went wrong on the server. Details are in the server log.",
+    "totp_already_on": "Two-factor authentication is already on.",
+    "totp_not_started": "Start the two-factor setup first.",
+    "path_not_allowed": "That folder is outside the allowed data folders.",
+    "path_not_found": "That folder does not exist.",
+    "already_exists": "It has already been added.",
+    "unknown_task": "There is no task with that name.",
+    "generic": "The request failed (HTTP {{status}}).",
+    "network": "Cannot reach the server. Check your connection.",
+    "unknown": "Something went wrong."
+  },
+  "errorPage": {
+    "title": "This page could not be shown",
+    "retry": "Try again",
+    "home": "Go to start",
+    "reload": "An unexpected error stopped the app. Reloading usually helps.",
+    "reloadButton": "Reload"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "There is nothing at this address.",
+    "home": "Back to start"
+  },
+  "comingSoon": {
+    "badge": "Coming soon",
+    "title": "Not built yet: arrives in phase {{phase}}",
+    "now": "Locarr is being built in phases. Accounts, security, settings, media folders and background tasks work today.",
+    "sections": {
+      "movies": "Search TMDb, add and monitor movies, grab releases and import them into your library with hardlinks.",
+      "series": "Follow series, seasons and episodes, including season packs, anime numbering and daily shows.",
+      "music": "Follow artists and albums from MusicBrainz and import releases with their tags and covers.",
+      "requests": "Users ask for movies, series and albums; administrators approve them or let them through automatically.",
+      "activity": "The download queue, history and a timeline per title explaining why something did or did not arrive.",
+      "calendar": "Upcoming episodes and releases, on the web and as an iCal feed.",
+      "wanted": "Missing titles and titles below their quality cutoff, with one-click searches.",
+      "indexers": "Torznab and Newznab indexers, or Prowlarr and Jackett as a source, with health and backoff.",
+      "downloaders": "qBittorrent, Transmission, Deluge, rTorrent, aria2, SABnzbd and NZBGet."
+    }
+  },
+  "nav": {
+    "label": "Main navigation",
+    "open": "Open menu",
+    "close": "Close menu",
+    "signOut": "Sign out",
+    "movies": "Movies",
+    "series": "Series",
+    "music": "Music",
+    "requests": "Requests",
+    "activity": "Activity",
+    "calendar": "Calendar",
+    "wanted": "Wanted",
+    "indexers": "Indexers",
+    "downloaders": "Downloaders",
+    "settings": "Settings",
+    "system": "System"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "manager": "Manager",
+    "requester": "Requester"
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Sign in to Locarr.",
+    "totpHint": "Two-factor authentication is on for this account.",
+    "username": "Username",
+    "password": "Password",
+    "totpCode": "Authenticator code",
+    "recoveryCode": "Recovery code",
+    "useRecovery": "Use a recovery code instead",
+    "useTotp": "Use an authenticator code instead",
+    "verify": "Verify",
+    "submit": "Sign in"
+  },
+  "setup": {
+    "title": "Welcome to Locarr",
+    "subtitle": "Create the administrator account.",
+    "codeHint": "The setup code is printed in the server log when Locarr starts:",
+    "code": "Setup code",
+    "username": "Administrator username",
+    "password": "Password",
+    "passwordHint": "At least {{min}} characters.",
+    "confirmPassword": "Repeat password",
+    "language": "Language",
+    "instanceName": "Server name (optional)",
+    "instanceNameHint": "Shown in the browser tab and the apps.",
+    "submit": "Create administrator",
+    "passwordTooShort": "The password needs at least {{min}} characters.",
+    "passwordMismatch": "The passwords do not match."
+  },
+  "account": {
+    "title": "Account",
+    "subtitle": "Signed in as {{username}}.",
+    "preferences": "Preferences",
+    "languageHint": "Saved to your account, so it follows you to other browsers and the apps.",
+    "password": {
+      "title": "Password",
+      "hint": "Changing it signs out all your other devices.",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Repeat new password",
+      "changed": "Password changed. Your other devices were signed out.",
+      "submit": "Change password"
+    },
+    "totp": {
+      "title": "Two-factor authentication",
+      "hint": "Ask for a code from an authenticator app when signing in.",
+      "on": "On",
+      "off": "Off",
+      "codesOnce": "Save these recovery codes somewhere safe. Each works once, and they are shown only now.",
+      "start": "Set up two-factor",
+      "addToApp": "Add this secret to your authenticator app (or open the link on your phone), then enter the code it shows.",
+      "secret": "Secret",
+      "uri": "Setup link",
+      "code": "Code from the app",
+      "enable": "Turn on",
+      "confirmPassword": "Your password (to confirm)",
+      "regenerate": "New recovery codes",
+      "disable": "Turn off"
+    },
+    "sessions": {
+      "title": "Signed-in devices",
+      "hint": "Sign out devices you no longer use.",
+      "none": "No other devices.",
+      "unknownDevice": "Unknown device",
+      "current": "This device",
+      "lastSeen": "last active {{when}}",
+      "revoke": "Sign out",
+      "revokeConfirm": "Sign out device"
+    },
+    "apiKeys": {
+      "title": "API keys",
+      "hint": "For scripts, dashboards and other apps. Read-only keys can only read.",
+      "name": "Name",
+      "readOnly": "Read-only",
+      "create": "Create key",
+      "shownOnce": "Copy this key now. It will not be shown again.",
+      "none": "No API keys yet.",
+      "key": "Key",
+      "access": "Access",
+      "created": "Created",
+      "lastUsed": "Last used",
+      "readOnlyBadge": "Read-only",
+      "fullBadge": "Full",
+      "revoke": "Revoke",
+      "revokeConfirm": "Revoke key"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "Who can sign in and what they may do.",
+    "add": "Add user",
+    "newUser": "New user",
+    "username": "Username",
+    "password": "Password",
+    "role": "Role",
+    "permissions": "Permissions",
+    "adminHasAll": "Administrators may do everything.",
+    "create": "Create user",
+    "disabled": "Disabled",
+    "locked": "Locked",
+    "you": "You",
+    "created": "Created {{when}}",
+    "lastLogin": "last signed in {{when}}",
+    "neverSignedIn": "never signed in",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Delete {{username}}",
+    "enable": "Enable",
+    "disable": "Disable",
+    "resetPassword": "New password",
+    "resetPasswordHint": "Signs the user out everywhere and unlocks the account.",
+    "setPassword": "Set password",
+    "passwordSet": "Password set. The user was signed out everywhere."
+  },
+  "permissions": {
+    "requestMovies": {
+      "label": "Request movies",
+      "hint": "Ask for movies to be added."
+    },
+    "requestSeries": {
+      "label": "Request series",
+      "hint": "Ask for series or single seasons."
+    },
+    "requestMusic": {
+      "label": "Request music",
+      "hint": "Ask for artists and albums."
+    },
+    "autoApprove": {
+      "label": "Auto-approve",
+      "hint": "Requests go through without an administrator."
+    },
+    "request4k": {
+      "label": "Request 4K",
+      "hint": "Ask for 4K versions."
+    },
+    "manageLibrary": {
+      "label": "Manage library",
+      "hint": "Add, edit and search titles."
+    },
+    "manageRequests": {
+      "label": "Manage requests",
+      "hint": "Approve and decline other users' requests."
+    }
+  },
+  "settings": {
+    "tabs": {
+      "general": "General",
+      "media": "Media folders",
+      "users": "Users"
+    },
+    "general": {
+      "title": "General",
+      "subtitle": "Settings for this Locarr server.",
+      "instance": "Server",
+      "instanceName": "Server name",
+      "instanceNameHint": "Shown in the browser tab and the apps."
+    },
+    "metadata": {
+      "title": "Metadata",
+      "subtitle": "The TMDb API key is used for movie and series information once those sections arrive.",
+      "tmdbKey": "TMDb API key"
+    },
+    "secret": {
+      "configured": "Configured",
+      "notConfigured": "Not set",
+      "keepPlaceholder": "Stored. Type a new value to replace it.",
+      "writeOnly": "Stored encrypted and never shown again.",
+      "remove": "Remove"
+    }
+  },
+  "rootFolders": {
+    "title": "Media folders",
+    "subtitle": "Where your movies, series and music live.",
+    "layoutHint": "Keep media and downloads on the same mount (for example /data/media/movies and /data/downloads) so imports can use hardlinks instead of copying.",
+    "add": "Add a folder",
+    "path": "Folder",
+    "kind": "Contains",
+    "browse": "Browse",
+    "addButton": "Add",
+    "list": "Folders",
+    "none": "No media folders yet.",
+    "missing": "Missing",
+    "readOnly": "Read-only",
+    "space": "{{free}} free of {{total}}",
+    "remove": "Remove",
+    "removeConfirm": "Remove folder",
+    "removeHint": "Removing a folder only forgets it; nothing on disk is touched.",
+    "dataRoots": "Data folders",
+    "up": "Up",
+    "noSubfolders": "No folders here."
+  },
+  "mediaKinds": {
+    "movies": "Movies",
+    "series": "Series",
+    "music": "Music"
+  },
+  "system": {
+    "tabs": {
+      "status": "Status",
+      "tasks": "Tasks"
+    },
+    "status": {
+      "title": "Status",
+      "subtitle": "What is running and where its data lives.",
+      "version": "Version",
+      "commit": "Commit",
+      "started": "Started",
+      "uptime": "Uptime",
+      "runtime": "Runtime",
+      "configDir": "Config folder",
+      "database": "Database size",
+      "dataRoots": "Data folders"
+    }
+  },
+  "jobStates": {
+    "queued": "Queued",
+    "running": "Running",
+    "succeeded": "Succeeded",
+    "failed": "Failed",
+    "cancelled": "Cancelled"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "subtitle": "Background work that runs on a schedule, and what ran recently.",
+    "scheduled": "Scheduled",
+    "noScheduled": "No scheduled tasks.",
+    "name": "Task",
+    "interval": "Every",
+    "lastRun": "Last run",
+    "nextRun": "Next run",
+    "run": "Run now",
+    "runNamed": "Run {{name}} now",
+    "history": "History",
+    "historyHint": "The most recent runs first. Failed runs are retried with growing pauses.",
+    "noJobs": "Nothing has run yet.",
+    "state": "State",
+    "attempt": "Attempt",
+    "when": "When",
+    "error": "Error",
+    "cancel": "Cancel",
+    "names": {
+      "ping": "Self-check",
+      "housekeeping": "Housekeeping"
+    }
+  }
+}

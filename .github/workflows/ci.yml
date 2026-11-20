@@ -1,0 +1,102 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - name: Generated API code is up to date
+        run: |
+          go tool ogen --target internal/api/gen --package gen --clean ../api/openapi.yaml
+          git diff --exit-code -- internal/api/gen
+          test -z "$(git status --porcelain -- internal/api/gen)"
+      - name: go mod tidy is clean
+        run: go mod tidy && git diff --exit-code -- go.mod go.sum
+      - run: go vet ./...
+      - uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.15.0
+          working-directory: server
+      - run: go test ./... -race
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Generated API types are up to date
+        run: pnpm gen:api && git diff --exit-code -- src/api/schema.gen.ts
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [server, web]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the compose stack
+        working-directory: deploy
+        run: |
+          cp .env.example .env
+          {
+            echo "LOCARR_SETUP_CODE=E2E-SETUP"
+            # The suite signs in many times from one address; the limiter has its own tests.
+            echo "LOCARR_AUTH_RATE_LIMIT=0"
+            echo "CONFIG_DIR=$RUNNER_TEMP/locarr/config"
+            echo "DATA_DIR=$RUNNER_TEMP/locarr/data"
+            echo "PUID=$(id -u)"
+            echo "PGID=$(id -g)"
+            echo "LOCARR_BUILD_COMMIT=$GITHUB_SHA"
+          } >> .env
+          mkdir -p "$RUNNER_TEMP/locarr/data/media/movies" "$RUNNER_TEMP/locarr/data/downloads"
+          docker compose -f docker-compose.yml -f compose.dev.yml up -d --build --wait
+          curl -fsS http://127.0.0.1:8484/api/v1/system/info
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - working-directory: web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+          pnpm e2e
+        env:
+          E2E_SETUP_CODE: E2E-SETUP
+      - name: Compose logs on failure
+        if: failure()
+        working-directory: deploy
+        run: docker compose -f docker-compose.yml -f compose.dev.yml logs

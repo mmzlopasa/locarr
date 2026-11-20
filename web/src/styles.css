@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Components only use these (through the Tailwind theme below),
+ * so the look can be changed here without touching components.
+ */
+:root {
+  --lc-bg: #0b0e12;
+  --lc-surface: #11151a;
+  --lc-surface-2: #171c22;
+  --lc-surface-3: #1e242c;
+  --lc-border: #252c35;
+  --lc-border-strong: #343d48;
+  --lc-text: #e4e8ee;
+  --lc-text-muted: #8c96a4;
+  --lc-text-faint: #5f6875;
+  --lc-accent: #4fd1a5;
+  --lc-accent-hover: #6bdcb6;
+  --lc-accent-ink: #052419;
+  --lc-danger: #f0727a;
+  --lc-danger-bg: #2a1417;
+  --lc-warning: #e6b450;
+  --lc-warning-bg: #2a2214;
+  --lc-info: #6cb6ff;
+  --lc-info-bg: #13202e;
+  --lc-success: #4fd1a5;
+  --lc-success-bg: #10251e;
+  --lc-focus: #6cb6ff;
+  --lc-radius: 6px;
+  --lc-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --lc-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--lc-bg);
+  --color-surface: var(--lc-surface);
+  --color-surface-2: var(--lc-surface-2);
+  --color-surface-3: var(--lc-surface-3);
+  --color-line: var(--lc-border);
+  --color-line-strong: var(--lc-border-strong);
+  --color-fg: var(--lc-text);
+  --color-muted: var(--lc-text-muted);
+  --color-faint: var(--lc-text-faint);
+  --color-accent: var(--lc-accent);
+  --color-accent-hover: var(--lc-accent-hover);
+  --color-accent-ink: var(--lc-accent-ink);
+  --color-danger: var(--lc-danger);
+  --color-danger-bg: var(--lc-danger-bg);
+  --color-warning: var(--lc-warning);
+  --color-warning-bg: var(--lc-warning-bg);
+  --color-info: var(--lc-info);
+  --color-info-bg: var(--lc-info-bg);
+  --color-success: var(--lc-success);
+  --color-success-bg: var(--lc-success-bg);
+  --radius-ui: var(--lc-radius);
+  --font-sans: var(--lc-font);
+  --font-mono: var(--lc-mono);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--lc-bg);
+  color: var(--lc-text);
+  font-family: var(--lc-font);
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lc-focus);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--lc-accent) 35%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
