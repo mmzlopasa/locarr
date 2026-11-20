@@ -1,0 +1,346 @@
+{
+  "common": {
+    "loading": "Učitavanje…",
+    "cancel": "Odustani",
+    "back": "Natrag",
+    "language": "Jezik",
+    "copy": "Kopiraj",
+    "copied": "Kopirano",
+    "done": "Gotovo",
+    "never": "Nikad",
+    "save": "Spremi",
+    "saved": "Spremljeno.",
+    "close": "Zatvori"
+  },
+  "languages": {
+    "en": "English",
+    "hr": "Hrvatski"
+  },
+  "errors": {
+    "invalid_credentials": "Pogrešno korisničko ime ili lozinka.",
+    "totp_required": "Upiši kôd iz aplikacije za autentifikaciju.",
+    "invalid_totp": "Kôd nije ispravan. Provjeri sat na uređaju i pokušaj ponovno.",
+    "account_locked": "Račun je zaključan nakon previše neuspjelih prijava. Pokušaj kasnije ili se obrati administratoru.",
+    "rate_limited": "Previše pokušaja. Pričekaj trenutak i pokušaj ponovno.",
+    "rate_limited_wait": "Previše pokušaja. Pokušaj ponovno za {{seconds}} s.",
+    "setup_done": "Postavljanje je već završeno. Prijavi se.",
+    "bad_setup_code": "Kôd za postavljanje nije ispravan. Kopiraj ga iz loga servera.",
+    "username_taken": "To korisničko ime je zauzeto.",
+    "invalid_username": "Korisničko ime smije sadržavati slova, znamenke, razmake i . _ - @ (najviše 64 znaka).",
+    "weak_password": "Lozinka je preslaba. Koristi barem 8 znakova.",
+    "last_admin": "Zadnji aktivni administrator ne može se ukloniti, degradirati ni onemogućiti.",
+    "self_action": "To ne možeš učiniti vlastitom računu.",
+    "not_found": "To više ne postoji.",
+    "forbidden": "Nemaš dopuštenje za to.",
+    "unauthorized": "Sesija je istekla. Prijavi se ponovno.",
+    "session_required": "Za ovo je potrebna prijava, a ne API ključ.",
+    "validation": "Neke vrijednosti nisu ispravne.",
+    "starting": "Server se pokreće. Pokušaj ponovno za nekoliko sekundi.",
+    "request_too_large": "Zahtjev je prevelik.",
+    "internal": "Na serveru je nešto pošlo po zlu. Detalji su u logu servera.",
+    "totp_already_on": "Dvofaktorska autentifikacija je već uključena.",
+    "totp_not_started": "Prvo pokreni postavljanje dvofaktorske autentifikacije.",
+    "path_not_allowed": "Ta mapa je izvan dopuštenih podatkovnih mapa.",
+    "path_not_found": "Ta mapa ne postoji.",
+    "already_exists": "To je već dodano.",
+    "unknown_task": "Ne postoji zadatak s tim imenom.",
+    "generic": "Zahtjev nije uspio (HTTP {{status}}).",
+    "network": "Server nije dostupan. Provjeri vezu.",
+    "unknown": "Nešto je pošlo po zlu."
+  },
+  "errorPage": {
+    "title": "Ova stranica se ne može prikazati",
+    "retry": "Pokušaj ponovno",
+    "home": "Na početak",
+    "reload": "Neočekivana greška je zaustavila aplikaciju. Ponovno učitavanje obično pomaže.",
+    "reloadButton": "Učitaj ponovno"
+  },
+  "notFound": {
+    "title": "Stranica nije pronađena",
+    "body": "Na ovoj adresi nema ničega.",
+    "home": "Natrag na početak"
+  },
+  "comingSoon": {
+    "badge": "Uskoro",
+    "title": "Još nije izgrađeno: stiže u fazi {{phase}}",
+    "now": "Locarr se gradi u fazama. Računi, sigurnost, postavke, mape za medije i pozadinski zadaci rade već danas.",
+    "sections": {
+      "movies": "Pretraga TMDb-a, dodavanje i praćenje filmova, preuzimanje izdanja i uvoz u biblioteku pomoću hardlinkova.",
+      "series": "Praćenje serija, sezona i epizoda, uključujući sezonske pakete, anime numeraciju i dnevne emisije.",
+      "music": "Praćenje izvođača i albuma s MusicBrainza i uvoz izdanja s tagovima i omotima.",
+      "requests": "Korisnici traže filmove, serije i albume; administratori ih odobravaju ili ih propuštaju automatski.",
+      "activity": "Red preuzimanja, povijest i vremenska crta po naslovu koja objašnjava zašto je nešto stiglo ili nije.",
+      "calendar": "Nadolazeće epizode i izdanja, na webu i kao iCal feed.",
+      "wanted": "Naslovi koji nedostaju ili su ispod granice kvalitete, s pretragom na jedan klik.",
+      "indexers": "Torznab i Newznab indexeri, ili Prowlarr i Jackett kao izvor, uz praćenje zdravlja i backoff.",
+      "downloaders": "qBittorrent, Transmission, Deluge, rTorrent, aria2, SABnzbd i NZBGet."
+    }
+  },
+  "nav": {
+    "label": "Glavna navigacija",
+    "open": "Otvori izbornik",
+    "close": "Zatvori izbornik",
+    "signOut": "Odjava",
+    "movies": "Filmovi",
+    "series": "Serije",
+    "music": "Glazba",
+    "requests": "Zahtjevi",
+    "activity": "Aktivnost",
+    "calendar": "Kalendar",
+    "wanted": "Nedostaje",
+    "indexers": "Indexeri",
+    "downloaders": "Klijenti za preuzimanje",
+    "settings": "Postavke",
+    "system": "Sustav"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "manager": "Upravitelj",
+    "requester": "Korisnik zahtjeva"
+  },
+  "login": {
+    "title": "Prijava",
+    "subtitle": "Prijavi se u Locarr.",
+    "totpHint": "Za ovaj račun uključena je dvofaktorska autentifikacija.",
+    "username": "Korisničko ime",
+    "password": "Lozinka",
+    "totpCode": "Kôd iz aplikacije",
+    "recoveryCode": "Kôd za oporavak",
+    "useRecovery": "Koristi kôd za oporavak",
+    "useTotp": "Koristi kôd iz aplikacije",
+    "verify": "Potvrdi",
+    "submit": "Prijavi se"
+  },
+  "setup": {
+    "title": "Dobro došli u Locarr",
+    "subtitle": "Izradi administratorski račun.",
+    "codeHint": "Kôd za postavljanje ispisuje se u logu servera pri pokretanju Locarra:",
+    "code": "Kôd za postavljanje",
+    "username": "Korisničko ime administratora",
+    "password": "Lozinka",
+    "passwordHint": "Barem {{min}} znakova.",
+    "confirmPassword": "Ponovi lozinku",
+    "language": "Jezik",
+    "instanceName": "Ime servera (nije obavezno)",
+    "instanceNameHint": "Prikazuje se na kartici preglednika i u aplikacijama.",
+    "submit": "Izradi administratora",
+    "passwordTooShort": "Lozinka mora imati barem {{min}} znakova.",
+    "passwordMismatch": "Lozinke se ne podudaraju."
+  },
+  "account": {
+    "title": "Račun",
+    "subtitle": "Prijavljen kao {{username}}.",
+    "preferences": "Postavke računa",
+    "languageHint": "Sprema se na račun pa te prati u drugim preglednicima i aplikacijama.",
+    "password": {
+      "title": "Lozinka",
+      "hint": "Promjena lozinke odjavljuje sve tvoje druge uređaje.",
+      "current": "Trenutna lozinka",
+      "new": "Nova lozinka",
+      "confirm": "Ponovi novu lozinku",
+      "changed": "Lozinka je promijenjena. Drugi uređaji su odjavljeni.",
+      "submit": "Promijeni lozinku"
+    },
+    "totp": {
+      "title": "Dvofaktorska autentifikacija",
+      "hint": "Pri prijavi traži kôd iz aplikacije za autentifikaciju.",
+      "on": "Uključeno",
+      "off": "Isključeno",
+      "codesOnce": "Spremi ove kodove za oporavak na sigurno mjesto. Svaki vrijedi jednom i prikazuju se samo sada.",
+      "start": "Postavi dvofaktorsku",
+      "addToApp": "Dodaj ovu tajnu u aplikaciju za autentifikaciju (ili otvori poveznicu na mobitelu), zatim upiši kôd koji prikaže.",
+      "secret": "Tajna",
+      "uri": "Poveznica za postavljanje",
+      "code": "Kôd iz aplikacije",
+      "enable": "Uključi",
+      "confirmPassword": "Tvoja lozinka (za potvrdu)",
+      "regenerate": "Novi kodovi za oporavak",
+      "disable": "Isključi"
+    },
+    "sessions": {
+      "title": "Prijavljeni uređaji",
+      "hint": "Odjavi uređaje koje više ne koristiš.",
+      "none": "Nema drugih uređaja.",
+      "unknownDevice": "Nepoznat uređaj",
+      "current": "Ovaj uređaj",
+      "lastSeen": "zadnja aktivnost {{when}}",
+      "revoke": "Odjavi",
+      "revokeConfirm": "Odjavi uređaj"
+    },
+    "apiKeys": {
+      "title": "API ključevi",
+      "hint": "Za skripte, nadzorne ploče i druge aplikacije. Ključevi samo za čitanje mogu samo čitati.",
+      "name": "Naziv",
+      "readOnly": "Samo za čitanje",
+      "create": "Izradi ključ",
+      "shownOnce": "Kopiraj ključ sada. Više se neće prikazati.",
+      "none": "Još nema API ključeva.",
+      "key": "Ključ",
+      "access": "Pristup",
+      "created": "Izrađen",
+      "lastUsed": "Zadnje korišten",
+      "readOnlyBadge": "Samo čitanje",
+      "fullBadge": "Puni",
+      "revoke": "Opozovi",
+      "revokeConfirm": "Opozovi ključ"
+    }
+  },
+  "users": {
+    "title": "Korisnici",
+    "subtitle": "Tko se može prijaviti i što smije raditi.",
+    "add": "Dodaj korisnika",
+    "newUser": "Novi korisnik",
+    "username": "Korisničko ime",
+    "password": "Lozinka",
+    "role": "Uloga",
+    "permissions": "Dopuštenja",
+    "adminHasAll": "Administratori smiju sve.",
+    "create": "Izradi korisnika",
+    "disabled": "Onemogućen",
+    "locked": "Zaključan",
+    "you": "Ti",
+    "created": "Izrađen {{when}}",
+    "lastLogin": "zadnja prijava {{when}}",
+    "neverSignedIn": "nikad se nije prijavio",
+    "edit": "Uredi",
+    "delete": "Obriši",
+    "deleteConfirm": "Obriši {{username}}",
+    "enable": "Omogući",
+    "disable": "Onemogući",
+    "resetPassword": "Nova lozinka",
+    "resetPasswordHint": "Korisnik se odjavljuje sa svih uređaja, a račun se otključava.",
+    "setPassword": "Postavi lozinku",
+    "passwordSet": "Lozinka je postavljena. Korisnik je odjavljen sa svih uređaja."
+  },
+  "permissions": {
+    "requestMovies": {
+      "label": "Zahtjevi za filmove",
+      "hint": "Traženje da se dodaju filmovi."
+    },
+    "requestSeries": {
+      "label": "Zahtjevi za serije",
+      "hint": "Traženje serija ili pojedinih sezona."
+    },
+    "requestMusic": {
+      "label": "Zahtjevi za glazbu",
+      "hint": "Traženje izvođača i albuma."
+    },
+    "autoApprove": {
+      "label": "Automatsko odobravanje",
+      "hint": "Zahtjevi prolaze bez administratora."
+    },
+    "request4k": {
+      "label": "Zahtjevi za 4K",
+      "hint": "Traženje 4K inačica."
+    },
+    "manageLibrary": {
+      "label": "Upravljanje bibliotekom",
+      "hint": "Dodavanje, uređivanje i pretraga naslova."
+    },
+    "manageRequests": {
+      "label": "Upravljanje zahtjevima",
+      "hint": "Odobravanje i odbijanje zahtjeva drugih korisnika."
+    }
+  },
+  "settings": {
+    "tabs": {
+      "general": "Općenito",
+      "media": "Mape za medije",
+      "users": "Korisnici"
+    },
+    "general": {
+      "title": "Općenito",
+      "subtitle": "Postavke ovog Locarr servera.",
+      "instance": "Server",
+      "instanceName": "Ime servera",
+      "instanceNameHint": "Prikazuje se na kartici preglednika i u aplikacijama."
+    },
+    "metadata": {
+      "title": "Metapodaci",
+      "subtitle": "TMDb API ključ koristit će se za podatke o filmovima i serijama kad ti dijelovi stignu.",
+      "tmdbKey": "TMDb API ključ"
+    },
+    "secret": {
+      "configured": "Postavljeno",
+      "notConfigured": "Nije postavljeno",
+      "keepPlaceholder": "Spremljeno. Upiši novu vrijednost za zamjenu.",
+      "writeOnly": "Sprema se šifrirano i više se nikad ne prikazuje.",
+      "remove": "Ukloni"
+    }
+  },
+  "rootFolders": {
+    "title": "Mape za medije",
+    "subtitle": "Gdje se nalaze tvoji filmovi, serije i glazba.",
+    "layoutHint": "Drži medije i preuzimanja na istom mountu (npr. /data/media/movies i /data/downloads) kako bi uvoz mogao koristiti hardlinkove umjesto kopiranja.",
+    "add": "Dodaj mapu",
+    "path": "Mapa",
+    "kind": "Sadrži",
+    "browse": "Pregledaj",
+    "addButton": "Dodaj",
+    "list": "Mape",
+    "none": "Još nema mapa za medije.",
+    "missing": "Ne postoji",
+    "readOnly": "Samo za čitanje",
+    "space": "slobodno {{free}} od {{total}}",
+    "remove": "Ukloni",
+    "removeConfirm": "Ukloni mapu",
+    "removeHint": "Uklanjanje mape samo je zaboravlja; ništa na disku se ne dira.",
+    "dataRoots": "Podatkovne mape",
+    "up": "Gore",
+    "noSubfolders": "Ovdje nema mapa."
+  },
+  "mediaKinds": {
+    "movies": "Filmovi",
+    "series": "Serije",
+    "music": "Glazba"
+  },
+  "system": {
+    "tabs": {
+      "status": "Stanje",
+      "tasks": "Zadaci"
+    },
+    "status": {
+      "title": "Stanje",
+      "subtitle": "Što radi i gdje su podaci.",
+      "version": "Verzija",
+      "commit": "Commit",
+      "started": "Pokrenut",
+      "uptime": "Vrijeme rada",
+      "runtime": "Okruženje",
+      "configDir": "Mapa s konfiguracijom",
+      "database": "Veličina baze",
+      "dataRoots": "Podatkovne mape"
+    }
+  },
+  "jobStates": {
+    "queued": "Na čekanju",
+    "running": "U tijeku",
+    "succeeded": "Uspjelo",
+    "failed": "Neuspjelo",
+    "cancelled": "Otkazano"
+  },
+  "tasks": {
+    "title": "Zadaci",
+    "subtitle": "Pozadinski poslovi koji se izvode po rasporedu i što se nedavno izvodilo.",
+    "scheduled": "Raspored",
+    "noScheduled": "Nema zakazanih zadataka.",
+    "name": "Zadatak",
+    "interval": "Svakih",
+    "lastRun": "Zadnje izvođenje",
+    "nextRun": "Sljedeće izvođenje",
+    "run": "Pokreni sada",
+    "runNamed": "Pokreni {{name}} sada",
+    "history": "Povijest",
+    "historyHint": "Najnovija izvođenja prva. Neuspjela se ponavljaju sa sve dužim pauzama.",
+    "noJobs": "Još se ništa nije izvodilo.",
+    "state": "Stanje",
+    "attempt": "Pokušaj",
+    "when": "Kada",
+    "error": "Greška",
+    "cancel": "Otkaži",
+    "names": {
+      "ping": "Samoprovjera",
+      "housekeeping": "Održavanje"
+    }
+  }
+}
