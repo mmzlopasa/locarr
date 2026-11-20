@@ -1,0 +1,19 @@
+# build output
+server/internal/webui/dist/*
+!server/internal/webui/dist/.keep
+/bin/
+
+# local configuration and data
+deploy/.env
+/data/
+*.db
+*.db-wal
+*.db-shm
+secret.key
+
+# tooling
+node_modules/
+web/test-results/
+web/playwright-report/
+*.tsbuildinfo
+.DS_Store

@@ -1,0 +1,1097 @@
+openapi: 3.1.0
+info:
+  title: Locarr API
+  version: 0.1.0
+  description: |
+    Locarr API. This file is the single source of truth: the server interfaces (ogen)
+    and the web client types (openapi-typescript) are generated from it by
+    `scripts/gen-api.sh`.
+
+    Authentication: `Authorization: Bearer <token>` with a session token (from
+    `/auth/login` or `/setup`) or an API key (`lk_…`). API keys may also be sent as
+    `X-Api-Key`. The web client uses the HttpOnly `locarr_session` cookie instead
+    (`useCookie: true`). Read-only API keys may only call `GET` operations.
+
+    Every error under `/api` is JSON: `{"code": "...", "message": "..."}`. `code`
+    is stable and meant for clients; `message` is English text for logs.
+servers:
+  - url: /api/v1
+tags:
+  - name: system
+  - name: setup
+  - name: auth
+  - name: sessions
+  - name: apikeys
+  - name: twofactor
+  - name: users
+  - name: settings
+  - name: rootfolders
+  - name: filesystem
+security:
+  - sessionToken: []
+paths:
+  /system/info:
+    get:
+      operationId: getSystemInfo
+      summary: Public server information
+      description: Unauthenticated. Clients use it to check a server address and whether first-run setup is needed.
+      tags: [system]
+      security: []
+      responses:
+        "200":
+          description: Server information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemInfo"
+        default:
+          $ref: "#/components/responses/Error"
+  /system/status:
+    get:
+      operationId: getSystemStatus
+      summary: Runtime status (administrators)
+      tags: [system]
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemStatus"
+        default:
+          $ref: "#/components/responses/Error"
+  /system/tasks:
+    get:
+      operationId: listTasks
+      summary: Scheduled tasks and recent job history (administrators)
+      tags: [system]
+      parameters:
+        - name: state
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/JobState"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+            default: 100
+      responses:
+        "200":
+          description: Tasks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskList"
+        default:
+          $ref: "#/components/responses/Error"
+  /system/tasks/{name}/run:
+    post:
+      operationId: runTask
+      summary: Run a scheduled task now (administrators)
+      description: Queues the task unless a run of it is already queued or running; then that run is returned.
+      tags: [system]
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 64
+      responses:
+        "202":
+          description: Queued (or already queued)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        default:
+          $ref: "#/components/responses/Error"
+  /system/jobs/{id}/cancel:
+    post:
+      operationId: cancelJob
+      summary: Cancel a queued or running job (administrators)
+      tags: [system]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Cancelled (a running job stops at its next check)
+        default:
+          $ref: "#/components/responses/Error"
+  /setup:
+    post:
+      operationId: setup
+      summary: Create the first administrator
+      description: |
+        Only works while no administrator exists. Needs the setup code the server
+        prints to its log on start. Signs the new administrator in.
+      tags: [setup]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetupRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/SignedIn"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/login:
+    post:
+      operationId: login
+      summary: Sign in
+      description: |
+        When the account has two-factor authentication on and neither `totpCode` nor
+        `recoveryCode` is given, the answer is 401 with code `totp_required`; send the
+        same request again with a code.
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/SignedIn"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/logout:
+    post:
+      operationId: logout
+      summary: End the current session
+      tags: [auth]
+      responses:
+        "204":
+          description: Signed out
+          headers:
+            Set-Cookie:
+              description: Clears the web session cookie.
+              schema:
+                type: string
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/me:
+    get:
+      operationId: getMe
+      summary: The signed-in user
+      tags: [auth]
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateMe
+      summary: Change own preferences
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMeRequest"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/password:
+    post:
+      operationId: changePassword
+      summary: Change own password
+      description: Signs out every other session of the account; the current one stays.
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+      responses:
+        "204":
+          description: Changed
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/sessions:
+    get:
+      operationId: listSessions
+      summary: Own signed-in devices
+      tags: [sessions]
+      responses:
+        "200":
+          description: Sessions, most recently used first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Session"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/sessions/{id}:
+    delete:
+      operationId: revokeSession
+      summary: Sign out a device
+      tags: [sessions]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Revoked
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/apikeys:
+    get:
+      operationId: listApiKeys
+      summary: Own API keys
+      tags: [apikeys]
+      responses:
+        "200":
+          description: API keys (never the key itself)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiKey"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createApiKey
+      summary: Create an API key
+      description: The key is returned once and cannot be shown again. Needs a session (not an API key).
+      tags: [apikeys]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApiKeyRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedApiKey"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/apikeys/{id}:
+    delete:
+      operationId: deleteApiKey
+      summary: Revoke an API key
+      tags: [apikeys]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Revoked
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/totp/setup:
+    post:
+      operationId: startTotpSetup
+      summary: Start two-factor setup
+      description: Returns a new secret to add to an authenticator app. Two-factor is on only after `/auth/totp/enable`.
+      tags: [twofactor]
+      responses:
+        "200":
+          description: Secret
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TotpSetup"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/totp/enable:
+    post:
+      operationId: enableTotp
+      summary: Confirm two-factor setup with a code
+      tags: [twofactor]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TotpCodeRequest"
+      responses:
+        "200":
+          description: Two-factor is on; recovery codes are shown once
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecoveryCodes"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/totp/disable:
+    post:
+      operationId: disableTotp
+      summary: Turn two-factor off
+      tags: [twofactor]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordConfirm"
+      responses:
+        "204":
+          description: Two-factor is off
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/totp/recovery-codes:
+    post:
+      operationId: regenerateRecoveryCodes
+      summary: Replace the recovery codes
+      tags: [twofactor]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordConfirm"
+      responses:
+        "200":
+          description: New recovery codes (the old ones stop working)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecoveryCodes"
+        default:
+          $ref: "#/components/responses/Error"
+  /users:
+    get:
+      operationId: listUsers
+      summary: All users (administrators)
+      tags: [users]
+      responses:
+        "200":
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createUser
+      summary: Create a user (administrators)
+      tags: [users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/Error"
+  /users/{id}:
+    get:
+      operationId: getUser
+      summary: One user (administrators)
+      tags: [users]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateUser
+      summary: Change role, permissions or disable a user (administrators)
+      description: The last enabled administrator cannot be demoted or disabled.
+      tags: [users]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteUser
+      summary: Delete a user (administrators)
+      description: Not the caller's own account and not the last enabled administrator.
+      tags: [users]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Deleted
+        default:
+          $ref: "#/components/responses/Error"
+  /users/{id}/password:
+    post:
+      operationId: resetUserPassword
+      summary: Set a user's password (administrators)
+      description: Signs the user out everywhere and clears an account lockout.
+      tags: [users]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+      responses:
+        "204":
+          description: Password set
+        default:
+          $ref: "#/components/responses/Error"
+  /settings:
+    get:
+      operationId: getSettings
+      summary: Server settings (administrators)
+      description: Secret fields only say whether they are set; their values never leave the server.
+      tags: [settings]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateSettings
+      summary: Change server settings (administrators)
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSettingsRequest"
+      responses:
+        "200":
+          description: Settings after the change
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+        default:
+          $ref: "#/components/responses/Error"
+  /rootfolders:
+    get:
+      operationId: listRootFolders
+      summary: Root folders with free space (administrators)
+      tags: [rootfolders]
+      responses:
+        "200":
+          description: Root folders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RootFolder"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createRootFolder
+      summary: Add a root folder (administrators)
+      description: The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
+      tags: [rootfolders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRootFolderRequest"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RootFolder"
+        default:
+          $ref: "#/components/responses/Error"
+  /rootfolders/{id}:
+    delete:
+      operationId: deleteRootFolder
+      summary: Remove a root folder (administrators)
+      description: Only forgets the folder; nothing on disk is touched.
+      tags: [rootfolders]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /filesystem:
+    get:
+      operationId: browseFilesystem
+      summary: List folders inside the allowed data roots (administrators)
+      description: Without `path`, lists the data roots themselves.
+      tags: [filesystem]
+      parameters:
+        - name: path
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 4096
+      responses:
+        "200":
+          description: Folders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FolderListing"
+        default:
+          $ref: "#/components/responses/Error"
+components:
+  securitySchemes:
+    sessionToken:
+      type: http
+      scheme: bearer
+      description: |
+        A session token from /auth/login or /setup, or an API key (`lk_…`). The web client's
+        HttpOnly `locarr_session` cookie and the `X-Api-Key` header are accepted too.
+  parameters:
+    ID:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+  responses:
+    SignedIn:
+      description: Signed in
+      headers:
+        Set-Cookie:
+          description: HttpOnly session cookie, only when useCookie was requested.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AuthResult"
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Stable machine-readable code, e.g. `invalid_credentials`, `totp_required`, `forbidden`.
+        message:
+          type: string
+    Language:
+      type: string
+      enum: [en, hr]
+    Role:
+      type: string
+      enum: [admin, manager, requester]
+      description: |
+        `admin` can do everything. `manager` manages the library and requests (as its
+        permissions allow). `requester` only asks for titles.
+    Username:
+      type: string
+      minLength: 1
+      maxLength: 64
+      description: Case-insensitive; letters, digits, space and . _ - @
+    Password:
+      type: string
+      minLength: 8
+      maxLength: 256
+    SystemInfo:
+      type: object
+      required: [product, instanceName, version, commit, startedAt, setupRequired]
+      properties:
+        product:
+          type: string
+        instanceName:
+          type: string
+        version:
+          type: string
+        commit:
+          type: string
+        startedAt:
+          type: string
+          format: date-time
+        setupRequired:
+          type: boolean
+          description: True while no administrator exists.
+    SystemStatus:
+      type: object
+      required: [version, commit, goVersion, os, arch, startedAt, uptimeSeconds, configDir, databaseSizeBytes, dataRoots]
+      properties:
+        version:
+          type: string
+        commit:
+          type: string
+        goVersion:
+          type: string
+        os:
+          type: string
+        arch:
+          type: string
+        startedAt:
+          type: string
+          format: date-time
+        uptimeSeconds:
+          type: integer
+          format: int64
+        configDir:
+          type: string
+        databaseSizeBytes:
+          type: integer
+          format: int64
+          description: Database file plus its write-ahead log.
+        dataRoots:
+          type: array
+          items:
+            type: string
+    JobState:
+      type: string
+      enum: [queued, running, succeeded, failed, cancelled]
+    Job:
+      type: object
+      required: [id, kind, queue, state, attempt, maxAttempts, runAt, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        kind:
+          type: string
+        queue:
+          type: string
+        state:
+          $ref: "#/components/schemas/JobState"
+        attempt:
+          type: integer
+        maxAttempts:
+          type: integer
+        runAt:
+          type: string
+          format: date-time
+          description: When a queued job is due (for a retry, after its backoff).
+        createdAt:
+          type: string
+          format: date-time
+        startedAt:
+          type: string
+          format: date-time
+        finishedAt:
+          type: string
+          format: date-time
+        error:
+          type: string
+          description: The last error, if any attempt failed.
+        uniqueKey:
+          type: string
+    ScheduledTask:
+      type: object
+      required: [name, kind, intervalSeconds, nextRunAt]
+      properties:
+        name:
+          type: string
+        kind:
+          type: string
+        intervalSeconds:
+          type: integer
+          format: int64
+        nextRunAt:
+          type: string
+          format: date-time
+        lastRunAt:
+          type: string
+          format: date-time
+        lastState:
+          $ref: "#/components/schemas/JobState"
+    TaskList:
+      type: object
+      required: [scheduled, jobs]
+      properties:
+        scheduled:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScheduledTask"
+        jobs:
+          type: array
+          description: Most recent first.
+          items:
+            $ref: "#/components/schemas/Job"
+    DeviceInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        client:
+          type: string
+          maxLength: 100
+    SetupRequest:
+      type: object
+      required: [setupCode, username, password]
+      properties:
+        setupCode:
+          type: string
+          maxLength: 64
+        username:
+          $ref: "#/components/schemas/Username"
+        password:
+          $ref: "#/components/schemas/Password"
+        language:
+          $ref: "#/components/schemas/Language"
+        instanceName:
+          type: string
+          maxLength: 100
+        device:
+          $ref: "#/components/schemas/DeviceInfo"
+        useCookie:
+          type: boolean
+          description: Web clients set this to get the HttpOnly cookie instead of a token in the body.
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          maxLength: 64
+        password:
+          type: string
+          maxLength: 256
+        totpCode:
+          type: string
+          maxLength: 16
+        recoveryCode:
+          type: string
+          maxLength: 32
+        device:
+          $ref: "#/components/schemas/DeviceInfo"
+        useCookie:
+          type: boolean
+    AuthResult:
+      type: object
+      required: [user]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+          description: The session token, only when useCookie was not requested.
+    Permissions:
+      type: object
+      description: What a non-administrator may do. Administrators may do everything regardless.
+      required: [requestMovies, requestSeries, requestMusic, autoApprove, request4k, manageLibrary, manageRequests]
+      properties:
+        requestMovies:
+          type: boolean
+        requestSeries:
+          type: boolean
+        requestMusic:
+          type: boolean
+        autoApprove:
+          type: boolean
+          description: Requests are approved without an administrator.
+        request4k:
+          type: boolean
+        manageLibrary:
+          type: boolean
+          description: Add, edit and search titles.
+        manageRequests:
+          type: boolean
+          description: Approve and decline other users' requests.
+    User:
+      type: object
+      required: [id, username, role, permissions, language, disabled, totpEnabled, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+        permissions:
+          $ref: "#/components/schemas/Permissions"
+        language:
+          $ref: "#/components/schemas/Language"
+        disabled:
+          type: boolean
+        totpEnabled:
+          type: boolean
+        lockedUntil:
+          type: string
+          format: date-time
+          description: Set while the account is locked after failed sign-ins.
+        createdAt:
+          type: string
+          format: date-time
+        lastLoginAt:
+          type: string
+          format: date-time
+    UpdateMeRequest:
+      type: object
+      properties:
+        language:
+          $ref: "#/components/schemas/Language"
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          maxLength: 256
+        newPassword:
+          $ref: "#/components/schemas/Password"
+    Session:
+      type: object
+      required: [id, deviceName, client, ip, createdAt, lastSeenAt, current]
+      properties:
+        id:
+          type: integer
+          format: int64
+        deviceName:
+          type: string
+        client:
+          type: string
+        ip:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        lastSeenAt:
+          type: string
+          format: date-time
+        current:
+          type: boolean
+    ApiKey:
+      type: object
+      required: [id, name, prefix, readOnly, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        prefix:
+          type: string
+          description: The first characters of the key, to recognise it.
+        readOnly:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        lastUsedAt:
+          type: string
+          format: date-time
+    CreateApiKeyRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        readOnly:
+          type: boolean
+    CreatedApiKey:
+      type: object
+      required: [apiKey, key]
+      properties:
+        apiKey:
+          $ref: "#/components/schemas/ApiKey"
+        key:
+          type: string
+          description: Shown once.
+    TotpSetup:
+      type: object
+      required: [secret, uri]
+      properties:
+        secret:
+          type: string
+          description: Base32, for typing into an authenticator app.
+        uri:
+          type: string
+          description: otpauth:// URI, for a QR code.
+    TotpCodeRequest:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+          maxLength: 16
+    PasswordConfirm:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+          maxLength: 256
+    RecoveryCodes:
+      type: object
+      required: [codes]
+      properties:
+        codes:
+          type: array
+          items:
+            type: string
+    CreateUserRequest:
+      type: object
+      required: [username, password, role]
+      properties:
+        username:
+          $ref: "#/components/schemas/Username"
+        password:
+          $ref: "#/components/schemas/Password"
+        role:
+          $ref: "#/components/schemas/Role"
+        permissions:
+          $ref: "#/components/schemas/Permissions"
+        language:
+          $ref: "#/components/schemas/Language"
+    UpdateUserRequest:
+      type: object
+      properties:
+        role:
+          $ref: "#/components/schemas/Role"
+        permissions:
+          $ref: "#/components/schemas/Permissions"
+        disabled:
+          type: boolean
+    ResetPasswordRequest:
+      type: object
+      required: [password]
+      properties:
+        password:
+          $ref: "#/components/schemas/Password"
+    SecretState:
+      type: object
+      required: [configured]
+      properties:
+        configured:
+          type: boolean
+    Settings:
+      type: object
+      required: [instanceName, tmdbApiKey]
+      properties:
+        instanceName:
+          type: string
+        tmdbApiKey:
+          $ref: "#/components/schemas/SecretState"
+    UpdateSettingsRequest:
+      type: object
+      properties:
+        instanceName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        tmdbApiKey:
+          type: string
+          maxLength: 512
+          description: Write-only. An empty string removes the stored key.
+    MediaKind:
+      type: string
+      enum: [movies, series, music]
+    RootFolder:
+      type: object
+      required: [id, path, kind, accessible, writable, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        path:
+          type: string
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        accessible:
+          type: boolean
+          description: The folder exists and can be listed.
+        writable:
+          type: boolean
+        freeSpaceBytes:
+          type: integer
+          format: int64
+        totalSpaceBytes:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+    CreateRootFolderRequest:
+      type: object
+      required: [path, kind]
+      properties:
+        path:
+          type: string
+          minLength: 1
+          maxLength: 4096
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+    FolderEntry:
+      type: object
+      required: [name, path]
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+    FolderListing:
+      type: object
+      required: [entries]
+      properties:
+        path:
+          type: string
+          description: The listed folder; absent when the data roots are listed.
+        parent:
+          type: string
+          description: The folder above, when it is still inside a data root.
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/FolderEntry"
