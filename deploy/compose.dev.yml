@@ -1,0 +1,11 @@
+# Builds the image from this checkout instead of pulling it:
+#   docker compose -f deploy/docker-compose.yml -f deploy/compose.dev.yml up -d --build
+services:
+  locarr:
+    image: locarr:dev
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        VERSION: ${LOCARR_BUILD_VERSION:-dev}
+        COMMIT: ${LOCARR_BUILD_COMMIT:-unknown}
