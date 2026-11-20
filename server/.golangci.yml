@@ -1,0 +1,22 @@
+version: "2"
+linters:
+  default: standard
+  enable: [errorlint, misspell, revive, gosec, bodyclose, noctx]
+  settings:
+    errcheck:
+      # Closing read-only resources (rows, response bodies, files opened for
+      # reading) has nothing useful to report.
+      exclude-functions:
+        - (*database/sql.Rows).Close
+        - (io.ReadCloser).Close
+        - (*os.File).Close
+  exclusions:
+    paths: [internal/api/gen]
+    rules:
+      - path: _test\.go
+        linters: [gosec, noctx, bodyclose, errcheck]
+      # Method and field names follow the generated API types (ogen names them
+      # after the OpenAPI operations, e.g. ListApiKeys).
+      - path: (internal/api/|_test\.go)
+        linters: [revive]
+        text: "var-naming"
