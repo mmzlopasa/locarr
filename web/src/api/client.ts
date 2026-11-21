@@ -20,6 +20,20 @@ export type RootFolder = Schemas["RootFolder"];
 export type MediaKind = Schemas["MediaKind"];
 export type FolderListing = Schemas["FolderListing"];
 export type TotpSetup = Schemas["TotpSetup"];
+export type Indexer = Schemas["Indexer"];
+export type IndexerInput = Schemas["IndexerInput"];
+export type IndexerCaps = Schemas["IndexerCaps"];
+export type IndexerCategories = Schemas["IndexerCategories"];
+export type IndexerTestResult = Schemas["IndexerTestResult"];
+export type IndexerSettings = Schemas["IndexerSettings"];
+export type IndexerSource = Schemas["IndexerSource"];
+export type IndexerSourceKind = Schemas["IndexerSourceKind"];
+export type IndexerSourceItem = Schemas["IndexerSourceItem"];
+export type Release = Schemas["Release"];
+export type SearchType = Schemas["SearchType"];
+export type SearchIndexerResult = Schemas["SearchIndexerResult"];
+export type SearchStreamIndexerEvent = Schemas["SearchStreamIndexerEvent"];
+export type SearchStreamDone = Schemas["SearchStreamDone"];
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -97,4 +111,7 @@ export const queryKeys = {
   settings: ["settings"] as const,
   rootFolders: ["rootfolders"] as const,
   folders: (path: string) => ["filesystem", path] as const,
+  indexers: ["indexers"] as const,
+  indexerSources: ["indexers", "sources"] as const,
+  indexerSettings: ["indexers", "settings"] as const,
 };

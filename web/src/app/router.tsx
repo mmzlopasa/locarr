@@ -22,6 +22,8 @@ import { RootFoldersPage } from "@/features/settings/RootFoldersPage";
 import { SystemLayout } from "@/features/system/SystemLayout";
 import { StatusPage } from "@/features/system/StatusPage";
 import { TasksPage } from "@/features/system/TasksPage";
+import { IndexersPage } from "@/features/indexers/IndexersPage";
+import { SearchPage } from "@/features/search/SearchPage";
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -81,7 +83,6 @@ export const UPCOMING = [
   { path: "/activity", key: "activity", phase: "P11" },
   { path: "/calendar", key: "calendar", phase: "P5" },
   { path: "/wanted", key: "wanted", phase: "P4" },
-  { path: "/indexers", key: "indexers", phase: "P1" },
   { path: "/downloaders", key: "downloaders", phase: "P3" },
 ] as const;
 
@@ -92,6 +93,8 @@ const upcomingRoutes = UPCOMING.map((s) =>
     component: () => <ComingSoonPage section={s.key} phase={s.phase} />,
   }),
 );
+
+const searchRoute = createRoute({ getParentRoute: () => appRoute, path: "/search", component: SearchPage });
 
 const accountRoute = createRoute({ getParentRoute: () => appRoute, path: "/account", component: AccountPage });
 
@@ -105,6 +108,7 @@ const adminRoute = createRoute({
   component: Outlet,
 });
 
+const indexersRoute = createRoute({ getParentRoute: () => adminRoute, path: "/indexers", component: IndexersPage });
 const settingsRoute = createRoute({ getParentRoute: () => adminRoute, path: "/settings", component: SettingsLayout });
 const settingsIndexRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/", component: GeneralSettingsPage });
 const rootFoldersRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/media", component: RootFoldersPage });
@@ -127,8 +131,10 @@ export const routeTree = rootRoute.addChildren([
   appRoute.addChildren([
     indexRoute,
     ...upcomingRoutes,
+    searchRoute,
     accountRoute,
     adminRoute.addChildren([
+      indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
