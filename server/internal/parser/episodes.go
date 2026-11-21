@@ -127,7 +127,7 @@ func scanTail(s string, p int, nx bool) (eps []int, end, version int) {
 // joined name. used reports byte ranges already taken.
 func findEpisodes(ln string, anime bool) []epMatch {
 	var out []epMatch
-	hasDigit := strings.IndexAny(ln, "0123456789") >= 0
+	hasDigit := strings.ContainsAny(ln, "0123456789")
 	seasonWord := strings.Contains(ln, "season") || strings.Contains(ln, "saison") || strings.Contains(ln, "staffel") ||
 		strings.Contains(ln, "temporad") || strings.Contains(ln, "sezon") || strings.Contains(ln, "stagione") || strings.Contains(ln, "seizoen")
 	if !hasDigit && !seasonWord {

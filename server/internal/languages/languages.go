@@ -181,7 +181,7 @@ var strong = map[string]string{
 	"norwegian": "no", "norsk": "no",
 	"finnish": "fi", "suomi": "fi",
 	"turkish":    "tr",
-	"portuguese": "pt", "portugues": "pt",
+	"portuguese": "pt", "portugues": "pt", //nolint:misspell // the Portuguese spelling, as release names use it
 	"brazilian": "pt-br", "dublado": "pt-br", "ptbr": "pt-br", "pt-br": "pt-br",
 	"greek":  "el",
 	"korean": "ko", "kor": "ko",

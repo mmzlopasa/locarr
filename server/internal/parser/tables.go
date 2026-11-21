@@ -318,7 +318,8 @@ var streaming = map[string]string{
 	"tubi": "Tubi", "unxt": "U-Next", "zee5": "ZEE5", "snxt": "Sun NXT", "htsr": "Hotstar",
 	"nflx": "Netflix", "netflix": "Netflix", "joyn": "Joyn", "rtl+": "RTL+", "amcp": "AMC+", "shout": "Shout! Factory",
 	"stz": "Starz", "strz": "Starz", "ufc": "UFC Fight Pass", "mgmp": "MGM+", "aubc": "ABC iview", "sbs": "SBS",
-	"vrv": "VRV", "viki": "Viki", "adn": "ADN", "wavve": "Wavve", "tving": "TVING",
+	"vrv": "VRV", "viki": "Viki", "adn": "ADN", //nolint:misspell // Anime Digital Network
+	"wavve": "Wavve", "tving": "TVING",
 }
 
 var streamingUpper = map[string]string{

@@ -144,7 +144,7 @@ func maxf(a, b float64) float64 {
 }
 
 var inputReplacer = strings.NewReplacer("–", " - ", "—", " - ", "【", "[", "】", "]", "「", "[", "」", "]",
-	"（", "(", "）", ")", "​", "", " ", " ", "：", ":", "＋", "+")
+	"（", "(", "）", ")", "\u200b", "", " ", " ", "：", ":", "＋", "+")
 
 func stripExt(s string, isPath bool) (string, string) {
 	i := strings.LastIndexByte(s, '.')

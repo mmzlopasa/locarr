@@ -389,7 +389,7 @@ func specUpgrade(e *eval) {
 	cutoff := p.CutoffPosition()
 	if curPos >= 0 && curPos <= cutoff && (p.CutoffFormatScore == 0 || cur.Score >= p.CutoffFormatScore) {
 		// The cutoff is met; only a proper/repack of the same quality is still welcome.
-		if !(e.pos == curPos && revisionValue(e.r.Revision) > revisionValue(cur.Revision)) {
+		if e.pos != curPos || revisionValue(e.r.Revision) <= revisionValue(cur.Revision) {
 			e.reject(CodeCutoffMet, fmt.Sprintf("%s (score %d) already meets the cutoff %s", curQ.Name, cur.Score, cutoffName(p)),
 				map[string]any{"current": curQ.Name, "currentScore": cur.Score, "cutoff": cutoffName(p)})
 		}
@@ -419,9 +419,9 @@ func cutoffName(p *quality.Profile) string {
 }
 
 func specScore(e *eval) {
-	if min := e.ctx.Profile.MinFormatScore; e.score < min {
-		e.reject(CodeScoreTooLow, fmt.Sprintf("custom format score %d is below the minimum %d", e.score, min),
-			map[string]any{"score": e.score, "minimum": min})
+	if minScore := e.ctx.Profile.MinFormatScore; e.score < minScore {
+		e.reject(CodeScoreTooLow, fmt.Sprintf("custom format score %d is below the minimum %d", e.score, minScore),
+			map[string]any{"score": e.score, "minimum": minScore})
 	}
 }
 
@@ -572,12 +572,12 @@ func specSeeders(e *eval) {
 	if e.c.Protocol != Torrent || e.c.Seeders == nil {
 		return
 	}
-	min := e.c.MinimumSeeders
-	if min == 0 {
-		min = e.ctx.MinimumSeeders
+	need := e.c.MinimumSeeders
+	if need == 0 {
+		need = e.ctx.MinimumSeeders
 	}
-	if *e.c.Seeders < min {
-		e.reject(CodeSeeders, fmt.Sprintf("%d seeders, at least %d needed", *e.c.Seeders, min), map[string]any{"seeders": *e.c.Seeders, "minimum": min})
+	if *e.c.Seeders < need {
+		e.reject(CodeSeeders, fmt.Sprintf("%d seeders, at least %d needed", *e.c.Seeders, need), map[string]any{"seeders": *e.c.Seeders, "minimum": need})
 	}
 }
 

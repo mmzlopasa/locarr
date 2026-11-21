@@ -157,7 +157,7 @@ func TestSpecs(t *testing.T) {
 		}, good, 12, []string{}, StatusAccepted},
 		{"blocklisted", func(c *Context, _ *Candidate) { c.Blocklist = blocked{good: "failed download"} }, good, 12, []string{CodeBlocklisted}, StatusRejected},
 		{"seeders", func(c *Context, k *Candidate) { c.MinimumSeeders = 5; k.Seeders = intp(2) }, good, 12, []string{CodeSeeders}, StatusRejected},
-		{"indexer minimum seeders", func(c *Context, k *Candidate) { k.MinimumSeeders = 100 }, good, 12, []string{CodeSeeders}, StatusRejected},
+		{"indexer minimum seeders", func(_ *Context, k *Candidate) { k.MinimumSeeders = 100 }, good, 12, []string{CodeSeeders}, StatusRejected},
 		{"retention", func(c *Context, k *Candidate) {
 			k.Protocol = Usenet
 			c.RetentionDays = 1
