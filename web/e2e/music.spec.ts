@@ -73,7 +73,8 @@ test("add an artist: MusicBrainz search, album search and grab, download, import
   await expect(page.getByTestId("album-group-live")).toHaveCount(0);
 
   await page.getByRole("link", { name: "Free Album", exact: true }).click();
-  await expect(page.getByTestId("album-title")).toHaveText("Free Album");
+  // The first view may wait for the track list from MusicBrainz (one request per second, shared with the background refresh).
+  await expect(page.getByTestId("album-title")).toHaveText("Free Album", { timeout: 60_000 });
   await page.getByTestId("open-history").click();
   const drawer = page.getByTestId("history-drawer");
   await expect(drawer.getByTestId("why-box")).toHaveAttribute("data-code", "available", { timeout: 200_000 });
@@ -84,6 +85,7 @@ test("add an artist: MusicBrainz search, album search and grab, download, import
   await page.keyboard.press("Escape");
 
   await page.reload();
+  await expect(page.getByTestId("album-path")).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId("album-path")).toContainText("/Open Source Artist/Free Album (2020)");
   const rows = page.getByTestId("track-row");
   await expect(rows).toHaveCount(5);
