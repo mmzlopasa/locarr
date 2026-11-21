@@ -17,3 +17,4 @@ export LOCARR_TEST_TRANSMISSION_HOST=127.0.0.1 LOCARR_TEST_TRANSMISSION_PORT="$P
     LOCARR_TEST_TRANSMISSION_SEED_CLIENT=/downloads/seed LOCARR_TEST_TRANSMISSION_SEED_LOCAL="$SEED_DIR"
 run_contract transmission
 run_app_test TestMovieFlowTransmission
+run_app_test TestSeasonPackTransmission
