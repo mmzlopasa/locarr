@@ -15,7 +15,7 @@ var (
 	// AlbumTokens name an album's folder (artist tokens work too).
 	AlbumTokens = append(append([]Token{}, ArtistTokens...), []Token{{"AlbumTitle", "Abbey Road"}, {"AlbumCleanTitle", "Abbey Road"},
 		{"AlbumTitleThe", "Abbey Road"}, {"AlbumType", "Album"}, {"AlbumDisambiguation", "deluxe"}, {"ReleaseYear", "1969"},
-		{"ReleaseDate", "1969-09-26"}, {"OriginalYear", "1969"}, {"ReleaseCountry", "GB"}, {"ReleaseFormat", "CD"},
+		{"ReleaseDate", "1969-09-26"}, {"OriginalYear", "1969"}, {"EditionYear", "2019"}, {"ReleaseCountry", "GB"}, {"ReleaseFormat", "CD"},
 		{"ReleaseDisambiguation", "2019 remaster"}, {"RecordLabel", "Apple Records"}, {"DiscCount", "1"}, {"TrackCount", "17"},
 		{"Quality", "FLAC 24bit"}, {"AudioFormat", "FLAC"}, {"AudioBitDepth", "24bit"}, {"AudioSampleRate", "96kHz"},
 		{"ReleaseGroup", "GROUP"}, {"AlbumMbId", "9162580e-5df4-32de-80cc-f45a8d8a9b1d"}}...)
@@ -97,8 +97,11 @@ func MusicValues(a ArtistInfo, al *AlbumInfo, t *TrackInfo) Values {
 	if len(al.ReleaseDate) >= 4 {
 		v["ReleaseYear"], v["OriginalYear"], v["ReleaseDate"] = al.ReleaseDate[:4], al.ReleaseDate[:4], al.ReleaseDate
 	}
-	if len(al.EditionDate) >= 4 {
+	if v["ReleaseYear"] == "" && len(al.EditionDate) >= 4 {
 		v["ReleaseYear"] = al.EditionDate[:4]
+	}
+	if len(al.EditionDate) >= 4 {
+		v["EditionYear"] = al.EditionDate[:4]
 	}
 	v["ReleaseCountry"], v["ReleaseFormat"], v["ReleaseDisambiguation"], v["RecordLabel"] = al.Country, al.Format, al.ReleaseDisambiguation, al.Label
 	if al.Discs > 0 {

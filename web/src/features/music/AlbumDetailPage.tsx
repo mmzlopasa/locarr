@@ -75,9 +75,9 @@ export function AlbumDetailPage() {
             {canManage ? (
               <>
                 <Button onClick={() => update.mutate({ monitored: !a.monitored })} busy={update.isPending && update.variables?.monitored !== undefined}>
-                  {a.monitored ? <BookmarkX className="size-3.5" /> : <Bookmark className="size-3.5" />} {a.monitored ? t("movie.unmonitor") : t("movie.monitor")}
+                  {a.monitored ? <BookmarkX className="size-3.5" /> : <Bookmark className="size-3.5" />} {a.monitored ? t("movie.actions.unmonitor") : t("movie.actions.monitor")}
                 </Button>
-                <Button onClick={() => search.mutate()} busy={search.isPending} disabled={!a.available}><Search className="size-3.5" /> {t("movie.searchNow")}</Button>
+                <Button onClick={() => search.mutate()} busy={search.isPending} disabled={!a.available}><Search className="size-3.5" /> {t("movie.actions.search")}</Button>
               </>
             ) : null}
             <Button onClick={() => setDrawer(true)} data-testid="open-history"><History className="size-3.5" /> {t("music.history")}</Button>

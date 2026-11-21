@@ -75,9 +75,9 @@ export function ArtistDetailPage() {
               </Button>
               <Button onClick={() => refresh.mutate()} busy={refresh.isPending}><RefreshCw className="size-3.5" /> {t("music.refresh")}</Button>
               <Button onClick={() => toggle.mutate(!a.monitored)} busy={toggle.isPending}>
-                {a.monitored ? <BookmarkX className="size-3.5" /> : <Bookmark className="size-3.5" />} {a.monitored ? t("movie.unmonitor") : t("movie.monitor")}
+                {a.monitored ? <BookmarkX className="size-3.5" /> : <Bookmark className="size-3.5" />} {a.monitored ? t("movie.actions.unmonitor") : t("movie.actions.monitor")}
               </Button>
-              <Button onClick={() => setEditing(!editing)} aria-expanded={editing}><Pencil className="size-3.5" /> {t("movie.edit")}</Button>
+              <Button onClick={() => setEditing(!editing)} aria-expanded={editing}><Pencil className="size-3.5" /> {t("movie.actions.edit")}</Button>
             </div>
           ) : null}
           {search.data ? <p role="status" className="mt-2 text-[13px] text-success">{t("wanted.queued", { count: search.data.count })}</p> : null}

@@ -73,7 +73,7 @@ export function MetadataProfilesPage() {
                 <div className="text-[11px] text-faint">{t("metadataProfiles.used", { count: p.artists })}</div>
               </div>
               <div className="flex gap-1">
-                <Button variant="ghost" onClick={() => edit(p)}>{t("movie.edit")}</Button>
+                <Button variant="ghost" onClick={() => edit(p)}>{t("movie.actions.edit")}</Button>
                 <Button variant="ghost" onClick={() => del.mutate(p.id)} disabled={p.artists > 0} title={p.artists > 0 ? t("metadataProfiles.inUse") : undefined}
                   aria-label={t("metadataProfiles.delete", { name: p.name })}><Trash2 className="size-3.5" /></Button>
               </div>
