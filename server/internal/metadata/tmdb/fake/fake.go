@@ -26,7 +26,7 @@ import (
 // APIKey is the v3 key the fake accepts; ReadToken is the v4 token.
 const (
 	APIKey    = "fake0000000000000000000000tmdb01"
-	ReadToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYWtlLXRtZGIifQ.ZmFrZS1zaWduYXR1cmUtZm9yLXRlc3RzLW9ubHk"
+	ReadToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYWtlLXRtZGIifQ.ZmFrZS1zaWduYXR1cmUtZm9yLXRlc3RzLW9ubHk" // #nosec G101 -- a fake token for tests
 )
 
 // Movie is a catalog movie.
@@ -301,7 +301,7 @@ func (s *Server) image(w http.ResponseWriter, path string) {
 	}
 	sum := crc32.ChecksumIEEE([]byte(parts[3]))
 	img := image.NewRGBA(image.Rect(0, 0, 40, 60))
-	c := color.RGBA{R: uint8(sum), G: uint8(sum >> 8), B: uint8(sum >> 16), A: 255}
+	c := color.RGBA{R: uint8(sum & 0xff), G: uint8((sum >> 8) & 0xff), B: uint8((sum >> 16) & 0xff), A: 255} // #nosec G115 -- masked to a byte
 	for y := 0; y < 60; y++ {
 		for x := 0; x < 40; x++ {
 			img.Set(x, y, c)

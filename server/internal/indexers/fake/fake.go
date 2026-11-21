@@ -528,11 +528,11 @@ func SeedTorrent(dir, title string) ([]byte, error) {
 	data := SeedPayload(title)
 	p := filepath.Join(dir, name)
 	if st, err := os.Stat(p); err != nil || st.Size() != int64(len(data)) {
-		if err := os.WriteFile(p, data, 0o666); err != nil {
+		if err := os.WriteFile(p, data, 0o666); err != nil { // #nosec G306 -- test data the client and Locarr (other users) must read and link
 			return nil, err
 		}
 		// World-writable so the client and Locarr (other users) may hardlink it.
-		_ = os.Chmod(p, 0o666)
+		_ = os.Chmod(p, 0o666) // #nosec G302 -- see above
 	}
 	return testkit.MakeTorrent(name, data).File, nil
 }

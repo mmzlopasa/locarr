@@ -111,7 +111,7 @@ func (c *Client) getWith(ctx context.Context, key, path string, q url.Values, tt
 		return err
 	}
 	if err := json.Unmarshal(body, out); err != nil {
-		return fmt.Errorf("%w: bad answer from %s: %v", metadata.ErrUnavailable, path, err)
+		return fmt.Errorf("%w: bad answer from %s: %w", metadata.ErrUnavailable, path, err)
 	}
 	if ttl > 0 {
 		c.Cache.Put(ctx, cacheKey, body, ttl)
@@ -460,7 +460,7 @@ func (c *Client) FetchImage(ctx context.Context, size, name string) ([]byte, str
 	}
 	res, err := c.HTTP.Do(req)
 	if err != nil {
-		return nil, "", fmt.Errorf("%w: %v", metadata.ErrUnavailable, err)
+		return nil, "", fmt.Errorf("%w: %w", metadata.ErrUnavailable, err)
 	}
 	defer res.Body.Close()
 	if res.StatusCode == http.StatusNotFound {

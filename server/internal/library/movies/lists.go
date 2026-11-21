@@ -38,7 +38,7 @@ func (s *Service) Collection(ctx context.Context, id int64) (CollectionView, err
 	}
 	v := CollectionView{Collection: c, Members: []CollectionPart{}}
 	for _, m := range marked {
-		v.Members = append(v.Members, CollectionPart{MovieSummary: m.MovieSummary, MovieID: m.MovieID})
+		v.Members = append(v.Members, CollectionPart(m))
 	}
 	return v, nil
 }

@@ -32,14 +32,14 @@ func Flags(r *indexers.Release) []string {
 	}
 	// Volume factors say the same as the flags when an indexer sends only those.
 	if r.DownloadVolumeFactor != nil {
-		switch dv := *r.DownloadVolumeFactor; {
-		case dv == 0:
+		switch *r.DownloadVolumeFactor {
+		case 0:
 			add("freeleech")
-		case dv == 0.5:
+		case 0.5:
 			add("halfleech")
-		case dv == 0.25:
+		case 0.25:
 			add("freeleech75")
-		case dv == 0.75:
+		case 0.75:
 			add("freeleech25")
 		}
 	}

@@ -210,13 +210,13 @@ func Sanitize(name string, o Options) string {
 	return Truncate(name, MaxSegment)
 }
 
-// Truncate shortens s to at most max bytes on a character boundary, keeping
+// Truncate shortens s to at most limit bytes on a character boundary, keeping
 // the end readable (no trailing space or dot).
-func Truncate(s string, max int) string {
-	if len(s) <= max {
+func Truncate(s string, limit int) string {
+	if len(s) <= limit {
 		return s
 	}
-	cut := max
+	cut := limit
 	for cut > 0 && !utf8.RuneStart(s[cut]) {
 		cut--
 	}

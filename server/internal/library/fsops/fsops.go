@@ -58,7 +58,7 @@ func existingParent(p string) string {
 }
 
 func device(p string) (uint64, bool) {
-	st, err := os.Stat(p)
+	st, err := os.Stat(p) // #nosec G703 -- callers pass paths checked by fs.SafePath
 	if err != nil {
 		return 0, false
 	}
@@ -133,7 +133,7 @@ func Transfer(src, dst, mode string, dirMode os.FileMode) (Result, error) {
 func Verify(p string, size int64) error {
 	st, err := os.Stat(p)
 	if err != nil {
-		return fmt.Errorf("%w: %v", ErrVerify, err)
+		return fmt.Errorf("%w: %w", ErrVerify, err)
 	}
 	if !st.Mode().IsRegular() || st.Size() != size {
 		return fmt.Errorf("%w: %s is %d bytes, expected %d", ErrVerify, p, st.Size(), size)
@@ -182,7 +182,7 @@ func MoveTree(src, dst string) error {
 	if _, err := os.Lstat(dst); err == nil {
 		return fmt.Errorf("%w: %s", ErrExists, dst)
 	}
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil { // #nosec G301 -- library folders must be readable by media servers
 		return err
 	}
 	if err := os.Rename(src, dst); err == nil {
@@ -208,7 +208,7 @@ func MoveTree(src, dst string) error {
 		}
 		target := filepath.Join(dst, rel)
 		if d.IsDir() {
-			return os.MkdirAll(target, 0o755)
+			return os.MkdirAll(target, 0o755) // #nosec G301 -- as above
 		}
 		if !d.Type().IsRegular() {
 			return nil // symbolic links and devices are not media

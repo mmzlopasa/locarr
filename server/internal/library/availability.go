@@ -49,11 +49,11 @@ func earliest(ts ...time.Time) time.Time {
 	return out
 }
 
-// AvailableFrom returns when a movie reaches min (zero when it is unknown),
+// AvailableFrom returns when a movie reaches minimum (zero when it is unknown),
 // shifted by delay (which may be negative to search early).
-func AvailableFrom(d ReleaseDates, min Availability, delay time.Duration) time.Time {
+func AvailableFrom(d ReleaseDates, minimum Availability, delay time.Duration) time.Time {
 	var at time.Time
-	switch min {
+	switch minimum {
 	case Announced:
 		return time.Unix(0, 0).UTC()
 	case InCinemas:
@@ -70,10 +70,10 @@ func AvailableFrom(d ReleaseDates, min Availability, delay time.Duration) time.T
 	return at.Add(delay)
 }
 
-// IsAvailable reports whether a movie with these dates has reached min at now.
+// IsAvailable reports whether a movie with these dates has reached minimum at now.
 // A movie whose provider says "Released" but has no dates counts as available.
-func IsAvailable(d ReleaseDates, min Availability, delay time.Duration, now time.Time) bool {
-	at := AvailableFrom(d, min, delay)
+func IsAvailable(d ReleaseDates, minimum Availability, delay time.Duration, now time.Time) bool {
+	at := AvailableFrom(d, minimum, delay)
 	if at.IsZero() {
 		return d.Released
 	}
