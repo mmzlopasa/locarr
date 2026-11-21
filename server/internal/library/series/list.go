@@ -50,14 +50,22 @@ type ListItem struct {
 }
 
 var sortColumns = map[string]string{"title": "i.sort_title", "year": "i.year", "added": "i.added_at", "network": "lower(s.network)",
-	"rating":         "s.rating",
-	"nextAiring":     `COALESCE((SELECT MIN(e.air_date_utc) FROM episodes e WHERE e.series_id = i.id AND e.air_date_utc > :now), 9e15)`,
-	"previousAiring": `COALESCE((SELECT MAX(e.air_date_utc) FROM episodes e WHERE e.series_id = i.id AND e.air_date_utc <= :now), 0)`,
-	"missing":        `(SELECT COUNT(*) FROM episodes e WHERE e.series_id = i.id AND e.monitored = 1 AND e.removed = 0 AND e.file_id IS NULL AND e.air_date_utc <= :now)`,
-	"size":           `COALESCE((SELECT SUM(f.size) FROM media_files f WHERE f.item_id = i.id), 0)`}
+	"rating": "s.rating", "nextAiring": "COALESCE(agg.next_air, 9e15)", "previousAiring": "COALESCE(agg.prev_air, 0)",
+	"missing": "COALESCE(agg.missing, 0)", "size": "COALESCE(sz.size, 0)"}
 
-const missingExists = `EXISTS (SELECT 1 FROM episodes e JOIN seasons sn ON sn.id = e.season_id WHERE e.series_id = i.id AND e.monitored = 1
-	AND sn.monitored = 1 AND e.removed = 0 AND e.file_id IS NULL AND e.air_date_utc <= :now)`
+// Sorting by episode facts joins them aggregated once (not per row).
+const episodeAgg = ` LEFT JOIN (SELECT e.series_id, MIN(CASE WHEN e.air_date_utc > :now THEN e.air_date_utc END) AS next_air,
+	MAX(CASE WHEN e.air_date_utc <= :now THEN e.air_date_utc END) AS prev_air,
+	SUM(CASE WHEN e.monitored = 1 AND e.removed = 0 AND e.file_id IS NULL AND e.air_date_utc <= :now THEN 1 ELSE 0 END) AS missing
+	FROM episodes e GROUP BY e.series_id) agg ON agg.series_id = i.id`
+
+const sizeAgg = ` LEFT JOIN (SELECT item_id, SUM(size) AS size FROM media_files GROUP BY item_id) sz ON sz.item_id = i.id`
+
+// missingIn keeps series with a monitored, aired episode without a file (one pass).
+// (A monitored episode always has a monitored season: toggling a season
+// sets its episodes, monitoring an episode monitors its season.)
+const missingIn = `i.id IN (SELECT e.series_id FROM episodes e WHERE e.monitored = 1 AND e.removed = 0 AND e.file_id IS NULL
+	AND e.air_date_utc <= :now)`
 
 // List returns one page of series and the number that match.
 func (s *Service) List(ctx context.Context, f ListFilter) ([]ListItem, int, error) {
@@ -83,7 +91,7 @@ func (s *Service) List(ctx context.Context, f ListFilter) ([]ListItem, int, erro
 		args = append(args, like, like, like, q, q, q)
 	}
 	if f.Missing {
-		where = append(where, "i.monitored = 1", missingExists)
+		where = append(where, "i.monitored = 1", missingIn)
 	}
 	col, ok := sortColumns[f.Sort]
 	if !ok {
@@ -99,11 +107,18 @@ func (s *Service) List(ctx context.Context, f ListFilter) ([]ListItem, int, erro
 	fill := func(q string) string { return strings.ReplaceAll(q, ":now", fmt.Sprint(now)) }
 	clause := fill(" WHERE " + strings.Join(where, " AND "))
 	order := fill(" ORDER BY " + col + " " + dir + ", i.sort_title, i.id")
+	joins := ""
+	switch f.Sort {
+	case "nextAiring", "previousAiring", "missing":
+		joins = fill(episodeAgg)
+	case "size":
+		joins = sizeAgg
+	}
 	total := 0
 	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*)`+seriesFrom+clause, args...).Scan(&total); err != nil { // #nosec G202 -- clauses are constants
 		return nil, 0, err
 	}
-	list, err := s.querySeries(ctx, `SELECT `+seriesColumns+seriesFrom+clause+order+` LIMIT ? OFFSET ?`, append(args, f.Limit, max(f.Offset, 0))...) // #nosec G202
+	list, err := s.querySeries(ctx, `SELECT `+seriesColumns+seriesFrom+joins+clause+order+` LIMIT ? OFFSET ?`, append(args, f.Limit, max(f.Offset, 0))...) // #nosec G202
 	if err != nil {
 		return nil, 0, err
 	}

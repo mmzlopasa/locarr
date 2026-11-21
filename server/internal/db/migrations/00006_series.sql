@@ -77,11 +77,11 @@ CREATE TABLE episodes (
     UNIQUE (series_id, season_number, episode_number)
 );
 CREATE INDEX episodes_season ON episodes (season_id);
-CREATE INDEX episodes_air ON episodes (air_date_utc) WHERE air_date_utc IS NOT NULL;
 CREATE INDEX episodes_air_date ON episodes (air_date) WHERE air_date <> '';
 CREATE INDEX episodes_absolute ON episodes (series_id, absolute_number) WHERE absolute_number > 0;
 CREATE INDEX episodes_file ON episodes (file_id) WHERE file_id IS NOT NULL;
-CREATE INDEX episodes_wanted ON episodes (monitored, file_id, air_date_utc);
+-- Missing episodes (the Wanted list and the "missing" filter) without touching the table.
+CREATE INDEX episodes_missing ON episodes (series_id, air_date_utc, season_id) WHERE file_id IS NULL AND monitored = 1 AND removed = 0;
 
 -- Every item a download is for (its ref and what it covers), filled by
 -- triggers from downloads.item_ref so lookups by item use an index.
