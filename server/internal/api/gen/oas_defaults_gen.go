@@ -27,6 +27,22 @@ func (s *AddOptions) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *AddSeriesRequest) setDefaults() {
+	{
+		val := bool(true)
+		s.SeasonFolder.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.Monitored.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.SearchOnAdd.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *DownloadClientInput) setDefaults() {
 	{
 		val := bool(true)
@@ -60,6 +76,22 @@ func (s *DownloadClientInput) setDefaults() {
 
 // setDefaults set default value of fields.
 func (s *ImportExistingRequest) setDefaults() {
+	{
+		val := bool(true)
+		s.Monitored.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.SearchOnAdd.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ImportExistingSeriesRequestItemsItem) setDefaults() {
+	{
+		val := bool(true)
+		s.SeasonFolder.SetTo(val)
+	}
 	{
 		val := bool(true)
 		s.Monitored.SetTo(val)

@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -286,22 +287,37 @@ func (h *Handler) DeleteImportExclusion(ctx context.Context, p gen.DeleteImportE
 	return h.Movies.DeleteExclusion(ctx, p.TmdbId)
 }
 
-// explain derives the explanation for a ref.
-func (h *Handler) explain(ctx context.Context, ref library.Ref) (timeline.Explanation, string, error) {
-	if ref.Kind != library.RefMovie {
-		return timeline.Explanation{}, "", fmt.Errorf("%w: only movies have timelines so far", library.ErrBadRef)
+// explain derives the explanation for a ref; refs are the refs whose
+// history belongs to it (an episode with its season).
+func (h *Handler) explain(ctx context.Context, ref library.Ref) (timeline.Explanation, string, []string, error) {
+	switch ref.Kind {
+	case library.RefMovie:
+		it, err := h.Movies.Item(ctx, ref.ID)
+		if err != nil {
+			return timeline.Explanation{}, "", nil, err
+		}
+		facts, err := h.Timeline.Facts(ctx, ref.String(), "movies")
+		if err != nil {
+			return timeline.Explanation{}, "", nil, err
+		}
+		st := timeline.ItemState{Ref: ref.String(), Monitored: it.Monitored, Available: it.Available, AvailableFrom: it.AvailableFrom,
+			HasFile: it.File != nil, CutoffMet: it.CutoffMet}
+		return timeline.Explain(st, facts), it.Title, []string{ref.String()}, nil
+	case library.RefEpisode, library.RefSeason, library.RefSeries:
+		if h.Series == nil {
+			break
+		}
+		es, err := h.Series.Explain(ctx, ref)
+		if err != nil {
+			return timeline.Explanation{}, "", nil, err
+		}
+		facts, err := h.Timeline.FactsRefs(ctx, es.Refs, "tv")
+		if err != nil {
+			return timeline.Explanation{}, "", nil, err
+		}
+		return timeline.Explain(es.State, facts), es.Title, es.Refs, nil
 	}
-	it, err := h.Movies.Item(ctx, ref.ID)
-	if err != nil {
-		return timeline.Explanation{}, "", err
-	}
-	facts, err := h.Timeline.Facts(ctx, ref.String(), "movies")
-	if err != nil {
-		return timeline.Explanation{}, "", err
-	}
-	st := timeline.ItemState{Ref: ref.String(), Monitored: it.Monitored, Available: it.Available, AvailableFrom: it.AvailableFrom,
-		HasFile: it.File != nil, CutoffMet: it.CutoffMet}
-	return timeline.Explain(st, facts), it.Title, nil
+	return timeline.Explanation{}, "", nil, fmt.Errorf("%w: this kind has no timeline yet", library.ErrBadRef)
 }
 
 func toExplanation(e timeline.Explanation) (gen.Explanation, error) {
@@ -317,11 +333,11 @@ func (h *Handler) GetTimeline(ctx context.Context, p gen.GetTimelineParams) (*ge
 	if err != nil {
 		return nil, err
 	}
-	ex, title, err := h.explain(ctx, ref)
+	ex, title, refs, err := h.explain(ctx, ref)
 	if err != nil {
 		return nil, err
 	}
-	events, err := h.Timeline.List(ctx, ref.String(), p.Limit.Or(500))
+	events, err := h.Timeline.ListRefs(ctx, refs, p.Limit.Or(500))
 	if err != nil {
 		return nil, err
 	}
@@ -346,7 +362,7 @@ func (h *Handler) ExplainItem(ctx context.Context, p gen.ExplainItemParams) (*ge
 	if err != nil {
 		return nil, err
 	}
-	ex, _, err := h.explain(ctx, ref)
+	ex, _, _, err := h.explain(ctx, ref)
 	if err != nil {
 		return nil, err
 	}
@@ -364,15 +380,34 @@ func (h *Handler) GetCalendar(ctx context.Context, p gen.GetCalendarParams) ([]g
 	if p.End.Before(p.Start) || p.End.Sub(p.Start) > 400*24*time.Hour {
 		return nil, &StatusError{Status: http.StatusBadRequest, Code: "validation", Message: "end must be after start and at most 400 days later"}
 	}
-	list, err := h.Movies.Calendar(ctx, day(p.Start), day(p.End))
+	return h.calendar(ctx, day(p.Start), day(p.End))
+}
+
+// calendar merges movie dates and episode air dates.
+func (h *Handler) calendar(ctx context.Context, from, to string) ([]gen.CalendarEntry, error) {
+	list, err := h.Movies.Calendar(ctx, from, to)
 	if err != nil {
 		return nil, err
 	}
 	out := make([]gen.CalendarEntry, 0, len(list))
 	for _, e := range list {
 		d, _ := time.Parse("2006-01-02", e.Date)
-		out = append(out, gen.CalendarEntry{Date: d, Kind: gen.CalendarEntryKind(e.Kind), MovieId: e.MovieID, Title: e.Title, Year: e.Year,
-			HasFile: e.HasFile, Monitored: e.Monitored, Poster: e.Poster})
+		out = append(out, gen.CalendarEntry{Date: d, Kind: gen.CalendarEntryKind(e.Kind), MovieId: gen.NewOptInt64(e.MovieID), Title: e.Title,
+			Year: e.Year, HasFile: e.HasFile, Monitored: e.Monitored, Poster: e.Poster})
+	}
+	if h.Series != nil {
+		eps, err := h.Series.Calendar(ctx, from, to)
+		if err != nil {
+			return nil, err
+		}
+		for _, e := range eps {
+			d, _ := time.Parse("2006-01-02", e.Date)
+			out = append(out, gen.CalendarEntry{Date: d, Kind: gen.CalendarEntryKindEpisode, SeriesId: gen.NewOptInt64(e.SeriesID),
+				EpisodeId: gen.NewOptInt64(e.EpisodeID), SeasonNumber: gen.NewOptInt(e.Season), EpisodeNumber: gen.NewOptInt(e.Number),
+				EpisodeTitle: gen.NewOptString(e.EpisodeTitle), AirDateUtc: optTime(e.AirDateUTC), Network: optStr(e.Network), Title: e.SeriesTitle,
+				HasFile: e.HasFile, Monitored: e.Monitored, Poster: e.Poster})
+		}
+		sort.SliceStable(out, func(i, j int) bool { return out[i].Date.Before(out[j].Date) })
 	}
 	return out, nil
 }
@@ -443,21 +478,34 @@ func (h *Handler) GetCalendarFeed(ctx context.Context, p gen.GetCalendarFeedPara
 		return gen.GetCalendarFeedOK{}, err
 	}
 	now := time.Now().UTC()
-	list, err := h.Movies.Calendar(ctx, day(now.AddDate(0, 0, -p.PastDays.Or(30))), day(now.AddDate(0, 0, p.FutureDays.Or(365))))
+	list, err := h.calendar(ctx, day(now.AddDate(0, 0, -p.PastDays.Or(30))), day(now.AddDate(0, 0, p.FutureDays.Or(365))))
 	if err != nil {
 		return gen.GetCalendarFeedOK{}, err
 	}
-	labels := map[string]string{movies.DateInCinemas: "in cinemas", movies.DateDigital: "digital release", movies.DatePhysical: "physical release"}
+	labels := map[gen.CalendarEntryKind]string{gen.CalendarEntryKindInCinemas: "in cinemas", gen.CalendarEntryKindDigital: "digital release",
+		gen.CalendarEntryKindPhysical: "physical release"}
 	var b bytes.Buffer
 	b.WriteString("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Locarr//Calendar//EN\r\nCALSCALE:GREGORIAN\r\nX-WR-CALNAME:Locarr\r\n")
 	stamp := now.Format("20060102T150405Z")
 	for _, e := range list {
-		d, err := time.Parse("2006-01-02", e.Date)
-		if err != nil {
+		if e.Kind == gen.CalendarEntryKindEpisode {
+			summary := fmt.Sprintf("%s - S%02dE%02d - %s", e.Title, e.SeasonNumber.Or(0), e.EpisodeNumber.Or(0), e.EpisodeTitle.Or(""))
+			if at, ok := e.AirDateUtc.Get(); ok {
+				end := at.Add(30 * time.Minute)
+				fmt.Fprintf(&b, "BEGIN:VEVENT\r\nUID:locarr-episode-%d@locarr\r\nDTSTAMP:%s\r\nDTSTART:%s\r\nDTEND:%s\r\nSUMMARY:%s\r\n",
+					e.EpisodeId.Or(0), stamp, at.UTC().Format("20060102T150405Z"), end.UTC().Format("20060102T150405Z"), icalEscape(summary))
+			} else {
+				fmt.Fprintf(&b, "BEGIN:VEVENT\r\nUID:locarr-episode-%d@locarr\r\nDTSTAMP:%s\r\nDTSTART;VALUE=DATE:%s\r\nDTEND;VALUE=DATE:%s\r\nSUMMARY:%s\r\n",
+					e.EpisodeId.Or(0), stamp, e.Date.Format("20060102"), e.Date.AddDate(0, 0, 1).Format("20060102"), icalEscape(summary))
+			}
+			if n, ok := e.Network.Get(); ok && n != "" {
+				fmt.Fprintf(&b, "LOCATION:%s\r\n", icalEscape(n))
+			}
+			b.WriteString("END:VEVENT\r\n")
 			continue
 		}
 		fmt.Fprintf(&b, "BEGIN:VEVENT\r\nUID:locarr-movie-%d-%s@locarr\r\nDTSTAMP:%s\r\nDTSTART;VALUE=DATE:%s\r\nDTEND;VALUE=DATE:%s\r\nSUMMARY:%s\r\nEND:VEVENT\r\n",
-			e.MovieID, e.Kind, stamp, d.Format("20060102"), d.AddDate(0, 0, 1).Format("20060102"),
+			e.MovieId.Or(0), e.Kind, stamp, e.Date.Format("20060102"), e.Date.AddDate(0, 0, 1).Format("20060102"),
 			icalEscape(fmt.Sprintf("%s (%d) - %s", e.Title, e.Year, labels[e.Kind])))
 	}
 	b.WriteString("END:VCALENDAR\r\n")
@@ -712,7 +760,21 @@ func (h *Handler) metadataSettings(ctx context.Context) (*gen.MetadataSettings, 
 	if err != nil {
 		return nil, err
 	}
-	return &gen.MetadataSettings{TmdbApiKey: gen.SecretState{Configured: ok}, Language: lang, Region: region}, nil
+	tvdb, err := h.Settings.Configured(ctx, settings.TVDBAPIKey)
+	if err != nil {
+		return nil, err
+	}
+	pin, err := h.Settings.Configured(ctx, settings.TVDBPin)
+	if err != nil {
+		return nil, err
+	}
+	provider, err := settings.Get(ctx, h.Settings, metadata.SeriesSource)
+	if err != nil {
+		return nil, err
+	}
+	return &gen.MetadataSettings{TmdbApiKey: gen.SecretState{Configured: ok}, Language: lang, Region: region,
+		TvdbApiKey: gen.SecretState{Configured: tvdb}, TvdbPin: gen.SecretState{Configured: pin},
+		SeriesProvider: gen.MetadataSettingsSeriesProvider(provider)}, nil
 }
 
 // GetMetadataSettings implements GET /settings/metadata.
@@ -736,6 +798,35 @@ func (h *Handler) UpdateMetadataSettings(ctx context.Context, req *gen.MetadataS
 			}
 		}
 		if err := h.Settings.SetSecret(ctx, settings.TMDbAPIKey, key); err != nil {
+			return nil, err
+		}
+	}
+	if key, ok := req.TvdbApiKey.Get(); ok {
+		key = strings.TrimSpace(key)
+		pin := strings.TrimSpace(req.TvdbPin.Or(""))
+		if key != "" && h.TVDB != nil {
+			if err := h.TVDB.ValidateKey(ctx, key, pin); err != nil {
+				return nil, err
+			}
+		}
+		if err := h.Settings.SetSecret(ctx, settings.TVDBAPIKey, key); err != nil {
+			return nil, err
+		}
+		if err := h.Settings.SetSecret(ctx, settings.TVDBPin, map[bool]string{true: pin, false: ""}[key != ""]); err != nil {
+			return nil, err
+		}
+	} else if pin, ok := req.TvdbPin.Get(); ok {
+		if err := h.Settings.SetSecret(ctx, settings.TVDBPin, strings.TrimSpace(pin)); err != nil {
+			return nil, err
+		}
+	}
+	if v, ok := req.SeriesProvider.Get(); ok {
+		if v == gen.MetadataSettingsInputSeriesProviderTvdb {
+			if on, _ := h.Settings.Configured(ctx, settings.TVDBAPIKey); !on {
+				return nil, &StatusError{Status: http.StatusBadRequest, Code: "metadata_key_missing", Message: "set a TVDB key before choosing TVDB"}
+			}
+		}
+		if err := settings.Set(ctx, h.Settings, nil, metadata.SeriesSource, string(v)); err != nil {
 			return nil, err
 		}
 	}

@@ -179,6 +179,144 @@ func (s *AddOptions) SetSearchOnAdd(val OptBool) {
 	s.SearchOnAdd = val
 }
 
+// Merged schema.
+// Ref: #/components/schemas/AddSeriesRequest
+type AddSeriesRequest struct {
+	RootFolderId      int64                `json:"rootFolderId"`
+	QualityProfileId  int64                `json:"qualityProfileId"`
+	SeriesType        OptSeriesType        `json:"seriesType"`
+	SeasonFolder      OptBool              `json:"seasonFolder"`
+	Monitor           OptMonitorOption     `json:"monitor"`
+	MonitorNewSeasons OptMonitorNewSeasons `json:"monitorNewSeasons"`
+	Monitored         OptBool              `json:"monitored"`
+	Tags              []string             `json:"tags"`
+	SearchOnAdd       OptBool              `json:"searchOnAdd"`
+	TmdbId            OptInt64             `json:"tmdbId"`
+	TvdbId            OptInt64             `json:"tvdbId"`
+	// Folder inside the root folder; empty = from the naming template.
+	Path OptString `json:"path"`
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *AddSeriesRequest) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AddSeriesRequest) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetSeriesType returns the value of SeriesType.
+func (s *AddSeriesRequest) GetSeriesType() OptSeriesType {
+	return s.SeriesType
+}
+
+// GetSeasonFolder returns the value of SeasonFolder.
+func (s *AddSeriesRequest) GetSeasonFolder() OptBool {
+	return s.SeasonFolder
+}
+
+// GetMonitor returns the value of Monitor.
+func (s *AddSeriesRequest) GetMonitor() OptMonitorOption {
+	return s.Monitor
+}
+
+// GetMonitorNewSeasons returns the value of MonitorNewSeasons.
+func (s *AddSeriesRequest) GetMonitorNewSeasons() OptMonitorNewSeasons {
+	return s.MonitorNewSeasons
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AddSeriesRequest) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetTags returns the value of Tags.
+func (s *AddSeriesRequest) GetTags() []string {
+	return s.Tags
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *AddSeriesRequest) GetSearchOnAdd() OptBool {
+	return s.SearchOnAdd
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *AddSeriesRequest) GetTmdbId() OptInt64 {
+	return s.TmdbId
+}
+
+// GetTvdbId returns the value of TvdbId.
+func (s *AddSeriesRequest) GetTvdbId() OptInt64 {
+	return s.TvdbId
+}
+
+// GetPath returns the value of Path.
+func (s *AddSeriesRequest) GetPath() OptString {
+	return s.Path
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *AddSeriesRequest) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AddSeriesRequest) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetSeriesType sets the value of SeriesType.
+func (s *AddSeriesRequest) SetSeriesType(val OptSeriesType) {
+	s.SeriesType = val
+}
+
+// SetSeasonFolder sets the value of SeasonFolder.
+func (s *AddSeriesRequest) SetSeasonFolder(val OptBool) {
+	s.SeasonFolder = val
+}
+
+// SetMonitor sets the value of Monitor.
+func (s *AddSeriesRequest) SetMonitor(val OptMonitorOption) {
+	s.Monitor = val
+}
+
+// SetMonitorNewSeasons sets the value of MonitorNewSeasons.
+func (s *AddSeriesRequest) SetMonitorNewSeasons(val OptMonitorNewSeasons) {
+	s.MonitorNewSeasons = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AddSeriesRequest) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetTags sets the value of Tags.
+func (s *AddSeriesRequest) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *AddSeriesRequest) SetSearchOnAdd(val OptBool) {
+	s.SearchOnAdd = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *AddSeriesRequest) SetTmdbId(val OptInt64) {
+	s.TmdbId = val
+}
+
+// SetTvdbId sets the value of TvdbId.
+func (s *AddSeriesRequest) SetTvdbId(val OptInt64) {
+	s.TvdbId = val
+}
+
+// SetPath sets the value of Path.
+func (s *AddSeriesRequest) SetPath(val OptString) {
+	s.Path = val
+}
+
 // Ref: #/components/schemas/ApiKey
 type ApiKey struct {
 	ID   int64  `json:"id"`
@@ -516,16 +654,25 @@ func (s *BlocklistInput) SetItemRef(val jx.Raw) {
 	s.ItemRef = val
 }
 
+// A movie date (movieId set) or an episode airing (kind episode; seriesId and episodeId set).
 // Ref: #/components/schemas/CalendarEntry
 type CalendarEntry struct {
-	Date      time.Time         `json:"date"`
-	Kind      CalendarEntryKind `json:"kind"`
-	MovieId   int64             `json:"movieId"`
-	Title     string            `json:"title"`
-	Year      int               `json:"year"`
-	HasFile   bool              `json:"hasFile"`
-	Monitored bool              `json:"monitored"`
-	Poster    string            `json:"poster"`
+	Date          time.Time         `json:"date"`
+	Kind          CalendarEntryKind `json:"kind"`
+	MovieId       OptInt64          `json:"movieId"`
+	SeriesId      OptInt64          `json:"seriesId"`
+	EpisodeId     OptInt64          `json:"episodeId"`
+	SeasonNumber  OptInt            `json:"seasonNumber"`
+	EpisodeNumber OptInt            `json:"episodeNumber"`
+	EpisodeTitle  OptString         `json:"episodeTitle"`
+	AirDateUtc    OptDateTime       `json:"airDateUtc"`
+	Network       OptString         `json:"network"`
+	// The movie or series title.
+	Title     string `json:"title"`
+	Year      int    `json:"year"`
+	HasFile   bool   `json:"hasFile"`
+	Monitored bool   `json:"monitored"`
+	Poster    string `json:"poster"`
 }
 
 // GetDate returns the value of Date.
@@ -539,8 +686,43 @@ func (s *CalendarEntry) GetKind() CalendarEntryKind {
 }
 
 // GetMovieId returns the value of MovieId.
-func (s *CalendarEntry) GetMovieId() int64 {
+func (s *CalendarEntry) GetMovieId() OptInt64 {
 	return s.MovieId
+}
+
+// GetSeriesId returns the value of SeriesId.
+func (s *CalendarEntry) GetSeriesId() OptInt64 {
+	return s.SeriesId
+}
+
+// GetEpisodeId returns the value of EpisodeId.
+func (s *CalendarEntry) GetEpisodeId() OptInt64 {
+	return s.EpisodeId
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *CalendarEntry) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *CalendarEntry) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetEpisodeTitle returns the value of EpisodeTitle.
+func (s *CalendarEntry) GetEpisodeTitle() OptString {
+	return s.EpisodeTitle
+}
+
+// GetAirDateUtc returns the value of AirDateUtc.
+func (s *CalendarEntry) GetAirDateUtc() OptDateTime {
+	return s.AirDateUtc
+}
+
+// GetNetwork returns the value of Network.
+func (s *CalendarEntry) GetNetwork() OptString {
+	return s.Network
 }
 
 // GetTitle returns the value of Title.
@@ -579,8 +761,43 @@ func (s *CalendarEntry) SetKind(val CalendarEntryKind) {
 }
 
 // SetMovieId sets the value of MovieId.
-func (s *CalendarEntry) SetMovieId(val int64) {
+func (s *CalendarEntry) SetMovieId(val OptInt64) {
 	s.MovieId = val
+}
+
+// SetSeriesId sets the value of SeriesId.
+func (s *CalendarEntry) SetSeriesId(val OptInt64) {
+	s.SeriesId = val
+}
+
+// SetEpisodeId sets the value of EpisodeId.
+func (s *CalendarEntry) SetEpisodeId(val OptInt64) {
+	s.EpisodeId = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *CalendarEntry) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *CalendarEntry) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetEpisodeTitle sets the value of EpisodeTitle.
+func (s *CalendarEntry) SetEpisodeTitle(val OptString) {
+	s.EpisodeTitle = val
+}
+
+// SetAirDateUtc sets the value of AirDateUtc.
+func (s *CalendarEntry) SetAirDateUtc(val OptDateTime) {
+	s.AirDateUtc = val
+}
+
+// SetNetwork sets the value of Network.
+func (s *CalendarEntry) SetNetwork(val OptString) {
+	s.Network = val
 }
 
 // SetTitle sets the value of Title.
@@ -614,6 +831,7 @@ const (
 	CalendarEntryKindInCinemas CalendarEntryKind = "in_cinemas"
 	CalendarEntryKindDigital   CalendarEntryKind = "digital"
 	CalendarEntryKindPhysical  CalendarEntryKind = "physical"
+	CalendarEntryKindEpisode   CalendarEntryKind = "episode"
 )
 
 // AllValues returns all CalendarEntryKind values.
@@ -622,6 +840,7 @@ func (CalendarEntryKind) AllValues() []CalendarEntryKind {
 		CalendarEntryKindInCinemas,
 		CalendarEntryKindDigital,
 		CalendarEntryKindPhysical,
+		CalendarEntryKindEpisode,
 	}
 }
 
@@ -633,6 +852,8 @@ func (s CalendarEntryKind) MarshalText() ([]byte, error) {
 	case CalendarEntryKindDigital:
 		return []byte(s), nil
 	case CalendarEntryKindPhysical:
+		return []byte(s), nil
+	case CalendarEntryKindEpisode:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -650,6 +871,9 @@ func (s *CalendarEntryKind) UnmarshalText(data []byte) error {
 		return nil
 	case CalendarEntryKindPhysical:
 		*s = CalendarEntryKindPhysical
+		return nil
+	case CalendarEntryKindEpisode:
+		*s = CalendarEntryKindEpisode
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -2284,6 +2508,9 @@ type DeleteRemotePathMappingNoContent struct{}
 // DeleteRootFolderNoContent is response for DeleteRootFolder operation.
 type DeleteRootFolderNoContent struct{}
 
+// DeleteSeriesNoContent is response for DeleteSeries operation.
+type DeleteSeriesNoContent struct{}
+
 // DeleteUserNoContent is response for DeleteUser operation.
 type DeleteUserNoContent struct{}
 
@@ -3807,6 +4034,573 @@ func (s *DownloadStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/Episode
+type Episode struct {
+	ID int64 `json:"id"`
+	// Timeline reference, e.g. "episode:42".
+	ItemRef        string `json:"itemRef"`
+	SeriesId       int64  `json:"seriesId"`
+	SeasonId       int64  `json:"seasonId"`
+	SeasonNumber   int    `json:"seasonNumber"`
+	EpisodeNumber  int    `json:"episodeNumber"`
+	AbsoluteNumber int    `json:"absoluteNumber"`
+	Title          string `json:"title"`
+	Overview       string `json:"overview"`
+	// YYYY-MM-DD in the network's time zone; empty = not announced.
+	AirDate    string      `json:"airDate"`
+	AirDateUtc OptDateTime `json:"airDateUtc"`
+	Runtime    int         `json:"runtime"`
+	Monitored  bool        `json:"monitored"`
+	Aired      bool        `json:"aired"`
+	// The provider no longer lists it; kept because it has a file.
+	Removed       bool             `json:"removed"`
+	SceneSeason   OptInt           `json:"sceneSeason"`
+	SceneEpisode  OptInt           `json:"sceneEpisode"`
+	SceneAbsolute OptInt           `json:"sceneAbsolute"`
+	Wanted        EpisodeWanted    `json:"wanted"`
+	CutoffMet     bool             `json:"cutoffMet"`
+	File          OptEpisodeFile   `json:"file"`
+	Download      OptMovieDownload `json:"download"`
+}
+
+// GetID returns the value of ID.
+func (s *Episode) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *Episode) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetSeriesId returns the value of SeriesId.
+func (s *Episode) GetSeriesId() int64 {
+	return s.SeriesId
+}
+
+// GetSeasonId returns the value of SeasonId.
+func (s *Episode) GetSeasonId() int64 {
+	return s.SeasonId
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *Episode) GetSeasonNumber() int {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *Episode) GetEpisodeNumber() int {
+	return s.EpisodeNumber
+}
+
+// GetAbsoluteNumber returns the value of AbsoluteNumber.
+func (s *Episode) GetAbsoluteNumber() int {
+	return s.AbsoluteNumber
+}
+
+// GetTitle returns the value of Title.
+func (s *Episode) GetTitle() string {
+	return s.Title
+}
+
+// GetOverview returns the value of Overview.
+func (s *Episode) GetOverview() string {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *Episode) GetAirDate() string {
+	return s.AirDate
+}
+
+// GetAirDateUtc returns the value of AirDateUtc.
+func (s *Episode) GetAirDateUtc() OptDateTime {
+	return s.AirDateUtc
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *Episode) GetRuntime() int {
+	return s.Runtime
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *Episode) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetAired returns the value of Aired.
+func (s *Episode) GetAired() bool {
+	return s.Aired
+}
+
+// GetRemoved returns the value of Removed.
+func (s *Episode) GetRemoved() bool {
+	return s.Removed
+}
+
+// GetSceneSeason returns the value of SceneSeason.
+func (s *Episode) GetSceneSeason() OptInt {
+	return s.SceneSeason
+}
+
+// GetSceneEpisode returns the value of SceneEpisode.
+func (s *Episode) GetSceneEpisode() OptInt {
+	return s.SceneEpisode
+}
+
+// GetSceneAbsolute returns the value of SceneAbsolute.
+func (s *Episode) GetSceneAbsolute() OptInt {
+	return s.SceneAbsolute
+}
+
+// GetWanted returns the value of Wanted.
+func (s *Episode) GetWanted() EpisodeWanted {
+	return s.Wanted
+}
+
+// GetCutoffMet returns the value of CutoffMet.
+func (s *Episode) GetCutoffMet() bool {
+	return s.CutoffMet
+}
+
+// GetFile returns the value of File.
+func (s *Episode) GetFile() OptEpisodeFile {
+	return s.File
+}
+
+// GetDownload returns the value of Download.
+func (s *Episode) GetDownload() OptMovieDownload {
+	return s.Download
+}
+
+// SetID sets the value of ID.
+func (s *Episode) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *Episode) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetSeriesId sets the value of SeriesId.
+func (s *Episode) SetSeriesId(val int64) {
+	s.SeriesId = val
+}
+
+// SetSeasonId sets the value of SeasonId.
+func (s *Episode) SetSeasonId(val int64) {
+	s.SeasonId = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *Episode) SetSeasonNumber(val int) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *Episode) SetEpisodeNumber(val int) {
+	s.EpisodeNumber = val
+}
+
+// SetAbsoluteNumber sets the value of AbsoluteNumber.
+func (s *Episode) SetAbsoluteNumber(val int) {
+	s.AbsoluteNumber = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Episode) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *Episode) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *Episode) SetAirDate(val string) {
+	s.AirDate = val
+}
+
+// SetAirDateUtc sets the value of AirDateUtc.
+func (s *Episode) SetAirDateUtc(val OptDateTime) {
+	s.AirDateUtc = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *Episode) SetRuntime(val int) {
+	s.Runtime = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *Episode) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetAired sets the value of Aired.
+func (s *Episode) SetAired(val bool) {
+	s.Aired = val
+}
+
+// SetRemoved sets the value of Removed.
+func (s *Episode) SetRemoved(val bool) {
+	s.Removed = val
+}
+
+// SetSceneSeason sets the value of SceneSeason.
+func (s *Episode) SetSceneSeason(val OptInt) {
+	s.SceneSeason = val
+}
+
+// SetSceneEpisode sets the value of SceneEpisode.
+func (s *Episode) SetSceneEpisode(val OptInt) {
+	s.SceneEpisode = val
+}
+
+// SetSceneAbsolute sets the value of SceneAbsolute.
+func (s *Episode) SetSceneAbsolute(val OptInt) {
+	s.SceneAbsolute = val
+}
+
+// SetWanted sets the value of Wanted.
+func (s *Episode) SetWanted(val EpisodeWanted) {
+	s.Wanted = val
+}
+
+// SetCutoffMet sets the value of CutoffMet.
+func (s *Episode) SetCutoffMet(val bool) {
+	s.CutoffMet = val
+}
+
+// SetFile sets the value of File.
+func (s *Episode) SetFile(val OptEpisodeFile) {
+	s.File = val
+}
+
+// SetDownload sets the value of Download.
+func (s *Episode) SetDownload(val OptMovieDownload) {
+	s.Download = val
+}
+
+// Ref: #/components/schemas/EpisodeBrief
+type EpisodeBrief struct {
+	ID            int64  `json:"id"`
+	SeasonNumber  int    `json:"seasonNumber"`
+	EpisodeNumber int    `json:"episodeNumber"`
+	Title         string `json:"title"`
+}
+
+// GetID returns the value of ID.
+func (s *EpisodeBrief) GetID() int64 {
+	return s.ID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *EpisodeBrief) GetSeasonNumber() int {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *EpisodeBrief) GetEpisodeNumber() int {
+	return s.EpisodeNumber
+}
+
+// GetTitle returns the value of Title.
+func (s *EpisodeBrief) GetTitle() string {
+	return s.Title
+}
+
+// SetID sets the value of ID.
+func (s *EpisodeBrief) SetID(val int64) {
+	s.ID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *EpisodeBrief) SetSeasonNumber(val int) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *EpisodeBrief) SetEpisodeNumber(val int) {
+	s.EpisodeNumber = val
+}
+
+// SetTitle sets the value of Title.
+func (s *EpisodeBrief) SetTitle(val string) {
+	s.Title = val
+}
+
+// Ref: #/components/schemas/EpisodeFile
+type EpisodeFile struct {
+	ID            int64     `json:"id"`
+	Path          string    `json:"path"`
+	SizeBytes     int64     `json:"sizeBytes"`
+	Quality       Quality   `json:"quality"`
+	Revision      int       `json:"revision"`
+	CustomFormats []string  `json:"customFormats"`
+	Score         int       `json:"score"`
+	ReleaseGroup  string    `json:"releaseGroup"`
+	Languages     []string  `json:"languages"`
+	MediaInfo     MediaInfo `json:"mediaInfo"`
+	SceneName     string    `json:"sceneName"`
+	DownloadId    OptInt64  `json:"downloadId"`
+	AddedAt       time.Time `json:"addedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *EpisodeFile) GetID() int64 {
+	return s.ID
+}
+
+// GetPath returns the value of Path.
+func (s *EpisodeFile) GetPath() string {
+	return s.Path
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *EpisodeFile) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetQuality returns the value of Quality.
+func (s *EpisodeFile) GetQuality() Quality {
+	return s.Quality
+}
+
+// GetRevision returns the value of Revision.
+func (s *EpisodeFile) GetRevision() int {
+	return s.Revision
+}
+
+// GetCustomFormats returns the value of CustomFormats.
+func (s *EpisodeFile) GetCustomFormats() []string {
+	return s.CustomFormats
+}
+
+// GetScore returns the value of Score.
+func (s *EpisodeFile) GetScore() int {
+	return s.Score
+}
+
+// GetReleaseGroup returns the value of ReleaseGroup.
+func (s *EpisodeFile) GetReleaseGroup() string {
+	return s.ReleaseGroup
+}
+
+// GetLanguages returns the value of Languages.
+func (s *EpisodeFile) GetLanguages() []string {
+	return s.Languages
+}
+
+// GetMediaInfo returns the value of MediaInfo.
+func (s *EpisodeFile) GetMediaInfo() MediaInfo {
+	return s.MediaInfo
+}
+
+// GetSceneName returns the value of SceneName.
+func (s *EpisodeFile) GetSceneName() string {
+	return s.SceneName
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *EpisodeFile) GetDownloadId() OptInt64 {
+	return s.DownloadId
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *EpisodeFile) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// SetID sets the value of ID.
+func (s *EpisodeFile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetPath sets the value of Path.
+func (s *EpisodeFile) SetPath(val string) {
+	s.Path = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *EpisodeFile) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *EpisodeFile) SetQuality(val Quality) {
+	s.Quality = val
+}
+
+// SetRevision sets the value of Revision.
+func (s *EpisodeFile) SetRevision(val int) {
+	s.Revision = val
+}
+
+// SetCustomFormats sets the value of CustomFormats.
+func (s *EpisodeFile) SetCustomFormats(val []string) {
+	s.CustomFormats = val
+}
+
+// SetScore sets the value of Score.
+func (s *EpisodeFile) SetScore(val int) {
+	s.Score = val
+}
+
+// SetReleaseGroup sets the value of ReleaseGroup.
+func (s *EpisodeFile) SetReleaseGroup(val string) {
+	s.ReleaseGroup = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *EpisodeFile) SetLanguages(val []string) {
+	s.Languages = val
+}
+
+// SetMediaInfo sets the value of MediaInfo.
+func (s *EpisodeFile) SetMediaInfo(val MediaInfo) {
+	s.MediaInfo = val
+}
+
+// SetSceneName sets the value of SceneName.
+func (s *EpisodeFile) SetSceneName(val string) {
+	s.SceneName = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *EpisodeFile) SetDownloadId(val OptInt64) {
+	s.DownloadId = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *EpisodeFile) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// Ref: #/components/schemas/EpisodeIdsRequest
+type EpisodeIdsRequest struct {
+	EpisodeIds []int64 `json:"episodeIds"`
+}
+
+// GetEpisodeIds returns the value of EpisodeIds.
+func (s *EpisodeIdsRequest) GetEpisodeIds() []int64 {
+	return s.EpisodeIds
+}
+
+// SetEpisodeIds sets the value of EpisodeIds.
+func (s *EpisodeIdsRequest) SetEpisodeIds(val []int64) {
+	s.EpisodeIds = val
+}
+
+// Ref: #/components/schemas/EpisodeUpdate
+type EpisodeUpdate struct {
+	Monitored     OptBool `json:"monitored"`
+	SceneSeason   OptInt  `json:"sceneSeason"`
+	SceneEpisode  OptInt  `json:"sceneEpisode"`
+	SceneAbsolute OptInt  `json:"sceneAbsolute"`
+	// Remove the scene numbering (releases use the provider's numbers again).
+	ClearScene OptBool `json:"clearScene"`
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *EpisodeUpdate) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetSceneSeason returns the value of SceneSeason.
+func (s *EpisodeUpdate) GetSceneSeason() OptInt {
+	return s.SceneSeason
+}
+
+// GetSceneEpisode returns the value of SceneEpisode.
+func (s *EpisodeUpdate) GetSceneEpisode() OptInt {
+	return s.SceneEpisode
+}
+
+// GetSceneAbsolute returns the value of SceneAbsolute.
+func (s *EpisodeUpdate) GetSceneAbsolute() OptInt {
+	return s.SceneAbsolute
+}
+
+// GetClearScene returns the value of ClearScene.
+func (s *EpisodeUpdate) GetClearScene() OptBool {
+	return s.ClearScene
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *EpisodeUpdate) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetSceneSeason sets the value of SceneSeason.
+func (s *EpisodeUpdate) SetSceneSeason(val OptInt) {
+	s.SceneSeason = val
+}
+
+// SetSceneEpisode sets the value of SceneEpisode.
+func (s *EpisodeUpdate) SetSceneEpisode(val OptInt) {
+	s.SceneEpisode = val
+}
+
+// SetSceneAbsolute sets the value of SceneAbsolute.
+func (s *EpisodeUpdate) SetSceneAbsolute(val OptInt) {
+	s.SceneAbsolute = val
+}
+
+// SetClearScene sets the value of ClearScene.
+func (s *EpisodeUpdate) SetClearScene(val OptBool) {
+	s.ClearScene = val
+}
+
+type EpisodeWanted string
+
+const (
+	EpisodeWantedMissing EpisodeWanted = "missing"
+	EpisodeWantedUpgrade EpisodeWanted = "upgrade"
+	EpisodeWantedNone    EpisodeWanted = "none"
+)
+
+// AllValues returns all EpisodeWanted values.
+func (EpisodeWanted) AllValues() []EpisodeWanted {
+	return []EpisodeWanted{
+		EpisodeWantedMissing,
+		EpisodeWantedUpgrade,
+		EpisodeWantedNone,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s EpisodeWanted) MarshalText() ([]byte, error) {
+	switch s {
+	case EpisodeWantedMissing:
+		return []byte(s), nil
+	case EpisodeWantedUpgrade:
+		return []byte(s), nil
+	case EpisodeWantedNone:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *EpisodeWanted) UnmarshalText(data []byte) error {
+	switch EpisodeWanted(data) {
+	case EpisodeWantedMissing:
+		*s = EpisodeWantedMissing
+		return nil
+	case EpisodeWantedUpgrade:
+		*s = EpisodeWantedUpgrade
+		return nil
+	case EpisodeWantedNone:
+		*s = EpisodeWantedNone
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/Error
 type Error struct {
 	// Stable machine-readable code, e.g. `invalid_credentials`, `totp_required`, `forbidden`.
@@ -4100,6 +4894,98 @@ func (s *ExistingFolder) SetCandidates(val []MovieLookup) {
 
 // SetError sets the value of Error.
 func (s *ExistingFolder) SetError(val OptString) {
+	s.Error = val
+}
+
+// Ref: #/components/schemas/ExistingSeriesFolder
+type ExistingSeriesFolder struct {
+	Path       string          `json:"path"`
+	Name       string          `json:"name"`
+	Title      string          `json:"title"`
+	Year       int             `json:"year"`
+	Videos     int             `json:"videos"`
+	Match      OptSeriesLookup `json:"match"`
+	Candidates []SeriesLookup  `json:"candidates"`
+	Error      OptString       `json:"error"`
+}
+
+// GetPath returns the value of Path.
+func (s *ExistingSeriesFolder) GetPath() string {
+	return s.Path
+}
+
+// GetName returns the value of Name.
+func (s *ExistingSeriesFolder) GetName() string {
+	return s.Name
+}
+
+// GetTitle returns the value of Title.
+func (s *ExistingSeriesFolder) GetTitle() string {
+	return s.Title
+}
+
+// GetYear returns the value of Year.
+func (s *ExistingSeriesFolder) GetYear() int {
+	return s.Year
+}
+
+// GetVideos returns the value of Videos.
+func (s *ExistingSeriesFolder) GetVideos() int {
+	return s.Videos
+}
+
+// GetMatch returns the value of Match.
+func (s *ExistingSeriesFolder) GetMatch() OptSeriesLookup {
+	return s.Match
+}
+
+// GetCandidates returns the value of Candidates.
+func (s *ExistingSeriesFolder) GetCandidates() []SeriesLookup {
+	return s.Candidates
+}
+
+// GetError returns the value of Error.
+func (s *ExistingSeriesFolder) GetError() OptString {
+	return s.Error
+}
+
+// SetPath sets the value of Path.
+func (s *ExistingSeriesFolder) SetPath(val string) {
+	s.Path = val
+}
+
+// SetName sets the value of Name.
+func (s *ExistingSeriesFolder) SetName(val string) {
+	s.Name = val
+}
+
+// SetTitle sets the value of Title.
+func (s *ExistingSeriesFolder) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetYear sets the value of Year.
+func (s *ExistingSeriesFolder) SetYear(val int) {
+	s.Year = val
+}
+
+// SetVideos sets the value of Videos.
+func (s *ExistingSeriesFolder) SetVideos(val int) {
+	s.Videos = val
+}
+
+// SetMatch sets the value of Match.
+func (s *ExistingSeriesFolder) SetMatch(val OptSeriesLookup) {
+	s.Match = val
+}
+
+// SetCandidates sets the value of Candidates.
+func (s *ExistingSeriesFolder) SetCandidates(val []SeriesLookup) {
+	s.Candidates = val
+}
+
+// SetError sets the value of Error.
+func (s *ExistingSeriesFolder) SetError(val OptString) {
 	s.Error = val
 }
 
@@ -5004,6 +5890,205 @@ func (s *ImportExistingResult) SetMovie(val OptMovie) {
 
 // SetError sets the value of Error.
 func (s *ImportExistingResult) SetError(val OptError) {
+	s.Error = val
+}
+
+// Ref: #/components/schemas/ImportExistingSeriesRequest
+type ImportExistingSeriesRequest struct {
+	Items []ImportExistingSeriesRequestItemsItem `json:"items"`
+}
+
+// GetItems returns the value of Items.
+func (s *ImportExistingSeriesRequest) GetItems() []ImportExistingSeriesRequestItemsItem {
+	return s.Items
+}
+
+// SetItems sets the value of Items.
+func (s *ImportExistingSeriesRequest) SetItems(val []ImportExistingSeriesRequestItemsItem) {
+	s.Items = val
+}
+
+// Merged schema.
+type ImportExistingSeriesRequestItemsItem struct {
+	RootFolderId      int64                `json:"rootFolderId"`
+	QualityProfileId  int64                `json:"qualityProfileId"`
+	SeriesType        OptSeriesType        `json:"seriesType"`
+	SeasonFolder      OptBool              `json:"seasonFolder"`
+	Monitor           OptMonitorOption     `json:"monitor"`
+	MonitorNewSeasons OptMonitorNewSeasons `json:"monitorNewSeasons"`
+	Monitored         OptBool              `json:"monitored"`
+	Tags              []string             `json:"tags"`
+	SearchOnAdd       OptBool              `json:"searchOnAdd"`
+	Path              string               `json:"path"`
+	TmdbId            OptInt64             `json:"tmdbId"`
+	TvdbId            OptInt64             `json:"tvdbId"`
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *ImportExistingSeriesRequestItemsItem) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *ImportExistingSeriesRequestItemsItem) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetSeriesType returns the value of SeriesType.
+func (s *ImportExistingSeriesRequestItemsItem) GetSeriesType() OptSeriesType {
+	return s.SeriesType
+}
+
+// GetSeasonFolder returns the value of SeasonFolder.
+func (s *ImportExistingSeriesRequestItemsItem) GetSeasonFolder() OptBool {
+	return s.SeasonFolder
+}
+
+// GetMonitor returns the value of Monitor.
+func (s *ImportExistingSeriesRequestItemsItem) GetMonitor() OptMonitorOption {
+	return s.Monitor
+}
+
+// GetMonitorNewSeasons returns the value of MonitorNewSeasons.
+func (s *ImportExistingSeriesRequestItemsItem) GetMonitorNewSeasons() OptMonitorNewSeasons {
+	return s.MonitorNewSeasons
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *ImportExistingSeriesRequestItemsItem) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetTags returns the value of Tags.
+func (s *ImportExistingSeriesRequestItemsItem) GetTags() []string {
+	return s.Tags
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *ImportExistingSeriesRequestItemsItem) GetSearchOnAdd() OptBool {
+	return s.SearchOnAdd
+}
+
+// GetPath returns the value of Path.
+func (s *ImportExistingSeriesRequestItemsItem) GetPath() string {
+	return s.Path
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *ImportExistingSeriesRequestItemsItem) GetTmdbId() OptInt64 {
+	return s.TmdbId
+}
+
+// GetTvdbId returns the value of TvdbId.
+func (s *ImportExistingSeriesRequestItemsItem) GetTvdbId() OptInt64 {
+	return s.TvdbId
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *ImportExistingSeriesRequestItemsItem) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *ImportExistingSeriesRequestItemsItem) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetSeriesType sets the value of SeriesType.
+func (s *ImportExistingSeriesRequestItemsItem) SetSeriesType(val OptSeriesType) {
+	s.SeriesType = val
+}
+
+// SetSeasonFolder sets the value of SeasonFolder.
+func (s *ImportExistingSeriesRequestItemsItem) SetSeasonFolder(val OptBool) {
+	s.SeasonFolder = val
+}
+
+// SetMonitor sets the value of Monitor.
+func (s *ImportExistingSeriesRequestItemsItem) SetMonitor(val OptMonitorOption) {
+	s.Monitor = val
+}
+
+// SetMonitorNewSeasons sets the value of MonitorNewSeasons.
+func (s *ImportExistingSeriesRequestItemsItem) SetMonitorNewSeasons(val OptMonitorNewSeasons) {
+	s.MonitorNewSeasons = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *ImportExistingSeriesRequestItemsItem) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ImportExistingSeriesRequestItemsItem) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *ImportExistingSeriesRequestItemsItem) SetSearchOnAdd(val OptBool) {
+	s.SearchOnAdd = val
+}
+
+// SetPath sets the value of Path.
+func (s *ImportExistingSeriesRequestItemsItem) SetPath(val string) {
+	s.Path = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *ImportExistingSeriesRequestItemsItem) SetTmdbId(val OptInt64) {
+	s.TmdbId = val
+}
+
+// SetTvdbId sets the value of TvdbId.
+func (s *ImportExistingSeriesRequestItemsItem) SetTvdbId(val OptInt64) {
+	s.TvdbId = val
+}
+
+// Ref: #/components/schemas/ImportExistingSeriesResult
+type ImportExistingSeriesResult struct {
+	Path         string    `json:"path"`
+	Series       OptSeries `json:"series"`
+	EpisodeFiles int       `json:"episodeFiles"`
+	Error        OptError  `json:"error"`
+}
+
+// GetPath returns the value of Path.
+func (s *ImportExistingSeriesResult) GetPath() string {
+	return s.Path
+}
+
+// GetSeries returns the value of Series.
+func (s *ImportExistingSeriesResult) GetSeries() OptSeries {
+	return s.Series
+}
+
+// GetEpisodeFiles returns the value of EpisodeFiles.
+func (s *ImportExistingSeriesResult) GetEpisodeFiles() int {
+	return s.EpisodeFiles
+}
+
+// GetError returns the value of Error.
+func (s *ImportExistingSeriesResult) GetError() OptError {
+	return s.Error
+}
+
+// SetPath sets the value of Path.
+func (s *ImportExistingSeriesResult) SetPath(val string) {
+	s.Path = val
+}
+
+// SetSeries sets the value of Series.
+func (s *ImportExistingSeriesResult) SetSeries(val OptSeries) {
+	s.Series = val
+}
+
+// SetEpisodeFiles sets the value of EpisodeFiles.
+func (s *ImportExistingSeriesResult) SetEpisodeFiles(val int) {
+	s.EpisodeFiles = val
+}
+
+// SetError sets the value of Error.
+func (s *ImportExistingSeriesResult) SetError(val OptError) {
 	s.Error = val
 }
 
@@ -7583,6 +8668,137 @@ func (s *ListMoviesSort) UnmarshalText(data []byte) error {
 	}
 }
 
+type ListSeriesSort string
+
+const (
+	ListSeriesSortTitle          ListSeriesSort = "title"
+	ListSeriesSortYear           ListSeriesSort = "year"
+	ListSeriesSortAdded          ListSeriesSort = "added"
+	ListSeriesSortNetwork        ListSeriesSort = "network"
+	ListSeriesSortRating         ListSeriesSort = "rating"
+	ListSeriesSortNextAiring     ListSeriesSort = "nextAiring"
+	ListSeriesSortPreviousAiring ListSeriesSort = "previousAiring"
+	ListSeriesSortMissing        ListSeriesSort = "missing"
+	ListSeriesSortSize           ListSeriesSort = "size"
+)
+
+// AllValues returns all ListSeriesSort values.
+func (ListSeriesSort) AllValues() []ListSeriesSort {
+	return []ListSeriesSort{
+		ListSeriesSortTitle,
+		ListSeriesSortYear,
+		ListSeriesSortAdded,
+		ListSeriesSortNetwork,
+		ListSeriesSortRating,
+		ListSeriesSortNextAiring,
+		ListSeriesSortPreviousAiring,
+		ListSeriesSortMissing,
+		ListSeriesSortSize,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListSeriesSort) MarshalText() ([]byte, error) {
+	switch s {
+	case ListSeriesSortTitle:
+		return []byte(s), nil
+	case ListSeriesSortYear:
+		return []byte(s), nil
+	case ListSeriesSortAdded:
+		return []byte(s), nil
+	case ListSeriesSortNetwork:
+		return []byte(s), nil
+	case ListSeriesSortRating:
+		return []byte(s), nil
+	case ListSeriesSortNextAiring:
+		return []byte(s), nil
+	case ListSeriesSortPreviousAiring:
+		return []byte(s), nil
+	case ListSeriesSortMissing:
+		return []byte(s), nil
+	case ListSeriesSortSize:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListSeriesSort) UnmarshalText(data []byte) error {
+	switch ListSeriesSort(data) {
+	case ListSeriesSortTitle:
+		*s = ListSeriesSortTitle
+		return nil
+	case ListSeriesSortYear:
+		*s = ListSeriesSortYear
+		return nil
+	case ListSeriesSortAdded:
+		*s = ListSeriesSortAdded
+		return nil
+	case ListSeriesSortNetwork:
+		*s = ListSeriesSortNetwork
+		return nil
+	case ListSeriesSortRating:
+		*s = ListSeriesSortRating
+		return nil
+	case ListSeriesSortNextAiring:
+		*s = ListSeriesSortNextAiring
+		return nil
+	case ListSeriesSortPreviousAiring:
+		*s = ListSeriesSortPreviousAiring
+		return nil
+	case ListSeriesSortMissing:
+		*s = ListSeriesSortMissing
+		return nil
+	case ListSeriesSortSize:
+		*s = ListSeriesSortSize
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type ListWantedEpisodesKind string
+
+const (
+	ListWantedEpisodesKindMissing     ListWantedEpisodesKind = "missing"
+	ListWantedEpisodesKindCutoffUnmet ListWantedEpisodesKind = "cutoff_unmet"
+)
+
+// AllValues returns all ListWantedEpisodesKind values.
+func (ListWantedEpisodesKind) AllValues() []ListWantedEpisodesKind {
+	return []ListWantedEpisodesKind{
+		ListWantedEpisodesKindMissing,
+		ListWantedEpisodesKindCutoffUnmet,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListWantedEpisodesKind) MarshalText() ([]byte, error) {
+	switch s {
+	case ListWantedEpisodesKindMissing:
+		return []byte(s), nil
+	case ListWantedEpisodesKindCutoffUnmet:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListWantedEpisodesKind) UnmarshalText(data []byte) error {
+	switch ListWantedEpisodesKind(data) {
+	case ListWantedEpisodesKindMissing:
+		*s = ListWantedEpisodesKindMissing
+		return nil
+	case ListWantedEpisodesKindCutoffUnmet:
+		*s = ListWantedEpisodesKindCutoffUnmet
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/LoginRequest
 type LoginRequest struct {
 	Username     string        `json:"username"`
@@ -8373,6 +9589,10 @@ type MetadataSettings struct {
 	TmdbApiKey SecretState `json:"tmdbApiKey"`
 	Language   string      `json:"language"`
 	Region     string      `json:"region"`
+	TvdbApiKey SecretState `json:"tvdbApiKey"`
+	TvdbPin    SecretState `json:"tvdbPin"`
+	// Who answers series lookups (tvdb needs a TVDB key).
+	SeriesProvider MetadataSettingsSeriesProvider `json:"seriesProvider"`
 }
 
 // GetTmdbApiKey returns the value of TmdbApiKey.
@@ -8390,6 +9610,21 @@ func (s *MetadataSettings) GetRegion() string {
 	return s.Region
 }
 
+// GetTvdbApiKey returns the value of TvdbApiKey.
+func (s *MetadataSettings) GetTvdbApiKey() SecretState {
+	return s.TvdbApiKey
+}
+
+// GetTvdbPin returns the value of TvdbPin.
+func (s *MetadataSettings) GetTvdbPin() SecretState {
+	return s.TvdbPin
+}
+
+// GetSeriesProvider returns the value of SeriesProvider.
+func (s *MetadataSettings) GetSeriesProvider() MetadataSettingsSeriesProvider {
+	return s.SeriesProvider
+}
+
 // SetTmdbApiKey sets the value of TmdbApiKey.
 func (s *MetadataSettings) SetTmdbApiKey(val SecretState) {
 	s.TmdbApiKey = val
@@ -8405,17 +9640,52 @@ func (s *MetadataSettings) SetRegion(val string) {
 	s.Region = val
 }
 
+// SetTvdbApiKey sets the value of TvdbApiKey.
+func (s *MetadataSettings) SetTvdbApiKey(val SecretState) {
+	s.TvdbApiKey = val
+}
+
+// SetTvdbPin sets the value of TvdbPin.
+func (s *MetadataSettings) SetTvdbPin(val SecretState) {
+	s.TvdbPin = val
+}
+
+// SetSeriesProvider sets the value of SeriesProvider.
+func (s *MetadataSettings) SetSeriesProvider(val MetadataSettingsSeriesProvider) {
+	s.SeriesProvider = val
+}
+
 // Ref: #/components/schemas/MetadataSettingsInput
 type MetadataSettingsInput struct {
 	// Write-only. v3 API key or v4 read access token; empty removes it.
 	TmdbApiKey OptString `json:"tmdbApiKey"`
-	Language   OptString `json:"language"`
-	Region     OptString `json:"region"`
+	// Write-only TVDB v4 project key; empty removes it (and the PIN).
+	TvdbApiKey OptString `json:"tvdbApiKey"`
+	// Write-only subscriber PIN for user-supported TVDB keys.
+	TvdbPin        OptString                              `json:"tvdbPin"`
+	SeriesProvider OptMetadataSettingsInputSeriesProvider `json:"seriesProvider"`
+	Language       OptString                              `json:"language"`
+	Region         OptString                              `json:"region"`
 }
 
 // GetTmdbApiKey returns the value of TmdbApiKey.
 func (s *MetadataSettingsInput) GetTmdbApiKey() OptString {
 	return s.TmdbApiKey
+}
+
+// GetTvdbApiKey returns the value of TvdbApiKey.
+func (s *MetadataSettingsInput) GetTvdbApiKey() OptString {
+	return s.TvdbApiKey
+}
+
+// GetTvdbPin returns the value of TvdbPin.
+func (s *MetadataSettingsInput) GetTvdbPin() OptString {
+	return s.TvdbPin
+}
+
+// GetSeriesProvider returns the value of SeriesProvider.
+func (s *MetadataSettingsInput) GetSeriesProvider() OptMetadataSettingsInputSeriesProvider {
+	return s.SeriesProvider
 }
 
 // GetLanguage returns the value of Language.
@@ -8433,6 +9703,21 @@ func (s *MetadataSettingsInput) SetTmdbApiKey(val OptString) {
 	s.TmdbApiKey = val
 }
 
+// SetTvdbApiKey sets the value of TvdbApiKey.
+func (s *MetadataSettingsInput) SetTvdbApiKey(val OptString) {
+	s.TvdbApiKey = val
+}
+
+// SetTvdbPin sets the value of TvdbPin.
+func (s *MetadataSettingsInput) SetTvdbPin(val OptString) {
+	s.TvdbPin = val
+}
+
+// SetSeriesProvider sets the value of SeriesProvider.
+func (s *MetadataSettingsInput) SetSeriesProvider(val OptMetadataSettingsInputSeriesProvider) {
+	s.SeriesProvider = val
+}
+
 // SetLanguage sets the value of Language.
 func (s *MetadataSettingsInput) SetLanguage(val OptString) {
 	s.Language = val
@@ -8441,6 +9726,89 @@ func (s *MetadataSettingsInput) SetLanguage(val OptString) {
 // SetRegion sets the value of Region.
 func (s *MetadataSettingsInput) SetRegion(val OptString) {
 	s.Region = val
+}
+
+type MetadataSettingsInputSeriesProvider string
+
+const (
+	MetadataSettingsInputSeriesProviderTmdb MetadataSettingsInputSeriesProvider = "tmdb"
+	MetadataSettingsInputSeriesProviderTvdb MetadataSettingsInputSeriesProvider = "tvdb"
+)
+
+// AllValues returns all MetadataSettingsInputSeriesProvider values.
+func (MetadataSettingsInputSeriesProvider) AllValues() []MetadataSettingsInputSeriesProvider {
+	return []MetadataSettingsInputSeriesProvider{
+		MetadataSettingsInputSeriesProviderTmdb,
+		MetadataSettingsInputSeriesProviderTvdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MetadataSettingsInputSeriesProvider) MarshalText() ([]byte, error) {
+	switch s {
+	case MetadataSettingsInputSeriesProviderTmdb:
+		return []byte(s), nil
+	case MetadataSettingsInputSeriesProviderTvdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MetadataSettingsInputSeriesProvider) UnmarshalText(data []byte) error {
+	switch MetadataSettingsInputSeriesProvider(data) {
+	case MetadataSettingsInputSeriesProviderTmdb:
+		*s = MetadataSettingsInputSeriesProviderTmdb
+		return nil
+	case MetadataSettingsInputSeriesProviderTvdb:
+		*s = MetadataSettingsInputSeriesProviderTvdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Who answers series lookups (tvdb needs a TVDB key).
+type MetadataSettingsSeriesProvider string
+
+const (
+	MetadataSettingsSeriesProviderTmdb MetadataSettingsSeriesProvider = "tmdb"
+	MetadataSettingsSeriesProviderTvdb MetadataSettingsSeriesProvider = "tvdb"
+)
+
+// AllValues returns all MetadataSettingsSeriesProvider values.
+func (MetadataSettingsSeriesProvider) AllValues() []MetadataSettingsSeriesProvider {
+	return []MetadataSettingsSeriesProvider{
+		MetadataSettingsSeriesProviderTmdb,
+		MetadataSettingsSeriesProviderTvdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MetadataSettingsSeriesProvider) MarshalText() ([]byte, error) {
+	switch s {
+	case MetadataSettingsSeriesProviderTmdb:
+		return []byte(s), nil
+	case MetadataSettingsSeriesProviderTvdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MetadataSettingsSeriesProvider) UnmarshalText(data []byte) error {
+	switch MetadataSettingsSeriesProvider(data) {
+	case MetadataSettingsSeriesProviderTmdb:
+		*s = MetadataSettingsSeriesProviderTmdb
+		return nil
+	case MetadataSettingsSeriesProviderTvdb:
+		*s = MetadataSettingsSeriesProviderTvdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/MinimumAvailability
@@ -8486,6 +9854,159 @@ func (s *MinimumAvailability) UnmarshalText(data []byte) error {
 		return nil
 	case MinimumAvailabilityReleased:
 		*s = MinimumAvailabilityReleased
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MonitorEpisodesRequest
+type MonitorEpisodesRequest struct {
+	EpisodeIds []int64 `json:"episodeIds"`
+	Monitored  bool    `json:"monitored"`
+}
+
+// GetEpisodeIds returns the value of EpisodeIds.
+func (s *MonitorEpisodesRequest) GetEpisodeIds() []int64 {
+	return s.EpisodeIds
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *MonitorEpisodesRequest) GetMonitored() bool {
+	return s.Monitored
+}
+
+// SetEpisodeIds sets the value of EpisodeIds.
+func (s *MonitorEpisodesRequest) SetEpisodeIds(val []int64) {
+	s.EpisodeIds = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *MonitorEpisodesRequest) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// Ref: #/components/schemas/MonitorNewSeasons
+type MonitorNewSeasons string
+
+const (
+	MonitorNewSeasonsAll  MonitorNewSeasons = "all"
+	MonitorNewSeasonsNone MonitorNewSeasons = "none"
+)
+
+// AllValues returns all MonitorNewSeasons values.
+func (MonitorNewSeasons) AllValues() []MonitorNewSeasons {
+	return []MonitorNewSeasons{
+		MonitorNewSeasonsAll,
+		MonitorNewSeasonsNone,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MonitorNewSeasons) MarshalText() ([]byte, error) {
+	switch s {
+	case MonitorNewSeasonsAll:
+		return []byte(s), nil
+	case MonitorNewSeasonsNone:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MonitorNewSeasons) UnmarshalText(data []byte) error {
+	switch MonitorNewSeasons(data) {
+	case MonitorNewSeasonsAll:
+		*s = MonitorNewSeasonsAll
+		return nil
+	case MonitorNewSeasonsNone:
+		*s = MonitorNewSeasonsNone
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Which episodes to monitor when adding (specials are never monitored by an option).
+// Ref: #/components/schemas/MonitorOption
+type MonitorOption string
+
+const (
+	MonitorOptionAll          MonitorOption = "all"
+	MonitorOptionFuture       MonitorOption = "future"
+	MonitorOptionMissing      MonitorOption = "missing"
+	MonitorOptionExisting     MonitorOption = "existing"
+	MonitorOptionFirstSeason  MonitorOption = "first_season"
+	MonitorOptionLatestSeason MonitorOption = "latest_season"
+	MonitorOptionPilot        MonitorOption = "pilot"
+	MonitorOptionNone         MonitorOption = "none"
+)
+
+// AllValues returns all MonitorOption values.
+func (MonitorOption) AllValues() []MonitorOption {
+	return []MonitorOption{
+		MonitorOptionAll,
+		MonitorOptionFuture,
+		MonitorOptionMissing,
+		MonitorOptionExisting,
+		MonitorOptionFirstSeason,
+		MonitorOptionLatestSeason,
+		MonitorOptionPilot,
+		MonitorOptionNone,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MonitorOption) MarshalText() ([]byte, error) {
+	switch s {
+	case MonitorOptionAll:
+		return []byte(s), nil
+	case MonitorOptionFuture:
+		return []byte(s), nil
+	case MonitorOptionMissing:
+		return []byte(s), nil
+	case MonitorOptionExisting:
+		return []byte(s), nil
+	case MonitorOptionFirstSeason:
+		return []byte(s), nil
+	case MonitorOptionLatestSeason:
+		return []byte(s), nil
+	case MonitorOptionPilot:
+		return []byte(s), nil
+	case MonitorOptionNone:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MonitorOption) UnmarshalText(data []byte) error {
+	switch MonitorOption(data) {
+	case MonitorOptionAll:
+		*s = MonitorOptionAll
+		return nil
+	case MonitorOptionFuture:
+		*s = MonitorOptionFuture
+		return nil
+	case MonitorOptionMissing:
+		*s = MonitorOptionMissing
+		return nil
+	case MonitorOptionExisting:
+		*s = MonitorOptionExisting
+		return nil
+	case MonitorOptionFirstSeason:
+		*s = MonitorOptionFirstSeason
+		return nil
+	case MonitorOptionLatestSeason:
+		*s = MonitorOptionLatestSeason
+		return nil
+	case MonitorOptionPilot:
+		*s = MonitorOptionPilot
+		return nil
+	case MonitorOptionNone:
+		*s = MonitorOptionNone
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -9536,6 +11057,78 @@ func (s *MovieUpdate) SetPath(val OptString) {
 	s.Path = val
 }
 
+// Extend S01E01-E02-E03, duplicate S01E01.S01E02, repeat S01E01E02, scene S01E01-02-03, range
+// S01E01-03, prefixed_range S01E01-E03.
+// Ref: #/components/schemas/MultiEpisodeStyle
+type MultiEpisodeStyle string
+
+const (
+	MultiEpisodeStyleExtend        MultiEpisodeStyle = "extend"
+	MultiEpisodeStyleDuplicate     MultiEpisodeStyle = "duplicate"
+	MultiEpisodeStyleRepeat        MultiEpisodeStyle = "repeat"
+	MultiEpisodeStyleScene         MultiEpisodeStyle = "scene"
+	MultiEpisodeStyleRange         MultiEpisodeStyle = "range"
+	MultiEpisodeStylePrefixedRange MultiEpisodeStyle = "prefixed_range"
+)
+
+// AllValues returns all MultiEpisodeStyle values.
+func (MultiEpisodeStyle) AllValues() []MultiEpisodeStyle {
+	return []MultiEpisodeStyle{
+		MultiEpisodeStyleExtend,
+		MultiEpisodeStyleDuplicate,
+		MultiEpisodeStyleRepeat,
+		MultiEpisodeStyleScene,
+		MultiEpisodeStyleRange,
+		MultiEpisodeStylePrefixedRange,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MultiEpisodeStyle) MarshalText() ([]byte, error) {
+	switch s {
+	case MultiEpisodeStyleExtend:
+		return []byte(s), nil
+	case MultiEpisodeStyleDuplicate:
+		return []byte(s), nil
+	case MultiEpisodeStyleRepeat:
+		return []byte(s), nil
+	case MultiEpisodeStyleScene:
+		return []byte(s), nil
+	case MultiEpisodeStyleRange:
+		return []byte(s), nil
+	case MultiEpisodeStylePrefixedRange:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MultiEpisodeStyle) UnmarshalText(data []byte) error {
+	switch MultiEpisodeStyle(data) {
+	case MultiEpisodeStyleExtend:
+		*s = MultiEpisodeStyleExtend
+		return nil
+	case MultiEpisodeStyleDuplicate:
+		*s = MultiEpisodeStyleDuplicate
+		return nil
+	case MultiEpisodeStyleRepeat:
+		*s = MultiEpisodeStyleRepeat
+		return nil
+	case MultiEpisodeStyleScene:
+		*s = MultiEpisodeStyleScene
+		return nil
+	case MultiEpisodeStyleRange:
+		*s = MultiEpisodeStyleRange
+		return nil
+	case MultiEpisodeStylePrefixedRange:
+		*s = MultiEpisodeStylePrefixedRange
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/NamingPreview
 type NamingPreview struct {
 	Folder      string        `json:"folder"`
@@ -10112,6 +11705,52 @@ func (o OptDownloadProtocol) Get() (v DownloadProtocol, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDownloadProtocol) Or(d DownloadProtocol) DownloadProtocol {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEpisodeFile returns new OptEpisodeFile with value set to v.
+func NewOptEpisodeFile(v EpisodeFile) OptEpisodeFile {
+	return OptEpisodeFile{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEpisodeFile is optional EpisodeFile.
+type OptEpisodeFile struct {
+	Value EpisodeFile
+	Set   bool
+}
+
+// IsSet returns true if OptEpisodeFile was set.
+func (o OptEpisodeFile) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEpisodeFile) Reset() {
+	var v EpisodeFile
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEpisodeFile) SetTo(v EpisodeFile) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEpisodeFile) Get() (v EpisodeFile, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEpisodeFile) Or(d EpisodeFile) EpisodeFile {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -10716,6 +12355,98 @@ func (o OptListMoviesSort) Or(d ListMoviesSort) ListMoviesSort {
 	return d
 }
 
+// NewOptListSeriesSort returns new OptListSeriesSort with value set to v.
+func NewOptListSeriesSort(v ListSeriesSort) OptListSeriesSort {
+	return OptListSeriesSort{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListSeriesSort is optional ListSeriesSort.
+type OptListSeriesSort struct {
+	Value ListSeriesSort
+	Set   bool
+}
+
+// IsSet returns true if OptListSeriesSort was set.
+func (o OptListSeriesSort) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListSeriesSort) Reset() {
+	var v ListSeriesSort
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListSeriesSort) SetTo(v ListSeriesSort) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListSeriesSort) Get() (v ListSeriesSort, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListSeriesSort) Or(d ListSeriesSort) ListSeriesSort {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptListWantedEpisodesKind returns new OptListWantedEpisodesKind with value set to v.
+func NewOptListWantedEpisodesKind(v ListWantedEpisodesKind) OptListWantedEpisodesKind {
+	return OptListWantedEpisodesKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListWantedEpisodesKind is optional ListWantedEpisodesKind.
+type OptListWantedEpisodesKind struct {
+	Value ListWantedEpisodesKind
+	Set   bool
+}
+
+// IsSet returns true if OptListWantedEpisodesKind was set.
+func (o OptListWantedEpisodesKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListWantedEpisodesKind) Reset() {
+	var v ListWantedEpisodesKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListWantedEpisodesKind) SetTo(v ListWantedEpisodesKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListWantedEpisodesKind) Get() (v ListWantedEpisodesKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListWantedEpisodesKind) Or(d ListWantedEpisodesKind) ListWantedEpisodesKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptMediaKind returns new OptMediaKind with value set to v.
 func NewOptMediaKind(v MediaKind) OptMediaKind {
 	return OptMediaKind{
@@ -10762,6 +12493,52 @@ func (o OptMediaKind) Or(d MediaKind) MediaKind {
 	return d
 }
 
+// NewOptMetadataSettingsInputSeriesProvider returns new OptMetadataSettingsInputSeriesProvider with value set to v.
+func NewOptMetadataSettingsInputSeriesProvider(v MetadataSettingsInputSeriesProvider) OptMetadataSettingsInputSeriesProvider {
+	return OptMetadataSettingsInputSeriesProvider{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMetadataSettingsInputSeriesProvider is optional MetadataSettingsInputSeriesProvider.
+type OptMetadataSettingsInputSeriesProvider struct {
+	Value MetadataSettingsInputSeriesProvider
+	Set   bool
+}
+
+// IsSet returns true if OptMetadataSettingsInputSeriesProvider was set.
+func (o OptMetadataSettingsInputSeriesProvider) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMetadataSettingsInputSeriesProvider) Reset() {
+	var v MetadataSettingsInputSeriesProvider
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMetadataSettingsInputSeriesProvider) SetTo(v MetadataSettingsInputSeriesProvider) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMetadataSettingsInputSeriesProvider) Get() (v MetadataSettingsInputSeriesProvider, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMetadataSettingsInputSeriesProvider) Or(d MetadataSettingsInputSeriesProvider) MetadataSettingsInputSeriesProvider {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptMinimumAvailability returns new OptMinimumAvailability with value set to v.
 func NewOptMinimumAvailability(v MinimumAvailability) OptMinimumAvailability {
 	return OptMinimumAvailability{
@@ -10802,6 +12579,98 @@ func (o OptMinimumAvailability) Get() (v MinimumAvailability, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptMinimumAvailability) Or(d MinimumAvailability) MinimumAvailability {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMonitorNewSeasons returns new OptMonitorNewSeasons with value set to v.
+func NewOptMonitorNewSeasons(v MonitorNewSeasons) OptMonitorNewSeasons {
+	return OptMonitorNewSeasons{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMonitorNewSeasons is optional MonitorNewSeasons.
+type OptMonitorNewSeasons struct {
+	Value MonitorNewSeasons
+	Set   bool
+}
+
+// IsSet returns true if OptMonitorNewSeasons was set.
+func (o OptMonitorNewSeasons) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMonitorNewSeasons) Reset() {
+	var v MonitorNewSeasons
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMonitorNewSeasons) SetTo(v MonitorNewSeasons) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMonitorNewSeasons) Get() (v MonitorNewSeasons, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMonitorNewSeasons) Or(d MonitorNewSeasons) MonitorNewSeasons {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMonitorOption returns new OptMonitorOption with value set to v.
+func NewOptMonitorOption(v MonitorOption) OptMonitorOption {
+	return OptMonitorOption{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMonitorOption is optional MonitorOption.
+type OptMonitorOption struct {
+	Value MonitorOption
+	Set   bool
+}
+
+// IsSet returns true if OptMonitorOption was set.
+func (o OptMonitorOption) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMonitorOption) Reset() {
+	var v MonitorOption
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMonitorOption) SetTo(v MonitorOption) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMonitorOption) Get() (v MonitorOption, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMonitorOption) Or(d MonitorOption) MonitorOption {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -11492,6 +13361,190 @@ func (o OptSearchType) Get() (v SearchType, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptSearchType) Or(d SearchType) SearchType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSeries returns new OptSeries with value set to v.
+func NewOptSeries(v Series) OptSeries {
+	return OptSeries{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSeries is optional Series.
+type OptSeries struct {
+	Value Series
+	Set   bool
+}
+
+// IsSet returns true if OptSeries was set.
+func (o OptSeries) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSeries) Reset() {
+	var v Series
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSeries) SetTo(v Series) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSeries) Get() (v Series, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSeries) Or(d Series) Series {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSeriesLookup returns new OptSeriesLookup with value set to v.
+func NewOptSeriesLookup(v SeriesLookup) OptSeriesLookup {
+	return OptSeriesLookup{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSeriesLookup is optional SeriesLookup.
+type OptSeriesLookup struct {
+	Value SeriesLookup
+	Set   bool
+}
+
+// IsSet returns true if OptSeriesLookup was set.
+func (o OptSeriesLookup) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSeriesLookup) Reset() {
+	var v SeriesLookup
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSeriesLookup) SetTo(v SeriesLookup) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSeriesLookup) Get() (v SeriesLookup, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSeriesLookup) Or(d SeriesLookup) SeriesLookup {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSeriesStatus returns new OptSeriesStatus with value set to v.
+func NewOptSeriesStatus(v SeriesStatus) OptSeriesStatus {
+	return OptSeriesStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSeriesStatus is optional SeriesStatus.
+type OptSeriesStatus struct {
+	Value SeriesStatus
+	Set   bool
+}
+
+// IsSet returns true if OptSeriesStatus was set.
+func (o OptSeriesStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSeriesStatus) Reset() {
+	var v SeriesStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSeriesStatus) SetTo(v SeriesStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSeriesStatus) Get() (v SeriesStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSeriesStatus) Or(d SeriesStatus) SeriesStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSeriesType returns new OptSeriesType with value set to v.
+func NewOptSeriesType(v SeriesType) OptSeriesType {
+	return OptSeriesType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSeriesType is optional SeriesType.
+type OptSeriesType struct {
+	Value SeriesType
+	Set   bool
+}
+
+// IsSet returns true if OptSeriesType was set.
+func (o OptSeriesType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSeriesType) Reset() {
+	var v SeriesType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSeriesType) SetTo(v SeriesType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSeriesType) Get() (v SeriesType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSeriesType) Or(d SeriesType) SeriesType {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -15364,6 +17417,124 @@ func (s *SearchType) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/SeasonInfo
+type SeasonInfo struct {
+	ID        int64       `json:"id"`
+	ItemRef   string      `json:"itemRef"`
+	Number    int         `json:"number"`
+	Monitored bool        `json:"monitored"`
+	Title     string      `json:"title"`
+	Overview  string      `json:"overview"`
+	Poster    string      `json:"poster"`
+	AirDate   string      `json:"airDate"`
+	Stats     SeriesStats `json:"stats"`
+}
+
+// GetID returns the value of ID.
+func (s *SeasonInfo) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *SeasonInfo) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetNumber returns the value of Number.
+func (s *SeasonInfo) GetNumber() int {
+	return s.Number
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *SeasonInfo) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetTitle returns the value of Title.
+func (s *SeasonInfo) GetTitle() string {
+	return s.Title
+}
+
+// GetOverview returns the value of Overview.
+func (s *SeasonInfo) GetOverview() string {
+	return s.Overview
+}
+
+// GetPoster returns the value of Poster.
+func (s *SeasonInfo) GetPoster() string {
+	return s.Poster
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *SeasonInfo) GetAirDate() string {
+	return s.AirDate
+}
+
+// GetStats returns the value of Stats.
+func (s *SeasonInfo) GetStats() SeriesStats {
+	return s.Stats
+}
+
+// SetID sets the value of ID.
+func (s *SeasonInfo) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *SeasonInfo) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetNumber sets the value of Number.
+func (s *SeasonInfo) SetNumber(val int) {
+	s.Number = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *SeasonInfo) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SeasonInfo) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *SeasonInfo) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *SeasonInfo) SetPoster(val string) {
+	s.Poster = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *SeasonInfo) SetAirDate(val string) {
+	s.AirDate = val
+}
+
+// SetStats sets the value of Stats.
+func (s *SeasonInfo) SetStats(val SeriesStats) {
+	s.Stats = val
+}
+
+// Ref: #/components/schemas/SeasonUpdate
+type SeasonUpdate struct {
+	Monitored bool `json:"monitored"`
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *SeasonUpdate) GetMonitored() bool {
+	return s.Monitored
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *SeasonUpdate) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
 // Ref: #/components/schemas/SecretState
 type SecretState struct {
 	Configured bool `json:"configured"`
@@ -15377,6 +17548,2082 @@ func (s *SecretState) GetConfigured() bool {
 // SetConfigured sets the value of Configured.
 func (s *SecretState) SetConfigured(val bool) {
 	s.Configured = val
+}
+
+// Ref: #/components/schemas/Series
+type Series struct {
+	ID int64 `json:"id"`
+	// Timeline reference, e.g. "series:7".
+	ItemRef          string               `json:"itemRef"`
+	TmdbId           int64                `json:"tmdbId"`
+	TvdbId           int64                `json:"tvdbId"`
+	ImdbId           string               `json:"imdbId"`
+	TvmazeId         int64                `json:"tvmazeId"`
+	MetadataSource   SeriesMetadataSource `json:"metadataSource"`
+	Title            string               `json:"title"`
+	OriginalTitle    string               `json:"originalTitle"`
+	OriginalLanguage string               `json:"originalLanguage"`
+	AlternateTitles  []string             `json:"alternateTitles"`
+	Year             int                  `json:"year"`
+	Overview         string               `json:"overview"`
+	Status           SeriesStatus         `json:"status"`
+	Network          string               `json:"network"`
+	// The network's IANA time zone.
+	TimeZone string `json:"timeZone"`
+	// HH:MM in the network's zone; empty = unknown (20:00 assumed, D-039).
+	AirTime           string            `json:"airTime"`
+	Runtime           int               `json:"runtime"`
+	Genres            []string          `json:"genres"`
+	Certification     string            `json:"certification"`
+	Rating            float64           `json:"rating"`
+	Votes             int               `json:"votes"`
+	FirstAired        string            `json:"firstAired"`
+	LastAired         string            `json:"lastAired"`
+	SeriesType        SeriesType        `json:"seriesType"`
+	SeasonFolder      bool              `json:"seasonFolder"`
+	MonitorNewSeasons MonitorNewSeasons `json:"monitorNewSeasons"`
+	// Image file name for /images/tmdb/{size}/{file}.
+	Poster           string      `json:"poster"`
+	Backdrop         string      `json:"backdrop"`
+	Monitored        bool        `json:"monitored"`
+	QualityProfileId int64       `json:"qualityProfileId"`
+	RootFolderId     OptInt64    `json:"rootFolderId"`
+	Path             string      `json:"path"`
+	Tags             []string    `json:"tags"`
+	AddedAt          time.Time   `json:"addedAt"`
+	UpdatedAt        time.Time   `json:"updatedAt"`
+	RefreshedAt      OptDateTime `json:"refreshedAt"`
+	Stats            SeriesStats `json:"stats"`
+	// Downloads under way for its episodes.
+	Downloading int `json:"downloading"`
+}
+
+// GetID returns the value of ID.
+func (s *Series) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *Series) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *Series) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// GetTvdbId returns the value of TvdbId.
+func (s *Series) GetTvdbId() int64 {
+	return s.TvdbId
+}
+
+// GetImdbId returns the value of ImdbId.
+func (s *Series) GetImdbId() string {
+	return s.ImdbId
+}
+
+// GetTvmazeId returns the value of TvmazeId.
+func (s *Series) GetTvmazeId() int64 {
+	return s.TvmazeId
+}
+
+// GetMetadataSource returns the value of MetadataSource.
+func (s *Series) GetMetadataSource() SeriesMetadataSource {
+	return s.MetadataSource
+}
+
+// GetTitle returns the value of Title.
+func (s *Series) GetTitle() string {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *Series) GetOriginalTitle() string {
+	return s.OriginalTitle
+}
+
+// GetOriginalLanguage returns the value of OriginalLanguage.
+func (s *Series) GetOriginalLanguage() string {
+	return s.OriginalLanguage
+}
+
+// GetAlternateTitles returns the value of AlternateTitles.
+func (s *Series) GetAlternateTitles() []string {
+	return s.AlternateTitles
+}
+
+// GetYear returns the value of Year.
+func (s *Series) GetYear() int {
+	return s.Year
+}
+
+// GetOverview returns the value of Overview.
+func (s *Series) GetOverview() string {
+	return s.Overview
+}
+
+// GetStatus returns the value of Status.
+func (s *Series) GetStatus() SeriesStatus {
+	return s.Status
+}
+
+// GetNetwork returns the value of Network.
+func (s *Series) GetNetwork() string {
+	return s.Network
+}
+
+// GetTimeZone returns the value of TimeZone.
+func (s *Series) GetTimeZone() string {
+	return s.TimeZone
+}
+
+// GetAirTime returns the value of AirTime.
+func (s *Series) GetAirTime() string {
+	return s.AirTime
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *Series) GetRuntime() int {
+	return s.Runtime
+}
+
+// GetGenres returns the value of Genres.
+func (s *Series) GetGenres() []string {
+	return s.Genres
+}
+
+// GetCertification returns the value of Certification.
+func (s *Series) GetCertification() string {
+	return s.Certification
+}
+
+// GetRating returns the value of Rating.
+func (s *Series) GetRating() float64 {
+	return s.Rating
+}
+
+// GetVotes returns the value of Votes.
+func (s *Series) GetVotes() int {
+	return s.Votes
+}
+
+// GetFirstAired returns the value of FirstAired.
+func (s *Series) GetFirstAired() string {
+	return s.FirstAired
+}
+
+// GetLastAired returns the value of LastAired.
+func (s *Series) GetLastAired() string {
+	return s.LastAired
+}
+
+// GetSeriesType returns the value of SeriesType.
+func (s *Series) GetSeriesType() SeriesType {
+	return s.SeriesType
+}
+
+// GetSeasonFolder returns the value of SeasonFolder.
+func (s *Series) GetSeasonFolder() bool {
+	return s.SeasonFolder
+}
+
+// GetMonitorNewSeasons returns the value of MonitorNewSeasons.
+func (s *Series) GetMonitorNewSeasons() MonitorNewSeasons {
+	return s.MonitorNewSeasons
+}
+
+// GetPoster returns the value of Poster.
+func (s *Series) GetPoster() string {
+	return s.Poster
+}
+
+// GetBackdrop returns the value of Backdrop.
+func (s *Series) GetBackdrop() string {
+	return s.Backdrop
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *Series) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *Series) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *Series) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetPath returns the value of Path.
+func (s *Series) GetPath() string {
+	return s.Path
+}
+
+// GetTags returns the value of Tags.
+func (s *Series) GetTags() []string {
+	return s.Tags
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *Series) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *Series) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetRefreshedAt returns the value of RefreshedAt.
+func (s *Series) GetRefreshedAt() OptDateTime {
+	return s.RefreshedAt
+}
+
+// GetStats returns the value of Stats.
+func (s *Series) GetStats() SeriesStats {
+	return s.Stats
+}
+
+// GetDownloading returns the value of Downloading.
+func (s *Series) GetDownloading() int {
+	return s.Downloading
+}
+
+// SetID sets the value of ID.
+func (s *Series) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *Series) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *Series) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// SetTvdbId sets the value of TvdbId.
+func (s *Series) SetTvdbId(val int64) {
+	s.TvdbId = val
+}
+
+// SetImdbId sets the value of ImdbId.
+func (s *Series) SetImdbId(val string) {
+	s.ImdbId = val
+}
+
+// SetTvmazeId sets the value of TvmazeId.
+func (s *Series) SetTvmazeId(val int64) {
+	s.TvmazeId = val
+}
+
+// SetMetadataSource sets the value of MetadataSource.
+func (s *Series) SetMetadataSource(val SeriesMetadataSource) {
+	s.MetadataSource = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Series) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *Series) SetOriginalTitle(val string) {
+	s.OriginalTitle = val
+}
+
+// SetOriginalLanguage sets the value of OriginalLanguage.
+func (s *Series) SetOriginalLanguage(val string) {
+	s.OriginalLanguage = val
+}
+
+// SetAlternateTitles sets the value of AlternateTitles.
+func (s *Series) SetAlternateTitles(val []string) {
+	s.AlternateTitles = val
+}
+
+// SetYear sets the value of Year.
+func (s *Series) SetYear(val int) {
+	s.Year = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *Series) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetStatus sets the value of Status.
+func (s *Series) SetStatus(val SeriesStatus) {
+	s.Status = val
+}
+
+// SetNetwork sets the value of Network.
+func (s *Series) SetNetwork(val string) {
+	s.Network = val
+}
+
+// SetTimeZone sets the value of TimeZone.
+func (s *Series) SetTimeZone(val string) {
+	s.TimeZone = val
+}
+
+// SetAirTime sets the value of AirTime.
+func (s *Series) SetAirTime(val string) {
+	s.AirTime = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *Series) SetRuntime(val int) {
+	s.Runtime = val
+}
+
+// SetGenres sets the value of Genres.
+func (s *Series) SetGenres(val []string) {
+	s.Genres = val
+}
+
+// SetCertification sets the value of Certification.
+func (s *Series) SetCertification(val string) {
+	s.Certification = val
+}
+
+// SetRating sets the value of Rating.
+func (s *Series) SetRating(val float64) {
+	s.Rating = val
+}
+
+// SetVotes sets the value of Votes.
+func (s *Series) SetVotes(val int) {
+	s.Votes = val
+}
+
+// SetFirstAired sets the value of FirstAired.
+func (s *Series) SetFirstAired(val string) {
+	s.FirstAired = val
+}
+
+// SetLastAired sets the value of LastAired.
+func (s *Series) SetLastAired(val string) {
+	s.LastAired = val
+}
+
+// SetSeriesType sets the value of SeriesType.
+func (s *Series) SetSeriesType(val SeriesType) {
+	s.SeriesType = val
+}
+
+// SetSeasonFolder sets the value of SeasonFolder.
+func (s *Series) SetSeasonFolder(val bool) {
+	s.SeasonFolder = val
+}
+
+// SetMonitorNewSeasons sets the value of MonitorNewSeasons.
+func (s *Series) SetMonitorNewSeasons(val MonitorNewSeasons) {
+	s.MonitorNewSeasons = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *Series) SetPoster(val string) {
+	s.Poster = val
+}
+
+// SetBackdrop sets the value of Backdrop.
+func (s *Series) SetBackdrop(val string) {
+	s.Backdrop = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *Series) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *Series) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *Series) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetPath sets the value of Path.
+func (s *Series) SetPath(val string) {
+	s.Path = val
+}
+
+// SetTags sets the value of Tags.
+func (s *Series) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *Series) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *Series) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetRefreshedAt sets the value of RefreshedAt.
+func (s *Series) SetRefreshedAt(val OptDateTime) {
+	s.RefreshedAt = val
+}
+
+// SetStats sets the value of Stats.
+func (s *Series) SetStats(val SeriesStats) {
+	s.Stats = val
+}
+
+// SetDownloading sets the value of Downloading.
+func (s *Series) SetDownloading(val int) {
+	s.Downloading = val
+}
+
+// Merged schema.
+// Ref: #/components/schemas/SeriesDetail
+type SeriesDetail struct {
+	ID int64 `json:"id"`
+	// Timeline reference, e.g. "series:7".
+	ItemRef          string                     `json:"itemRef"`
+	TmdbId           int64                      `json:"tmdbId"`
+	TvdbId           int64                      `json:"tvdbId"`
+	ImdbId           string                     `json:"imdbId"`
+	TvmazeId         int64                      `json:"tvmazeId"`
+	MetadataSource   SeriesDetailMetadataSource `json:"metadataSource"`
+	Title            string                     `json:"title"`
+	OriginalTitle    string                     `json:"originalTitle"`
+	OriginalLanguage string                     `json:"originalLanguage"`
+	AlternateTitles  []string                   `json:"alternateTitles"`
+	Year             int                        `json:"year"`
+	Overview         string                     `json:"overview"`
+	Status           SeriesStatus               `json:"status"`
+	Network          string                     `json:"network"`
+	// The network's IANA time zone.
+	TimeZone string `json:"timeZone"`
+	// HH:MM in the network's zone; empty = unknown (20:00 assumed, D-039).
+	AirTime           string            `json:"airTime"`
+	Runtime           int               `json:"runtime"`
+	Genres            []string          `json:"genres"`
+	Certification     string            `json:"certification"`
+	Rating            float64           `json:"rating"`
+	Votes             int               `json:"votes"`
+	FirstAired        string            `json:"firstAired"`
+	LastAired         string            `json:"lastAired"`
+	SeriesType        SeriesType        `json:"seriesType"`
+	SeasonFolder      bool              `json:"seasonFolder"`
+	MonitorNewSeasons MonitorNewSeasons `json:"monitorNewSeasons"`
+	// Image file name for /images/tmdb/{size}/{file}.
+	Poster           string      `json:"poster"`
+	Backdrop         string      `json:"backdrop"`
+	Monitored        bool        `json:"monitored"`
+	QualityProfileId int64       `json:"qualityProfileId"`
+	RootFolderId     OptInt64    `json:"rootFolderId"`
+	Path             string      `json:"path"`
+	Tags             []string    `json:"tags"`
+	AddedAt          time.Time   `json:"addedAt"`
+	UpdatedAt        time.Time   `json:"updatedAt"`
+	RefreshedAt      OptDateTime `json:"refreshedAt"`
+	Stats            SeriesStats `json:"stats"`
+	// Downloads under way for its episodes.
+	Downloading int          `json:"downloading"`
+	Seasons     []SeasonInfo `json:"seasons"`
+}
+
+// GetID returns the value of ID.
+func (s *SeriesDetail) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *SeriesDetail) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *SeriesDetail) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// GetTvdbId returns the value of TvdbId.
+func (s *SeriesDetail) GetTvdbId() int64 {
+	return s.TvdbId
+}
+
+// GetImdbId returns the value of ImdbId.
+func (s *SeriesDetail) GetImdbId() string {
+	return s.ImdbId
+}
+
+// GetTvmazeId returns the value of TvmazeId.
+func (s *SeriesDetail) GetTvmazeId() int64 {
+	return s.TvmazeId
+}
+
+// GetMetadataSource returns the value of MetadataSource.
+func (s *SeriesDetail) GetMetadataSource() SeriesDetailMetadataSource {
+	return s.MetadataSource
+}
+
+// GetTitle returns the value of Title.
+func (s *SeriesDetail) GetTitle() string {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *SeriesDetail) GetOriginalTitle() string {
+	return s.OriginalTitle
+}
+
+// GetOriginalLanguage returns the value of OriginalLanguage.
+func (s *SeriesDetail) GetOriginalLanguage() string {
+	return s.OriginalLanguage
+}
+
+// GetAlternateTitles returns the value of AlternateTitles.
+func (s *SeriesDetail) GetAlternateTitles() []string {
+	return s.AlternateTitles
+}
+
+// GetYear returns the value of Year.
+func (s *SeriesDetail) GetYear() int {
+	return s.Year
+}
+
+// GetOverview returns the value of Overview.
+func (s *SeriesDetail) GetOverview() string {
+	return s.Overview
+}
+
+// GetStatus returns the value of Status.
+func (s *SeriesDetail) GetStatus() SeriesStatus {
+	return s.Status
+}
+
+// GetNetwork returns the value of Network.
+func (s *SeriesDetail) GetNetwork() string {
+	return s.Network
+}
+
+// GetTimeZone returns the value of TimeZone.
+func (s *SeriesDetail) GetTimeZone() string {
+	return s.TimeZone
+}
+
+// GetAirTime returns the value of AirTime.
+func (s *SeriesDetail) GetAirTime() string {
+	return s.AirTime
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *SeriesDetail) GetRuntime() int {
+	return s.Runtime
+}
+
+// GetGenres returns the value of Genres.
+func (s *SeriesDetail) GetGenres() []string {
+	return s.Genres
+}
+
+// GetCertification returns the value of Certification.
+func (s *SeriesDetail) GetCertification() string {
+	return s.Certification
+}
+
+// GetRating returns the value of Rating.
+func (s *SeriesDetail) GetRating() float64 {
+	return s.Rating
+}
+
+// GetVotes returns the value of Votes.
+func (s *SeriesDetail) GetVotes() int {
+	return s.Votes
+}
+
+// GetFirstAired returns the value of FirstAired.
+func (s *SeriesDetail) GetFirstAired() string {
+	return s.FirstAired
+}
+
+// GetLastAired returns the value of LastAired.
+func (s *SeriesDetail) GetLastAired() string {
+	return s.LastAired
+}
+
+// GetSeriesType returns the value of SeriesType.
+func (s *SeriesDetail) GetSeriesType() SeriesType {
+	return s.SeriesType
+}
+
+// GetSeasonFolder returns the value of SeasonFolder.
+func (s *SeriesDetail) GetSeasonFolder() bool {
+	return s.SeasonFolder
+}
+
+// GetMonitorNewSeasons returns the value of MonitorNewSeasons.
+func (s *SeriesDetail) GetMonitorNewSeasons() MonitorNewSeasons {
+	return s.MonitorNewSeasons
+}
+
+// GetPoster returns the value of Poster.
+func (s *SeriesDetail) GetPoster() string {
+	return s.Poster
+}
+
+// GetBackdrop returns the value of Backdrop.
+func (s *SeriesDetail) GetBackdrop() string {
+	return s.Backdrop
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *SeriesDetail) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *SeriesDetail) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *SeriesDetail) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetPath returns the value of Path.
+func (s *SeriesDetail) GetPath() string {
+	return s.Path
+}
+
+// GetTags returns the value of Tags.
+func (s *SeriesDetail) GetTags() []string {
+	return s.Tags
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *SeriesDetail) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *SeriesDetail) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetRefreshedAt returns the value of RefreshedAt.
+func (s *SeriesDetail) GetRefreshedAt() OptDateTime {
+	return s.RefreshedAt
+}
+
+// GetStats returns the value of Stats.
+func (s *SeriesDetail) GetStats() SeriesStats {
+	return s.Stats
+}
+
+// GetDownloading returns the value of Downloading.
+func (s *SeriesDetail) GetDownloading() int {
+	return s.Downloading
+}
+
+// GetSeasons returns the value of Seasons.
+func (s *SeriesDetail) GetSeasons() []SeasonInfo {
+	return s.Seasons
+}
+
+// SetID sets the value of ID.
+func (s *SeriesDetail) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *SeriesDetail) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *SeriesDetail) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// SetTvdbId sets the value of TvdbId.
+func (s *SeriesDetail) SetTvdbId(val int64) {
+	s.TvdbId = val
+}
+
+// SetImdbId sets the value of ImdbId.
+func (s *SeriesDetail) SetImdbId(val string) {
+	s.ImdbId = val
+}
+
+// SetTvmazeId sets the value of TvmazeId.
+func (s *SeriesDetail) SetTvmazeId(val int64) {
+	s.TvmazeId = val
+}
+
+// SetMetadataSource sets the value of MetadataSource.
+func (s *SeriesDetail) SetMetadataSource(val SeriesDetailMetadataSource) {
+	s.MetadataSource = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SeriesDetail) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *SeriesDetail) SetOriginalTitle(val string) {
+	s.OriginalTitle = val
+}
+
+// SetOriginalLanguage sets the value of OriginalLanguage.
+func (s *SeriesDetail) SetOriginalLanguage(val string) {
+	s.OriginalLanguage = val
+}
+
+// SetAlternateTitles sets the value of AlternateTitles.
+func (s *SeriesDetail) SetAlternateTitles(val []string) {
+	s.AlternateTitles = val
+}
+
+// SetYear sets the value of Year.
+func (s *SeriesDetail) SetYear(val int) {
+	s.Year = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *SeriesDetail) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetStatus sets the value of Status.
+func (s *SeriesDetail) SetStatus(val SeriesStatus) {
+	s.Status = val
+}
+
+// SetNetwork sets the value of Network.
+func (s *SeriesDetail) SetNetwork(val string) {
+	s.Network = val
+}
+
+// SetTimeZone sets the value of TimeZone.
+func (s *SeriesDetail) SetTimeZone(val string) {
+	s.TimeZone = val
+}
+
+// SetAirTime sets the value of AirTime.
+func (s *SeriesDetail) SetAirTime(val string) {
+	s.AirTime = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *SeriesDetail) SetRuntime(val int) {
+	s.Runtime = val
+}
+
+// SetGenres sets the value of Genres.
+func (s *SeriesDetail) SetGenres(val []string) {
+	s.Genres = val
+}
+
+// SetCertification sets the value of Certification.
+func (s *SeriesDetail) SetCertification(val string) {
+	s.Certification = val
+}
+
+// SetRating sets the value of Rating.
+func (s *SeriesDetail) SetRating(val float64) {
+	s.Rating = val
+}
+
+// SetVotes sets the value of Votes.
+func (s *SeriesDetail) SetVotes(val int) {
+	s.Votes = val
+}
+
+// SetFirstAired sets the value of FirstAired.
+func (s *SeriesDetail) SetFirstAired(val string) {
+	s.FirstAired = val
+}
+
+// SetLastAired sets the value of LastAired.
+func (s *SeriesDetail) SetLastAired(val string) {
+	s.LastAired = val
+}
+
+// SetSeriesType sets the value of SeriesType.
+func (s *SeriesDetail) SetSeriesType(val SeriesType) {
+	s.SeriesType = val
+}
+
+// SetSeasonFolder sets the value of SeasonFolder.
+func (s *SeriesDetail) SetSeasonFolder(val bool) {
+	s.SeasonFolder = val
+}
+
+// SetMonitorNewSeasons sets the value of MonitorNewSeasons.
+func (s *SeriesDetail) SetMonitorNewSeasons(val MonitorNewSeasons) {
+	s.MonitorNewSeasons = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *SeriesDetail) SetPoster(val string) {
+	s.Poster = val
+}
+
+// SetBackdrop sets the value of Backdrop.
+func (s *SeriesDetail) SetBackdrop(val string) {
+	s.Backdrop = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *SeriesDetail) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *SeriesDetail) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *SeriesDetail) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetPath sets the value of Path.
+func (s *SeriesDetail) SetPath(val string) {
+	s.Path = val
+}
+
+// SetTags sets the value of Tags.
+func (s *SeriesDetail) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *SeriesDetail) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *SeriesDetail) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetRefreshedAt sets the value of RefreshedAt.
+func (s *SeriesDetail) SetRefreshedAt(val OptDateTime) {
+	s.RefreshedAt = val
+}
+
+// SetStats sets the value of Stats.
+func (s *SeriesDetail) SetStats(val SeriesStats) {
+	s.Stats = val
+}
+
+// SetDownloading sets the value of Downloading.
+func (s *SeriesDetail) SetDownloading(val int) {
+	s.Downloading = val
+}
+
+// SetSeasons sets the value of Seasons.
+func (s *SeriesDetail) SetSeasons(val []SeasonInfo) {
+	s.Seasons = val
+}
+
+type SeriesDetailMetadataSource string
+
+const (
+	SeriesDetailMetadataSourceTmdb SeriesDetailMetadataSource = "tmdb"
+	SeriesDetailMetadataSourceTvdb SeriesDetailMetadataSource = "tvdb"
+)
+
+// AllValues returns all SeriesDetailMetadataSource values.
+func (SeriesDetailMetadataSource) AllValues() []SeriesDetailMetadataSource {
+	return []SeriesDetailMetadataSource{
+		SeriesDetailMetadataSourceTmdb,
+		SeriesDetailMetadataSourceTvdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SeriesDetailMetadataSource) MarshalText() ([]byte, error) {
+	switch s {
+	case SeriesDetailMetadataSourceTmdb:
+		return []byte(s), nil
+	case SeriesDetailMetadataSourceTvdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SeriesDetailMetadataSource) UnmarshalText(data []byte) error {
+	switch SeriesDetailMetadataSource(data) {
+	case SeriesDetailMetadataSourceTmdb:
+		*s = SeriesDetailMetadataSourceTmdb
+		return nil
+	case SeriesDetailMetadataSourceTvdb:
+		*s = SeriesDetailMetadataSourceTvdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SeriesIdsRequest
+type SeriesIdsRequest struct {
+	SeriesIds []int64 `json:"seriesIds"`
+}
+
+// GetSeriesIds returns the value of SeriesIds.
+func (s *SeriesIdsRequest) GetSeriesIds() []int64 {
+	return s.SeriesIds
+}
+
+// SetSeriesIds sets the value of SeriesIds.
+func (s *SeriesIdsRequest) SetSeriesIds(val []int64) {
+	s.SeriesIds = val
+}
+
+// Ref: #/components/schemas/SeriesImportCandidate
+type SeriesImportCandidate struct {
+	Path         string         `json:"path"`
+	RelativePath string         `json:"relativePath"`
+	SizeBytes    int64          `json:"sizeBytes"`
+	SeriesId     OptInt64       `json:"seriesId"`
+	SeriesTitle  OptString      `json:"seriesTitle"`
+	Episodes     []EpisodeBrief `json:"episodes"`
+	Quality      OptQuality     `json:"quality"`
+	ReleaseGroup OptString      `json:"releaseGroup"`
+	Rejection    OptError       `json:"rejection"`
+	Sidecars     []string       `json:"sidecars"`
+}
+
+// GetPath returns the value of Path.
+func (s *SeriesImportCandidate) GetPath() string {
+	return s.Path
+}
+
+// GetRelativePath returns the value of RelativePath.
+func (s *SeriesImportCandidate) GetRelativePath() string {
+	return s.RelativePath
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *SeriesImportCandidate) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetSeriesId returns the value of SeriesId.
+func (s *SeriesImportCandidate) GetSeriesId() OptInt64 {
+	return s.SeriesId
+}
+
+// GetSeriesTitle returns the value of SeriesTitle.
+func (s *SeriesImportCandidate) GetSeriesTitle() OptString {
+	return s.SeriesTitle
+}
+
+// GetEpisodes returns the value of Episodes.
+func (s *SeriesImportCandidate) GetEpisodes() []EpisodeBrief {
+	return s.Episodes
+}
+
+// GetQuality returns the value of Quality.
+func (s *SeriesImportCandidate) GetQuality() OptQuality {
+	return s.Quality
+}
+
+// GetReleaseGroup returns the value of ReleaseGroup.
+func (s *SeriesImportCandidate) GetReleaseGroup() OptString {
+	return s.ReleaseGroup
+}
+
+// GetRejection returns the value of Rejection.
+func (s *SeriesImportCandidate) GetRejection() OptError {
+	return s.Rejection
+}
+
+// GetSidecars returns the value of Sidecars.
+func (s *SeriesImportCandidate) GetSidecars() []string {
+	return s.Sidecars
+}
+
+// SetPath sets the value of Path.
+func (s *SeriesImportCandidate) SetPath(val string) {
+	s.Path = val
+}
+
+// SetRelativePath sets the value of RelativePath.
+func (s *SeriesImportCandidate) SetRelativePath(val string) {
+	s.RelativePath = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *SeriesImportCandidate) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetSeriesId sets the value of SeriesId.
+func (s *SeriesImportCandidate) SetSeriesId(val OptInt64) {
+	s.SeriesId = val
+}
+
+// SetSeriesTitle sets the value of SeriesTitle.
+func (s *SeriesImportCandidate) SetSeriesTitle(val OptString) {
+	s.SeriesTitle = val
+}
+
+// SetEpisodes sets the value of Episodes.
+func (s *SeriesImportCandidate) SetEpisodes(val []EpisodeBrief) {
+	s.Episodes = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *SeriesImportCandidate) SetQuality(val OptQuality) {
+	s.Quality = val
+}
+
+// SetReleaseGroup sets the value of ReleaseGroup.
+func (s *SeriesImportCandidate) SetReleaseGroup(val OptString) {
+	s.ReleaseGroup = val
+}
+
+// SetRejection sets the value of Rejection.
+func (s *SeriesImportCandidate) SetRejection(val OptError) {
+	s.Rejection = val
+}
+
+// SetSidecars sets the value of Sidecars.
+func (s *SeriesImportCandidate) SetSidecars(val []string) {
+	s.Sidecars = val
+}
+
+// Ref: #/components/schemas/SeriesList
+type SeriesList struct {
+	Total int      `json:"total"`
+	Items []Series `json:"items"`
+}
+
+// GetTotal returns the value of Total.
+func (s *SeriesList) GetTotal() int {
+	return s.Total
+}
+
+// GetItems returns the value of Items.
+func (s *SeriesList) GetItems() []Series {
+	return s.Items
+}
+
+// SetTotal sets the value of Total.
+func (s *SeriesList) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetItems sets the value of Items.
+func (s *SeriesList) SetItems(val []Series) {
+	s.Items = val
+}
+
+// Ref: #/components/schemas/SeriesLookup
+type SeriesLookup struct {
+	TmdbId        int64              `json:"tmdbId"`
+	TvdbId        int64              `json:"tvdbId"`
+	Source        SeriesLookupSource `json:"source"`
+	Title         string             `json:"title"`
+	OriginalTitle string             `json:"originalTitle"`
+	Year          int                `json:"year"`
+	FirstAired    string             `json:"firstAired"`
+	Overview      string             `json:"overview"`
+	Poster        string             `json:"poster"`
+	Backdrop      string             `json:"backdrop"`
+	Network       string             `json:"network"`
+	Status        string             `json:"status"`
+	Rating        float64            `json:"rating"`
+	// Set when the series is in the library.
+	SeriesId OptInt64 `json:"seriesId"`
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *SeriesLookup) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// GetTvdbId returns the value of TvdbId.
+func (s *SeriesLookup) GetTvdbId() int64 {
+	return s.TvdbId
+}
+
+// GetSource returns the value of Source.
+func (s *SeriesLookup) GetSource() SeriesLookupSource {
+	return s.Source
+}
+
+// GetTitle returns the value of Title.
+func (s *SeriesLookup) GetTitle() string {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *SeriesLookup) GetOriginalTitle() string {
+	return s.OriginalTitle
+}
+
+// GetYear returns the value of Year.
+func (s *SeriesLookup) GetYear() int {
+	return s.Year
+}
+
+// GetFirstAired returns the value of FirstAired.
+func (s *SeriesLookup) GetFirstAired() string {
+	return s.FirstAired
+}
+
+// GetOverview returns the value of Overview.
+func (s *SeriesLookup) GetOverview() string {
+	return s.Overview
+}
+
+// GetPoster returns the value of Poster.
+func (s *SeriesLookup) GetPoster() string {
+	return s.Poster
+}
+
+// GetBackdrop returns the value of Backdrop.
+func (s *SeriesLookup) GetBackdrop() string {
+	return s.Backdrop
+}
+
+// GetNetwork returns the value of Network.
+func (s *SeriesLookup) GetNetwork() string {
+	return s.Network
+}
+
+// GetStatus returns the value of Status.
+func (s *SeriesLookup) GetStatus() string {
+	return s.Status
+}
+
+// GetRating returns the value of Rating.
+func (s *SeriesLookup) GetRating() float64 {
+	return s.Rating
+}
+
+// GetSeriesId returns the value of SeriesId.
+func (s *SeriesLookup) GetSeriesId() OptInt64 {
+	return s.SeriesId
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *SeriesLookup) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// SetTvdbId sets the value of TvdbId.
+func (s *SeriesLookup) SetTvdbId(val int64) {
+	s.TvdbId = val
+}
+
+// SetSource sets the value of Source.
+func (s *SeriesLookup) SetSource(val SeriesLookupSource) {
+	s.Source = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SeriesLookup) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *SeriesLookup) SetOriginalTitle(val string) {
+	s.OriginalTitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *SeriesLookup) SetYear(val int) {
+	s.Year = val
+}
+
+// SetFirstAired sets the value of FirstAired.
+func (s *SeriesLookup) SetFirstAired(val string) {
+	s.FirstAired = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *SeriesLookup) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *SeriesLookup) SetPoster(val string) {
+	s.Poster = val
+}
+
+// SetBackdrop sets the value of Backdrop.
+func (s *SeriesLookup) SetBackdrop(val string) {
+	s.Backdrop = val
+}
+
+// SetNetwork sets the value of Network.
+func (s *SeriesLookup) SetNetwork(val string) {
+	s.Network = val
+}
+
+// SetStatus sets the value of Status.
+func (s *SeriesLookup) SetStatus(val string) {
+	s.Status = val
+}
+
+// SetRating sets the value of Rating.
+func (s *SeriesLookup) SetRating(val float64) {
+	s.Rating = val
+}
+
+// SetSeriesId sets the value of SeriesId.
+func (s *SeriesLookup) SetSeriesId(val OptInt64) {
+	s.SeriesId = val
+}
+
+type SeriesLookupSource string
+
+const (
+	SeriesLookupSourceTmdb SeriesLookupSource = "tmdb"
+	SeriesLookupSourceTvdb SeriesLookupSource = "tvdb"
+)
+
+// AllValues returns all SeriesLookupSource values.
+func (SeriesLookupSource) AllValues() []SeriesLookupSource {
+	return []SeriesLookupSource{
+		SeriesLookupSourceTmdb,
+		SeriesLookupSourceTvdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SeriesLookupSource) MarshalText() ([]byte, error) {
+	switch s {
+	case SeriesLookupSourceTmdb:
+		return []byte(s), nil
+	case SeriesLookupSourceTvdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SeriesLookupSource) UnmarshalText(data []byte) error {
+	switch SeriesLookupSource(data) {
+	case SeriesLookupSourceTmdb:
+		*s = SeriesLookupSourceTmdb
+		return nil
+	case SeriesLookupSourceTvdb:
+		*s = SeriesLookupSourceTvdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SeriesManualImportRequest
+type SeriesManualImportRequest struct {
+	Items []SeriesManualImportRequestItemsItem `json:"items"`
+}
+
+// GetItems returns the value of Items.
+func (s *SeriesManualImportRequest) GetItems() []SeriesManualImportRequestItemsItem {
+	return s.Items
+}
+
+// SetItems sets the value of Items.
+func (s *SeriesManualImportRequest) SetItems(val []SeriesManualImportRequestItemsItem) {
+	s.Items = val
+}
+
+type SeriesManualImportRequestItemsItem struct {
+	Path       string          `json:"path"`
+	SeriesId   int64           `json:"seriesId"`
+	EpisodeIds []int64         `json:"episodeIds"`
+	Mode       OptTransferMode `json:"mode"`
+	Sidecars   []string        `json:"sidecars"`
+}
+
+// GetPath returns the value of Path.
+func (s *SeriesManualImportRequestItemsItem) GetPath() string {
+	return s.Path
+}
+
+// GetSeriesId returns the value of SeriesId.
+func (s *SeriesManualImportRequestItemsItem) GetSeriesId() int64 {
+	return s.SeriesId
+}
+
+// GetEpisodeIds returns the value of EpisodeIds.
+func (s *SeriesManualImportRequestItemsItem) GetEpisodeIds() []int64 {
+	return s.EpisodeIds
+}
+
+// GetMode returns the value of Mode.
+func (s *SeriesManualImportRequestItemsItem) GetMode() OptTransferMode {
+	return s.Mode
+}
+
+// GetSidecars returns the value of Sidecars.
+func (s *SeriesManualImportRequestItemsItem) GetSidecars() []string {
+	return s.Sidecars
+}
+
+// SetPath sets the value of Path.
+func (s *SeriesManualImportRequestItemsItem) SetPath(val string) {
+	s.Path = val
+}
+
+// SetSeriesId sets the value of SeriesId.
+func (s *SeriesManualImportRequestItemsItem) SetSeriesId(val int64) {
+	s.SeriesId = val
+}
+
+// SetEpisodeIds sets the value of EpisodeIds.
+func (s *SeriesManualImportRequestItemsItem) SetEpisodeIds(val []int64) {
+	s.EpisodeIds = val
+}
+
+// SetMode sets the value of Mode.
+func (s *SeriesManualImportRequestItemsItem) SetMode(val OptTransferMode) {
+	s.Mode = val
+}
+
+// SetSidecars sets the value of Sidecars.
+func (s *SeriesManualImportRequestItemsItem) SetSidecars(val []string) {
+	s.Sidecars = val
+}
+
+// Ref: #/components/schemas/SeriesManualImportResult
+type SeriesManualImportResult struct {
+	Path         string    `json:"path"`
+	SeriesId     int64     `json:"seriesId"`
+	EpisodeIds   []int64   `json:"episodeIds"`
+	ImportedPath OptString `json:"importedPath"`
+	Mode         OptString `json:"mode"`
+	Upgraded     OptBool   `json:"upgraded"`
+	Recycled     []string  `json:"recycled"`
+	Error        OptError  `json:"error"`
+}
+
+// GetPath returns the value of Path.
+func (s *SeriesManualImportResult) GetPath() string {
+	return s.Path
+}
+
+// GetSeriesId returns the value of SeriesId.
+func (s *SeriesManualImportResult) GetSeriesId() int64 {
+	return s.SeriesId
+}
+
+// GetEpisodeIds returns the value of EpisodeIds.
+func (s *SeriesManualImportResult) GetEpisodeIds() []int64 {
+	return s.EpisodeIds
+}
+
+// GetImportedPath returns the value of ImportedPath.
+func (s *SeriesManualImportResult) GetImportedPath() OptString {
+	return s.ImportedPath
+}
+
+// GetMode returns the value of Mode.
+func (s *SeriesManualImportResult) GetMode() OptString {
+	return s.Mode
+}
+
+// GetUpgraded returns the value of Upgraded.
+func (s *SeriesManualImportResult) GetUpgraded() OptBool {
+	return s.Upgraded
+}
+
+// GetRecycled returns the value of Recycled.
+func (s *SeriesManualImportResult) GetRecycled() []string {
+	return s.Recycled
+}
+
+// GetError returns the value of Error.
+func (s *SeriesManualImportResult) GetError() OptError {
+	return s.Error
+}
+
+// SetPath sets the value of Path.
+func (s *SeriesManualImportResult) SetPath(val string) {
+	s.Path = val
+}
+
+// SetSeriesId sets the value of SeriesId.
+func (s *SeriesManualImportResult) SetSeriesId(val int64) {
+	s.SeriesId = val
+}
+
+// SetEpisodeIds sets the value of EpisodeIds.
+func (s *SeriesManualImportResult) SetEpisodeIds(val []int64) {
+	s.EpisodeIds = val
+}
+
+// SetImportedPath sets the value of ImportedPath.
+func (s *SeriesManualImportResult) SetImportedPath(val OptString) {
+	s.ImportedPath = val
+}
+
+// SetMode sets the value of Mode.
+func (s *SeriesManualImportResult) SetMode(val OptString) {
+	s.Mode = val
+}
+
+// SetUpgraded sets the value of Upgraded.
+func (s *SeriesManualImportResult) SetUpgraded(val OptBool) {
+	s.Upgraded = val
+}
+
+// SetRecycled sets the value of Recycled.
+func (s *SeriesManualImportResult) SetRecycled(val []string) {
+	s.Recycled = val
+}
+
+// SetError sets the value of Error.
+func (s *SeriesManualImportResult) SetError(val OptError) {
+	s.Error = val
+}
+
+type SeriesMetadataSource string
+
+const (
+	SeriesMetadataSourceTmdb SeriesMetadataSource = "tmdb"
+	SeriesMetadataSourceTvdb SeriesMetadataSource = "tvdb"
+)
+
+// AllValues returns all SeriesMetadataSource values.
+func (SeriesMetadataSource) AllValues() []SeriesMetadataSource {
+	return []SeriesMetadataSource{
+		SeriesMetadataSourceTmdb,
+		SeriesMetadataSourceTvdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SeriesMetadataSource) MarshalText() ([]byte, error) {
+	switch s {
+	case SeriesMetadataSourceTmdb:
+		return []byte(s), nil
+	case SeriesMetadataSourceTvdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SeriesMetadataSource) UnmarshalText(data []byte) error {
+	switch SeriesMetadataSource(data) {
+	case SeriesMetadataSourceTmdb:
+		*s = SeriesMetadataSourceTmdb
+		return nil
+	case SeriesMetadataSourceTvdb:
+		*s = SeriesMetadataSourceTvdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SeriesNamingPreview
+type SeriesNamingPreview struct {
+	SeriesFolder   string `json:"seriesFolder"`
+	SeasonFolder   string `json:"seasonFolder"`
+	SpecialsFolder string `json:"specialsFolder"`
+	Standard       string `json:"standard"`
+	MultiEpisode   string `json:"multiEpisode"`
+	Daily          string `json:"daily"`
+	Anime          string `json:"anime"`
+	// Template errors by field name.
+	Errors SeriesNamingPreviewErrors `json:"errors"`
+	Tokens []NamingToken             `json:"tokens"`
+}
+
+// GetSeriesFolder returns the value of SeriesFolder.
+func (s *SeriesNamingPreview) GetSeriesFolder() string {
+	return s.SeriesFolder
+}
+
+// GetSeasonFolder returns the value of SeasonFolder.
+func (s *SeriesNamingPreview) GetSeasonFolder() string {
+	return s.SeasonFolder
+}
+
+// GetSpecialsFolder returns the value of SpecialsFolder.
+func (s *SeriesNamingPreview) GetSpecialsFolder() string {
+	return s.SpecialsFolder
+}
+
+// GetStandard returns the value of Standard.
+func (s *SeriesNamingPreview) GetStandard() string {
+	return s.Standard
+}
+
+// GetMultiEpisode returns the value of MultiEpisode.
+func (s *SeriesNamingPreview) GetMultiEpisode() string {
+	return s.MultiEpisode
+}
+
+// GetDaily returns the value of Daily.
+func (s *SeriesNamingPreview) GetDaily() string {
+	return s.Daily
+}
+
+// GetAnime returns the value of Anime.
+func (s *SeriesNamingPreview) GetAnime() string {
+	return s.Anime
+}
+
+// GetErrors returns the value of Errors.
+func (s *SeriesNamingPreview) GetErrors() SeriesNamingPreviewErrors {
+	return s.Errors
+}
+
+// GetTokens returns the value of Tokens.
+func (s *SeriesNamingPreview) GetTokens() []NamingToken {
+	return s.Tokens
+}
+
+// SetSeriesFolder sets the value of SeriesFolder.
+func (s *SeriesNamingPreview) SetSeriesFolder(val string) {
+	s.SeriesFolder = val
+}
+
+// SetSeasonFolder sets the value of SeasonFolder.
+func (s *SeriesNamingPreview) SetSeasonFolder(val string) {
+	s.SeasonFolder = val
+}
+
+// SetSpecialsFolder sets the value of SpecialsFolder.
+func (s *SeriesNamingPreview) SetSpecialsFolder(val string) {
+	s.SpecialsFolder = val
+}
+
+// SetStandard sets the value of Standard.
+func (s *SeriesNamingPreview) SetStandard(val string) {
+	s.Standard = val
+}
+
+// SetMultiEpisode sets the value of MultiEpisode.
+func (s *SeriesNamingPreview) SetMultiEpisode(val string) {
+	s.MultiEpisode = val
+}
+
+// SetDaily sets the value of Daily.
+func (s *SeriesNamingPreview) SetDaily(val string) {
+	s.Daily = val
+}
+
+// SetAnime sets the value of Anime.
+func (s *SeriesNamingPreview) SetAnime(val string) {
+	s.Anime = val
+}
+
+// SetErrors sets the value of Errors.
+func (s *SeriesNamingPreview) SetErrors(val SeriesNamingPreviewErrors) {
+	s.Errors = val
+}
+
+// SetTokens sets the value of Tokens.
+func (s *SeriesNamingPreview) SetTokens(val []NamingToken) {
+	s.Tokens = val
+}
+
+// Template errors by field name.
+type SeriesNamingPreviewErrors map[string]string
+
+func (s *SeriesNamingPreviewErrors) init() SeriesNamingPreviewErrors {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/SeriesNamingSettings
+type SeriesNamingSettings struct {
+	RenameEpisodes        bool              `json:"renameEpisodes"`
+	SeriesFolderFormat    string            `json:"seriesFolderFormat"`
+	SeasonFolderFormat    string            `json:"seasonFolderFormat"`
+	SpecialsFolderFormat  string            `json:"specialsFolderFormat"`
+	StandardEpisodeFormat string            `json:"standardEpisodeFormat"`
+	DailyEpisodeFormat    string            `json:"dailyEpisodeFormat"`
+	AnimeEpisodeFormat    string            `json:"animeEpisodeFormat"`
+	MultiEpisodeStyle     MultiEpisodeStyle `json:"multiEpisodeStyle"`
+	// Wanted episodes in a season that make Locarr search the whole season.
+	SeasonPackThreshold int                 `json:"seasonPackThreshold"`
+	SearchOnAddDefault  bool                `json:"searchOnAddDefault"`
+	ColonReplacement    OptColonReplacement `json:"colonReplacement"`
+}
+
+// GetRenameEpisodes returns the value of RenameEpisodes.
+func (s *SeriesNamingSettings) GetRenameEpisodes() bool {
+	return s.RenameEpisodes
+}
+
+// GetSeriesFolderFormat returns the value of SeriesFolderFormat.
+func (s *SeriesNamingSettings) GetSeriesFolderFormat() string {
+	return s.SeriesFolderFormat
+}
+
+// GetSeasonFolderFormat returns the value of SeasonFolderFormat.
+func (s *SeriesNamingSettings) GetSeasonFolderFormat() string {
+	return s.SeasonFolderFormat
+}
+
+// GetSpecialsFolderFormat returns the value of SpecialsFolderFormat.
+func (s *SeriesNamingSettings) GetSpecialsFolderFormat() string {
+	return s.SpecialsFolderFormat
+}
+
+// GetStandardEpisodeFormat returns the value of StandardEpisodeFormat.
+func (s *SeriesNamingSettings) GetStandardEpisodeFormat() string {
+	return s.StandardEpisodeFormat
+}
+
+// GetDailyEpisodeFormat returns the value of DailyEpisodeFormat.
+func (s *SeriesNamingSettings) GetDailyEpisodeFormat() string {
+	return s.DailyEpisodeFormat
+}
+
+// GetAnimeEpisodeFormat returns the value of AnimeEpisodeFormat.
+func (s *SeriesNamingSettings) GetAnimeEpisodeFormat() string {
+	return s.AnimeEpisodeFormat
+}
+
+// GetMultiEpisodeStyle returns the value of MultiEpisodeStyle.
+func (s *SeriesNamingSettings) GetMultiEpisodeStyle() MultiEpisodeStyle {
+	return s.MultiEpisodeStyle
+}
+
+// GetSeasonPackThreshold returns the value of SeasonPackThreshold.
+func (s *SeriesNamingSettings) GetSeasonPackThreshold() int {
+	return s.SeasonPackThreshold
+}
+
+// GetSearchOnAddDefault returns the value of SearchOnAddDefault.
+func (s *SeriesNamingSettings) GetSearchOnAddDefault() bool {
+	return s.SearchOnAddDefault
+}
+
+// GetColonReplacement returns the value of ColonReplacement.
+func (s *SeriesNamingSettings) GetColonReplacement() OptColonReplacement {
+	return s.ColonReplacement
+}
+
+// SetRenameEpisodes sets the value of RenameEpisodes.
+func (s *SeriesNamingSettings) SetRenameEpisodes(val bool) {
+	s.RenameEpisodes = val
+}
+
+// SetSeriesFolderFormat sets the value of SeriesFolderFormat.
+func (s *SeriesNamingSettings) SetSeriesFolderFormat(val string) {
+	s.SeriesFolderFormat = val
+}
+
+// SetSeasonFolderFormat sets the value of SeasonFolderFormat.
+func (s *SeriesNamingSettings) SetSeasonFolderFormat(val string) {
+	s.SeasonFolderFormat = val
+}
+
+// SetSpecialsFolderFormat sets the value of SpecialsFolderFormat.
+func (s *SeriesNamingSettings) SetSpecialsFolderFormat(val string) {
+	s.SpecialsFolderFormat = val
+}
+
+// SetStandardEpisodeFormat sets the value of StandardEpisodeFormat.
+func (s *SeriesNamingSettings) SetStandardEpisodeFormat(val string) {
+	s.StandardEpisodeFormat = val
+}
+
+// SetDailyEpisodeFormat sets the value of DailyEpisodeFormat.
+func (s *SeriesNamingSettings) SetDailyEpisodeFormat(val string) {
+	s.DailyEpisodeFormat = val
+}
+
+// SetAnimeEpisodeFormat sets the value of AnimeEpisodeFormat.
+func (s *SeriesNamingSettings) SetAnimeEpisodeFormat(val string) {
+	s.AnimeEpisodeFormat = val
+}
+
+// SetMultiEpisodeStyle sets the value of MultiEpisodeStyle.
+func (s *SeriesNamingSettings) SetMultiEpisodeStyle(val MultiEpisodeStyle) {
+	s.MultiEpisodeStyle = val
+}
+
+// SetSeasonPackThreshold sets the value of SeasonPackThreshold.
+func (s *SeriesNamingSettings) SetSeasonPackThreshold(val int) {
+	s.SeasonPackThreshold = val
+}
+
+// SetSearchOnAddDefault sets the value of SearchOnAddDefault.
+func (s *SeriesNamingSettings) SetSearchOnAddDefault(val bool) {
+	s.SearchOnAddDefault = val
+}
+
+// SetColonReplacement sets the value of ColonReplacement.
+func (s *SeriesNamingSettings) SetColonReplacement(val OptColonReplacement) {
+	s.ColonReplacement = val
+}
+
+// Ref: #/components/schemas/SeriesRenameItem
+type SeriesRenameItem struct {
+	SeriesId int64  `json:"seriesId"`
+	Title    string `json:"title"`
+	From     string `json:"from"`
+	To       string `json:"to"`
+}
+
+// GetSeriesId returns the value of SeriesId.
+func (s *SeriesRenameItem) GetSeriesId() int64 {
+	return s.SeriesId
+}
+
+// GetTitle returns the value of Title.
+func (s *SeriesRenameItem) GetTitle() string {
+	return s.Title
+}
+
+// GetFrom returns the value of From.
+func (s *SeriesRenameItem) GetFrom() string {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *SeriesRenameItem) GetTo() string {
+	return s.To
+}
+
+// SetSeriesId sets the value of SeriesId.
+func (s *SeriesRenameItem) SetSeriesId(val int64) {
+	s.SeriesId = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SeriesRenameItem) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetFrom sets the value of From.
+func (s *SeriesRenameItem) SetFrom(val string) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *SeriesRenameItem) SetTo(val string) {
+	s.To = val
+}
+
+// Ref: #/components/schemas/SeriesStats
+type SeriesStats struct {
+	SeasonCount int `json:"seasonCount"`
+	// Episodes outside specials.
+	EpisodeCount          int `json:"episodeCount"`
+	EpisodeFileCount      int `json:"episodeFileCount"`
+	MonitoredEpisodeCount int `json:"monitoredEpisodeCount"`
+	// Monitored episodes that have aired and have no file.
+	MissingCount   int         `json:"missingCount"`
+	SizeOnDisk     int64       `json:"sizeOnDisk"`
+	NextAiring     OptDateTime `json:"nextAiring"`
+	PreviousAiring OptDateTime `json:"previousAiring"`
+}
+
+// GetSeasonCount returns the value of SeasonCount.
+func (s *SeriesStats) GetSeasonCount() int {
+	return s.SeasonCount
+}
+
+// GetEpisodeCount returns the value of EpisodeCount.
+func (s *SeriesStats) GetEpisodeCount() int {
+	return s.EpisodeCount
+}
+
+// GetEpisodeFileCount returns the value of EpisodeFileCount.
+func (s *SeriesStats) GetEpisodeFileCount() int {
+	return s.EpisodeFileCount
+}
+
+// GetMonitoredEpisodeCount returns the value of MonitoredEpisodeCount.
+func (s *SeriesStats) GetMonitoredEpisodeCount() int {
+	return s.MonitoredEpisodeCount
+}
+
+// GetMissingCount returns the value of MissingCount.
+func (s *SeriesStats) GetMissingCount() int {
+	return s.MissingCount
+}
+
+// GetSizeOnDisk returns the value of SizeOnDisk.
+func (s *SeriesStats) GetSizeOnDisk() int64 {
+	return s.SizeOnDisk
+}
+
+// GetNextAiring returns the value of NextAiring.
+func (s *SeriesStats) GetNextAiring() OptDateTime {
+	return s.NextAiring
+}
+
+// GetPreviousAiring returns the value of PreviousAiring.
+func (s *SeriesStats) GetPreviousAiring() OptDateTime {
+	return s.PreviousAiring
+}
+
+// SetSeasonCount sets the value of SeasonCount.
+func (s *SeriesStats) SetSeasonCount(val int) {
+	s.SeasonCount = val
+}
+
+// SetEpisodeCount sets the value of EpisodeCount.
+func (s *SeriesStats) SetEpisodeCount(val int) {
+	s.EpisodeCount = val
+}
+
+// SetEpisodeFileCount sets the value of EpisodeFileCount.
+func (s *SeriesStats) SetEpisodeFileCount(val int) {
+	s.EpisodeFileCount = val
+}
+
+// SetMonitoredEpisodeCount sets the value of MonitoredEpisodeCount.
+func (s *SeriesStats) SetMonitoredEpisodeCount(val int) {
+	s.MonitoredEpisodeCount = val
+}
+
+// SetMissingCount sets the value of MissingCount.
+func (s *SeriesStats) SetMissingCount(val int) {
+	s.MissingCount = val
+}
+
+// SetSizeOnDisk sets the value of SizeOnDisk.
+func (s *SeriesStats) SetSizeOnDisk(val int64) {
+	s.SizeOnDisk = val
+}
+
+// SetNextAiring sets the value of NextAiring.
+func (s *SeriesStats) SetNextAiring(val OptDateTime) {
+	s.NextAiring = val
+}
+
+// SetPreviousAiring sets the value of PreviousAiring.
+func (s *SeriesStats) SetPreviousAiring(val OptDateTime) {
+	s.PreviousAiring = val
+}
+
+// Ref: #/components/schemas/SeriesStatus
+type SeriesStatus string
+
+const (
+	SeriesStatusContinuing SeriesStatus = "continuing"
+	SeriesStatusEnded      SeriesStatus = "ended"
+	SeriesStatusUpcoming   SeriesStatus = "upcoming"
+)
+
+// AllValues returns all SeriesStatus values.
+func (SeriesStatus) AllValues() []SeriesStatus {
+	return []SeriesStatus{
+		SeriesStatusContinuing,
+		SeriesStatusEnded,
+		SeriesStatusUpcoming,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SeriesStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case SeriesStatusContinuing:
+		return []byte(s), nil
+	case SeriesStatusEnded:
+		return []byte(s), nil
+	case SeriesStatusUpcoming:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SeriesStatus) UnmarshalText(data []byte) error {
+	switch SeriesStatus(data) {
+	case SeriesStatusContinuing:
+		*s = SeriesStatusContinuing
+		return nil
+	case SeriesStatusEnded:
+		*s = SeriesStatusEnded
+		return nil
+	case SeriesStatusUpcoming:
+		*s = SeriesStatusUpcoming
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Standard (S01E01), daily (by air date) or anime (absolute numbers).
+// Ref: #/components/schemas/SeriesType
+type SeriesType string
+
+const (
+	SeriesTypeStandard SeriesType = "standard"
+	SeriesTypeDaily    SeriesType = "daily"
+	SeriesTypeAnime    SeriesType = "anime"
+)
+
+// AllValues returns all SeriesType values.
+func (SeriesType) AllValues() []SeriesType {
+	return []SeriesType{
+		SeriesTypeStandard,
+		SeriesTypeDaily,
+		SeriesTypeAnime,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SeriesType) MarshalText() ([]byte, error) {
+	switch s {
+	case SeriesTypeStandard:
+		return []byte(s), nil
+	case SeriesTypeDaily:
+		return []byte(s), nil
+	case SeriesTypeAnime:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SeriesType) UnmarshalText(data []byte) error {
+	switch SeriesType(data) {
+	case SeriesTypeStandard:
+		*s = SeriesTypeStandard
+		return nil
+	case SeriesTypeDaily:
+		*s = SeriesTypeDaily
+		return nil
+	case SeriesTypeAnime:
+		*s = SeriesTypeAnime
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SeriesUpdate
+type SeriesUpdate struct {
+	Monitored         OptBool              `json:"monitored"`
+	QualityProfileId  OptInt64             `json:"qualityProfileId"`
+	SeriesType        OptSeriesType        `json:"seriesType"`
+	SeasonFolder      OptBool              `json:"seasonFolder"`
+	MonitorNewSeasons OptMonitorNewSeasons `json:"monitorNewSeasons"`
+	Monitor           OptMonitorOption     `json:"monitor"`
+	Tags              []string             `json:"tags"`
+	RootFolderId      OptInt64             `json:"rootFolderId"`
+	Path              OptString            `json:"path"`
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *SeriesUpdate) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *SeriesUpdate) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetSeriesType returns the value of SeriesType.
+func (s *SeriesUpdate) GetSeriesType() OptSeriesType {
+	return s.SeriesType
+}
+
+// GetSeasonFolder returns the value of SeasonFolder.
+func (s *SeriesUpdate) GetSeasonFolder() OptBool {
+	return s.SeasonFolder
+}
+
+// GetMonitorNewSeasons returns the value of MonitorNewSeasons.
+func (s *SeriesUpdate) GetMonitorNewSeasons() OptMonitorNewSeasons {
+	return s.MonitorNewSeasons
+}
+
+// GetMonitor returns the value of Monitor.
+func (s *SeriesUpdate) GetMonitor() OptMonitorOption {
+	return s.Monitor
+}
+
+// GetTags returns the value of Tags.
+func (s *SeriesUpdate) GetTags() []string {
+	return s.Tags
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *SeriesUpdate) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetPath returns the value of Path.
+func (s *SeriesUpdate) GetPath() OptString {
+	return s.Path
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *SeriesUpdate) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *SeriesUpdate) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetSeriesType sets the value of SeriesType.
+func (s *SeriesUpdate) SetSeriesType(val OptSeriesType) {
+	s.SeriesType = val
+}
+
+// SetSeasonFolder sets the value of SeasonFolder.
+func (s *SeriesUpdate) SetSeasonFolder(val OptBool) {
+	s.SeasonFolder = val
+}
+
+// SetMonitorNewSeasons sets the value of MonitorNewSeasons.
+func (s *SeriesUpdate) SetMonitorNewSeasons(val OptMonitorNewSeasons) {
+	s.MonitorNewSeasons = val
+}
+
+// SetMonitor sets the value of Monitor.
+func (s *SeriesUpdate) SetMonitor(val OptMonitorOption) {
+	s.Monitor = val
+}
+
+// SetTags sets the value of Tags.
+func (s *SeriesUpdate) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *SeriesUpdate) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetPath sets the value of Path.
+func (s *SeriesUpdate) SetPath(val OptString) {
+	s.Path = val
 }
 
 // Ref: #/components/schemas/Session
@@ -16476,6 +20723,363 @@ func (s *WantedEpisode) SetAbsolute(val OptInt) {
 // SetAirDate sets the value of AirDate.
 func (s *WantedEpisode) SetAirDate(val OptString) {
 	s.AirDate = val
+}
+
+// Merged schema.
+// Ref: #/components/schemas/WantedEpisodeItem
+type WantedEpisodeItem struct {
+	ID int64 `json:"id"`
+	// Timeline reference, e.g. "episode:42".
+	ItemRef        string `json:"itemRef"`
+	SeriesId       int64  `json:"seriesId"`
+	SeasonId       int64  `json:"seasonId"`
+	SeasonNumber   int    `json:"seasonNumber"`
+	EpisodeNumber  int    `json:"episodeNumber"`
+	AbsoluteNumber int    `json:"absoluteNumber"`
+	Title          string `json:"title"`
+	Overview       string `json:"overview"`
+	// YYYY-MM-DD in the network's time zone; empty = not announced.
+	AirDate    string      `json:"airDate"`
+	AirDateUtc OptDateTime `json:"airDateUtc"`
+	Runtime    int         `json:"runtime"`
+	Monitored  bool        `json:"monitored"`
+	Aired      bool        `json:"aired"`
+	// The provider no longer lists it; kept because it has a file.
+	Removed       bool                    `json:"removed"`
+	SceneSeason   OptInt                  `json:"sceneSeason"`
+	SceneEpisode  OptInt                  `json:"sceneEpisode"`
+	SceneAbsolute OptInt                  `json:"sceneAbsolute"`
+	Wanted        WantedEpisodeItemWanted `json:"wanted"`
+	CutoffMet     bool                    `json:"cutoffMet"`
+	File          OptEpisodeFile          `json:"file"`
+	Download      OptMovieDownload        `json:"download"`
+	SeriesTitle   string                  `json:"seriesTitle"`
+	Poster        string                  `json:"poster"`
+	SeriesType    SeriesType              `json:"seriesType"`
+}
+
+// GetID returns the value of ID.
+func (s *WantedEpisodeItem) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *WantedEpisodeItem) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetSeriesId returns the value of SeriesId.
+func (s *WantedEpisodeItem) GetSeriesId() int64 {
+	return s.SeriesId
+}
+
+// GetSeasonId returns the value of SeasonId.
+func (s *WantedEpisodeItem) GetSeasonId() int64 {
+	return s.SeasonId
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *WantedEpisodeItem) GetSeasonNumber() int {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *WantedEpisodeItem) GetEpisodeNumber() int {
+	return s.EpisodeNumber
+}
+
+// GetAbsoluteNumber returns the value of AbsoluteNumber.
+func (s *WantedEpisodeItem) GetAbsoluteNumber() int {
+	return s.AbsoluteNumber
+}
+
+// GetTitle returns the value of Title.
+func (s *WantedEpisodeItem) GetTitle() string {
+	return s.Title
+}
+
+// GetOverview returns the value of Overview.
+func (s *WantedEpisodeItem) GetOverview() string {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *WantedEpisodeItem) GetAirDate() string {
+	return s.AirDate
+}
+
+// GetAirDateUtc returns the value of AirDateUtc.
+func (s *WantedEpisodeItem) GetAirDateUtc() OptDateTime {
+	return s.AirDateUtc
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *WantedEpisodeItem) GetRuntime() int {
+	return s.Runtime
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *WantedEpisodeItem) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetAired returns the value of Aired.
+func (s *WantedEpisodeItem) GetAired() bool {
+	return s.Aired
+}
+
+// GetRemoved returns the value of Removed.
+func (s *WantedEpisodeItem) GetRemoved() bool {
+	return s.Removed
+}
+
+// GetSceneSeason returns the value of SceneSeason.
+func (s *WantedEpisodeItem) GetSceneSeason() OptInt {
+	return s.SceneSeason
+}
+
+// GetSceneEpisode returns the value of SceneEpisode.
+func (s *WantedEpisodeItem) GetSceneEpisode() OptInt {
+	return s.SceneEpisode
+}
+
+// GetSceneAbsolute returns the value of SceneAbsolute.
+func (s *WantedEpisodeItem) GetSceneAbsolute() OptInt {
+	return s.SceneAbsolute
+}
+
+// GetWanted returns the value of Wanted.
+func (s *WantedEpisodeItem) GetWanted() WantedEpisodeItemWanted {
+	return s.Wanted
+}
+
+// GetCutoffMet returns the value of CutoffMet.
+func (s *WantedEpisodeItem) GetCutoffMet() bool {
+	return s.CutoffMet
+}
+
+// GetFile returns the value of File.
+func (s *WantedEpisodeItem) GetFile() OptEpisodeFile {
+	return s.File
+}
+
+// GetDownload returns the value of Download.
+func (s *WantedEpisodeItem) GetDownload() OptMovieDownload {
+	return s.Download
+}
+
+// GetSeriesTitle returns the value of SeriesTitle.
+func (s *WantedEpisodeItem) GetSeriesTitle() string {
+	return s.SeriesTitle
+}
+
+// GetPoster returns the value of Poster.
+func (s *WantedEpisodeItem) GetPoster() string {
+	return s.Poster
+}
+
+// GetSeriesType returns the value of SeriesType.
+func (s *WantedEpisodeItem) GetSeriesType() SeriesType {
+	return s.SeriesType
+}
+
+// SetID sets the value of ID.
+func (s *WantedEpisodeItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *WantedEpisodeItem) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetSeriesId sets the value of SeriesId.
+func (s *WantedEpisodeItem) SetSeriesId(val int64) {
+	s.SeriesId = val
+}
+
+// SetSeasonId sets the value of SeasonId.
+func (s *WantedEpisodeItem) SetSeasonId(val int64) {
+	s.SeasonId = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *WantedEpisodeItem) SetSeasonNumber(val int) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *WantedEpisodeItem) SetEpisodeNumber(val int) {
+	s.EpisodeNumber = val
+}
+
+// SetAbsoluteNumber sets the value of AbsoluteNumber.
+func (s *WantedEpisodeItem) SetAbsoluteNumber(val int) {
+	s.AbsoluteNumber = val
+}
+
+// SetTitle sets the value of Title.
+func (s *WantedEpisodeItem) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *WantedEpisodeItem) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *WantedEpisodeItem) SetAirDate(val string) {
+	s.AirDate = val
+}
+
+// SetAirDateUtc sets the value of AirDateUtc.
+func (s *WantedEpisodeItem) SetAirDateUtc(val OptDateTime) {
+	s.AirDateUtc = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *WantedEpisodeItem) SetRuntime(val int) {
+	s.Runtime = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *WantedEpisodeItem) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetAired sets the value of Aired.
+func (s *WantedEpisodeItem) SetAired(val bool) {
+	s.Aired = val
+}
+
+// SetRemoved sets the value of Removed.
+func (s *WantedEpisodeItem) SetRemoved(val bool) {
+	s.Removed = val
+}
+
+// SetSceneSeason sets the value of SceneSeason.
+func (s *WantedEpisodeItem) SetSceneSeason(val OptInt) {
+	s.SceneSeason = val
+}
+
+// SetSceneEpisode sets the value of SceneEpisode.
+func (s *WantedEpisodeItem) SetSceneEpisode(val OptInt) {
+	s.SceneEpisode = val
+}
+
+// SetSceneAbsolute sets the value of SceneAbsolute.
+func (s *WantedEpisodeItem) SetSceneAbsolute(val OptInt) {
+	s.SceneAbsolute = val
+}
+
+// SetWanted sets the value of Wanted.
+func (s *WantedEpisodeItem) SetWanted(val WantedEpisodeItemWanted) {
+	s.Wanted = val
+}
+
+// SetCutoffMet sets the value of CutoffMet.
+func (s *WantedEpisodeItem) SetCutoffMet(val bool) {
+	s.CutoffMet = val
+}
+
+// SetFile sets the value of File.
+func (s *WantedEpisodeItem) SetFile(val OptEpisodeFile) {
+	s.File = val
+}
+
+// SetDownload sets the value of Download.
+func (s *WantedEpisodeItem) SetDownload(val OptMovieDownload) {
+	s.Download = val
+}
+
+// SetSeriesTitle sets the value of SeriesTitle.
+func (s *WantedEpisodeItem) SetSeriesTitle(val string) {
+	s.SeriesTitle = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *WantedEpisodeItem) SetPoster(val string) {
+	s.Poster = val
+}
+
+// SetSeriesType sets the value of SeriesType.
+func (s *WantedEpisodeItem) SetSeriesType(val SeriesType) {
+	s.SeriesType = val
+}
+
+type WantedEpisodeItemWanted string
+
+const (
+	WantedEpisodeItemWantedMissing WantedEpisodeItemWanted = "missing"
+	WantedEpisodeItemWantedUpgrade WantedEpisodeItemWanted = "upgrade"
+	WantedEpisodeItemWantedNone    WantedEpisodeItemWanted = "none"
+)
+
+// AllValues returns all WantedEpisodeItemWanted values.
+func (WantedEpisodeItemWanted) AllValues() []WantedEpisodeItemWanted {
+	return []WantedEpisodeItemWanted{
+		WantedEpisodeItemWantedMissing,
+		WantedEpisodeItemWantedUpgrade,
+		WantedEpisodeItemWantedNone,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s WantedEpisodeItemWanted) MarshalText() ([]byte, error) {
+	switch s {
+	case WantedEpisodeItemWantedMissing:
+		return []byte(s), nil
+	case WantedEpisodeItemWantedUpgrade:
+		return []byte(s), nil
+	case WantedEpisodeItemWantedNone:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *WantedEpisodeItemWanted) UnmarshalText(data []byte) error {
+	switch WantedEpisodeItemWanted(data) {
+	case WantedEpisodeItemWantedMissing:
+		*s = WantedEpisodeItemWantedMissing
+		return nil
+	case WantedEpisodeItemWantedUpgrade:
+		*s = WantedEpisodeItemWantedUpgrade
+		return nil
+	case WantedEpisodeItemWantedNone:
+		*s = WantedEpisodeItemWantedNone
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/WantedEpisodeList
+type WantedEpisodeList struct {
+	Total int                 `json:"total"`
+	Items []WantedEpisodeItem `json:"items"`
+}
+
+// GetTotal returns the value of Total.
+func (s *WantedEpisodeList) GetTotal() int {
+	return s.Total
+}
+
+// GetItems returns the value of Items.
+func (s *WantedEpisodeList) GetItems() []WantedEpisodeItem {
+	return s.Items
+}
+
+// SetTotal sets the value of Total.
+func (s *WantedEpisodeList) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetItems sets the value of Items.
+func (s *WantedEpisodeList) SetItems(val []WantedEpisodeItem) {
+	s.Items = val
 }
 
 // The item a release is decided for. Fields left out are not checked.

@@ -438,6 +438,304 @@ func (s *AddOptions) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *AddSeriesRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *AddSeriesRequest) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("rootFolderId")
+		e.Int64(s.RootFolderId)
+	}
+	{
+		e.FieldStart("qualityProfileId")
+		e.Int64(s.QualityProfileId)
+	}
+	{
+		if s.SeriesType.Set {
+			e.FieldStart("seriesType")
+			s.SeriesType.Encode(e)
+		}
+	}
+	{
+		if s.SeasonFolder.Set {
+			e.FieldStart("seasonFolder")
+			s.SeasonFolder.Encode(e)
+		}
+	}
+	{
+		if s.Monitor.Set {
+			e.FieldStart("monitor")
+			s.Monitor.Encode(e)
+		}
+	}
+	{
+		if s.MonitorNewSeasons.Set {
+			e.FieldStart("monitorNewSeasons")
+			s.MonitorNewSeasons.Encode(e)
+		}
+	}
+	{
+		if s.Monitored.Set {
+			e.FieldStart("monitored")
+			s.Monitored.Encode(e)
+		}
+	}
+	{
+		if s.Tags != nil {
+			e.FieldStart("tags")
+			e.ArrStart()
+			for _, elem := range s.Tags {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.SearchOnAdd.Set {
+			e.FieldStart("searchOnAdd")
+			s.SearchOnAdd.Encode(e)
+		}
+	}
+	{
+		if s.TmdbId.Set {
+			e.FieldStart("tmdbId")
+			s.TmdbId.Encode(e)
+		}
+	}
+	{
+		if s.TvdbId.Set {
+			e.FieldStart("tvdbId")
+			s.TvdbId.Encode(e)
+		}
+	}
+	{
+		if s.Path.Set {
+			e.FieldStart("path")
+			s.Path.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfAddSeriesRequest = [12]string{
+	0:  "rootFolderId",
+	1:  "qualityProfileId",
+	2:  "seriesType",
+	3:  "seasonFolder",
+	4:  "monitor",
+	5:  "monitorNewSeasons",
+	6:  "monitored",
+	7:  "tags",
+	8:  "searchOnAdd",
+	9:  "tmdbId",
+	10: "tvdbId",
+	11: "path",
+}
+
+// Decode decodes AddSeriesRequest from json.
+func (s *AddSeriesRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AddSeriesRequest to nil")
+	}
+	var requiredBitSet [2]uint8
+	s.setDefaults()
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "rootFolderId":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.RootFolderId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rootFolderId\"")
+			}
+		case "qualityProfileId":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.QualityProfileId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qualityProfileId\"")
+			}
+		case "seriesType":
+			if err := func() error {
+				s.SeriesType.Reset()
+				if err := s.SeriesType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesType\"")
+			}
+		case "seasonFolder":
+			if err := func() error {
+				s.SeasonFolder.Reset()
+				if err := s.SeasonFolder.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonFolder\"")
+			}
+		case "monitor":
+			if err := func() error {
+				s.Monitor.Reset()
+				if err := s.Monitor.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitor\"")
+			}
+		case "monitorNewSeasons":
+			if err := func() error {
+				s.MonitorNewSeasons.Reset()
+				if err := s.MonitorNewSeasons.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitorNewSeasons\"")
+			}
+		case "monitored":
+			if err := func() error {
+				s.Monitored.Reset()
+				if err := s.Monitored.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "tags":
+			if err := func() error {
+				s.Tags = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Tags = append(s.Tags, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tags\"")
+			}
+		case "searchOnAdd":
+			if err := func() error {
+				s.SearchOnAdd.Reset()
+				if err := s.SearchOnAdd.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"searchOnAdd\"")
+			}
+		case "tmdbId":
+			if err := func() error {
+				s.TmdbId.Reset()
+				if err := s.TmdbId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdbId\"")
+			}
+		case "tvdbId":
+			if err := func() error {
+				s.TvdbId.Reset()
+				if err := s.TvdbId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbId\"")
+			}
+		case "path":
+			if err := func() error {
+				s.Path.Reset()
+				if err := s.Path.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode AddSeriesRequest")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b00000011,
+		0b00000000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfAddSeriesRequest) {
+					name = jsonFieldsNameOfAddSeriesRequest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AddSeriesRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AddSeriesRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *ApiKey) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -1266,8 +1564,52 @@ func (s *CalendarEntry) encodeFields(e *jx.Encoder) {
 		s.Kind.Encode(e)
 	}
 	{
-		e.FieldStart("movieId")
-		e.Int64(s.MovieId)
+		if s.MovieId.Set {
+			e.FieldStart("movieId")
+			s.MovieId.Encode(e)
+		}
+	}
+	{
+		if s.SeriesId.Set {
+			e.FieldStart("seriesId")
+			s.SeriesId.Encode(e)
+		}
+	}
+	{
+		if s.EpisodeId.Set {
+			e.FieldStart("episodeId")
+			s.EpisodeId.Encode(e)
+		}
+	}
+	{
+		if s.SeasonNumber.Set {
+			e.FieldStart("seasonNumber")
+			s.SeasonNumber.Encode(e)
+		}
+	}
+	{
+		if s.EpisodeNumber.Set {
+			e.FieldStart("episodeNumber")
+			s.EpisodeNumber.Encode(e)
+		}
+	}
+	{
+		if s.EpisodeTitle.Set {
+			e.FieldStart("episodeTitle")
+			s.EpisodeTitle.Encode(e)
+		}
+	}
+	{
+		if s.AirDateUtc.Set {
+			e.FieldStart("airDateUtc")
+			s.AirDateUtc.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.Network.Set {
+			e.FieldStart("network")
+			s.Network.Encode(e)
+		}
 	}
 	{
 		e.FieldStart("title")
@@ -1291,15 +1633,22 @@ func (s *CalendarEntry) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCalendarEntry = [8]string{
-	0: "date",
-	1: "kind",
-	2: "movieId",
-	3: "title",
-	4: "year",
-	5: "hasFile",
-	6: "monitored",
-	7: "poster",
+var jsonFieldsNameOfCalendarEntry = [15]string{
+	0:  "date",
+	1:  "kind",
+	2:  "movieId",
+	3:  "seriesId",
+	4:  "episodeId",
+	5:  "seasonNumber",
+	6:  "episodeNumber",
+	7:  "episodeTitle",
+	8:  "airDateUtc",
+	9:  "network",
+	10: "title",
+	11: "year",
+	12: "hasFile",
+	13: "monitored",
+	14: "poster",
 }
 
 // Decode decodes CalendarEntry from json.
@@ -1307,7 +1656,7 @@ func (s *CalendarEntry) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode CalendarEntry to nil")
 	}
-	var requiredBitSet [1]uint8
+	var requiredBitSet [2]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -1334,19 +1683,87 @@ func (s *CalendarEntry) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"kind\"")
 			}
 		case "movieId":
-			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				v, err := d.Int64()
-				s.MovieId = int64(v)
-				if err != nil {
+				s.MovieId.Reset()
+				if err := s.MovieId.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"movieId\"")
 			}
+		case "seriesId":
+			if err := func() error {
+				s.SeriesId.Reset()
+				if err := s.SeriesId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesId\"")
+			}
+		case "episodeId":
+			if err := func() error {
+				s.EpisodeId.Reset()
+				if err := s.EpisodeId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeId\"")
+			}
+		case "seasonNumber":
+			if err := func() error {
+				s.SeasonNumber.Reset()
+				if err := s.SeasonNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonNumber\"")
+			}
+		case "episodeNumber":
+			if err := func() error {
+				s.EpisodeNumber.Reset()
+				if err := s.EpisodeNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeNumber\"")
+			}
+		case "episodeTitle":
+			if err := func() error {
+				s.EpisodeTitle.Reset()
+				if err := s.EpisodeTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeTitle\"")
+			}
+		case "airDateUtc":
+			if err := func() error {
+				s.AirDateUtc.Reset()
+				if err := s.AirDateUtc.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"airDateUtc\"")
+			}
+		case "network":
+			if err := func() error {
+				s.Network.Reset()
+				if err := s.Network.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"network\"")
+			}
 		case "title":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
 				v, err := d.Str()
 				s.Title = string(v)
@@ -1358,7 +1775,7 @@ func (s *CalendarEntry) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"title\"")
 			}
 		case "year":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[1] |= 1 << 3
 			if err := func() error {
 				v, err := d.Int()
 				s.Year = int(v)
@@ -1370,7 +1787,7 @@ func (s *CalendarEntry) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"year\"")
 			}
 		case "hasFile":
-			requiredBitSet[0] |= 1 << 5
+			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				v, err := d.Bool()
 				s.HasFile = bool(v)
@@ -1382,7 +1799,7 @@ func (s *CalendarEntry) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"hasFile\"")
 			}
 		case "monitored":
-			requiredBitSet[0] |= 1 << 6
+			requiredBitSet[1] |= 1 << 5
 			if err := func() error {
 				v, err := d.Bool()
 				s.Monitored = bool(v)
@@ -1394,7 +1811,7 @@ func (s *CalendarEntry) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"monitored\"")
 			}
 		case "poster":
-			requiredBitSet[0] |= 1 << 7
+			requiredBitSet[1] |= 1 << 6
 			if err := func() error {
 				v, err := d.Str()
 				s.Poster = string(v)
@@ -1414,8 +1831,9 @@ func (s *CalendarEntry) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b11111111,
+	for i, mask := range [2]uint8{
+		0b00000011,
+		0b01111100,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -1483,6 +1901,8 @@ func (s *CalendarEntryKind) Decode(d *jx.Decoder) error {
 		*s = CalendarEntryKindDigital
 	case CalendarEntryKindPhysical:
 		*s = CalendarEntryKindPhysical
+	case CalendarEntryKindEpisode:
+		*s = CalendarEntryKindEpisode
 	default:
 		*s = CalendarEntryKind(v)
 	}
@@ -8157,6 +8577,1208 @@ func (s *DownloadStatus) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *Episode) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *Episode) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int64(s.ID)
+	}
+	{
+		e.FieldStart("itemRef")
+		e.Str(s.ItemRef)
+	}
+	{
+		e.FieldStart("seriesId")
+		e.Int64(s.SeriesId)
+	}
+	{
+		e.FieldStart("seasonId")
+		e.Int64(s.SeasonId)
+	}
+	{
+		e.FieldStart("seasonNumber")
+		e.Int(s.SeasonNumber)
+	}
+	{
+		e.FieldStart("episodeNumber")
+		e.Int(s.EpisodeNumber)
+	}
+	{
+		e.FieldStart("absoluteNumber")
+		e.Int(s.AbsoluteNumber)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
+		e.FieldStart("overview")
+		e.Str(s.Overview)
+	}
+	{
+		e.FieldStart("airDate")
+		e.Str(s.AirDate)
+	}
+	{
+		if s.AirDateUtc.Set {
+			e.FieldStart("airDateUtc")
+			s.AirDateUtc.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		e.FieldStart("runtime")
+		e.Int(s.Runtime)
+	}
+	{
+		e.FieldStart("monitored")
+		e.Bool(s.Monitored)
+	}
+	{
+		e.FieldStart("aired")
+		e.Bool(s.Aired)
+	}
+	{
+		e.FieldStart("removed")
+		e.Bool(s.Removed)
+	}
+	{
+		if s.SceneSeason.Set {
+			e.FieldStart("sceneSeason")
+			s.SceneSeason.Encode(e)
+		}
+	}
+	{
+		if s.SceneEpisode.Set {
+			e.FieldStart("sceneEpisode")
+			s.SceneEpisode.Encode(e)
+		}
+	}
+	{
+		if s.SceneAbsolute.Set {
+			e.FieldStart("sceneAbsolute")
+			s.SceneAbsolute.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("wanted")
+		s.Wanted.Encode(e)
+	}
+	{
+		e.FieldStart("cutoffMet")
+		e.Bool(s.CutoffMet)
+	}
+	{
+		if s.File.Set {
+			e.FieldStart("file")
+			s.File.Encode(e)
+		}
+	}
+	{
+		if s.Download.Set {
+			e.FieldStart("download")
+			s.Download.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfEpisode = [22]string{
+	0:  "id",
+	1:  "itemRef",
+	2:  "seriesId",
+	3:  "seasonId",
+	4:  "seasonNumber",
+	5:  "episodeNumber",
+	6:  "absoluteNumber",
+	7:  "title",
+	8:  "overview",
+	9:  "airDate",
+	10: "airDateUtc",
+	11: "runtime",
+	12: "monitored",
+	13: "aired",
+	14: "removed",
+	15: "sceneSeason",
+	16: "sceneEpisode",
+	17: "sceneAbsolute",
+	18: "wanted",
+	19: "cutoffMet",
+	20: "file",
+	21: "download",
+}
+
+// Decode decodes Episode from json.
+func (s *Episode) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode Episode to nil")
+	}
+	var requiredBitSet [3]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.ID = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "itemRef":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.ItemRef = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"itemRef\"")
+			}
+		case "seriesId":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int64()
+				s.SeriesId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesId\"")
+			}
+		case "seasonId":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int64()
+				s.SeasonId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonId\"")
+			}
+		case "seasonNumber":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int()
+				s.SeasonNumber = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonNumber\"")
+			}
+		case "episodeNumber":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.EpisodeNumber = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeNumber\"")
+			}
+		case "absoluteNumber":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int()
+				s.AbsoluteNumber = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"absoluteNumber\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "overview":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Overview = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "airDate":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.AirDate = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"airDate\"")
+			}
+		case "airDateUtc":
+			if err := func() error {
+				s.AirDateUtc.Reset()
+				if err := s.AirDateUtc.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"airDateUtc\"")
+			}
+		case "runtime":
+			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int()
+				s.Runtime = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "monitored":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				v, err := d.Bool()
+				s.Monitored = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "aired":
+			requiredBitSet[1] |= 1 << 5
+			if err := func() error {
+				v, err := d.Bool()
+				s.Aired = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"aired\"")
+			}
+		case "removed":
+			requiredBitSet[1] |= 1 << 6
+			if err := func() error {
+				v, err := d.Bool()
+				s.Removed = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"removed\"")
+			}
+		case "sceneSeason":
+			if err := func() error {
+				s.SceneSeason.Reset()
+				if err := s.SceneSeason.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneSeason\"")
+			}
+		case "sceneEpisode":
+			if err := func() error {
+				s.SceneEpisode.Reset()
+				if err := s.SceneEpisode.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneEpisode\"")
+			}
+		case "sceneAbsolute":
+			if err := func() error {
+				s.SceneAbsolute.Reset()
+				if err := s.SceneAbsolute.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneAbsolute\"")
+			}
+		case "wanted":
+			requiredBitSet[2] |= 1 << 2
+			if err := func() error {
+				if err := s.Wanted.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"wanted\"")
+			}
+		case "cutoffMet":
+			requiredBitSet[2] |= 1 << 3
+			if err := func() error {
+				v, err := d.Bool()
+				s.CutoffMet = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"cutoffMet\"")
+			}
+		case "file":
+			if err := func() error {
+				s.File.Reset()
+				if err := s.File.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"file\"")
+			}
+		case "download":
+			if err := func() error {
+				s.Download.Reset()
+				if err := s.Download.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"download\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode Episode")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [3]uint8{
+		0b11111111,
+		0b01111011,
+		0b00001100,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfEpisode) {
+					name = jsonFieldsNameOfEpisode[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *Episode) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *Episode) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *EpisodeBrief) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *EpisodeBrief) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int64(s.ID)
+	}
+	{
+		e.FieldStart("seasonNumber")
+		e.Int(s.SeasonNumber)
+	}
+	{
+		e.FieldStart("episodeNumber")
+		e.Int(s.EpisodeNumber)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+}
+
+var jsonFieldsNameOfEpisodeBrief = [4]string{
+	0: "id",
+	1: "seasonNumber",
+	2: "episodeNumber",
+	3: "title",
+}
+
+// Decode decodes EpisodeBrief from json.
+func (s *EpisodeBrief) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeBrief to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.ID = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "seasonNumber":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int()
+				s.SeasonNumber = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonNumber\"")
+			}
+		case "episodeNumber":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int()
+				s.EpisodeNumber = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeNumber\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EpisodeBrief")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00001111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfEpisodeBrief) {
+					name = jsonFieldsNameOfEpisodeBrief[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *EpisodeBrief) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeBrief) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *EpisodeFile) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *EpisodeFile) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int64(s.ID)
+	}
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		e.FieldStart("sizeBytes")
+		e.Int64(s.SizeBytes)
+	}
+	{
+		e.FieldStart("quality")
+		s.Quality.Encode(e)
+	}
+	{
+		e.FieldStart("revision")
+		e.Int(s.Revision)
+	}
+	{
+		e.FieldStart("customFormats")
+		e.ArrStart()
+		for _, elem := range s.CustomFormats {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("score")
+		e.Int(s.Score)
+	}
+	{
+		e.FieldStart("releaseGroup")
+		e.Str(s.ReleaseGroup)
+	}
+	{
+		e.FieldStart("languages")
+		e.ArrStart()
+		for _, elem := range s.Languages {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("mediaInfo")
+		s.MediaInfo.Encode(e)
+	}
+	{
+		e.FieldStart("sceneName")
+		e.Str(s.SceneName)
+	}
+	{
+		if s.DownloadId.Set {
+			e.FieldStart("downloadId")
+			s.DownloadId.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("addedAt")
+		json.EncodeDateTime(e, s.AddedAt)
+	}
+}
+
+var jsonFieldsNameOfEpisodeFile = [13]string{
+	0:  "id",
+	1:  "path",
+	2:  "sizeBytes",
+	3:  "quality",
+	4:  "revision",
+	5:  "customFormats",
+	6:  "score",
+	7:  "releaseGroup",
+	8:  "languages",
+	9:  "mediaInfo",
+	10: "sceneName",
+	11: "downloadId",
+	12: "addedAt",
+}
+
+// Decode decodes EpisodeFile from json.
+func (s *EpisodeFile) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeFile to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.ID = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "path":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "sizeBytes":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int64()
+				s.SizeBytes = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sizeBytes\"")
+			}
+		case "quality":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				if err := s.Quality.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"quality\"")
+			}
+		case "revision":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int()
+				s.Revision = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"revision\"")
+			}
+		case "customFormats":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				s.CustomFormats = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.CustomFormats = append(s.CustomFormats, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"customFormats\"")
+			}
+		case "score":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int()
+				s.Score = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"score\"")
+			}
+		case "releaseGroup":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.ReleaseGroup = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"releaseGroup\"")
+			}
+		case "languages":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				s.Languages = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Languages = append(s.Languages, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"languages\"")
+			}
+		case "mediaInfo":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				if err := s.MediaInfo.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mediaInfo\"")
+			}
+		case "sceneName":
+			requiredBitSet[1] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.SceneName = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneName\"")
+			}
+		case "downloadId":
+			if err := func() error {
+				s.DownloadId.Reset()
+				if err := s.DownloadId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"downloadId\"")
+			}
+		case "addedAt":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.AddedAt = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"addedAt\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EpisodeFile")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b11111111,
+		0b00010111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfEpisodeFile) {
+					name = jsonFieldsNameOfEpisodeFile[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *EpisodeFile) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeFile) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *EpisodeIdsRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *EpisodeIdsRequest) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("episodeIds")
+		e.ArrStart()
+		for _, elem := range s.EpisodeIds {
+			e.Int64(elem)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfEpisodeIdsRequest = [1]string{
+	0: "episodeIds",
+}
+
+// Decode decodes EpisodeIdsRequest from json.
+func (s *EpisodeIdsRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeIdsRequest to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "episodeIds":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				s.EpisodeIds = make([]int64, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int64
+					v, err := d.Int64()
+					elem = int64(v)
+					if err != nil {
+						return err
+					}
+					s.EpisodeIds = append(s.EpisodeIds, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeIds\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EpisodeIdsRequest")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfEpisodeIdsRequest) {
+					name = jsonFieldsNameOfEpisodeIdsRequest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *EpisodeIdsRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeIdsRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *EpisodeUpdate) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *EpisodeUpdate) encodeFields(e *jx.Encoder) {
+	{
+		if s.Monitored.Set {
+			e.FieldStart("monitored")
+			s.Monitored.Encode(e)
+		}
+	}
+	{
+		if s.SceneSeason.Set {
+			e.FieldStart("sceneSeason")
+			s.SceneSeason.Encode(e)
+		}
+	}
+	{
+		if s.SceneEpisode.Set {
+			e.FieldStart("sceneEpisode")
+			s.SceneEpisode.Encode(e)
+		}
+	}
+	{
+		if s.SceneAbsolute.Set {
+			e.FieldStart("sceneAbsolute")
+			s.SceneAbsolute.Encode(e)
+		}
+	}
+	{
+		if s.ClearScene.Set {
+			e.FieldStart("clearScene")
+			s.ClearScene.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfEpisodeUpdate = [5]string{
+	0: "monitored",
+	1: "sceneSeason",
+	2: "sceneEpisode",
+	3: "sceneAbsolute",
+	4: "clearScene",
+}
+
+// Decode decodes EpisodeUpdate from json.
+func (s *EpisodeUpdate) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeUpdate to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "monitored":
+			if err := func() error {
+				s.Monitored.Reset()
+				if err := s.Monitored.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "sceneSeason":
+			if err := func() error {
+				s.SceneSeason.Reset()
+				if err := s.SceneSeason.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneSeason\"")
+			}
+		case "sceneEpisode":
+			if err := func() error {
+				s.SceneEpisode.Reset()
+				if err := s.SceneEpisode.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneEpisode\"")
+			}
+		case "sceneAbsolute":
+			if err := func() error {
+				s.SceneAbsolute.Reset()
+				if err := s.SceneAbsolute.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneAbsolute\"")
+			}
+		case "clearScene":
+			if err := func() error {
+				s.ClearScene.Reset()
+				if err := s.ClearScene.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"clearScene\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EpisodeUpdate")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *EpisodeUpdate) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeUpdate) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EpisodeWanted as json.
+func (s EpisodeWanted) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes EpisodeWanted from json.
+func (s *EpisodeWanted) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeWanted to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch EpisodeWanted(v) {
+	case EpisodeWantedMissing:
+		*s = EpisodeWantedMissing
+	case EpisodeWantedUpgrade:
+		*s = EpisodeWantedUpgrade
+	case EpisodeWantedNone:
+		*s = EpisodeWantedNone
+	default:
+		*s = EpisodeWanted(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EpisodeWanted) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeWanted) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *Error) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -8773,6 +10395,231 @@ func (s *ExistingFolder) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ExistingFolder) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *ExistingSeriesFolder) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *ExistingSeriesFolder) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		e.FieldStart("name")
+		e.Str(s.Name)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
+		e.FieldStart("year")
+		e.Int(s.Year)
+	}
+	{
+		e.FieldStart("videos")
+		e.Int(s.Videos)
+	}
+	{
+		if s.Match.Set {
+			e.FieldStart("match")
+			s.Match.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("candidates")
+		e.ArrStart()
+		for _, elem := range s.Candidates {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
+		if s.Error.Set {
+			e.FieldStart("error")
+			s.Error.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfExistingSeriesFolder = [8]string{
+	0: "path",
+	1: "name",
+	2: "title",
+	3: "year",
+	4: "videos",
+	5: "match",
+	6: "candidates",
+	7: "error",
+}
+
+// Decode decodes ExistingSeriesFolder from json.
+func (s *ExistingSeriesFolder) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ExistingSeriesFolder to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "path":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "name":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Name = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "year":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int()
+				s.Year = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"year\"")
+			}
+		case "videos":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int()
+				s.Videos = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"videos\"")
+			}
+		case "match":
+			if err := func() error {
+				s.Match.Reset()
+				if err := s.Match.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"match\"")
+			}
+		case "candidates":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				s.Candidates = make([]SeriesLookup, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SeriesLookup
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Candidates = append(s.Candidates, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"candidates\"")
+			}
+		case "error":
+			if err := func() error {
+				s.Error.Reset()
+				if err := s.Error.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"error\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode ExistingSeriesFolder")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b01011111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfExistingSeriesFolder) {
+					name = jsonFieldsNameOfExistingSeriesFolder[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *ExistingSeriesFolder) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ExistingSeriesFolder) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -10766,6 +12613,557 @@ func (s *ImportExistingResult) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ImportExistingResult) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *ImportExistingSeriesRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *ImportExistingSeriesRequest) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("items")
+		e.ArrStart()
+		for _, elem := range s.Items {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfImportExistingSeriesRequest = [1]string{
+	0: "items",
+}
+
+// Decode decodes ImportExistingSeriesRequest from json.
+func (s *ImportExistingSeriesRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ImportExistingSeriesRequest to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "items":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				s.Items = make([]ImportExistingSeriesRequestItemsItem, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem ImportExistingSeriesRequestItemsItem
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Items = append(s.Items, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"items\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode ImportExistingSeriesRequest")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfImportExistingSeriesRequest) {
+					name = jsonFieldsNameOfImportExistingSeriesRequest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *ImportExistingSeriesRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ImportExistingSeriesRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *ImportExistingSeriesRequestItemsItem) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *ImportExistingSeriesRequestItemsItem) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("rootFolderId")
+		e.Int64(s.RootFolderId)
+	}
+	{
+		e.FieldStart("qualityProfileId")
+		e.Int64(s.QualityProfileId)
+	}
+	{
+		if s.SeriesType.Set {
+			e.FieldStart("seriesType")
+			s.SeriesType.Encode(e)
+		}
+	}
+	{
+		if s.SeasonFolder.Set {
+			e.FieldStart("seasonFolder")
+			s.SeasonFolder.Encode(e)
+		}
+	}
+	{
+		if s.Monitor.Set {
+			e.FieldStart("monitor")
+			s.Monitor.Encode(e)
+		}
+	}
+	{
+		if s.MonitorNewSeasons.Set {
+			e.FieldStart("monitorNewSeasons")
+			s.MonitorNewSeasons.Encode(e)
+		}
+	}
+	{
+		if s.Monitored.Set {
+			e.FieldStart("monitored")
+			s.Monitored.Encode(e)
+		}
+	}
+	{
+		if s.Tags != nil {
+			e.FieldStart("tags")
+			e.ArrStart()
+			for _, elem := range s.Tags {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.SearchOnAdd.Set {
+			e.FieldStart("searchOnAdd")
+			s.SearchOnAdd.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		if s.TmdbId.Set {
+			e.FieldStart("tmdbId")
+			s.TmdbId.Encode(e)
+		}
+	}
+	{
+		if s.TvdbId.Set {
+			e.FieldStart("tvdbId")
+			s.TvdbId.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfImportExistingSeriesRequestItemsItem = [12]string{
+	0:  "rootFolderId",
+	1:  "qualityProfileId",
+	2:  "seriesType",
+	3:  "seasonFolder",
+	4:  "monitor",
+	5:  "monitorNewSeasons",
+	6:  "monitored",
+	7:  "tags",
+	8:  "searchOnAdd",
+	9:  "path",
+	10: "tmdbId",
+	11: "tvdbId",
+}
+
+// Decode decodes ImportExistingSeriesRequestItemsItem from json.
+func (s *ImportExistingSeriesRequestItemsItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ImportExistingSeriesRequestItemsItem to nil")
+	}
+	var requiredBitSet [2]uint8
+	s.setDefaults()
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "rootFolderId":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.RootFolderId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rootFolderId\"")
+			}
+		case "qualityProfileId":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.QualityProfileId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qualityProfileId\"")
+			}
+		case "seriesType":
+			if err := func() error {
+				s.SeriesType.Reset()
+				if err := s.SeriesType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesType\"")
+			}
+		case "seasonFolder":
+			if err := func() error {
+				s.SeasonFolder.Reset()
+				if err := s.SeasonFolder.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonFolder\"")
+			}
+		case "monitor":
+			if err := func() error {
+				s.Monitor.Reset()
+				if err := s.Monitor.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitor\"")
+			}
+		case "monitorNewSeasons":
+			if err := func() error {
+				s.MonitorNewSeasons.Reset()
+				if err := s.MonitorNewSeasons.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitorNewSeasons\"")
+			}
+		case "monitored":
+			if err := func() error {
+				s.Monitored.Reset()
+				if err := s.Monitored.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "tags":
+			if err := func() error {
+				s.Tags = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Tags = append(s.Tags, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tags\"")
+			}
+		case "searchOnAdd":
+			if err := func() error {
+				s.SearchOnAdd.Reset()
+				if err := s.SearchOnAdd.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"searchOnAdd\"")
+			}
+		case "path":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "tmdbId":
+			if err := func() error {
+				s.TmdbId.Reset()
+				if err := s.TmdbId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdbId\"")
+			}
+		case "tvdbId":
+			if err := func() error {
+				s.TvdbId.Reset()
+				if err := s.TvdbId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbId\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode ImportExistingSeriesRequestItemsItem")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b00000011,
+		0b00000010,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfImportExistingSeriesRequestItemsItem) {
+					name = jsonFieldsNameOfImportExistingSeriesRequestItemsItem[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *ImportExistingSeriesRequestItemsItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ImportExistingSeriesRequestItemsItem) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *ImportExistingSeriesResult) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *ImportExistingSeriesResult) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		if s.Series.Set {
+			e.FieldStart("series")
+			s.Series.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("episodeFiles")
+		e.Int(s.EpisodeFiles)
+	}
+	{
+		if s.Error.Set {
+			e.FieldStart("error")
+			s.Error.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfImportExistingSeriesResult = [4]string{
+	0: "path",
+	1: "series",
+	2: "episodeFiles",
+	3: "error",
+}
+
+// Decode decodes ImportExistingSeriesResult from json.
+func (s *ImportExistingSeriesResult) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ImportExistingSeriesResult to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "path":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "series":
+			if err := func() error {
+				s.Series.Reset()
+				if err := s.Series.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"series\"")
+			}
+		case "episodeFiles":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int()
+				s.EpisodeFiles = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeFiles\"")
+			}
+		case "error":
+			if err := func() error {
+				s.Error.Reset()
+				if err := s.Error.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"error\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode ImportExistingSeriesResult")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000101,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfImportExistingSeriesResult) {
+					name = jsonFieldsNameOfImportExistingSeriesResult[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *ImportExistingSeriesResult) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ImportExistingSeriesResult) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -18149,12 +20547,27 @@ func (s *MetadataSettings) encodeFields(e *jx.Encoder) {
 		e.FieldStart("region")
 		e.Str(s.Region)
 	}
+	{
+		e.FieldStart("tvdbApiKey")
+		s.TvdbApiKey.Encode(e)
+	}
+	{
+		e.FieldStart("tvdbPin")
+		s.TvdbPin.Encode(e)
+	}
+	{
+		e.FieldStart("seriesProvider")
+		s.SeriesProvider.Encode(e)
+	}
 }
 
-var jsonFieldsNameOfMetadataSettings = [3]string{
+var jsonFieldsNameOfMetadataSettings = [6]string{
 	0: "tmdbApiKey",
 	1: "language",
 	2: "region",
+	3: "tvdbApiKey",
+	4: "tvdbPin",
+	5: "seriesProvider",
 }
 
 // Decode decodes MetadataSettings from json.
@@ -18200,6 +20613,36 @@ func (s *MetadataSettings) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"region\"")
 			}
+		case "tvdbApiKey":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				if err := s.TvdbApiKey.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbApiKey\"")
+			}
+		case "tvdbPin":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				if err := s.TvdbPin.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbPin\"")
+			}
+		case "seriesProvider":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				if err := s.SeriesProvider.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesProvider\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -18210,7 +20653,7 @@ func (s *MetadataSettings) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000111,
+		0b00111111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -18272,6 +20715,24 @@ func (s *MetadataSettingsInput) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.TvdbApiKey.Set {
+			e.FieldStart("tvdbApiKey")
+			s.TvdbApiKey.Encode(e)
+		}
+	}
+	{
+		if s.TvdbPin.Set {
+			e.FieldStart("tvdbPin")
+			s.TvdbPin.Encode(e)
+		}
+	}
+	{
+		if s.SeriesProvider.Set {
+			e.FieldStart("seriesProvider")
+			s.SeriesProvider.Encode(e)
+		}
+	}
+	{
 		if s.Language.Set {
 			e.FieldStart("language")
 			s.Language.Encode(e)
@@ -18285,10 +20746,13 @@ func (s *MetadataSettingsInput) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfMetadataSettingsInput = [3]string{
+var jsonFieldsNameOfMetadataSettingsInput = [6]string{
 	0: "tmdbApiKey",
-	1: "language",
-	2: "region",
+	1: "tvdbApiKey",
+	2: "tvdbPin",
+	3: "seriesProvider",
+	4: "language",
+	5: "region",
 }
 
 // Decode decodes MetadataSettingsInput from json.
@@ -18308,6 +20772,36 @@ func (s *MetadataSettingsInput) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"tmdbApiKey\"")
+			}
+		case "tvdbApiKey":
+			if err := func() error {
+				s.TvdbApiKey.Reset()
+				if err := s.TvdbApiKey.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbApiKey\"")
+			}
+		case "tvdbPin":
+			if err := func() error {
+				s.TvdbPin.Reset()
+				if err := s.TvdbPin.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbPin\"")
+			}
+		case "seriesProvider":
+			if err := func() error {
+				s.SeriesProvider.Reset()
+				if err := s.SeriesProvider.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesProvider\"")
 			}
 		case "language":
 			if err := func() error {
@@ -18353,6 +20847,86 @@ func (s *MetadataSettingsInput) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes MetadataSettingsInputSeriesProvider as json.
+func (s MetadataSettingsInputSeriesProvider) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes MetadataSettingsInputSeriesProvider from json.
+func (s *MetadataSettingsInputSeriesProvider) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataSettingsInputSeriesProvider to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch MetadataSettingsInputSeriesProvider(v) {
+	case MetadataSettingsInputSeriesProviderTmdb:
+		*s = MetadataSettingsInputSeriesProviderTmdb
+	case MetadataSettingsInputSeriesProviderTvdb:
+		*s = MetadataSettingsInputSeriesProviderTvdb
+	default:
+		*s = MetadataSettingsInputSeriesProvider(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MetadataSettingsInputSeriesProvider) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataSettingsInputSeriesProvider) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MetadataSettingsSeriesProvider as json.
+func (s MetadataSettingsSeriesProvider) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes MetadataSettingsSeriesProvider from json.
+func (s *MetadataSettingsSeriesProvider) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataSettingsSeriesProvider to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch MetadataSettingsSeriesProvider(v) {
+	case MetadataSettingsSeriesProviderTmdb:
+		*s = MetadataSettingsSeriesProviderTmdb
+	case MetadataSettingsSeriesProviderTvdb:
+		*s = MetadataSettingsSeriesProviderTvdb
+	default:
+		*s = MetadataSettingsSeriesProvider(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MetadataSettingsSeriesProvider) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataSettingsSeriesProvider) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes MinimumAvailability as json.
 func (s MinimumAvailability) Encode(e *jx.Encoder) {
 	e.Str(string(s))
@@ -18391,6 +20965,223 @@ func (s MinimumAvailability) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *MinimumAvailability) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MonitorEpisodesRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MonitorEpisodesRequest) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("episodeIds")
+		e.ArrStart()
+		for _, elem := range s.EpisodeIds {
+			e.Int64(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("monitored")
+		e.Bool(s.Monitored)
+	}
+}
+
+var jsonFieldsNameOfMonitorEpisodesRequest = [2]string{
+	0: "episodeIds",
+	1: "monitored",
+}
+
+// Decode decodes MonitorEpisodesRequest from json.
+func (s *MonitorEpisodesRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MonitorEpisodesRequest to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "episodeIds":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				s.EpisodeIds = make([]int64, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int64
+					v, err := d.Int64()
+					elem = int64(v)
+					if err != nil {
+						return err
+					}
+					s.EpisodeIds = append(s.EpisodeIds, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeIds\"")
+			}
+		case "monitored":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Bool()
+				s.Monitored = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MonitorEpisodesRequest")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfMonitorEpisodesRequest) {
+					name = jsonFieldsNameOfMonitorEpisodesRequest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MonitorEpisodesRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MonitorEpisodesRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MonitorNewSeasons as json.
+func (s MonitorNewSeasons) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes MonitorNewSeasons from json.
+func (s *MonitorNewSeasons) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MonitorNewSeasons to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch MonitorNewSeasons(v) {
+	case MonitorNewSeasonsAll:
+		*s = MonitorNewSeasonsAll
+	case MonitorNewSeasonsNone:
+		*s = MonitorNewSeasonsNone
+	default:
+		*s = MonitorNewSeasons(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MonitorNewSeasons) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MonitorNewSeasons) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MonitorOption as json.
+func (s MonitorOption) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes MonitorOption from json.
+func (s *MonitorOption) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MonitorOption to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch MonitorOption(v) {
+	case MonitorOptionAll:
+		*s = MonitorOptionAll
+	case MonitorOptionFuture:
+		*s = MonitorOptionFuture
+	case MonitorOptionMissing:
+		*s = MonitorOptionMissing
+	case MonitorOptionExisting:
+		*s = MonitorOptionExisting
+	case MonitorOptionFirstSeason:
+		*s = MonitorOptionFirstSeason
+	case MonitorOptionLatestSeason:
+		*s = MonitorOptionLatestSeason
+	case MonitorOptionPilot:
+		*s = MonitorOptionPilot
+	case MonitorOptionNone:
+		*s = MonitorOptionNone
+	default:
+		*s = MonitorOption(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MonitorOption) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MonitorOption) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -20590,6 +23381,54 @@ func (s *MovieUpdate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes MultiEpisodeStyle as json.
+func (s MultiEpisodeStyle) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes MultiEpisodeStyle from json.
+func (s *MultiEpisodeStyle) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MultiEpisodeStyle to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch MultiEpisodeStyle(v) {
+	case MultiEpisodeStyleExtend:
+		*s = MultiEpisodeStyleExtend
+	case MultiEpisodeStyleDuplicate:
+		*s = MultiEpisodeStyleDuplicate
+	case MultiEpisodeStyleRepeat:
+		*s = MultiEpisodeStyleRepeat
+	case MultiEpisodeStyleScene:
+		*s = MultiEpisodeStyleScene
+	case MultiEpisodeStyleRange:
+		*s = MultiEpisodeStyleRange
+	case MultiEpisodeStylePrefixedRange:
+		*s = MultiEpisodeStylePrefixedRange
+	default:
+		*s = MultiEpisodeStyle(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MultiEpisodeStyle) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MultiEpisodeStyle) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode implements json.Marshaler.
 func (s *NamingPreview) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -21341,6 +24180,39 @@ func (s *OptDownloadProtocol) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes EpisodeFile as json.
+func (o OptEpisodeFile) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes EpisodeFile from json.
+func (o *OptEpisodeFile) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEpisodeFile to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEpisodeFile) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEpisodeFile) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes Error as json.
 func (o OptError) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -21776,6 +24648,39 @@ func (s *OptMediaKind) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes MetadataSettingsInputSeriesProvider as json.
+func (o OptMetadataSettingsInputSeriesProvider) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes MetadataSettingsInputSeriesProvider from json.
+func (o *OptMetadataSettingsInputSeriesProvider) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMetadataSettingsInputSeriesProvider to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMetadataSettingsInputSeriesProvider) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMetadataSettingsInputSeriesProvider) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes MinimumAvailability as json.
 func (o OptMinimumAvailability) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -21805,6 +24710,72 @@ func (s OptMinimumAvailability) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptMinimumAvailability) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MonitorNewSeasons as json.
+func (o OptMonitorNewSeasons) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes MonitorNewSeasons from json.
+func (o *OptMonitorNewSeasons) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMonitorNewSeasons to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMonitorNewSeasons) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMonitorNewSeasons) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MonitorOption as json.
+func (o OptMonitorOption) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes MonitorOption from json.
+func (o *OptMonitorOption) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMonitorOption to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMonitorOption) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMonitorOption) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -22268,6 +25239,105 @@ func (s OptSearchType) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptSearchType) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes Series as json.
+func (o OptSeries) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes Series from json.
+func (o *OptSeries) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSeries to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSeries) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSeries) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeriesLookup as json.
+func (o OptSeriesLookup) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SeriesLookup from json.
+func (o *OptSeriesLookup) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSeriesLookup to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSeriesLookup) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSeriesLookup) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeriesType as json.
+func (o OptSeriesType) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes SeriesType from json.
+func (o *OptSeriesType) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSeriesType to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSeriesType) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSeriesType) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -30963,6 +34033,333 @@ func (s *SearchType) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *SeasonInfo) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeasonInfo) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int64(s.ID)
+	}
+	{
+		e.FieldStart("itemRef")
+		e.Str(s.ItemRef)
+	}
+	{
+		e.FieldStart("number")
+		e.Int(s.Number)
+	}
+	{
+		e.FieldStart("monitored")
+		e.Bool(s.Monitored)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
+		e.FieldStart("overview")
+		e.Str(s.Overview)
+	}
+	{
+		e.FieldStart("poster")
+		e.Str(s.Poster)
+	}
+	{
+		e.FieldStart("airDate")
+		e.Str(s.AirDate)
+	}
+	{
+		e.FieldStart("stats")
+		s.Stats.Encode(e)
+	}
+}
+
+var jsonFieldsNameOfSeasonInfo = [9]string{
+	0: "id",
+	1: "itemRef",
+	2: "number",
+	3: "monitored",
+	4: "title",
+	5: "overview",
+	6: "poster",
+	7: "airDate",
+	8: "stats",
+}
+
+// Decode decodes SeasonInfo from json.
+func (s *SeasonInfo) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeasonInfo to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.ID = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "itemRef":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.ItemRef = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"itemRef\"")
+			}
+		case "number":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int()
+				s.Number = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"number\"")
+			}
+		case "monitored":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Bool()
+				s.Monitored = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "overview":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Str()
+				s.Overview = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "poster":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.Poster = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster\"")
+			}
+		case "airDate":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.AirDate = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"airDate\"")
+			}
+		case "stats":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				if err := s.Stats.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"stats\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeasonInfo")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b11111111,
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeasonInfo) {
+					name = jsonFieldsNameOfSeasonInfo[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeasonInfo) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeasonInfo) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeasonUpdate) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeasonUpdate) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("monitored")
+		e.Bool(s.Monitored)
+	}
+}
+
+var jsonFieldsNameOfSeasonUpdate = [1]string{
+	0: "monitored",
+}
+
+// Decode decodes SeasonUpdate from json.
+func (s *SeasonUpdate) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeasonUpdate to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "monitored":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Bool()
+				s.Monitored = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeasonUpdate")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeasonUpdate) {
+					name = jsonFieldsNameOfSeasonUpdate[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeasonUpdate) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeasonUpdate) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *SecretState) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -31054,6 +34451,4272 @@ func (s *SecretState) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *SecretState) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *Series) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *Series) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int64(s.ID)
+	}
+	{
+		e.FieldStart("itemRef")
+		e.Str(s.ItemRef)
+	}
+	{
+		e.FieldStart("tmdbId")
+		e.Int64(s.TmdbId)
+	}
+	{
+		e.FieldStart("tvdbId")
+		e.Int64(s.TvdbId)
+	}
+	{
+		e.FieldStart("imdbId")
+		e.Str(s.ImdbId)
+	}
+	{
+		e.FieldStart("tvmazeId")
+		e.Int64(s.TvmazeId)
+	}
+	{
+		e.FieldStart("metadataSource")
+		s.MetadataSource.Encode(e)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
+		e.FieldStart("originalTitle")
+		e.Str(s.OriginalTitle)
+	}
+	{
+		e.FieldStart("originalLanguage")
+		e.Str(s.OriginalLanguage)
+	}
+	{
+		e.FieldStart("alternateTitles")
+		e.ArrStart()
+		for _, elem := range s.AlternateTitles {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("year")
+		e.Int(s.Year)
+	}
+	{
+		e.FieldStart("overview")
+		e.Str(s.Overview)
+	}
+	{
+		e.FieldStart("status")
+		s.Status.Encode(e)
+	}
+	{
+		e.FieldStart("network")
+		e.Str(s.Network)
+	}
+	{
+		e.FieldStart("timeZone")
+		e.Str(s.TimeZone)
+	}
+	{
+		e.FieldStart("airTime")
+		e.Str(s.AirTime)
+	}
+	{
+		e.FieldStart("runtime")
+		e.Int(s.Runtime)
+	}
+	{
+		e.FieldStart("genres")
+		e.ArrStart()
+		for _, elem := range s.Genres {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("certification")
+		e.Str(s.Certification)
+	}
+	{
+		e.FieldStart("rating")
+		e.Float64(s.Rating)
+	}
+	{
+		e.FieldStart("votes")
+		e.Int(s.Votes)
+	}
+	{
+		e.FieldStart("firstAired")
+		e.Str(s.FirstAired)
+	}
+	{
+		e.FieldStart("lastAired")
+		e.Str(s.LastAired)
+	}
+	{
+		e.FieldStart("seriesType")
+		s.SeriesType.Encode(e)
+	}
+	{
+		e.FieldStart("seasonFolder")
+		e.Bool(s.SeasonFolder)
+	}
+	{
+		e.FieldStart("monitorNewSeasons")
+		s.MonitorNewSeasons.Encode(e)
+	}
+	{
+		e.FieldStart("poster")
+		e.Str(s.Poster)
+	}
+	{
+		e.FieldStart("backdrop")
+		e.Str(s.Backdrop)
+	}
+	{
+		e.FieldStart("monitored")
+		e.Bool(s.Monitored)
+	}
+	{
+		e.FieldStart("qualityProfileId")
+		e.Int64(s.QualityProfileId)
+	}
+	{
+		if s.RootFolderId.Set {
+			e.FieldStart("rootFolderId")
+			s.RootFolderId.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		e.FieldStart("tags")
+		e.ArrStart()
+		for _, elem := range s.Tags {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("addedAt")
+		json.EncodeDateTime(e, s.AddedAt)
+	}
+	{
+		e.FieldStart("updatedAt")
+		json.EncodeDateTime(e, s.UpdatedAt)
+	}
+	{
+		if s.RefreshedAt.Set {
+			e.FieldStart("refreshedAt")
+			s.RefreshedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		e.FieldStart("stats")
+		s.Stats.Encode(e)
+	}
+	{
+		e.FieldStart("downloading")
+		e.Int(s.Downloading)
+	}
+}
+
+var jsonFieldsNameOfSeries = [39]string{
+	0:  "id",
+	1:  "itemRef",
+	2:  "tmdbId",
+	3:  "tvdbId",
+	4:  "imdbId",
+	5:  "tvmazeId",
+	6:  "metadataSource",
+	7:  "title",
+	8:  "originalTitle",
+	9:  "originalLanguage",
+	10: "alternateTitles",
+	11: "year",
+	12: "overview",
+	13: "status",
+	14: "network",
+	15: "timeZone",
+	16: "airTime",
+	17: "runtime",
+	18: "genres",
+	19: "certification",
+	20: "rating",
+	21: "votes",
+	22: "firstAired",
+	23: "lastAired",
+	24: "seriesType",
+	25: "seasonFolder",
+	26: "monitorNewSeasons",
+	27: "poster",
+	28: "backdrop",
+	29: "monitored",
+	30: "qualityProfileId",
+	31: "rootFolderId",
+	32: "path",
+	33: "tags",
+	34: "addedAt",
+	35: "updatedAt",
+	36: "refreshedAt",
+	37: "stats",
+	38: "downloading",
+}
+
+// Decode decodes Series from json.
+func (s *Series) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode Series to nil")
+	}
+	var requiredBitSet [5]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.ID = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "itemRef":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.ItemRef = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"itemRef\"")
+			}
+		case "tmdbId":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int64()
+				s.TmdbId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdbId\"")
+			}
+		case "tvdbId":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int64()
+				s.TvdbId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbId\"")
+			}
+		case "imdbId":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.ImdbId = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imdbId\"")
+			}
+		case "tvmazeId":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int64()
+				s.TvmazeId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvmazeId\"")
+			}
+		case "metadataSource":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				if err := s.MetadataSource.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadataSource\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "originalTitle":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.OriginalTitle = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"originalTitle\"")
+			}
+		case "originalLanguage":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.OriginalLanguage = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"originalLanguage\"")
+			}
+		case "alternateTitles":
+			requiredBitSet[1] |= 1 << 2
+			if err := func() error {
+				s.AlternateTitles = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.AlternateTitles = append(s.AlternateTitles, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"alternateTitles\"")
+			}
+		case "year":
+			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int()
+				s.Year = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"year\"")
+			}
+		case "overview":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.Overview = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "status":
+			requiredBitSet[1] |= 1 << 5
+			if err := func() error {
+				if err := s.Status.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "network":
+			requiredBitSet[1] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.Network = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"network\"")
+			}
+		case "timeZone":
+			requiredBitSet[1] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.TimeZone = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"timeZone\"")
+			}
+		case "airTime":
+			requiredBitSet[2] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.AirTime = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"airTime\"")
+			}
+		case "runtime":
+			requiredBitSet[2] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int()
+				s.Runtime = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "genres":
+			requiredBitSet[2] |= 1 << 2
+			if err := func() error {
+				s.Genres = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Genres = append(s.Genres, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"genres\"")
+			}
+		case "certification":
+			requiredBitSet[2] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Certification = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"certification\"")
+			}
+		case "rating":
+			requiredBitSet[2] |= 1 << 4
+			if err := func() error {
+				v, err := d.Float64()
+				s.Rating = float64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rating\"")
+			}
+		case "votes":
+			requiredBitSet[2] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.Votes = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"votes\"")
+			}
+		case "firstAired":
+			requiredBitSet[2] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.FirstAired = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"firstAired\"")
+			}
+		case "lastAired":
+			requiredBitSet[2] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.LastAired = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastAired\"")
+			}
+		case "seriesType":
+			requiredBitSet[3] |= 1 << 0
+			if err := func() error {
+				if err := s.SeriesType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesType\"")
+			}
+		case "seasonFolder":
+			requiredBitSet[3] |= 1 << 1
+			if err := func() error {
+				v, err := d.Bool()
+				s.SeasonFolder = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonFolder\"")
+			}
+		case "monitorNewSeasons":
+			requiredBitSet[3] |= 1 << 2
+			if err := func() error {
+				if err := s.MonitorNewSeasons.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitorNewSeasons\"")
+			}
+		case "poster":
+			requiredBitSet[3] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Poster = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster\"")
+			}
+		case "backdrop":
+			requiredBitSet[3] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.Backdrop = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop\"")
+			}
+		case "monitored":
+			requiredBitSet[3] |= 1 << 5
+			if err := func() error {
+				v, err := d.Bool()
+				s.Monitored = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "qualityProfileId":
+			requiredBitSet[3] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int64()
+				s.QualityProfileId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qualityProfileId\"")
+			}
+		case "rootFolderId":
+			if err := func() error {
+				s.RootFolderId.Reset()
+				if err := s.RootFolderId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rootFolderId\"")
+			}
+		case "path":
+			requiredBitSet[4] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "tags":
+			requiredBitSet[4] |= 1 << 1
+			if err := func() error {
+				s.Tags = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Tags = append(s.Tags, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tags\"")
+			}
+		case "addedAt":
+			requiredBitSet[4] |= 1 << 2
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.AddedAt = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"addedAt\"")
+			}
+		case "updatedAt":
+			requiredBitSet[4] |= 1 << 3
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.UpdatedAt = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updatedAt\"")
+			}
+		case "refreshedAt":
+			if err := func() error {
+				s.RefreshedAt.Reset()
+				if err := s.RefreshedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"refreshedAt\"")
+			}
+		case "stats":
+			requiredBitSet[4] |= 1 << 5
+			if err := func() error {
+				if err := s.Stats.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"stats\"")
+			}
+		case "downloading":
+			requiredBitSet[4] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int()
+				s.Downloading = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"downloading\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode Series")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [5]uint8{
+		0b11111111,
+		0b11111111,
+		0b11111111,
+		0b01111111,
+		0b01101111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeries) {
+					name = jsonFieldsNameOfSeries[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *Series) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *Series) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesDetail) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesDetail) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int64(s.ID)
+	}
+	{
+		e.FieldStart("itemRef")
+		e.Str(s.ItemRef)
+	}
+	{
+		e.FieldStart("tmdbId")
+		e.Int64(s.TmdbId)
+	}
+	{
+		e.FieldStart("tvdbId")
+		e.Int64(s.TvdbId)
+	}
+	{
+		e.FieldStart("imdbId")
+		e.Str(s.ImdbId)
+	}
+	{
+		e.FieldStart("tvmazeId")
+		e.Int64(s.TvmazeId)
+	}
+	{
+		e.FieldStart("metadataSource")
+		s.MetadataSource.Encode(e)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
+		e.FieldStart("originalTitle")
+		e.Str(s.OriginalTitle)
+	}
+	{
+		e.FieldStart("originalLanguage")
+		e.Str(s.OriginalLanguage)
+	}
+	{
+		e.FieldStart("alternateTitles")
+		e.ArrStart()
+		for _, elem := range s.AlternateTitles {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("year")
+		e.Int(s.Year)
+	}
+	{
+		e.FieldStart("overview")
+		e.Str(s.Overview)
+	}
+	{
+		e.FieldStart("status")
+		s.Status.Encode(e)
+	}
+	{
+		e.FieldStart("network")
+		e.Str(s.Network)
+	}
+	{
+		e.FieldStart("timeZone")
+		e.Str(s.TimeZone)
+	}
+	{
+		e.FieldStart("airTime")
+		e.Str(s.AirTime)
+	}
+	{
+		e.FieldStart("runtime")
+		e.Int(s.Runtime)
+	}
+	{
+		e.FieldStart("genres")
+		e.ArrStart()
+		for _, elem := range s.Genres {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("certification")
+		e.Str(s.Certification)
+	}
+	{
+		e.FieldStart("rating")
+		e.Float64(s.Rating)
+	}
+	{
+		e.FieldStart("votes")
+		e.Int(s.Votes)
+	}
+	{
+		e.FieldStart("firstAired")
+		e.Str(s.FirstAired)
+	}
+	{
+		e.FieldStart("lastAired")
+		e.Str(s.LastAired)
+	}
+	{
+		e.FieldStart("seriesType")
+		s.SeriesType.Encode(e)
+	}
+	{
+		e.FieldStart("seasonFolder")
+		e.Bool(s.SeasonFolder)
+	}
+	{
+		e.FieldStart("monitorNewSeasons")
+		s.MonitorNewSeasons.Encode(e)
+	}
+	{
+		e.FieldStart("poster")
+		e.Str(s.Poster)
+	}
+	{
+		e.FieldStart("backdrop")
+		e.Str(s.Backdrop)
+	}
+	{
+		e.FieldStart("monitored")
+		e.Bool(s.Monitored)
+	}
+	{
+		e.FieldStart("qualityProfileId")
+		e.Int64(s.QualityProfileId)
+	}
+	{
+		if s.RootFolderId.Set {
+			e.FieldStart("rootFolderId")
+			s.RootFolderId.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		e.FieldStart("tags")
+		e.ArrStart()
+		for _, elem := range s.Tags {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("addedAt")
+		json.EncodeDateTime(e, s.AddedAt)
+	}
+	{
+		e.FieldStart("updatedAt")
+		json.EncodeDateTime(e, s.UpdatedAt)
+	}
+	{
+		if s.RefreshedAt.Set {
+			e.FieldStart("refreshedAt")
+			s.RefreshedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		e.FieldStart("stats")
+		s.Stats.Encode(e)
+	}
+	{
+		e.FieldStart("downloading")
+		e.Int(s.Downloading)
+	}
+	{
+		e.FieldStart("seasons")
+		e.ArrStart()
+		for _, elem := range s.Seasons {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfSeriesDetail = [40]string{
+	0:  "id",
+	1:  "itemRef",
+	2:  "tmdbId",
+	3:  "tvdbId",
+	4:  "imdbId",
+	5:  "tvmazeId",
+	6:  "metadataSource",
+	7:  "title",
+	8:  "originalTitle",
+	9:  "originalLanguage",
+	10: "alternateTitles",
+	11: "year",
+	12: "overview",
+	13: "status",
+	14: "network",
+	15: "timeZone",
+	16: "airTime",
+	17: "runtime",
+	18: "genres",
+	19: "certification",
+	20: "rating",
+	21: "votes",
+	22: "firstAired",
+	23: "lastAired",
+	24: "seriesType",
+	25: "seasonFolder",
+	26: "monitorNewSeasons",
+	27: "poster",
+	28: "backdrop",
+	29: "monitored",
+	30: "qualityProfileId",
+	31: "rootFolderId",
+	32: "path",
+	33: "tags",
+	34: "addedAt",
+	35: "updatedAt",
+	36: "refreshedAt",
+	37: "stats",
+	38: "downloading",
+	39: "seasons",
+}
+
+// Decode decodes SeriesDetail from json.
+func (s *SeriesDetail) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesDetail to nil")
+	}
+	var requiredBitSet [5]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.ID = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "itemRef":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.ItemRef = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"itemRef\"")
+			}
+		case "tmdbId":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int64()
+				s.TmdbId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdbId\"")
+			}
+		case "tvdbId":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int64()
+				s.TvdbId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbId\"")
+			}
+		case "imdbId":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.ImdbId = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imdbId\"")
+			}
+		case "tvmazeId":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int64()
+				s.TvmazeId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvmazeId\"")
+			}
+		case "metadataSource":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				if err := s.MetadataSource.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadataSource\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "originalTitle":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.OriginalTitle = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"originalTitle\"")
+			}
+		case "originalLanguage":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.OriginalLanguage = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"originalLanguage\"")
+			}
+		case "alternateTitles":
+			requiredBitSet[1] |= 1 << 2
+			if err := func() error {
+				s.AlternateTitles = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.AlternateTitles = append(s.AlternateTitles, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"alternateTitles\"")
+			}
+		case "year":
+			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int()
+				s.Year = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"year\"")
+			}
+		case "overview":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.Overview = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "status":
+			requiredBitSet[1] |= 1 << 5
+			if err := func() error {
+				if err := s.Status.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "network":
+			requiredBitSet[1] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.Network = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"network\"")
+			}
+		case "timeZone":
+			requiredBitSet[1] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.TimeZone = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"timeZone\"")
+			}
+		case "airTime":
+			requiredBitSet[2] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.AirTime = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"airTime\"")
+			}
+		case "runtime":
+			requiredBitSet[2] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int()
+				s.Runtime = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "genres":
+			requiredBitSet[2] |= 1 << 2
+			if err := func() error {
+				s.Genres = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Genres = append(s.Genres, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"genres\"")
+			}
+		case "certification":
+			requiredBitSet[2] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Certification = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"certification\"")
+			}
+		case "rating":
+			requiredBitSet[2] |= 1 << 4
+			if err := func() error {
+				v, err := d.Float64()
+				s.Rating = float64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rating\"")
+			}
+		case "votes":
+			requiredBitSet[2] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.Votes = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"votes\"")
+			}
+		case "firstAired":
+			requiredBitSet[2] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.FirstAired = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"firstAired\"")
+			}
+		case "lastAired":
+			requiredBitSet[2] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.LastAired = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastAired\"")
+			}
+		case "seriesType":
+			requiredBitSet[3] |= 1 << 0
+			if err := func() error {
+				if err := s.SeriesType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesType\"")
+			}
+		case "seasonFolder":
+			requiredBitSet[3] |= 1 << 1
+			if err := func() error {
+				v, err := d.Bool()
+				s.SeasonFolder = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonFolder\"")
+			}
+		case "monitorNewSeasons":
+			requiredBitSet[3] |= 1 << 2
+			if err := func() error {
+				if err := s.MonitorNewSeasons.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitorNewSeasons\"")
+			}
+		case "poster":
+			requiredBitSet[3] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Poster = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster\"")
+			}
+		case "backdrop":
+			requiredBitSet[3] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.Backdrop = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop\"")
+			}
+		case "monitored":
+			requiredBitSet[3] |= 1 << 5
+			if err := func() error {
+				v, err := d.Bool()
+				s.Monitored = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "qualityProfileId":
+			requiredBitSet[3] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int64()
+				s.QualityProfileId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qualityProfileId\"")
+			}
+		case "rootFolderId":
+			if err := func() error {
+				s.RootFolderId.Reset()
+				if err := s.RootFolderId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rootFolderId\"")
+			}
+		case "path":
+			requiredBitSet[4] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "tags":
+			requiredBitSet[4] |= 1 << 1
+			if err := func() error {
+				s.Tags = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Tags = append(s.Tags, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tags\"")
+			}
+		case "addedAt":
+			requiredBitSet[4] |= 1 << 2
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.AddedAt = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"addedAt\"")
+			}
+		case "updatedAt":
+			requiredBitSet[4] |= 1 << 3
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.UpdatedAt = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updatedAt\"")
+			}
+		case "refreshedAt":
+			if err := func() error {
+				s.RefreshedAt.Reset()
+				if err := s.RefreshedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"refreshedAt\"")
+			}
+		case "stats":
+			requiredBitSet[4] |= 1 << 5
+			if err := func() error {
+				if err := s.Stats.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"stats\"")
+			}
+		case "downloading":
+			requiredBitSet[4] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int()
+				s.Downloading = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"downloading\"")
+			}
+		case "seasons":
+			requiredBitSet[4] |= 1 << 7
+			if err := func() error {
+				s.Seasons = make([]SeasonInfo, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SeasonInfo
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Seasons = append(s.Seasons, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasons\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesDetail")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [5]uint8{
+		0b11111111,
+		0b11111111,
+		0b11111111,
+		0b01111111,
+		0b11101111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesDetail) {
+					name = jsonFieldsNameOfSeriesDetail[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesDetail) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesDetail) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeriesDetailMetadataSource as json.
+func (s SeriesDetailMetadataSource) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SeriesDetailMetadataSource from json.
+func (s *SeriesDetailMetadataSource) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesDetailMetadataSource to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SeriesDetailMetadataSource(v) {
+	case SeriesDetailMetadataSourceTmdb:
+		*s = SeriesDetailMetadataSourceTmdb
+	case SeriesDetailMetadataSourceTvdb:
+		*s = SeriesDetailMetadataSourceTvdb
+	default:
+		*s = SeriesDetailMetadataSource(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SeriesDetailMetadataSource) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesDetailMetadataSource) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesIdsRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesIdsRequest) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("seriesIds")
+		e.ArrStart()
+		for _, elem := range s.SeriesIds {
+			e.Int64(elem)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfSeriesIdsRequest = [1]string{
+	0: "seriesIds",
+}
+
+// Decode decodes SeriesIdsRequest from json.
+func (s *SeriesIdsRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesIdsRequest to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "seriesIds":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				s.SeriesIds = make([]int64, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int64
+					v, err := d.Int64()
+					elem = int64(v)
+					if err != nil {
+						return err
+					}
+					s.SeriesIds = append(s.SeriesIds, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesIds\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesIdsRequest")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesIdsRequest) {
+					name = jsonFieldsNameOfSeriesIdsRequest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesIdsRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesIdsRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesImportCandidate) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesImportCandidate) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		e.FieldStart("relativePath")
+		e.Str(s.RelativePath)
+	}
+	{
+		e.FieldStart("sizeBytes")
+		e.Int64(s.SizeBytes)
+	}
+	{
+		if s.SeriesId.Set {
+			e.FieldStart("seriesId")
+			s.SeriesId.Encode(e)
+		}
+	}
+	{
+		if s.SeriesTitle.Set {
+			e.FieldStart("seriesTitle")
+			s.SeriesTitle.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("episodes")
+		e.ArrStart()
+		for _, elem := range s.Episodes {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
+		if s.Quality.Set {
+			e.FieldStart("quality")
+			s.Quality.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseGroup.Set {
+			e.FieldStart("releaseGroup")
+			s.ReleaseGroup.Encode(e)
+		}
+	}
+	{
+		if s.Rejection.Set {
+			e.FieldStart("rejection")
+			s.Rejection.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("sidecars")
+		e.ArrStart()
+		for _, elem := range s.Sidecars {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfSeriesImportCandidate = [10]string{
+	0: "path",
+	1: "relativePath",
+	2: "sizeBytes",
+	3: "seriesId",
+	4: "seriesTitle",
+	5: "episodes",
+	6: "quality",
+	7: "releaseGroup",
+	8: "rejection",
+	9: "sidecars",
+}
+
+// Decode decodes SeriesImportCandidate from json.
+func (s *SeriesImportCandidate) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesImportCandidate to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "path":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "relativePath":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.RelativePath = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"relativePath\"")
+			}
+		case "sizeBytes":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int64()
+				s.SizeBytes = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sizeBytes\"")
+			}
+		case "seriesId":
+			if err := func() error {
+				s.SeriesId.Reset()
+				if err := s.SeriesId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesId\"")
+			}
+		case "seriesTitle":
+			if err := func() error {
+				s.SeriesTitle.Reset()
+				if err := s.SeriesTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesTitle\"")
+			}
+		case "episodes":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				s.Episodes = make([]EpisodeBrief, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem EpisodeBrief
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Episodes = append(s.Episodes, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodes\"")
+			}
+		case "quality":
+			if err := func() error {
+				s.Quality.Reset()
+				if err := s.Quality.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"quality\"")
+			}
+		case "releaseGroup":
+			if err := func() error {
+				s.ReleaseGroup.Reset()
+				if err := s.ReleaseGroup.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"releaseGroup\"")
+			}
+		case "rejection":
+			if err := func() error {
+				s.Rejection.Reset()
+				if err := s.Rejection.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rejection\"")
+			}
+		case "sidecars":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				s.Sidecars = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Sidecars = append(s.Sidecars, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sidecars\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesImportCandidate")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b00100111,
+		0b00000010,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesImportCandidate) {
+					name = jsonFieldsNameOfSeriesImportCandidate[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesImportCandidate) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesImportCandidate) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesList) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesList) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("total")
+		e.Int(s.Total)
+	}
+	{
+		e.FieldStart("items")
+		e.ArrStart()
+		for _, elem := range s.Items {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfSeriesList = [2]string{
+	0: "total",
+	1: "items",
+}
+
+// Decode decodes SeriesList from json.
+func (s *SeriesList) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesList to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "total":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.Total = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
+		case "items":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				s.Items = make([]Series, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem Series
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Items = append(s.Items, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"items\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesList")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesList) {
+					name = jsonFieldsNameOfSeriesList[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesList) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesList) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesLookup) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesLookup) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("tmdbId")
+		e.Int64(s.TmdbId)
+	}
+	{
+		e.FieldStart("tvdbId")
+		e.Int64(s.TvdbId)
+	}
+	{
+		e.FieldStart("source")
+		s.Source.Encode(e)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
+		e.FieldStart("originalTitle")
+		e.Str(s.OriginalTitle)
+	}
+	{
+		e.FieldStart("year")
+		e.Int(s.Year)
+	}
+	{
+		e.FieldStart("firstAired")
+		e.Str(s.FirstAired)
+	}
+	{
+		e.FieldStart("overview")
+		e.Str(s.Overview)
+	}
+	{
+		e.FieldStart("poster")
+		e.Str(s.Poster)
+	}
+	{
+		e.FieldStart("backdrop")
+		e.Str(s.Backdrop)
+	}
+	{
+		e.FieldStart("network")
+		e.Str(s.Network)
+	}
+	{
+		e.FieldStart("status")
+		e.Str(s.Status)
+	}
+	{
+		e.FieldStart("rating")
+		e.Float64(s.Rating)
+	}
+	{
+		if s.SeriesId.Set {
+			e.FieldStart("seriesId")
+			s.SeriesId.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSeriesLookup = [14]string{
+	0:  "tmdbId",
+	1:  "tvdbId",
+	2:  "source",
+	3:  "title",
+	4:  "originalTitle",
+	5:  "year",
+	6:  "firstAired",
+	7:  "overview",
+	8:  "poster",
+	9:  "backdrop",
+	10: "network",
+	11: "status",
+	12: "rating",
+	13: "seriesId",
+}
+
+// Decode decodes SeriesLookup from json.
+func (s *SeriesLookup) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesLookup to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "tmdbId":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.TmdbId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdbId\"")
+			}
+		case "tvdbId":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.TvdbId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdbId\"")
+			}
+		case "source":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				if err := s.Source.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"source\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "originalTitle":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.OriginalTitle = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"originalTitle\"")
+			}
+		case "year":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.Year = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"year\"")
+			}
+		case "firstAired":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.FirstAired = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"firstAired\"")
+			}
+		case "overview":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.Overview = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "poster":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Poster = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster\"")
+			}
+		case "backdrop":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Backdrop = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop\"")
+			}
+		case "network":
+			requiredBitSet[1] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Network = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"network\"")
+			}
+		case "status":
+			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Status = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "rating":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				v, err := d.Float64()
+				s.Rating = float64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rating\"")
+			}
+		case "seriesId":
+			if err := func() error {
+				s.SeriesId.Reset()
+				if err := s.SeriesId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesId\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesLookup")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b11111111,
+		0b00011111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesLookup) {
+					name = jsonFieldsNameOfSeriesLookup[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesLookup) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesLookup) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeriesLookupSource as json.
+func (s SeriesLookupSource) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SeriesLookupSource from json.
+func (s *SeriesLookupSource) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesLookupSource to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SeriesLookupSource(v) {
+	case SeriesLookupSourceTmdb:
+		*s = SeriesLookupSourceTmdb
+	case SeriesLookupSourceTvdb:
+		*s = SeriesLookupSourceTvdb
+	default:
+		*s = SeriesLookupSource(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SeriesLookupSource) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesLookupSource) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesManualImportRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesManualImportRequest) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("items")
+		e.ArrStart()
+		for _, elem := range s.Items {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfSeriesManualImportRequest = [1]string{
+	0: "items",
+}
+
+// Decode decodes SeriesManualImportRequest from json.
+func (s *SeriesManualImportRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesManualImportRequest to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "items":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				s.Items = make([]SeriesManualImportRequestItemsItem, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SeriesManualImportRequestItemsItem
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Items = append(s.Items, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"items\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesManualImportRequest")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesManualImportRequest) {
+					name = jsonFieldsNameOfSeriesManualImportRequest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesManualImportRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesManualImportRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesManualImportRequestItemsItem) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesManualImportRequestItemsItem) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		e.FieldStart("seriesId")
+		e.Int64(s.SeriesId)
+	}
+	{
+		if s.EpisodeIds != nil {
+			e.FieldStart("episodeIds")
+			e.ArrStart()
+			for _, elem := range s.EpisodeIds {
+				e.Int64(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Mode.Set {
+			e.FieldStart("mode")
+			s.Mode.Encode(e)
+		}
+	}
+	{
+		if s.Sidecars != nil {
+			e.FieldStart("sidecars")
+			e.ArrStart()
+			for _, elem := range s.Sidecars {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+}
+
+var jsonFieldsNameOfSeriesManualImportRequestItemsItem = [5]string{
+	0: "path",
+	1: "seriesId",
+	2: "episodeIds",
+	3: "mode",
+	4: "sidecars",
+}
+
+// Decode decodes SeriesManualImportRequestItemsItem from json.
+func (s *SeriesManualImportRequestItemsItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesManualImportRequestItemsItem to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "path":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "seriesId":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.SeriesId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesId\"")
+			}
+		case "episodeIds":
+			if err := func() error {
+				s.EpisodeIds = make([]int64, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int64
+					v, err := d.Int64()
+					elem = int64(v)
+					if err != nil {
+						return err
+					}
+					s.EpisodeIds = append(s.EpisodeIds, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeIds\"")
+			}
+		case "mode":
+			if err := func() error {
+				s.Mode.Reset()
+				if err := s.Mode.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mode\"")
+			}
+		case "sidecars":
+			if err := func() error {
+				s.Sidecars = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Sidecars = append(s.Sidecars, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sidecars\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesManualImportRequestItemsItem")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesManualImportRequestItemsItem) {
+					name = jsonFieldsNameOfSeriesManualImportRequestItemsItem[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesManualImportRequestItemsItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesManualImportRequestItemsItem) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesManualImportResult) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesManualImportResult) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		e.FieldStart("seriesId")
+		e.Int64(s.SeriesId)
+	}
+	{
+		e.FieldStart("episodeIds")
+		e.ArrStart()
+		for _, elem := range s.EpisodeIds {
+			e.Int64(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		if s.ImportedPath.Set {
+			e.FieldStart("importedPath")
+			s.ImportedPath.Encode(e)
+		}
+	}
+	{
+		if s.Mode.Set {
+			e.FieldStart("mode")
+			s.Mode.Encode(e)
+		}
+	}
+	{
+		if s.Upgraded.Set {
+			e.FieldStart("upgraded")
+			s.Upgraded.Encode(e)
+		}
+	}
+	{
+		if s.Recycled != nil {
+			e.FieldStart("recycled")
+			e.ArrStart()
+			for _, elem := range s.Recycled {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Error.Set {
+			e.FieldStart("error")
+			s.Error.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSeriesManualImportResult = [8]string{
+	0: "path",
+	1: "seriesId",
+	2: "episodeIds",
+	3: "importedPath",
+	4: "mode",
+	5: "upgraded",
+	6: "recycled",
+	7: "error",
+}
+
+// Decode decodes SeriesManualImportResult from json.
+func (s *SeriesManualImportResult) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesManualImportResult to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "path":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "seriesId":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.SeriesId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesId\"")
+			}
+		case "episodeIds":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				s.EpisodeIds = make([]int64, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int64
+					v, err := d.Int64()
+					elem = int64(v)
+					if err != nil {
+						return err
+					}
+					s.EpisodeIds = append(s.EpisodeIds, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeIds\"")
+			}
+		case "importedPath":
+			if err := func() error {
+				s.ImportedPath.Reset()
+				if err := s.ImportedPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"importedPath\"")
+			}
+		case "mode":
+			if err := func() error {
+				s.Mode.Reset()
+				if err := s.Mode.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mode\"")
+			}
+		case "upgraded":
+			if err := func() error {
+				s.Upgraded.Reset()
+				if err := s.Upgraded.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"upgraded\"")
+			}
+		case "recycled":
+			if err := func() error {
+				s.Recycled = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Recycled = append(s.Recycled, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"recycled\"")
+			}
+		case "error":
+			if err := func() error {
+				s.Error.Reset()
+				if err := s.Error.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"error\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesManualImportResult")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesManualImportResult) {
+					name = jsonFieldsNameOfSeriesManualImportResult[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesManualImportResult) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesManualImportResult) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeriesMetadataSource as json.
+func (s SeriesMetadataSource) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SeriesMetadataSource from json.
+func (s *SeriesMetadataSource) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesMetadataSource to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SeriesMetadataSource(v) {
+	case SeriesMetadataSourceTmdb:
+		*s = SeriesMetadataSourceTmdb
+	case SeriesMetadataSourceTvdb:
+		*s = SeriesMetadataSourceTvdb
+	default:
+		*s = SeriesMetadataSource(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SeriesMetadataSource) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesMetadataSource) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesNamingPreview) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesNamingPreview) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("seriesFolder")
+		e.Str(s.SeriesFolder)
+	}
+	{
+		e.FieldStart("seasonFolder")
+		e.Str(s.SeasonFolder)
+	}
+	{
+		e.FieldStart("specialsFolder")
+		e.Str(s.SpecialsFolder)
+	}
+	{
+		e.FieldStart("standard")
+		e.Str(s.Standard)
+	}
+	{
+		e.FieldStart("multiEpisode")
+		e.Str(s.MultiEpisode)
+	}
+	{
+		e.FieldStart("daily")
+		e.Str(s.Daily)
+	}
+	{
+		e.FieldStart("anime")
+		e.Str(s.Anime)
+	}
+	{
+		e.FieldStart("errors")
+		s.Errors.Encode(e)
+	}
+	{
+		e.FieldStart("tokens")
+		e.ArrStart()
+		for _, elem := range s.Tokens {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfSeriesNamingPreview = [9]string{
+	0: "seriesFolder",
+	1: "seasonFolder",
+	2: "specialsFolder",
+	3: "standard",
+	4: "multiEpisode",
+	5: "daily",
+	6: "anime",
+	7: "errors",
+	8: "tokens",
+}
+
+// Decode decodes SeriesNamingPreview from json.
+func (s *SeriesNamingPreview) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesNamingPreview to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "seriesFolder":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.SeriesFolder = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesFolder\"")
+			}
+		case "seasonFolder":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.SeasonFolder = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonFolder\"")
+			}
+		case "specialsFolder":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.SpecialsFolder = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"specialsFolder\"")
+			}
+		case "standard":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Standard = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"standard\"")
+			}
+		case "multiEpisode":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.MultiEpisode = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"multiEpisode\"")
+			}
+		case "daily":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Str()
+				s.Daily = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"daily\"")
+			}
+		case "anime":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.Anime = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"anime\"")
+			}
+		case "errors":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				if err := s.Errors.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"errors\"")
+			}
+		case "tokens":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				s.Tokens = make([]NamingToken, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem NamingToken
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Tokens = append(s.Tokens, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tokens\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesNamingPreview")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b11111111,
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesNamingPreview) {
+					name = jsonFieldsNameOfSeriesNamingPreview[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesNamingPreview) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesNamingPreview) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s SeriesNamingPreviewErrors) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s SeriesNamingPreviewErrors) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.Str(elem)
+	}
+}
+
+// Decode decodes SeriesNamingPreviewErrors from json.
+func (s *SeriesNamingPreviewErrors) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesNamingPreviewErrors to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem string
+		if err := func() error {
+			v, err := d.Str()
+			elem = string(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesNamingPreviewErrors")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SeriesNamingPreviewErrors) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesNamingPreviewErrors) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesNamingSettings) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesNamingSettings) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("renameEpisodes")
+		e.Bool(s.RenameEpisodes)
+	}
+	{
+		e.FieldStart("seriesFolderFormat")
+		e.Str(s.SeriesFolderFormat)
+	}
+	{
+		e.FieldStart("seasonFolderFormat")
+		e.Str(s.SeasonFolderFormat)
+	}
+	{
+		e.FieldStart("specialsFolderFormat")
+		e.Str(s.SpecialsFolderFormat)
+	}
+	{
+		e.FieldStart("standardEpisodeFormat")
+		e.Str(s.StandardEpisodeFormat)
+	}
+	{
+		e.FieldStart("dailyEpisodeFormat")
+		e.Str(s.DailyEpisodeFormat)
+	}
+	{
+		e.FieldStart("animeEpisodeFormat")
+		e.Str(s.AnimeEpisodeFormat)
+	}
+	{
+		e.FieldStart("multiEpisodeStyle")
+		s.MultiEpisodeStyle.Encode(e)
+	}
+	{
+		e.FieldStart("seasonPackThreshold")
+		e.Int(s.SeasonPackThreshold)
+	}
+	{
+		e.FieldStart("searchOnAddDefault")
+		e.Bool(s.SearchOnAddDefault)
+	}
+	{
+		if s.ColonReplacement.Set {
+			e.FieldStart("colonReplacement")
+			s.ColonReplacement.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSeriesNamingSettings = [11]string{
+	0:  "renameEpisodes",
+	1:  "seriesFolderFormat",
+	2:  "seasonFolderFormat",
+	3:  "specialsFolderFormat",
+	4:  "standardEpisodeFormat",
+	5:  "dailyEpisodeFormat",
+	6:  "animeEpisodeFormat",
+	7:  "multiEpisodeStyle",
+	8:  "seasonPackThreshold",
+	9:  "searchOnAddDefault",
+	10: "colonReplacement",
+}
+
+// Decode decodes SeriesNamingSettings from json.
+func (s *SeriesNamingSettings) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesNamingSettings to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "renameEpisodes":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Bool()
+				s.RenameEpisodes = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"renameEpisodes\"")
+			}
+		case "seriesFolderFormat":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.SeriesFolderFormat = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesFolderFormat\"")
+			}
+		case "seasonFolderFormat":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.SeasonFolderFormat = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonFolderFormat\"")
+			}
+		case "specialsFolderFormat":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.SpecialsFolderFormat = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"specialsFolderFormat\"")
+			}
+		case "standardEpisodeFormat":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.StandardEpisodeFormat = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"standardEpisodeFormat\"")
+			}
+		case "dailyEpisodeFormat":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Str()
+				s.DailyEpisodeFormat = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"dailyEpisodeFormat\"")
+			}
+		case "animeEpisodeFormat":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.AnimeEpisodeFormat = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"animeEpisodeFormat\"")
+			}
+		case "multiEpisodeStyle":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				if err := s.MultiEpisodeStyle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"multiEpisodeStyle\"")
+			}
+		case "seasonPackThreshold":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.SeasonPackThreshold = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonPackThreshold\"")
+			}
+		case "searchOnAddDefault":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				v, err := d.Bool()
+				s.SearchOnAddDefault = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"searchOnAddDefault\"")
+			}
+		case "colonReplacement":
+			if err := func() error {
+				s.ColonReplacement.Reset()
+				if err := s.ColonReplacement.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"colonReplacement\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesNamingSettings")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b11111111,
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesNamingSettings) {
+					name = jsonFieldsNameOfSeriesNamingSettings[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesNamingSettings) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesNamingSettings) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesRenameItem) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesRenameItem) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("seriesId")
+		e.Int64(s.SeriesId)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
+		e.FieldStart("from")
+		e.Str(s.From)
+	}
+	{
+		e.FieldStart("to")
+		e.Str(s.To)
+	}
+}
+
+var jsonFieldsNameOfSeriesRenameItem = [4]string{
+	0: "seriesId",
+	1: "title",
+	2: "from",
+	3: "to",
+}
+
+// Decode decodes SeriesRenameItem from json.
+func (s *SeriesRenameItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesRenameItem to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "seriesId":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.SeriesId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesId\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "from":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.From = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"from\"")
+			}
+		case "to":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.To = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"to\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesRenameItem")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00001111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesRenameItem) {
+					name = jsonFieldsNameOfSeriesRenameItem[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesRenameItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesRenameItem) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesStats) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesStats) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("seasonCount")
+		e.Int(s.SeasonCount)
+	}
+	{
+		e.FieldStart("episodeCount")
+		e.Int(s.EpisodeCount)
+	}
+	{
+		e.FieldStart("episodeFileCount")
+		e.Int(s.EpisodeFileCount)
+	}
+	{
+		e.FieldStart("monitoredEpisodeCount")
+		e.Int(s.MonitoredEpisodeCount)
+	}
+	{
+		e.FieldStart("missingCount")
+		e.Int(s.MissingCount)
+	}
+	{
+		e.FieldStart("sizeOnDisk")
+		e.Int64(s.SizeOnDisk)
+	}
+	{
+		if s.NextAiring.Set {
+			e.FieldStart("nextAiring")
+			s.NextAiring.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.PreviousAiring.Set {
+			e.FieldStart("previousAiring")
+			s.PreviousAiring.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfSeriesStats = [8]string{
+	0: "seasonCount",
+	1: "episodeCount",
+	2: "episodeFileCount",
+	3: "monitoredEpisodeCount",
+	4: "missingCount",
+	5: "sizeOnDisk",
+	6: "nextAiring",
+	7: "previousAiring",
+}
+
+// Decode decodes SeriesStats from json.
+func (s *SeriesStats) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesStats to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "seasonCount":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.SeasonCount = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonCount\"")
+			}
+		case "episodeCount":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int()
+				s.EpisodeCount = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeCount\"")
+			}
+		case "episodeFileCount":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int()
+				s.EpisodeFileCount = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeFileCount\"")
+			}
+		case "monitoredEpisodeCount":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int()
+				s.MonitoredEpisodeCount = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitoredEpisodeCount\"")
+			}
+		case "missingCount":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int()
+				s.MissingCount = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"missingCount\"")
+			}
+		case "sizeOnDisk":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int64()
+				s.SizeOnDisk = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sizeOnDisk\"")
+			}
+		case "nextAiring":
+			if err := func() error {
+				s.NextAiring.Reset()
+				if err := s.NextAiring.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"nextAiring\"")
+			}
+		case "previousAiring":
+			if err := func() error {
+				s.PreviousAiring.Reset()
+				if err := s.PreviousAiring.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"previousAiring\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesStats")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00111111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSeriesStats) {
+					name = jsonFieldsNameOfSeriesStats[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesStats) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesStats) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeriesStatus as json.
+func (s SeriesStatus) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SeriesStatus from json.
+func (s *SeriesStatus) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesStatus to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SeriesStatus(v) {
+	case SeriesStatusContinuing:
+		*s = SeriesStatusContinuing
+	case SeriesStatusEnded:
+		*s = SeriesStatusEnded
+	case SeriesStatusUpcoming:
+		*s = SeriesStatusUpcoming
+	default:
+		*s = SeriesStatus(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SeriesStatus) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesStatus) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeriesType as json.
+func (s SeriesType) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SeriesType from json.
+func (s *SeriesType) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesType to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SeriesType(v) {
+	case SeriesTypeStandard:
+		*s = SeriesTypeStandard
+	case SeriesTypeDaily:
+		*s = SeriesTypeDaily
+	case SeriesTypeAnime:
+		*s = SeriesTypeAnime
+	default:
+		*s = SeriesType(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SeriesType) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesType) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeriesUpdate) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeriesUpdate) encodeFields(e *jx.Encoder) {
+	{
+		if s.Monitored.Set {
+			e.FieldStart("monitored")
+			s.Monitored.Encode(e)
+		}
+	}
+	{
+		if s.QualityProfileId.Set {
+			e.FieldStart("qualityProfileId")
+			s.QualityProfileId.Encode(e)
+		}
+	}
+	{
+		if s.SeriesType.Set {
+			e.FieldStart("seriesType")
+			s.SeriesType.Encode(e)
+		}
+	}
+	{
+		if s.SeasonFolder.Set {
+			e.FieldStart("seasonFolder")
+			s.SeasonFolder.Encode(e)
+		}
+	}
+	{
+		if s.MonitorNewSeasons.Set {
+			e.FieldStart("monitorNewSeasons")
+			s.MonitorNewSeasons.Encode(e)
+		}
+	}
+	{
+		if s.Monitor.Set {
+			e.FieldStart("monitor")
+			s.Monitor.Encode(e)
+		}
+	}
+	{
+		if s.Tags != nil {
+			e.FieldStart("tags")
+			e.ArrStart()
+			for _, elem := range s.Tags {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.RootFolderId.Set {
+			e.FieldStart("rootFolderId")
+			s.RootFolderId.Encode(e)
+		}
+	}
+	{
+		if s.Path.Set {
+			e.FieldStart("path")
+			s.Path.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSeriesUpdate = [9]string{
+	0: "monitored",
+	1: "qualityProfileId",
+	2: "seriesType",
+	3: "seasonFolder",
+	4: "monitorNewSeasons",
+	5: "monitor",
+	6: "tags",
+	7: "rootFolderId",
+	8: "path",
+}
+
+// Decode decodes SeriesUpdate from json.
+func (s *SeriesUpdate) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeriesUpdate to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "monitored":
+			if err := func() error {
+				s.Monitored.Reset()
+				if err := s.Monitored.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "qualityProfileId":
+			if err := func() error {
+				s.QualityProfileId.Reset()
+				if err := s.QualityProfileId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qualityProfileId\"")
+			}
+		case "seriesType":
+			if err := func() error {
+				s.SeriesType.Reset()
+				if err := s.SeriesType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesType\"")
+			}
+		case "seasonFolder":
+			if err := func() error {
+				s.SeasonFolder.Reset()
+				if err := s.SeasonFolder.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonFolder\"")
+			}
+		case "monitorNewSeasons":
+			if err := func() error {
+				s.MonitorNewSeasons.Reset()
+				if err := s.MonitorNewSeasons.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitorNewSeasons\"")
+			}
+		case "monitor":
+			if err := func() error {
+				s.Monitor.Reset()
+				if err := s.Monitor.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitor\"")
+			}
+		case "tags":
+			if err := func() error {
+				s.Tags = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Tags = append(s.Tags, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tags\"")
+			}
+		case "rootFolderId":
+			if err := func() error {
+				s.RootFolderId.Reset()
+				if err := s.RootFolderId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rootFolderId\"")
+			}
+		case "path":
+			if err := func() error {
+				s.Path.Reset()
+				if err := s.Path.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeriesUpdate")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeriesUpdate) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeriesUpdate) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -33855,6 +41518,674 @@ func (s *WantedEpisode) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *WantedEpisode) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *WantedEpisodeItem) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *WantedEpisodeItem) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int64(s.ID)
+	}
+	{
+		e.FieldStart("itemRef")
+		e.Str(s.ItemRef)
+	}
+	{
+		e.FieldStart("seriesId")
+		e.Int64(s.SeriesId)
+	}
+	{
+		e.FieldStart("seasonId")
+		e.Int64(s.SeasonId)
+	}
+	{
+		e.FieldStart("seasonNumber")
+		e.Int(s.SeasonNumber)
+	}
+	{
+		e.FieldStart("episodeNumber")
+		e.Int(s.EpisodeNumber)
+	}
+	{
+		e.FieldStart("absoluteNumber")
+		e.Int(s.AbsoluteNumber)
+	}
+	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
+		e.FieldStart("overview")
+		e.Str(s.Overview)
+	}
+	{
+		e.FieldStart("airDate")
+		e.Str(s.AirDate)
+	}
+	{
+		if s.AirDateUtc.Set {
+			e.FieldStart("airDateUtc")
+			s.AirDateUtc.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		e.FieldStart("runtime")
+		e.Int(s.Runtime)
+	}
+	{
+		e.FieldStart("monitored")
+		e.Bool(s.Monitored)
+	}
+	{
+		e.FieldStart("aired")
+		e.Bool(s.Aired)
+	}
+	{
+		e.FieldStart("removed")
+		e.Bool(s.Removed)
+	}
+	{
+		if s.SceneSeason.Set {
+			e.FieldStart("sceneSeason")
+			s.SceneSeason.Encode(e)
+		}
+	}
+	{
+		if s.SceneEpisode.Set {
+			e.FieldStart("sceneEpisode")
+			s.SceneEpisode.Encode(e)
+		}
+	}
+	{
+		if s.SceneAbsolute.Set {
+			e.FieldStart("sceneAbsolute")
+			s.SceneAbsolute.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("wanted")
+		s.Wanted.Encode(e)
+	}
+	{
+		e.FieldStart("cutoffMet")
+		e.Bool(s.CutoffMet)
+	}
+	{
+		if s.File.Set {
+			e.FieldStart("file")
+			s.File.Encode(e)
+		}
+	}
+	{
+		if s.Download.Set {
+			e.FieldStart("download")
+			s.Download.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("seriesTitle")
+		e.Str(s.SeriesTitle)
+	}
+	{
+		e.FieldStart("poster")
+		e.Str(s.Poster)
+	}
+	{
+		e.FieldStart("seriesType")
+		s.SeriesType.Encode(e)
+	}
+}
+
+var jsonFieldsNameOfWantedEpisodeItem = [25]string{
+	0:  "id",
+	1:  "itemRef",
+	2:  "seriesId",
+	3:  "seasonId",
+	4:  "seasonNumber",
+	5:  "episodeNumber",
+	6:  "absoluteNumber",
+	7:  "title",
+	8:  "overview",
+	9:  "airDate",
+	10: "airDateUtc",
+	11: "runtime",
+	12: "monitored",
+	13: "aired",
+	14: "removed",
+	15: "sceneSeason",
+	16: "sceneEpisode",
+	17: "sceneAbsolute",
+	18: "wanted",
+	19: "cutoffMet",
+	20: "file",
+	21: "download",
+	22: "seriesTitle",
+	23: "poster",
+	24: "seriesType",
+}
+
+// Decode decodes WantedEpisodeItem from json.
+func (s *WantedEpisodeItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode WantedEpisodeItem to nil")
+	}
+	var requiredBitSet [4]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.ID = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "itemRef":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.ItemRef = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"itemRef\"")
+			}
+		case "seriesId":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int64()
+				s.SeriesId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesId\"")
+			}
+		case "seasonId":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int64()
+				s.SeasonId = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonId\"")
+			}
+		case "seasonNumber":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int()
+				s.SeasonNumber = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasonNumber\"")
+			}
+		case "episodeNumber":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.EpisodeNumber = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodeNumber\"")
+			}
+		case "absoluteNumber":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int()
+				s.AbsoluteNumber = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"absoluteNumber\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "overview":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Overview = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "airDate":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.AirDate = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"airDate\"")
+			}
+		case "airDateUtc":
+			if err := func() error {
+				s.AirDateUtc.Reset()
+				if err := s.AirDateUtc.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"airDateUtc\"")
+			}
+		case "runtime":
+			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int()
+				s.Runtime = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "monitored":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				v, err := d.Bool()
+				s.Monitored = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "aired":
+			requiredBitSet[1] |= 1 << 5
+			if err := func() error {
+				v, err := d.Bool()
+				s.Aired = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"aired\"")
+			}
+		case "removed":
+			requiredBitSet[1] |= 1 << 6
+			if err := func() error {
+				v, err := d.Bool()
+				s.Removed = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"removed\"")
+			}
+		case "sceneSeason":
+			if err := func() error {
+				s.SceneSeason.Reset()
+				if err := s.SceneSeason.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneSeason\"")
+			}
+		case "sceneEpisode":
+			if err := func() error {
+				s.SceneEpisode.Reset()
+				if err := s.SceneEpisode.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneEpisode\"")
+			}
+		case "sceneAbsolute":
+			if err := func() error {
+				s.SceneAbsolute.Reset()
+				if err := s.SceneAbsolute.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneAbsolute\"")
+			}
+		case "wanted":
+			requiredBitSet[2] |= 1 << 2
+			if err := func() error {
+				if err := s.Wanted.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"wanted\"")
+			}
+		case "cutoffMet":
+			requiredBitSet[2] |= 1 << 3
+			if err := func() error {
+				v, err := d.Bool()
+				s.CutoffMet = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"cutoffMet\"")
+			}
+		case "file":
+			if err := func() error {
+				s.File.Reset()
+				if err := s.File.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"file\"")
+			}
+		case "download":
+			if err := func() error {
+				s.Download.Reset()
+				if err := s.Download.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"download\"")
+			}
+		case "seriesTitle":
+			requiredBitSet[2] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.SeriesTitle = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesTitle\"")
+			}
+		case "poster":
+			requiredBitSet[2] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.Poster = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster\"")
+			}
+		case "seriesType":
+			requiredBitSet[3] |= 1 << 0
+			if err := func() error {
+				if err := s.SeriesType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seriesType\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode WantedEpisodeItem")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [4]uint8{
+		0b11111111,
+		0b01111011,
+		0b11001100,
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfWantedEpisodeItem) {
+					name = jsonFieldsNameOfWantedEpisodeItem[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *WantedEpisodeItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *WantedEpisodeItem) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes WantedEpisodeItemWanted as json.
+func (s WantedEpisodeItemWanted) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes WantedEpisodeItemWanted from json.
+func (s *WantedEpisodeItemWanted) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode WantedEpisodeItemWanted to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch WantedEpisodeItemWanted(v) {
+	case WantedEpisodeItemWantedMissing:
+		*s = WantedEpisodeItemWantedMissing
+	case WantedEpisodeItemWantedUpgrade:
+		*s = WantedEpisodeItemWantedUpgrade
+	case WantedEpisodeItemWantedNone:
+		*s = WantedEpisodeItemWantedNone
+	default:
+		*s = WantedEpisodeItemWanted(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s WantedEpisodeItemWanted) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *WantedEpisodeItemWanted) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *WantedEpisodeList) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *WantedEpisodeList) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("total")
+		e.Int(s.Total)
+	}
+	{
+		e.FieldStart("items")
+		e.ArrStart()
+		for _, elem := range s.Items {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfWantedEpisodeList = [2]string{
+	0: "total",
+	1: "items",
+}
+
+// Decode decodes WantedEpisodeList from json.
+func (s *WantedEpisodeList) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode WantedEpisodeList to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "total":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.Total = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
+		case "items":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				s.Items = make([]WantedEpisodeItem, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem WantedEpisodeItem
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Items = append(s.Items, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"items\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode WantedEpisodeList")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfWantedEpisodeList) {
+					name = jsonFieldsNameOfWantedEpisodeList[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *WantedEpisodeList) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *WantedEpisodeList) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

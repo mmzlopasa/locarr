@@ -373,7 +373,7 @@ func (h *Handler) GetQueue(ctx context.Context, params gen.GetQueueParams) (*gen
 	for _, it := range items {
 		out.Items = append(out.Items, toQueueItem(it))
 	}
-	if h.Movies != nil {
+	{
 		ptrs := make([]*gen.QueueItem, len(out.Items))
 		for i := range out.Items {
 			ptrs[i] = &out.Items[i]
