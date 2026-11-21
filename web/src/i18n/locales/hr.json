@@ -294,7 +294,8 @@
       "tester": "Provjera izdanja",
       "mediaManagement": "Upravljanje medijima",
       "metadata": "Metapodaci",
-      "importLists": "Popisi za uvoz"
+      "importLists": "Popisi za uvoz",
+      "metadataProfiles": "Profili metapodataka"
     },
     "general": {
       "title": "Općenito",
@@ -1410,7 +1411,18 @@
       "failed": "Preuzimanje {{title}} nije uspjelo: {{message}}",
       "removed": "Preuzimanje uklonjeno: {{message}}",
       "downloadImported": "Preuzimanje označeno kao uvezeno: {{message}}",
-      "blocklisted": "{{title}} je blokirano."
+      "blocklisted": "{{title}} je blokirano.",
+      "importedTracks": "Uvezeno pjesama: {{count}} ({{mode}}) u {{folder}}",
+      "foundTracks": "Pronađeno postojećih datoteka: {{count}} u {{path}}",
+      "renamedTracks": "Preimenovano datoteka po predlošku: {{count}}, npr. {{example}}",
+      "matched": "Datoteke uparene s {{title}} ({{format}}, {{country}}): bodova {{score}}",
+      "releaseChanged": "Izdanje promijenjeno: {{message}}",
+      "coverSaved": "Omot spremljen ({{source}})",
+      "albumAdded": "Novi album na MusicBrainzu: {{title}}",
+      "albumRemoved": "{{message}}"
+    },
+    "coverSources": {
+      "download": "iz preuzimanja"
     }
   },
   "interactive": {
@@ -1457,10 +1469,16 @@
     "selectAll": "Odaberi sve",
     "previous": "Prethodna",
     "next": "Sljedeća",
-    "page": "Stranica {{page}} od {{pages}}"
+    "page": "Stranica {{page}} od {{pages}}",
+    "media": "Mediji",
+    "mediaKinds": {
+      "movies": "Filmovi",
+      "albums": "Albumi"
+    },
+    "albumsDescription": "Praćeni albumi koji su izašli, a nedostaju im pjesme ili su ispod granice profila."
   },
   "calendar": {
-    "description": "Datumi kino, digitalnih i fizičkih izdanja filmova iz biblioteke.",
+    "description": "Datumi filmova i izlasci albuma iz biblioteke.",
     "previous": "Prethodno",
     "next": "Sljedeće",
     "today": "Danas",
@@ -1473,7 +1491,8 @@
     "kinds": {
       "in_cinemas": "U kinima",
       "digital": "Digitalno",
-      "physical": "Fizičko"
+      "physical": "Fizičko",
+      "album": "Izlazak albuma"
     },
     "empty": "Nema datuma u ovom razdoblju.",
     "feed": {
@@ -1635,5 +1654,212 @@
     "exclusionsHint": "Filmovi obrisani uz „ne dodaj ponovno”; popisi ih preskaču.",
     "noExclusions": "Nema.",
     "allowAgain": "Ponovno dopusti"
+  },
+  "music": {
+    "description": "Izvođači s MusicBrainza, njihovi albumi i izdanja te što biblioteka od toga ima.",
+    "importExisting": "Uvezi postojeće",
+    "add": "Dodaj izvođača",
+    "empty": "Još nema izvođača. Dodajte jednog ili uvezite postojeću biblioteku.",
+    "filter": {
+      "search": "Traži",
+      "searchHint": "Ime ili drugo ime",
+      "monitored": "Praćenje"
+    },
+    "sort": {
+      "name": "Ime",
+      "added": "Dodano",
+      "albums": "Albumi",
+      "size": "Veličina"
+    },
+    "columns": {
+      "name": "Izvođač",
+      "albums": "Albumi (ima/prati se)",
+      "tracks": "Pjesme",
+      "size": "Veličina",
+      "latest": "Zadnje izdanje",
+      "album": "Album",
+      "released": "Izašlo",
+      "title": "Naslov",
+      "length": "Trajanje",
+      "file": "Datoteka",
+      "track": "Pjesma",
+      "fit": "Podudaranje",
+      "lengthDiff": "Razlika u trajanju"
+    },
+    "albumsHave": "{{have}} od {{count}} albuma",
+    "trackFiles": "Datoteke: {{count}}",
+    "aliases": "Poznat i kao",
+    "searchWanted": "Traži albume koji nedostaju",
+    "refresh": "Osvježi s MusicBrainza",
+    "noAlbums": "Profil metapodataka ne zadržava ni jedan album ovog izvođača.",
+    "groups": {
+      "album": "Albumi",
+      "ep": "EP-ovi",
+      "single": "Singlovi",
+      "live": "Uživo",
+      "compilation": "Kompilacije",
+      "other": "Ostalo"
+    },
+    "monitorAll": "Prati sve",
+    "unmonitorAll": "Ne prati ništa",
+    "monitorAlbum": "Prati {{title}}",
+    "searchAlbum": "Traži {{title}}",
+    "filtered": "zadržano: ima datoteke, izvan profila metapodataka",
+    "editArtist": "Uredi izvođača",
+    "deleteFiles": "Premjesti mapu izvođača u koš",
+    "deleteFilesHint": "Bez toga datoteke ostaju gdje jesu.",
+    "deleteArtist": "Ukloni izvođača",
+    "status": {
+      "downloaded": "Preuzeto",
+      "partial": "Djelomično",
+      "missing": "Nedostaje",
+      "downloading": "Preuzima se",
+      "unreleased": "Nije izašlo",
+      "unmonitored": "Ne prati se"
+    },
+    "types": {
+      "album": "Album",
+      "ep": "EP",
+      "single": "Singl",
+      "broadcast": "Emitiranje",
+      "other": "Ostalo",
+      "studio": "Studijski (bez dodatne vrste)",
+      "compilation": "Kompilacija",
+      "soundtrack": "Glazba iz filma",
+      "spokenword": "Govorni",
+      "interview": "Intervju",
+      "audiobook": "Audioknjiga",
+      "audio_drama": "Radio-drama",
+      "live": "Uživo",
+      "remix": "Remiks",
+      "dj_mix": "DJ miks",
+      "mixtape_street": "Mixtape",
+      "demo": "Demo",
+      "field_recording": "Terenska snimka"
+    },
+    "statuses": {
+      "official": "Službeno",
+      "promotion": "Promotivno",
+      "bootleg": "Neslužbeno (bootleg)",
+      "pseudo_release": "Pseudo-izdanje",
+      "withdrawn": "Povučeno",
+      "cancelled": "Otkazano"
+    },
+    "tracks": "pjesama: {{count}}",
+    "tracksHave": "{{have}} od {{count}} pjesama",
+    "artistUnmonitored": "Izvođač se ne prati",
+    "history": "Povijest",
+    "tabs": {
+      "tracks": "Pjesme",
+      "search": "Izdanja",
+      "import": "Uvezi mapu"
+    },
+    "edition": "Izdanje",
+    "editionLocked": "Odabrano ručno; Locarr ga ne mijenja.",
+    "editionAuto": "Odabrao Locarr; uvoz može prijeći na izdanje kojem datoteke najbolje odgovaraju.",
+    "chooseEdition": "Uspoređuj datoteke s",
+    "editionAutomatic": "Automatski",
+    "noEdition": "Još nije poznato ni jedno izdanje (učitava ih osvježavanje u pozadini).",
+    "tracksUnavailable": "Popis pjesama nije se mogao učitati s MusicBrainza; pokušajte uskoro ponovno.",
+    "noTracks": "Za ovo izdanje nisu poznate pjesme.",
+    "missingTrack": "nedostaje",
+    "extraFiles": "Datoteke koje nisu ni na jednoj pjesmi ovog izdanja: {{count}}",
+    "importFolder": "Mapa",
+    "importFolderHint": "Završeno preuzimanje ili bilo koja mapa albuma unutar mapa s podacima.",
+    "preview": "Provjeri podudaranje",
+    "previewSummary": "Audio datoteka: {{files}}. Za automatski uvoz treba barem {{min}} bodova.",
+    "matched": "upareno {{count}} · nedostaje {{missing}} · višak {{extra}}",
+    "missingNamed": "Nedostaje: {{track}}",
+    "extraNamed": "Nema pjesme za: {{file}}",
+    "allowPartial": "Uvezi i kad neke pjesme nedostaju",
+    "allowPartialHint": "Album se i dalje traži dok ne stignu sve pjesme.",
+    "import": "Uvezi",
+    "importAnyway": "Ipak uvezi",
+    "imported": "Uvezeno datoteka: {{count}} (preskočeno {{skipped}}, bodova {{score}})."
+  },
+  "addArtist": {
+    "title": "Dodaj izvođača",
+    "description": "Pretraga MusicBrainza. Pojašnjenje razlikuje izvođače istog imena.",
+    "search": "Izvođač",
+    "searchHint": "Ime ili mbid:<id>",
+    "noRoot": "Najprije dodajte root mapu za glazbu:",
+    "metadataProfile": "Profil metapodataka",
+    "monitor": "Prati odmah",
+    "monitorOptions": {
+      "all": "Sve albume",
+      "future": "Samo buduće albume",
+      "latest": "Samo najnoviji album",
+      "none": "Ništa"
+    },
+    "monitorNew": "Novi albumi",
+    "monitorNewOptions": {
+      "all": "Prati nove albume",
+      "future": "Prati nove buduće albume",
+      "none": "Ne prati nove albume"
+    },
+    "monitored": "Prati izvođača",
+    "monitoredHint": "Automatski se traže samo praćeni albumi praćenih izvođača.",
+    "searchOnAddHint": "Odmah traži praćene albume koji su već izašli.",
+    "optionsDescription": "Kako Locarr upravlja ovim izvođačem.",
+    "add": "Dodaj izvođača",
+    "score": "Bodovi pretrage",
+    "noDisambiguation": "Bez pojašnjenja"
+  },
+  "musicImport": {
+    "title": "Uvoz postojeće glazbe",
+    "description": "Locarr čita mape izvođača i albuma u root mapi, uparuje ih s MusicBrainzom i bilježi datoteke tamo gdje jesu. Ništa se ne premješta ni preimenuje.",
+    "scan": "Pregledaj",
+    "rate": "MusicBrainz odgovara na jedan zahtjev u sekundi, pa uparivanje velike biblioteke traje (izvođači s MusicBrainz ID-jem u tagovima idu brzo).",
+    "scanning": "Čitam tagove i pitam MusicBrainz…",
+    "nothing": "Nema mapa izvođača s audio datotekama.",
+    "folder": "Mapa",
+    "albums": "Mape albuma",
+    "match": "Izvođač na MusicBrainzu",
+    "tagged": "U tagovima: {{name}}",
+    "matchFor": "Izvođač za {{name}}",
+    "skip": "Preskoči",
+    "options": "Postavke za prihvaćene izvođače",
+    "optionsHint": "Datoteke se albumima pridružuju u pozadini; povijest svakog albuma pokazuje što je pronađeno.",
+    "accept": "Uvezi odabrane ({{count}})",
+    "added": "Dodan {{name}}."
+  },
+  "metadataProfiles": {
+    "title": "Profili metapodataka",
+    "description": "Koje albume izvođača biblioteka drži: po glavnoj vrsti, dodatnim vrstama i statusu izdanja. Albumi s datotekama nikad se ne uklanjaju.",
+    "new": "Novi profil",
+    "used": "Izvođača: {{count}}",
+    "inUse": "Ovaj profil koriste izvođači",
+    "delete": "Obriši {{name}}",
+    "edit": "Uredi profil",
+    "studioHint": "Album prolazi kad mu je glavna vrsta odabrana i kad je odabrana svaka dodatna vrsta koju ima; „Studijski“ znači albume bez dodatne vrste.",
+    "name": "Naziv",
+    "primary": "Glavne vrste",
+    "secondary": "Dodatne vrste",
+    "statuses": "Statusi izdanja"
+  },
+  "musicNaming": {
+    "title": "Imena i uvoz glazbe",
+    "description": "Mape i imena datoteka uvezenih albuma.",
+    "artistFolderFormat": "Mapa izvođača",
+    "albumFolderFormat": "Mapa albuma",
+    "trackFormat": "Datoteka pjesme",
+    "multiDiscTrackFormat": "Datoteka pjesme (više diskova)",
+    "discFolderFormat": "Mapa diska",
+    "rename": "Preimenuj pjesme",
+    "renameHint": "Isključeno: datoteke zadržavaju imena (i dalje idu u mapu albuma).",
+    "discFolders": "Mapa za svaki disk",
+    "discFoldersHint": "Albumi s više diskova dobivaju mape Disc 1, Disc 2 … umjesto broja diska u imenu datoteke.",
+    "preview": "Primjer",
+    "importTitle": "Uvoz",
+    "partial": "Uvezi albume kojima nedostaju pjesme",
+    "partialHint": "Isključeno: takvo preuzimanje ne uspijeva, uz popis onoga što nedostaje.",
+    "cover": "Spremi cover.jpg",
+    "coverHint": "Iz preuzimanja, inače prednji omot s Cover Art Archivea.",
+    "writeTags": "Upiši ispravljene tagove u FLAC datoteke",
+    "writeTagsHint": "Zadano isključeno. Takve se datoteke kopiraju, nikad hardlinkaju, pa preuzimanja koja se seedaju ostaju netaknuta.",
+    "minScore": "Najmanji broj bodova podudaranja",
+    "minScoreHint": "40–100. Ispod toga preuzimanje se ne uvozi automatski.",
+    "contact": "Kontakt za MusicBrainz",
+    "contactHint": "E-mail ili web adresa koja ide uz svaki zahtjev MusicBrainzu (traže ga od svake aplikacije). Prazno: stranica projekta."
   }
 }

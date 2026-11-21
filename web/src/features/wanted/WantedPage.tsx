@@ -6,11 +6,30 @@ import { Search } from "lucide-react";
 import { api, unwrap } from "@/api/client";
 import { Button, EmptyState, ErrorAlert, PageHeader, Spinner } from "@/components/ui";
 import { StatusBadge } from "@/features/movies/common";
+import { WantedAlbums } from "@/features/music/WantedAlbums";
 
 const PAGE = 100;
 
-/** Monitored movies that are missing or below the profile's cutoff, with bulk search. */
+/** Wanted movies or albums (a switch at the top). */
 export function WantedPage() {
+  const { t } = useTranslation();
+  const [media, setMedia] = useState<"movies" | "albums">("movies");
+  return (
+    <div>
+      <div className="mb-2 flex justify-end gap-1" role="group" aria-label={t("wanted.media")}>
+        {(["movies", "albums"] as const).map((m) => (
+          <Button key={m} variant={media === m ? "secondary" : "ghost"} aria-pressed={media === m} onClick={() => setMedia(m)} data-testid={`wanted-${m}`}>
+            {t(`wanted.mediaKinds.${m}`)}
+          </Button>
+        ))}
+      </div>
+      {media === "movies" ? <WantedMovies /> : <WantedAlbums />}
+    </div>
+  );
+}
+
+/** Monitored movies that are missing or below the profile's cutoff, with bulk search. */
+function WantedMovies() {
   const { t } = useTranslation();
   const [kind, setKind] = useState<"missing" | "cutoff_unmet">("missing");
   const [page, setPage] = useState(0);

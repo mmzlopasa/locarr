@@ -9,15 +9,20 @@ import { describeRejection } from "@/features/profiles/rejections";
 
 const tone = { accepted: "success", pending: "warning", rejected: "danger" } as const;
 
-/** Every release the indexers have for a movie, with the decision on each (nothing is grabbed until you choose). */
-export function InteractiveSearch({ movieId, itemRef }: { movieId: number; itemRef: string }) {
+/**
+ * Every release the indexers have for a movie (or an album, with kind="album"),
+ * with the decision on each (nothing is grabbed until you choose).
+ */
+export function InteractiveSearch({ movieId, itemRef, kind = "movie" }: { movieId: number; itemRef: string; kind?: "movie" | "album" }) {
   const { t, i18n } = useTranslation();
   const qc = useQueryClient();
   const [run, setRun] = useState(0);
   const [show, setShow] = useState<"all" | "accepted" | "rejected">("all");
   const search = useQuery({
-    queryKey: ["movies", movieId, "releases", run],
-    queryFn: async () => unwrap(await api.GET("/movies/{id}/releases", { params: { path: { id: movieId } } })),
+    queryKey: [kind, movieId, "releases", run],
+    queryFn: async () => unwrap(kind === "album"
+      ? await api.GET("/music/albums/{id}/releases", { params: { path: { id: movieId } } })
+      : await api.GET("/movies/{id}/releases", { params: { path: { id: movieId } } })),
     enabled: run > 0,
     staleTime: Infinity,
     retry: false,
@@ -26,15 +31,17 @@ export function InteractiveSearch({ movieId, itemRef }: { movieId: number; itemR
   const grab = useMutation({
     mutationFn: async (d: InteractiveDecision) => {
       const c = d.decision.candidate;
-      return unwrap(await api.POST("/movies/{id}/releases", { params: { path: { id: movieId } }, body: {
-        indexerId: c.indexerId ?? 0, title: c.title, protocol: c.protocol ?? "torrent", guid: c.guid,
+      const body = { indexerId: c.indexerId ?? 0, title: c.title, protocol: c.protocol ?? "torrent", guid: c.guid,
         ...(d.downloadToken ? { downloadToken: d.downloadToken } : {}), ...(d.magnetUrl ? { magnetUrl: d.magnetUrl } : {}),
-        ...(c.publishDate ? { publishDate: c.publishDate } : {}) } }));
+        ...(c.publishDate ? { publishDate: c.publishDate } : {}) };
+      return unwrap(kind === "album"
+        ? await api.POST("/music/albums/{id}/releases", { params: { path: { id: movieId } }, body })
+        : await api.POST("/movies/{id}/releases", { params: { path: { id: movieId } }, body }));
     },
     onSuccess: (_, d) => {
       setGrabbed((s) => new Set(s).add(`${d.decision.candidate.indexerId}:${d.decision.candidate.guid}`));
       void qc.invalidateQueries({ queryKey: queryKeys.timeline(itemRef) });
-      void qc.invalidateQueries({ queryKey: queryKeys.movie(movieId) });
+      void qc.invalidateQueries({ queryKey: kind === "album" ? ["music"] : queryKeys.movie(movieId) });
     },
   });
   const rows = useMemo(() => (search.data?.decisions ?? []).filter((d) =>
