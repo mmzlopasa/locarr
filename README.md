@@ -24,7 +24,7 @@ docker compose up -d
 docker compose logs locarr | grep "setup code"
 ```
 
-Open `http://127.0.0.1:8484`, enter the setup code from the log and create the administrator.
+Open `http://<server-lan-ip>:8484` (on the server itself `http://127.0.0.1:8484`), enter the setup code from the log and create the administrator.
 
 **One `/data` mount for media and downloads.** Put both under one host folder and mount it once:
 `/data/media/{movies,tv,music}` and `/data/downloads/{torrents,usenet}`. Imports then use hardlinks
