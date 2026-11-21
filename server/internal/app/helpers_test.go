@@ -51,7 +51,7 @@ func newEnv(t *testing.T, mod func(*RouterOptions)) *env {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { _ = deps.Close() })
-	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots,
+	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots, Indexers: deps.Indexers,
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: time.Now().UTC(), Log: quietLog()}
 	web := webui.FromFS(fstest.MapFS{
 		"index.html":    {Data: []byte("<!doctype html><title>Locarr</title><div id=root></div>")},
