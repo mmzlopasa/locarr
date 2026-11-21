@@ -257,7 +257,13 @@ func pairScore(f *LocalFile, t *CandidateTrack) (float64, bool) {
 	case f.Track == t.Position:
 		pos = 0.5
 	}
-	return 0.5*ts + 0.3*pos + 0.2*durationFit(int(f.Tags.Duration.Milliseconds()), t.LengthMs), false
+	score := 0.5*ts + 0.3*pos + 0.2*durationFit(int(f.Tags.Duration.Milliseconds()), t.LengthMs)
+	// A file whose title is clearly another song is not this track, whatever
+	// its number and length say.
+	if title != "" && ts < 0.5 {
+		score *= 0.5
+	}
+	return score, false
 }
 
 // minPair: weaker pairs are not the same track.

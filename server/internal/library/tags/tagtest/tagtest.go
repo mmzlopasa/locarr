@@ -58,7 +58,7 @@ func (s Stream) norm() Stream {
 func filler(n int) []byte {
 	b := make([]byte, n)
 	for i := range b {
-		b[i] = byte(i * 31)
+		b[i] = byte(i * 31 & 0xFF) // #nosec G115 -- masked
 	}
 	return b
 }
@@ -73,16 +73,16 @@ func FLAC(f Fields, s Stream) []byte {
 	binary.BigEndian.PutUint16(si[2:], 4096)
 	samples := uint64(s.Duration.Seconds() * float64(s.SampleRate))
 	x := si[10:18]
-	x[0] = byte(s.SampleRate >> 12)
-	x[1] = byte(s.SampleRate >> 4)
-	x[2] = byte(s.SampleRate&0x0F)<<4 | byte(s.Channels-1)<<1 | byte((s.BitDepth-1)>>4)
+	x[0] = byte(s.SampleRate >> 12 & 0xFF) // #nosec G115 -- masked
+	x[1] = byte(s.SampleRate >> 4 & 0xFF) // #nosec G115 -- masked
+	x[2] = byte(s.SampleRate&0x0F)<<4 | byte((s.Channels-1)&0x07)<<1 | byte((s.BitDepth-1)>>4&0x01) // #nosec G115 -- masked
 	x[3] = byte((s.BitDepth-1)&0x0F)<<4 | byte(samples>>32&0x0F)
 	binary.BigEndian.PutUint32(x[4:], uint32(samples)) // #nosec G115 -- test data
 	block := func(typ byte, last bool, data []byte) {
 		if last {
 			typ |= 0x80
 		}
-		b.Write([]byte{typ, byte(len(data) >> 16), byte(len(data) >> 8), byte(len(data))})
+		b.Write([]byte{typ, byte(len(data) >> 16 & 0xFF), byte(len(data) >> 8 & 0xFF), byte(len(data) & 0xFF)}) // #nosec G115 -- masked
 		b.Write(data)
 	}
 	block(0, false, si)
@@ -138,7 +138,7 @@ func MP3(major int, f Fields, s Stream) []byte {
 			if r > 0xFFFF {
 				r = '?'
 			}
-			out = append(out, byte(r), byte(r>>8))
+			out = append(out, byte(r&0xFF), byte(r>>8&0xFF)) // #nosec G115 -- masked
 		}
 		return out
 	}
@@ -162,7 +162,7 @@ func MP3(major int, f Fields, s Stream) []byte {
 			} else {
 				d = append(d, 0, 0, 0xFF, 0xFE)
 				for _, r := range v {
-					d = append(d, byte(r), byte(r>>8))
+					d = append(d, byte(r&0xFF), byte(r>>8&0xFF)) // #nosec G115 -- masked
 				}
 				frame("TXXX", d)
 				continue
@@ -172,7 +172,7 @@ func MP3(major int, f Fields, s Stream) []byte {
 	}
 	frames.Write(make([]byte, 128)) // padding
 	var b bytes.Buffer
-	b.Write([]byte{'I', 'D', '3', byte(major), 0, 0})
+	b.Write([]byte{'I', 'D', '3', byte(major), 0, 0}) // #nosec G115 -- small test values
 	b.Write(syncsafe(frames.Len()))
 	b.Write(frames.Bytes())
 	// First frame: MPEG-1 layer III, 44.1 kHz, stereo; bitrate index 9 (128) for VBR, else the real one.
@@ -180,7 +180,7 @@ func MP3(major int, f Fields, s Stream) []byte {
 	if idx == 0 || s.VBR {
 		idx = 9
 	}
-	hdr := []byte{0xFF, 0xFB, idx<<4 | 0x00, 0x00}
+	hdr := []byte{0xFF, 0xFB, idx << 4, 0x00}
 	fr := make([]byte, 417)
 	copy(fr, hdr)
 	tag := "Info"
@@ -289,14 +289,14 @@ func oggPage(headerType byte, granule int64, seq uint32, packet []byte) []byte {
 		segs = append(segs, 255)
 		n -= 255
 	}
-	segs = append(segs, byte(n))
+	segs = append(segs, byte(n&0xFF)) // #nosec G115 -- below 255
 	p := make([]byte, 27, 27+len(segs)+len(packet))
 	copy(p, "OggS")
 	p[5] = headerType
 	binary.LittleEndian.PutUint64(p[6:], uint64(granule)) // #nosec G115
 	binary.LittleEndian.PutUint32(p[14:], 0x4C4F4341)
 	binary.LittleEndian.PutUint32(p[18:], seq)
-	p[26] = byte(len(segs))
+	p[26] = byte(len(segs) & 0xFF) // #nosec G115 -- test pages are small
 	p = append(p, segs...)
 	p = append(p, packet...)
 	var crc uint32
@@ -314,7 +314,7 @@ func Ogg(opus bool, f Fields, s Stream) []byte {
 	var granule int64
 	if opus {
 		id = []byte("OpusHead")
-		id = append(id, 1, byte(s.Channels))
+		id = append(id, 1, byte(s.Channels)) // #nosec G115 -- small test values
 		id = binary.LittleEndian.AppendUint16(id, 312)
 		id = binary.LittleEndian.AppendUint32(id, uint32(s.SampleRate)) // #nosec G115
 		id = append(id, 0, 0, 0)
@@ -323,7 +323,7 @@ func Ogg(opus bool, f Fields, s Stream) []byte {
 	} else {
 		id = []byte("\x01vorbis")
 		id = binary.LittleEndian.AppendUint32(id, 0)
-		id = append(id, byte(s.Channels))
+		id = append(id, byte(s.Channels)) // #nosec G115 -- small test values
 		id = binary.LittleEndian.AppendUint32(id, uint32(s.SampleRate)) // #nosec G115
 		id = binary.LittleEndian.AppendUint32(id, 0)
 		id = binary.LittleEndian.AppendUint32(id, uint32(s.Bitrate*1000)) // #nosec G115

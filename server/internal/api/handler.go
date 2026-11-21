@@ -21,6 +21,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
+	"github.com/mmzlopasa/locarr/server/internal/library/music"
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
@@ -45,6 +46,11 @@ type Handler struct {
 	Downloads   *downloads.Service
 	Indexers    *indexers.Service
 	Movies      *movies.Service
+	Music       *music.Service
+	// CoverArt caches Cover Art Archive images; LinkExisting queues linking
+	// an existing artist folder's files (both set by the app).
+	CoverArt     *metadata.ImageCache
+	LinkExisting func(ctx context.Context, artistID int64)
 	Wanted      *wanted.Service
 	Timeline    *timeline.Store
 	Recycle     *recycle.Bin
@@ -105,6 +111,9 @@ func mapError(err error) *StatusError {
 		return se
 	}
 	if se := mapLibraryError(err); se != nil {
+		return se
+	}
+	if se := mapMusicError(err); se != nil {
 		return se
 	}
 	if se := mapDownloadsError(err); se != nil {

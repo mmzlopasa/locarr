@@ -24,6 +24,8 @@ type flowClient struct {
 	// fail makes the next added release fail in the client.
 	fail  map[string]bool
 	added []string
+	// write fills a finished download's folder (nil = a movie folder).
+	write func(t *testing.T, folder, name string)
 }
 
 func newFlowClient(dir string) *flowClient {
@@ -81,7 +83,11 @@ func (f *flowClient) finish(t *testing.T) {
 			continue
 		}
 		folder := filepath.Join(f.dir, it.Name)
-		writeMovieFolder(t, folder, it.Name)
+		if f.write != nil {
+			f.write(t, folder, it.Name)
+		} else {
+			writeMovieFolder(t, folder, it.Name)
+		}
 		it.State, it.RawState, it.Progress, it.Downloaded = downloaders.StateSeeding, "seeding", 1, it.Size
 		it.ContentPath = folder
 		f.items[id] = it

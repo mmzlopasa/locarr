@@ -105,8 +105,8 @@ func TestMatchMissingAndExtra(t *testing.T) {
 
 func TestMatchDurationTolerance(t *testing.T) {
 	c := cand("r1", five)
-	near := filesFor(c, func(i int, f *LocalFile) { f.Tags.Duration += 3 * time.Second })
-	far := filesFor(c, func(i int, f *LocalFile) { f.Tags.Duration += 90 * time.Second })
+	near := filesFor(c, func(_ int, f *LocalFile) { f.Tags.Duration += 3 * time.Second })
+	far := filesFor(c, func(_ int, f *LocalFile) { f.Tags.Duration += 90 * time.Second })
 	mn, mf := MatchRelease(near, c), MatchRelease(far, c)
 	if mn.DurationOK != 1 || mf.DurationOK != 0 || mf.Score >= mn.Score {
 		t.Fatalf("near %d (%.2f) far %d (%.2f)", mn.Score, mn.DurationOK, mf.Score, mf.DurationOK)

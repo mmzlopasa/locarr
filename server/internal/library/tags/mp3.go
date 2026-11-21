@@ -177,8 +177,8 @@ func (t *Tags) parseID3(major, flags byte, body []byte) {
 		var id string
 		var size, hdr int
 		var fflags int
-		switch {
-		case major == 2:
+		switch major {
+		case 2:
 			if p+6 > len(body) {
 				return
 			}

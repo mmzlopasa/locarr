@@ -159,7 +159,8 @@ func WriteFLAC(path string, fields map[string]string) error {
 		return cleanup(err)
 	}
 	for i, b := range out {
-		h := []byte{b.typ, byte(len(b.data) >> 16), byte(len(b.data) >> 8), byte(len(b.data))}
+		n := len(b.data) & 0xFFFFFF
+		h := []byte{b.typ, byte(n >> 16), byte(n >> 8 & 0xFF), byte(n & 0xFF)} // #nosec G115 -- masked to 24 bits
 		if i == len(out)-1 {
 			h[0] |= 0x80
 		}

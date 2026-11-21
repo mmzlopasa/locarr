@@ -164,7 +164,7 @@ func (w WantedSource) Matcher(ctx context.Context) (wanted.Matcher, error) {
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	return func(r *indexers.Release, p *parser.Release) []library.Ref {
+	return func(_ *indexers.Release, p *parser.Release) []library.Ref {
 		artist, album := "", ""
 		if p.Music != nil {
 			artist, album = p.Music.Artist, p.Music.Album

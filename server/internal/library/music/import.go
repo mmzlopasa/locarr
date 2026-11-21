@@ -314,8 +314,8 @@ func (s *Service) Analyse(ctx context.Context, albumID int64, root string, relea
 			"split it into tracks first (cue images are not supported)", filepath.Base(src))}
 		return an, nil
 	}
-	min, _ := settings.Get(ctx, s.Settings, MinimumMatchScore)
-	if best.Match.Score < min {
+	minScore, _ := settings.Get(ctx, s.Settings, MinimumMatchScore)
+	if best.Match.Score < minScore {
 		an.Rejection = &ImportError{Code: RejectWeakMatch, Message: fmt.Sprintf("the files do not match %s well enough: best score %d of 100 (%s, %d of %d tracks); "+
 			"import manually to choose", al.Title, best.Match.Score, best.Release.FormatSummary(), len(best.Match.Pairs), len(best.Tracks))}
 	}
@@ -482,7 +482,7 @@ func (s *Service) Import(ctx context.Context, albumID int64, root string, o Impo
 	al, a := an.Album, an.Artist
 	ref := al.Ref()
 	res := ImportResult{AlbumID: al.ID}
-	if an.Rejection != nil && !(o.Force && an.Rejection.Code == RejectWeakMatch) {
+	if an.Rejection != nil && (!o.Force || an.Rejection.Code != RejectWeakMatch) {
 		return res, an.Rejection
 	}
 	best := an.Best()
