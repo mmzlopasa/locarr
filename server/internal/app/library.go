@@ -120,10 +120,12 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 
 // NewHandler builds the API handler for the services.
 func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger) *api.Handler {
-	return &api.Handler{DB: d.DB, Auth: d.Auth, Settings: d.Settings, Jobs: d.Jobs, RootFolders: d.Roots, Downloads: d.Downloads,
+	h := &api.Handler{DB: d.DB, Auth: d.Auth, Settings: d.Settings, Jobs: d.Jobs, RootFolders: d.Roots, Downloads: d.Downloads,
 		Indexers: d.Indexers, Quality: d.Quality, Formats: d.Formats, Movies: d.Movies, Wanted: d.Wanted, Timeline: d.Timeline,
 		Recycle: d.Recycle, Images: d.Images, TMDb: d.TMDb, MetaCache: d.MetaCache,
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
+	attachMusic(h, d, log)
+	return h
 }
 
 // runBackground starts the RSS consumer; the returned function waits for it.

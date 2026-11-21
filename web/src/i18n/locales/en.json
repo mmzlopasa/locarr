@@ -294,7 +294,8 @@
       "tester": "Release tester",
       "mediaManagement": "Media management",
       "metadata": "Metadata",
-      "importLists": "Import lists"
+      "importLists": "Import lists",
+      "metadataProfiles": "Metadata profiles"
     },
     "general": {
       "title": "General",
@@ -1410,7 +1411,18 @@
       "failed": "Download {{title}} failed: {{message}}",
       "removed": "Download removed: {{message}}",
       "downloadImported": "Download marked imported: {{message}}",
-      "blocklisted": "{{title}} was blocklisted."
+      "blocklisted": "{{title}} was blocklisted.",
+      "importedTracks": "Imported {{count}} tracks ({{mode}}) into {{folder}}",
+      "foundTracks": "Found {{count}} existing files in {{path}}",
+      "renamedTracks": "Renamed {{count}} files by the naming template, e.g. {{example}}",
+      "matched": "Matched the files to {{title}} ({{format}}, {{country}}): score {{score}}",
+      "releaseChanged": "Edition changed: {{message}}",
+      "coverSaved": "Saved the cover ({{source}})",
+      "albumAdded": "New album on MusicBrainz: {{title}}",
+      "albumRemoved": "{{message}}"
+    },
+    "coverSources": {
+      "download": "the download"
     }
   },
   "interactive": {
@@ -1457,10 +1469,16 @@
     "selectAll": "Select all",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {{page}} of {{pages}}"
+    "page": "Page {{page}} of {{pages}}",
+    "media": "Media",
+    "mediaKinds": {
+      "movies": "Movies",
+      "albums": "Albums"
+    },
+    "albumsDescription": "Monitored, released albums that are missing tracks or below their profile's cutoff."
   },
   "calendar": {
-    "description": "Cinema, digital and physical release dates of the movies in the library.",
+    "description": "Movie dates and album releases of the library.",
     "previous": "Previous",
     "next": "Next",
     "today": "Today",
@@ -1473,7 +1491,8 @@
     "kinds": {
       "in_cinemas": "In cinemas",
       "digital": "Digital",
-      "physical": "Physical"
+      "physical": "Physical",
+      "album": "Album release"
     },
     "empty": "No dates in this period.",
     "feed": {
@@ -1635,5 +1654,212 @@
     "exclusionsHint": "Movies deleted with “don't add again”; lists skip them.",
     "noExclusions": "None.",
     "allowAgain": "Allow again"
+  },
+  "music": {
+    "description": "Artists from MusicBrainz, their albums and editions, and what the library has of them.",
+    "importExisting": "Import existing",
+    "add": "Add artist",
+    "empty": "No artists yet. Add one or import an existing library.",
+    "filter": {
+      "search": "Search",
+      "searchHint": "Name or alias",
+      "monitored": "Monitored"
+    },
+    "sort": {
+      "name": "Name",
+      "added": "Added",
+      "albums": "Albums",
+      "size": "Size"
+    },
+    "columns": {
+      "name": "Artist",
+      "albums": "Albums (have/monitored)",
+      "tracks": "Tracks",
+      "size": "Size",
+      "latest": "Latest release",
+      "album": "Album",
+      "released": "Released",
+      "title": "Title",
+      "length": "Length",
+      "file": "File",
+      "track": "Track",
+      "fit": "Fit",
+      "lengthDiff": "Length difference"
+    },
+    "albumsHave": "{{have}} of {{count}} albums",
+    "trackFiles": "Files: {{count}}",
+    "aliases": "Also known as",
+    "searchWanted": "Search wanted albums",
+    "refresh": "Refresh from MusicBrainz",
+    "noAlbums": "The metadata profile keeps no albums of this artist.",
+    "groups": {
+      "album": "Albums",
+      "ep": "EPs",
+      "single": "Singles",
+      "live": "Live",
+      "compilation": "Compilations",
+      "other": "Other"
+    },
+    "monitorAll": "Monitor all",
+    "unmonitorAll": "Unmonitor all",
+    "monitorAlbum": "Monitor {{title}}",
+    "searchAlbum": "Search for {{title}}",
+    "filtered": "kept: has files, outside the metadata profile",
+    "editArtist": "Edit artist",
+    "deleteFiles": "Move the artist folder to the recycle bin",
+    "deleteFilesHint": "Without this the files stay where they are.",
+    "deleteArtist": "Remove artist",
+    "status": {
+      "downloaded": "Downloaded",
+      "partial": "Partial",
+      "missing": "Missing",
+      "downloading": "Downloading",
+      "unreleased": "Unreleased",
+      "unmonitored": "Unmonitored"
+    },
+    "types": {
+      "album": "Album",
+      "ep": "EP",
+      "single": "Single",
+      "broadcast": "Broadcast",
+      "other": "Other",
+      "studio": "Studio (no secondary type)",
+      "compilation": "Compilation",
+      "soundtrack": "Soundtrack",
+      "spokenword": "Spoken word",
+      "interview": "Interview",
+      "audiobook": "Audiobook",
+      "audio_drama": "Audio drama",
+      "live": "Live",
+      "remix": "Remix",
+      "dj_mix": "DJ-mix",
+      "mixtape_street": "Mixtape/Street",
+      "demo": "Demo",
+      "field_recording": "Field recording"
+    },
+    "statuses": {
+      "official": "Official",
+      "promotion": "Promotion",
+      "bootleg": "Bootleg",
+      "pseudo_release": "Pseudo-release",
+      "withdrawn": "Withdrawn",
+      "cancelled": "Cancelled"
+    },
+    "tracks": "tracks: {{count}}",
+    "tracksHave": "{{have}} of {{count}} tracks",
+    "artistUnmonitored": "Artist not monitored",
+    "history": "History",
+    "tabs": {
+      "tracks": "Tracks",
+      "search": "Releases",
+      "import": "Import a folder"
+    },
+    "edition": "Edition",
+    "editionLocked": "Chosen by hand; Locarr keeps it.",
+    "editionAuto": "Chosen by Locarr; an import may switch to the edition the files fit best.",
+    "chooseEdition": "Match files against",
+    "editionAutomatic": "Automatic",
+    "noEdition": "No edition known yet (the background refresh loads them).",
+    "tracksUnavailable": "The track list could not be loaded from MusicBrainz; try again shortly.",
+    "noTracks": "No tracks known for this edition.",
+    "missingTrack": "missing",
+    "extraFiles": "Files on no track of this edition: {{count}}",
+    "importFolder": "Folder",
+    "importFolderHint": "A finished download or any album folder inside the data folders.",
+    "preview": "Check match",
+    "previewSummary": "{{files}} audio files. Automatic imports need a score of at least {{min}}.",
+    "matched": "{{count}} matched · {{missing}} missing · {{extra}} extra",
+    "missingNamed": "Missing: {{track}}",
+    "extraNamed": "No track for: {{file}}",
+    "allowPartial": "Import even if tracks are missing",
+    "allowPartialHint": "The album stays wanted until every track is there.",
+    "import": "Import",
+    "importAnyway": "Import anyway",
+    "imported": "Imported {{count}} files (skipped {{skipped}}, score {{score}})."
+  },
+  "addArtist": {
+    "title": "Add artist",
+    "description": "Search MusicBrainz. The disambiguation tells artists with the same name apart.",
+    "search": "Artist",
+    "searchHint": "Name, or mbid:<id>",
+    "noRoot": "Add a root folder for music first:",
+    "metadataProfile": "Metadata profile",
+    "monitor": "Monitor now",
+    "monitorOptions": {
+      "all": "All albums",
+      "future": "Only future albums",
+      "latest": "Only the latest album",
+      "none": "None"
+    },
+    "monitorNew": "New albums",
+    "monitorNewOptions": {
+      "all": "Monitor new albums",
+      "future": "Monitor new future albums",
+      "none": "Do not monitor new albums"
+    },
+    "monitored": "Monitor the artist",
+    "monitoredHint": "Only monitored artists' monitored albums are searched automatically.",
+    "searchOnAddHint": "Search for the monitored, released albums right away.",
+    "optionsDescription": "How Locarr manages this artist.",
+    "add": "Add artist",
+    "score": "Search score",
+    "noDisambiguation": "No disambiguation"
+  },
+  "musicImport": {
+    "title": "Import existing music",
+    "description": "Locarr reads the artist and album folders of a root folder, matches them to MusicBrainz and records the files where they are. Nothing is moved or renamed.",
+    "scan": "Scan",
+    "rate": "MusicBrainz answers one request per second, so a large library takes a while to match (artists with MusicBrainz ids in their tags are quick).",
+    "scanning": "Reading tags and asking MusicBrainz…",
+    "nothing": "No artist folders with audio files found.",
+    "folder": "Folder",
+    "albums": "Album folders",
+    "match": "MusicBrainz artist",
+    "tagged": "Tags say: {{name}}",
+    "matchFor": "Artist for {{name}}",
+    "skip": "Skip",
+    "options": "Options for the accepted artists",
+    "optionsHint": "The files are linked to albums in the background; each album's history shows what was found.",
+    "accept": "Import selected ({{count}})",
+    "added": "Added {{name}}."
+  },
+  "metadataProfiles": {
+    "title": "Metadata profiles",
+    "description": "Which albums of an artist the library holds: by primary type, secondary types and release status. Albums with files are never removed.",
+    "new": "New profile",
+    "used": "Artists: {{count}}",
+    "inUse": "Artists use this profile",
+    "delete": "Delete {{name}}",
+    "edit": "Edit profile",
+    "studioHint": "An album passes when its primary type is chosen and every secondary type it has is chosen; “Studio” stands for albums without one.",
+    "name": "Name",
+    "primary": "Primary types",
+    "secondary": "Secondary types",
+    "statuses": "Release statuses"
+  },
+  "musicNaming": {
+    "title": "Music naming and import",
+    "description": "Folders and file names for imported albums.",
+    "artistFolderFormat": "Artist folder",
+    "albumFolderFormat": "Album folder",
+    "trackFormat": "Track file",
+    "multiDiscTrackFormat": "Track file (several discs)",
+    "discFolderFormat": "Disc folder",
+    "rename": "Rename tracks",
+    "renameHint": "Off: files keep their names (they still go into the album folder).",
+    "discFolders": "A folder per disc",
+    "discFoldersHint": "Multi-disc albums get Disc 1, Disc 2 … folders instead of a disc number in the file name.",
+    "preview": "Example",
+    "importTitle": "Import",
+    "partial": "Import albums with missing tracks",
+    "partialHint": "Off: such a download fails with a report of what is missing.",
+    "cover": "Save cover.jpg",
+    "coverHint": "From the download, otherwise the Cover Art Archive front cover.",
+    "writeTags": "Write corrected tags into FLAC files",
+    "writeTagsHint": "Off by default. Tagged files are copied, never hardlinked, so seeding downloads stay intact.",
+    "minScore": "Minimum match score",
+    "minScoreHint": "40–100. Below it a download is not imported automatically.",
+    "contact": "MusicBrainz contact",
+    "contactHint": "An e-mail or web address sent with every MusicBrainz request (they ask every application for one). Empty: the project page."
   }
 }

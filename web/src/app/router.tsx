@@ -42,6 +42,12 @@ import { WantedPage } from "@/features/wanted/WantedPage";
 import { CalendarPage } from "@/features/calendar/CalendarPage";
 import { MediaManagementPage } from "@/features/settings/MediaManagementPage";
 import { ImportListsPage, MetadataPage } from "@/features/settings/MetadataPage";
+import { ArtistsPage } from "@/features/music/ArtistsPage";
+import { AddArtistPage } from "@/features/music/AddArtistPage";
+import { ArtistDetailPage } from "@/features/music/ArtistDetailPage";
+import { AlbumDetailPage } from "@/features/music/AlbumDetailPage";
+import { MusicImportPage } from "@/features/music/MusicImportPage";
+import { MetadataProfilesPage } from "@/features/music/MetadataProfilesPage";
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -95,7 +101,6 @@ const indexRoute = createRoute({
 /** Sections that later phases fill in; each says honestly when it arrives. */
 export const UPCOMING = [
   { path: "/series", key: "series", phase: "P5" },
-  { path: "/music", key: "music", phase: "P6" },
   { path: "/requests", key: "requests", phase: "P8" },
 ] as const;
 
@@ -112,6 +117,11 @@ const addMovieRoute = createRoute({ getParentRoute: () => appRoute, path: "/movi
 const importMoviesRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/import", component: ImportPage });
 const movieRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/$id", component: MovieDetailPage });
 const collectionRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/collections/$id", component: CollectionPage });
+const musicRoute = createRoute({ getParentRoute: () => appRoute, path: "/music", component: ArtistsPage });
+const addArtistRoute = createRoute({ getParentRoute: () => appRoute, path: "/music/add", component: AddArtistPage });
+const importMusicRoute = createRoute({ getParentRoute: () => appRoute, path: "/music/import", component: MusicImportPage });
+const artistRoute = createRoute({ getParentRoute: () => appRoute, path: "/music/artists/$id", component: ArtistDetailPage });
+const albumRoute = createRoute({ getParentRoute: () => appRoute, path: "/music/albums/$id", component: AlbumDetailPage });
 const wantedRoute = createRoute({ getParentRoute: () => appRoute, path: "/wanted", component: WantedPage });
 const calendarRoute = createRoute({ getParentRoute: () => appRoute, path: "/calendar", component: CalendarPage });
 
@@ -153,6 +163,7 @@ const rulesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/ru
 const testerRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/tester", component: ReleaseTesterPage });
 const mediaManagementRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/mediamanagement", component: MediaManagementPage });
 const metadataRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadata", component: MetadataPage });
+const metadataProfilesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadataprofiles", component: MetadataProfilesPage });
 const importListsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/importlists", component: ImportListsPage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
@@ -177,6 +188,11 @@ export const routeTree = rootRoute.addChildren([
     importMoviesRoute,
     movieRoute,
     collectionRoute,
+    musicRoute,
+    addArtistRoute,
+    importMusicRoute,
+    artistRoute,
+    albumRoute,
     wantedRoute,
     calendarRoute,
     activityRoute.addChildren([activityIndexRoute, queueRoute, blocklistRoute]),
@@ -186,7 +202,7 @@ export const routeTree = rootRoute.addChildren([
       downloadersRoute,
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
-        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute]),
+        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
   ]),

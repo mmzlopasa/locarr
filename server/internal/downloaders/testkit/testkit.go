@@ -69,3 +69,58 @@ func NZB(name string) []byte {
 </nzb>
 `)
 }
+
+// TorrentFile is one file of a multi-file torrent (Path uses "/").
+type TorrentFile struct {
+	Path string
+	Data []byte
+}
+
+// MakeFolderTorrent builds a private, trackerless multi-file torrent whose
+// files live in the folder name (pieces span file boundaries, as the format
+// defines).
+func MakeFolderTorrent(name string, files []TorrentFile) Torrent {
+	const pieceLen = 16 << 10
+	var all []byte
+	list := make([]any, 0, len(files))
+	for _, f := range files {
+		all = append(all, f.Data...)
+		var parts []any
+		for _, p := range splitPath(f.Path) {
+			parts = append(parts, p)
+		}
+		list = append(list, map[string]any{"length": len(f.Data), "path": parts})
+	}
+	var pieces []byte
+	for off := 0; off < len(all); off += pieceLen {
+		end := min(off+pieceLen, len(all))
+		sum := sha1.Sum(all[off:end]) // #nosec G401
+		pieces = append(pieces, sum[:]...)
+	}
+	info := map[string]any{"name": name, "files": list, "piece length": pieceLen, "pieces": pieces, "private": 1}
+	file := downloaders.Bencode(map[string]any{"announce": "http://127.0.0.1:1/announce", "created by": "locarr-test", "info": info})
+	ti, err := downloaders.ParseTorrent(file)
+	if err != nil {
+		panic(err)
+	}
+	return Torrent{Name: name, Data: all, File: file, InfoHash: ti.InfoHash}
+}
+
+func splitPath(p string) []string {
+	var out []string
+	cur := ""
+	for _, r := range p {
+		if r == '/' {
+			if cur != "" {
+				out = append(out, cur)
+			}
+			cur = ""
+			continue
+		}
+		cur += string(r)
+	}
+	if cur != "" {
+		out = append(out, cur)
+	}
+	return out
+}

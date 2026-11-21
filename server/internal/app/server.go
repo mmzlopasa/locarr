@@ -20,6 +20,8 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
+	"github.com/mmzlopasa/locarr/server/internal/library/music"
+	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
@@ -62,6 +64,10 @@ type Deps struct {
 	Images    *metadata.ImageCache
 	TMDb      metadata.MovieProvider
 	MetaCache *metadata.Cache
+	// Music (P6).
+	Music       *music.Service
+	MusicBrainz *musicbrainz.Client
+	CoverArt    *metadata.ImageCache
 }
 
 // Close stops the jobs and closes the database.
@@ -119,6 +125,10 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 		return nil, err
 	}
 	if err := buildLibrary(ctx, deps, cfg, log); err != nil {
+		_ = d.Close()
+		return nil, err
+	}
+	if err := buildMusic(ctx, deps, cfg, log); err != nil {
 		_ = d.Close()
 		return nil, err
 	}

@@ -288,8 +288,11 @@ func (h *Handler) DeleteImportExclusion(ctx context.Context, p gen.DeleteImportE
 
 // explain derives the explanation for a ref.
 func (h *Handler) explain(ctx context.Context, ref library.Ref) (timeline.Explanation, string, error) {
+	if ref.Kind == library.RefAlbum || ref.Kind == library.RefArtist {
+		return h.explainMusic(ctx, ref)
+	}
 	if ref.Kind != library.RefMovie {
-		return timeline.Explanation{}, "", fmt.Errorf("%w: only movies have timelines so far", library.ErrBadRef)
+		return timeline.Explanation{}, "", fmt.Errorf("%w: this kind has no timeline yet", library.ErrBadRef)
 	}
 	it, err := h.Movies.Item(ctx, ref.ID)
 	if err != nil {
@@ -460,6 +463,15 @@ func (h *Handler) GetCalendarFeed(ctx context.Context, p gen.GetCalendarFeedPara
 			e.MovieID, e.Kind, stamp, d.Format("20060102"), d.AddDate(0, 0, 1).Format("20060102"),
 			icalEscape(fmt.Sprintf("%s (%d) - %s", e.Title, e.Year, labels[e.Kind])))
 	}
+	h.musicFeedEvents(ctx, day(now.AddDate(0, 0, -p.PastDays.Or(30))), day(now.AddDate(0, 0, p.FutureDays.Or(365))), stamp,
+		func(uid, date, summary string) {
+			d, err := time.Parse("2006-01-02", date)
+			if err != nil {
+				return
+			}
+			fmt.Fprintf(&b, "BEGIN:VEVENT\r\nUID:%s\r\nDTSTAMP:%s\r\nDTSTART;VALUE=DATE:%s\r\nDTEND;VALUE=DATE:%s\r\nSUMMARY:%s\r\nEND:VEVENT\r\n",
+				uid, stamp, d.Format("20060102"), d.AddDate(0, 0, 1).Format("20060102"), icalEscape(summary))
+		})
 	b.WriteString("END:VCALENDAR\r\n")
 	return gen.GetCalendarFeedOK{Data: &b}, nil
 }

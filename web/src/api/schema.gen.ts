@@ -2028,6 +2028,409 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/music/artists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The music library's artists, one page at a time */
+        get: operations["listArtists"];
+        put?: never;
+        /**
+         * Add an artist from MusicBrainz with the albums its metadata profile wants (library managers)
+         * @description Albums appear at once; editions and track lists load in the background (MusicBrainz allows one request per second).
+         */
+        post: operations["addArtist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/artists/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search MusicBrainz for artists by name, or by id ("mbid:<id>") */
+        get: operations["lookupArtists"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/artists/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** One artist */
+        get: operations["getArtist"];
+        put?: never;
+        post?: never;
+        /**
+         * Remove an artist (library managers)
+         * @description With `deleteFiles` the artist folder goes to the recycle bin; files are never deleted outright.
+         */
+        delete: operations["deleteArtist"];
+        options?: never;
+        head?: never;
+        /**
+         * Change how an artist is managed (library managers)
+         * @description A new metadata profile refreshes the albums; albums with files always stay.
+         */
+        patch: operations["updateArtist"];
+        trace?: never;
+    };
+    "/music/artists/{id}/albums": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** An artist's albums with their status, newest first */
+        get: operations["listArtistAlbums"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/artists/{id}/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reload an artist and its albums from MusicBrainz (library managers)
+         * @description Albums are synced at once; editions and track lists follow in the background.
+         */
+        post: operations["refreshArtist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/artists/{id}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue automatic searches for every wanted album of an artist (library managers) */
+        post: operations["searchArtist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/albums": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Wanted albums - monitored and released, missing tracks (missing) or below the cutoff (cutoff_unmet) */
+        get: operations["listWantedAlbums"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/albums/monitor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Monitor or unmonitor several albums (library managers) */
+        put: operations["monitorAlbums"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/albums/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue automatic searches for several albums (library managers) */
+        post: operations["searchAlbums"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/albums/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /**
+         * One album with its editions and the chosen edition's tracks and files
+         * @description The track list loads from MusicBrainz on first view when the background refresh has not got to it yet.
+         */
+        get: operations["getAlbum"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Monitor an album or choose its edition (library managers)
+         * @description `releaseId` picks an edition and keeps it; 0 lets Locarr choose again.
+         */
+        patch: operations["updateAlbum"];
+        trace?: never;
+    };
+    "/music/albums/{id}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue an automatic search for an album now (library managers) */
+        post: operations["searchAlbum"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/albums/{id}/releases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** Interactive search for an album - every release and the decision on it (library managers) */
+        get: operations["interactiveSearchAlbum"];
+        put?: never;
+        /** Grab a release chosen in an interactive search (library managers) */
+        post: operations["grabAlbumRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/import/manual": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** How a folder's files match an album's editions, with scores (library managers) */
+        get: operations["previewMusicImport"];
+        put?: never;
+        /** Import a folder into an album (library managers) */
+        post: operations["musicImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/import/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Artist and album folders of a music root folder, matched to MusicBrainz (library managers)
+         * @description Tags are read from the first file of each album; artists are matched by the MusicBrainz id in the tags, else by name (one request per artist).
+         */
+        get: operations["scanExistingMusic"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/import/existing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add artists with their existing folders; files stay where they are (library managers) */
+        post: operations["importExistingMusic"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/metadataprofiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Metadata profiles (which album types and release statuses an artist's library holds) */
+        get: operations["listMetadataProfiles"];
+        put?: never;
+        /** Create a metadata profile (administrators) */
+        post: operations["createMetadataProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/metadataprofiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a metadata profile; its artists are refreshed (administrators) */
+        put: operations["updateMetadataProfile"];
+        post?: never;
+        /** Delete an unused metadata profile (administrators) */
+        delete: operations["deleteMetadataProfile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Album releases between two days */
+        get: operations["getMusicCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/music": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Music naming, import options and the MusicBrainz contact (administrators) */
+        get: operations["getMusicSettings"];
+        /** Change music naming and import options (administrators) */
+        put: operations["updateMusicSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/music/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Render music naming templates with an example album */
+        post: operations["previewMusicNaming"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/images/coverart/{size}/{file}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A Cover Art Archive front cover ("rg-<release group id>.jpg" or "r-<release id>.jpg"), cached on the server */
+        get: operations["getCoverArt"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3818,6 +4221,379 @@ export interface components {
             id: number;
             title: string;
             year?: number;
+        };
+        /** @enum {string} */
+        MonitorNewAlbums: "all" | "none" | "future";
+        ArtistLookup: {
+            mbid: string;
+            name: string;
+            sortName: string;
+            disambiguation: string;
+            type: string;
+            country: string;
+            begin?: string;
+            end?: string;
+            score: number;
+            /**
+             * Format: int64
+             * @description Set when the artist is in the library.
+             */
+            artistId?: number;
+        };
+        Artist: {
+            /** Format: int64 */
+            id: number;
+            itemRef: string;
+            mbid: string;
+            name: string;
+            sortName: string;
+            disambiguation: string;
+            type: string;
+            country: string;
+            aliases: string[];
+            genres: string[];
+            monitored: boolean;
+            monitorNewAlbums: components["schemas"]["MonitorNewAlbums"];
+            /** Format: int64 */
+            qualityProfileId: number;
+            /** Format: int64 */
+            metadataProfileId: number;
+            /** Format: int64 */
+            rootFolderId?: number;
+            path: string;
+            tags: string[];
+            /** Format: date-time */
+            addedAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            refreshedAt?: string;
+            albums: number;
+            monitoredAlbums: number;
+            albumsWithFiles: number;
+            files: number;
+            /** Format: int64 */
+            sizeBytes: number;
+            /** @description Cover image name for /images/coverart (newest album), empty when none. */
+            cover: string;
+            latestRelease?: string;
+        };
+        ArtistList: {
+            total: number;
+            items: components["schemas"]["Artist"][];
+        };
+        AddArtistRequest: {
+            mbid: string;
+            /** Format: int64 */
+            rootFolderId: number;
+            /** Format: int64 */
+            qualityProfileId: number;
+            /** Format: int64 */
+            metadataProfileId: number;
+            /** @default true */
+            monitored: boolean;
+            /**
+             * @description Which existing albums are monitored now.
+             * @default all
+             * @enum {string}
+             */
+            monitor: "all" | "future" | "latest" | "none";
+            monitorNewAlbums?: components["schemas"]["MonitorNewAlbums"];
+            tags?: string[];
+            /** @default false */
+            searchOnAdd: boolean;
+        };
+        ArtistUpdate: {
+            monitored?: boolean;
+            monitorNewAlbums?: components["schemas"]["MonitorNewAlbums"];
+            /** Format: int64 */
+            qualityProfileId?: number;
+            /** Format: int64 */
+            metadataProfileId?: number;
+            tags?: string[];
+        };
+        /** @enum {string} */
+        AlbumStatus: "downloaded" | "partial" | "missing" | "downloading" | "unreleased" | "unmonitored";
+        AlbumRelease: {
+            /** Format: int64 */
+            id: number;
+            mbid: string;
+            title: string;
+            status: string;
+            date: string;
+            country: string;
+            disambiguation: string;
+            label: string;
+            catalogNumber: string;
+            formats: string[];
+            /** @description Summary such as "2×CD". */
+            format: string;
+            trackCount: number;
+            mediaCount: number;
+            tracksLoaded: boolean;
+        };
+        Album: {
+            /** Format: int64 */
+            id: number;
+            itemRef: string;
+            /** Format: int64 */
+            artistId: number;
+            artistName: string;
+            mbid: string;
+            title: string;
+            disambiguation: string;
+            primaryType: string;
+            secondaryTypes: string[];
+            releaseDate: string;
+            monitored: boolean;
+            artistMonitored: boolean;
+            releaseLocked: boolean;
+            /** @description Kept although the metadata profile no longer includes it (it has files). */
+            filtered: boolean;
+            path: string;
+            release?: components["schemas"]["AlbumRelease"];
+            trackCount: number;
+            fileCount: number;
+            /** Format: int64 */
+            sizeBytes: number;
+            quality?: components["schemas"]["Quality"];
+            cutoffMet: boolean;
+            available: boolean;
+            libraryStatus: components["schemas"]["AlbumStatus"];
+            cover: string;
+            download?: components["schemas"]["MovieDownload"];
+        };
+        AlbumList: {
+            total: number;
+            items: components["schemas"]["Album"][];
+        };
+        TrackFile: {
+            /** Format: int64 */
+            id: number;
+            path: string;
+            /** Format: int64 */
+            sizeBytes: number;
+            quality: components["schemas"]["Quality"];
+            format: string;
+            bitDepth: number;
+            sampleRate: number;
+            bitrate: number;
+            durationMs: number;
+            releaseGroup?: string;
+            sceneName?: string;
+            /** Format: int64 */
+            downloadId?: number;
+            /** Format: date-time */
+            addedAt: string;
+            disc?: number;
+            position?: number;
+            title?: string;
+        };
+        AlbumTrack: {
+            /** Format: int64 */
+            id: number;
+            mbid: string;
+            recordingMbid: string;
+            disc: number;
+            position: number;
+            number: string;
+            title: string;
+            lengthMs: number;
+            artist: string;
+            file?: components["schemas"]["TrackFile"];
+        };
+        AlbumDetail: {
+            album: components["schemas"]["Album"];
+            releases: components["schemas"]["AlbumRelease"][];
+            tracks: components["schemas"]["AlbumTrack"][];
+            /** @description Files of the album that are on no track of the chosen edition. */
+            extraFiles: components["schemas"]["TrackFile"][];
+            /** @description Why the track list could not be loaded (MusicBrainz unreachable). */
+            tracksError?: string;
+        };
+        AlbumUpdate: {
+            monitored?: boolean;
+            /** Format: int64 */
+            releaseId?: number;
+        };
+        AlbumMonitorRequest: {
+            albumIds: number[];
+            monitored: boolean;
+        };
+        AlbumIdsRequest: {
+            albumIds: number[];
+        };
+        MusicMatchPair: {
+            path: string;
+            relativePath: string;
+            disc: number;
+            position: number;
+            trackTitle: string;
+            fileTitle?: string;
+            score: number;
+            durationDiffMs: number;
+            byId: boolean;
+            quality?: components["schemas"]["Quality"];
+        };
+        MusicReleaseMatch: {
+            release: components["schemas"]["AlbumRelease"];
+            /** @description 0-100; automatic imports need at least the minimum match score (default 70). */
+            score: number;
+            coverage: number;
+            trackFit: number;
+            albumFit: number;
+            artistFit: number;
+            durationOk: number;
+            idMatch: boolean;
+            pairs: components["schemas"]["MusicMatchPair"][];
+            /** @description Tracks without a file ("disc-position title"). */
+            missing: string[];
+            /** @description Files without a track (relative paths). */
+            extra: string[];
+            notes: string[];
+        };
+        MusicImportPreview: {
+            /** Format: int64 */
+            albumId: number;
+            path: string;
+            files: number;
+            unreadable: string[];
+            cue: boolean;
+            cover?: string;
+            matches: components["schemas"]["MusicReleaseMatch"][];
+            minimumScore: number;
+            rejection?: components["schemas"]["Error"];
+        };
+        MusicImportRequest: {
+            path: string;
+            /** Format: int64 */
+            albumId: number;
+            /** Format: int64 */
+            releaseId?: number;
+            allowPartial?: boolean;
+            /** @description Import below the minimum match score (a person checked the match). */
+            force?: boolean;
+            mode?: components["schemas"]["TransferMode"];
+        };
+        MusicImportResult: {
+            /** Format: int64 */
+            albumId: number;
+            release?: components["schemas"]["AlbumRelease"];
+            score: number;
+            imported: string[];
+            skipped: {
+                path: string;
+                reason: string;
+            }[];
+            recycled: string[];
+            missing: number;
+            upgraded: number;
+            cover?: string;
+        };
+        ExistingAlbumFolder: {
+            path: string;
+            name: string;
+            album: string;
+            year: number;
+            files: number;
+        };
+        ExistingArtistFolder: {
+            path: string;
+            name: string;
+            tagArtist: string;
+            albums: components["schemas"]["ExistingAlbumFolder"][];
+            match?: components["schemas"]["ArtistLookup"];
+            candidates: components["schemas"]["ArtistLookup"][];
+            /** Format: int64 */
+            artistId?: number;
+            error?: string;
+        };
+        ImportExistingArtistsRequest: {
+            /** Format: int64 */
+            rootFolderId: number;
+            /** Format: int64 */
+            qualityProfileId: number;
+            /** Format: int64 */
+            metadataProfileId: number;
+            /** @default true */
+            monitored: boolean;
+            /**
+             * @default all
+             * @enum {string}
+             */
+            monitor: "all" | "future" | "latest" | "none";
+            monitorNewAlbums?: components["schemas"]["MonitorNewAlbums"];
+            /** @default false */
+            searchOnAdd: boolean;
+            items: {
+                path: string;
+                mbid: string;
+            }[];
+        };
+        ImportExistingArtistResult: {
+            path: string;
+            artist?: components["schemas"]["Artist"];
+            error?: components["schemas"]["Error"];
+        };
+        MetadataProfile: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            primaryTypes: string[];
+            secondaryTypes: string[];
+            releaseStatuses: string[];
+            /** @description Artists using it. */
+            artists: number;
+        };
+        MetadataProfileInput: {
+            name: string;
+            primaryTypes: ("album" | "ep" | "single" | "broadcast" | "other")[];
+            secondaryTypes: ("studio" | "compilation" | "soundtrack" | "spokenword" | "interview" | "audiobook" | "audio drama" | "live" | "remix" | "dj-mix" | "mixtape/street" | "demo" | "field recording")[];
+            releaseStatuses: ("official" | "promotion" | "bootleg" | "pseudo-release" | "withdrawn" | "cancelled")[];
+        };
+        AlbumCalendarEntry: {
+            /** Format: date */
+            date: string;
+            /** Format: int64 */
+            albumId: number;
+            /** Format: int64 */
+            artistId: number;
+            artistName: string;
+            title: string;
+            type: string;
+            monitored: boolean;
+            hasFiles: boolean;
+            cover: string;
+        };
+        MusicSettings: {
+            artistFolderFormat: string;
+            albumFolderFormat: string;
+            trackFormat: string;
+            multiDiscTrackFormat: string;
+            discFolders: boolean;
+            discFolderFormat: string;
+            renameTracks: boolean;
+            /** @description Import an album with tracks missing (otherwise the import fails with a report). */
+            importPartialAlbums: boolean;
+            /** @description Write corrected tags into imported FLAC files (such files are copied, never hardlinked). */
+            writeTags: boolean;
+            /** @description Save the Cover Art Archive front as cover.jpg when the download has no cover. */
+            saveCoverArt: boolean;
+            minimumMatchScore: number;
+            /** @description E-mail or URL sent in the User-Agent to MusicBrainz (empty = the project page). */
+            musicBrainzContact: string;
+            colonReplacement?: components["schemas"]["ColonReplacement"];
+        };
+        MusicNamingPreview: {
+            artistFolder: string;
+            albumFolder: string;
+            track: string;
+            /** @description Path of a track on disc 2 inside the album folder. */
+            multiDiscTrack: string;
+            errors?: {
+                [key: string]: string;
+            };
+            tokens: components["schemas"]["NamingToken"][];
         };
     };
     responses: {
@@ -7350,6 +8126,747 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["MetadataSettings"];
                 };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listArtists: {
+        parameters: {
+            query?: {
+                q?: string;
+                monitored?: boolean;
+                tag?: string;
+                sort?: "name" | "added" | "albums" | "size";
+                desc?: boolean;
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of artists */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtistList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addArtist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddArtistRequest"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Artist"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    lookupArtists: {
+        parameters: {
+            query: {
+                term: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Results with their disambiguation, marked when already in the library */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtistLookup"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getArtist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The artist */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Artist"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteArtist: {
+        parameters: {
+            query?: {
+                deleteFiles?: boolean;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateArtist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ArtistUpdate"];
+            };
+        };
+        responses: {
+            /** @description The artist */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Artist"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listArtistAlbums: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Albums */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Album"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    refreshArtist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The artist */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Artist"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchArtist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listWantedAlbums: {
+        parameters: {
+            query?: {
+                status?: "missing" | "cutoff_unmet";
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of albums */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlbumList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    monitorAlbums: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlbumMonitorRequest"];
+            };
+        };
+        responses: {
+            /** @description Changed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchAlbums: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlbumIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAlbum: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The album */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlbumDetail"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateAlbum: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlbumUpdate"];
+            };
+        };
+        responses: {
+            /** @description The album */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlbumDetail"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchAlbum: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    interactiveSearchAlbum: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The decision report */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InteractiveSearch"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    grabAlbumRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualGrabRequest"];
+            };
+        };
+        responses: {
+            /** @description Sent to a download client */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueueItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewMusicImport: {
+        parameters: {
+            query: {
+                path: string;
+                albumId: number;
+                releaseId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The match report */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MusicImportPreview"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    musicImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MusicImportRequest"];
+            };
+        };
+        responses: {
+            /** @description What was imported */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MusicImportResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    scanExistingMusic: {
+        parameters: {
+            query: {
+                rootFolderId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Folders */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExistingArtistFolder"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    importExistingMusic: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportExistingArtistsRequest"];
+            };
+        };
+        responses: {
+            /** @description One result per folder */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportExistingArtistResult"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listMetadataProfiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profiles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetadataProfile"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createMetadataProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MetadataProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetadataProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateMetadataProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MetadataProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetadataProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteMetadataProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMusicCalendar: {
+        parameters: {
+            query: {
+                start: string;
+                end: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Entries by date */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlbumCalendarEntry"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMusicSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MusicSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateMusicSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MusicSettings"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MusicSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewMusicNaming: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MusicSettings"];
+            };
+        };
+        responses: {
+            /** @description The example names */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MusicNamingPreview"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getCoverArt: {
+        parameters: {
+            query?: never;
+            header?: {
+                "If-None-Match"?: string;
+            };
+            path: {
+                size: "250" | "500" | "1200";
+                file: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The image */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/*": string;
+                };
+            };
+            /** @description Not modified */
+            304: {
+                headers: {
+                    ETag?: string;
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             default: components["responses"]["Error"];
         };

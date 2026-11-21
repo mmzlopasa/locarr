@@ -10,6 +10,20 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
+func encodeAddArtistRequest(
+	req *AddArtistRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeAddBlocklistEntryRequest(
 	req *BlocklistInput,
 	r *http.Request,
@@ -164,6 +178,20 @@ func encodeCreateIndexerSourceRequest(
 	return nil
 }
 
+func encodeCreateMetadataProfileRequest(
+	req *MetadataProfileInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateQualityProfileRequest(
 	req *QualityProfileInput,
 	r *http.Request,
@@ -276,6 +304,20 @@ func encodeEvaluateReleasesRequest(
 	return nil
 }
 
+func encodeGrabAlbumReleaseRequest(
+	req *ManualGrabRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeGrabMovieReleaseRequest(
 	req *ManualGrabRequest,
 	r *http.Request,
@@ -332,6 +374,20 @@ func encodeImportExistingMoviesRequest(
 	return nil
 }
 
+func encodeImportExistingMusicRequest(
+	req *ImportExistingArtistsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeLoginRequest(
 	req *LoginRequest,
 	r *http.Request,
@@ -360,6 +416,34 @@ func encodeManualImportRequest(
 	return nil
 }
 
+func encodeMonitorAlbumsRequest(
+	req *AlbumMonitorRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeMusicImportRequest(
+	req *MusicImportRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeParseReleaseRequest(
 	req *ParseRequest,
 	r *http.Request,
@@ -376,6 +460,20 @@ func encodeParseReleaseRequest(
 
 func encodePreviewIndexerSourceRequest(
 	req *IndexerSourcePreviewRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodePreviewMusicNamingRequest(
+	req *MusicSettings,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -486,6 +584,20 @@ func encodeResetUserPasswordRequest(
 	return nil
 }
 
+func encodeSearchAlbumsRequest(
+	req *AlbumIdsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeSearchMoviesRequest(
 	req *MovieIdsRequest,
 	r *http.Request,
@@ -544,6 +656,34 @@ func encodeTestDownloadClientRequest(
 
 func encodeTestIndexerConfigRequest(
 	req *IndexerTestRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateAlbumRequest(
+	req *AlbumUpdate,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateArtistRequest(
+	req *ArtistUpdate,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -682,6 +822,20 @@ func encodeUpdateMediaManagementRequest(
 	return nil
 }
 
+func encodeUpdateMetadataProfileRequest(
+	req *MetadataProfileInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeUpdateMetadataSettingsRequest(
 	req *MetadataSettingsInput,
 	r *http.Request,
@@ -698,6 +852,20 @@ func encodeUpdateMetadataSettingsRequest(
 
 func encodeUpdateMovieRequest(
 	req *MovieUpdate,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateMusicSettingsRequest(
+	req *MusicSettings,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
