@@ -705,6 +705,14 @@ func (s *Service) Delete(ctx context.Context, id int64, o DeleteOptions) error {
 	if _, err := s.DB.W.ExecContext(ctx, `DELETE FROM media_items WHERE id = ?`, id); err != nil {
 		return err
 	}
+	// Season and episode ids can be reused by SQLite after a delete: their
+	// history must not attach to a series added later (the series' own
+	// "deleted" event stays).
+	for _, r := range refs {
+		_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM timeline_events WHERE item_ref = ?`, r)
+		_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM download_refs WHERE item_ref = ?`, r)
+		_, _ = s.DB.W.ExecContext(ctx, `UPDATE search_log SET item_ref = NULL WHERE item_ref = ?`, r)
+	}
 	for _, r := range append(refs, v.Ref().String()) {
 		_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM search_state WHERE item_ref = ?`, r)
 		_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM pending_releases WHERE item_ref = ?`, r)

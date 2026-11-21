@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -41,7 +41,14 @@ export function SeriesDetailPage() {
   const me = useCurrentUser();
   const canManage = me.role === "admin" || me.permissions.manageLibrary;
   const series = useSeriesDetail(seriesId);
-  const episodes = useEpisodes(seriesId, (series.data?.downloading ?? 0) > 0);
+  const downloading = series.data?.downloading ?? 0;
+  const files = series.data?.stats.episodeFileCount ?? 0;
+  const episodes = useEpisodes(seriesId, downloading > 0);
+  const qc = useQueryClient();
+  // A download that finished (and was imported) changes the episodes once more.
+  useEffect(() => {
+    void qc.invalidateQueries({ queryKey: queryKeys.seriesEpisodes(seriesId) });
+  }, [downloading, files, seriesId, qc]);
   const [panel, setPanel] = useState<Panel>(null);
   if (series.isLoading) return <Spinner />;
   if (series.error || !series.data) return <ErrorAlert error={series.error} />;

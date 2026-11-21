@@ -189,7 +189,7 @@ func (s *Service) decorate(ctx context.Context, list []Series) ([]ListItem, erro
 	_ = rows.Close()
 	rows, err = s.DB.R.QueryContext(ctx, `SELECT e.series_id, COUNT(DISTINCT d.id) FROM downloads d
 		JOIN download_refs r ON r.download_id = d.id JOIN episodes e ON r.item_ref = 'episode:' || e.id
-		WHERE d.status = 'active' AND e.series_id IN (`+in+`) GROUP BY e.series_id`, ids...) // #nosec G202
+		WHERE d.status IN ('active', 'completed') AND e.series_id IN (`+in+`) GROUP BY e.series_id`, ids...) // #nosec G202
 	if err != nil {
 		return nil, err
 	}

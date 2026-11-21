@@ -53,7 +53,8 @@ export function useSeriesDetail(id: number) {
   return useQuery({
     queryKey: queryKeys.series(id),
     queryFn: async () => unwrap(await api.GET("/series/{id}", { params: { path: { id } } })),
-    refetchInterval: (q) => ((q.state.data?.downloading ?? 0) > 0 ? 4_000 : false),
+    // Downloads under way change it quickly; missing episodes may be grabbed any moment.
+    refetchInterval: (q) => ((q.state.data?.downloading ?? 0) > 0 ? 4_000 : (q.state.data?.stats.missingCount ?? 0) > 0 ? 10_000 : false),
   });
 }
 
