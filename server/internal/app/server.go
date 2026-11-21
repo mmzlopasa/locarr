@@ -16,6 +16,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
@@ -44,6 +45,7 @@ type Deps struct {
 	Roots    *rootfolders.Service
 	Quality  *quality.Store
 	Formats  *customformats.Store
+	Indexers *indexers.Service
 }
 
 // Close stops the jobs and closes the database.
@@ -92,7 +94,12 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 		return nil, fmt.Errorf("seed quality profiles: %w", err)
 	}
 	deps.Jobs = jobs.New(d, log, jobs.Options{Concurrency: map[string]int{jobs.DefaultQueue: 2}})
+	deps.Indexers = indexers.New(d, box, deps.Settings, log)
 	registerTasks(deps, log)
+	if err := registerIndexerTasks(ctx, deps, log); err != nil {
+		_ = d.Close()
+		return nil, err
+	}
 	return deps, nil
 }
 
@@ -193,7 +200,7 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 			log.Warn("client banned from sign-in after repeated failures", "ip", ip.String(), "until", until.UTC().Format(time.RFC3339))
 		}
 	}
-	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots,
+	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots, Indexers: deps.Indexers,
 		Quality: deps.Quality, Formats: deps.Formats,
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
 	router, err := NewRouter(h, opts)

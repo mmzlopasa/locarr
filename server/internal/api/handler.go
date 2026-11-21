@@ -17,6 +17,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
+	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
@@ -35,6 +36,7 @@ type Handler struct {
 	RootFolders *rootfolders.Service
 	Quality     *quality.Store
 	Formats     *customformats.Store
+	Indexers    *indexers.Service
 	ConfigDir   string
 	DataRoots   []string
 	StartedAt   time.Time
@@ -86,6 +88,9 @@ func mapError(err error) *StatusError {
 	}
 	if se := mapProfileError(err); se != nil {
 		return se
+	}
+	if ie := mapIndexerError(err); ie != nil {
+		return ie
 	}
 	table := []struct {
 		err    error

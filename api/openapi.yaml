@@ -27,6 +27,8 @@ tags:
   - name: settings
   - name: rootfolders
   - name: filesystem
+  - name: indexers
+  - name: search
   - name: quality
   - name: customformats
   - name: profiles
@@ -588,6 +590,404 @@ paths:
                 $ref: "#/components/schemas/FolderListing"
         default:
           $ref: "#/components/responses/Error"
+  /indexers:
+    get:
+      operationId: listIndexers
+      summary: Indexers with their health (administrators)
+      tags: [indexers]
+      responses:
+        "200":
+          description: Indexers, by priority then name
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Indexer"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createIndexer
+      summary: Add a Torznab or Newznab indexer (administrators)
+      description: |
+        Categories left empty are filled from the indexer's capabilities when they
+        can be fetched. The API key is write-only.
+      tags: [indexers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IndexerInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Indexer"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/{id}:
+    get:
+      operationId: getIndexer
+      summary: One indexer (administrators)
+      tags: [indexers]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Indexer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Indexer"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateIndexer
+      summary: Change an indexer (administrators)
+      description: Write-only fields (`apiKey`, `proxyPassword`) keep their stored value when absent; an empty string removes it.
+      tags: [indexers]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IndexerInput"
+      responses:
+        "200":
+          description: Indexer after the change
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Indexer"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteIndexer
+      summary: Remove an indexer (administrators)
+      tags: [indexers]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/{id}/test:
+    post:
+      operationId: testIndexer
+      summary: Test a saved indexer (administrators)
+      description: Fetches the capabilities and runs a probe search. Success clears the indexer's failures; the capabilities are stored.
+      tags: [indexers]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Test result (also when the indexer failed)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerTestResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/{id}/health/reset:
+    post:
+      operationId: resetIndexerHealth
+      summary: Clear failures and backoff (administrators)
+      tags: [indexers]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Indexer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Indexer"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/{id}/download:
+    get:
+      operationId: downloadRelease
+      summary: Download a release file through the server (administrators and managers)
+      description: |
+        `token` comes from a search result's `downloadLink`. The server fetches the
+        .torrent or .nzb with the indexer's credentials, so the API key never
+        reaches the browser. Counts as a grab for the indexer's daily limit.
+      tags: [indexers]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+            maxLength: 8192
+      responses:
+        "200":
+          description: The release file
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/test:
+    post:
+      operationId: testIndexerConfig
+      summary: Test an indexer configuration before saving it (administrators)
+      description: When `indexerId` is set, missing write-only fields are taken from that saved indexer.
+      tags: [indexers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IndexerTestRequest"
+      responses:
+        "200":
+          description: Test result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerTestResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/settings:
+    get:
+      operationId: getIndexerSettings
+      summary: Indexer-wide settings (administrators)
+      tags: [indexers]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerSettings"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateIndexerSettings
+      summary: Change indexer-wide settings (administrators)
+      tags: [indexers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateIndexerSettingsRequest"
+      responses:
+        "200":
+          description: Settings after the change
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerSettings"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/sources:
+    get:
+      operationId: listIndexerSources
+      summary: Prowlarr and Jackett instances indexers are imported from (administrators)
+      tags: [indexers]
+      responses:
+        "200":
+          description: Sources
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IndexerSource"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createIndexerSource
+      summary: Add a Prowlarr or Jackett source and import its indexers (administrators)
+      description: Imports every indexer the source lists except those in `exclude`. Nothing is changed on the source.
+      tags: [indexers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IndexerSourceInput"
+      responses:
+        "201":
+          description: Added and synced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerSourceSyncResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/sources/preview:
+    post:
+      operationId: previewIndexerSource
+      summary: List what a Prowlarr or Jackett source would import (administrators)
+      tags: [indexers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IndexerSourcePreviewRequest"
+      responses:
+        "200":
+          description: Preview; nothing is saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerSourcePreview"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/sources/{id}:
+    delete:
+      operationId: deleteIndexerSource
+      summary: Forget a source (administrators)
+      description: Its imported indexers stay and become ordinary indexers.
+      tags: [indexers]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/sources/{id}/sync:
+    post:
+      operationId: syncIndexerSource
+      summary: Sync a source again (administrators)
+      description: Adds indexers that are new on the source, updates changed ones and disables (never deletes) those the source no longer lists.
+      tags: [indexers]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Sync result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerSourceSyncResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /search:
+    get:
+      operationId: search
+      summary: Search every eligible indexer and wait for all answers
+      description: |
+        Indexers are asked in parallel, each with its own timeout and request limit.
+        Results are de-duplicated by GUID and info hash. Download links and magnets are
+        only included for administrators and managers.
+      tags: [search]
+      parameters:
+        - $ref: "#/components/parameters/SearchQ"
+        - $ref: "#/components/parameters/SearchType"
+        - $ref: "#/components/parameters/SearchCategories"
+        - $ref: "#/components/parameters/SearchIndexerIds"
+        - $ref: "#/components/parameters/SearchImdbId"
+        - $ref: "#/components/parameters/SearchTmdbId"
+        - $ref: "#/components/parameters/SearchTvdbId"
+        - $ref: "#/components/parameters/SearchTvmazeId"
+        - $ref: "#/components/parameters/SearchSeason"
+        - $ref: "#/components/parameters/SearchEpisode"
+        - $ref: "#/components/parameters/SearchArtist"
+        - $ref: "#/components/parameters/SearchAlbum"
+        - $ref: "#/components/parameters/SearchAuthor"
+        - $ref: "#/components/parameters/SearchTitle"
+        - $ref: "#/components/parameters/SearchLimit"
+        - $ref: "#/components/parameters/SearchOffset"
+      responses:
+        "200":
+          description: Results of every indexer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        default:
+          $ref: "#/components/responses/Error"
+  /search/stream:
+    get:
+      operationId: searchStream
+      summary: Search every eligible indexer, streaming results as they arrive
+      description: |
+        Same parameters as `/search`. The answer is a Server-Sent Events stream
+        (`text/event-stream`). Each event's `data` is one line of JSON:
+
+        - `event: indexer` — one indexer answered (or was skipped): a `SearchStreamIndexerEvent`
+          with that indexer's status and its releases not already sent.
+        - `event: done` — every indexer is finished: a `SearchStreamDone`. The stream then ends.
+
+        Browsers can read it with `EventSource` (the session cookie is sent) or `fetch`.
+      tags: [search]
+      parameters:
+        - $ref: "#/components/parameters/SearchQ"
+        - $ref: "#/components/parameters/SearchType"
+        - $ref: "#/components/parameters/SearchCategories"
+        - $ref: "#/components/parameters/SearchIndexerIds"
+        - $ref: "#/components/parameters/SearchImdbId"
+        - $ref: "#/components/parameters/SearchTmdbId"
+        - $ref: "#/components/parameters/SearchTvdbId"
+        - $ref: "#/components/parameters/SearchTvmazeId"
+        - $ref: "#/components/parameters/SearchSeason"
+        - $ref: "#/components/parameters/SearchEpisode"
+        - $ref: "#/components/parameters/SearchArtist"
+        - $ref: "#/components/parameters/SearchAlbum"
+        - $ref: "#/components/parameters/SearchAuthor"
+        - $ref: "#/components/parameters/SearchTitle"
+        - $ref: "#/components/parameters/SearchLimit"
+        - $ref: "#/components/parameters/SearchOffset"
+      responses:
+        "200":
+          description: Server-Sent Events
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: "#/components/responses/Error"
+  /search/log:
+    get:
+      operationId: listSearchLog
+      summary: Recent searches with per-indexer outcomes (administrators)
+      tags: [search]
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+            default: 50
+        - name: itemRef
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 200
+      responses:
+        "200":
+          description: Newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SearchLogEntry"
+        default:
+          $ref: "#/components/responses/Error"
   /qualities:
     get:
       operationId: listQualities
@@ -1131,6 +1531,137 @@ components:
         type: integer
         format: int64
         minimum: 1
+    SearchQ:
+      name: q
+      in: query
+      required: false
+      description: Free text.
+      schema:
+        type: string
+        maxLength: 300
+    SearchType:
+      name: type
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/SearchType"
+    SearchCategories:
+      name: categories
+      in: query
+      required: false
+      description: Newznab category ids; empty = the indexer's categories for the search type.
+      style: form
+      explode: false
+      schema:
+        type: array
+        maxItems: 50
+        items:
+          type: integer
+          minimum: 1
+    SearchIndexerIds:
+      name: indexerIds
+      in: query
+      required: false
+      description: Only these indexers; empty = every enabled one.
+      style: form
+      explode: false
+      schema:
+        type: array
+        maxItems: 200
+        items:
+          type: integer
+          format: int64
+          minimum: 1
+    SearchImdbId:
+      name: imdbId
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: "^(tt)?[0-9]{1,10}$"
+    SearchTmdbId:
+      name: tmdbId
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    SearchTvdbId:
+      name: tvdbId
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    SearchTvmazeId:
+      name: tvmazeId
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    SearchSeason:
+      name: season
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 20
+    SearchEpisode:
+      name: episode
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 20
+    SearchArtist:
+      name: artist
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 200
+    SearchAlbum:
+      name: album
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 200
+    SearchAuthor:
+      name: author
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 200
+    SearchTitle:
+      name: title
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 200
+    SearchLimit:
+      name: limit
+      in: query
+      required: false
+      description: Results asked from each indexer (capped by its own maximum).
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+    SearchOffset:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 100000
   responses:
     SignedIn:
       description: Signed in
@@ -1625,6 +2156,656 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/FolderEntry"
+    IndexerKind:
+      type: string
+      enum: [torznab, newznab]
+      description: "`torznab` indexers are torrent indexers, `newznab` ones usenet."
+    Protocol:
+      type: string
+      enum: [torrent, usenet]
+    SearchType:
+      type: string
+      enum: [search, tv, movie, music, book]
+    IndexerCategories:
+      type: object
+      description: Newznab category ids used for each kind of media.
+      required: [movies, tv, music, books]
+      properties:
+        movies:
+          type: array
+          items:
+            type: integer
+        tv:
+          type: array
+          items:
+            type: integer
+        music:
+          type: array
+          items:
+            type: integer
+        books:
+          type: array
+          items:
+            type: integer
+    IndexerCategory:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        subcategories:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndexerCategory"
+    IndexerSearchCap:
+      type: object
+      required: [type, available, params]
+      properties:
+        type:
+          $ref: "#/components/schemas/SearchType"
+        available:
+          type: boolean
+        params:
+          type: array
+          items:
+            type: string
+    IndexerCaps:
+      type: object
+      required: [searching, categories]
+      properties:
+        serverTitle:
+          type: string
+        limitMax:
+          type: integer
+        limitDefault:
+          type: integer
+        searching:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndexerSearchCap"
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndexerCategory"
+    IndexerHealthStatus:
+      type: string
+      enum: [healthy, failing, disabled, unknown]
+      description: |
+        `failing`: recent requests failed; the indexer is skipped until `retryAt`
+        and then tried again automatically. `disabled`: switched off by an administrator
+        or by a source sync. `unknown`: never used yet.
+    IndexerHealth:
+      type: object
+      required: [status, failures]
+      properties:
+        status:
+          $ref: "#/components/schemas/IndexerHealthStatus"
+        failures:
+          type: integer
+        lastError:
+          type: string
+        lastErrorCode:
+          type: string
+        lastErrorAt:
+          type: string
+          format: date-time
+        lastSuccessAt:
+          type: string
+          format: date-time
+        retryAt:
+          type: string
+          format: date-time
+    IndexerSourceRef:
+      type: object
+      required: [id, name, ref]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        ref:
+          type: string
+          description: The indexer's id on the source.
+    Indexer:
+      type: object
+      required: [id, name, kind, protocol, baseUrl, apiPath, apiKey, enabled, enableRss, enableAutomaticSearch,
+        enableInteractiveSearch, priority, tags, categories, minimumSeeders, timeoutSeconds, proxyPassword, health,
+        createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        kind:
+          $ref: "#/components/schemas/IndexerKind"
+        protocol:
+          $ref: "#/components/schemas/Protocol"
+        baseUrl:
+          type: string
+        apiPath:
+          type: string
+        apiKey:
+          $ref: "#/components/schemas/SecretState"
+        enabled:
+          type: boolean
+        enableRss:
+          type: boolean
+        enableAutomaticSearch:
+          type: boolean
+        enableInteractiveSearch:
+          type: boolean
+        priority:
+          type: integer
+          description: 1 (most preferred) to 50.
+        tags:
+          type: array
+          items:
+            type: string
+        categories:
+          $ref: "#/components/schemas/IndexerCategories"
+        minimumSeeders:
+          type: integer
+        seedRatio:
+          type: number
+          description: Seed ratio goal for torrents from this indexer (used by download clients).
+        seedTimeMinutes:
+          type: integer
+        requestLimit:
+          type: integer
+          description: At most this many requests per `requestPeriodSeconds`.
+        requestPeriodSeconds:
+          type: integer
+        grabLimitPerDay:
+          type: integer
+        timeoutSeconds:
+          type: integer
+        proxyUrl:
+          type: string
+          description: http://, https:// or socks5:// proxy, without credentials.
+        proxyUsername:
+          type: string
+        proxyPassword:
+          $ref: "#/components/schemas/SecretState"
+        flaresolverrUrl:
+          type: string
+        source:
+          $ref: "#/components/schemas/IndexerSourceRef"
+        caps:
+          $ref: "#/components/schemas/IndexerCaps"
+        capsUpdatedAt:
+          type: string
+          format: date-time
+        health:
+          $ref: "#/components/schemas/IndexerHealth"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    IndexerInput:
+      type: object
+      required: [name, kind, baseUrl]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        kind:
+          $ref: "#/components/schemas/IndexerKind"
+        baseUrl:
+          type: string
+          minLength: 1
+          maxLength: 2048
+        apiPath:
+          type: string
+          maxLength: 512
+          description: Default `/api`.
+        apiKey:
+          type: string
+          maxLength: 512
+          description: Write-only.
+        enabled:
+          type: boolean
+          default: true
+        enableRss:
+          type: boolean
+          default: true
+        enableAutomaticSearch:
+          type: boolean
+          default: true
+        enableInteractiveSearch:
+          type: boolean
+          default: true
+        priority:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 25
+        tags:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+        categories:
+          $ref: "#/components/schemas/IndexerCategories"
+        minimumSeeders:
+          type: integer
+          minimum: 0
+          maximum: 10000
+          default: 1
+        seedRatio:
+          type: number
+          minimum: 0
+          maximum: 1000
+        seedTimeMinutes:
+          type: integer
+          minimum: 0
+          maximum: 5256000
+        requestLimit:
+          type: integer
+          minimum: 1
+          maximum: 100000
+        requestPeriodSeconds:
+          type: integer
+          minimum: 1
+          maximum: 86400
+        grabLimitPerDay:
+          type: integer
+          minimum: 1
+          maximum: 100000
+        timeoutSeconds:
+          type: integer
+          minimum: 2
+          maximum: 120
+          default: 30
+        proxyUrl:
+          type: string
+          maxLength: 2048
+        proxyUsername:
+          type: string
+          maxLength: 256
+        proxyPassword:
+          type: string
+          maxLength: 512
+          description: Write-only.
+        flaresolverrUrl:
+          type: string
+          maxLength: 2048
+    IndexerTestRequest:
+      type: object
+      required: [indexer]
+      properties:
+        indexer:
+          $ref: "#/components/schemas/IndexerInput"
+        indexerId:
+          type: integer
+          format: int64
+          minimum: 1
+    IndexerTestResult:
+      type: object
+      required: [ok, durationMs]
+      properties:
+        ok:
+          type: boolean
+        durationMs:
+          type: integer
+          format: int64
+        caps:
+          $ref: "#/components/schemas/IndexerCaps"
+        defaultCategories:
+          $ref: "#/components/schemas/IndexerCategories"
+        probeResults:
+          type: integer
+          description: Results of the probe search.
+        errorCode:
+          type: string
+          description: auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked or unknown.
+        error:
+          type: string
+    IndexerSettings:
+      type: object
+      required: [rssSyncIntervalMinutes, releaseRetentionDays, searchTimeoutSeconds, searchCacheSeconds, allowedHosts, blockPrivateNetworks]
+      properties:
+        rssSyncIntervalMinutes:
+          type: integer
+          description: How often RSS feeds are fetched (RSS can be turned off per indexer).
+        releaseRetentionDays:
+          type: integer
+        searchTimeoutSeconds:
+          type: integer
+          description: Upper bound for a whole search; each indexer also has its own timeout.
+        searchCacheSeconds:
+          type: integer
+        allowedHosts:
+          type: array
+          description: Addresses, networks or host names indexers may reach even though they are blocked by default (loopback, link-local).
+          items:
+            type: string
+        blockPrivateNetworks:
+          type: boolean
+          description: Also refuse private (RFC 1918) addresses. Off by default because Prowlarr and Jackett usually share the Docker network.
+    UpdateIndexerSettingsRequest:
+      type: object
+      properties:
+        rssSyncIntervalMinutes:
+          type: integer
+          minimum: 10
+          maximum: 1440
+        releaseRetentionDays:
+          type: integer
+          minimum: 1
+          maximum: 365
+        searchTimeoutSeconds:
+          type: integer
+          minimum: 5
+          maximum: 55
+        searchCacheSeconds:
+          type: integer
+          minimum: 0
+          maximum: 3600
+        allowedHosts:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            maxLength: 255
+        blockPrivateNetworks:
+          type: boolean
+    IndexerSourceKind:
+      type: string
+      enum: [prowlarr, jackett]
+    IndexerSource:
+      type: object
+      required: [id, kind, name, url, apiKey, exclude, indexerCount, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        kind:
+          $ref: "#/components/schemas/IndexerSourceKind"
+        name:
+          type: string
+        url:
+          type: string
+        apiKey:
+          $ref: "#/components/schemas/SecretState"
+        exclude:
+          type: array
+          description: Indexer refs on the source that are not imported.
+          items:
+            type: string
+        indexerCount:
+          type: integer
+        lastSyncAt:
+          type: string
+          format: date-time
+        lastError:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    IndexerSourceInput:
+      type: object
+      required: [kind, url, apiKey]
+      properties:
+        kind:
+          $ref: "#/components/schemas/IndexerSourceKind"
+        name:
+          type: string
+          maxLength: 100
+        url:
+          type: string
+          minLength: 1
+          maxLength: 2048
+        apiKey:
+          type: string
+          minLength: 1
+          maxLength: 512
+        exclude:
+          type: array
+          maxItems: 1000
+          items:
+            type: string
+            maxLength: 200
+    IndexerSourcePreviewRequest:
+      type: object
+      description: Either `sourceId` (a saved source) or `kind`, `url` and `apiKey`.
+      properties:
+        sourceId:
+          type: integer
+          format: int64
+          minimum: 1
+        kind:
+          $ref: "#/components/schemas/IndexerSourceKind"
+        url:
+          type: string
+          maxLength: 2048
+        apiKey:
+          type: string
+          maxLength: 512
+    IndexerSourceAction:
+      type: string
+      enum: [add, update, unchanged, disable, excluded]
+    IndexerSourceItem:
+      type: object
+      required: [ref, name, kind, protocol, feedUrl, action]
+      properties:
+        ref:
+          type: string
+        name:
+          type: string
+        kind:
+          $ref: "#/components/schemas/IndexerKind"
+        protocol:
+          $ref: "#/components/schemas/Protocol"
+        feedUrl:
+          type: string
+        enabledOnSource:
+          type: boolean
+        action:
+          $ref: "#/components/schemas/IndexerSourceAction"
+        indexerId:
+          type: integer
+          format: int64
+    IndexerSourcePreview:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndexerSourceItem"
+    IndexerSourceSyncResult:
+      type: object
+      required: [source, added, updated, disabled, unchanged]
+      properties:
+        source:
+          $ref: "#/components/schemas/IndexerSource"
+        added:
+          type: integer
+        updated:
+          type: integer
+        disabled:
+          type: integer
+        unchanged:
+          type: integer
+    Release:
+      type: object
+      required: [guid, title, indexerId, indexerName, protocol, categories, flags]
+      properties:
+        guid:
+          type: string
+        title:
+          type: string
+        indexerId:
+          type: integer
+          format: int64
+        indexerName:
+          type: string
+        indexerPriority:
+          type: integer
+        protocol:
+          $ref: "#/components/schemas/Protocol"
+        size:
+          type: integer
+          format: int64
+        files:
+          type: integer
+        grabs:
+          type: integer
+        seeders:
+          type: integer
+        leechers:
+          type: integer
+        peers:
+          type: integer
+        publishDate:
+          type: string
+          format: date-time
+        categories:
+          type: array
+          items:
+            type: integer
+        downloadLink:
+          type: string
+          description: Server URL that fetches the .torrent/.nzb (administrators and managers only).
+        magnetUrl:
+          type: string
+          description: Administrators and managers only.
+        infoHash:
+          type: string
+        infoUrl:
+          type: string
+        imdbId:
+          type: string
+        tmdbId:
+          type: integer
+          format: int64
+        tvdbId:
+          type: integer
+          format: int64
+        tvmazeId:
+          type: integer
+          format: int64
+        season:
+          type: string
+        episode:
+          type: string
+        downloadVolumeFactor:
+          type: number
+        uploadVolumeFactor:
+          type: number
+        minimumRatio:
+          type: number
+        minimumSeedTimeSeconds:
+          type: integer
+          format: int64
+        flags:
+          type: array
+          description: freeleech, halfleech, doubleupload, internal, scene… (lower-case)
+          items:
+            type: string
+    SearchIndexerStatus:
+      type: string
+      enum: [ok, error, skipped, rate_limited, backoff, unsupported]
+    SearchIndexerResult:
+      type: object
+      required: [indexerId, indexerName, status, count, cached, durationMs]
+      properties:
+        indexerId:
+          type: integer
+          format: int64
+        indexerName:
+          type: string
+        status:
+          $ref: "#/components/schemas/SearchIndexerStatus"
+        count:
+          type: integer
+          description: Results this indexer returned (before de-duplication).
+        cached:
+          type: boolean
+        durationMs:
+          type: integer
+          format: int64
+        errorCode:
+          type: string
+        error:
+          type: string
+    SearchResponse:
+      type: object
+      required: [releases, indexers, durationMs]
+      properties:
+        releases:
+          type: array
+          items:
+            $ref: "#/components/schemas/Release"
+        indexers:
+          type: array
+          items:
+            $ref: "#/components/schemas/SearchIndexerResult"
+        durationMs:
+          type: integer
+          format: int64
+    SearchStreamIndexerEvent:
+      type: object
+      required: [indexer, releases]
+      properties:
+        indexer:
+          $ref: "#/components/schemas/SearchIndexerResult"
+        releases:
+          type: array
+          items:
+            $ref: "#/components/schemas/Release"
+    SearchStreamDone:
+      type: object
+      required: [total, durationMs]
+      properties:
+        total:
+          type: integer
+        durationMs:
+          type: integer
+          format: int64
+    SearchLogEntry:
+      type: object
+      required: [id, startedAt, durationMs, source, type, query, resultCount, errorCount, indexers]
+      properties:
+        id:
+          type: integer
+          format: int64
+        startedAt:
+          type: string
+          format: date-time
+        durationMs:
+          type: integer
+          format: int64
+        source:
+          type: string
+          enum: [interactive, automatic, rss, test]
+        type:
+          $ref: "#/components/schemas/SearchType"
+        query:
+          type: string
+          description: Human-readable summary of the search terms.
+        itemRef:
+          type: string
+        userId:
+          type: integer
+          format: int64
+        resultCount:
+          type: integer
+        errorCount:
+          type: integer
+        indexers:
+          type: array
+          items:
+            $ref: "#/components/schemas/SearchIndexerResult"
     Quality:
       type: object
       required: [id, name, source, rank, music]
@@ -1943,9 +3124,6 @@ components:
         indexerId:
           type: integer
           format: int64
-    Protocol:
-      type: string
-      enum: [usenet, torrent]
     DelayProfileInput:
       type: object
       required: [name, enabled, preferredProtocol, usenetEnabled, torrentEnabled, usenetDelay, torrentDelay]

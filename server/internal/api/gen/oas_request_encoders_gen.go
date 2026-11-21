@@ -66,6 +66,34 @@ func encodeCreateDelayProfileRequest(
 	return nil
 }
 
+func encodeCreateIndexerRequest(
+	req *IndexerInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeCreateIndexerSourceRequest(
+	req *IndexerSourceInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateQualityProfileRequest(
 	req *QualityProfileInput,
 	r *http.Request,
@@ -206,6 +234,20 @@ func encodeParseReleaseRequest(
 	return nil
 }
 
+func encodePreviewIndexerSourceRequest(
+	req *IndexerSourcePreviewRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeRegenerateRecoveryCodesRequest(
 	req *PasswordConfirm,
 	r *http.Request,
@@ -276,6 +318,20 @@ func encodeSetupRequest(
 	return nil
 }
 
+func encodeTestIndexerConfigRequest(
+	req *IndexerTestRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeUpdateCustomFormatRequest(
 	req *CustomFormatInput,
 	r *http.Request,
@@ -292,6 +348,34 @@ func encodeUpdateCustomFormatRequest(
 
 func encodeUpdateDelayProfileRequest(
 	req *DelayProfileInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateIndexerRequest(
+	req *IndexerInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateIndexerSettingsRequest(
+	req *UpdateIndexerSettingsRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

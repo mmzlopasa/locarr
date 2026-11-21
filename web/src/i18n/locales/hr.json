@@ -46,7 +46,21 @@
     "unknown_task": "Ne postoji zadatak s tim imenom.",
     "generic": "Zahtjev nije uspio (HTTP {{status}}).",
     "network": "Server nije dostupan. Provjeri vezu.",
-    "unknown": "Nešto je pošlo po zlu."
+    "unknown": "Nešto je pošlo po zlu.",
+    "name_taken": "Indexer s tim nazivom već postoji.",
+    "source_error": "Izvor se ne može pročitati. Provjeri URL i API ključ.",
+    "grab_limit": "Dosegnut je dnevni limit preuzimanja za indexer.",
+    "bad_token": "Poveznica za preuzimanje nije valjana ili je istekla. Pretraži ponovno.",
+    "no_download": "Ovo izdanje nema poveznicu za preuzimanje.",
+    "indexer_auth": "Indexer je odbio API ključ.",
+    "indexer_rate_limit": "Dosegnut je limit zahtjeva indexera.",
+    "indexer_unsupported": "Indexer to ne podržava.",
+    "indexer_disabled": "API ili račun na indexeru je isključen.",
+    "indexer_not_found": "Indexer više nema ovo izdanje.",
+    "indexer_bad_response": "Indexer je poslao odgovor koji se ne može pročitati.",
+    "indexer_unreachable": "Indexer nije dostupan.",
+    "indexer_blocked": "Ova adresa je blokirana iz sigurnosnih razloga.",
+    "indexer_unknown": "Indexer je prijavio grešku."
   },
   "errorPage": {
     "title": "Ova stranica se ne može prikazati",
@@ -72,7 +86,6 @@
       "activity": "Red preuzimanja, povijest i vremenska crta po naslovu koja objašnjava zašto je nešto stiglo ili nije.",
       "calendar": "Nadolazeće epizode i izdanja, na webu i kao iCal feed.",
       "wanted": "Naslovi koji nedostaju ili su ispod granice kvalitete, s pretragom na jedan klik.",
-      "indexers": "Torznab i Newznab indexeri, ili Prowlarr i Jackett kao izvor, uz praćenje zdravlja i backoff.",
       "downloaders": "qBittorrent, Transmission, Deluge, rTorrent, aria2, SABnzbd i NZBGet."
     }
   },
@@ -91,7 +104,8 @@
     "indexers": "Indexeri",
     "downloaders": "Klijenti za preuzimanje",
     "settings": "Postavke",
-    "system": "Sustav"
+    "system": "Sustav",
+    "search": "Pretraga"
   },
   "roles": {
     "admin": "Administrator",
@@ -309,7 +323,9 @@
       "runtime": "Okruženje",
       "configDir": "Mapa s konfiguracijom",
       "database": "Veličina baze",
-      "dataRoots": "Podatkovne mape"
+      "dataRoots": "Podatkovne mape",
+      "indexers": "Stanje indexera",
+      "manageIndexers": "Upravljaj indexerima"
     }
   },
   "jobStates": {
@@ -341,6 +357,200 @@
     "names": {
       "ping": "Samoprovjera",
       "housekeeping": "Održavanje"
+    }
+  },
+  "search": {
+    "title": "Pretraga",
+    "subtitle": "Pitaj sve indexere odjednom. Rezultati se pojavljuju čim koji indexer odgovori.",
+    "query": "Traži",
+    "queryPlaceholder": "Naslov, ime izdanja ili ključne riječi",
+    "type": "Vrsta",
+    "types": {
+      "search": "Bilo što",
+      "movie": "Film",
+      "tv": "Serija",
+      "music": "Glazba",
+      "book": "Knjiga"
+    },
+    "submit": "Traži",
+    "categories": "Kategorije",
+    "cats": {
+      "movies": "Filmovi",
+      "tv": "Serije",
+      "audio": "Glazba i zvuk",
+      "books": "Knjige",
+      "console": "Konzole",
+      "pc": "PC",
+      "other": "Ostalo"
+    },
+    "status": {
+      "ok": "U redu",
+      "error": "Greška",
+      "skipped": "Preskočen",
+      "rate_limited": "Dosegnut limit",
+      "backoff": "Pauziran",
+      "unsupported": "Nije podržano"
+    },
+    "cached": "iz predmemorije",
+    "searching": "Tražim…",
+    "summary": "Rezultata: {{n}}, za {{ms}} ms",
+    "col": {
+      "title": "Izdanje",
+      "indexer": "Indexer",
+      "size": "Veličina",
+      "peers": "Seederi / leecheri",
+      "age": "Starost",
+      "actions": "Radnje"
+    },
+    "flags": {
+      "freeleech": "Freeleech",
+      "halfleech": "Pola leecha",
+      "partialfreeleech": "Popust",
+      "doubleupload": "Dvostruki upload",
+      "internal": "Interno",
+      "scene": "Scena"
+    },
+    "usenet": "usenet",
+    "torrent": "torrent",
+    "details": "Stranica s detaljima",
+    "magnet": "Magnet poveznica",
+    "download": "Preuzmi datoteku",
+    "grab": "Preuzmi",
+    "grabLater": "Dostupno nakon download klijenata (P3)",
+    "noResults": "Nema rezultata.",
+    "noIndexers": "Nijedan indexer nije uključen za pretragu. Dodaj ga pod Indexeri."
+  },
+  "indexers": {
+    "title": "Indexeri",
+    "subtitle": "Torznab i Newznab indexeri, izravno ili preko Prowlarra ili Jacketta.",
+    "add": "Dodaj indexer",
+    "empty": "Još nema indexera.",
+    "edit": "Uredi",
+    "delete": "Obriši",
+    "deleteConfirm": "Obriši {{name}}",
+    "resetHealth": "Poništi greške",
+    "fromSource": "iz: {{name}}",
+    "priorityShort": "Prioritet {{n}}",
+    "uses": {
+      "rss": "RSS",
+      "automatic": "automatska pretraga",
+      "interactive": "ručna pretraga",
+      "none": "ne koristi se"
+    },
+    "lastSuccess": "zadnji odgovor {{when}}",
+    "retryAt": "idući pokušaj {{when}}, neuspjeha: {{failures}}",
+    "health": {
+      "healthy": "Ispravan",
+      "failing": "Ne radi",
+      "disabled": "Isključen",
+      "unknown": "Još nekorišten"
+    },
+    "kinds": {
+      "torznab": "Torznab (torrent)",
+      "newznab": "Newznab (usenet)"
+    },
+    "media": {
+      "movies": "Filmovi",
+      "tv": "Serije",
+      "music": "Glazba",
+      "books": "Knjige"
+    },
+    "errorKinds": {
+      "auth": "Indexer je odbio API ključ.",
+      "rate_limit": "Dosegnut je limit zahtjeva indexera.",
+      "unsupported": "Indexer ne podržava ovu pretragu.",
+      "disabled": "API ili račun na indexeru je isključen.",
+      "not_found": "Indexer nema tu stavku.",
+      "bad_response": "Odgovor nije Torznab/Newznab feed. Provjeri URL i API putanju.",
+      "unreachable": "Indexer nije dostupan ili nije odgovorio na vrijeme.",
+      "blocked": "Ova adresa je blokirana iz sigurnosnih razloga. Dopusti je u postavkama indexera ispod ako je tvoja.",
+      "unknown": "Indexer je prijavio grešku.",
+      "removed": "Izvor više ne navodi ovaj indexer."
+    },
+    "test": {
+      "button": "Testiraj",
+      "ok": "Radi: {{n}} rezultata u probnoj pretrazi ({{ms}} ms)."
+    },
+    "form": {
+      "addTitle": "Dodaj indexer",
+      "editTitle": "Uredi {{name}}",
+      "name": "Naziv",
+      "kind": "Vrsta",
+      "baseUrl": "URL",
+      "baseUrlHint": "Adresa indexera bez API putanje.",
+      "apiPath": "API putanja",
+      "apiKey": "API ključ",
+      "apiKeyHint": "Sprema se šifrirano i više se ne prikazuje.",
+      "apiKeyKept": "Ključ je spremljen. Ostavi prazno da ostane.",
+      "tags": "Oznake",
+      "tagsHint": "Odvojene zarezom.",
+      "priority": "Prioritet",
+      "priorityHint": "1 je najpoželjniji, 50 najmanje.",
+      "minimumSeeders": "Najmanje seedera",
+      "enabled": "Uključen",
+      "enableRss": "Koristi za RSS sync",
+      "enableAutomatic": "Koristi za automatsku pretragu",
+      "enableInteractive": "Koristi za ručnu pretragu",
+      "categories": "Kategorije po vrsti sadržaja",
+      "category": "Kategorija",
+      "categoriesNeedTest": "Pokreni test da se učitaju kategorije indexera.",
+      "showAdvanced": "Prikaži napredne postavke",
+      "hideAdvanced": "Sakrij napredne postavke",
+      "seedRatio": "Omjer seedanja",
+      "seedHint": "Koriste ga download klijenti; prazno znači zadano klijenta.",
+      "seedTime": "Vrijeme seedanja (minute)",
+      "timeout": "Vremensko ograničenje (sekunde)",
+      "requestLimit": "Ograničenje zahtjeva",
+      "requestLimitHint": "Dopušteni zahtjevi po razdoblju.",
+      "requestPeriod": "Razdoblje (sekunde)",
+      "grabLimit": "Preuzimanja na dan",
+      "proxyUrl": "Proxy",
+      "proxyUsername": "Korisničko ime za proxy",
+      "proxyPassword": "Lozinka za proxy",
+      "flaresolverr": "FlareSolverr URL",
+      "flaresolverrHint": "Samo za indexere iza Cloudflare provjere.",
+      "add": "Dodaj"
+    },
+    "import": {
+      "button": "Uvezi iz Prowlarra ili Jacketta",
+      "title": "Uvoz indexera",
+      "subtitle": "Prikazuje tamo postavljene indexere i dodaje svaki kao Torznab/Newznab indexer. Na izvoru se ništa ne mijenja.",
+      "kind": "Aplikacija",
+      "url": "URL",
+      "apiKey": "API ključ",
+      "preview": "Prikaži indexere",
+      "none": "Izvor nema postavljenih indexera.",
+      "done": "Uvezeno indexera: {{added}}.",
+      "importN": "Uvezi ({{n}})",
+      "actions": {
+        "add": "novi",
+        "update": "bit će ažuriran",
+        "unchanged": "već uvezen",
+        "disable": "bit će isključen",
+        "excluded": "izostavljen"
+      }
+    },
+    "sources": {
+      "title": "Izvori",
+      "subtitle": "Sinkronizacija dodaje nove indexere i isključuje uklonjene; ništa se ne briše.",
+      "count": "Indexera: {{n}}",
+      "lastSync": "sinkronizirano {{when}}",
+      "sync": "Sinkroniziraj",
+      "forget": "Zaboravi",
+      "forgetConfirm": "Zaboravi (indexeri ostaju)",
+      "synced": "Dodano: {{added}}, ažurirano: {{updated}}, isključeno: {{disabled}}."
+    },
+    "settings": {
+      "title": "Postavke indexera",
+      "subtitle": "Vrijede za sve indexere.",
+      "rss": "RSS sync svakih (minuta)",
+      "retention": "Čuvaj viđena izdanja (dana)",
+      "timeout": "Vremensko ograničenje pretrage (sekunde)",
+      "cache": "Pamti iste pretrage (sekunde)",
+      "allowedHosts": "Dopuštene lokalne adrese",
+      "allowedHostsHint": "Loopback i link-local adrese su zadano blokirane. Navedi adrese, mreže ili imena hostova koje dopuštaš, npr. 127.0.0.1.",
+      "blockPrivate": "Blokiraj i privatne mreže",
+      "blockPrivateHint": "Zadano isključeno jer Prowlarr i Jackett obično rade na istoj Docker mreži."
     }
   }
 }

@@ -12,11 +12,11 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Backup i vraćanje (automatski i ručno), migracije baze pri pokretanju
 
 ## Indexeri (P1)
-- [ ] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/MusicBrainz) i tekstu, RSS
-- [ ] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab)
-- [ ] Prioriteti, oznake (tagovi), ograničenja zahtjeva (rate limit), dnevni limiti, backoff i zdravlje
-- [ ] Paralelna pretraga svih indexera, rezultati čim stignu, ručna (interaktivna) pretraga
-- [ ] Proxyji po indexeru (HTTP/SOCKS5), FlareSolverr po izboru
+- [x] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/TVmaze) i tekstu, RSS (glazba po izvođaču/albumu: Newznab nema MusicBrainz parametar)
+- [x] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab)
+- [x] Prioriteti, oznake (tagovi), ograničenja zahtjeva (rate limit), dnevni limiti, backoff i zdravlje
+- [x] Paralelna pretraga svih indexera, rezultati čim stignu, ručna (interaktivna) pretraga
+- [ ] Proxyji po indexeru (HTTP/SOCKS5), FlareSolverr po izboru (ugrađeno; FlareSolverr testiran s lažnim servisom, proxyji još nisu testirani end-to-end)
 
 ## Parser i odluke (P2)
 - [ ] Parser imena izdanja: naslov, godina, sezona/epizoda (SxxEyy, višestruke, sezonski paketi, apsolutno, dnevno), kvaliteta, izvor, rezolucija, kodek, HDR/DV, audio, jezici, grupa, proper/repack, verzija
