@@ -1,0 +1,304 @@
+package timeline
+
+import (
+	"context"
+	"database/sql"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"sort"
+	"time"
+
+	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/decision"
+)
+
+// ReasonCount is how many releases one rejection code stopped.
+type ReasonCount struct {
+	Code    string `json:"code"`
+	Count   int    `json:"count"`
+	Example string `json:"example"`
+}
+
+// RejectedRelease is one of the best rejected releases with its reasons.
+type RejectedRelease struct {
+	Title   string               `json:"title"`
+	Indexer string               `json:"indexer"`
+	Quality string               `json:"quality"`
+	Status  string               `json:"status"`
+	Reasons []decision.Rejection `json:"reasons"`
+}
+
+// DecisionSummary is the data of a decision event.
+type DecisionSummary struct {
+	Mode       string            `json:"mode"`
+	Profile    string            `json:"profile"`
+	Candidates int               `json:"candidates"`
+	Accepted   int               `json:"accepted"`
+	Pending    int               `json:"pending"`
+	Rejected   int               `json:"rejected"`
+	Best       string            `json:"best,omitempty"`
+	BestScore  int               `json:"bestScore,omitempty"`
+	Reasons    []ReasonCount     `json:"reasons"`
+	TopRejects []RejectedRelease `json:"topRejected"`
+}
+
+// TopN is how many rejected releases a decision event keeps.
+const TopN = 10
+
+// Summarize turns a decision report into a decision event's data.
+func Summarize(rep decision.Report) DecisionSummary {
+	s := DecisionSummary{Mode: string(rep.Mode), Profile: rep.ProfileName, Candidates: len(rep.Decisions), Accepted: rep.Accepted,
+		Pending: rep.Pending, Rejected: rep.Rejected, Reasons: []ReasonCount{}, TopRejects: []RejectedRelease{}}
+	if b := rep.Best(); b != nil {
+		s.Best, s.BestScore = b.Candidate.Title, b.Score
+	}
+	counts := map[string]*ReasonCount{}
+	for _, d := range rep.Decisions {
+		if d.Status == decision.StatusAccepted {
+			continue
+		}
+		for _, r := range d.Rejections {
+			rc := counts[r.Code]
+			if rc == nil {
+				rc = &ReasonCount{Code: r.Code, Example: r.Message}
+				counts[r.Code] = rc
+			}
+			rc.Count++
+		}
+		if len(s.TopRejects) < TopN {
+			s.TopRejects = append(s.TopRejects, RejectedRelease{Title: d.Candidate.Title, Indexer: d.Candidate.IndexerName,
+				Quality: d.Quality.Name, Status: d.Status, Reasons: d.Rejections})
+		}
+	}
+	for _, rc := range counts {
+		s.Reasons = append(s.Reasons, *rc)
+	}
+	sort.Slice(s.Reasons, func(i, j int) bool {
+		if s.Reasons[i].Count != s.Reasons[j].Count {
+			return s.Reasons[i].Count > s.Reasons[j].Count
+		}
+		return s.Reasons[i].Code < s.Reasons[j].Code
+	})
+	return s
+}
+
+// ItemState is what the media kind knows about an item.
+type ItemState struct {
+	Ref       string
+	Monitored bool
+	// Available: the item reached its minimum availability.
+	Available     bool
+	AvailableFrom *time.Time
+	HasFile       bool
+	CutoffMet     bool
+}
+
+// DownloadFact is the item's latest download.
+type DownloadFact struct {
+	ID        int64
+	Title     string
+	Status    string // active, completed, imported, failed, removed
+	State     string
+	Progress  float64
+	Message   string
+	UpdatedAt time.Time
+}
+
+// PendingFact is a release held back.
+type PendingFact struct {
+	Title   string
+	Reason  string
+	RetryAt time.Time
+}
+
+// Facts are what the database says about an item's way to the library.
+type Facts struct {
+	Download     *DownloadFact
+	ImportFailed string // last import failure message after the latest download completed
+	Pending      *PendingFact
+	Searches     int
+	LastSearch   *time.Time
+	NextSearch   *time.Time
+	LastDecision *DecisionSummary
+	// Indexers usable for automatic search; Clients enabled download clients.
+	Indexers int
+	Clients  int
+}
+
+// Explanation is the one answer to "why isn't it here?".
+type Explanation struct {
+	Code    string         `json:"code"`
+	Tone    string         `json:"tone"` // success, info, warning, danger
+	Message string         `json:"message"`
+	Params  map[string]any `json:"params"`
+	// Reasons are the most common rejection reasons of the last search.
+	Reasons []ReasonCount `json:"reasons"`
+}
+
+// Explanation codes (the web client translates them).
+const (
+	ExplainAvailable      = "available"
+	ExplainDownloading    = "downloading"
+	ExplainImporting      = "importing"
+	ExplainImportFailed   = "import_failed"
+	ExplainNotMonitored   = "not_monitored"
+	ExplainNotAvailable   = "not_available_yet"
+	ExplainNoIndexers     = "no_indexers"
+	ExplainNoClients      = "no_download_client"
+	ExplainDelayed        = "waiting_delay"
+	ExplainNothingFound   = "nothing_found"
+	ExplainAllRejected    = "all_rejected"
+	ExplainNotSearched    = "not_searched_yet"
+	ExplainUpgradeWanted  = "upgrade_wanted"
+	ExplainDownloadFailed = "download_failed"
+)
+
+func fmtTime(t *time.Time) string {
+	if t == nil {
+		return "unknown"
+	}
+	return t.UTC().Format("2006-01-02 15:04 UTC")
+}
+
+// Explain derives the current blocking reason. Rules run in order; the first
+// that applies wins.
+func Explain(st ItemState, f Facts) Explanation {
+	e := Explanation{Params: map[string]any{"searches": f.Searches}, Reasons: []ReasonCount{}}
+	if f.LastSearch != nil {
+		e.Params["lastSearch"] = f.LastSearch.UTC()
+	}
+	if f.NextSearch != nil {
+		e.Params["nextSearch"] = f.NextSearch.UTC()
+	}
+	if f.LastDecision != nil && f.LastDecision.Reasons != nil {
+		e.Reasons = f.LastDecision.Reasons
+		if len(e.Reasons) > 3 {
+			e.Reasons = e.Reasons[:3]
+		}
+	}
+	set := func(code, tone, msg string) Explanation {
+		e.Code, e.Tone, e.Message = code, tone, msg
+		return e
+	}
+	d := f.Download
+	switch {
+	case st.HasFile && st.CutoffMet:
+		return set(ExplainAvailable, "success", "in the library and the quality profile's cutoff is met")
+	case d != nil && d.Status == "active":
+		e.Params["progress"], e.Params["title"], e.Params["state"] = d.Progress, d.Title, d.State
+		msg := fmt.Sprintf("downloading %s: %.0f%% (%s)", d.Title, d.Progress*100, d.State)
+		if d.Message != "" {
+			e.Params["detail"] = d.Message
+			msg += ": " + d.Message
+		}
+		return set(ExplainDownloading, "info", msg)
+	case d != nil && d.Status == "completed" && f.ImportFailed != "":
+		e.Params["title"], e.Params["detail"] = d.Title, f.ImportFailed
+		return set(ExplainImportFailed, "danger", "the download finished but the import failed: "+f.ImportFailed)
+	case d != nil && d.Status == "completed":
+		e.Params["title"] = d.Title
+		return set(ExplainImporting, "info", "the download finished and is waiting to be imported")
+	case !st.Monitored:
+		return set(ExplainNotMonitored, "warning", "not monitored: Locarr does not search for it")
+	case !st.Available:
+		if st.AvailableFrom != nil {
+			e.Params["availableFrom"] = st.AvailableFrom.UTC()
+		}
+		return set(ExplainNotAvailable, "info", "not available yet (minimum availability): searching starts "+fmtTime(st.AvailableFrom))
+	case f.Indexers == 0:
+		return set(ExplainNoIndexers, "danger", "no enabled indexer is used for automatic searches of this kind")
+	case f.Clients == 0:
+		return set(ExplainNoClients, "danger", "no download client is enabled")
+	case f.Pending != nil:
+		e.Params["title"], e.Params["retryAt"], e.Params["detail"] = f.Pending.Title, f.Pending.RetryAt.UTC(), f.Pending.Reason
+		return set(ExplainDelayed, "info", fmt.Sprintf("found %s, held back until %s: %s", f.Pending.Title, fmtTime(&f.Pending.RetryAt), f.Pending.Reason))
+	case d != nil && d.Status == "failed" && f.Searches == 0:
+		e.Params["title"], e.Params["detail"] = d.Title, d.Message
+		return set(ExplainDownloadFailed, "danger", "the last download failed: "+d.Message)
+	case f.Searches == 0:
+		return set(ExplainNotSearched, "info", "not searched yet; the next automatic search is at "+fmtTime(f.NextSearch))
+	case f.LastDecision != nil && f.LastDecision.Candidates > 0 && f.LastDecision.Accepted == 0:
+		e.Params["candidates"] = f.LastDecision.Candidates
+		msg := fmt.Sprintf("searched %d times; the last search found %d releases and every one was rejected", f.Searches, f.LastDecision.Candidates)
+		if len(e.Reasons) > 0 {
+			msg += " (mostly: " + e.Reasons[0].Example + ")"
+		}
+		if st.HasFile {
+			return set(ExplainUpgradeWanted, "info", "in the library below the cutoff; "+msg)
+		}
+		return set(ExplainAllRejected, "warning", msg)
+	case st.HasFile:
+		return set(ExplainUpgradeWanted, "info", "in the library below the quality profile's cutoff; Locarr keeps looking for an upgrade")
+	default:
+		return set(ExplainNothingFound, "warning", fmt.Sprintf("searched %d times and no indexer had a release; next search %s", f.Searches, fmtTime(f.NextSearch)))
+	}
+}
+
+// Facts loads what the database knows about ref's way to the library.
+// kindCategory is the indexers.categories key ("movies", "tv", "music").
+func (s *Store) Facts(ctx context.Context, ref, kindCategory string) (Facts, error) {
+	var f Facts
+	var (
+		d       DownloadFact
+		updated int64
+	)
+	err := s.DB.R.QueryRowContext(ctx, `SELECT id, title, status, state, progress, message, updated_at FROM downloads
+		WHERE json_extract(item_ref, '$.ref') = ? ORDER BY added_at DESC, id DESC LIMIT 1`, ref).
+		Scan(&d.ID, &d.Title, &d.Status, &d.State, &d.Progress, &d.Message, &updated)
+	switch {
+	case err == nil:
+		d.UpdatedAt = db.Time(updated)
+		f.Download = &d
+		if d.Status == "completed" {
+			var msg string
+			if err := s.DB.R.QueryRowContext(ctx, `SELECT message FROM download_events WHERE download_id = ? AND type = 'import_failed'
+				ORDER BY at DESC, id DESC LIMIT 1`, d.ID).Scan(&msg); err == nil {
+				f.ImportFailed = msg
+			}
+		}
+	case !errors.Is(err, sql.ErrNoRows):
+		return f, err
+	}
+	var p PendingFact
+	var retry int64
+	err = s.DB.R.QueryRowContext(ctx, `SELECT title, reason, retry_at FROM pending_releases WHERE item_ref = ? ORDER BY retry_at LIMIT 1`, ref).
+		Scan(&p.Title, &p.Reason, &retry)
+	if err == nil {
+		p.RetryAt = db.Time(retry)
+		f.Pending = &p
+	} else if !errors.Is(err, sql.ErrNoRows) {
+		return f, err
+	}
+	var last, next sql.NullInt64
+	err = s.DB.R.QueryRowContext(ctx, `SELECT searches, last_search_at, next_search_at FROM search_state WHERE item_ref = ?`, ref).
+		Scan(&f.Searches, &last, &next)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return f, err
+	}
+	f.LastSearch, f.NextSearch = db.NullTime(last), db.NullTime(next)
+	var data string
+	err = s.DB.R.QueryRowContext(ctx, `SELECT data FROM timeline_events WHERE item_ref = ? AND type = ? ORDER BY at DESC, id DESC LIMIT 1`,
+		ref, TypeDecision).Scan(&data)
+	if err == nil {
+		var wrap struct {
+			Summary DecisionSummary `json:"summary"`
+		}
+		if json.Unmarshal([]byte(data), &wrap) == nil {
+			f.LastDecision = &wrap.Summary
+		}
+	} else if !errors.Is(err, sql.ErrNoRows) {
+		return f, err
+	}
+	// An indexer counts when it is enabled for automatic search and offers
+	// categories of this kind (an empty list means "the standard ones").
+	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM indexers WHERE enabled = 1 AND enable_automatic = 1
+		AND (json_extract(categories, '$.`+kindCategory+`') IS NULL OR json_array_length(json_extract(categories, '$.`+kindCategory+`')) > 0)`).
+		Scan(&f.Indexers); err != nil { // #nosec G202 -- kindCategory is a constant from the caller
+		return f, err
+	}
+	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM download_clients WHERE enabled = 1`).Scan(&f.Clients); err != nil {
+		return f, err
+	}
+	return f, nil
+}

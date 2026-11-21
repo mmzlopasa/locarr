@@ -22,6 +22,24 @@ func (UnimplementedHandler) AddBlocklistEntry(ctx context.Context, req *Blocklis
 	return r, ht.ErrNotImplemented
 }
 
+// AddMovie implements addMovie operation.
+//
+// Add a movie from TMDb (library managers).
+//
+// POST /movies
+func (UnimplementedHandler) AddMovie(ctx context.Context, req *AddMovieRequest) (r *Movie, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AddMovieCollection implements addMovieCollection operation.
+//
+// Add the collection's missing movies (library managers).
+//
+// POST /movies/collections/{tmdbId}
+func (UnimplementedHandler) AddMovieCollection(ctx context.Context, req *AddOptions, params AddMovieCollectionParams) (r []Movie, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // BrowseFilesystem implements browseFilesystem operation.
 //
 // Without `path`, lists the data roots themselves.
@@ -58,6 +76,15 @@ func (UnimplementedHandler) CreateApiKey(ctx context.Context, req *CreateApiKeyR
 	return r, ht.ErrNotImplemented
 }
 
+// CreateCalendarToken implements createCalendarToken operation.
+//
+// The link is shown once; creating a new one stops the old one.
+//
+// POST /calendar/token
+func (UnimplementedHandler) CreateCalendarToken(ctx context.Context) (r *CalendarFeed, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateCustomFormat implements createCustomFormat operation.
 //
 // Add a custom format (administrators).
@@ -91,6 +118,15 @@ func (UnimplementedHandler) CreateDownloadClient(ctx context.Context, req *Downl
 //
 // POST /downloadclients/{id}/categories
 func (UnimplementedHandler) CreateDownloadClientCategories(ctx context.Context, params CreateDownloadClientCategoriesParams) (r *CreatedCategories, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateImportList implements createImportList operation.
+//
+// Add an import list (administrators).
+//
+// POST /movies/importlists
+func (UnimplementedHandler) CreateImportList(ctx context.Context, req *ImportListInput) (r *ImportList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -176,6 +212,15 @@ func (UnimplementedHandler) DeleteBlocklistEntry(ctx context.Context, params Del
 	return ht.ErrNotImplemented
 }
 
+// DeleteCalendarToken implements deleteCalendarToken operation.
+//
+// Stop the signed-in user's calendar feed link.
+//
+// DELETE /calendar/token
+func (UnimplementedHandler) DeleteCalendarToken(ctx context.Context) error {
+	return ht.ErrNotImplemented
+}
+
 // DeleteCustomFormat implements deleteCustomFormat operation.
 //
 // Profiles that scored it simply stop seeing it.
@@ -203,6 +248,24 @@ func (UnimplementedHandler) DeleteDownloadClient(ctx context.Context, params Del
 	return ht.ErrNotImplemented
 }
 
+// DeleteImportExclusion implements deleteImportExclusion operation.
+//
+// Let import lists add a movie again (administrators).
+//
+// DELETE /movies/exclusions/{tmdbId}
+func (UnimplementedHandler) DeleteImportExclusion(ctx context.Context, params DeleteImportExclusionParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteImportList implements deleteImportList operation.
+//
+// Remove an import list; its movies stay (administrators).
+//
+// DELETE /movies/importlists/{id}
+func (UnimplementedHandler) DeleteImportList(ctx context.Context, params DeleteImportListParams) error {
+	return ht.ErrNotImplemented
+}
+
 // DeleteIndexer implements deleteIndexer operation.
 //
 // Remove an indexer (administrators).
@@ -221,12 +284,30 @@ func (UnimplementedHandler) DeleteIndexerSource(ctx context.Context, params Dele
 	return ht.ErrNotImplemented
 }
 
+// DeleteMovie implements deleteMovie operation.
+//
+// With `deleteFiles` the movie folder goes to the recycle bin; files are never deleted outright.
+//
+// DELETE /movies/{id}
+func (UnimplementedHandler) DeleteMovie(ctx context.Context, params DeleteMovieParams) error {
+	return ht.ErrNotImplemented
+}
+
 // DeleteQualityProfile implements deleteQualityProfile operation.
 //
 // Remove a quality profile (administrators).
 //
 // DELETE /qualityprofiles/{id}
 func (UnimplementedHandler) DeleteQualityProfile(ctx context.Context, params DeleteQualityProfileParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteRecycleEntry implements deleteRecycleEntry operation.
+//
+// Delete one recycle bin entry permanently (administrators).
+//
+// DELETE /recyclebin/{id}
+func (UnimplementedHandler) DeleteRecycleEntry(ctx context.Context, params DeleteRecycleEntryParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -286,6 +367,15 @@ func (UnimplementedHandler) DownloadRelease(ctx context.Context, params Download
 	return r, ht.ErrNotImplemented
 }
 
+// EmptyRecycleBin implements emptyRecycleBin operation.
+//
+// Delete everything in the recycle bin permanently (administrators).
+//
+// DELETE /recyclebin
+func (UnimplementedHandler) EmptyRecycleBin(ctx context.Context) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // EnableTotp implements enableTotp operation.
 //
 // Confirm two-factor setup with a code.
@@ -305,12 +395,48 @@ func (UnimplementedHandler) EvaluateReleases(ctx context.Context, req *EvaluateR
 	return r, ht.ErrNotImplemented
 }
 
+// ExplainItem implements explainItem operation.
+//
+// Why an item is not in the library (yet).
+//
+// GET /timeline/explain
+func (UnimplementedHandler) ExplainItem(ctx context.Context, params ExplainItemParams) (r *Explanation, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ExportCustomFormat implements exportCustomFormat operation.
 //
 // A custom format as shared JSON.
 //
 // GET /customformats/{id}/export
 func (UnimplementedHandler) ExportCustomFormat(ctx context.Context, params ExportCustomFormatParams) (r SharedCustomFormat, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetCalendar implements getCalendar operation.
+//
+// Movie dates (in cinemas, digital, physical) between two days.
+//
+// GET /calendar
+func (UnimplementedHandler) GetCalendar(ctx context.Context, params GetCalendarParams) (r []CalendarEntry, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetCalendarFeed implements getCalendarFeed operation.
+//
+// ICalendar feed (authenticated by the per-user token in the link).
+//
+// GET /calendar/feed.ics
+func (UnimplementedHandler) GetCalendarFeed(ctx context.Context, params GetCalendarFeedParams) (r GetCalendarFeedOK, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetCalendarToken implements getCalendarToken operation.
+//
+// Whether the signed-in user has a calendar feed link.
+//
+// GET /calendar/token
+func (UnimplementedHandler) GetCalendarToken(ctx context.Context) (r *SecretState, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -377,6 +503,42 @@ func (UnimplementedHandler) GetMe(ctx context.Context) (r *User, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
+// GetMediaManagement implements getMediaManagement operation.
+//
+// Naming, transfer mode, recycle bin and permissions (administrators).
+//
+// GET /settings/mediamanagement
+func (UnimplementedHandler) GetMediaManagement(ctx context.Context) (r *MediaManagementSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMetadataSettings implements getMetadataSettings operation.
+//
+// TMDb key state, language and region (administrators).
+//
+// GET /settings/metadata
+func (UnimplementedHandler) GetMetadataSettings(ctx context.Context) (r *MetadataSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovie implements getMovie operation.
+//
+// One movie.
+//
+// GET /movies/{id}
+func (UnimplementedHandler) GetMovie(ctx context.Context, params GetMovieParams) (r *Movie, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieCollection implements getMovieCollection operation.
+//
+// A TMDb collection and which of its movies are in the library.
+//
+// GET /movies/collections/{tmdbId}
+func (UnimplementedHandler) GetMovieCollection(ctx context.Context, params GetMovieCollectionParams) (r *MovieCollection, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetQualityProfile implements getQualityProfile operation.
 //
 // One quality profile.
@@ -394,6 +556,15 @@ func (UnimplementedHandler) GetQualityProfile(ctx context.Context, params GetQua
 //
 // GET /queue
 func (UnimplementedHandler) GetQueue(ctx context.Context, params GetQueueParams) (r *Queue, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetRecycleBin implements getRecycleBin operation.
+//
+// Files in the recycle bin (library managers).
+//
+// GET /recyclebin
+func (UnimplementedHandler) GetRecycleBin(ctx context.Context) (r *RecycleBin, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -424,12 +595,41 @@ func (UnimplementedHandler) GetSystemStatus(ctx context.Context) (r *SystemStatu
 	return r, ht.ErrNotImplemented
 }
 
+// GetTimeline implements getTimeline operation.
+//
+// `item` is an item reference such as `movie:42`. Events are newest first: searches with per-indexer
+// counts, decisions with the most common rejection reasons, grabs, download milestones, imports,
+// renames, upgrades, recycled files and media server notifications.
+//
+// GET /timeline
+func (UnimplementedHandler) GetTimeline(ctx context.Context, params GetTimelineParams) (r *Timeline, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTmdbImage implements getTmdbImage operation.
+//
+// A TMDb poster or backdrop, cached on the server.
+//
+// GET /images/tmdb/{size}/{file}
+func (UnimplementedHandler) GetTmdbImage(ctx context.Context, params GetTmdbImageParams) (r GetTmdbImageRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetUser implements getUser operation.
 //
 // One user (administrators).
 //
 // GET /users/{id}
 func (UnimplementedHandler) GetUser(ctx context.Context, params GetUserParams) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GrabMovieRelease implements grabMovieRelease operation.
+//
+// Grab a release chosen in an interactive search (library managers).
+//
+// POST /movies/{id}/releases
+func (UnimplementedHandler) GrabMovieRelease(ctx context.Context, req *ManualGrabRequest, params GrabMovieReleaseParams) (r *QueueItem, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -453,6 +653,24 @@ func (UnimplementedHandler) GrabRelease(ctx context.Context, req *GrabRequest) (
 //
 // POST /customformats/import
 func (UnimplementedHandler) ImportCustomFormats(ctx context.Context, req *ImportCustomFormatsRequest) (r *ImportCustomFormatsResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ImportExistingMovies implements importExistingMovies operation.
+//
+// Add movies for existing folders; their files stay where they are (library managers).
+//
+// POST /movies/import/existing
+func (UnimplementedHandler) ImportExistingMovies(ctx context.Context, req *ImportExistingRequest) (r []ImportExistingResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// InteractiveSearchMovie implements interactiveSearchMovie operation.
+//
+// Interactive search - every release and the decision on it (library managers).
+//
+// GET /movies/{id}/releases
+func (UnimplementedHandler) InteractiveSearchMovie(ctx context.Context, params InteractiveSearchMovieParams) (r *InteractiveSearch, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -510,6 +728,24 @@ func (UnimplementedHandler) ListDownloadClients(ctx context.Context) (r []Downlo
 	return r, ht.ErrNotImplemented
 }
 
+// ListImportExclusions implements listImportExclusions operation.
+//
+// Movies import lists never add again.
+//
+// GET /movies/exclusions
+func (UnimplementedHandler) ListImportExclusions(ctx context.Context) (r []ImportExclusion, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListImportLists implements listImportLists operation.
+//
+// Lists that add movies automatically (administrators).
+//
+// GET /movies/importlists
+func (UnimplementedHandler) ListImportLists(ctx context.Context) (r []ImportList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListIndexerSources implements listIndexerSources operation.
 //
 // Prowlarr and Jackett instances indexers are imported from (administrators).
@@ -534,6 +770,16 @@ func (UnimplementedHandler) ListIndexers(ctx context.Context) (r []Indexer, _ er
 //
 // GET /languages
 func (UnimplementedHandler) ListLanguages(ctx context.Context) (r []LanguageInfo, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListMovies implements listMovies operation.
+//
+// Filters combine. `status`: missing (monitored, available, no file), downloaded, downloading,
+// cutoff_unmet, unavailable (not yet at minimum availability), unmonitored.
+//
+// GET /movies
+func (UnimplementedHandler) ListMovies(ctx context.Context, params ListMoviesParams) (r *MovieList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -655,6 +901,24 @@ func (UnimplementedHandler) Logout(ctx context.Context) (r *LogoutNoContent, _ e
 	return r, ht.ErrNotImplemented
 }
 
+// LookupMovies implements lookupMovies operation.
+//
+// Search TMDb by title ("Title 2008"), TMDb id ("tmdb:10378") or IMDb id ("tt1254207").
+//
+// GET /movies/lookup
+func (UnimplementedHandler) LookupMovies(ctx context.Context, params LookupMoviesParams) (r []MovieLookup, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ManualImport implements manualImport operation.
+//
+// Import chosen files into movies (library managers).
+//
+// POST /movies/import/manual
+func (UnimplementedHandler) ManualImport(ctx context.Context, req *ManualImportRequest) (r []ManualImportResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ParseRelease implements parseRelease operation.
 //
 // Returns every parsed field and how each custom format did. With `profileId` the release is also
@@ -684,6 +948,42 @@ func (UnimplementedHandler) PreviewIndexerSource(ctx context.Context, req *Index
 	return r, ht.ErrNotImplemented
 }
 
+// PreviewManualImport implements previewManualImport operation.
+//
+// Preview importing the video files of a folder (library managers).
+//
+// GET /movies/import/manual
+func (UnimplementedHandler) PreviewManualImport(ctx context.Context, params PreviewManualImportParams) (r []ManualImportCandidate, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// PreviewNaming implements previewNaming operation.
+//
+// Render naming templates for an example movie.
+//
+// POST /settings/mediamanagement/preview
+func (UnimplementedHandler) PreviewNaming(ctx context.Context, req *NamingPreviewRequest) (r *NamingPreview, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// PreviewRenameMovies implements previewRenameMovies operation.
+//
+// Show which movie files a rename would change.
+//
+// POST /movies/rename/preview
+func (UnimplementedHandler) PreviewRenameMovies(ctx context.Context, req *MovieIdsRequest) (r []RenameItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RefreshMovie implements refreshMovie operation.
+//
+// Reload a movie's metadata and check its file (library managers).
+//
+// POST /movies/{id}/refresh
+func (UnimplementedHandler) RefreshMovie(ctx context.Context, params RefreshMovieParams) (r *Movie, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RefreshQueue implements refreshQueue operation.
 //
 // Poll every client now (library managers).
@@ -710,6 +1010,15 @@ func (UnimplementedHandler) RegenerateRecoveryCodes(ctx context.Context, req *Pa
 // DELETE /queue/{id}
 func (UnimplementedHandler) RemoveQueueItem(ctx context.Context, params RemoveQueueItemParams) error {
 	return ht.ErrNotImplemented
+}
+
+// RenameMovies implements renameMovies operation.
+//
+// An empty list renames every movie. Files are renamed in place; nothing is deleted.
+//
+// POST /movies/rename
+func (UnimplementedHandler) RenameMovies(ctx context.Context, req *MovieIdsRequest) (r []RenameItem, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // ReorderDelayProfiles implements reorderDelayProfiles operation.
@@ -748,6 +1057,15 @@ func (UnimplementedHandler) ResetUserPassword(ctx context.Context, req *ResetPas
 	return ht.ErrNotImplemented
 }
 
+// RestoreRecycleEntry implements restoreRecycleEntry operation.
+//
+// Fails with `restore_conflict` when something else is at the original place.
+//
+// POST /recyclebin/{id}/restore
+func (UnimplementedHandler) RestoreRecycleEntry(ctx context.Context, params RestoreRecycleEntryParams) (r *RecycleEntry, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ResumeQueueItem implements resumeQueueItem operation.
 //
 // Resume a download (library managers).
@@ -775,6 +1093,15 @@ func (UnimplementedHandler) RunTask(ctx context.Context, params RunTaskParams) (
 	return r, ht.ErrNotImplemented
 }
 
+// ScanExistingMovies implements scanExistingMovies operation.
+//
+// Folders in a root folder that are not in the library, with TMDb matches (library managers).
+//
+// GET /movies/import/scan
+func (UnimplementedHandler) ScanExistingMovies(ctx context.Context, params ScanExistingMoviesParams) (r []ExistingFolder, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // Search implements search operation.
 //
 // Indexers are asked in parallel, each with its own timeout and request limit. Results are
@@ -783,6 +1110,24 @@ func (UnimplementedHandler) RunTask(ctx context.Context, params RunTaskParams) (
 //
 // GET /search
 func (UnimplementedHandler) Search(ctx context.Context, params SearchParams) (r *SearchResponse, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchMovie implements searchMovie operation.
+//
+// The search, the decision and any grab appear on the movie's timeline.
+//
+// POST /movies/{id}/search
+func (UnimplementedHandler) SearchMovie(ctx context.Context, params SearchMovieParams) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchMovies implements searchMovies operation.
+//
+// Queue automatic searches for several movies (library managers).
+//
+// POST /movies/search
+func (UnimplementedHandler) SearchMovies(ctx context.Context, req *MovieIdsRequest) (r *QueuedCount, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -828,6 +1173,15 @@ func (UnimplementedHandler) Setup(ctx context.Context, req *SetupRequest) (r *Si
 //
 // POST /auth/totp/setup
 func (UnimplementedHandler) StartTotpSetup(ctx context.Context) (r *TotpSetup, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SyncImportList implements syncImportList operation.
+//
+// Add the list's missing movies now (administrators).
+//
+// POST /movies/importlists/{id}/sync
+func (UnimplementedHandler) SyncImportList(ctx context.Context, params SyncImportListParams) (r *ImportListSyncResult, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -908,6 +1262,15 @@ func (UnimplementedHandler) UpdateDownloadSettings(ctx context.Context, req *Upd
 	return r, ht.ErrNotImplemented
 }
 
+// UpdateImportList implements updateImportList operation.
+//
+// Change an import list (administrators).
+//
+// PUT /movies/importlists/{id}
+func (UnimplementedHandler) UpdateImportList(ctx context.Context, req *ImportListInput, params UpdateImportListParams) (r *ImportList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateIndexer implements updateIndexer operation.
 //
 // Write-only fields (`apiKey`, `proxyPassword`) keep their stored value when absent; an empty string
@@ -933,6 +1296,33 @@ func (UnimplementedHandler) UpdateIndexerSettings(ctx context.Context, req *Upda
 //
 // PATCH /auth/me
 func (UnimplementedHandler) UpdateMe(ctx context.Context, req *UpdateMeRequest) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateMediaManagement implements updateMediaManagement operation.
+//
+// Change naming, transfer mode, recycle bin and permissions (administrators).
+//
+// PUT /settings/mediamanagement
+func (UnimplementedHandler) UpdateMediaManagement(ctx context.Context, req *MediaManagementSettings) (r *MediaManagementSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateMetadataSettings implements updateMetadataSettings operation.
+//
+// A key TMDb refuses is not stored (`metadata_key_invalid`).
+//
+// PUT /settings/metadata
+func (UnimplementedHandler) UpdateMetadataSettings(ctx context.Context, req *MetadataSettingsInput) (r *MetadataSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateMovie implements updateMovie operation.
+//
+// The folder can change only while the movie has no file (`has_file`).
+//
+// PATCH /movies/{id}
+func (UnimplementedHandler) UpdateMovie(ctx context.Context, req *MovieUpdate, params UpdateMovieParams) (r *Movie, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

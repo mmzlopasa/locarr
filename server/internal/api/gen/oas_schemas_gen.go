@@ -15,6 +15,170 @@ func (s *ErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// Merged schema.
+// Ref: #/components/schemas/AddMovieRequest
+type AddMovieRequest struct {
+	RootFolderId        int64                  `json:"rootFolderId"`
+	QualityProfileId    int64                  `json:"qualityProfileId"`
+	MinimumAvailability OptMinimumAvailability `json:"minimumAvailability"`
+	Monitored           OptBool                `json:"monitored"`
+	Tags                []string               `json:"tags"`
+	SearchOnAdd         OptBool                `json:"searchOnAdd"`
+	TmdbId              int64                  `json:"tmdbId"`
+	// Folder inside the root folder; empty = from the naming template.
+	Path OptString `json:"path"`
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *AddMovieRequest) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AddMovieRequest) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetMinimumAvailability returns the value of MinimumAvailability.
+func (s *AddMovieRequest) GetMinimumAvailability() OptMinimumAvailability {
+	return s.MinimumAvailability
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AddMovieRequest) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetTags returns the value of Tags.
+func (s *AddMovieRequest) GetTags() []string {
+	return s.Tags
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *AddMovieRequest) GetSearchOnAdd() OptBool {
+	return s.SearchOnAdd
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *AddMovieRequest) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// GetPath returns the value of Path.
+func (s *AddMovieRequest) GetPath() OptString {
+	return s.Path
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *AddMovieRequest) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AddMovieRequest) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetMinimumAvailability sets the value of MinimumAvailability.
+func (s *AddMovieRequest) SetMinimumAvailability(val OptMinimumAvailability) {
+	s.MinimumAvailability = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AddMovieRequest) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetTags sets the value of Tags.
+func (s *AddMovieRequest) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *AddMovieRequest) SetSearchOnAdd(val OptBool) {
+	s.SearchOnAdd = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *AddMovieRequest) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// SetPath sets the value of Path.
+func (s *AddMovieRequest) SetPath(val OptString) {
+	s.Path = val
+}
+
+// Ref: #/components/schemas/AddOptions
+type AddOptions struct {
+	RootFolderId        int64                  `json:"rootFolderId"`
+	QualityProfileId    int64                  `json:"qualityProfileId"`
+	MinimumAvailability OptMinimumAvailability `json:"minimumAvailability"`
+	Monitored           OptBool                `json:"monitored"`
+	Tags                []string               `json:"tags"`
+	SearchOnAdd         OptBool                `json:"searchOnAdd"`
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *AddOptions) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AddOptions) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetMinimumAvailability returns the value of MinimumAvailability.
+func (s *AddOptions) GetMinimumAvailability() OptMinimumAvailability {
+	return s.MinimumAvailability
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AddOptions) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetTags returns the value of Tags.
+func (s *AddOptions) GetTags() []string {
+	return s.Tags
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *AddOptions) GetSearchOnAdd() OptBool {
+	return s.SearchOnAdd
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *AddOptions) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AddOptions) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetMinimumAvailability sets the value of MinimumAvailability.
+func (s *AddOptions) SetMinimumAvailability(val OptMinimumAvailability) {
+	s.MinimumAvailability = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AddOptions) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetTags sets the value of Tags.
+func (s *AddOptions) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *AddOptions) SetSearchOnAdd(val OptBool) {
+	s.SearchOnAdd = val
+}
+
 // Ref: #/components/schemas/ApiKey
 type ApiKey struct {
 	ID   int64  `json:"id"`
@@ -352,6 +516,173 @@ func (s *BlocklistInput) SetItemRef(val jx.Raw) {
 	s.ItemRef = val
 }
 
+// Ref: #/components/schemas/CalendarEntry
+type CalendarEntry struct {
+	Date      time.Time         `json:"date"`
+	Kind      CalendarEntryKind `json:"kind"`
+	MovieId   int64             `json:"movieId"`
+	Title     string            `json:"title"`
+	Year      int               `json:"year"`
+	HasFile   bool              `json:"hasFile"`
+	Monitored bool              `json:"monitored"`
+	Poster    string            `json:"poster"`
+}
+
+// GetDate returns the value of Date.
+func (s *CalendarEntry) GetDate() time.Time {
+	return s.Date
+}
+
+// GetKind returns the value of Kind.
+func (s *CalendarEntry) GetKind() CalendarEntryKind {
+	return s.Kind
+}
+
+// GetMovieId returns the value of MovieId.
+func (s *CalendarEntry) GetMovieId() int64 {
+	return s.MovieId
+}
+
+// GetTitle returns the value of Title.
+func (s *CalendarEntry) GetTitle() string {
+	return s.Title
+}
+
+// GetYear returns the value of Year.
+func (s *CalendarEntry) GetYear() int {
+	return s.Year
+}
+
+// GetHasFile returns the value of HasFile.
+func (s *CalendarEntry) GetHasFile() bool {
+	return s.HasFile
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *CalendarEntry) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetPoster returns the value of Poster.
+func (s *CalendarEntry) GetPoster() string {
+	return s.Poster
+}
+
+// SetDate sets the value of Date.
+func (s *CalendarEntry) SetDate(val time.Time) {
+	s.Date = val
+}
+
+// SetKind sets the value of Kind.
+func (s *CalendarEntry) SetKind(val CalendarEntryKind) {
+	s.Kind = val
+}
+
+// SetMovieId sets the value of MovieId.
+func (s *CalendarEntry) SetMovieId(val int64) {
+	s.MovieId = val
+}
+
+// SetTitle sets the value of Title.
+func (s *CalendarEntry) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetYear sets the value of Year.
+func (s *CalendarEntry) SetYear(val int) {
+	s.Year = val
+}
+
+// SetHasFile sets the value of HasFile.
+func (s *CalendarEntry) SetHasFile(val bool) {
+	s.HasFile = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *CalendarEntry) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *CalendarEntry) SetPoster(val string) {
+	s.Poster = val
+}
+
+type CalendarEntryKind string
+
+const (
+	CalendarEntryKindInCinemas CalendarEntryKind = "in_cinemas"
+	CalendarEntryKindDigital   CalendarEntryKind = "digital"
+	CalendarEntryKindPhysical  CalendarEntryKind = "physical"
+)
+
+// AllValues returns all CalendarEntryKind values.
+func (CalendarEntryKind) AllValues() []CalendarEntryKind {
+	return []CalendarEntryKind{
+		CalendarEntryKindInCinemas,
+		CalendarEntryKindDigital,
+		CalendarEntryKindPhysical,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CalendarEntryKind) MarshalText() ([]byte, error) {
+	switch s {
+	case CalendarEntryKindInCinemas:
+		return []byte(s), nil
+	case CalendarEntryKindDigital:
+		return []byte(s), nil
+	case CalendarEntryKindPhysical:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CalendarEntryKind) UnmarshalText(data []byte) error {
+	switch CalendarEntryKind(data) {
+	case CalendarEntryKindInCinemas:
+		*s = CalendarEntryKindInCinemas
+		return nil
+	case CalendarEntryKindDigital:
+		*s = CalendarEntryKindDigital
+		return nil
+	case CalendarEntryKindPhysical:
+		*s = CalendarEntryKindPhysical
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/CalendarFeed
+type CalendarFeed struct {
+	Token string `json:"token"`
+	// Path of the feed on this server, e.g. /api/v1/calendar/feed.ics?token=….
+	Path string `json:"path"`
+}
+
+// GetToken returns the value of Token.
+func (s *CalendarFeed) GetToken() string {
+	return s.Token
+}
+
+// GetPath returns the value of Path.
+func (s *CalendarFeed) GetPath() string {
+	return s.Path
+}
+
+// SetToken sets the value of Token.
+func (s *CalendarFeed) SetToken(val string) {
+	s.Token = val
+}
+
+// SetPath sets the value of Path.
+func (s *CalendarFeed) SetPath(val string) {
+	s.Path = val
+}
+
 // CancelJobNoContent is response for CancelJob operation.
 type CancelJobNoContent struct{}
 
@@ -606,6 +937,55 @@ func (s *ChangePasswordRequest) SetCurrentPassword(val string) {
 // SetNewPassword sets the value of NewPassword.
 func (s *ChangePasswordRequest) SetNewPassword(val Password) {
 	s.NewPassword = val
+}
+
+// Ref: #/components/schemas/ColonReplacement
+type ColonReplacement string
+
+const (
+	ColonReplacementDelete    ColonReplacement = "delete"
+	ColonReplacementDash      ColonReplacement = "dash"
+	ColonReplacementSpaceDash ColonReplacement = "space_dash"
+)
+
+// AllValues returns all ColonReplacement values.
+func (ColonReplacement) AllValues() []ColonReplacement {
+	return []ColonReplacement{
+		ColonReplacementDelete,
+		ColonReplacementDash,
+		ColonReplacementSpaceDash,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ColonReplacement) MarshalText() ([]byte, error) {
+	switch s {
+	case ColonReplacementDelete:
+		return []byte(s), nil
+	case ColonReplacementDash:
+		return []byte(s), nil
+	case ColonReplacementSpaceDash:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ColonReplacement) UnmarshalText(data []byte) error {
+	switch ColonReplacement(data) {
+	case ColonReplacementDelete:
+		*s = ColonReplacementDelete
+		return nil
+	case ColonReplacementDash:
+		*s = ColonReplacementDash
+		return nil
+	case ColonReplacementSpaceDash:
+		*s = ColonReplacementSpaceDash
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/ConditionResult
@@ -1862,6 +2242,9 @@ type DeleteApiKeyNoContent struct{}
 // DeleteBlocklistEntryNoContent is response for DeleteBlocklistEntry operation.
 type DeleteBlocklistEntryNoContent struct{}
 
+// DeleteCalendarTokenNoContent is response for DeleteCalendarToken operation.
+type DeleteCalendarTokenNoContent struct{}
+
 // DeleteCustomFormatNoContent is response for DeleteCustomFormat operation.
 type DeleteCustomFormatNoContent struct{}
 
@@ -1871,14 +2254,26 @@ type DeleteDelayProfileNoContent struct{}
 // DeleteDownloadClientNoContent is response for DeleteDownloadClient operation.
 type DeleteDownloadClientNoContent struct{}
 
+// DeleteImportExclusionNoContent is response for DeleteImportExclusion operation.
+type DeleteImportExclusionNoContent struct{}
+
+// DeleteImportListNoContent is response for DeleteImportList operation.
+type DeleteImportListNoContent struct{}
+
 // DeleteIndexerNoContent is response for DeleteIndexer operation.
 type DeleteIndexerNoContent struct{}
 
 // DeleteIndexerSourceNoContent is response for DeleteIndexerSource operation.
 type DeleteIndexerSourceNoContent struct{}
 
+// DeleteMovieNoContent is response for DeleteMovie operation.
+type DeleteMovieNoContent struct{}
+
 // DeleteQualityProfileNoContent is response for DeleteQualityProfile operation.
 type DeleteQualityProfileNoContent struct{}
+
+// DeleteRecycleEntryNoContent is response for DeleteRecycleEntry operation.
+type DeleteRecycleEntryNoContent struct{}
 
 // DeleteReleaseProfileNoContent is response for DeleteReleaseProfile operation.
 type DeleteReleaseProfileNoContent struct{}
@@ -3605,6 +4000,237 @@ func (s *EvaluateRequestMode) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/ExistingFolder
+type ExistingFolder struct {
+	Path           string         `json:"path"`
+	Name           string         `json:"name"`
+	Title          string         `json:"title"`
+	Year           int            `json:"year"`
+	Video          OptString      `json:"video"`
+	VideoSizeBytes OptInt64       `json:"videoSizeBytes"`
+	Match          OptMovieLookup `json:"match"`
+	Candidates     []MovieLookup  `json:"candidates"`
+	Error          OptString      `json:"error"`
+}
+
+// GetPath returns the value of Path.
+func (s *ExistingFolder) GetPath() string {
+	return s.Path
+}
+
+// GetName returns the value of Name.
+func (s *ExistingFolder) GetName() string {
+	return s.Name
+}
+
+// GetTitle returns the value of Title.
+func (s *ExistingFolder) GetTitle() string {
+	return s.Title
+}
+
+// GetYear returns the value of Year.
+func (s *ExistingFolder) GetYear() int {
+	return s.Year
+}
+
+// GetVideo returns the value of Video.
+func (s *ExistingFolder) GetVideo() OptString {
+	return s.Video
+}
+
+// GetVideoSizeBytes returns the value of VideoSizeBytes.
+func (s *ExistingFolder) GetVideoSizeBytes() OptInt64 {
+	return s.VideoSizeBytes
+}
+
+// GetMatch returns the value of Match.
+func (s *ExistingFolder) GetMatch() OptMovieLookup {
+	return s.Match
+}
+
+// GetCandidates returns the value of Candidates.
+func (s *ExistingFolder) GetCandidates() []MovieLookup {
+	return s.Candidates
+}
+
+// GetError returns the value of Error.
+func (s *ExistingFolder) GetError() OptString {
+	return s.Error
+}
+
+// SetPath sets the value of Path.
+func (s *ExistingFolder) SetPath(val string) {
+	s.Path = val
+}
+
+// SetName sets the value of Name.
+func (s *ExistingFolder) SetName(val string) {
+	s.Name = val
+}
+
+// SetTitle sets the value of Title.
+func (s *ExistingFolder) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetYear sets the value of Year.
+func (s *ExistingFolder) SetYear(val int) {
+	s.Year = val
+}
+
+// SetVideo sets the value of Video.
+func (s *ExistingFolder) SetVideo(val OptString) {
+	s.Video = val
+}
+
+// SetVideoSizeBytes sets the value of VideoSizeBytes.
+func (s *ExistingFolder) SetVideoSizeBytes(val OptInt64) {
+	s.VideoSizeBytes = val
+}
+
+// SetMatch sets the value of Match.
+func (s *ExistingFolder) SetMatch(val OptMovieLookup) {
+	s.Match = val
+}
+
+// SetCandidates sets the value of Candidates.
+func (s *ExistingFolder) SetCandidates(val []MovieLookup) {
+	s.Candidates = val
+}
+
+// SetError sets the value of Error.
+func (s *ExistingFolder) SetError(val OptString) {
+	s.Error = val
+}
+
+// Ref: #/components/schemas/Explanation
+type Explanation struct {
+	// Available, downloading, importing, import_failed, not_monitored, not_available_yet, no_indexers,
+	// no_download_client, waiting_delay, download_failed, not_searched_yet, all_rejected, nothing_found,
+	// upgrade_wanted.
+	Code    string            `json:"code"`
+	Tone    ExplanationTone   `json:"tone"`
+	Message string            `json:"message"`
+	Params  ExplanationParams `json:"params"`
+	Reasons []ReasonCount     `json:"reasons"`
+}
+
+// GetCode returns the value of Code.
+func (s *Explanation) GetCode() string {
+	return s.Code
+}
+
+// GetTone returns the value of Tone.
+func (s *Explanation) GetTone() ExplanationTone {
+	return s.Tone
+}
+
+// GetMessage returns the value of Message.
+func (s *Explanation) GetMessage() string {
+	return s.Message
+}
+
+// GetParams returns the value of Params.
+func (s *Explanation) GetParams() ExplanationParams {
+	return s.Params
+}
+
+// GetReasons returns the value of Reasons.
+func (s *Explanation) GetReasons() []ReasonCount {
+	return s.Reasons
+}
+
+// SetCode sets the value of Code.
+func (s *Explanation) SetCode(val string) {
+	s.Code = val
+}
+
+// SetTone sets the value of Tone.
+func (s *Explanation) SetTone(val ExplanationTone) {
+	s.Tone = val
+}
+
+// SetMessage sets the value of Message.
+func (s *Explanation) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetParams sets the value of Params.
+func (s *Explanation) SetParams(val ExplanationParams) {
+	s.Params = val
+}
+
+// SetReasons sets the value of Reasons.
+func (s *Explanation) SetReasons(val []ReasonCount) {
+	s.Reasons = val
+}
+
+type ExplanationParams map[string]jx.Raw
+
+func (s *ExplanationParams) init() ExplanationParams {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+type ExplanationTone string
+
+const (
+	ExplanationToneSuccess ExplanationTone = "success"
+	ExplanationToneInfo    ExplanationTone = "info"
+	ExplanationToneWarning ExplanationTone = "warning"
+	ExplanationToneDanger  ExplanationTone = "danger"
+)
+
+// AllValues returns all ExplanationTone values.
+func (ExplanationTone) AllValues() []ExplanationTone {
+	return []ExplanationTone{
+		ExplanationToneSuccess,
+		ExplanationToneInfo,
+		ExplanationToneWarning,
+		ExplanationToneDanger,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ExplanationTone) MarshalText() ([]byte, error) {
+	switch s {
+	case ExplanationToneSuccess:
+		return []byte(s), nil
+	case ExplanationToneInfo:
+		return []byte(s), nil
+	case ExplanationToneWarning:
+		return []byte(s), nil
+	case ExplanationToneDanger:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ExplanationTone) UnmarshalText(data []byte) error {
+	switch ExplanationTone(data) {
+	case ExplanationToneSuccess:
+		*s = ExplanationToneSuccess
+		return nil
+	case ExplanationToneInfo:
+		*s = ExplanationToneInfo
+		return nil
+	case ExplanationToneWarning:
+		*s = ExplanationToneWarning
+		return nil
+	case ExplanationToneDanger:
+		*s = ExplanationToneDanger
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/ExternalIds
 type ExternalIds struct {
 	Tmdb        OptInt    `json:"tmdb"`
@@ -3742,6 +4368,202 @@ func (s *FormatScore) SetFormatId(val int64) {
 // SetScore sets the value of Score.
 func (s *FormatScore) SetScore(val int) {
 	s.Score = val
+}
+
+type GetCalendarFeedOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s GetCalendarFeedOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+// GetTmdbImageNotModified is response for GetTmdbImage operation.
+type GetTmdbImageNotModified struct {
+	CacheControl OptString
+	ETag         OptString
+}
+
+// GetCacheControl returns the value of CacheControl.
+func (s *GetTmdbImageNotModified) GetCacheControl() OptString {
+	return s.CacheControl
+}
+
+// GetETag returns the value of ETag.
+func (s *GetTmdbImageNotModified) GetETag() OptString {
+	return s.ETag
+}
+
+// SetCacheControl sets the value of CacheControl.
+func (s *GetTmdbImageNotModified) SetCacheControl(val OptString) {
+	s.CacheControl = val
+}
+
+// SetETag sets the value of ETag.
+func (s *GetTmdbImageNotModified) SetETag(val OptString) {
+	s.ETag = val
+}
+
+func (*GetTmdbImageNotModified) getTmdbImageRes() {}
+
+type GetTmdbImageOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s GetTmdbImageOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+// GetTmdbImageOKHeaders wraps GetTmdbImageOK with response headers.
+type GetTmdbImageOKHeaders struct {
+	CacheControl OptString
+	ContentType  string
+	ETag         OptString
+	Response     GetTmdbImageOK
+}
+
+// GetCacheControl returns the value of CacheControl.
+func (s *GetTmdbImageOKHeaders) GetCacheControl() OptString {
+	return s.CacheControl
+}
+
+// GetContentType returns the value of ContentType.
+func (s *GetTmdbImageOKHeaders) GetContentType() string {
+	return s.ContentType
+}
+
+// GetETag returns the value of ETag.
+func (s *GetTmdbImageOKHeaders) GetETag() OptString {
+	return s.ETag
+}
+
+// GetResponse returns the value of Response.
+func (s *GetTmdbImageOKHeaders) GetResponse() GetTmdbImageOK {
+	return s.Response
+}
+
+// SetCacheControl sets the value of CacheControl.
+func (s *GetTmdbImageOKHeaders) SetCacheControl(val OptString) {
+	s.CacheControl = val
+}
+
+// SetContentType sets the value of ContentType.
+func (s *GetTmdbImageOKHeaders) SetContentType(val string) {
+	s.ContentType = val
+}
+
+// SetETag sets the value of ETag.
+func (s *GetTmdbImageOKHeaders) SetETag(val OptString) {
+	s.ETag = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetTmdbImageOKHeaders) SetResponse(val GetTmdbImageOK) {
+	s.Response = val
+}
+
+func (*GetTmdbImageOKHeaders) getTmdbImageRes() {}
+
+type GetTmdbImageSize string
+
+const (
+	GetTmdbImageSizeW92      GetTmdbImageSize = "w92"
+	GetTmdbImageSizeW154     GetTmdbImageSize = "w154"
+	GetTmdbImageSizeW185     GetTmdbImageSize = "w185"
+	GetTmdbImageSizeW300     GetTmdbImageSize = "w300"
+	GetTmdbImageSizeW342     GetTmdbImageSize = "w342"
+	GetTmdbImageSizeW500     GetTmdbImageSize = "w500"
+	GetTmdbImageSizeW780     GetTmdbImageSize = "w780"
+	GetTmdbImageSizeW1280    GetTmdbImageSize = "w1280"
+	GetTmdbImageSizeOriginal GetTmdbImageSize = "original"
+)
+
+// AllValues returns all GetTmdbImageSize values.
+func (GetTmdbImageSize) AllValues() []GetTmdbImageSize {
+	return []GetTmdbImageSize{
+		GetTmdbImageSizeW92,
+		GetTmdbImageSizeW154,
+		GetTmdbImageSizeW185,
+		GetTmdbImageSizeW300,
+		GetTmdbImageSizeW342,
+		GetTmdbImageSizeW500,
+		GetTmdbImageSizeW780,
+		GetTmdbImageSizeW1280,
+		GetTmdbImageSizeOriginal,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetTmdbImageSize) MarshalText() ([]byte, error) {
+	switch s {
+	case GetTmdbImageSizeW92:
+		return []byte(s), nil
+	case GetTmdbImageSizeW154:
+		return []byte(s), nil
+	case GetTmdbImageSizeW185:
+		return []byte(s), nil
+	case GetTmdbImageSizeW300:
+		return []byte(s), nil
+	case GetTmdbImageSizeW342:
+		return []byte(s), nil
+	case GetTmdbImageSizeW500:
+		return []byte(s), nil
+	case GetTmdbImageSizeW780:
+		return []byte(s), nil
+	case GetTmdbImageSizeW1280:
+		return []byte(s), nil
+	case GetTmdbImageSizeOriginal:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetTmdbImageSize) UnmarshalText(data []byte) error {
+	switch GetTmdbImageSize(data) {
+	case GetTmdbImageSizeW92:
+		*s = GetTmdbImageSizeW92
+		return nil
+	case GetTmdbImageSizeW154:
+		*s = GetTmdbImageSizeW154
+		return nil
+	case GetTmdbImageSizeW185:
+		*s = GetTmdbImageSizeW185
+		return nil
+	case GetTmdbImageSizeW300:
+		*s = GetTmdbImageSizeW300
+		return nil
+	case GetTmdbImageSizeW342:
+		*s = GetTmdbImageSizeW342
+		return nil
+	case GetTmdbImageSizeW500:
+		*s = GetTmdbImageSizeW500
+		return nil
+	case GetTmdbImageSizeW780:
+		*s = GetTmdbImageSizeW780
+		return nil
+	case GetTmdbImageSizeW1280:
+		*s = GetTmdbImageSizeW1280
+		return nil
+	case GetTmdbImageSizeOriginal:
+		*s = GetTmdbImageSizeOriginal
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // One of `downloadUrl` or `downloadToken`. With `indexerId`, http(s) links and tokens are fetched
@@ -3992,6 +4814,582 @@ func (s *ImportCustomFormatsResult) SetWarnings(val []string) {
 // SetStored sets the value of Stored.
 func (s *ImportCustomFormatsResult) SetStored(val bool) {
 	s.Stored = val
+}
+
+// Ref: #/components/schemas/ImportExclusion
+type ImportExclusion struct {
+	TmdbId    int64     `json:"tmdbId"`
+	Title     string    `json:"title"`
+	Year      int       `json:"year"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *ImportExclusion) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// GetTitle returns the value of Title.
+func (s *ImportExclusion) GetTitle() string {
+	return s.Title
+}
+
+// GetYear returns the value of Year.
+func (s *ImportExclusion) GetYear() int {
+	return s.Year
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *ImportExclusion) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *ImportExclusion) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// SetTitle sets the value of Title.
+func (s *ImportExclusion) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetYear sets the value of Year.
+func (s *ImportExclusion) SetYear(val int) {
+	s.Year = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *ImportExclusion) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// Ref: #/components/schemas/ImportExistingRequest
+type ImportExistingRequest struct {
+	RootFolderId        int64                            `json:"rootFolderId"`
+	QualityProfileId    int64                            `json:"qualityProfileId"`
+	MinimumAvailability OptMinimumAvailability           `json:"minimumAvailability"`
+	Monitored           OptBool                          `json:"monitored"`
+	SearchOnAdd         OptBool                          `json:"searchOnAdd"`
+	Tags                []string                         `json:"tags"`
+	Items               []ImportExistingRequestItemsItem `json:"items"`
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *ImportExistingRequest) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *ImportExistingRequest) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetMinimumAvailability returns the value of MinimumAvailability.
+func (s *ImportExistingRequest) GetMinimumAvailability() OptMinimumAvailability {
+	return s.MinimumAvailability
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *ImportExistingRequest) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *ImportExistingRequest) GetSearchOnAdd() OptBool {
+	return s.SearchOnAdd
+}
+
+// GetTags returns the value of Tags.
+func (s *ImportExistingRequest) GetTags() []string {
+	return s.Tags
+}
+
+// GetItems returns the value of Items.
+func (s *ImportExistingRequest) GetItems() []ImportExistingRequestItemsItem {
+	return s.Items
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *ImportExistingRequest) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *ImportExistingRequest) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetMinimumAvailability sets the value of MinimumAvailability.
+func (s *ImportExistingRequest) SetMinimumAvailability(val OptMinimumAvailability) {
+	s.MinimumAvailability = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *ImportExistingRequest) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *ImportExistingRequest) SetSearchOnAdd(val OptBool) {
+	s.SearchOnAdd = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ImportExistingRequest) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetItems sets the value of Items.
+func (s *ImportExistingRequest) SetItems(val []ImportExistingRequestItemsItem) {
+	s.Items = val
+}
+
+type ImportExistingRequestItemsItem struct {
+	Path   string `json:"path"`
+	TmdbId int64  `json:"tmdbId"`
+}
+
+// GetPath returns the value of Path.
+func (s *ImportExistingRequestItemsItem) GetPath() string {
+	return s.Path
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *ImportExistingRequestItemsItem) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// SetPath sets the value of Path.
+func (s *ImportExistingRequestItemsItem) SetPath(val string) {
+	s.Path = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *ImportExistingRequestItemsItem) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// Ref: #/components/schemas/ImportExistingResult
+type ImportExistingResult struct {
+	Path  string   `json:"path"`
+	Movie OptMovie `json:"movie"`
+	Error OptError `json:"error"`
+}
+
+// GetPath returns the value of Path.
+func (s *ImportExistingResult) GetPath() string {
+	return s.Path
+}
+
+// GetMovie returns the value of Movie.
+func (s *ImportExistingResult) GetMovie() OptMovie {
+	return s.Movie
+}
+
+// GetError returns the value of Error.
+func (s *ImportExistingResult) GetError() OptError {
+	return s.Error
+}
+
+// SetPath sets the value of Path.
+func (s *ImportExistingResult) SetPath(val string) {
+	s.Path = val
+}
+
+// SetMovie sets the value of Movie.
+func (s *ImportExistingResult) SetMovie(val OptMovie) {
+	s.Movie = val
+}
+
+// SetError sets the value of Error.
+func (s *ImportExistingResult) SetError(val OptError) {
+	s.Error = val
+}
+
+// Ref: #/components/schemas/ImportList
+type ImportList struct {
+	ID                  int64               `json:"id"`
+	Name                string              `json:"name"`
+	Kind                ImportListKind      `json:"kind"`
+	ListId              string              `json:"listId"`
+	Enabled             bool                `json:"enabled"`
+	RootFolderId        int64               `json:"rootFolderId"`
+	QualityProfileId    int64               `json:"qualityProfileId"`
+	MinimumAvailability MinimumAvailability `json:"minimumAvailability"`
+	Monitored           bool                `json:"monitored"`
+	SearchOnAdd         bool                `json:"searchOnAdd"`
+	Tags                []string            `json:"tags"`
+	LastSyncAt          OptDateTime         `json:"lastSyncAt"`
+	LastAdded           int                 `json:"lastAdded"`
+	LastError           string              `json:"lastError"`
+	CreatedAt           time.Time           `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *ImportList) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *ImportList) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *ImportList) GetKind() ImportListKind {
+	return s.Kind
+}
+
+// GetListId returns the value of ListId.
+func (s *ImportList) GetListId() string {
+	return s.ListId
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *ImportList) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *ImportList) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *ImportList) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetMinimumAvailability returns the value of MinimumAvailability.
+func (s *ImportList) GetMinimumAvailability() MinimumAvailability {
+	return s.MinimumAvailability
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *ImportList) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *ImportList) GetSearchOnAdd() bool {
+	return s.SearchOnAdd
+}
+
+// GetTags returns the value of Tags.
+func (s *ImportList) GetTags() []string {
+	return s.Tags
+}
+
+// GetLastSyncAt returns the value of LastSyncAt.
+func (s *ImportList) GetLastSyncAt() OptDateTime {
+	return s.LastSyncAt
+}
+
+// GetLastAdded returns the value of LastAdded.
+func (s *ImportList) GetLastAdded() int {
+	return s.LastAdded
+}
+
+// GetLastError returns the value of LastError.
+func (s *ImportList) GetLastError() string {
+	return s.LastError
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *ImportList) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *ImportList) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *ImportList) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *ImportList) SetKind(val ImportListKind) {
+	s.Kind = val
+}
+
+// SetListId sets the value of ListId.
+func (s *ImportList) SetListId(val string) {
+	s.ListId = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *ImportList) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *ImportList) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *ImportList) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetMinimumAvailability sets the value of MinimumAvailability.
+func (s *ImportList) SetMinimumAvailability(val MinimumAvailability) {
+	s.MinimumAvailability = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *ImportList) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *ImportList) SetSearchOnAdd(val bool) {
+	s.SearchOnAdd = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ImportList) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetLastSyncAt sets the value of LastSyncAt.
+func (s *ImportList) SetLastSyncAt(val OptDateTime) {
+	s.LastSyncAt = val
+}
+
+// SetLastAdded sets the value of LastAdded.
+func (s *ImportList) SetLastAdded(val int) {
+	s.LastAdded = val
+}
+
+// SetLastError sets the value of LastError.
+func (s *ImportList) SetLastError(val string) {
+	s.LastError = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *ImportList) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// Ref: #/components/schemas/ImportListInput
+type ImportListInput struct {
+	Name string         `json:"name"`
+	Kind ImportListKind `json:"kind"`
+	// TMDb list id or collection id.
+	ListId              string                 `json:"listId"`
+	Enabled             OptBool                `json:"enabled"`
+	RootFolderId        int64                  `json:"rootFolderId"`
+	QualityProfileId    int64                  `json:"qualityProfileId"`
+	MinimumAvailability OptMinimumAvailability `json:"minimumAvailability"`
+	Monitored           OptBool                `json:"monitored"`
+	SearchOnAdd         OptBool                `json:"searchOnAdd"`
+	Tags                []string               `json:"tags"`
+}
+
+// GetName returns the value of Name.
+func (s *ImportListInput) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *ImportListInput) GetKind() ImportListKind {
+	return s.Kind
+}
+
+// GetListId returns the value of ListId.
+func (s *ImportListInput) GetListId() string {
+	return s.ListId
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *ImportListInput) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *ImportListInput) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *ImportListInput) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetMinimumAvailability returns the value of MinimumAvailability.
+func (s *ImportListInput) GetMinimumAvailability() OptMinimumAvailability {
+	return s.MinimumAvailability
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *ImportListInput) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *ImportListInput) GetSearchOnAdd() OptBool {
+	return s.SearchOnAdd
+}
+
+// GetTags returns the value of Tags.
+func (s *ImportListInput) GetTags() []string {
+	return s.Tags
+}
+
+// SetName sets the value of Name.
+func (s *ImportListInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *ImportListInput) SetKind(val ImportListKind) {
+	s.Kind = val
+}
+
+// SetListId sets the value of ListId.
+func (s *ImportListInput) SetListId(val string) {
+	s.ListId = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *ImportListInput) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *ImportListInput) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *ImportListInput) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetMinimumAvailability sets the value of MinimumAvailability.
+func (s *ImportListInput) SetMinimumAvailability(val OptMinimumAvailability) {
+	s.MinimumAvailability = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *ImportListInput) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *ImportListInput) SetSearchOnAdd(val OptBool) {
+	s.SearchOnAdd = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ImportListInput) SetTags(val []string) {
+	s.Tags = val
+}
+
+// Ref: #/components/schemas/ImportListKind
+type ImportListKind string
+
+const (
+	ImportListKindTmdbList       ImportListKind = "tmdb_list"
+	ImportListKindTmdbCollection ImportListKind = "tmdb_collection"
+)
+
+// AllValues returns all ImportListKind values.
+func (ImportListKind) AllValues() []ImportListKind {
+	return []ImportListKind{
+		ImportListKindTmdbList,
+		ImportListKindTmdbCollection,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ImportListKind) MarshalText() ([]byte, error) {
+	switch s {
+	case ImportListKindTmdbList:
+		return []byte(s), nil
+	case ImportListKindTmdbCollection:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ImportListKind) UnmarshalText(data []byte) error {
+	switch ImportListKind(data) {
+	case ImportListKindTmdbList:
+		*s = ImportListKindTmdbList
+		return nil
+	case ImportListKindTmdbCollection:
+		*s = ImportListKindTmdbCollection
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/ImportListSyncResult
+type ImportListSyncResult struct {
+	ListId   int64     `json:"listId"`
+	Found    int       `json:"found"`
+	Added    []string  `json:"added"`
+	Excluded int       `json:"excluded"`
+	Error    OptString `json:"error"`
+}
+
+// GetListId returns the value of ListId.
+func (s *ImportListSyncResult) GetListId() int64 {
+	return s.ListId
+}
+
+// GetFound returns the value of Found.
+func (s *ImportListSyncResult) GetFound() int {
+	return s.Found
+}
+
+// GetAdded returns the value of Added.
+func (s *ImportListSyncResult) GetAdded() []string {
+	return s.Added
+}
+
+// GetExcluded returns the value of Excluded.
+func (s *ImportListSyncResult) GetExcluded() int {
+	return s.Excluded
+}
+
+// GetError returns the value of Error.
+func (s *ImportListSyncResult) GetError() OptString {
+	return s.Error
+}
+
+// SetListId sets the value of ListId.
+func (s *ImportListSyncResult) SetListId(val int64) {
+	s.ListId = val
+}
+
+// SetFound sets the value of Found.
+func (s *ImportListSyncResult) SetFound(val int) {
+	s.Found = val
+}
+
+// SetAdded sets the value of Added.
+func (s *ImportListSyncResult) SetAdded(val []string) {
+	s.Added = val
+}
+
+// SetExcluded sets the value of Excluded.
+func (s *ImportListSyncResult) SetExcluded(val int) {
+	s.Excluded = val
+}
+
+// SetError sets the value of Error.
+func (s *ImportListSyncResult) SetError(val OptString) {
+	s.Error = val
 }
 
 // Ref: #/components/schemas/Indexer
@@ -5685,6 +7083,136 @@ func (s *IndexerTestResult) SetError(val OptString) {
 	s.Error = val
 }
 
+// Ref: #/components/schemas/InteractiveDecision
+type InteractiveDecision struct {
+	Decision Decision `json:"decision"`
+	// Pass to grabMovieRelease (the link stays on the server).
+	DownloadToken OptString `json:"downloadToken"`
+	MagnetUrl     OptString `json:"magnetUrl"`
+}
+
+// GetDecision returns the value of Decision.
+func (s *InteractiveDecision) GetDecision() Decision {
+	return s.Decision
+}
+
+// GetDownloadToken returns the value of DownloadToken.
+func (s *InteractiveDecision) GetDownloadToken() OptString {
+	return s.DownloadToken
+}
+
+// GetMagnetUrl returns the value of MagnetUrl.
+func (s *InteractiveDecision) GetMagnetUrl() OptString {
+	return s.MagnetUrl
+}
+
+// SetDecision sets the value of Decision.
+func (s *InteractiveDecision) SetDecision(val Decision) {
+	s.Decision = val
+}
+
+// SetDownloadToken sets the value of DownloadToken.
+func (s *InteractiveDecision) SetDownloadToken(val OptString) {
+	s.DownloadToken = val
+}
+
+// SetMagnetUrl sets the value of MagnetUrl.
+func (s *InteractiveDecision) SetMagnetUrl(val OptString) {
+	s.MagnetUrl = val
+}
+
+// Ref: #/components/schemas/InteractiveSearch
+type InteractiveSearch struct {
+	Kind        MediaKind             `json:"kind"`
+	ProfileName string                `json:"profileName"`
+	Accepted    int                   `json:"accepted"`
+	Pending     int                   `json:"pending"`
+	Rejected    int                   `json:"rejected"`
+	Decisions   []InteractiveDecision `json:"decisions"`
+	Indexers    []SearchIndexerResult `json:"indexers"`
+	DurationMs  int64                 `json:"durationMs"`
+}
+
+// GetKind returns the value of Kind.
+func (s *InteractiveSearch) GetKind() MediaKind {
+	return s.Kind
+}
+
+// GetProfileName returns the value of ProfileName.
+func (s *InteractiveSearch) GetProfileName() string {
+	return s.ProfileName
+}
+
+// GetAccepted returns the value of Accepted.
+func (s *InteractiveSearch) GetAccepted() int {
+	return s.Accepted
+}
+
+// GetPending returns the value of Pending.
+func (s *InteractiveSearch) GetPending() int {
+	return s.Pending
+}
+
+// GetRejected returns the value of Rejected.
+func (s *InteractiveSearch) GetRejected() int {
+	return s.Rejected
+}
+
+// GetDecisions returns the value of Decisions.
+func (s *InteractiveSearch) GetDecisions() []InteractiveDecision {
+	return s.Decisions
+}
+
+// GetIndexers returns the value of Indexers.
+func (s *InteractiveSearch) GetIndexers() []SearchIndexerResult {
+	return s.Indexers
+}
+
+// GetDurationMs returns the value of DurationMs.
+func (s *InteractiveSearch) GetDurationMs() int64 {
+	return s.DurationMs
+}
+
+// SetKind sets the value of Kind.
+func (s *InteractiveSearch) SetKind(val MediaKind) {
+	s.Kind = val
+}
+
+// SetProfileName sets the value of ProfileName.
+func (s *InteractiveSearch) SetProfileName(val string) {
+	s.ProfileName = val
+}
+
+// SetAccepted sets the value of Accepted.
+func (s *InteractiveSearch) SetAccepted(val int) {
+	s.Accepted = val
+}
+
+// SetPending sets the value of Pending.
+func (s *InteractiveSearch) SetPending(val int) {
+	s.Pending = val
+}
+
+// SetRejected sets the value of Rejected.
+func (s *InteractiveSearch) SetRejected(val int) {
+	s.Rejected = val
+}
+
+// SetDecisions sets the value of Decisions.
+func (s *InteractiveSearch) SetDecisions(val []InteractiveDecision) {
+	s.Decisions = val
+}
+
+// SetIndexers sets the value of Indexers.
+func (s *InteractiveSearch) SetIndexers(val []SearchIndexerResult) {
+	s.Indexers = val
+}
+
+// SetDurationMs sets the value of DurationMs.
+func (s *InteractiveSearch) SetDurationMs(val int64) {
+	s.DurationMs = val
+}
+
 // Ref: #/components/schemas/Job
 type Job struct {
 	ID          int64    `json:"id"`
@@ -5965,6 +7493,96 @@ func (s *LanguageInfo) SetNative(val string) {
 	s.Native = val
 }
 
+type ListMoviesSort string
+
+const (
+	ListMoviesSortTitle      ListMoviesSort = "title"
+	ListMoviesSortYear       ListMoviesSort = "year"
+	ListMoviesSortAdded      ListMoviesSort = "added"
+	ListMoviesSortRating     ListMoviesSort = "rating"
+	ListMoviesSortPopularity ListMoviesSort = "popularity"
+	ListMoviesSortSize       ListMoviesSort = "size"
+	ListMoviesSortInCinemas  ListMoviesSort = "inCinemas"
+	ListMoviesSortDigital    ListMoviesSort = "digital"
+	ListMoviesSortPhysical   ListMoviesSort = "physical"
+)
+
+// AllValues returns all ListMoviesSort values.
+func (ListMoviesSort) AllValues() []ListMoviesSort {
+	return []ListMoviesSort{
+		ListMoviesSortTitle,
+		ListMoviesSortYear,
+		ListMoviesSortAdded,
+		ListMoviesSortRating,
+		ListMoviesSortPopularity,
+		ListMoviesSortSize,
+		ListMoviesSortInCinemas,
+		ListMoviesSortDigital,
+		ListMoviesSortPhysical,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListMoviesSort) MarshalText() ([]byte, error) {
+	switch s {
+	case ListMoviesSortTitle:
+		return []byte(s), nil
+	case ListMoviesSortYear:
+		return []byte(s), nil
+	case ListMoviesSortAdded:
+		return []byte(s), nil
+	case ListMoviesSortRating:
+		return []byte(s), nil
+	case ListMoviesSortPopularity:
+		return []byte(s), nil
+	case ListMoviesSortSize:
+		return []byte(s), nil
+	case ListMoviesSortInCinemas:
+		return []byte(s), nil
+	case ListMoviesSortDigital:
+		return []byte(s), nil
+	case ListMoviesSortPhysical:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListMoviesSort) UnmarshalText(data []byte) error {
+	switch ListMoviesSort(data) {
+	case ListMoviesSortTitle:
+		*s = ListMoviesSortTitle
+		return nil
+	case ListMoviesSortYear:
+		*s = ListMoviesSortYear
+		return nil
+	case ListMoviesSortAdded:
+		*s = ListMoviesSortAdded
+		return nil
+	case ListMoviesSortRating:
+		*s = ListMoviesSortRating
+		return nil
+	case ListMoviesSortPopularity:
+		*s = ListMoviesSortPopularity
+		return nil
+	case ListMoviesSortSize:
+		*s = ListMoviesSortSize
+		return nil
+	case ListMoviesSortInCinemas:
+		*s = ListMoviesSortInCinemas
+		return nil
+	case ListMoviesSortDigital:
+		*s = ListMoviesSortDigital
+		return nil
+	case ListMoviesSortPhysical:
+		*s = ListMoviesSortPhysical
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/LoginRequest
 type LoginRequest struct {
 	Username     string        `json:"username"`
@@ -6050,6 +7668,356 @@ func (s *LogoutNoContent) SetSetCookie(val OptString) {
 	s.SetCookie = val
 }
 
+// Ref: #/components/schemas/ManualGrabRequest
+type ManualGrabRequest struct {
+	IndexerId     int64            `json:"indexerId"`
+	DownloadToken OptString        `json:"downloadToken"`
+	MagnetUrl     OptString        `json:"magnetUrl"`
+	Title         string           `json:"title"`
+	Protocol      DownloadProtocol `json:"protocol"`
+	GUID          OptString        `json:"guid"`
+	PublishDate   OptDateTime      `json:"publishDate"`
+}
+
+// GetIndexerId returns the value of IndexerId.
+func (s *ManualGrabRequest) GetIndexerId() int64 {
+	return s.IndexerId
+}
+
+// GetDownloadToken returns the value of DownloadToken.
+func (s *ManualGrabRequest) GetDownloadToken() OptString {
+	return s.DownloadToken
+}
+
+// GetMagnetUrl returns the value of MagnetUrl.
+func (s *ManualGrabRequest) GetMagnetUrl() OptString {
+	return s.MagnetUrl
+}
+
+// GetTitle returns the value of Title.
+func (s *ManualGrabRequest) GetTitle() string {
+	return s.Title
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *ManualGrabRequest) GetProtocol() DownloadProtocol {
+	return s.Protocol
+}
+
+// GetGUID returns the value of GUID.
+func (s *ManualGrabRequest) GetGUID() OptString {
+	return s.GUID
+}
+
+// GetPublishDate returns the value of PublishDate.
+func (s *ManualGrabRequest) GetPublishDate() OptDateTime {
+	return s.PublishDate
+}
+
+// SetIndexerId sets the value of IndexerId.
+func (s *ManualGrabRequest) SetIndexerId(val int64) {
+	s.IndexerId = val
+}
+
+// SetDownloadToken sets the value of DownloadToken.
+func (s *ManualGrabRequest) SetDownloadToken(val OptString) {
+	s.DownloadToken = val
+}
+
+// SetMagnetUrl sets the value of MagnetUrl.
+func (s *ManualGrabRequest) SetMagnetUrl(val OptString) {
+	s.MagnetUrl = val
+}
+
+// SetTitle sets the value of Title.
+func (s *ManualGrabRequest) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *ManualGrabRequest) SetProtocol(val DownloadProtocol) {
+	s.Protocol = val
+}
+
+// SetGUID sets the value of GUID.
+func (s *ManualGrabRequest) SetGUID(val OptString) {
+	s.GUID = val
+}
+
+// SetPublishDate sets the value of PublishDate.
+func (s *ManualGrabRequest) SetPublishDate(val OptDateTime) {
+	s.PublishDate = val
+}
+
+// Ref: #/components/schemas/ManualImportCandidate
+type ManualImportCandidate struct {
+	Path         string `json:"path"`
+	RelativePath string `json:"relativePath"`
+	SizeBytes    int64  `json:"sizeBytes"`
+	// Why the file is left out: sample, extra, smaller_than_main, disc_structure, not_media.
+	Skipped      OptString  `json:"skipped"`
+	MovieId      OptInt64   `json:"movieId"`
+	MovieTitle   OptString  `json:"movieTitle"`
+	MovieYear    OptInt     `json:"movieYear"`
+	Quality      OptQuality `json:"quality"`
+	ReleaseGroup OptString  `json:"releaseGroup"`
+	Rejection    OptError   `json:"rejection"`
+	Sidecars     []string   `json:"sidecars"`
+}
+
+// GetPath returns the value of Path.
+func (s *ManualImportCandidate) GetPath() string {
+	return s.Path
+}
+
+// GetRelativePath returns the value of RelativePath.
+func (s *ManualImportCandidate) GetRelativePath() string {
+	return s.RelativePath
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *ManualImportCandidate) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetSkipped returns the value of Skipped.
+func (s *ManualImportCandidate) GetSkipped() OptString {
+	return s.Skipped
+}
+
+// GetMovieId returns the value of MovieId.
+func (s *ManualImportCandidate) GetMovieId() OptInt64 {
+	return s.MovieId
+}
+
+// GetMovieTitle returns the value of MovieTitle.
+func (s *ManualImportCandidate) GetMovieTitle() OptString {
+	return s.MovieTitle
+}
+
+// GetMovieYear returns the value of MovieYear.
+func (s *ManualImportCandidate) GetMovieYear() OptInt {
+	return s.MovieYear
+}
+
+// GetQuality returns the value of Quality.
+func (s *ManualImportCandidate) GetQuality() OptQuality {
+	return s.Quality
+}
+
+// GetReleaseGroup returns the value of ReleaseGroup.
+func (s *ManualImportCandidate) GetReleaseGroup() OptString {
+	return s.ReleaseGroup
+}
+
+// GetRejection returns the value of Rejection.
+func (s *ManualImportCandidate) GetRejection() OptError {
+	return s.Rejection
+}
+
+// GetSidecars returns the value of Sidecars.
+func (s *ManualImportCandidate) GetSidecars() []string {
+	return s.Sidecars
+}
+
+// SetPath sets the value of Path.
+func (s *ManualImportCandidate) SetPath(val string) {
+	s.Path = val
+}
+
+// SetRelativePath sets the value of RelativePath.
+func (s *ManualImportCandidate) SetRelativePath(val string) {
+	s.RelativePath = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *ManualImportCandidate) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetSkipped sets the value of Skipped.
+func (s *ManualImportCandidate) SetSkipped(val OptString) {
+	s.Skipped = val
+}
+
+// SetMovieId sets the value of MovieId.
+func (s *ManualImportCandidate) SetMovieId(val OptInt64) {
+	s.MovieId = val
+}
+
+// SetMovieTitle sets the value of MovieTitle.
+func (s *ManualImportCandidate) SetMovieTitle(val OptString) {
+	s.MovieTitle = val
+}
+
+// SetMovieYear sets the value of MovieYear.
+func (s *ManualImportCandidate) SetMovieYear(val OptInt) {
+	s.MovieYear = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *ManualImportCandidate) SetQuality(val OptQuality) {
+	s.Quality = val
+}
+
+// SetReleaseGroup sets the value of ReleaseGroup.
+func (s *ManualImportCandidate) SetReleaseGroup(val OptString) {
+	s.ReleaseGroup = val
+}
+
+// SetRejection sets the value of Rejection.
+func (s *ManualImportCandidate) SetRejection(val OptError) {
+	s.Rejection = val
+}
+
+// SetSidecars sets the value of Sidecars.
+func (s *ManualImportCandidate) SetSidecars(val []string) {
+	s.Sidecars = val
+}
+
+// Ref: #/components/schemas/ManualImportRequest
+type ManualImportRequest struct {
+	Items []ManualImportRequestItemsItem `json:"items"`
+}
+
+// GetItems returns the value of Items.
+func (s *ManualImportRequest) GetItems() []ManualImportRequestItemsItem {
+	return s.Items
+}
+
+// SetItems sets the value of Items.
+func (s *ManualImportRequest) SetItems(val []ManualImportRequestItemsItem) {
+	s.Items = val
+}
+
+type ManualImportRequestItemsItem struct {
+	Path     string          `json:"path"`
+	MovieId  int64           `json:"movieId"`
+	Mode     OptTransferMode `json:"mode"`
+	Sidecars []string        `json:"sidecars"`
+}
+
+// GetPath returns the value of Path.
+func (s *ManualImportRequestItemsItem) GetPath() string {
+	return s.Path
+}
+
+// GetMovieId returns the value of MovieId.
+func (s *ManualImportRequestItemsItem) GetMovieId() int64 {
+	return s.MovieId
+}
+
+// GetMode returns the value of Mode.
+func (s *ManualImportRequestItemsItem) GetMode() OptTransferMode {
+	return s.Mode
+}
+
+// GetSidecars returns the value of Sidecars.
+func (s *ManualImportRequestItemsItem) GetSidecars() []string {
+	return s.Sidecars
+}
+
+// SetPath sets the value of Path.
+func (s *ManualImportRequestItemsItem) SetPath(val string) {
+	s.Path = val
+}
+
+// SetMovieId sets the value of MovieId.
+func (s *ManualImportRequestItemsItem) SetMovieId(val int64) {
+	s.MovieId = val
+}
+
+// SetMode sets the value of Mode.
+func (s *ManualImportRequestItemsItem) SetMode(val OptTransferMode) {
+	s.Mode = val
+}
+
+// SetSidecars sets the value of Sidecars.
+func (s *ManualImportRequestItemsItem) SetSidecars(val []string) {
+	s.Sidecars = val
+}
+
+// Ref: #/components/schemas/ManualImportResult
+type ManualImportResult struct {
+	Path         string    `json:"path"`
+	MovieId      int64     `json:"movieId"`
+	ImportedPath OptString `json:"importedPath"`
+	Mode         OptString `json:"mode"`
+	Upgraded     OptBool   `json:"upgraded"`
+	Recycled     []string  `json:"recycled"`
+	Error        OptError  `json:"error"`
+}
+
+// GetPath returns the value of Path.
+func (s *ManualImportResult) GetPath() string {
+	return s.Path
+}
+
+// GetMovieId returns the value of MovieId.
+func (s *ManualImportResult) GetMovieId() int64 {
+	return s.MovieId
+}
+
+// GetImportedPath returns the value of ImportedPath.
+func (s *ManualImportResult) GetImportedPath() OptString {
+	return s.ImportedPath
+}
+
+// GetMode returns the value of Mode.
+func (s *ManualImportResult) GetMode() OptString {
+	return s.Mode
+}
+
+// GetUpgraded returns the value of Upgraded.
+func (s *ManualImportResult) GetUpgraded() OptBool {
+	return s.Upgraded
+}
+
+// GetRecycled returns the value of Recycled.
+func (s *ManualImportResult) GetRecycled() []string {
+	return s.Recycled
+}
+
+// GetError returns the value of Error.
+func (s *ManualImportResult) GetError() OptError {
+	return s.Error
+}
+
+// SetPath sets the value of Path.
+func (s *ManualImportResult) SetPath(val string) {
+	s.Path = val
+}
+
+// SetMovieId sets the value of MovieId.
+func (s *ManualImportResult) SetMovieId(val int64) {
+	s.MovieId = val
+}
+
+// SetImportedPath sets the value of ImportedPath.
+func (s *ManualImportResult) SetImportedPath(val OptString) {
+	s.ImportedPath = val
+}
+
+// SetMode sets the value of Mode.
+func (s *ManualImportResult) SetMode(val OptString) {
+	s.Mode = val
+}
+
+// SetUpgraded sets the value of Upgraded.
+func (s *ManualImportResult) SetUpgraded(val OptBool) {
+	s.Upgraded = val
+}
+
+// SetRecycled sets the value of Recycled.
+func (s *ManualImportResult) SetRecycled(val []string) {
+	s.Recycled = val
+}
+
+// SetError sets the value of Error.
+func (s *ManualImportResult) SetError(val OptError) {
+	s.Error = val
+}
+
 // Ref: #/components/schemas/MatchedFormat
 type MatchedFormat struct {
 	ID    int64  `json:"id"`
@@ -6085,6 +8053,121 @@ func (s *MatchedFormat) SetName(val string) {
 // SetScore sets the value of Score.
 func (s *MatchedFormat) SetScore(val int) {
 	s.Score = val
+}
+
+// Read from the file or release name (`source` = name); see D-033.
+// Ref: #/components/schemas/MediaInfo
+type MediaInfo struct {
+	Source        string    `json:"source"`
+	Resolution    OptInt    `json:"resolution"`
+	VideoCodec    OptString `json:"videoCodec"`
+	BitDepth      OptInt    `json:"bitDepth"`
+	Hdr           []string  `json:"hdr"`
+	AudioCodec    OptString `json:"audioCodec"`
+	AudioChannels OptString `json:"audioChannels"`
+	Atmos         OptBool   `json:"atmos"`
+	Languages     []string  `json:"languages"`
+	Subtitles     []string  `json:"subtitles"`
+}
+
+// GetSource returns the value of Source.
+func (s *MediaInfo) GetSource() string {
+	return s.Source
+}
+
+// GetResolution returns the value of Resolution.
+func (s *MediaInfo) GetResolution() OptInt {
+	return s.Resolution
+}
+
+// GetVideoCodec returns the value of VideoCodec.
+func (s *MediaInfo) GetVideoCodec() OptString {
+	return s.VideoCodec
+}
+
+// GetBitDepth returns the value of BitDepth.
+func (s *MediaInfo) GetBitDepth() OptInt {
+	return s.BitDepth
+}
+
+// GetHdr returns the value of Hdr.
+func (s *MediaInfo) GetHdr() []string {
+	return s.Hdr
+}
+
+// GetAudioCodec returns the value of AudioCodec.
+func (s *MediaInfo) GetAudioCodec() OptString {
+	return s.AudioCodec
+}
+
+// GetAudioChannels returns the value of AudioChannels.
+func (s *MediaInfo) GetAudioChannels() OptString {
+	return s.AudioChannels
+}
+
+// GetAtmos returns the value of Atmos.
+func (s *MediaInfo) GetAtmos() OptBool {
+	return s.Atmos
+}
+
+// GetLanguages returns the value of Languages.
+func (s *MediaInfo) GetLanguages() []string {
+	return s.Languages
+}
+
+// GetSubtitles returns the value of Subtitles.
+func (s *MediaInfo) GetSubtitles() []string {
+	return s.Subtitles
+}
+
+// SetSource sets the value of Source.
+func (s *MediaInfo) SetSource(val string) {
+	s.Source = val
+}
+
+// SetResolution sets the value of Resolution.
+func (s *MediaInfo) SetResolution(val OptInt) {
+	s.Resolution = val
+}
+
+// SetVideoCodec sets the value of VideoCodec.
+func (s *MediaInfo) SetVideoCodec(val OptString) {
+	s.VideoCodec = val
+}
+
+// SetBitDepth sets the value of BitDepth.
+func (s *MediaInfo) SetBitDepth(val OptInt) {
+	s.BitDepth = val
+}
+
+// SetHdr sets the value of Hdr.
+func (s *MediaInfo) SetHdr(val []string) {
+	s.Hdr = val
+}
+
+// SetAudioCodec sets the value of AudioCodec.
+func (s *MediaInfo) SetAudioCodec(val OptString) {
+	s.AudioCodec = val
+}
+
+// SetAudioChannels sets the value of AudioChannels.
+func (s *MediaInfo) SetAudioChannels(val OptString) {
+	s.AudioChannels = val
+}
+
+// SetAtmos sets the value of Atmos.
+func (s *MediaInfo) SetAtmos(val OptBool) {
+	s.Atmos = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *MediaInfo) SetLanguages(val []string) {
+	s.Languages = val
+}
+
+// SetSubtitles sets the value of Subtitles.
+func (s *MediaInfo) SetSubtitles(val []string) {
+	s.Subtitles = val
 }
 
 // Ref: #/components/schemas/MediaKind
@@ -6136,6 +8219,1445 @@ func (s *MediaKind) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/MediaManagementSettings
+type MediaManagementSettings struct {
+	RenameMovies      bool             `json:"renameMovies"`
+	MovieFolderFormat string           `json:"movieFolderFormat"`
+	MovieFileFormat   string           `json:"movieFileFormat"`
+	ColonReplacement  ColonReplacement `json:"colonReplacement"`
+	TransferMode      TransferMode     `json:"transferMode"`
+	// Empty = recycle-bin under the first data root.
+	RecycleBinPath string `json:"recycleBinPath"`
+	// 0 = keep until emptied by hand.
+	RecycleBinRetentionDays int      `json:"recycleBinRetentionDays"`
+	SetPermissions          bool     `json:"setPermissions"`
+	FileMode                string   `json:"fileMode"`
+	FolderMode              string   `json:"folderMode"`
+	ExtraExtensions         []string `json:"extraExtensions"`
+	AvailabilityDelayDays   int      `json:"availabilityDelayDays"`
+	SearchOnAddDefault      bool     `json:"searchOnAddDefault"`
+}
+
+// GetRenameMovies returns the value of RenameMovies.
+func (s *MediaManagementSettings) GetRenameMovies() bool {
+	return s.RenameMovies
+}
+
+// GetMovieFolderFormat returns the value of MovieFolderFormat.
+func (s *MediaManagementSettings) GetMovieFolderFormat() string {
+	return s.MovieFolderFormat
+}
+
+// GetMovieFileFormat returns the value of MovieFileFormat.
+func (s *MediaManagementSettings) GetMovieFileFormat() string {
+	return s.MovieFileFormat
+}
+
+// GetColonReplacement returns the value of ColonReplacement.
+func (s *MediaManagementSettings) GetColonReplacement() ColonReplacement {
+	return s.ColonReplacement
+}
+
+// GetTransferMode returns the value of TransferMode.
+func (s *MediaManagementSettings) GetTransferMode() TransferMode {
+	return s.TransferMode
+}
+
+// GetRecycleBinPath returns the value of RecycleBinPath.
+func (s *MediaManagementSettings) GetRecycleBinPath() string {
+	return s.RecycleBinPath
+}
+
+// GetRecycleBinRetentionDays returns the value of RecycleBinRetentionDays.
+func (s *MediaManagementSettings) GetRecycleBinRetentionDays() int {
+	return s.RecycleBinRetentionDays
+}
+
+// GetSetPermissions returns the value of SetPermissions.
+func (s *MediaManagementSettings) GetSetPermissions() bool {
+	return s.SetPermissions
+}
+
+// GetFileMode returns the value of FileMode.
+func (s *MediaManagementSettings) GetFileMode() string {
+	return s.FileMode
+}
+
+// GetFolderMode returns the value of FolderMode.
+func (s *MediaManagementSettings) GetFolderMode() string {
+	return s.FolderMode
+}
+
+// GetExtraExtensions returns the value of ExtraExtensions.
+func (s *MediaManagementSettings) GetExtraExtensions() []string {
+	return s.ExtraExtensions
+}
+
+// GetAvailabilityDelayDays returns the value of AvailabilityDelayDays.
+func (s *MediaManagementSettings) GetAvailabilityDelayDays() int {
+	return s.AvailabilityDelayDays
+}
+
+// GetSearchOnAddDefault returns the value of SearchOnAddDefault.
+func (s *MediaManagementSettings) GetSearchOnAddDefault() bool {
+	return s.SearchOnAddDefault
+}
+
+// SetRenameMovies sets the value of RenameMovies.
+func (s *MediaManagementSettings) SetRenameMovies(val bool) {
+	s.RenameMovies = val
+}
+
+// SetMovieFolderFormat sets the value of MovieFolderFormat.
+func (s *MediaManagementSettings) SetMovieFolderFormat(val string) {
+	s.MovieFolderFormat = val
+}
+
+// SetMovieFileFormat sets the value of MovieFileFormat.
+func (s *MediaManagementSettings) SetMovieFileFormat(val string) {
+	s.MovieFileFormat = val
+}
+
+// SetColonReplacement sets the value of ColonReplacement.
+func (s *MediaManagementSettings) SetColonReplacement(val ColonReplacement) {
+	s.ColonReplacement = val
+}
+
+// SetTransferMode sets the value of TransferMode.
+func (s *MediaManagementSettings) SetTransferMode(val TransferMode) {
+	s.TransferMode = val
+}
+
+// SetRecycleBinPath sets the value of RecycleBinPath.
+func (s *MediaManagementSettings) SetRecycleBinPath(val string) {
+	s.RecycleBinPath = val
+}
+
+// SetRecycleBinRetentionDays sets the value of RecycleBinRetentionDays.
+func (s *MediaManagementSettings) SetRecycleBinRetentionDays(val int) {
+	s.RecycleBinRetentionDays = val
+}
+
+// SetSetPermissions sets the value of SetPermissions.
+func (s *MediaManagementSettings) SetSetPermissions(val bool) {
+	s.SetPermissions = val
+}
+
+// SetFileMode sets the value of FileMode.
+func (s *MediaManagementSettings) SetFileMode(val string) {
+	s.FileMode = val
+}
+
+// SetFolderMode sets the value of FolderMode.
+func (s *MediaManagementSettings) SetFolderMode(val string) {
+	s.FolderMode = val
+}
+
+// SetExtraExtensions sets the value of ExtraExtensions.
+func (s *MediaManagementSettings) SetExtraExtensions(val []string) {
+	s.ExtraExtensions = val
+}
+
+// SetAvailabilityDelayDays sets the value of AvailabilityDelayDays.
+func (s *MediaManagementSettings) SetAvailabilityDelayDays(val int) {
+	s.AvailabilityDelayDays = val
+}
+
+// SetSearchOnAddDefault sets the value of SearchOnAddDefault.
+func (s *MediaManagementSettings) SetSearchOnAddDefault(val bool) {
+	s.SearchOnAddDefault = val
+}
+
+// Ref: #/components/schemas/MetadataSettings
+type MetadataSettings struct {
+	TmdbApiKey SecretState `json:"tmdbApiKey"`
+	Language   string      `json:"language"`
+	Region     string      `json:"region"`
+}
+
+// GetTmdbApiKey returns the value of TmdbApiKey.
+func (s *MetadataSettings) GetTmdbApiKey() SecretState {
+	return s.TmdbApiKey
+}
+
+// GetLanguage returns the value of Language.
+func (s *MetadataSettings) GetLanguage() string {
+	return s.Language
+}
+
+// GetRegion returns the value of Region.
+func (s *MetadataSettings) GetRegion() string {
+	return s.Region
+}
+
+// SetTmdbApiKey sets the value of TmdbApiKey.
+func (s *MetadataSettings) SetTmdbApiKey(val SecretState) {
+	s.TmdbApiKey = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *MetadataSettings) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetRegion sets the value of Region.
+func (s *MetadataSettings) SetRegion(val string) {
+	s.Region = val
+}
+
+// Ref: #/components/schemas/MetadataSettingsInput
+type MetadataSettingsInput struct {
+	// Write-only. v3 API key or v4 read access token; empty removes it.
+	TmdbApiKey OptString `json:"tmdbApiKey"`
+	Language   OptString `json:"language"`
+	Region     OptString `json:"region"`
+}
+
+// GetTmdbApiKey returns the value of TmdbApiKey.
+func (s *MetadataSettingsInput) GetTmdbApiKey() OptString {
+	return s.TmdbApiKey
+}
+
+// GetLanguage returns the value of Language.
+func (s *MetadataSettingsInput) GetLanguage() OptString {
+	return s.Language
+}
+
+// GetRegion returns the value of Region.
+func (s *MetadataSettingsInput) GetRegion() OptString {
+	return s.Region
+}
+
+// SetTmdbApiKey sets the value of TmdbApiKey.
+func (s *MetadataSettingsInput) SetTmdbApiKey(val OptString) {
+	s.TmdbApiKey = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *MetadataSettingsInput) SetLanguage(val OptString) {
+	s.Language = val
+}
+
+// SetRegion sets the value of Region.
+func (s *MetadataSettingsInput) SetRegion(val OptString) {
+	s.Region = val
+}
+
+// Ref: #/components/schemas/MinimumAvailability
+type MinimumAvailability string
+
+const (
+	MinimumAvailabilityAnnounced MinimumAvailability = "announced"
+	MinimumAvailabilityInCinemas MinimumAvailability = "in_cinemas"
+	MinimumAvailabilityReleased  MinimumAvailability = "released"
+)
+
+// AllValues returns all MinimumAvailability values.
+func (MinimumAvailability) AllValues() []MinimumAvailability {
+	return []MinimumAvailability{
+		MinimumAvailabilityAnnounced,
+		MinimumAvailabilityInCinemas,
+		MinimumAvailabilityReleased,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MinimumAvailability) MarshalText() ([]byte, error) {
+	switch s {
+	case MinimumAvailabilityAnnounced:
+		return []byte(s), nil
+	case MinimumAvailabilityInCinemas:
+		return []byte(s), nil
+	case MinimumAvailabilityReleased:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MinimumAvailability) UnmarshalText(data []byte) error {
+	switch MinimumAvailability(data) {
+	case MinimumAvailabilityAnnounced:
+		*s = MinimumAvailabilityAnnounced
+		return nil
+	case MinimumAvailabilityInCinemas:
+		*s = MinimumAvailabilityInCinemas
+		return nil
+	case MinimumAvailabilityReleased:
+		*s = MinimumAvailabilityReleased
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/Movie
+type Movie struct {
+	ID int64 `json:"id"`
+	// Timeline reference, e.g. "movie:42".
+	ItemRef          OptString `json:"itemRef"`
+	TmdbId           int64     `json:"tmdbId"`
+	ImdbId           string    `json:"imdbId"`
+	Title            string    `json:"title"`
+	OriginalTitle    string    `json:"originalTitle"`
+	OriginalLanguage string    `json:"originalLanguage"`
+	AlternateTitles  []string  `json:"alternateTitles"`
+	Year             int       `json:"year"`
+	Overview         string    `json:"overview"`
+	// Minutes.
+	Runtime int `json:"runtime"`
+	// TMDb status: Rumored, Planned, In Production, Post Production, Released, Canceled.
+	Status        string   `json:"status"`
+	Studio        string   `json:"studio"`
+	Genres        []string `json:"genres"`
+	Certification string   `json:"certification"`
+	Rating        float64  `json:"rating"`
+	Votes         int      `json:"votes"`
+	// YYYY-MM-DD or empty.
+	InCinemas       string `json:"inCinemas"`
+	DigitalRelease  string `json:"digitalRelease"`
+	PhysicalRelease string `json:"physicalRelease"`
+	CollectionId    int64  `json:"collectionId"`
+	CollectionName  string `json:"collectionName"`
+	// Image file name for /images/tmdb/{size}/{file}.
+	Poster              string              `json:"poster"`
+	Backdrop            string              `json:"backdrop"`
+	Monitored           bool                `json:"monitored"`
+	QualityProfileId    int64               `json:"qualityProfileId"`
+	RootFolderId        OptInt64            `json:"rootFolderId"`
+	Path                string              `json:"path"`
+	MinimumAvailability MinimumAvailability `json:"minimumAvailability"`
+	Tags                []string            `json:"tags"`
+	AddedByListId       OptInt64            `json:"addedByListId"`
+	AddedAt             time.Time           `json:"addedAt"`
+	UpdatedAt           time.Time           `json:"updatedAt"`
+	RefreshedAt         OptDateTime         `json:"refreshedAt"`
+	// The movie reached its minimum availability.
+	Available     bool             `json:"available"`
+	AvailableFrom OptDateTime      `json:"availableFrom"`
+	CutoffMet     bool             `json:"cutoffMet"`
+	LibraryStatus MovieStatus      `json:"libraryStatus"`
+	File          OptMovieFile     `json:"file"`
+	Download      OptMovieDownload `json:"download"`
+}
+
+// GetID returns the value of ID.
+func (s *Movie) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *Movie) GetItemRef() OptString {
+	return s.ItemRef
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *Movie) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// GetImdbId returns the value of ImdbId.
+func (s *Movie) GetImdbId() string {
+	return s.ImdbId
+}
+
+// GetTitle returns the value of Title.
+func (s *Movie) GetTitle() string {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *Movie) GetOriginalTitle() string {
+	return s.OriginalTitle
+}
+
+// GetOriginalLanguage returns the value of OriginalLanguage.
+func (s *Movie) GetOriginalLanguage() string {
+	return s.OriginalLanguage
+}
+
+// GetAlternateTitles returns the value of AlternateTitles.
+func (s *Movie) GetAlternateTitles() []string {
+	return s.AlternateTitles
+}
+
+// GetYear returns the value of Year.
+func (s *Movie) GetYear() int {
+	return s.Year
+}
+
+// GetOverview returns the value of Overview.
+func (s *Movie) GetOverview() string {
+	return s.Overview
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *Movie) GetRuntime() int {
+	return s.Runtime
+}
+
+// GetStatus returns the value of Status.
+func (s *Movie) GetStatus() string {
+	return s.Status
+}
+
+// GetStudio returns the value of Studio.
+func (s *Movie) GetStudio() string {
+	return s.Studio
+}
+
+// GetGenres returns the value of Genres.
+func (s *Movie) GetGenres() []string {
+	return s.Genres
+}
+
+// GetCertification returns the value of Certification.
+func (s *Movie) GetCertification() string {
+	return s.Certification
+}
+
+// GetRating returns the value of Rating.
+func (s *Movie) GetRating() float64 {
+	return s.Rating
+}
+
+// GetVotes returns the value of Votes.
+func (s *Movie) GetVotes() int {
+	return s.Votes
+}
+
+// GetInCinemas returns the value of InCinemas.
+func (s *Movie) GetInCinemas() string {
+	return s.InCinemas
+}
+
+// GetDigitalRelease returns the value of DigitalRelease.
+func (s *Movie) GetDigitalRelease() string {
+	return s.DigitalRelease
+}
+
+// GetPhysicalRelease returns the value of PhysicalRelease.
+func (s *Movie) GetPhysicalRelease() string {
+	return s.PhysicalRelease
+}
+
+// GetCollectionId returns the value of CollectionId.
+func (s *Movie) GetCollectionId() int64 {
+	return s.CollectionId
+}
+
+// GetCollectionName returns the value of CollectionName.
+func (s *Movie) GetCollectionName() string {
+	return s.CollectionName
+}
+
+// GetPoster returns the value of Poster.
+func (s *Movie) GetPoster() string {
+	return s.Poster
+}
+
+// GetBackdrop returns the value of Backdrop.
+func (s *Movie) GetBackdrop() string {
+	return s.Backdrop
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *Movie) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *Movie) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *Movie) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetPath returns the value of Path.
+func (s *Movie) GetPath() string {
+	return s.Path
+}
+
+// GetMinimumAvailability returns the value of MinimumAvailability.
+func (s *Movie) GetMinimumAvailability() MinimumAvailability {
+	return s.MinimumAvailability
+}
+
+// GetTags returns the value of Tags.
+func (s *Movie) GetTags() []string {
+	return s.Tags
+}
+
+// GetAddedByListId returns the value of AddedByListId.
+func (s *Movie) GetAddedByListId() OptInt64 {
+	return s.AddedByListId
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *Movie) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *Movie) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetRefreshedAt returns the value of RefreshedAt.
+func (s *Movie) GetRefreshedAt() OptDateTime {
+	return s.RefreshedAt
+}
+
+// GetAvailable returns the value of Available.
+func (s *Movie) GetAvailable() bool {
+	return s.Available
+}
+
+// GetAvailableFrom returns the value of AvailableFrom.
+func (s *Movie) GetAvailableFrom() OptDateTime {
+	return s.AvailableFrom
+}
+
+// GetCutoffMet returns the value of CutoffMet.
+func (s *Movie) GetCutoffMet() bool {
+	return s.CutoffMet
+}
+
+// GetLibraryStatus returns the value of LibraryStatus.
+func (s *Movie) GetLibraryStatus() MovieStatus {
+	return s.LibraryStatus
+}
+
+// GetFile returns the value of File.
+func (s *Movie) GetFile() OptMovieFile {
+	return s.File
+}
+
+// GetDownload returns the value of Download.
+func (s *Movie) GetDownload() OptMovieDownload {
+	return s.Download
+}
+
+// SetID sets the value of ID.
+func (s *Movie) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *Movie) SetItemRef(val OptString) {
+	s.ItemRef = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *Movie) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// SetImdbId sets the value of ImdbId.
+func (s *Movie) SetImdbId(val string) {
+	s.ImdbId = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Movie) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *Movie) SetOriginalTitle(val string) {
+	s.OriginalTitle = val
+}
+
+// SetOriginalLanguage sets the value of OriginalLanguage.
+func (s *Movie) SetOriginalLanguage(val string) {
+	s.OriginalLanguage = val
+}
+
+// SetAlternateTitles sets the value of AlternateTitles.
+func (s *Movie) SetAlternateTitles(val []string) {
+	s.AlternateTitles = val
+}
+
+// SetYear sets the value of Year.
+func (s *Movie) SetYear(val int) {
+	s.Year = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *Movie) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *Movie) SetRuntime(val int) {
+	s.Runtime = val
+}
+
+// SetStatus sets the value of Status.
+func (s *Movie) SetStatus(val string) {
+	s.Status = val
+}
+
+// SetStudio sets the value of Studio.
+func (s *Movie) SetStudio(val string) {
+	s.Studio = val
+}
+
+// SetGenres sets the value of Genres.
+func (s *Movie) SetGenres(val []string) {
+	s.Genres = val
+}
+
+// SetCertification sets the value of Certification.
+func (s *Movie) SetCertification(val string) {
+	s.Certification = val
+}
+
+// SetRating sets the value of Rating.
+func (s *Movie) SetRating(val float64) {
+	s.Rating = val
+}
+
+// SetVotes sets the value of Votes.
+func (s *Movie) SetVotes(val int) {
+	s.Votes = val
+}
+
+// SetInCinemas sets the value of InCinemas.
+func (s *Movie) SetInCinemas(val string) {
+	s.InCinemas = val
+}
+
+// SetDigitalRelease sets the value of DigitalRelease.
+func (s *Movie) SetDigitalRelease(val string) {
+	s.DigitalRelease = val
+}
+
+// SetPhysicalRelease sets the value of PhysicalRelease.
+func (s *Movie) SetPhysicalRelease(val string) {
+	s.PhysicalRelease = val
+}
+
+// SetCollectionId sets the value of CollectionId.
+func (s *Movie) SetCollectionId(val int64) {
+	s.CollectionId = val
+}
+
+// SetCollectionName sets the value of CollectionName.
+func (s *Movie) SetCollectionName(val string) {
+	s.CollectionName = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *Movie) SetPoster(val string) {
+	s.Poster = val
+}
+
+// SetBackdrop sets the value of Backdrop.
+func (s *Movie) SetBackdrop(val string) {
+	s.Backdrop = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *Movie) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *Movie) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *Movie) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetPath sets the value of Path.
+func (s *Movie) SetPath(val string) {
+	s.Path = val
+}
+
+// SetMinimumAvailability sets the value of MinimumAvailability.
+func (s *Movie) SetMinimumAvailability(val MinimumAvailability) {
+	s.MinimumAvailability = val
+}
+
+// SetTags sets the value of Tags.
+func (s *Movie) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetAddedByListId sets the value of AddedByListId.
+func (s *Movie) SetAddedByListId(val OptInt64) {
+	s.AddedByListId = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *Movie) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *Movie) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetRefreshedAt sets the value of RefreshedAt.
+func (s *Movie) SetRefreshedAt(val OptDateTime) {
+	s.RefreshedAt = val
+}
+
+// SetAvailable sets the value of Available.
+func (s *Movie) SetAvailable(val bool) {
+	s.Available = val
+}
+
+// SetAvailableFrom sets the value of AvailableFrom.
+func (s *Movie) SetAvailableFrom(val OptDateTime) {
+	s.AvailableFrom = val
+}
+
+// SetCutoffMet sets the value of CutoffMet.
+func (s *Movie) SetCutoffMet(val bool) {
+	s.CutoffMet = val
+}
+
+// SetLibraryStatus sets the value of LibraryStatus.
+func (s *Movie) SetLibraryStatus(val MovieStatus) {
+	s.LibraryStatus = val
+}
+
+// SetFile sets the value of File.
+func (s *Movie) SetFile(val OptMovieFile) {
+	s.File = val
+}
+
+// SetDownload sets the value of Download.
+func (s *Movie) SetDownload(val OptMovieDownload) {
+	s.Download = val
+}
+
+// Ref: #/components/schemas/MovieCollection
+type MovieCollection struct {
+	ID       int64         `json:"id"`
+	Name     string        `json:"name"`
+	Overview string        `json:"overview"`
+	Poster   string        `json:"poster"`
+	Backdrop string        `json:"backdrop"`
+	Members  []MovieLookup `json:"members"`
+}
+
+// GetID returns the value of ID.
+func (s *MovieCollection) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *MovieCollection) GetName() string {
+	return s.Name
+}
+
+// GetOverview returns the value of Overview.
+func (s *MovieCollection) GetOverview() string {
+	return s.Overview
+}
+
+// GetPoster returns the value of Poster.
+func (s *MovieCollection) GetPoster() string {
+	return s.Poster
+}
+
+// GetBackdrop returns the value of Backdrop.
+func (s *MovieCollection) GetBackdrop() string {
+	return s.Backdrop
+}
+
+// GetMembers returns the value of Members.
+func (s *MovieCollection) GetMembers() []MovieLookup {
+	return s.Members
+}
+
+// SetID sets the value of ID.
+func (s *MovieCollection) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *MovieCollection) SetName(val string) {
+	s.Name = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MovieCollection) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *MovieCollection) SetPoster(val string) {
+	s.Poster = val
+}
+
+// SetBackdrop sets the value of Backdrop.
+func (s *MovieCollection) SetBackdrop(val string) {
+	s.Backdrop = val
+}
+
+// SetMembers sets the value of Members.
+func (s *MovieCollection) SetMembers(val []MovieLookup) {
+	s.Members = val
+}
+
+// Ref: #/components/schemas/MovieDownload
+type MovieDownload struct {
+	ID       int64   `json:"id"`
+	Title    string  `json:"title"`
+	Progress float64 `json:"progress"`
+	State    string  `json:"state"`
+	Status   string  `json:"status"`
+}
+
+// GetID returns the value of ID.
+func (s *MovieDownload) GetID() int64 {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *MovieDownload) GetTitle() string {
+	return s.Title
+}
+
+// GetProgress returns the value of Progress.
+func (s *MovieDownload) GetProgress() float64 {
+	return s.Progress
+}
+
+// GetState returns the value of State.
+func (s *MovieDownload) GetState() string {
+	return s.State
+}
+
+// GetStatus returns the value of Status.
+func (s *MovieDownload) GetStatus() string {
+	return s.Status
+}
+
+// SetID sets the value of ID.
+func (s *MovieDownload) SetID(val int64) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *MovieDownload) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *MovieDownload) SetProgress(val float64) {
+	s.Progress = val
+}
+
+// SetState sets the value of State.
+func (s *MovieDownload) SetState(val string) {
+	s.State = val
+}
+
+// SetStatus sets the value of Status.
+func (s *MovieDownload) SetStatus(val string) {
+	s.Status = val
+}
+
+// Ref: #/components/schemas/MovieFile
+type MovieFile struct {
+	ID            int64     `json:"id"`
+	Path          string    `json:"path"`
+	SizeBytes     int64     `json:"sizeBytes"`
+	Quality       Quality   `json:"quality"`
+	Revision      int       `json:"revision"`
+	CustomFormats []string  `json:"customFormats"`
+	Score         int       `json:"score"`
+	ReleaseGroup  string    `json:"releaseGroup"`
+	Edition       string    `json:"edition"`
+	Languages     []string  `json:"languages"`
+	MediaInfo     MediaInfo `json:"mediaInfo"`
+	SceneName     string    `json:"sceneName"`
+	DownloadId    OptInt64  `json:"downloadId"`
+	AddedAt       time.Time `json:"addedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *MovieFile) GetID() int64 {
+	return s.ID
+}
+
+// GetPath returns the value of Path.
+func (s *MovieFile) GetPath() string {
+	return s.Path
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *MovieFile) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetQuality returns the value of Quality.
+func (s *MovieFile) GetQuality() Quality {
+	return s.Quality
+}
+
+// GetRevision returns the value of Revision.
+func (s *MovieFile) GetRevision() int {
+	return s.Revision
+}
+
+// GetCustomFormats returns the value of CustomFormats.
+func (s *MovieFile) GetCustomFormats() []string {
+	return s.CustomFormats
+}
+
+// GetScore returns the value of Score.
+func (s *MovieFile) GetScore() int {
+	return s.Score
+}
+
+// GetReleaseGroup returns the value of ReleaseGroup.
+func (s *MovieFile) GetReleaseGroup() string {
+	return s.ReleaseGroup
+}
+
+// GetEdition returns the value of Edition.
+func (s *MovieFile) GetEdition() string {
+	return s.Edition
+}
+
+// GetLanguages returns the value of Languages.
+func (s *MovieFile) GetLanguages() []string {
+	return s.Languages
+}
+
+// GetMediaInfo returns the value of MediaInfo.
+func (s *MovieFile) GetMediaInfo() MediaInfo {
+	return s.MediaInfo
+}
+
+// GetSceneName returns the value of SceneName.
+func (s *MovieFile) GetSceneName() string {
+	return s.SceneName
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *MovieFile) GetDownloadId() OptInt64 {
+	return s.DownloadId
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *MovieFile) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// SetID sets the value of ID.
+func (s *MovieFile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetPath sets the value of Path.
+func (s *MovieFile) SetPath(val string) {
+	s.Path = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *MovieFile) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *MovieFile) SetQuality(val Quality) {
+	s.Quality = val
+}
+
+// SetRevision sets the value of Revision.
+func (s *MovieFile) SetRevision(val int) {
+	s.Revision = val
+}
+
+// SetCustomFormats sets the value of CustomFormats.
+func (s *MovieFile) SetCustomFormats(val []string) {
+	s.CustomFormats = val
+}
+
+// SetScore sets the value of Score.
+func (s *MovieFile) SetScore(val int) {
+	s.Score = val
+}
+
+// SetReleaseGroup sets the value of ReleaseGroup.
+func (s *MovieFile) SetReleaseGroup(val string) {
+	s.ReleaseGroup = val
+}
+
+// SetEdition sets the value of Edition.
+func (s *MovieFile) SetEdition(val string) {
+	s.Edition = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *MovieFile) SetLanguages(val []string) {
+	s.Languages = val
+}
+
+// SetMediaInfo sets the value of MediaInfo.
+func (s *MovieFile) SetMediaInfo(val MediaInfo) {
+	s.MediaInfo = val
+}
+
+// SetSceneName sets the value of SceneName.
+func (s *MovieFile) SetSceneName(val string) {
+	s.SceneName = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *MovieFile) SetDownloadId(val OptInt64) {
+	s.DownloadId = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *MovieFile) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// Ref: #/components/schemas/MovieIdsRequest
+type MovieIdsRequest struct {
+	MovieIds []int64 `json:"movieIds"`
+}
+
+// GetMovieIds returns the value of MovieIds.
+func (s *MovieIdsRequest) GetMovieIds() []int64 {
+	return s.MovieIds
+}
+
+// SetMovieIds sets the value of MovieIds.
+func (s *MovieIdsRequest) SetMovieIds(val []int64) {
+	s.MovieIds = val
+}
+
+// Ref: #/components/schemas/MovieList
+type MovieList struct {
+	Total int     `json:"total"`
+	Items []Movie `json:"items"`
+}
+
+// GetTotal returns the value of Total.
+func (s *MovieList) GetTotal() int {
+	return s.Total
+}
+
+// GetItems returns the value of Items.
+func (s *MovieList) GetItems() []Movie {
+	return s.Items
+}
+
+// SetTotal sets the value of Total.
+func (s *MovieList) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetItems sets the value of Items.
+func (s *MovieList) SetItems(val []Movie) {
+	s.Items = val
+}
+
+// Ref: #/components/schemas/MovieLookup
+type MovieLookup struct {
+	TmdbId        int64   `json:"tmdbId"`
+	Title         string  `json:"title"`
+	OriginalTitle string  `json:"originalTitle"`
+	Year          int     `json:"year"`
+	ReleaseDate   string  `json:"releaseDate"`
+	Overview      string  `json:"overview"`
+	Poster        string  `json:"poster"`
+	Backdrop      string  `json:"backdrop"`
+	Popularity    float64 `json:"popularity"`
+	Rating        float64 `json:"rating"`
+	// Set when the movie is in the library.
+	MovieId OptInt64 `json:"movieId"`
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *MovieLookup) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// GetTitle returns the value of Title.
+func (s *MovieLookup) GetTitle() string {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *MovieLookup) GetOriginalTitle() string {
+	return s.OriginalTitle
+}
+
+// GetYear returns the value of Year.
+func (s *MovieLookup) GetYear() int {
+	return s.Year
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *MovieLookup) GetReleaseDate() string {
+	return s.ReleaseDate
+}
+
+// GetOverview returns the value of Overview.
+func (s *MovieLookup) GetOverview() string {
+	return s.Overview
+}
+
+// GetPoster returns the value of Poster.
+func (s *MovieLookup) GetPoster() string {
+	return s.Poster
+}
+
+// GetBackdrop returns the value of Backdrop.
+func (s *MovieLookup) GetBackdrop() string {
+	return s.Backdrop
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *MovieLookup) GetPopularity() float64 {
+	return s.Popularity
+}
+
+// GetRating returns the value of Rating.
+func (s *MovieLookup) GetRating() float64 {
+	return s.Rating
+}
+
+// GetMovieId returns the value of MovieId.
+func (s *MovieLookup) GetMovieId() OptInt64 {
+	return s.MovieId
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *MovieLookup) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// SetTitle sets the value of Title.
+func (s *MovieLookup) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *MovieLookup) SetOriginalTitle(val string) {
+	s.OriginalTitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *MovieLookup) SetYear(val int) {
+	s.Year = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *MovieLookup) SetReleaseDate(val string) {
+	s.ReleaseDate = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MovieLookup) SetOverview(val string) {
+	s.Overview = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *MovieLookup) SetPoster(val string) {
+	s.Poster = val
+}
+
+// SetBackdrop sets the value of Backdrop.
+func (s *MovieLookup) SetBackdrop(val string) {
+	s.Backdrop = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *MovieLookup) SetPopularity(val float64) {
+	s.Popularity = val
+}
+
+// SetRating sets the value of Rating.
+func (s *MovieLookup) SetRating(val float64) {
+	s.Rating = val
+}
+
+// SetMovieId sets the value of MovieId.
+func (s *MovieLookup) SetMovieId(val OptInt64) {
+	s.MovieId = val
+}
+
+// Ref: #/components/schemas/MovieStatus
+type MovieStatus string
+
+const (
+	MovieStatusMissing     MovieStatus = "missing"
+	MovieStatusDownloaded  MovieStatus = "downloaded"
+	MovieStatusDownloading MovieStatus = "downloading"
+	MovieStatusCutoffUnmet MovieStatus = "cutoff_unmet"
+	MovieStatusUnavailable MovieStatus = "unavailable"
+	MovieStatusUnmonitored MovieStatus = "unmonitored"
+)
+
+// AllValues returns all MovieStatus values.
+func (MovieStatus) AllValues() []MovieStatus {
+	return []MovieStatus{
+		MovieStatusMissing,
+		MovieStatusDownloaded,
+		MovieStatusDownloading,
+		MovieStatusCutoffUnmet,
+		MovieStatusUnavailable,
+		MovieStatusUnmonitored,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MovieStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case MovieStatusMissing:
+		return []byte(s), nil
+	case MovieStatusDownloaded:
+		return []byte(s), nil
+	case MovieStatusDownloading:
+		return []byte(s), nil
+	case MovieStatusCutoffUnmet:
+		return []byte(s), nil
+	case MovieStatusUnavailable:
+		return []byte(s), nil
+	case MovieStatusUnmonitored:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MovieStatus) UnmarshalText(data []byte) error {
+	switch MovieStatus(data) {
+	case MovieStatusMissing:
+		*s = MovieStatusMissing
+		return nil
+	case MovieStatusDownloaded:
+		*s = MovieStatusDownloaded
+		return nil
+	case MovieStatusDownloading:
+		*s = MovieStatusDownloading
+		return nil
+	case MovieStatusCutoffUnmet:
+		*s = MovieStatusCutoffUnmet
+		return nil
+	case MovieStatusUnavailable:
+		*s = MovieStatusUnavailable
+		return nil
+	case MovieStatusUnmonitored:
+		*s = MovieStatusUnmonitored
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MovieUpdate
+type MovieUpdate struct {
+	Monitored           OptBool                `json:"monitored"`
+	QualityProfileId    OptInt64               `json:"qualityProfileId"`
+	MinimumAvailability OptMinimumAvailability `json:"minimumAvailability"`
+	Tags                []string               `json:"tags"`
+	RootFolderId        OptInt64               `json:"rootFolderId"`
+	Path                OptString              `json:"path"`
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *MovieUpdate) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *MovieUpdate) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetMinimumAvailability returns the value of MinimumAvailability.
+func (s *MovieUpdate) GetMinimumAvailability() OptMinimumAvailability {
+	return s.MinimumAvailability
+}
+
+// GetTags returns the value of Tags.
+func (s *MovieUpdate) GetTags() []string {
+	return s.Tags
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *MovieUpdate) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetPath returns the value of Path.
+func (s *MovieUpdate) GetPath() OptString {
+	return s.Path
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *MovieUpdate) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *MovieUpdate) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetMinimumAvailability sets the value of MinimumAvailability.
+func (s *MovieUpdate) SetMinimumAvailability(val OptMinimumAvailability) {
+	s.MinimumAvailability = val
+}
+
+// SetTags sets the value of Tags.
+func (s *MovieUpdate) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *MovieUpdate) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetPath sets the value of Path.
+func (s *MovieUpdate) SetPath(val OptString) {
+	s.Path = val
+}
+
+// Ref: #/components/schemas/NamingPreview
+type NamingPreview struct {
+	Folder      string        `json:"folder"`
+	File        string        `json:"file"`
+	FolderError OptString     `json:"folderError"`
+	FileError   OptString     `json:"fileError"`
+	Tokens      []NamingToken `json:"tokens"`
+}
+
+// GetFolder returns the value of Folder.
+func (s *NamingPreview) GetFolder() string {
+	return s.Folder
+}
+
+// GetFile returns the value of File.
+func (s *NamingPreview) GetFile() string {
+	return s.File
+}
+
+// GetFolderError returns the value of FolderError.
+func (s *NamingPreview) GetFolderError() OptString {
+	return s.FolderError
+}
+
+// GetFileError returns the value of FileError.
+func (s *NamingPreview) GetFileError() OptString {
+	return s.FileError
+}
+
+// GetTokens returns the value of Tokens.
+func (s *NamingPreview) GetTokens() []NamingToken {
+	return s.Tokens
+}
+
+// SetFolder sets the value of Folder.
+func (s *NamingPreview) SetFolder(val string) {
+	s.Folder = val
+}
+
+// SetFile sets the value of File.
+func (s *NamingPreview) SetFile(val string) {
+	s.File = val
+}
+
+// SetFolderError sets the value of FolderError.
+func (s *NamingPreview) SetFolderError(val OptString) {
+	s.FolderError = val
+}
+
+// SetFileError sets the value of FileError.
+func (s *NamingPreview) SetFileError(val OptString) {
+	s.FileError = val
+}
+
+// SetTokens sets the value of Tokens.
+func (s *NamingPreview) SetTokens(val []NamingToken) {
+	s.Tokens = val
+}
+
+// Ref: #/components/schemas/NamingPreviewRequest
+type NamingPreviewRequest struct {
+	MovieFolderFormat string              `json:"movieFolderFormat"`
+	MovieFileFormat   string              `json:"movieFileFormat"`
+	ColonReplacement  OptColonReplacement `json:"colonReplacement"`
+}
+
+// GetMovieFolderFormat returns the value of MovieFolderFormat.
+func (s *NamingPreviewRequest) GetMovieFolderFormat() string {
+	return s.MovieFolderFormat
+}
+
+// GetMovieFileFormat returns the value of MovieFileFormat.
+func (s *NamingPreviewRequest) GetMovieFileFormat() string {
+	return s.MovieFileFormat
+}
+
+// GetColonReplacement returns the value of ColonReplacement.
+func (s *NamingPreviewRequest) GetColonReplacement() OptColonReplacement {
+	return s.ColonReplacement
+}
+
+// SetMovieFolderFormat sets the value of MovieFolderFormat.
+func (s *NamingPreviewRequest) SetMovieFolderFormat(val string) {
+	s.MovieFolderFormat = val
+}
+
+// SetMovieFileFormat sets the value of MovieFileFormat.
+func (s *NamingPreviewRequest) SetMovieFileFormat(val string) {
+	s.MovieFileFormat = val
+}
+
+// SetColonReplacement sets the value of ColonReplacement.
+func (s *NamingPreviewRequest) SetColonReplacement(val OptColonReplacement) {
+	s.ColonReplacement = val
+}
+
+// Ref: #/components/schemas/NamingToken
+type NamingToken struct {
+	Name    string `json:"name"`
+	Example string `json:"example"`
+}
+
+// GetName returns the value of Name.
+func (s *NamingToken) GetName() string {
+	return s.Name
+}
+
+// GetExample returns the value of Example.
+func (s *NamingToken) GetExample() string {
+	return s.Example
+}
+
+// SetName sets the value of Name.
+func (s *NamingToken) SetName(val string) {
+	s.Name = val
+}
+
+// SetExample sets the value of Example.
+func (s *NamingToken) SetExample(val string) {
+	s.Example = val
+}
+
 // NewOptBool returns new OptBool with value set to v.
 func NewOptBool(v bool) OptBool {
 	return OptBool{
@@ -6176,6 +9698,52 @@ func (o OptBool) Get() (v bool, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptColonReplacement returns new OptColonReplacement with value set to v.
+func NewOptColonReplacement(v ColonReplacement) OptColonReplacement {
+	return OptColonReplacement{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptColonReplacement is optional ColonReplacement.
+type OptColonReplacement struct {
+	Value ColonReplacement
+	Set   bool
+}
+
+// IsSet returns true if OptColonReplacement was set.
+func (o OptColonReplacement) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptColonReplacement) Reset() {
+	var v ColonReplacement
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptColonReplacement) SetTo(v ColonReplacement) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptColonReplacement) Get() (v ColonReplacement, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptColonReplacement) Or(d ColonReplacement) ColonReplacement {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -6544,6 +10112,52 @@ func (o OptDownloadProtocol) Get() (v DownloadProtocol, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDownloadProtocol) Or(d DownloadProtocol) DownloadProtocol {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptError returns new OptError with value set to v.
+func NewOptError(v Error) OptError {
+	return OptError{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptError is optional Error.
+type OptError struct {
+	Value Error
+	Set   bool
+}
+
+// IsSet returns true if OptError was set.
+func (o OptError) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptError) Reset() {
+	var v Error
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptError) SetTo(v Error) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptError) Get() (v Error, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptError) Or(d Error) Error {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -7056,6 +10670,52 @@ func (o OptLanguage) Or(d Language) Language {
 	return d
 }
 
+// NewOptListMoviesSort returns new OptListMoviesSort with value set to v.
+func NewOptListMoviesSort(v ListMoviesSort) OptListMoviesSort {
+	return OptListMoviesSort{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListMoviesSort is optional ListMoviesSort.
+type OptListMoviesSort struct {
+	Value ListMoviesSort
+	Set   bool
+}
+
+// IsSet returns true if OptListMoviesSort was set.
+func (o OptListMoviesSort) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListMoviesSort) Reset() {
+	var v ListMoviesSort
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListMoviesSort) SetTo(v ListMoviesSort) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListMoviesSort) Get() (v ListMoviesSort, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListMoviesSort) Or(d ListMoviesSort) ListMoviesSort {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptMediaKind returns new OptMediaKind with value set to v.
 func NewOptMediaKind(v MediaKind) OptMediaKind {
 	return OptMediaKind{
@@ -7096,6 +10756,282 @@ func (o OptMediaKind) Get() (v MediaKind, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptMediaKind) Or(d MediaKind) MediaKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMinimumAvailability returns new OptMinimumAvailability with value set to v.
+func NewOptMinimumAvailability(v MinimumAvailability) OptMinimumAvailability {
+	return OptMinimumAvailability{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMinimumAvailability is optional MinimumAvailability.
+type OptMinimumAvailability struct {
+	Value MinimumAvailability
+	Set   bool
+}
+
+// IsSet returns true if OptMinimumAvailability was set.
+func (o OptMinimumAvailability) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMinimumAvailability) Reset() {
+	var v MinimumAvailability
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMinimumAvailability) SetTo(v MinimumAvailability) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMinimumAvailability) Get() (v MinimumAvailability, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMinimumAvailability) Or(d MinimumAvailability) MinimumAvailability {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMovie returns new OptMovie with value set to v.
+func NewOptMovie(v Movie) OptMovie {
+	return OptMovie{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMovie is optional Movie.
+type OptMovie struct {
+	Value Movie
+	Set   bool
+}
+
+// IsSet returns true if OptMovie was set.
+func (o OptMovie) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMovie) Reset() {
+	var v Movie
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMovie) SetTo(v Movie) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMovie) Get() (v Movie, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMovie) Or(d Movie) Movie {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMovieDownload returns new OptMovieDownload with value set to v.
+func NewOptMovieDownload(v MovieDownload) OptMovieDownload {
+	return OptMovieDownload{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMovieDownload is optional MovieDownload.
+type OptMovieDownload struct {
+	Value MovieDownload
+	Set   bool
+}
+
+// IsSet returns true if OptMovieDownload was set.
+func (o OptMovieDownload) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMovieDownload) Reset() {
+	var v MovieDownload
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMovieDownload) SetTo(v MovieDownload) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMovieDownload) Get() (v MovieDownload, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMovieDownload) Or(d MovieDownload) MovieDownload {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMovieFile returns new OptMovieFile with value set to v.
+func NewOptMovieFile(v MovieFile) OptMovieFile {
+	return OptMovieFile{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMovieFile is optional MovieFile.
+type OptMovieFile struct {
+	Value MovieFile
+	Set   bool
+}
+
+// IsSet returns true if OptMovieFile was set.
+func (o OptMovieFile) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMovieFile) Reset() {
+	var v MovieFile
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMovieFile) SetTo(v MovieFile) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMovieFile) Get() (v MovieFile, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMovieFile) Or(d MovieFile) MovieFile {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMovieLookup returns new OptMovieLookup with value set to v.
+func NewOptMovieLookup(v MovieLookup) OptMovieLookup {
+	return OptMovieLookup{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMovieLookup is optional MovieLookup.
+type OptMovieLookup struct {
+	Value MovieLookup
+	Set   bool
+}
+
+// IsSet returns true if OptMovieLookup was set.
+func (o OptMovieLookup) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMovieLookup) Reset() {
+	var v MovieLookup
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMovieLookup) SetTo(v MovieLookup) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMovieLookup) Get() (v MovieLookup, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMovieLookup) Or(d MovieLookup) MovieLookup {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMovieStatus returns new OptMovieStatus with value set to v.
+func NewOptMovieStatus(v MovieStatus) OptMovieStatus {
+	return OptMovieStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMovieStatus is optional MovieStatus.
+type OptMovieStatus struct {
+	Value MovieStatus
+	Set   bool
+}
+
+// IsSet returns true if OptMovieStatus was set.
+func (o OptMovieStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMovieStatus) Reset() {
+	var v MovieStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMovieStatus) SetTo(v MovieStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMovieStatus) Get() (v MovieStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMovieStatus) Or(d MovieStatus) MovieStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -7280,6 +11216,98 @@ func (o OptProtocol) Get() (v Protocol, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptProtocol) Or(d Protocol) Protocol {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptQuality returns new OptQuality with value set to v.
+func NewOptQuality(v Quality) OptQuality {
+	return OptQuality{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptQuality is optional Quality.
+type OptQuality struct {
+	Value Quality
+	Set   bool
+}
+
+// IsSet returns true if OptQuality was set.
+func (o OptQuality) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptQuality) Reset() {
+	var v Quality
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptQuality) SetTo(v Quality) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptQuality) Get() (v Quality, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptQuality) Or(d Quality) Quality {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptQueueItemLink returns new OptQueueItemLink with value set to v.
+func NewOptQueueItemLink(v QueueItemLink) OptQueueItemLink {
+	return OptQueueItemLink{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptQueueItemLink is optional QueueItemLink.
+type OptQueueItemLink struct {
+	Value QueueItemLink
+	Set   bool
+}
+
+// IsSet returns true if OptQueueItemLink was set.
+func (o OptQueueItemLink) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptQueueItemLink) Reset() {
+	var v QueueItemLink
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptQueueItemLink) SetTo(v QueueItemLink) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptQueueItemLink) Get() (v QueueItemLink, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptQueueItemLink) Or(d QueueItemLink) QueueItemLink {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -7510,6 +11538,52 @@ func (o OptString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTransferMode returns new OptTransferMode with value set to v.
+func NewOptTransferMode(v TransferMode) OptTransferMode {
+	return OptTransferMode{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTransferMode is optional TransferMode.
+type OptTransferMode struct {
+	Value TransferMode
+	Set   bool
+}
+
+// IsSet returns true if OptTransferMode was set.
+func (o OptTransferMode) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTransferMode) Reset() {
+	var v TransferMode
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTransferMode) SetTo(v TransferMode) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTransferMode) Get() (v TransferMode, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTransferMode) Or(d TransferMode) TransferMode {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -9186,10 +13260,11 @@ type QueueItem struct {
 	LocalPath       OptString        `json:"localPath"`
 	Message         string           `json:"message"`
 	// Opaque JSON from whoever grabbed the release.
-	ItemRef     jx.Raw      `json:"itemRef"`
-	AddedAt     time.Time   `json:"addedAt"`
-	UpdatedAt   time.Time   `json:"updatedAt"`
-	CompletedAt OptDateTime `json:"completedAt"`
+	ItemRef     jx.Raw           `json:"itemRef"`
+	Item        OptQueueItemLink `json:"item"`
+	AddedAt     time.Time        `json:"addedAt"`
+	UpdatedAt   time.Time        `json:"updatedAt"`
+	CompletedAt OptDateTime      `json:"completedAt"`
 }
 
 // GetID returns the value of ID.
@@ -9315,6 +13390,11 @@ func (s *QueueItem) GetMessage() string {
 // GetItemRef returns the value of ItemRef.
 func (s *QueueItem) GetItemRef() jx.Raw {
 	return s.ItemRef
+}
+
+// GetItem returns the value of Item.
+func (s *QueueItem) GetItem() OptQueueItemLink {
+	return s.Item
 }
 
 // GetAddedAt returns the value of AddedAt.
@@ -9457,6 +13537,11 @@ func (s *QueueItem) SetItemRef(val jx.Raw) {
 	s.ItemRef = val
 }
 
+// SetItem sets the value of Item.
+func (s *QueueItem) SetItem(val OptQueueItemLink) {
+	s.Item = val
+}
+
 // SetAddedAt sets the value of AddedAt.
 func (s *QueueItem) SetAddedAt(val time.Time) {
 	s.AddedAt = val
@@ -9470,6 +13555,65 @@ func (s *QueueItem) SetUpdatedAt(val time.Time) {
 // SetCompletedAt sets the value of CompletedAt.
 func (s *QueueItem) SetCompletedAt(val OptDateTime) {
 	s.CompletedAt = val
+}
+
+// Ref: #/components/schemas/QueueItemLink
+type QueueItemLink struct {
+	Ref   string `json:"ref"`
+	Kind  string `json:"kind"`
+	ID    int64  `json:"id"`
+	Title string `json:"title"`
+	Year  OptInt `json:"year"`
+}
+
+// GetRef returns the value of Ref.
+func (s *QueueItemLink) GetRef() string {
+	return s.Ref
+}
+
+// GetKind returns the value of Kind.
+func (s *QueueItemLink) GetKind() string {
+	return s.Kind
+}
+
+// GetID returns the value of ID.
+func (s *QueueItemLink) GetID() int64 {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *QueueItemLink) GetTitle() string {
+	return s.Title
+}
+
+// GetYear returns the value of Year.
+func (s *QueueItemLink) GetYear() OptInt {
+	return s.Year
+}
+
+// SetRef sets the value of Ref.
+func (s *QueueItemLink) SetRef(val string) {
+	s.Ref = val
+}
+
+// SetKind sets the value of Kind.
+func (s *QueueItemLink) SetKind(val string) {
+	s.Kind = val
+}
+
+// SetID sets the value of ID.
+func (s *QueueItemLink) SetID(val int64) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *QueueItemLink) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetYear sets the value of Year.
+func (s *QueueItemLink) SetYear(val OptInt) {
+	s.Year = val
 }
 
 // Ref: #/components/schemas/QueuePriority
@@ -9519,6 +13663,21 @@ func (s *QueuePriority) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/QueuedCount
+type QueuedCount struct {
+	Count int `json:"count"`
+}
+
+// GetCount returns the value of Count.
+func (s *QueuedCount) GetCount() int {
+	return s.Count
+}
+
+// SetCount sets the value of Count.
+func (s *QueuedCount) SetCount(val int) {
+	s.Count = val
 }
 
 // Ref: #/components/schemas/RankKey
@@ -9613,6 +13772,43 @@ func (s *RankKey) SetAgeMinutes(val int64) {
 	s.AgeMinutes = val
 }
 
+// Ref: #/components/schemas/ReasonCount
+type ReasonCount struct {
+	Code    string `json:"code"`
+	Count   int    `json:"count"`
+	Example string `json:"example"`
+}
+
+// GetCode returns the value of Code.
+func (s *ReasonCount) GetCode() string {
+	return s.Code
+}
+
+// GetCount returns the value of Count.
+func (s *ReasonCount) GetCount() int {
+	return s.Count
+}
+
+// GetExample returns the value of Example.
+func (s *ReasonCount) GetExample() string {
+	return s.Example
+}
+
+// SetCode sets the value of Code.
+func (s *ReasonCount) SetCode(val string) {
+	s.Code = val
+}
+
+// SetCount sets the value of Count.
+func (s *ReasonCount) SetCount(val int) {
+	s.Count = val
+}
+
+// SetExample sets the value of Example.
+func (s *ReasonCount) SetExample(val string) {
+	s.Example = val
+}
+
 // Ref: #/components/schemas/RecoveryCodes
 type RecoveryCodes struct {
 	Codes []string `json:"codes"`
@@ -9626,6 +13822,135 @@ func (s *RecoveryCodes) GetCodes() []string {
 // SetCodes sets the value of Codes.
 func (s *RecoveryCodes) SetCodes(val []string) {
 	s.Codes = val
+}
+
+// Ref: #/components/schemas/RecycleBin
+type RecycleBin struct {
+	Folder        string         `json:"folder"`
+	RetentionDays int            `json:"retentionDays"`
+	Entries       []RecycleEntry `json:"entries"`
+}
+
+// GetFolder returns the value of Folder.
+func (s *RecycleBin) GetFolder() string {
+	return s.Folder
+}
+
+// GetRetentionDays returns the value of RetentionDays.
+func (s *RecycleBin) GetRetentionDays() int {
+	return s.RetentionDays
+}
+
+// GetEntries returns the value of Entries.
+func (s *RecycleBin) GetEntries() []RecycleEntry {
+	return s.Entries
+}
+
+// SetFolder sets the value of Folder.
+func (s *RecycleBin) SetFolder(val string) {
+	s.Folder = val
+}
+
+// SetRetentionDays sets the value of RetentionDays.
+func (s *RecycleBin) SetRetentionDays(val int) {
+	s.RetentionDays = val
+}
+
+// SetEntries sets the value of Entries.
+func (s *RecycleBin) SetEntries(val []RecycleEntry) {
+	s.Entries = val
+}
+
+// Ref: #/components/schemas/RecycleEntry
+type RecycleEntry struct {
+	ID           int64     `json:"id"`
+	OriginalPath string    `json:"originalPath"`
+	RecycledPath string    `json:"recycledPath"`
+	SizeBytes    int64     `json:"sizeBytes"`
+	IsDir        bool      `json:"isDir"`
+	ItemRef      string    `json:"itemRef"`
+	Reason       string    `json:"reason"`
+	RecycledAt   time.Time `json:"recycledAt"`
+}
+
+// GetID returns the value of ID.
+func (s *RecycleEntry) GetID() int64 {
+	return s.ID
+}
+
+// GetOriginalPath returns the value of OriginalPath.
+func (s *RecycleEntry) GetOriginalPath() string {
+	return s.OriginalPath
+}
+
+// GetRecycledPath returns the value of RecycledPath.
+func (s *RecycleEntry) GetRecycledPath() string {
+	return s.RecycledPath
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *RecycleEntry) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetIsDir returns the value of IsDir.
+func (s *RecycleEntry) GetIsDir() bool {
+	return s.IsDir
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *RecycleEntry) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetReason returns the value of Reason.
+func (s *RecycleEntry) GetReason() string {
+	return s.Reason
+}
+
+// GetRecycledAt returns the value of RecycledAt.
+func (s *RecycleEntry) GetRecycledAt() time.Time {
+	return s.RecycledAt
+}
+
+// SetID sets the value of ID.
+func (s *RecycleEntry) SetID(val int64) {
+	s.ID = val
+}
+
+// SetOriginalPath sets the value of OriginalPath.
+func (s *RecycleEntry) SetOriginalPath(val string) {
+	s.OriginalPath = val
+}
+
+// SetRecycledPath sets the value of RecycledPath.
+func (s *RecycleEntry) SetRecycledPath(val string) {
+	s.RecycledPath = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *RecycleEntry) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetIsDir sets the value of IsDir.
+func (s *RecycleEntry) SetIsDir(val bool) {
+	s.IsDir = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *RecycleEntry) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetReason sets the value of Reason.
+func (s *RecycleEntry) SetReason(val string) {
+	s.Reason = val
+}
+
+// SetRecycledAt sets the value of RecycledAt.
+func (s *RecycleEntry) SetRecycledAt(val time.Time) {
+	s.RecycledAt = val
 }
 
 // RefreshQueueAccepted is response for RefreshQueue operation.
@@ -10264,6 +14589,54 @@ func (s *RemotePathMappingInput) SetLocalPath(val string) {
 
 // RemoveQueueItemNoContent is response for RemoveQueueItem operation.
 type RemoveQueueItemNoContent struct{}
+
+// Ref: #/components/schemas/RenameItem
+type RenameItem struct {
+	MovieId int64  `json:"movieId"`
+	Title   string `json:"title"`
+	From    string `json:"from"`
+	To      string `json:"to"`
+}
+
+// GetMovieId returns the value of MovieId.
+func (s *RenameItem) GetMovieId() int64 {
+	return s.MovieId
+}
+
+// GetTitle returns the value of Title.
+func (s *RenameItem) GetTitle() string {
+	return s.Title
+}
+
+// GetFrom returns the value of From.
+func (s *RenameItem) GetFrom() string {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *RenameItem) GetTo() string {
+	return s.To
+}
+
+// SetMovieId sets the value of MovieId.
+func (s *RenameItem) SetMovieId(val int64) {
+	s.MovieId = val
+}
+
+// SetTitle sets the value of Title.
+func (s *RenameItem) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetFrom sets the value of From.
+func (s *RenameItem) SetFrom(val string) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *RenameItem) SetTo(val string) {
+	s.To = val
+}
 
 // Ref: #/components/schemas/ReorderRequest
 type ReorderRequest struct {
@@ -11475,6 +15848,189 @@ func (s *TaskList) SetJobs(val []Job) {
 	s.Jobs = val
 }
 
+// Ref: #/components/schemas/Timeline
+type Timeline struct {
+	Item        string          `json:"item"`
+	Title       OptString       `json:"title"`
+	Explanation Explanation     `json:"explanation"`
+	Events      []TimelineEvent `json:"events"`
+}
+
+// GetItem returns the value of Item.
+func (s *Timeline) GetItem() string {
+	return s.Item
+}
+
+// GetTitle returns the value of Title.
+func (s *Timeline) GetTitle() OptString {
+	return s.Title
+}
+
+// GetExplanation returns the value of Explanation.
+func (s *Timeline) GetExplanation() Explanation {
+	return s.Explanation
+}
+
+// GetEvents returns the value of Events.
+func (s *Timeline) GetEvents() []TimelineEvent {
+	return s.Events
+}
+
+// SetItem sets the value of Item.
+func (s *Timeline) SetItem(val string) {
+	s.Item = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Timeline) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetExplanation sets the value of Explanation.
+func (s *Timeline) SetExplanation(val Explanation) {
+	s.Explanation = val
+}
+
+// SetEvents sets the value of Events.
+func (s *Timeline) SetEvents(val []TimelineEvent) {
+	s.Events = val
+}
+
+// Ref: #/components/schemas/TimelineEvent
+type TimelineEvent struct {
+	ID int64     `json:"id"`
+	At time.Time `json:"at"`
+	// Added, edited, refreshed, search, decision, pending, grab_failed, retry, download_grabbed,
+	// download_state, download_progress, download_completed, download_failed, download_removed,
+	// download_imported, download_import_failed, download_blocklisted, file_imported, file_found,
+	// import_failed, renamed, upgraded, recycled, deleted, notified.
+	Type   string              `json:"type"`
+	Source TimelineEventSource `json:"source"`
+	// English summary; clients render `type` and `data` themselves.
+	Message string `json:"message"`
+	// Event details (shape depends on the type).
+	Data       jx.Raw   `json:"data"`
+	DownloadId OptInt64 `json:"downloadId"`
+}
+
+// GetID returns the value of ID.
+func (s *TimelineEvent) GetID() int64 {
+	return s.ID
+}
+
+// GetAt returns the value of At.
+func (s *TimelineEvent) GetAt() time.Time {
+	return s.At
+}
+
+// GetType returns the value of Type.
+func (s *TimelineEvent) GetType() string {
+	return s.Type
+}
+
+// GetSource returns the value of Source.
+func (s *TimelineEvent) GetSource() TimelineEventSource {
+	return s.Source
+}
+
+// GetMessage returns the value of Message.
+func (s *TimelineEvent) GetMessage() string {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *TimelineEvent) GetData() jx.Raw {
+	return s.Data
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *TimelineEvent) GetDownloadId() OptInt64 {
+	return s.DownloadId
+}
+
+// SetID sets the value of ID.
+func (s *TimelineEvent) SetID(val int64) {
+	s.ID = val
+}
+
+// SetAt sets the value of At.
+func (s *TimelineEvent) SetAt(val time.Time) {
+	s.At = val
+}
+
+// SetType sets the value of Type.
+func (s *TimelineEvent) SetType(val string) {
+	s.Type = val
+}
+
+// SetSource sets the value of Source.
+func (s *TimelineEvent) SetSource(val TimelineEventSource) {
+	s.Source = val
+}
+
+// SetMessage sets the value of Message.
+func (s *TimelineEvent) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *TimelineEvent) SetData(val jx.Raw) {
+	s.Data = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *TimelineEvent) SetDownloadId(val OptInt64) {
+	s.DownloadId = val
+}
+
+type TimelineEventSource string
+
+const (
+	TimelineEventSourceTimeline TimelineEventSource = "timeline"
+	TimelineEventSourceSearch   TimelineEventSource = "search"
+	TimelineEventSourceDownload TimelineEventSource = "download"
+)
+
+// AllValues returns all TimelineEventSource values.
+func (TimelineEventSource) AllValues() []TimelineEventSource {
+	return []TimelineEventSource{
+		TimelineEventSourceTimeline,
+		TimelineEventSourceSearch,
+		TimelineEventSourceDownload,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TimelineEventSource) MarshalText() ([]byte, error) {
+	switch s {
+	case TimelineEventSourceTimeline:
+		return []byte(s), nil
+	case TimelineEventSourceSearch:
+		return []byte(s), nil
+	case TimelineEventSourceDownload:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TimelineEventSource) UnmarshalText(data []byte) error {
+	switch TimelineEventSource(data) {
+	case TimelineEventSourceTimeline:
+		*s = TimelineEventSourceTimeline
+		return nil
+	case TimelineEventSourceSearch:
+		*s = TimelineEventSourceSearch
+		return nil
+	case TimelineEventSourceDownload:
+		*s = TimelineEventSourceDownload
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/TotpCodeRequest
 type TotpCodeRequest struct {
 	Code string `json:"code"`
@@ -11516,6 +16072,55 @@ func (s *TotpSetup) SetSecret(val string) {
 // SetURI sets the value of URI.
 func (s *TotpSetup) SetURI(val string) {
 	s.URI = val
+}
+
+// Ref: #/components/schemas/TransferMode
+type TransferMode string
+
+const (
+	TransferModeHardlink TransferMode = "hardlink"
+	TransferModeCopy     TransferMode = "copy"
+	TransferModeMove     TransferMode = "move"
+)
+
+// AllValues returns all TransferMode values.
+func (TransferMode) AllValues() []TransferMode {
+	return []TransferMode{
+		TransferModeHardlink,
+		TransferModeCopy,
+		TransferModeMove,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TransferMode) MarshalText() ([]byte, error) {
+	switch s {
+	case TransferModeHardlink:
+		return []byte(s), nil
+	case TransferModeCopy:
+		return []byte(s), nil
+	case TransferModeMove:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TransferMode) UnmarshalText(data []byte) error {
+	switch TransferMode(data) {
+	case TransferModeHardlink:
+		*s = TransferModeHardlink
+		return nil
+	case TransferModeCopy:
+		*s = TransferModeCopy
+		return nil
+	case TransferModeMove:
+		*s = TransferModeMove
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/UpdateDownloadSettings

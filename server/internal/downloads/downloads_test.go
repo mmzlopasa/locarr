@@ -339,7 +339,7 @@ func TestTrackingCompletesThroughRemotePathMapping(t *testing.T) {
 	for _, ev := range evs {
 		kinds = append(kinds, string(ev.Type)+":"+ev.ToState)
 	}
-	want := "grabbed:queued state:downloading state:seeding completed:seeding"
+	want := "grabbed:queued state:downloading progress:downloading state:seeding completed:seeding"
 	if strings.Join(kinds, " ") != want {
 		t.Fatalf("history = %v, want %s", kinds, want)
 	}

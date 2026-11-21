@@ -57,6 +57,8 @@ type Candidate struct {
 	IDs         IDs       `json:"ids"`
 	DownloadURL string    `json:"downloadUrl,omitempty"`
 	InfoURL     string    `json:"infoUrl,omitempty"`
+	// InfoHash (torrents) lets the blocklist match a release by hash.
+	InfoHash string `json:"infoHash,omitempty"`
 }
 
 // Mode is why releases are being evaluated.

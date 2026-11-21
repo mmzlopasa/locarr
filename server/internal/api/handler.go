@@ -20,9 +20,14 @@ import (
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
+	"github.com/mmzlopasa/locarr/server/internal/library/movies"
+	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
+	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
+	"github.com/mmzlopasa/locarr/server/internal/timeline"
+	"github.com/mmzlopasa/locarr/server/internal/wanted"
 )
 
 // SessionCookie is the web client's HttpOnly session cookie.
@@ -39,10 +44,18 @@ type Handler struct {
 	Formats     *customformats.Store
 	Downloads   *downloads.Service
 	Indexers    *indexers.Service
-	ConfigDir   string
-	DataRoots   []string
-	StartedAt   time.Time
-	Log         *slog.Logger
+	Movies      *movies.Service
+	Wanted      *wanted.Service
+	Timeline    *timeline.Store
+	Recycle     *recycle.Bin
+	Images      *metadata.ImageCache
+	// TMDb validates keys before they are stored; MetaCache is cleared when the language changes.
+	TMDb      metadata.MovieProvider
+	MetaCache *metadata.Cache
+	ConfigDir string
+	DataRoots []string
+	StartedAt time.Time
+	Log       *slog.Logger
 }
 
 var _ gen.Handler = (*Handler)(nil)
@@ -89,6 +102,9 @@ func mapError(err error) *StatusError {
 		return &StatusError{Status: http.StatusLocked, Code: "account_locked", Message: err.Error()}
 	}
 	if se := mapProfileError(err); se != nil {
+		return se
+	}
+	if se := mapLibraryError(err); se != nil {
 		return se
 	}
 	if se := mapDownloadsError(err); se != nil {

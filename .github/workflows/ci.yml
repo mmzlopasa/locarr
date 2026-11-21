@@ -93,16 +93,28 @@ jobs:
             echo "PUID=$(id -u)"
             echo "PGID=$(id -g)"
             echo "LOCARR_BUILD_COMMIT=$GITHUB_SHA"
+            # The fake TMDb of scripts/dev-fakes.sh (compose.dev.yml passes it on).
+            echo "LOCARR_TMDB_URL=http://fake-indexer:9117/tmdb"
           } >> .env
-          mkdir -p "$RUNNER_TEMP/locarr/data/media/movies" "$RUNNER_TEMP/locarr/data/downloads"
+          mkdir -p "$RUNNER_TEMP/locarr/data/media/movies" "$RUNNER_TEMP/locarr/data/downloads/fake-seed"
           docker compose -f docker-compose.yml -f compose.dev.yml up -d --build --wait
           curl -fsS http://127.0.0.1:8484/api/v1/system/info
-      - name: Start the fake indexers
-        run: ./scripts/dev-fakes.sh up
-      - name: Start Transmission for the download client tests
+      - name: Start the fake indexers and TMDb
+        run: LOCARR_FAKES_SEED_DIR="$RUNNER_TEMP/locarr/data/downloads/fake-seed" ./scripts/dev-fakes.sh up
+      - name: Start Transmission for the download client and movie tests
         run: |
+          # It sees the data folder under the same /data path as Locarr and saves into the
+          # folder where the fakes put the data of their tiny torrents.
           docker run -d --name transmission --network locarr-net -e PUID="$(id -u)" -e PGID="$(id -g)" \
-            -e USER=locarr -e PASS=locarr-e2e lscr.io/linuxserver/transmission:latest
+            -e USER=locarr -e PASS=locarr-e2e -v "$RUNNER_TEMP/locarr/data:/data" lscr.io/linuxserver/transmission:latest
+          rpc() { docker run --rm --network locarr-net curlimages/curl:8.11.1 -s -u locarr:locarr-e2e "$@" http://transmission:9091/transmission/rpc; }
+          for _ in $(seq 1 60); do
+            sid="$(rpc -o /dev/null -D - | tr -d '\r' | awk 'tolower($1)=="x-transmission-session-id:" {print $2}')"
+            [ -n "$sid" ] && break
+            sleep 1
+          done
+          rpc -H "X-Transmission-Session-Id: $sid" \
+            -d '{"method":"session-set","arguments":{"download-dir":"/data/downloads/fake-seed","incomplete-dir-enabled":false}}'
       - uses: pnpm/action-setup@v4
         with:
           package_json_file: web/package.json

@@ -17,6 +17,12 @@
 #   LOCARR_FAKES_NETWORK   Docker network (default locarr-net)
 #   LOCARR_FAKES_NAME      container name (default locarr-fakes)
 #   LOCARR_FAKES_PORT      also publish on this host address, e.g. 127.0.0.1:9117 (default: not published)
+#   LOCARR_FAKES_SEED_DIR  host folder (inside the Locarr data folder, e.g. <data>/downloads/fake-seed):
+#                          the fake indexers then serve real tiny torrents whose data they write there,
+#                          so a download client that saves into the same folder finishes them offline
+#
+# Fake TMDb: http://fake-indexer:9117/tmdb (start Locarr with LOCARR_TMDB_URL=http://fake-indexer:9117/tmdb,
+# API key fake0000000000000000000000tmdb01).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 NETWORK="${LOCARR_FAKES_NETWORK:-locarr-net}"
@@ -30,8 +36,13 @@ up)
     docker rm -f "$NAME" >/dev/null 2>&1 || true
     publish=()
     if [ -n "${LOCARR_FAKES_PORT:-}" ]; then publish=(-p "${LOCARR_FAKES_PORT}:9117"); fi
+    seed=()
+    if [ -n "${LOCARR_FAKES_SEED_DIR:-}" ]; then
+        mkdir -p "$LOCARR_FAKES_SEED_DIR"
+        seed=(-v "$LOCARR_FAKES_SEED_DIR:/seed" -e LOCARR_FAKES_SEED_DIR=/seed --user "$(id -u):$(id -g)")
+    fi
     docker run -d --name "$NAME" --network "$NETWORK" --network-alias fake-indexer --restart unless-stopped \
-        --read-only --cap-drop ALL --security-opt no-new-privileges:true "${publish[@]}" "$IMAGE" >/dev/null
+        --read-only --cap-drop ALL --security-opt no-new-privileges:true "${publish[@]}" "${seed[@]}" "$IMAGE" >/dev/null
     echo "fake indexers running as $NAME on $NETWORK: http://fake-indexer:9117/torznab (key fakekey)"
     ;;
 down)

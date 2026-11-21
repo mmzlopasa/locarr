@@ -3,6 +3,30 @@
 package gen
 
 // setDefaults set default value of fields.
+func (s *AddMovieRequest) setDefaults() {
+	{
+		val := bool(true)
+		s.Monitored.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.SearchOnAdd.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *AddOptions) setDefaults() {
+	{
+		val := bool(true)
+		s.Monitored.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.SearchOnAdd.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *DownloadClientInput) setDefaults() {
 	{
 		val := bool(true)
@@ -31,6 +55,34 @@ func (s *DownloadClientInput) setDefaults() {
 	{
 		val := bool(false)
 		s.FirstLastPiece.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ImportExistingRequest) setDefaults() {
+	{
+		val := bool(true)
+		s.Monitored.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.SearchOnAdd.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ImportListInput) setDefaults() {
+	{
+		val := bool(true)
+		s.Enabled.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.Monitored.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.SearchOnAdd.SetTo(val)
 	}
 }
 

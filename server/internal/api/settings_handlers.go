@@ -40,6 +40,11 @@ func (h *Handler) UpdateSettings(ctx context.Context, req *gen.UpdateSettingsReq
 		}
 	}
 	if key, ok := req.TmdbApiKey.Get(); ok {
+		if k := strings.TrimSpace(key); k != "" && h.TMDb != nil {
+			if err := h.TMDb.Validate(ctx, k); err != nil {
+				return nil, err
+			}
+		}
 		if err := h.Settings.SetSecret(ctx, settings.TMDbAPIKey, strings.TrimSpace(key)); err != nil {
 			return nil, err
 		}

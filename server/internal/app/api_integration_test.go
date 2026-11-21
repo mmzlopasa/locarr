@@ -2,6 +2,7 @@ package app
 
 import (
 	"compress/gzip"
+	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 	"io"
 	"net/http"
 	"os"
@@ -245,7 +246,7 @@ func TestUserAdministration(t *testing.T) {
 func TestSettingsSecretsAreWriteOnly(t *testing.T) {
 	e := newEnv(t, nil)
 	e.setup()
-	const secret = "tmdb-secret-value-123"
+	secret := tmdbfake.APIKey
 	r := e.expect(e.do("PATCH", "/api/v1/settings", map[string]any{"instanceName": "Home", "tmdbApiKey": secret}), 200)
 	if strings.Contains(string(r.body), secret) {
 		t.Fatal("secret echoed")

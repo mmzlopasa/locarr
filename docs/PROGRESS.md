@@ -1,7 +1,26 @@
 # Napredak
 
 ## Trenutna faza
-P0–P3 gotovi. Sljedeće: P4 filmovi (koristi parser, profile i `decision.Evaluate`).
+P0–P4 gotovi. Sljedeće: P5 serije (na zajedničkoj jezgri iz P4).
+
+## Gotovo u P4 (branch `phase/P4-movies`)
+- Zajednička jezgra (migracija `00005_library.sql`, D-028): `media_items` + `movies` + `media_files`, oznaka stavke `vrsta:id` (`library.Ref`), dostupnost (D-031), postavke upravljanja medijima.
+- `internal/metadata` (D-029): `MovieProvider`/`ImageSource`, TMDb klijent (v3 ključ ili v4 token, provjera ključa pri spremanju), predmemorija u SQLiteu, 20 zahtjeva/s uz `Retry-After`, jezik i regija, slike u `/config/cache/images` preko `/images/tmdb/{size}/{file}` s ETagom. Lažni TMDb: `internal/metadata/tmdb/fake` (i u `locarr-fakes` pod `/tmdb`).
+- `internal/timeline` (D-030): događaji po stavci + pretrage iz `search_log` + koraci preuzimanja iz `download_events` (s 25/50/75 %), objašnjenje „zašto nije stiglo".
+- `internal/wanted` (D-032): pretraga nakon dodavanja i po rasporedu s odmakom, RSS uparivanje, odluka, grab s idućim izdanjem kad grab ne uspije, zadržana izdanja, blokiranje i ponovna pretraga nakon neuspjelog preuzimanja, ručna (interaktivna) pretraga i grab.
+- Uvoz (D-034): `library/importer` (pronalazak datoteka, uzorci/dodaci/disk, titlovi), `library/fsops` (hardlink → kopija, kopija, premještanje uz provjeru), `library/naming` (D-035), `library/recycle` (D-036), `mediaserver.Notifier` (bez učinka do P9).
+- `internal/library/movies`: TMDb pretraga i dodavanje, uređivanje, brisanje u koš, osvježavanje (posao dnevno), kolekcije, popisi za uvoz i isključenja (posao svakih 6 h), uvoz preuzimanja, ručni uvoz s pregledom, uvoz postojeće biblioteke, preimenovanje, kalendar i iCal (D-037).
+- API: `/movies*`, `/timeline`, `/timeline/explain`, `/calendar*`, `/images/tmdb/*`, `/recyclebin*`, `/settings/mediamanagement*`, `/settings/metadata`; red preuzimanja pokazuje film kojem preuzimanje pripada.
+- Web (EN + HR): Filmovi (plakati i tablica, virtualizirano, filtri, poredak), Dodaj film, stranica filma (pregled, izdanja s odlukom i razlozima, povijest s „Zašto nije stiglo?"), kolekcija, Uvoz (postojeća biblioteka, ručni uvoz, preimenovanje), Nedostaje, Kalendar (mjesec/tjedan/popis, iCal), Postavke → Upravljanje medijima (imena uz pregled, prijenos, prava, koš), Metapodaci, Popisi za uvoz.
+- Testovi: jedinični (imena i čišćenje, prijenosi uklj. hardlink i kopiju na drugom datotečnom sustavu, uvoznik, koš, dostupnost, objašnjenje, odmak), integracijski (cijeli tok s lažnim TMDb-om, indexerom i klijentom; neuspjelo preuzimanje → blokada → iduće najbolje; RSS grab; ručni uvoz i nadogradnja u koš; postojeća biblioteka; kolekcije, popisi, kalendar), stvarni Transmission (`clients`, `scripts/test-clients.sh transmission`), 10 000 filmova: stranica od 100 za ~30–90 ms, Vitest, Playwright `e2e/movies.spec.ts` (dodaj → traži → Transmission → uvoz → vremenska crta).
+- Korisnička dokumentacija: `docs/user/movies.md`.
+
+## Za P5–P6 (što koristiti)
+- Oznaka stavke: `library.Ref{Kind, ID}` (`episode:7`, `album:3`), u preuzimanju `ref.JSON()`.
+- Pretrage: implementirati `wanted.Source` (Item, Wanted, Matcher) i `wanted.Service.Register`; `Enqueue`, `Search`, `Interactive`, `Grab`, RSS i neuspjela preuzimanja rade sami.
+- Uvoz: `importer.Discover` (+ vlastito uparivanje epizoda/pjesama), `importer.Place` s `Replace` koji zove `recycle.Bin.Recycle`; nakon uvoza `Downloads.MarkImported/MarkImportFailed`; pretplata na `EventCompleted` kao u `app/library.go`.
+- Imena: `naming.Render`/`Validate`/`Sanitize`, vrijednosti po vrsti (kao `naming.MovieValues`).
+- Vremenska crta: `timeline.Store.Record`, `Facts`, `Explain`; metapodaci: novi provider uz `metadata.Cache` i `Limiter`.
 
 ## Gotovo u P2 (branch `phase/P2-decisions`)
 - `internal/parser` (D-022): naslov i alternativni naslovi, godina, vrsta (film/serija/glazba), SxxEyy i višestruke epizode, 1x01, sezonski i višesezonski paketi („Season 1", „Sezona 1", „Staffel 2", „S01-S03", „Complete Series"), dnevne emisije, specijali, anime (`- 012`, `[012]`, `E1012`, verzije v2), izdanja filmova, 3D, glazba (izvođač, album, FLAC 16/24-bit, MP3 320/V0, diskovi, scenska imena), izvor, rezolucija, kodek, HDR/DV s profilom, dubina boje, audio i kanali, streaming servisi, jezici (uklj. hrvatski, srpski, bosanski), titlovi i utisnuti titlovi, grupa (i anime grupe u zagradama), hash, PROPER/REPACK/REAL, ekstenzije, uzorci, zamaskirana imena; `ParsePath` za putanje datoteka. 1381 golden ime (`testdata/*.json`), fuzz, ~35 ms za 1000 imena.
@@ -56,6 +75,8 @@ P0–P3 gotovi. Sljedeće: P4 filmovi (koristi parser, profile i `decision.Evalu
 4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- Filmovi: podaci o zapisima iz imena (D-033); NFO i slike uz film, Trakt/IMDb popisi još nisu napravljeni. Film obrisan i ponovno dodan dok mu staro izdanje još seeda u klijentu ne grabi isto izdanje ponovno („already queued" na vremenskoj crti).
+- Red preuzimanja ne prikazuje uvezena preuzimanja koja još seedaju (ponašanje iz P3).
 - Download klijenti: uklanjanje nakon uvoza i ciljevi seedanja provjereni su samo s lažnim klijentom dok ne stigne uvoz (P4). Usenet klijenti su testirani bez news servera, pa su završena i neuspjela preuzimanja pokrivena samo testovima s fixturama. NZBGet kategorije se ne mogu stvoriti kroz API.
 - Ograničenje zahtjeva po indexeru vodi se u memoriji i počinje od nule nakon restarta (D-014).
 - Playwright u lokalnom razvoju: lockfile koristi 1.65; slika `mcr.microsoft.com/playwright:v1.64.1` radi uz `PW_CHROMIUM_PATH`.
