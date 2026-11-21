@@ -75,7 +75,7 @@ func ParseRef(s string) (Ref, error) {
 
 // refJSON is the shape of downloads.item_ref. Covers lists the other items
 // one download is for: the episodes of a season pack or a multi-episode
-// release (D-038). A trigger copies ref and covers into download_refs.
+// release (D-045). A trigger copies ref and covers into download_refs.
 type refJSON struct {
 	Ref    string   `json:"ref"`
 	Covers []string `json:"covers,omitempty"`

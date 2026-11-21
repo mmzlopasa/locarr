@@ -6629,7 +6629,7 @@ components:
         status: {$ref: "#/components/schemas/SeriesStatus"}
         network: {type: string}
         timeZone: {type: string, description: The network's IANA time zone.}
-        airTime: {type: string, description: "HH:MM in the network's zone; empty = unknown (20:00 assumed, D-039)."}
+        airTime: {type: string, description: "HH:MM in the network's zone; empty = unknown (20:00 assumed, D-046)."}
         runtime: {type: integer}
         genres: {type: array, items: {type: string}}
         certification: {type: string}

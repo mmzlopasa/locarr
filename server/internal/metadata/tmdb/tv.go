@@ -107,7 +107,7 @@ type seasonDetails struct {
 }
 
 // Series implements metadata.SeriesProvider: the series and, season by
-// season, every episode (TMDb has no absolute numbers; D-040).
+// season, every episode (TMDb has no absolute numbers; D-047).
 func (c *Client) Series(ctx context.Context, id int64) (metadata.Series, error) {
 	lang := c.lang(ctx)
 	var d tvDetails

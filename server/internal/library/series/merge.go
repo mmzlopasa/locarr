@@ -21,7 +21,7 @@ type EpisodeUpdate struct {
 	FromSeason, FromNumber int
 }
 
-// MergePlan is what a refresh changes (D-043).
+// MergePlan is what a refresh changes (D-050).
 type MergePlan struct {
 	Insert []NewEpisode
 	Update []EpisodeUpdate
@@ -47,7 +47,7 @@ func existingID(e *Episode, source string) int64 {
 }
 
 // FillAbsolute numbers the episodes outside specials 1, 2, 3… in season
-// order when the provider gives no absolute numbers (TMDb, D-040).
+// order when the provider gives no absolute numbers (TMDb, D-047).
 func FillAbsolute(seasons []metadata.Season) {
 	for _, sn := range seasons {
 		for _, e := range sn.Episodes {

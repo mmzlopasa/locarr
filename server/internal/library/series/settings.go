@@ -20,7 +20,7 @@ var (
 	MultiEpisodeStyle = settings.Key[string]{Name: "media.multiEpisodeStyle", Default: naming.MultiPrefixedRange}
 	// SeasonPackThreshold: a season is searched as a whole (a season pack)
 	// once this many of its episodes are wanted, or when it has finished
-	// airing with at least two wanted (D-044).
+	// airing with at least two wanted (D-051).
 	SeasonPackThreshold = settings.Key[int]{Name: "series.seasonPackThreshold", Default: 3}
 	SearchOnAddDefault  = settings.Key[bool]{Name: "series.searchOnAdd", Default: true}
 )

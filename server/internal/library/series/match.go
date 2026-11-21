@@ -15,7 +15,7 @@ func IsPack(r *parser.Release) bool {
 // MatchRelease returns the episodes (of eps, one series) a parsed release or
 // file name holds, in order. Daily shows match by air date, anime by absolute
 // number (unless the name has season and episode), everything else by season
-// and episode; the manual scene mapping (D-040) wins over the provider's
+// and episode; the manual scene mapping (D-047) wins over the provider's
 // numbers. Season packs return every episode of their seasons, complete
 // series every episode outside specials.
 func MatchRelease(seriesType string, eps []Episode, r *parser.Release) []*Episode {

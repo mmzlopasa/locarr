@@ -9,7 +9,7 @@ import (
 	"unicode"
 )
 
-// Multi-episode styles: how a file holding S01E01–E03 is named (D-041).
+// Multi-episode styles: how a file holding S01E01–E03 is named (D-048).
 const (
 	MultiExtend        = "extend"         // S01E01-E02-E03
 	MultiDuplicate     = "duplicate"      // S01E01.S01E02.S01E03

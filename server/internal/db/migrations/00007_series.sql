@@ -63,11 +63,11 @@ CREATE TABLE episodes (
     title           TEXT    NOT NULL DEFAULT '',
     overview        TEXT    NOT NULL DEFAULT '',
     air_date        TEXT    NOT NULL DEFAULT '',   -- YYYY-MM-DD in the network's time zone
-    air_date_utc    INTEGER,                       -- millis; when it airs (D-039)
+    air_date_utc    INTEGER,                       -- millis; when it airs (D-046)
     runtime         INTEGER NOT NULL DEFAULT 0,
     monitored       INTEGER NOT NULL DEFAULT 1,
     file_id         INTEGER REFERENCES media_files (id) ON DELETE SET NULL,
-    -- Manual scene mapping (D-040): how releases number this episode.
+    -- Manual scene mapping (D-047): how releases number this episode.
     scene_season    INTEGER,
     scene_episode   INTEGER,
     scene_absolute  INTEGER,

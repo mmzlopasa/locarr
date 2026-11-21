@@ -58,7 +58,7 @@ func (s *Service) packThreshold(ctx context.Context) int {
 	return max(n, 2)
 }
 
-// PackWanted decides whether a season is searched as a whole (D-044):
+// PackWanted decides whether a season is searched as a whole (D-051):
 // never for specials or daily shows; when at least threshold of its
 // episodes are wanted, or it has finished airing with at least two wanted.
 func PackWanted(seriesType string, season int, missing, unaired, threshold int) bool {

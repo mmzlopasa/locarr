@@ -127,7 +127,7 @@ var countryZones = map[string]string{
 // CountryZone returns the time zone for a country code ("" when unknown).
 func CountryZone(country string) string { return countryZones[strings.ToUpper(country)] }
 
-// DefaultAirTime is assumed when the provider has no air time (D-039).
+// DefaultAirTime is assumed when the provider has no air time (D-046).
 const DefaultAirTime = "20:00"
 
 // AirTimeUTC turns an air date in a network's zone (and an air time, "" =

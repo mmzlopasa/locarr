@@ -36,7 +36,7 @@ type EpisodeState struct {
 }
 
 // ApplyMonitor decides which episodes and seasons an option monitors.
-// Specials (season 0) are never monitored by an option (D-042). seasons lists
+// Specials (season 0) are never monitored by an option (D-049). seasons lists
 // every season number, also those without episodes yet.
 func ApplyMonitor(option string, eps []EpisodeState, seasons []int, now time.Time) ([]bool, map[int]bool) {
 	first, latest := 0, 0

@@ -645,7 +645,7 @@ type SceneMapping struct {
 	Absolute *int
 }
 
-// SetSceneMapping stores an episode's manual scene numbering (D-040).
+// SetSceneMapping stores an episode's manual scene numbering (D-047).
 func (s *Service) SetSceneMapping(ctx context.Context, id int64, m SceneMapping) (Episode, error) {
 	e, err := s.Episode(ctx, id)
 	if err != nil {

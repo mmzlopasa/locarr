@@ -169,7 +169,7 @@ func (e *Episode) Ref() library.Ref { return library.EpisodeRef(e.ID) }
 // Aired reports whether the episode has aired at now.
 func (e *Episode) Aired(now time.Time) bool { return e.AirDateUTC != nil && !e.AirDateUTC.After(now) }
 
-// ReleaseNumbers are the season and episode releases use (scene mapping, D-040).
+// ReleaseNumbers are the season and episode releases use (scene mapping, D-047).
 func (e *Episode) ReleaseNumbers() (int, int) {
 	s, n := e.Season, e.Number
 	if e.SceneSeason != nil {

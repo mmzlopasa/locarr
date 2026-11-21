@@ -49,12 +49,12 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Podaci o zapisima iz same datoteke (ffprobe); danas iz imena (D-033)
 
 ## Serije (P5)
-- [x] TMDb (i TVDB po izboru): serije, sezone, epizode, specijali, vrijeme emitiranja u zoni mreže, osvježavanje s prenumeriranjem (D-039, D-043, D-046)
-- [x] Vrste: standardne, dnevne, anime (apsolutna numeracija, ručno mapiranje scenske numeracije; javni izvor mapiranja nije uključen, D-040)
-- [x] Sezonski paketi, višestruke epizode, praćenje novih sezona, mogućnosti praćenja pri dodavanju (D-042, D-044)
-- [x] Uvoz epizoda (sezonski paketi, djelomični paketi, više epizoda u datoteci, mape sezona i specijala, nadogradnje u koš), uvoz postojeće biblioteke, ručni uvoz, preimenovanje (D-041, D-045)
+- [x] TMDb (i TVDB po izboru): serije, sezone, epizode, specijali, vrijeme emitiranja u zoni mreže, osvježavanje s prenumeriranjem (D-046, D-050, D-053)
+- [x] Vrste: standardne, dnevne, anime (apsolutna numeracija, ručno mapiranje scenske numeracije; javni izvor mapiranja nije uključen, D-047)
+- [x] Sezonski paketi, višestruke epizode, praćenje novih sezona, mogućnosti praćenja pri dodavanju (D-049, D-051)
+- [x] Uvoz epizoda (sezonski paketi, djelomični paketi, više epizoda u datoteci, mape sezona i specijala, nadogradnje u koš), uvoz postojeće biblioteke, ručni uvoz, preimenovanje (D-048, D-052)
 - [x] Kalendar (web + iCal feed), nadolazeće epizode
-- [ ] Slike serija dodanih s TVDB-a (samo TMDb slike se prikazuju, D-046)
+- [ ] Slike serija dodanih s TVDB-a (samo TMDb slike se prikazuju, D-053)
 
 ## Glazba (P6)
 - [ ] MusicBrainz izvođači, albumi, vrste izdanja (album, EP, singl), praćenje novih izdanja
