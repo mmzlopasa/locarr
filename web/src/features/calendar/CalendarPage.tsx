@@ -5,13 +5,33 @@ import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Link2 } from "lucide-react";
 import { api, queryKeys, unwrap, type CalendarEntry } from "@/api/client";
 import { Button, ConfirmButton, ErrorAlert, PageHeader, Panel, Spinner } from "@/components/ui";
+import { musicKeys, type AlbumCalendarEntry } from "@/features/music/common";
 import { monthGrid, rangeFor, step, weekDays, ymd, type CalendarView } from "./dates";
+
+type Item = { kind: "movie"; e: CalendarEntry } | { kind: "album"; e: AlbumCalendarEntry };
+
+const itemKey = (i: Item) => (i.kind === "movie" ? entryKey(i.e) : `a${i.e.albumId}`);
+
+function AlbumEntry({ e, compact }: { e: AlbumCalendarEntry; compact?: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <Link to="/music/albums/$id" params={{ id: String(e.albumId) }} data-testid="calendar-entry"
+      className={`block truncate rounded border border-line border-l-2 border-l-success bg-surface-2 px-1.5 py-0.5 text-[12px] hover:bg-surface-3 ${e.hasFiles ? "text-muted line-through decoration-faint" : "text-fg"}`}
+      title={`${e.artistName} – ${e.title} · ${t("calendar.kinds.album")}`}>
+      {e.artistName} – {e.title}{compact ? "" : <span className="ml-1 text-faint">· {t("calendar.kinds.album")}</span>}
+    </Link>
+  );
+}
+
+function ItemEntry({ i, compact }: { i: Item; compact?: boolean }) {
+  return i.kind === "movie" ? <Entry e={i.e} compact={compact} /> : <AlbumEntry e={i.e} compact={compact} />;
+}
 
 const kindTone: Record<CalendarEntry["kind"], string> = {
   in_cinemas: "border-l-warning",
   digital: "border-l-info",
   physical: "border-l-accent",
-  episode: "border-l-success",
+  episode: "border-l-muted",
 };
 
 const code = (e: CalendarEntry) => `S${String(e.seasonNumber ?? 0).padStart(2, "0")}E${String(e.episodeNumber ?? 0).padStart(2, "0")}`;
@@ -49,11 +69,17 @@ export function CalendarPage() {
     queryKey: queryKeys.calendar(start, end),
     queryFn: async () => unwrap(await api.GET("/calendar", { params: { query: { start, end } } })),
   });
+  const albums = useQuery({
+    queryKey: musicKeys.calendar(start, end),
+    queryFn: async () => unwrap(await api.GET("/music/calendar", { params: { query: { start, end } } })),
+  });
   const byDay = useMemo(() => {
-    const m = new Map<string, CalendarEntry[]>();
-    for (const e of cal.data ?? []) m.set(e.date, [...(m.get(e.date) ?? []), e]);
-    return m;
-  }, [cal.data]);
+    const m = new Map<string, Item[]>();
+    const add = (date: string, i: Item) => m.set(date, [...(m.get(date) ?? []), i]);
+    for (const e of cal.data ?? []) add(e.date, { kind: "movie", e });
+    for (const e of albums.data ?? []) add(e.date, { kind: "album", e });
+    return new Map([...m.entries()].sort(([a], [b]) => a.localeCompare(b)));
+  }, [cal.data, albums.data]);
   const today = ymd(new Date());
   const title = view === "month"
     ? new Intl.DateTimeFormat(i18n.language, { month: "long", year: "numeric" }).format(anchor)
@@ -74,7 +100,7 @@ export function CalendarPage() {
           ))}
         </div>
       </div>
-      <ErrorAlert error={cal.error} />
+      <ErrorAlert error={cal.error ?? albums.error} />
       {cal.isLoading ? <Spinner /> : null}
       {view === "month" ? (
         <div className="grid grid-cols-7 gap-px overflow-hidden rounded-ui border border-line bg-line text-[12px]">
@@ -85,7 +111,7 @@ export function CalendarPage() {
             return (
               <div key={key} className={`min-h-[96px] bg-surface p-1 ${out ? "opacity-50" : ""}`}>
                 <div className={`mb-1 text-right text-[11px] tabular-nums ${key === today ? "font-semibold text-accent" : "text-faint"}`}>{d.getDate()}</div>
-                <div className="space-y-0.5">{(byDay.get(key) ?? []).map((e) => <Entry key={entryKey(e)} e={e} compact />)}</div>
+                <div className="space-y-0.5">{(byDay.get(key) ?? []).map((i) => <ItemEntry key={itemKey(i)} i={i} compact />)}</div>
               </div>
             );
           })}
@@ -98,7 +124,7 @@ export function CalendarPage() {
             return (
               <div key={key} className="min-h-[160px] rounded-ui border border-line bg-surface p-2">
                 <div className={`mb-2 text-[12px] ${key === today ? "font-semibold text-accent" : "text-muted"}`}>{dayName(d)} {d.getDate()}.</div>
-                <div className="space-y-1">{(byDay.get(key) ?? []).map((e) => <Entry key={entryKey(e)} e={e} />)}</div>
+                <div className="space-y-1">{(byDay.get(key) ?? []).map((i) => <ItemEntry key={itemKey(i)} i={i} />)}</div>
               </div>
             );
           })}
@@ -111,16 +137,17 @@ export function CalendarPage() {
               <h3 className="mb-1 text-[12px] font-medium text-muted">
                 {new Intl.DateTimeFormat(i18n.language, { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date(day))}
               </h3>
-              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">{list.map((e) => <Entry key={entryKey(e)} e={e} />)}</div>
+              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">{list.map((i) => <ItemEntry key={itemKey(i)} i={i} />)}</div>
             </li>
           ))}
-          {cal.data && cal.data.length === 0 ? <li className="text-[13px] text-faint">{t("calendar.empty")}</li> : null}
+          {cal.data && byDay.size === 0 ? <li className="text-[13px] text-faint">{t("calendar.empty")}</li> : null}
         </ol>
       ) : null}
       <div className="mt-3 flex flex-wrap gap-3 text-[12px] text-muted">
         {(["in_cinemas", "digital", "physical", "episode"] as const).map((k) => (
           <span key={k} className={`border-l-2 pl-1.5 ${kindTone[k]}`}>{t(`calendar.kinds.${k}`)}</span>
         ))}
+        <span className="border-l-2 border-l-success pl-1.5">{t("calendar.kinds.album")}</span>
       </div>
       <FeedPanel />
     </div>

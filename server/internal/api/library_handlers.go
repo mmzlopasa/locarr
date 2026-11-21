@@ -291,6 +291,9 @@ func (h *Handler) DeleteImportExclusion(ctx context.Context, p gen.DeleteImportE
 // history belongs to it (an episode with its season).
 func (h *Handler) explain(ctx context.Context, ref library.Ref) (timeline.Explanation, string, []string, error) {
 	switch ref.Kind {
+	case library.RefAlbum, library.RefArtist:
+		ex, title, err := h.explainMusic(ctx, ref)
+		return ex, title, []string{ref.String()}, err
 	case library.RefMovie:
 		it, err := h.Movies.Item(ctx, ref.ID)
 		if err != nil {
@@ -508,6 +511,15 @@ func (h *Handler) GetCalendarFeed(ctx context.Context, p gen.GetCalendarFeedPara
 			e.MovieId.Or(0), e.Kind, stamp, e.Date.Format("20060102"), e.Date.AddDate(0, 0, 1).Format("20060102"),
 			icalEscape(fmt.Sprintf("%s (%d) - %s", e.Title, e.Year, labels[e.Kind])))
 	}
+	h.musicFeedEvents(ctx, day(now.AddDate(0, 0, -p.PastDays.Or(30))), day(now.AddDate(0, 0, p.FutureDays.Or(365))), stamp,
+		func(uid, date, summary string) {
+			d, err := time.Parse("2006-01-02", date)
+			if err != nil {
+				return
+			}
+			fmt.Fprintf(&b, "BEGIN:VEVENT\r\nUID:%s\r\nDTSTAMP:%s\r\nDTSTART;VALUE=DATE:%s\r\nDTEND;VALUE=DATE:%s\r\nSUMMARY:%s\r\nEND:VEVENT\r\n",
+				uid, stamp, d.Format("20060102"), d.AddDate(0, 0, 1).Format("20060102"), icalEscape(summary))
+		})
 	b.WriteString("END:VCALENDAR\r\n")
 	return gen.GetCalendarFeedOK{Data: &b}, nil
 }

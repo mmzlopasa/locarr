@@ -6,6 +6,7 @@ import { formatBytes, formatDateTime } from "@/components/format";
 import { Alert, Button, Checkbox, ConfirmButton, EmptyState, ErrorAlert, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 import { useCurrentUser } from "@/features/auth/hooks";
 import { SeriesNamingPanel } from "./SeriesNamingPanel";
+import { MusicNamingPanel } from "@/features/music/MusicNamingPanel";
 
 /** Waits until v has not changed for ms. */
 function useDebounced<T>(v: T, ms: number): T {
@@ -116,6 +117,7 @@ export function MediaManagementPage() {
         {save.isSuccess ? <span role="status" className="text-[13px] text-success">{t("common.saved")}</span> : null}
         <ErrorAlert error={save.error} />
       </div>
+      <MusicNamingPanel />
       <RecycleBinPanel />
     </div>
   );

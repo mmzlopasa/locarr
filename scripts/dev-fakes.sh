@@ -23,6 +23,8 @@
 #
 # Fake TMDb: http://fake-indexer:9117/tmdb (start Locarr with LOCARR_TMDB_URL=http://fake-indexer:9117/tmdb,
 # API key fake0000000000000000000000tmdb01).
+# Fake MusicBrainz: http://fake-indexer:9117/musicbrainz (LOCARR_MUSICBRAINZ_URL), covers at
+# http://fake-indexer:9117/musicbrainz/coverart (LOCARR_COVERART_URL); it refuses more than one request per second.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 NETWORK="${LOCARR_FAKES_NETWORK:-locarr-net}"

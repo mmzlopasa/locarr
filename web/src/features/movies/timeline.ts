@@ -14,6 +14,8 @@ export function eventTone(e: TimelineEvent): "success" | "danger" | "warning" | 
     case "upgraded":
     case "download_completed":
     case "file_found":
+    case "release_matched":
+    case "cover_saved":
       return "success";
     case "import_failed":
     case "import_skipped":
@@ -73,8 +75,13 @@ export function describeEvent(t: TFunction, e: TimelineEvent): string {
     case "retry":
       return t("timeline.events.retry", { title: str(d.title), message: str(d.message) });
     case "file_imported":
+      if (Array.isArray(d.files)) {
+        return t("timeline.events.importedTracks", { count: d.files.length, folder: str(d.folder),
+          mode: t(`transfer.${str(d.mode)}`, { defaultValue: str(d.mode) }) });
+      }
       return t("timeline.events.imported", { quality: str(d.quality), mode: t(`transfer.${str(d.mode)}`, { defaultValue: str(d.mode) }), path: str(d.path) });
     case "file_found":
+      if (typeof d.files === "number") return t("timeline.events.foundTracks", { count: d.files, path: str(d.path) });
       return t("timeline.events.found", { quality: str(d.quality), path: str(d.path) });
     case "import_failed":
       return t("timeline.events.importFailed", { message: e.message });
@@ -82,6 +89,7 @@ export function describeEvent(t: TFunction, e: TimelineEvent): string {
       return t(`timeline.skipped.${str(d.code)}`, { defaultValue: t("timeline.events.importSkipped", { message: e.message }), download: str(d.download),
         path: str(d.path).split("/").pop() });
     case "renamed":
+      if (typeof d.count === "number") return t("timeline.events.renamedTracks", { count: d.count, example: str(d.example) });
       return t("timeline.events.renamed", { from: str(d.from).split("/").pop(), to: str(d.to).split("/").pop() });
     case "upgraded":
       return t("timeline.events.upgraded", { from: str(d.from), to: str(d.to) });
@@ -110,6 +118,19 @@ export function describeEvent(t: TFunction, e: TimelineEvent): string {
       return t("timeline.events.importFailed", { message: e.message });
     case "download_blocklisted":
       return t("timeline.events.blocklisted", { title: str(d.title) });
+    case "release_matched": {
+      const list = (d.releases as { release: string; title: string; format: string; country: string; score: number }[] | undefined) ?? [];
+      const best = list.find((x) => x.score === d.score) ?? list[0];
+      return t("timeline.events.matched", { title: best?.title ?? "", format: best?.format ?? "", country: best?.country ?? "", score: Number(d.score ?? 0) });
+    }
+    case "release_changed":
+      return t("timeline.events.releaseChanged", { message: e.message.replace(/^edition (set to |chosen )/, "") });
+    case "cover_saved":
+      return t("timeline.events.coverSaved", { source: str(d.source) === "download" ? t("timeline.coverSources.download") : "Cover Art Archive" });
+    case "album_added":
+      return t("timeline.events.albumAdded", { title: str(d.title) });
+    case "album_removed":
+      return t("timeline.events.albumRemoved", { message: e.message });
   }
   return e.message;
 }

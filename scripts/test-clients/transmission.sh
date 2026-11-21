@@ -18,3 +18,4 @@ export LOCARR_TEST_TRANSMISSION_HOST=127.0.0.1 LOCARR_TEST_TRANSMISSION_PORT="$P
 run_contract transmission
 run_app_test TestMovieFlowTransmission
 run_app_test TestSeasonPackTransmission
+run_app_test TestMusicFlowTransmission

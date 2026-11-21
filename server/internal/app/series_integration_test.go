@@ -44,7 +44,7 @@ type seriesEnv struct {
 func newSeriesEnv(t *testing.T) *seriesEnv {
 	t.Helper()
 	le := newLibraryEnv(t)
-	le.client.writeFolder = writeRelease
+	le.client.write = writeRelease
 	se := &seriesEnv{libraryEnv: le, tv: filepath.Join(le.data, "media", "tv")}
 	var rf struct{ ID int64 }
 	le.expect(le.do("POST", "/api/v1/rootfolders", map[string]any{"path": se.tv, "kind": "series"}), 201).json(&rf)

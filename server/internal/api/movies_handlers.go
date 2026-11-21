@@ -364,6 +364,12 @@ func (h *Handler) linkItems(ctx context.Context, items []*gen.QueueItem) {
 	cache := map[library.Ref]*gen.QueueItemLink{}
 	for _, it := range items {
 		ref := library.RefFromJSON([]byte(it.ItemRef))
+		if ref.Kind == library.RefAlbum {
+			if link := h.albumLink(ctx, ref); link != nil {
+				it.Item = gen.NewOptQueueItemLink(*link)
+			}
+			continue
+		}
 		if ref.IsZero() {
 			continue
 		}

@@ -13,6 +13,16 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AddArtist implements addArtist operation.
+//
+// Albums appear at once; editions and track lists load in the background (MusicBrainz allows one
+// request per second).
+//
+// POST /music/artists
+func (UnimplementedHandler) AddArtist(ctx context.Context, req *AddArtistRequest) (r *Artist, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AddBlocklistEntry implements addBlocklistEntry operation.
 //
 // Block a release (library managers).
@@ -158,6 +168,15 @@ func (UnimplementedHandler) CreateIndexerSource(ctx context.Context, req *Indexe
 	return r, ht.ErrNotImplemented
 }
 
+// CreateMetadataProfile implements createMetadataProfile operation.
+//
+// Create a metadata profile (administrators).
+//
+// POST /music/metadataprofiles
+func (UnimplementedHandler) CreateMetadataProfile(ctx context.Context, req *MetadataProfileInput) (r *MetadataProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateQualityProfile implements createQualityProfile operation.
 //
 // Qualities of the kind that the item list leaves out are added at the end as not allowed.
@@ -209,6 +228,15 @@ func (UnimplementedHandler) CreateUser(ctx context.Context, req *CreateUserReque
 //
 // DELETE /auth/apikeys/{id}
 func (UnimplementedHandler) DeleteApiKey(ctx context.Context, params DeleteApiKeyParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteArtist implements deleteArtist operation.
+//
+// With `deleteFiles` the artist folder goes to the recycle bin; files are never deleted outright.
+//
+// DELETE /music/artists/{id}
+func (UnimplementedHandler) DeleteArtist(ctx context.Context, params DeleteArtistParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -290,6 +318,15 @@ func (UnimplementedHandler) DeleteIndexer(ctx context.Context, params DeleteInde
 //
 // DELETE /indexers/sources/{id}
 func (UnimplementedHandler) DeleteIndexerSource(ctx context.Context, params DeleteIndexerSourceParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteMetadataProfile implements deleteMetadataProfile operation.
+//
+// Delete an unused metadata profile (administrators).
+//
+// DELETE /music/metadataprofiles/{id}
+func (UnimplementedHandler) DeleteMetadataProfile(ctx context.Context, params DeleteMetadataProfileParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -431,6 +468,25 @@ func (UnimplementedHandler) ExportCustomFormat(ctx context.Context, params Expor
 	return r, ht.ErrNotImplemented
 }
 
+// GetAlbum implements getAlbum operation.
+//
+// The track list loads from MusicBrainz on first view when the background refresh has not got to it
+// yet.
+//
+// GET /music/albums/{id}
+func (UnimplementedHandler) GetAlbum(ctx context.Context, params GetAlbumParams) (r *AlbumDetail, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetArtist implements getArtist operation.
+//
+// One artist.
+//
+// GET /music/artists/{id}
+func (UnimplementedHandler) GetArtist(ctx context.Context, params GetArtistParams) (r *Artist, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetCalendar implements getCalendar operation.
 //
 // Movie dates (in cinemas, digital, physical) and episode air dates between two days.
@@ -455,6 +511,15 @@ func (UnimplementedHandler) GetCalendarFeed(ctx context.Context, params GetCalen
 //
 // GET /calendar/token
 func (UnimplementedHandler) GetCalendarToken(ctx context.Context) (r *SecretState, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetCoverArt implements getCoverArt operation.
+//
+// A Cover Art Archive front cover ("rg-.jpg" or "r-.jpg"), cached on the server.
+//
+// GET /images/coverart/{size}/{file}
+func (UnimplementedHandler) GetCoverArt(ctx context.Context, params GetCoverArtParams) (r GetCoverArtRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -566,6 +631,24 @@ func (UnimplementedHandler) GetMovieCollection(ctx context.Context, params GetMo
 	return r, ht.ErrNotImplemented
 }
 
+// GetMusicCalendar implements getMusicCalendar operation.
+//
+// Album releases between two days.
+//
+// GET /music/calendar
+func (UnimplementedHandler) GetMusicCalendar(ctx context.Context, params GetMusicCalendarParams) (r []AlbumCalendarEntry, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMusicSettings implements getMusicSettings operation.
+//
+// Music naming, import options and the MusicBrainz contact (administrators).
+//
+// GET /settings/music
+func (UnimplementedHandler) GetMusicSettings(ctx context.Context) (r *MusicSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetQualityProfile implements getQualityProfile operation.
 //
 // One quality profile.
@@ -669,6 +752,15 @@ func (UnimplementedHandler) GetUser(ctx context.Context, params GetUserParams) (
 	return r, ht.ErrNotImplemented
 }
 
+// GrabAlbumRelease implements grabAlbumRelease operation.
+//
+// Grab a release chosen in an interactive search (library managers).
+//
+// POST /music/albums/{id}/releases
+func (UnimplementedHandler) GrabAlbumRelease(ctx context.Context, req *ManualGrabRequest, params GrabAlbumReleaseParams) (r *QueueItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GrabEpisodeRelease implements grabEpisodeRelease operation.
 //
 // Grab a release chosen in an interactive episode search (library managers).
@@ -728,12 +820,30 @@ func (UnimplementedHandler) ImportExistingMovies(ctx context.Context, req *Impor
 	return r, ht.ErrNotImplemented
 }
 
+// ImportExistingMusic implements importExistingMusic operation.
+//
+// Add artists with their existing folders; files stay where they are (library managers).
+//
+// POST /music/import/existing
+func (UnimplementedHandler) ImportExistingMusic(ctx context.Context, req *ImportExistingArtistsRequest) (r []ImportExistingArtistResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ImportExistingSeries implements importExistingSeries operation.
 //
 // Add series for existing folders and register their episode files in place (library managers).
 //
 // POST /series/import/existing
 func (UnimplementedHandler) ImportExistingSeries(ctx context.Context, req *ImportExistingSeriesRequest) (r []ImportExistingSeriesResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// InteractiveSearchAlbum implements interactiveSearchAlbum operation.
+//
+// Interactive search for an album - every release and the decision on it (library managers).
+//
+// GET /music/albums/{id}/releases
+func (UnimplementedHandler) InteractiveSearchAlbum(ctx context.Context, params InteractiveSearchAlbumParams) (r *InteractiveSearch, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -770,6 +880,24 @@ func (UnimplementedHandler) InteractiveSearchSeason(ctx context.Context, params 
 //
 // GET /auth/apikeys
 func (UnimplementedHandler) ListApiKeys(ctx context.Context) (r []ApiKey, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListArtistAlbums implements listArtistAlbums operation.
+//
+// An artist's albums with their status, newest first.
+//
+// GET /music/artists/{id}/albums
+func (UnimplementedHandler) ListArtistAlbums(ctx context.Context, params ListArtistAlbumsParams) (r []Album, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListArtists implements listArtists operation.
+//
+// The music library's artists, one page at a time.
+//
+// GET /music/artists
+func (UnimplementedHandler) ListArtists(ctx context.Context, params ListArtistsParams) (r *ArtistList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -860,6 +988,15 @@ func (UnimplementedHandler) ListIndexers(ctx context.Context) (r []Indexer, _ er
 //
 // GET /languages
 func (UnimplementedHandler) ListLanguages(ctx context.Context) (r []LanguageInfo, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListMetadataProfiles implements listMetadataProfiles operation.
+//
+// Metadata profiles (which album types and release statuses an artist's library holds).
+//
+// GET /music/metadataprofiles
+func (UnimplementedHandler) ListMetadataProfiles(ctx context.Context) (r []MetadataProfile, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -991,6 +1128,15 @@ func (UnimplementedHandler) ListUsers(ctx context.Context) (r []User, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
+// ListWantedAlbums implements listWantedAlbums operation.
+//
+// Wanted albums - monitored and released, missing tracks (missing) or below the cutoff (cutoff_unmet).
+//
+// GET /music/albums
+func (UnimplementedHandler) ListWantedAlbums(ctx context.Context, params ListWantedAlbumsParams) (r *AlbumList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListWantedEpisodes implements listWantedEpisodes operation.
 //
 // Missing episodes or episodes below the cutoff, oldest air date first.
@@ -1016,6 +1162,15 @@ func (UnimplementedHandler) Login(ctx context.Context, req *LoginRequest) (r *Si
 //
 // POST /auth/logout
 func (UnimplementedHandler) Logout(ctx context.Context) (r *LogoutNoContent, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// LookupArtists implements lookupArtists operation.
+//
+// Search MusicBrainz for artists by name, or by id ("mbid:").
+//
+// GET /music/artists/lookup
+func (UnimplementedHandler) LookupArtists(ctx context.Context, params LookupArtistsParams) (r []ArtistLookup, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1055,12 +1210,30 @@ func (UnimplementedHandler) ManualImportSeries(ctx context.Context, req *SeriesM
 	return r, ht.ErrNotImplemented
 }
 
+// MonitorAlbums implements monitorAlbums operation.
+//
+// Monitor or unmonitor several albums (library managers).
+//
+// PUT /music/albums/monitor
+func (UnimplementedHandler) MonitorAlbums(ctx context.Context, req *AlbumMonitorRequest) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // MonitorEpisodes implements monitorEpisodes operation.
 //
 // Monitor or unmonitor several episodes (library managers).
 //
 // POST /episodes/monitor
 func (UnimplementedHandler) MonitorEpisodes(ctx context.Context, req *MonitorEpisodesRequest) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// MusicImport implements musicImport operation.
+//
+// Import a folder into an album (library managers).
+//
+// POST /music/import/manual
+func (UnimplementedHandler) MusicImport(ctx context.Context, req *MusicImportRequest) (r *MusicImportResult, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1111,6 +1284,24 @@ func (UnimplementedHandler) PreviewManualImportSeries(ctx context.Context, param
 	return r, ht.ErrNotImplemented
 }
 
+// PreviewMusicImport implements previewMusicImport operation.
+//
+// How a folder's files match an album's editions, with scores (library managers).
+//
+// GET /music/import/manual
+func (UnimplementedHandler) PreviewMusicImport(ctx context.Context, params PreviewMusicImportParams) (r *MusicImportPreview, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// PreviewMusicNaming implements previewMusicNaming operation.
+//
+// Render music naming templates with an example album.
+//
+// POST /settings/music/preview
+func (UnimplementedHandler) PreviewMusicNaming(ctx context.Context, req *MusicSettings) (r *MusicNamingPreview, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // PreviewNaming implements previewNaming operation.
 //
 // Render naming templates for an example movie.
@@ -1144,6 +1335,15 @@ func (UnimplementedHandler) PreviewRenameSeries(ctx context.Context, req *Series
 //
 // POST /settings/mediamanagement/series/preview
 func (UnimplementedHandler) PreviewSeriesNaming(ctx context.Context, req *SeriesNamingSettings) (r *SeriesNamingPreview, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RefreshArtist implements refreshArtist operation.
+//
+// Albums are synced at once; editions and track lists follow in the background.
+//
+// POST /music/artists/{id}/refresh
+func (UnimplementedHandler) RefreshArtist(ctx context.Context, params RefreshArtistParams) (r *Artist, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1293,6 +1493,16 @@ func (UnimplementedHandler) ScanExistingMovies(ctx context.Context, params ScanE
 	return r, ht.ErrNotImplemented
 }
 
+// ScanExistingMusic implements scanExistingMusic operation.
+//
+// Tags are read from the first file of each album; artists are matched by the MusicBrainz id in the
+// tags, else by name (one request per artist).
+//
+// GET /music/import/scan
+func (UnimplementedHandler) ScanExistingMusic(ctx context.Context, params ScanExistingMusicParams) (r []ExistingArtistFolder, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ScanExistingSeries implements scanExistingSeries operation.
 //
 // Folders in a series root folder that are not in the library, with provider matches (library
@@ -1311,6 +1521,33 @@ func (UnimplementedHandler) ScanExistingSeries(ctx context.Context, params ScanE
 //
 // GET /search
 func (UnimplementedHandler) Search(ctx context.Context, params SearchParams) (r *SearchResponse, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchAlbum implements searchAlbum operation.
+//
+// Queue an automatic search for an album now (library managers).
+//
+// POST /music/albums/{id}/search
+func (UnimplementedHandler) SearchAlbum(ctx context.Context, params SearchAlbumParams) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchAlbums implements searchAlbums operation.
+//
+// Queue automatic searches for several albums (library managers).
+//
+// POST /music/albums/search
+func (UnimplementedHandler) SearchAlbums(ctx context.Context, req *AlbumIdsRequest) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchArtist implements searchArtist operation.
+//
+// Queue automatic searches for every wanted album of an artist (library managers).
+//
+// POST /music/artists/{id}/search
+func (UnimplementedHandler) SearchArtist(ctx context.Context, params SearchArtistParams) (r *QueuedCount, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1463,6 +1700,24 @@ func (UnimplementedHandler) TestIndexerConfig(ctx context.Context, req *IndexerT
 	return r, ht.ErrNotImplemented
 }
 
+// UpdateAlbum implements updateAlbum operation.
+//
+// `releaseId` picks an edition and keeps it; 0 lets Locarr choose again.
+//
+// PATCH /music/albums/{id}
+func (UnimplementedHandler) UpdateAlbum(ctx context.Context, req *AlbumUpdate, params UpdateAlbumParams) (r *AlbumDetail, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateArtist implements updateArtist operation.
+//
+// A new metadata profile refreshes the albums; albums with files always stay.
+//
+// PATCH /music/artists/{id}
+func (UnimplementedHandler) UpdateArtist(ctx context.Context, req *ArtistUpdate, params UpdateArtistParams) (r *Artist, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateCustomFormat implements updateCustomFormat operation.
 //
 // Replace a custom format (administrators).
@@ -1554,6 +1809,15 @@ func (UnimplementedHandler) UpdateMediaManagement(ctx context.Context, req *Medi
 	return r, ht.ErrNotImplemented
 }
 
+// UpdateMetadataProfile implements updateMetadataProfile operation.
+//
+// Change a metadata profile; its artists are refreshed (administrators).
+//
+// PUT /music/metadataprofiles/{id}
+func (UnimplementedHandler) UpdateMetadataProfile(ctx context.Context, req *MetadataProfileInput, params UpdateMetadataProfileParams) (r *MetadataProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateMetadataSettings implements updateMetadataSettings operation.
 //
 // A key TMDb refuses is not stored (`metadata_key_invalid`).
@@ -1569,6 +1833,15 @@ func (UnimplementedHandler) UpdateMetadataSettings(ctx context.Context, req *Met
 //
 // PATCH /movies/{id}
 func (UnimplementedHandler) UpdateMovie(ctx context.Context, req *MovieUpdate, params UpdateMovieParams) (r *Movie, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateMusicSettings implements updateMusicSettings operation.
+//
+// Change music naming and import options (administrators).
+//
+// PUT /settings/music
+func (UnimplementedHandler) UpdateMusicSettings(ctx context.Context, req *MusicSettings) (r *MusicSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

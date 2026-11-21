@@ -1,10 +1,10 @@
 # Napredak
 
 ## Trenutna faza
-P0–P5 gotovi (P6 glazba u radu paralelno).
+P0–P6 gotovi.
 
 ## Gotovo u P5 (branch `phase/P5-series`)
-- Migracija `00006_series.sql`: `series`, `seasons`, `episodes` (scenska numeracija, uklonjene epizode s datotekom), `download_refs` s okidačima (D-045).
+- Migracija `00007_series.sql`: `series`, `seasons`, `episodes` (scenska numeracija, uklonjene epizode s datotekom), `download_refs` s okidačima (D-045).
 - `internal/metadata`: `SeriesProvider`; TMDb TV (serije, sezone, epizode, specijali, vanjski ID-jevi, zona mreže, D-046) i TVDB v4 (`internal/metadata/tvdb`, apsolutni brojevi, vrijeme emitiranja, TVmaze ID; D-053). Lažni TMDb ima četiri serije (paket, standardna koja traje, anime, dnevna), lažni TVDB jednu anime seriju.
 - `internal/library/series`: dodavanje s mogućnostima praćenja i vrstom serije, uređivanje, brisanje u koš, praćenje sezona i epizoda, scensko mapiranje, osvježavanje (D-050, posao svakih 12 h), uparivanje epizoda (standardno, više epizoda, dnevno, apsolutno, paketi, cijela serija; D-047), izvori za pretrage epizoda i sezona sa sezonskim paketima (D-051), uvoz preuzimanja i ručni uvoz (D-052), postojeća biblioteka, preimenovanje, kalendar, popis traženih epizoda, objašnjenje za epizodu/sezonu/seriju.
 - `internal/wanted`: `Multi` (pokrivanje i dorada odluke), više grabova po pretrazi s prednošću paketa; `decision`: `Finalize`, `Reject`, kodovi `season_pack_not_wanted` i `episode_not_wanted`; `timeline`: `ListRefs`, `FactsRefs` preko `download_refs`.
@@ -13,6 +13,17 @@ P0–P5 gotovi (P6 glazba u radu paralelno).
 - Web (EN + HR): Serije (plakati i tablica, virtualizirano, filtri traje/završena/najavljena i nedostaju epizode), Dodaj seriju, stranica serije (sezone s epizodama, praćenje, pretraga i ručna pretraga po epizodi i sezoni, skupne radnje, ladica s vremenskom crtom i „zašto nije stiglo", uređivanje, brisanje), Uvoz serija (postojeća biblioteka, ručni uvoz, preimenovanje), Nedostaje → Epizode, Kalendar s epizodama, Imena serija s pregledom uživo, TVDB u Metapodacima.
 - Testovi: jedinični (uparivanje, paketi, pravilo paketa, mogućnosti praćenja, plan osvježavanja, apsolutni brojevi, imena, TVDB klijent), integracijski (paket → hardlink uvoz svih epizoda i preimenovanje; epizode jedna po jedna, kalendar, iCal, Wanted, praćenje, prenumeriranje; anime i dnevna serija; RSS uparivanje), stvarni Transmission sa sezonskim paketom (`clients`), performanse (5000 serija: stranica od 100 za ~15–40 ms; serija s 30 sezona i 1020 epizoda ~20 ms), Vitest (biblioteka, stranica serije, dodavanje, 1000 epizoda), Playwright `e2e/series.spec.ts`.
 - Korisnička dokumentacija: `docs/user/series.md`.
+
+## Gotovo u P6 (branch `phase/P6-music`)
+- Migracija `00006_music.sql` (D-041): `metadata_profiles` (Standard, Samo albumi, Sve), `artists`, `albums` (grupe izdanja), `album_releases`, `tracks`, `album_files`.
+- `internal/library/tags` (D-038): vlastiti čitač tagova i podataka o zapisu za FLAC, MP3 (ID3v2.2/2.3/2.4, Xing/Info), M4A (AAC/ALAC) i Ogg (Vorbis/Opus), pisanje Vorbis komentara u FLAC; `tags/tagtest` piše testne datoteke svih formata; fuzz test.
+- `internal/metadata/musicbrainz` (D-039, D-040): pretraga i dohvat izvođača, grupe izdanja, izdanja (browse po izvođaču ili grupi) i izdanje s pjesmama; 1 zahtjev/s, User-Agent s kontaktom iz postavke, predmemorija, 503/Retry-After; Cover Art Archive s preusmjerenjem na archive.org i predmemorijom omota. Lažni MusicBrainz + CAA: `metadata/musicbrainz/fake` (u `locarr-fakes` pod `/musicbrainz`, odbija više od 1 zahtjeva/s).
+- `internal/library/music`: dodavanje izvođača (praćenje svih/budućih/najnovijeg/ničega, novi albumi svi/budući/ništa), osvježavanje (posao dnevno i po izvođaču u pozadini) koje nikad ne briše albume s datotekama, izbor izdanja (D-042), stanje albuma (najlošija kvaliteta, granica), izvor za pretrage `album:<id>` s RSS uparivanjem po izvođaču/drugom imenu i albumu, uvoz preuzimanja i ručni uvoz s bodovima (D-043), više diskova, djelomični albumi po izboru, cue slike odbijene (D-044), omot, zamjena u koš, pisanje tagova po izboru, uvoz postojeće biblioteke na mjestu, kalendar.
+- `naming`: glazbene oznake (izvođač, album, vrsta, godina, izdanje, disk, pjesma, format, dubina bita, frekvencija, bitrate, grupa izdanja…).
+- API: `/music/artists*`, `/music/albums*` (nedostaje, praćenje, pretraga, ručna pretraga i grab), `/music/import/*`, `/music/metadataprofiles*`, `/music/calendar`, `/settings/music*`, `/images/coverart/*`; vremenska crta i objašnjenje za `album:` i `artist:`; red preuzimanja povezuje album; iCal feed sadrži albume.
+- Web (EN + HR): Glazba (omoti i tablica, virtualizirano), Dodaj izvođača (pojašnjenja), stranica izvođača (albumi po vrsti s praćenjem i pretragom, uređivanje, uklanjanje), stranica albuma (izdanje, pjesme s datotekama, ručna pretraga, uvoz mape s bodovima, ladica s poviješću i „Zašto nije stiglo?"), Uvoz postojeće glazbe, Nedostaje → Albumi, Kalendar s albumima, Postavke → Profili metapodataka, Upravljanje medijima → Imena i uvoz glazbe s pregledom uživo.
+- Testovi: tagovi (svi formati, oštećene datoteke, pisanje FLAC-a, fuzz), MusicBrainz (parsiranje, predmemorija, User-Agent, ≤ 1 zahtjev/s, 503), uparivanje (točno, bez tagova, više diskova, nedostaje/višak, trajanja, ID-jevi, krivi album), profili metapodataka, izbor izdanja, imena; integracijski (`TestMusicFlow`, `TestMusicImportMatching`, `TestMusicExistingLibrary`, `TestMusicRSS`) s lažnim MusicBrainzom, indexerom i klijentom; stvarni Transmission (`TestMusicFlowTransmission`, oznaka `clients`); Vitest; Playwright `e2e/music.spec.ts` (dodaj izvođača → grab → Transmission → uvoz → vremenska crta).
+- Korisnička dokumentacija: `docs/user/music.md`.
 
 ## Gotovo u P4 (branch `phase/P4-movies`)
 - Zajednička jezgra (migracija `00005_library.sql`, D-028): `media_items` + `movies` + `media_files`, oznaka stavke `vrsta:id` (`library.Ref`), dostupnost (D-031), postavke upravljanja medijima.
@@ -87,6 +98,7 @@ P0–P5 gotovi (P6 glazba u radu paralelno).
 
 ## Poznati problemi / napomene
 - Serije: slike za serije dodane s TVDB-a se ne prikazuju (D-053); vrijeme emitiranja za TMDb serije je procjena (20:00 u zoni mreže, D-046); scensko mapiranje je samo ručno i za sada samo kroz API (`PATCH /episodes/{id}`), web ga prikazuje ali ne uređuje (D-047); sortiranje popisa serija po sljedećem emitiranju ili broju nedostajućih epizoda zbraja sve epizode (~130 ms na 5000 serija).
+- Glazba: cue slike (jedan FLAC po albumu) se ne uvoze, tagovi se pišu samo u FLAC (D-044); WAV/APE/DSD se ne čitaju. Uvoz postojeće biblioteke i osvježavanje velikih diskografija su spori zbog 1 zahtjeva/s prema MusicBrainzu. Izvođači nemaju vlastitu sliku (prikazuje se omot najnovijeg albuma).
 - Filmovi: podaci o zapisima iz imena (D-033); NFO i slike uz film, Trakt/IMDb popisi još nisu napravljeni. Film obrisan i ponovno dodan dok mu staro izdanje još seeda u klijentu ne grabi isto izdanje ponovno („already queued" na vremenskoj crti).
 - Red preuzimanja ne prikazuje uvezena preuzimanja koja još seedaju (ponašanje iz P3).
 - Download klijenti: uklanjanje nakon uvoza i ciljevi seedanja provjereni su samo s lažnim klijentom dok ne stigne uvoz (P4). Usenet klijenti su testirani bez news servera, pa su završena i neuspjela preuzimanja pokrivena samo testovima s fixturama. NZBGet kategorije se ne mogu stvoriti kroz API.

@@ -21,6 +21,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
+	"github.com/mmzlopasa/locarr/server/internal/library/music"
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
 	"github.com/mmzlopasa/locarr/server/internal/library/series"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
@@ -47,10 +48,15 @@ type Handler struct {
 	Indexers    *indexers.Service
 	Movies      *movies.Service
 	Series      *series.Service
-	Wanted      *wanted.Service
-	Timeline    *timeline.Store
-	Recycle     *recycle.Bin
-	Images      *metadata.ImageCache
+	Music       *music.Service
+	// CoverArt caches Cover Art Archive images; LinkExisting queues linking
+	// an existing artist folder's files (both set by the app).
+	CoverArt     *metadata.ImageCache
+	LinkExisting func(ctx context.Context, artistID int64)
+	Wanted       *wanted.Service
+	Timeline     *timeline.Store
+	Recycle      *recycle.Bin
+	Images       *metadata.ImageCache
 	// TMDb validates keys before they are stored; MetaCache is cleared when the language changes.
 	TMDb metadata.MovieProvider
 	// TVDB validates a TVDB key before it is stored (nil = TVDB not available).
@@ -112,6 +118,9 @@ func mapError(err error) *StatusError {
 		return se
 	}
 	if se := mapLibraryError(err); se != nil {
+		return se
+	}
+	if se := mapMusicError(err); se != nil {
 		return se
 	}
 	if se := mapDownloadsError(err); se != nil {

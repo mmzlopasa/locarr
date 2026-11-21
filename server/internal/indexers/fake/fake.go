@@ -32,6 +32,7 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/downloaders/testkit"
+	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
 )
 
 // Release is one release in the fake catalog.
@@ -88,10 +89,12 @@ var Catalog = []Release{
 		TVDB: 454545, Hash: "f3b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 30 * time.Hour},
 	{Title: "The.Open.Desk.2025.03.14.720p.WEB.h264-LOCARR", Cat: 5030, Size: 524_288_000, Seeders: 7, Peers: 7, Grabs: 9,
 		TVDB: 464646, Season: "2025", Episode: "03/14", Hash: "f4b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 50 * time.Hour},
-	{Title: "Open Source Artist - Free Album (2020) [FLAC]", Cat: 3040, Size: 419_430_400, Seeders: 6, Peers: 6, Grabs: 15,
+	{Title: "Open Source Artist - Free Album (2020) [FLAC]", Cat: 3040, Size: 157_286_400, Seeders: 6, Peers: 6, Grabs: 15,
 		Artist: "Open Source Artist", Album: "Free Album", Hash: "a2b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 48 * time.Hour},
 	{Title: "Public Domain Author - A Free Book (EPUB)", Cat: 7020, Size: 2_097_152, Seeders: 3, Peers: 3, Grabs: 4,
 		Author: "Public Domain Author", Hash: "a3b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 30 * time.Hour},
+	{Title: "Open Source Artist - Free Album (2020) [MP3 320]", Cat: 3000, Size: 41_943_040, Seeders: 20, Peers: 22, Grabs: 70,
+		Artist: "Open Source Artist", Album: "Free Album", Hash: "a4b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 50 * time.Hour},
 }
 
 // Server is the fake. Change its fields only before serving or under Lock.
@@ -328,6 +331,15 @@ func (s *Server) download(w http.ResponseWriter, r *http.Request, name, key, n s
 	w.Header().Set("Content-Disposition", `attachment; filename="`+rel.Title+`.torrent"`)
 	if s.SeedDir != "" && len(rel.Files) > 0 {
 		t, err := SeedPack(s.SeedDir, rel.Title, rel.Files)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		_, _ = w.Write(t)
+		return
+	}
+	if s.SeedDir != "" && rel.Cat/1000 == 3 {
+		t, err := SeedAlbum(s.SeedDir, rel.Title, strings.Contains(rel.Title, "MP3"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -572,7 +584,7 @@ func SeedPack(dir, title string, files []string) ([]byte, error) {
 		tf = append(tf, testkit.TorrentFile{Path: f, Data: data})
 	}
 	_ = os.Chmod(filepath.Join(dir, title), 0o777) // #nosec G302 -- see above
-	return testkit.MakeMultiTorrent(title, tf).File, nil
+	return testkit.MakeFolderTorrent(title, tf).File, nil
 }
 
 // SeedPayload is the deterministic content of a seeded release (1 MiB).
@@ -600,4 +612,31 @@ func SeedTorrent(dir, title string) ([]byte, error) {
 		_ = os.Chmod(p, 0o666) // #nosec G302 -- see above
 	}
 	return testkit.MakeTorrent(name, data).File, nil
+}
+
+// SeedAlbum writes the fake MusicBrainz standard edition of "Free Album"
+// (tagged FLAC, or MP3 320 when mp3) into dir/<title>/ and returns a
+// multi-file torrent for it.
+func SeedAlbum(dir, title string, mp3 bool) ([]byte, error) {
+	format := "flac"
+	if mp3 {
+		format = "mp3"
+	}
+	files := mbfake.ReleaseFiles(mbfake.ReleaseStandard, mbfake.FileOptions{Format: format})
+	var tf []testkit.TorrentFile
+	for _, f := range files {
+		p := filepath.Join(dir, title, filepath.FromSlash(f.Path))
+		if err := os.MkdirAll(filepath.Dir(p), 0o777); err != nil { // #nosec G301 -- test data shared with the client
+			return nil, err
+		}
+		if st, err := os.Stat(p); err != nil || st.Size() != int64(len(f.Data)) {
+			if err := os.WriteFile(p, f.Data, 0o666); err != nil { // #nosec G306 -- see SeedTorrent
+				return nil, err
+			}
+			_ = os.Chmod(p, 0o666) // #nosec G302 -- see SeedTorrent
+		}
+		tf = append(tf, testkit.TorrentFile{Path: f.Path, Data: f.Data})
+	}
+	_ = os.Chmod(filepath.Join(dir, title), 0o777) // #nosec G302 -- see SeedTorrent
+	return testkit.MakeFolderTorrent(title, tf).File, nil
 }

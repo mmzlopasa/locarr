@@ -7,26 +7,29 @@ import { api, queryKeys, unwrap } from "@/api/client";
 import { Button, EmptyState, ErrorAlert, PageHeader, Spinner } from "@/components/ui";
 import { StatusBadge } from "@/features/movies/common";
 import { episodeCode, formatAir } from "@/features/series/common";
+import { WantedAlbums } from "@/features/music/WantedAlbums";
 
 const PAGE = 100;
 
 type Kind = "missing" | "cutoff_unmet";
 
-/** Monitored movies and episodes that are missing or below the profile's cutoff, with bulk search. */
+/** Monitored movies, episodes and albums that are missing or below the profile's cutoff, with bulk search. */
 export function WantedPage() {
   const { t } = useTranslation();
-  const [media, setMedia] = useState<"movies" | "episodes">("movies");
+  const [media, setMedia] = useState<"movies" | "episodes" | "albums">("movies");
   const [kind, setKind] = useState<Kind>("missing");
   return (
     <div>
       <div className="mb-2 flex justify-end gap-1" role="group" aria-label={t("wanted.media")}>
-        {(["movies", "episodes"] as const).map((m) => (
+        {(["movies", "episodes", "albums"] as const).map((m) => (
           <Button key={m} variant={media === m ? "secondary" : "ghost"} aria-pressed={media === m} onClick={() => setMedia(m)} data-testid={`wanted-${m}`}>
             {t(`wanted.mediaKinds.${m}`)}
           </Button>
         ))}
       </div>
-      {media === "movies" ? <WantedMovies kind={kind} setKind={setKind} /> : <WantedEpisodes kind={kind} setKind={setKind} />}
+      {media === "movies" ? <WantedMovies kind={kind} setKind={setKind} /> : null}
+      {media === "episodes" ? <WantedEpisodes kind={kind} setKind={setKind} /> : null}
+      {media === "albums" ? <WantedAlbums /> : null}
     </div>
   );
 }

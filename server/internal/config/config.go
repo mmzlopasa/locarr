@@ -27,6 +27,11 @@ type Config struct {
 	// TVDBURL replaces TVDB's API address (LOCARR_TVDB_URL; tests and the
 	// fake services only, default https://api4.thetvdb.com).
 	TVDBURL string
+	// MusicBrainzURL and CoverArtURL replace MusicBrainz's and the Cover Art
+	// Archive's addresses (LOCARR_MUSICBRAINZ_URL, LOCARR_COVERART_URL; tests
+	// and the fake services only).
+	MusicBrainzURL string
+	CoverArtURL    string
 	// TrustedProxies are CIDRs whose X-Forwarded-For is believed (LOCARR_TRUSTED_PROXIES).
 	TrustedProxies string
 	// SetupCode fixes the first-run setup code instead of a random one (LOCARR_SETUP_CODE).
@@ -58,6 +63,8 @@ func load(env func(string) string) (Config, error) {
 		SetupCode:      get("LOCARR_SETUP_CODE", ""),
 		TMDbURL:        get("LOCARR_TMDB_URL", ""),
 		TVDBURL:        get("LOCARR_TVDB_URL", ""),
+		MusicBrainzURL: get("LOCARR_MUSICBRAINZ_URL", ""),
+		CoverArtURL:    get("LOCARR_COVERART_URL", ""),
 	}
 	switch c.LogLevel {
 	case "debug", "info", "warn", "error":

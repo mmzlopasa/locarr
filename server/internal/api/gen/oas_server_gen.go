@@ -8,6 +8,13 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AddArtist implements addArtist operation.
+	//
+	// Albums appear at once; editions and track lists load in the background (MusicBrainz allows one
+	// request per second).
+	//
+	// POST /music/artists
+	AddArtist(ctx context.Context, req *AddArtistRequest) (*Artist, error)
 	// AddBlocklistEntry implements addBlocklistEntry operation.
 	//
 	// Block a release (library managers).
@@ -105,6 +112,12 @@ type Handler interface {
 	//
 	// POST /indexers/sources
 	CreateIndexerSource(ctx context.Context, req *IndexerSourceInput) (*IndexerSourceSyncResult, error)
+	// CreateMetadataProfile implements createMetadataProfile operation.
+	//
+	// Create a metadata profile (administrators).
+	//
+	// POST /music/metadataprofiles
+	CreateMetadataProfile(ctx context.Context, req *MetadataProfileInput) (*MetadataProfile, error)
 	// CreateQualityProfile implements createQualityProfile operation.
 	//
 	// Qualities of the kind that the item list leaves out are added at the end as not allowed.
@@ -141,6 +154,12 @@ type Handler interface {
 	//
 	// DELETE /auth/apikeys/{id}
 	DeleteApiKey(ctx context.Context, params DeleteApiKeyParams) error
+	// DeleteArtist implements deleteArtist operation.
+	//
+	// With `deleteFiles` the artist folder goes to the recycle bin; files are never deleted outright.
+	//
+	// DELETE /music/artists/{id}
+	DeleteArtist(ctx context.Context, params DeleteArtistParams) error
 	// DeleteBlocklistEntry implements deleteBlocklistEntry operation.
 	//
 	// Unblock a release (library managers).
@@ -195,6 +214,12 @@ type Handler interface {
 	//
 	// DELETE /indexers/sources/{id}
 	DeleteIndexerSource(ctx context.Context, params DeleteIndexerSourceParams) error
+	// DeleteMetadataProfile implements deleteMetadataProfile operation.
+	//
+	// Delete an unused metadata profile (administrators).
+	//
+	// DELETE /music/metadataprofiles/{id}
+	DeleteMetadataProfile(ctx context.Context, params DeleteMetadataProfileParams) error
 	// DeleteMovie implements deleteMovie operation.
 	//
 	// With `deleteFiles` the movie folder goes to the recycle bin; files are never deleted outright.
@@ -288,6 +313,19 @@ type Handler interface {
 	//
 	// GET /customformats/{id}/export
 	ExportCustomFormat(ctx context.Context, params ExportCustomFormatParams) (SharedCustomFormat, error)
+	// GetAlbum implements getAlbum operation.
+	//
+	// The track list loads from MusicBrainz on first view when the background refresh has not got to it
+	// yet.
+	//
+	// GET /music/albums/{id}
+	GetAlbum(ctx context.Context, params GetAlbumParams) (*AlbumDetail, error)
+	// GetArtist implements getArtist operation.
+	//
+	// One artist.
+	//
+	// GET /music/artists/{id}
+	GetArtist(ctx context.Context, params GetArtistParams) (*Artist, error)
 	// GetCalendar implements getCalendar operation.
 	//
 	// Movie dates (in cinemas, digital, physical) and episode air dates between two days.
@@ -306,6 +344,12 @@ type Handler interface {
 	//
 	// GET /calendar/token
 	GetCalendarToken(ctx context.Context) (*SecretState, error)
+	// GetCoverArt implements getCoverArt operation.
+	//
+	// A Cover Art Archive front cover ("rg-.jpg" or "r-.jpg"), cached on the server.
+	//
+	// GET /images/coverart/{size}/{file}
+	GetCoverArt(ctx context.Context, params GetCoverArtParams) (GetCoverArtRes, error)
 	// GetCustomFormat implements getCustomFormat operation.
 	//
 	// One custom format.
@@ -378,6 +422,18 @@ type Handler interface {
 	//
 	// GET /movies/collections/{tmdbId}
 	GetMovieCollection(ctx context.Context, params GetMovieCollectionParams) (*MovieCollection, error)
+	// GetMusicCalendar implements getMusicCalendar operation.
+	//
+	// Album releases between two days.
+	//
+	// GET /music/calendar
+	GetMusicCalendar(ctx context.Context, params GetMusicCalendarParams) ([]AlbumCalendarEntry, error)
+	// GetMusicSettings implements getMusicSettings operation.
+	//
+	// Music naming, import options and the MusicBrainz contact (administrators).
+	//
+	// GET /settings/music
+	GetMusicSettings(ctx context.Context) (*MusicSettings, error)
 	// GetQualityProfile implements getQualityProfile operation.
 	//
 	// One quality profile.
@@ -448,6 +504,12 @@ type Handler interface {
 	//
 	// GET /users/{id}
 	GetUser(ctx context.Context, params GetUserParams) (*User, error)
+	// GrabAlbumRelease implements grabAlbumRelease operation.
+	//
+	// Grab a release chosen in an interactive search (library managers).
+	//
+	// POST /music/albums/{id}/releases
+	GrabAlbumRelease(ctx context.Context, req *ManualGrabRequest, params GrabAlbumReleaseParams) (*QueueItem, error)
 	// GrabEpisodeRelease implements grabEpisodeRelease operation.
 	//
 	// Grab a release chosen in an interactive episode search (library managers).
@@ -489,12 +551,24 @@ type Handler interface {
 	//
 	// POST /movies/import/existing
 	ImportExistingMovies(ctx context.Context, req *ImportExistingRequest) ([]ImportExistingResult, error)
+	// ImportExistingMusic implements importExistingMusic operation.
+	//
+	// Add artists with their existing folders; files stay where they are (library managers).
+	//
+	// POST /music/import/existing
+	ImportExistingMusic(ctx context.Context, req *ImportExistingArtistsRequest) ([]ImportExistingArtistResult, error)
 	// ImportExistingSeries implements importExistingSeries operation.
 	//
 	// Add series for existing folders and register their episode files in place (library managers).
 	//
 	// POST /series/import/existing
 	ImportExistingSeries(ctx context.Context, req *ImportExistingSeriesRequest) ([]ImportExistingSeriesResult, error)
+	// InteractiveSearchAlbum implements interactiveSearchAlbum operation.
+	//
+	// Interactive search for an album - every release and the decision on it (library managers).
+	//
+	// GET /music/albums/{id}/releases
+	InteractiveSearchAlbum(ctx context.Context, params InteractiveSearchAlbumParams) (*InteractiveSearch, error)
 	// InteractiveSearchEpisode implements interactiveSearchEpisode operation.
 	//
 	// Interactive episode search - every release and the decision on it (library managers).
@@ -519,6 +593,18 @@ type Handler interface {
 	//
 	// GET /auth/apikeys
 	ListApiKeys(ctx context.Context) ([]ApiKey, error)
+	// ListArtistAlbums implements listArtistAlbums operation.
+	//
+	// An artist's albums with their status, newest first.
+	//
+	// GET /music/artists/{id}/albums
+	ListArtistAlbums(ctx context.Context, params ListArtistAlbumsParams) ([]Album, error)
+	// ListArtists implements listArtists operation.
+	//
+	// The music library's artists, one page at a time.
+	//
+	// GET /music/artists
+	ListArtists(ctx context.Context, params ListArtistsParams) (*ArtistList, error)
 	// ListBlocklist implements listBlocklist operation.
 	//
 	// Blocked releases (library managers).
@@ -579,6 +665,12 @@ type Handler interface {
 	//
 	// GET /languages
 	ListLanguages(ctx context.Context) ([]LanguageInfo, error)
+	// ListMetadataProfiles implements listMetadataProfiles operation.
+	//
+	// Metadata profiles (which album types and release statuses an artist's library holds).
+	//
+	// GET /music/metadataprofiles
+	ListMetadataProfiles(ctx context.Context) ([]MetadataProfile, error)
 	// ListMovies implements listMovies operation.
 	//
 	// Filters combine. `status`: missing (monitored, available, no file), downloaded, downloading,
@@ -665,6 +757,12 @@ type Handler interface {
 	//
 	// GET /users
 	ListUsers(ctx context.Context) ([]User, error)
+	// ListWantedAlbums implements listWantedAlbums operation.
+	//
+	// Wanted albums - monitored and released, missing tracks (missing) or below the cutoff (cutoff_unmet).
+	//
+	// GET /music/albums
+	ListWantedAlbums(ctx context.Context, params ListWantedAlbumsParams) (*AlbumList, error)
 	// ListWantedEpisodes implements listWantedEpisodes operation.
 	//
 	// Missing episodes or episodes below the cutoff, oldest air date first.
@@ -684,6 +782,12 @@ type Handler interface {
 	//
 	// POST /auth/logout
 	Logout(ctx context.Context) (*LogoutNoContent, error)
+	// LookupArtists implements lookupArtists operation.
+	//
+	// Search MusicBrainz for artists by name, or by id ("mbid:").
+	//
+	// GET /music/artists/lookup
+	LookupArtists(ctx context.Context, params LookupArtistsParams) ([]ArtistLookup, error)
 	// LookupMovies implements lookupMovies operation.
 	//
 	// Search TMDb by title ("Title 2008"), TMDb id ("tmdb:10378") or IMDb id ("tt1254207").
@@ -708,12 +812,24 @@ type Handler interface {
 	//
 	// POST /series/import/manual
 	ManualImportSeries(ctx context.Context, req *SeriesManualImportRequest) ([]SeriesManualImportResult, error)
+	// MonitorAlbums implements monitorAlbums operation.
+	//
+	// Monitor or unmonitor several albums (library managers).
+	//
+	// PUT /music/albums/monitor
+	MonitorAlbums(ctx context.Context, req *AlbumMonitorRequest) (*QueuedCount, error)
 	// MonitorEpisodes implements monitorEpisodes operation.
 	//
 	// Monitor or unmonitor several episodes (library managers).
 	//
 	// POST /episodes/monitor
 	MonitorEpisodes(ctx context.Context, req *MonitorEpisodesRequest) (*QueuedCount, error)
+	// MusicImport implements musicImport operation.
+	//
+	// Import a folder into an album (library managers).
+	//
+	// POST /music/import/manual
+	MusicImport(ctx context.Context, req *MusicImportRequest) (*MusicImportResult, error)
 	// ParseRelease implements parseRelease operation.
 	//
 	// Returns every parsed field and how each custom format did. With `profileId` the release is also
@@ -746,6 +862,18 @@ type Handler interface {
 	//
 	// GET /series/import/manual
 	PreviewManualImportSeries(ctx context.Context, params PreviewManualImportSeriesParams) ([]SeriesImportCandidate, error)
+	// PreviewMusicImport implements previewMusicImport operation.
+	//
+	// How a folder's files match an album's editions, with scores (library managers).
+	//
+	// GET /music/import/manual
+	PreviewMusicImport(ctx context.Context, params PreviewMusicImportParams) (*MusicImportPreview, error)
+	// PreviewMusicNaming implements previewMusicNaming operation.
+	//
+	// Render music naming templates with an example album.
+	//
+	// POST /settings/music/preview
+	PreviewMusicNaming(ctx context.Context, req *MusicSettings) (*MusicNamingPreview, error)
 	// PreviewNaming implements previewNaming operation.
 	//
 	// Render naming templates for an example movie.
@@ -770,6 +898,12 @@ type Handler interface {
 	//
 	// POST /settings/mediamanagement/series/preview
 	PreviewSeriesNaming(ctx context.Context, req *SeriesNamingSettings) (*SeriesNamingPreview, error)
+	// RefreshArtist implements refreshArtist operation.
+	//
+	// Albums are synced at once; editions and track lists follow in the background.
+	//
+	// POST /music/artists/{id}/refresh
+	RefreshArtist(ctx context.Context, params RefreshArtistParams) (*Artist, error)
 	// RefreshMovie implements refreshMovie operation.
 	//
 	// Reload a movie's metadata and check its file (library managers).
@@ -868,6 +1002,13 @@ type Handler interface {
 	//
 	// GET /movies/import/scan
 	ScanExistingMovies(ctx context.Context, params ScanExistingMoviesParams) ([]ExistingFolder, error)
+	// ScanExistingMusic implements scanExistingMusic operation.
+	//
+	// Tags are read from the first file of each album; artists are matched by the MusicBrainz id in the
+	// tags, else by name (one request per artist).
+	//
+	// GET /music/import/scan
+	ScanExistingMusic(ctx context.Context, params ScanExistingMusicParams) ([]ExistingArtistFolder, error)
 	// ScanExistingSeries implements scanExistingSeries operation.
 	//
 	// Folders in a series root folder that are not in the library, with provider matches (library
@@ -883,6 +1024,24 @@ type Handler interface {
 	//
 	// GET /search
 	Search(ctx context.Context, params SearchParams) (*SearchResponse, error)
+	// SearchAlbum implements searchAlbum operation.
+	//
+	// Queue an automatic search for an album now (library managers).
+	//
+	// POST /music/albums/{id}/search
+	SearchAlbum(ctx context.Context, params SearchAlbumParams) (*QueuedCount, error)
+	// SearchAlbums implements searchAlbums operation.
+	//
+	// Queue automatic searches for several albums (library managers).
+	//
+	// POST /music/albums/search
+	SearchAlbums(ctx context.Context, req *AlbumIdsRequest) (*QueuedCount, error)
+	// SearchArtist implements searchArtist operation.
+	//
+	// Queue automatic searches for every wanted album of an artist (library managers).
+	//
+	// POST /music/artists/{id}/search
+	SearchArtist(ctx context.Context, params SearchArtistParams) (*QueuedCount, error)
 	// SearchEpisodes implements searchEpisodes operation.
 	//
 	// Queue searches for episodes now (library managers).
@@ -987,6 +1146,18 @@ type Handler interface {
 	//
 	// POST /indexers/test
 	TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (*IndexerTestResult, error)
+	// UpdateAlbum implements updateAlbum operation.
+	//
+	// `releaseId` picks an edition and keeps it; 0 lets Locarr choose again.
+	//
+	// PATCH /music/albums/{id}
+	UpdateAlbum(ctx context.Context, req *AlbumUpdate, params UpdateAlbumParams) (*AlbumDetail, error)
+	// UpdateArtist implements updateArtist operation.
+	//
+	// A new metadata profile refreshes the albums; albums with files always stay.
+	//
+	// PATCH /music/artists/{id}
+	UpdateArtist(ctx context.Context, req *ArtistUpdate, params UpdateArtistParams) (*Artist, error)
 	// UpdateCustomFormat implements updateCustomFormat operation.
 	//
 	// Replace a custom format (administrators).
@@ -1048,6 +1219,12 @@ type Handler interface {
 	//
 	// PUT /settings/mediamanagement
 	UpdateMediaManagement(ctx context.Context, req *MediaManagementSettings) (*MediaManagementSettings, error)
+	// UpdateMetadataProfile implements updateMetadataProfile operation.
+	//
+	// Change a metadata profile; its artists are refreshed (administrators).
+	//
+	// PUT /music/metadataprofiles/{id}
+	UpdateMetadataProfile(ctx context.Context, req *MetadataProfileInput, params UpdateMetadataProfileParams) (*MetadataProfile, error)
 	// UpdateMetadataSettings implements updateMetadataSettings operation.
 	//
 	// A key TMDb refuses is not stored (`metadata_key_invalid`).
@@ -1060,6 +1237,12 @@ type Handler interface {
 	//
 	// PATCH /movies/{id}
 	UpdateMovie(ctx context.Context, req *MovieUpdate, params UpdateMovieParams) (*Movie, error)
+	// UpdateMusicSettings implements updateMusicSettings operation.
+	//
+	// Change music naming and import options (administrators).
+	//
+	// PUT /settings/music
+	UpdateMusicSettings(ctx context.Context, req *MusicSettings) (*MusicSettings, error)
 	// UpdateQualityDefinitions implements updateQualityDefinitions operation.
 	//
 	// All or nothing; returns every definition afterwards.

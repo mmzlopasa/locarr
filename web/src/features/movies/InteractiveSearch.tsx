@@ -31,6 +31,16 @@ export function movieReleases(movieId: number): ReleaseSource {
   };
 }
 
+/** The album's interactive search. */
+export function albumReleases(albumId: number): ReleaseSource {
+  return {
+    key: ["music", "albums", albumId, "releases"],
+    load: async () => unwrap(await api.GET("/music/albums/{id}/releases", { params: { path: { id: albumId } } })),
+    grab: async (body) => unwrap(await api.POST("/music/albums/{id}/releases", { params: { path: { id: albumId } }, body })),
+    refresh: [["music"]],
+  };
+}
+
 /** Every release the indexers have for an item, with the decision on each (nothing is grabbed until you choose). */
 export function InteractiveSearch({ source, itemRef, autoStart = false }: { source: ReleaseSource; itemRef: string; autoStart?: boolean }) {
   const { t, i18n } = useTranslation();

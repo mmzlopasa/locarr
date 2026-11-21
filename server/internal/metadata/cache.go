@@ -128,6 +128,8 @@ func (l *Limiter) Wait(ctx context.Context) error {
 type ImageCache struct {
 	Dir    string
 	Source ImageSource
+	// Sizes replaces ImageSizes for this cache (nil = ImageSizes).
+	Sizes map[string]bool
 	mu     sync.Mutex
 	// inflight de-duplicates concurrent fetches of one image.
 	inflight map[string]*sync.WaitGroup
@@ -168,7 +170,11 @@ func ETag(size, file string) string {
 
 // Get returns the image, fetching and storing it on first use.
 func (c *ImageCache) Get(ctx context.Context, size, file string) (Image, error) {
-	if !ImageSizes[size] || !imageFile.MatchString(file) {
+	sizes := c.Sizes
+	if sizes == nil {
+		sizes = ImageSizes
+	}
+	if !sizes[size] || !imageFile.MatchString(file) {
 		return Image{}, ErrBadImage
 	}
 	p := filepath.Join(c.Dir, size, file)

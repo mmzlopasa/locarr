@@ -57,8 +57,11 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Slike serija dodanih s TVDB-a (samo TMDb slike se prikazuju, D-053)
 
 ## Glazba (P6)
-- [ ] MusicBrainz izvođači, albumi, vrste izdanja (album, EP, singl), praćenje novih izdanja
-- [ ] Uvoz s prepoznavanjem po tagovima i trajanju, preimenovanje, omoti (Cover Art Archive)
+- [x] MusicBrainz izvođači (pretraga s pojašnjenjem), albumi, izdanja i pjesme, profili metapodataka (glavne i dodatne vrste, statusi izdanja), praćenje novih izdanja (svi / budući / ništa), osvježavanje koje ne briše datoteke
+- [x] Pretraga albuma (automatska, po rasporedu, RSS, ručna s odlukom), profili kvalitete „Lossless" i „Lossy", nadogradnje do granice
+- [x] Uvoz s prepoznavanjem po tagovima, brojevima, naslovima i trajanju (bodovi, više diskova, izbor izdanja), djelomični albumi po izboru, preimenovanje, omoti (iz preuzimanja ili Cover Art Archive), zamjena u koš
+- [x] Uvoz postojeće glazbene biblioteke (datoteke ostaju na mjestu), kalendar izlazaka albuma, nedostajući albumi
+- [ ] Cue slike (jedna datoteka po albumu) i pisanje tagova osim FLAC-a (D-044)
 
 ## Titlovi (P7)
 - [ ] Jezični profili po filmu/seriji, forsirani i za gluhe
@@ -84,7 +87,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Pregled prije uvoza, izvori se nikad ne mijenjaju
 
 ## Vremenska crta i nadzor (P11)
-- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5; glazba s P6)
+- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
 - [ ] „Zašto nije stiglo": jedan ekran koji objašnjava trenutno stanje svakog nedostajućeg naslova (za filmove na stranici filma od P4)
 - [ ] Aktivnost (red preuzimanja), povijest, blokirana izdanja, nedostajuće/ispod granice
 - [ ] Zdravlje sustava (indexeri, klijenti, disk, putanje, prava), logovi, zadaci
