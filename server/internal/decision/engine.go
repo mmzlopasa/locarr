@@ -44,6 +44,11 @@ const (
 	CodeIndexerLimited    = "indexer_limited"
 	CodeProtocolDisabled  = "protocol_disabled"
 	CodeDelayed           = "delayed"
+	// CodeSeasonPack: a season pack offered to a search for single episodes.
+	CodeSeasonPack = "season_pack_not_wanted"
+	// CodeEpisodeNotWanted: the release holds episodes, none of which is wanted
+	// (they have files that meet the cutoff, or are not monitored).
+	CodeEpisodeNotWanted = "episode_not_wanted"
 )
 
 // Codes lists every rejection code (for documentation and clients).
@@ -51,7 +56,7 @@ var Codes = []string{CodeParseFailed, CodeWrongKind, CodeWrongIDs, CodeWrongTitl
 	CodeWrongEpisode, CodeQualityNotAllowed, CodeUpgradesDisabled, CodeCutoffMet, CodeNotAnUpgrade, CodeScoreTooLow,
 	CodeSizeTooSmall, CodeSizeTooLarge, CodeLanguage, CodeMustContain, CodeMustNotContain, CodeBlocklisted, CodeSeeders,
 	CodeTooOld, CodeTooNew, CodeSample, CodeHardcodedSubs, CodeThreeD, CodeIndexerDisabled, CodeIndexerLimited,
-	CodeProtocolDisabled, CodeDelayed}
+	CodeProtocolDisabled, CodeDelayed, CodeSeasonPack, CodeEpisodeNotWanted}
 
 // Typical runtimes when the wanted item does not say.
 var defaultRuntime = map[quality.Kind]int{quality.Movies: 110, quality.Series: 45, quality.Music: 45}
@@ -100,6 +105,14 @@ func Evaluate(goctx context.Context, ctx Context, cands []Candidate) Report {
 	for i := range cands {
 		rep.Decisions = append(rep.Decisions, EvaluateOne(goctx, &ctx, cands[i]))
 	}
+	rep.Finalize()
+	return rep
+}
+
+// Finalize sorts the decisions (accepted in rank order, then pending, then
+// rejected), ranks the accepted ones and counts them. Evaluate calls it;
+// callers that add rejections afterwards (Reject) call it again.
+func (rep *Report) Finalize() {
 	order := map[string]int{StatusAccepted: 0, StatusPending: 1, StatusRejected: 2}
 	sort.SliceStable(rep.Decisions, func(i, j int) bool {
 		a, b := &rep.Decisions[i], &rep.Decisions[j]
@@ -111,8 +124,10 @@ func Evaluate(goctx context.Context, ctx Context, cands []Candidate) Report {
 		}
 		return better(a.RankKey, b.RankKey)
 	})
+	rep.Accepted, rep.Pending, rep.Rejected, rep.BestGUID = 0, 0, 0, ""
 	for i := range rep.Decisions {
 		d := &rep.Decisions[i]
+		d.Rank = 0
 		switch d.Status {
 		case StatusAccepted:
 			rep.Accepted++
@@ -126,7 +141,17 @@ func Evaluate(goctx context.Context, ctx Context, cands []Candidate) Report {
 	if b := rep.Best(); b != nil {
 		rep.BestGUID = b.Candidate.GUID
 	}
-	return rep
+}
+
+// Reject adds a rejection to a decision and updates its status (call
+// Finalize after the last one).
+func (d *Decision) Reject(r Rejection) {
+	d.Rejections = append(d.Rejections, r)
+	if !r.Temporary {
+		d.Status = StatusRejected
+	} else if d.Status == StatusAccepted {
+		d.Status = StatusPending
+	}
 }
 
 // EvaluateOne decides on one candidate (no rank).

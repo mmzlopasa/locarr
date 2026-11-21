@@ -96,6 +96,22 @@ export type NamingPreview = Schemas["NamingPreview"];
 export type MetadataSettings = Schemas["MetadataSettings"];
 export type TransferMode = Schemas["TransferMode"];
 export type RenameItem = Schemas["RenameItem"];
+export type Series = Schemas["Series"];
+export type SeriesDetail = Schemas["SeriesDetail"];
+export type SeriesList = Schemas["SeriesList"];
+export type SeriesLookup = Schemas["SeriesLookup"];
+export type SeriesStatus = Schemas["SeriesStatus"];
+export type SeriesType = Schemas["SeriesType"];
+export type SeriesStats = Schemas["SeriesStats"];
+export type SeasonInfo = Schemas["SeasonInfo"];
+export type Episode = Schemas["Episode"];
+export type EpisodeFile = Schemas["EpisodeFile"];
+export type MonitorOption = Schemas["MonitorOption"];
+export type WantedEpisode = Schemas["WantedEpisodeItem"];
+export type SeriesNamingSettings = Schemas["SeriesNamingSettings"];
+export type SeriesNamingPreview = Schemas["SeriesNamingPreview"];
+export type ExistingSeriesFolder = Schemas["ExistingSeriesFolder"];
+export type SeriesImportCandidate = Schemas["SeriesImportCandidate"];
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -192,6 +208,11 @@ export const queryKeys = {
   indexerSettings: ["indexers", "settings"] as const,
   movies: ["movies"] as const,
   movie: (id: number) => ["movies", id] as const,
+  seriesList: ["series"] as const,
+  series: (id: number) => ["series", id] as const,
+  seriesEpisodes: (id: number) => ["series", id, "episodes"] as const,
+  wantedEpisodes: (kind: string, offset: number) => ["episodes", "wanted", kind, offset] as const,
+  seriesNaming: ["settings", "mediamanagement", "series"] as const,
   timeline: (ref: string) => ["timeline", ref] as const,
   calendar: (start: string, end: string) => ["calendar", start, end] as const,
   calendarToken: ["calendar", "token"] as const,

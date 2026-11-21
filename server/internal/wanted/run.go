@@ -187,7 +187,7 @@ func (s *Service) rssItem(ctx context.Context, ref library.Ref, releases []index
 	if err != nil {
 		return false, err
 	}
-	if !it.Monitored || !it.Available || (it.HasFile && it.CutoffMet) || s.activeDownload(ctx, ref.String()) {
+	if !it.Monitored || !it.Available || (it.HasFile && it.CutoffMet) || it.Busy || s.activeDownload(ctx, ref.String()) {
 		return false, nil
 	}
 	ev, err := s.evaluate(ctx, it, decision.ModeRSS, releases)
@@ -199,7 +199,7 @@ func (s *Service) rssItem(ctx context.Context, ref library.Ref, releases []index
 	}
 	sum := timeline.Summarize(ev.Report)
 	s.record(ctx, ref.String(), timeline.TypeDecision, decisionMessage(sum, "rss"), map[string]any{"summary": sum, "reason": "rss"})
-	d, err := s.act(ctx, it, &ev)
+	d, _, err := s.act(ctx, it, &ev)
 	return d != nil, err
 }
 
@@ -236,6 +236,10 @@ func (s *Service) HandleDownloadEvent(ctx context.Context, ev downloads.Event) {
 	if retry {
 		if err := s.Enqueue(ctx, ref, "retry"); err != nil {
 			s.Log.Warn("retry search", "err", err)
+		}
+		// Items the failed download covered (the episodes of a pack) are due again too.
+		for _, c := range library.CoversFromJSON(d.ItemRef) {
+			s.ResetBackoff(ctx, c)
 		}
 	}
 }
@@ -281,8 +285,16 @@ func (s *Service) Grab(ctx context.Context, ref library.Ref, g ManualGrab) (down
 		return downloads.Download{}, err
 	}
 	id := g.IndexerID
+	itemRef := ref.JSON()
+	if src, err := s.source(ref.Kind); err == nil {
+		if m, ok := src.(Multi); ok {
+			if r, covers := m.Covers(ctx, it, &decision.Decision{Release: parser.Parse(g.Title)}); !r.IsZero() {
+				itemRef = r.JSONWith(covers)
+			}
+		}
+	}
 	req := downloads.GrabRequest{DownloadToken: g.DownloadToken, DownloadURL: g.MagnetURL, Protocol: downloaders.Protocol(g.Protocol),
-		Title: g.Title, GUID: g.GUID, ItemRef: ref.JSON(), MediaKind: it.MediaKind, PublishedAt: g.PublishedAt}
+		Title: g.Title, GUID: g.GUID, ItemRef: itemRef, MediaKind: it.MediaKind, PublishedAt: g.PublishedAt}
 	if id > 0 {
 		req.IndexerID = &id
 	}

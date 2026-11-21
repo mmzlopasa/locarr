@@ -33,6 +33,12 @@ type Handler interface {
 	//
 	// POST /movies/collections/{tmdbId}
 	AddMovieCollection(ctx context.Context, req *AddOptions, params AddMovieCollectionParams) ([]Movie, error)
+	// AddSeries implements addSeries operation.
+	//
+	// Add a series from TMDb or TVDB with its seasons and episodes (library managers).
+	//
+	// POST /series
+	AddSeries(ctx context.Context, req *AddSeriesRequest) (*Series, error)
 	// BrowseFilesystem implements browseFilesystem operation.
 	//
 	// Without `path`, lists the data roots themselves.
@@ -250,6 +256,12 @@ type Handler interface {
 	//
 	// DELETE /rootfolders/{id}
 	DeleteRootFolder(ctx context.Context, params DeleteRootFolderParams) error
+	// DeleteSeries implements deleteSeries operation.
+	//
+	// With `deleteFiles` the series folder goes to the recycle bin; files are never deleted outright.
+	//
+	// DELETE /series/{id}
+	DeleteSeries(ctx context.Context, params DeleteSeriesParams) error
 	// DeleteUser implements deleteUser operation.
 	//
 	// Not the caller's own account and not the last enabled administrator.
@@ -316,7 +328,7 @@ type Handler interface {
 	GetArtist(ctx context.Context, params GetArtistParams) (*Artist, error)
 	// GetCalendar implements getCalendar operation.
 	//
-	// Movie dates (in cinemas, digital, physical) between two days.
+	// Movie dates (in cinemas, digital, physical) and episode air dates between two days.
 	//
 	// GET /calendar
 	GetCalendar(ctx context.Context, params GetCalendarParams) ([]CalendarEntry, error)
@@ -362,6 +374,12 @@ type Handler interface {
 	//
 	// GET /downloadclients/settings
 	GetDownloadSettings(ctx context.Context) (*DownloadSettings, error)
+	// GetEpisode implements getEpisode operation.
+	//
+	// One episode.
+	//
+	// GET /episodes/{id}
+	GetEpisode(ctx context.Context, params GetEpisodeParams) (*Episode, error)
 	// GetIndexer implements getIndexer operation.
 	//
 	// One indexer (administrators).
@@ -436,6 +454,18 @@ type Handler interface {
 	//
 	// GET /recyclebin
 	GetRecycleBin(ctx context.Context) (*RecycleBin, error)
+	// GetSeries implements getSeries operation.
+	//
+	// One series with its seasons.
+	//
+	// GET /series/{id}
+	GetSeries(ctx context.Context, params GetSeriesParams) (*SeriesDetail, error)
+	// GetSeriesNaming implements getSeriesNaming operation.
+	//
+	// Series naming and season pack settings (administrators).
+	//
+	// GET /settings/mediamanagement/series
+	GetSeriesNaming(ctx context.Context) (*SeriesNamingSettings, error)
 	// GetSettings implements getSettings operation.
 	//
 	// Secret fields only say whether they are set; their values never leave the server.
@@ -480,6 +510,12 @@ type Handler interface {
 	//
 	// POST /music/albums/{id}/releases
 	GrabAlbumRelease(ctx context.Context, req *ManualGrabRequest, params GrabAlbumReleaseParams) (*QueueItem, error)
+	// GrabEpisodeRelease implements grabEpisodeRelease operation.
+	//
+	// Grab a release chosen in an interactive episode search (library managers).
+	//
+	// POST /episodes/{id}/releases
+	GrabEpisodeRelease(ctx context.Context, req *ManualGrabRequest, params GrabEpisodeReleaseParams) (*QueueItem, error)
 	// GrabMovieRelease implements grabMovieRelease operation.
 	//
 	// Grab a release chosen in an interactive search (library managers).
@@ -495,6 +531,12 @@ type Handler interface {
 	//
 	// POST /queue/grab
 	GrabRelease(ctx context.Context, req *GrabRequest) (*QueueItem, error)
+	// GrabSeasonRelease implements grabSeasonRelease operation.
+	//
+	// Grab a release chosen in an interactive season search (library managers).
+	//
+	// POST /series/{id}/seasons/{number}/releases
+	GrabSeasonRelease(ctx context.Context, req *ManualGrabRequest, params GrabSeasonReleaseParams) (*QueueItem, error)
 	// ImportCustomFormats implements importCustomFormats operation.
 	//
 	// Accepts one format object or an array in the commonly shared shape (`name`, `specifications[]` with
@@ -515,18 +557,36 @@ type Handler interface {
 	//
 	// POST /music/import/existing
 	ImportExistingMusic(ctx context.Context, req *ImportExistingArtistsRequest) ([]ImportExistingArtistResult, error)
+	// ImportExistingSeries implements importExistingSeries operation.
+	//
+	// Add series for existing folders and register their episode files in place (library managers).
+	//
+	// POST /series/import/existing
+	ImportExistingSeries(ctx context.Context, req *ImportExistingSeriesRequest) ([]ImportExistingSeriesResult, error)
 	// InteractiveSearchAlbum implements interactiveSearchAlbum operation.
 	//
 	// Interactive search for an album - every release and the decision on it (library managers).
 	//
 	// GET /music/albums/{id}/releases
 	InteractiveSearchAlbum(ctx context.Context, params InteractiveSearchAlbumParams) (*InteractiveSearch, error)
+	// InteractiveSearchEpisode implements interactiveSearchEpisode operation.
+	//
+	// Interactive episode search - every release and the decision on it (library managers).
+	//
+	// GET /episodes/{id}/releases
+	InteractiveSearchEpisode(ctx context.Context, params InteractiveSearchEpisodeParams) (*InteractiveSearch, error)
 	// InteractiveSearchMovie implements interactiveSearchMovie operation.
 	//
 	// Interactive search - every release and the decision on it (library managers).
 	//
 	// GET /movies/{id}/releases
 	InteractiveSearchMovie(ctx context.Context, params InteractiveSearchMovieParams) (*InteractiveSearch, error)
+	// InteractiveSearchSeason implements interactiveSearchSeason operation.
+	//
+	// Interactive season search - every release and the decision on it (library managers).
+	//
+	// GET /series/{id}/seasons/{number}/releases
+	InteractiveSearchSeason(ctx context.Context, params InteractiveSearchSeasonParams) (*InteractiveSearch, error)
 	// ListApiKeys implements listApiKeys operation.
 	//
 	// Own API keys.
@@ -666,6 +726,19 @@ type Handler interface {
 	//
 	// GET /search/log
 	ListSearchLog(ctx context.Context, params ListSearchLogParams) ([]SearchLogEntry, error)
+	// ListSeries implements listSeries operation.
+	//
+	// Filters combine. `status` is the series' own status (continuing, ended, upcoming); `missing` keeps
+	// series with monitored, aired episodes that have no file.
+	//
+	// GET /series
+	ListSeries(ctx context.Context, params ListSeriesParams) (*SeriesList, error)
+	// ListSeriesEpisodes implements listSeriesEpisodes operation.
+	//
+	// Every episode of a series, in order.
+	//
+	// GET /series/{id}/episodes
+	ListSeriesEpisodes(ctx context.Context, params ListSeriesEpisodesParams) ([]Episode, error)
 	// ListSessions implements listSessions operation.
 	//
 	// Own signed-in devices.
@@ -690,6 +763,12 @@ type Handler interface {
 	//
 	// GET /music/albums
 	ListWantedAlbums(ctx context.Context, params ListWantedAlbumsParams) (*AlbumList, error)
+	// ListWantedEpisodes implements listWantedEpisodes operation.
+	//
+	// Missing episodes or episodes below the cutoff, oldest air date first.
+	//
+	// GET /episodes/wanted
+	ListWantedEpisodes(ctx context.Context, params ListWantedEpisodesParams) (*WantedEpisodeList, error)
 	// Login implements login operation.
 	//
 	// When the account has two-factor authentication on and neither `totpCode` nor `recoveryCode` is
@@ -715,18 +794,36 @@ type Handler interface {
 	//
 	// GET /movies/lookup
 	LookupMovies(ctx context.Context, params LookupMoviesParams) ([]MovieLookup, error)
+	// LookupSeries implements lookupSeries operation.
+	//
+	// Search the series provider by title, TMDb id ("tmdb:1399"), TVDB id ("tvdb:121361") or IMDb id.
+	//
+	// GET /series/lookup
+	LookupSeries(ctx context.Context, params LookupSeriesParams) ([]SeriesLookup, error)
 	// ManualImport implements manualImport operation.
 	//
 	// Import chosen files into movies (library managers).
 	//
 	// POST /movies/import/manual
 	ManualImport(ctx context.Context, req *ManualImportRequest) ([]ManualImportResult, error)
+	// ManualImportSeries implements manualImportSeries operation.
+	//
+	// Import chosen files into episodes (library managers).
+	//
+	// POST /series/import/manual
+	ManualImportSeries(ctx context.Context, req *SeriesManualImportRequest) ([]SeriesManualImportResult, error)
 	// MonitorAlbums implements monitorAlbums operation.
 	//
 	// Monitor or unmonitor several albums (library managers).
 	//
 	// PUT /music/albums/monitor
 	MonitorAlbums(ctx context.Context, req *AlbumMonitorRequest) (*QueuedCount, error)
+	// MonitorEpisodes implements monitorEpisodes operation.
+	//
+	// Monitor or unmonitor several episodes (library managers).
+	//
+	// POST /episodes/monitor
+	MonitorEpisodes(ctx context.Context, req *MonitorEpisodesRequest) (*QueuedCount, error)
 	// MusicImport implements musicImport operation.
 	//
 	// Import a folder into an album (library managers).
@@ -759,6 +856,12 @@ type Handler interface {
 	//
 	// GET /movies/import/manual
 	PreviewManualImport(ctx context.Context, params PreviewManualImportParams) ([]ManualImportCandidate, error)
+	// PreviewManualImportSeries implements previewManualImportSeries operation.
+	//
+	// Preview importing the episode files of a folder (library managers).
+	//
+	// GET /series/import/manual
+	PreviewManualImportSeries(ctx context.Context, params PreviewManualImportSeriesParams) ([]SeriesImportCandidate, error)
 	// PreviewMusicImport implements previewMusicImport operation.
 	//
 	// How a folder's files match an album's editions, with scores (library managers).
@@ -783,6 +886,18 @@ type Handler interface {
 	//
 	// POST /movies/rename/preview
 	PreviewRenameMovies(ctx context.Context, req *MovieIdsRequest) ([]RenameItem, error)
+	// PreviewRenameSeries implements previewRenameSeries operation.
+	//
+	// Show which episode files a rename would change.
+	//
+	// POST /series/rename/preview
+	PreviewRenameSeries(ctx context.Context, req *SeriesIdsRequest) ([]SeriesRenameItem, error)
+	// PreviewSeriesNaming implements previewSeriesNaming operation.
+	//
+	// Render the series templates for standard, multi-episode, daily and anime examples.
+	//
+	// POST /settings/mediamanagement/series/preview
+	PreviewSeriesNaming(ctx context.Context, req *SeriesNamingSettings) (*SeriesNamingPreview, error)
 	// RefreshArtist implements refreshArtist operation.
 	//
 	// Albums are synced at once; editions and track lists follow in the background.
@@ -801,6 +916,12 @@ type Handler interface {
 	//
 	// POST /queue/refresh
 	RefreshQueue(ctx context.Context) error
+	// RefreshSeries implements refreshSeries operation.
+	//
+	// Reload a series from its provider and merge seasons and episodes (library managers).
+	//
+	// POST /series/{id}/refresh
+	RefreshSeries(ctx context.Context, params RefreshSeriesParams) (*Series, error)
 	// RegenerateRecoveryCodes implements regenerateRecoveryCodes operation.
 	//
 	// Replace the recovery codes.
@@ -820,6 +941,13 @@ type Handler interface {
 	//
 	// POST /movies/rename
 	RenameMovies(ctx context.Context, req *MovieIdsRequest) ([]RenameItem, error)
+	// RenameSeries implements renameSeries operation.
+	//
+	// An empty list renames every series. Files stay inside their series folder; nothing is overwritten or
+	// deleted.
+	//
+	// POST /series/rename
+	RenameSeries(ctx context.Context, req *SeriesIdsRequest) ([]SeriesRenameItem, error)
 	// ReorderDelayProfiles implements reorderDelayProfiles operation.
 	//
 	// Set the evaluation order of the non-default delay profiles (administrators).
@@ -881,6 +1009,13 @@ type Handler interface {
 	//
 	// GET /music/import/scan
 	ScanExistingMusic(ctx context.Context, params ScanExistingMusicParams) ([]ExistingArtistFolder, error)
+	// ScanExistingSeries implements scanExistingSeries operation.
+	//
+	// Folders in a series root folder that are not in the library, with provider matches (library
+	// managers).
+	//
+	// GET /series/import/scan
+	ScanExistingSeries(ctx context.Context, params ScanExistingSeriesParams) ([]ExistingSeriesFolder, error)
 	// Search implements search operation.
 	//
 	// Indexers are asked in parallel, each with its own timeout and request limit. Results are
@@ -907,6 +1042,12 @@ type Handler interface {
 	//
 	// POST /music/artists/{id}/search
 	SearchArtist(ctx context.Context, params SearchArtistParams) (*QueuedCount, error)
+	// SearchEpisodes implements searchEpisodes operation.
+	//
+	// Queue searches for episodes now (library managers).
+	//
+	// POST /episodes/search
+	SearchEpisodes(ctx context.Context, req *EpisodeIdsRequest) (*QueuedCount, error)
 	// SearchMovie implements searchMovie operation.
 	//
 	// The search, the decision and any grab appear on the movie's timeline.
@@ -919,6 +1060,24 @@ type Handler interface {
 	//
 	// POST /movies/search
 	SearchMovies(ctx context.Context, req *MovieIdsRequest) (*QueuedCount, error)
+	// SearchSeason implements searchSeason operation.
+	//
+	// Queue a season search now (season packs preferred) (library managers).
+	//
+	// POST /series/{id}/seasons/{number}/search
+	SearchSeason(ctx context.Context, params SearchSeasonParams) (*QueuedCount, error)
+	// SearchSeries implements searchSeries operation.
+	//
+	// Queue searches for every wanted season and episode of a series (library managers).
+	//
+	// POST /series/{id}/search
+	SearchSeries(ctx context.Context, params SearchSeriesParams) (*QueuedCount, error)
+	// SearchSeriesBulk implements searchSeriesBulk operation.
+	//
+	// Queue searches for every wanted episode of several series (library managers).
+	//
+	// POST /series/search
+	SearchSeriesBulk(ctx context.Context, req *SeriesIdsRequest) (*QueuedCount, error)
 	// SearchStream implements searchStream operation.
 	//
 	// Same parameters as `/search`. The answer is a Server-Sent Events stream (`text/event-stream`). Each
@@ -1023,6 +1182,12 @@ type Handler interface {
 	//
 	// PATCH /downloadclients/settings
 	UpdateDownloadSettings(ctx context.Context, req *UpdateDownloadSettings) (*DownloadSettings, error)
+	// UpdateEpisode implements updateEpisode operation.
+	//
+	// Monitor an episode or set its scene numbering (library managers).
+	//
+	// PATCH /episodes/{id}
+	UpdateEpisode(ctx context.Context, req *EpisodeUpdate, params UpdateEpisodeParams) (*Episode, error)
 	// UpdateImportList implements updateImportList operation.
 	//
 	// Change an import list (administrators).
@@ -1102,6 +1267,25 @@ type Handler interface {
 	//
 	// PUT /remotepathmappings/{id}
 	UpdateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput, params UpdateRemotePathMappingParams) (*RemotePathMapping, error)
+	// UpdateSeason implements updateSeason operation.
+	//
+	// Monitor or unmonitor a season and all its episodes (library managers).
+	//
+	// PATCH /series/{id}/seasons/{number}
+	UpdateSeason(ctx context.Context, req *SeasonUpdate, params UpdateSeasonParams) (*SeasonInfo, error)
+	// UpdateSeries implements updateSeries operation.
+	//
+	// `monitor` re-applies a monitor option to every episode (specials keep their own setting). The folder
+	// can change only while the series has no files (`has_files`).
+	//
+	// PATCH /series/{id}
+	UpdateSeries(ctx context.Context, req *SeriesUpdate, params UpdateSeriesParams) (*Series, error)
+	// UpdateSeriesNaming implements updateSeriesNaming operation.
+	//
+	// Change series naming and season pack settings (administrators).
+	//
+	// PUT /settings/mediamanagement/series
+	UpdateSeriesNaming(ctx context.Context, req *SeriesNamingSettings) (*SeriesNamingSettings, error)
 	// UpdateSettings implements updateSettings operation.
 	//
 	// Change server settings (administrators).

@@ -1801,6 +1801,388 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The series library, one page at a time
+         * @description Filters combine. `status` is the series' own status (continuing, ended, upcoming);
+         *     `missing` keeps series with monitored, aired episodes that have no file.
+         */
+        get: operations["listSeries"];
+        put?: never;
+        /** Add a series from TMDb or TVDB with its seasons and episodes (library managers) */
+        post: operations["addSeries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search the series provider by title, TMDb id ("tmdb:1399"), TVDB id ("tvdb:121361") or IMDb id */
+        get: operations["lookupSeries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue searches for every wanted episode of several series (library managers) */
+        post: operations["searchSeriesBulk"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/rename": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rename episode files by the naming templates (library managers)
+         * @description An empty list renames every series. Files stay inside their series folder; nothing is overwritten or deleted.
+         */
+        post: operations["renameSeries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/rename/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Show which episode files a rename would change */
+        post: operations["previewRenameSeries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/import/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Folders in a series root folder that are not in the library, with provider matches (library managers) */
+        get: operations["scanExistingSeries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/import/existing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add series for existing folders and register their episode files in place (library managers) */
+        post: operations["importExistingSeries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/import/manual": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Preview importing the episode files of a folder (library managers) */
+        get: operations["previewManualImportSeries"];
+        put?: never;
+        /** Import chosen files into episodes (library managers) */
+        post: operations["manualImportSeries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** One series with its seasons */
+        get: operations["getSeries"];
+        put?: never;
+        post?: never;
+        /**
+         * Remove a series (library managers)
+         * @description With `deleteFiles` the series folder goes to the recycle bin; files are never deleted outright.
+         */
+        delete: operations["deleteSeries"];
+        options?: never;
+        head?: never;
+        /**
+         * Change how a series is managed (library managers)
+         * @description `monitor` re-applies a monitor option to every episode (specials keep their own setting).
+         *     The folder can change only while the series has no files (`has_files`).
+         */
+        patch: operations["updateSeries"];
+        trace?: never;
+    };
+    "/series/{id}/episodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** Every episode of a series, in order */
+        get: operations["listSeriesEpisodes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/{id}/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reload a series from its provider and merge seasons and episodes (library managers) */
+        post: operations["refreshSeries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/{id}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue searches for every wanted season and episode of a series (library managers) */
+        post: operations["searchSeries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/{id}/seasons/{number}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                number: number;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Monitor or unmonitor a season and all its episodes (library managers) */
+        patch: operations["updateSeason"];
+        trace?: never;
+    };
+    "/series/{id}/seasons/{number}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                number: number;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue a season search now (season packs preferred) (library managers) */
+        post: operations["searchSeason"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/series/{id}/seasons/{number}/releases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                number: number;
+            };
+            cookie?: never;
+        };
+        /** Interactive season search - every release and the decision on it (library managers) */
+        get: operations["interactiveSearchSeason"];
+        put?: never;
+        /** Grab a release chosen in an interactive season search (library managers) */
+        post: operations["grabSeasonRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/episodes/wanted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Missing episodes or episodes below the cutoff, oldest air date first */
+        get: operations["listWantedEpisodes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/episodes/monitor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Monitor or unmonitor several episodes (library managers) */
+        post: operations["monitorEpisodes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/episodes/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue searches for episodes now (library managers) */
+        post: operations["searchEpisodes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/episodes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** One episode */
+        get: operations["getEpisode"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Monitor an episode or set its scene numbering (library managers) */
+        patch: operations["updateEpisode"];
+        trace?: never;
+    };
+    "/episodes/{id}/releases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** Interactive episode search - every release and the decision on it (library managers) */
+        get: operations["interactiveSearchEpisode"];
+        put?: never;
+        /** Grab a release chosen in an interactive episode search (library managers) */
+        post: operations["grabEpisodeRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/timeline": {
         parameters: {
             query?: never;
@@ -1847,7 +2229,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Movie dates (in cinemas, digital, physical) between two days */
+        /** Movie dates (in cinemas, digital, physical) and episode air dates between two days */
         get: operations["getCalendar"];
         put?: never;
         post?: never;
@@ -1984,6 +2366,41 @@ export interface paths {
         /** Change naming, transfer mode, recycle bin and permissions (administrators) */
         put: operations["updateMediaManagement"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/mediamanagement/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Series naming and season pack settings (administrators) */
+        get: operations["getSeriesNaming"];
+        /** Change series naming and season pack settings (administrators) */
+        put: operations["updateSeriesNaming"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/mediamanagement/series/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Render the series templates for standard, multi-episode, daily and anime examples */
+        post: operations["previewSeriesNaming"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4132,13 +4549,25 @@ export interface components {
             explanation: components["schemas"]["Explanation"];
             events: components["schemas"]["TimelineEvent"][];
         };
+        /** @description A movie date (movieId set) or an episode airing (kind episode; seriesId and episodeId set). */
         CalendarEntry: {
             /** Format: date */
             date: string;
             /** @enum {string} */
-            kind: "in_cinemas" | "digital" | "physical";
+            kind: "in_cinemas" | "digital" | "physical" | "episode";
             /** Format: int64 */
-            movieId: number;
+            movieId?: number;
+            /** Format: int64 */
+            seriesId?: number;
+            /** Format: int64 */
+            episodeId?: number;
+            seasonNumber?: number;
+            episodeNumber?: number;
+            episodeTitle?: string;
+            /** Format: date-time */
+            airDateUtc?: string;
+            network?: string;
+            /** @description The movie or series title. */
             title: string;
             year: number;
             hasFile: boolean;
@@ -4207,10 +4636,23 @@ export interface components {
             tmdbApiKey: components["schemas"]["SecretState"];
             language: string;
             region: string;
+            tvdbApiKey: components["schemas"]["SecretState"];
+            tvdbPin: components["schemas"]["SecretState"];
+            /**
+             * @description Who answers series lookups (tvdb needs a TVDB key).
+             * @enum {string}
+             */
+            seriesProvider: "tmdb" | "tvdb";
         };
         MetadataSettingsInput: {
             /** @description Write-only. v3 API key or v4 read access token; empty removes it. */
             tmdbApiKey?: string;
+            /** @description Write-only TVDB v4 project key; empty removes it (and the PIN). */
+            tvdbApiKey?: string;
+            /** @description Write-only subscriber PIN for user-supported TVDB keys. */
+            tvdbPin?: string;
+            /** @enum {string} */
+            seriesProvider?: "tmdb" | "tvdb";
             language?: string;
             region?: string;
         };
@@ -4591,6 +5033,360 @@ export interface components {
             /** @description Path of a track on disc 2 inside the album folder. */
             multiDiscTrack: string;
             errors?: {
+                [key: string]: string;
+            };
+            tokens: components["schemas"]["NamingToken"][];
+        };
+        /** @enum {string} */
+        SeriesStatus: "continuing" | "ended" | "upcoming";
+        /**
+         * @description standard (S01E01), daily (by air date) or anime (absolute numbers).
+         * @enum {string}
+         */
+        SeriesType: "standard" | "daily" | "anime";
+        /**
+         * @description Which episodes to monitor when adding (specials are never monitored by an option).
+         * @enum {string}
+         */
+        MonitorOption: "all" | "future" | "missing" | "existing" | "first_season" | "latest_season" | "pilot" | "none";
+        /** @enum {string} */
+        MonitorNewSeasons: "all" | "none";
+        SeriesStats: {
+            seasonCount: number;
+            /** @description Episodes outside specials. */
+            episodeCount: number;
+            episodeFileCount: number;
+            monitoredEpisodeCount: number;
+            /** @description Monitored episodes that have aired and have no file. */
+            missingCount: number;
+            /** Format: int64 */
+            sizeOnDisk: number;
+            /** Format: date-time */
+            nextAiring?: string;
+            /** Format: date-time */
+            previousAiring?: string;
+        };
+        Series: {
+            /** Format: int64 */
+            id: number;
+            /** @description Timeline reference, e.g. "series:7". */
+            itemRef: string;
+            /** Format: int64 */
+            tmdbId: number;
+            /** Format: int64 */
+            tvdbId: number;
+            imdbId: string;
+            /** Format: int64 */
+            tvmazeId: number;
+            /** @enum {string} */
+            metadataSource: "tmdb" | "tvdb";
+            title: string;
+            originalTitle: string;
+            originalLanguage: string;
+            alternateTitles: string[];
+            year: number;
+            overview: string;
+            status: components["schemas"]["SeriesStatus"];
+            network: string;
+            /** @description The network's IANA time zone. */
+            timeZone: string;
+            /** @description HH:MM in the network's zone; empty = unknown (20:00 assumed, D-046). */
+            airTime: string;
+            runtime: number;
+            genres: string[];
+            certification: string;
+            /** Format: double */
+            rating: number;
+            votes: number;
+            firstAired: string;
+            lastAired: string;
+            seriesType: components["schemas"]["SeriesType"];
+            seasonFolder: boolean;
+            monitorNewSeasons: components["schemas"]["MonitorNewSeasons"];
+            /** @description Image file name for /images/tmdb/{size}/{file}. */
+            poster: string;
+            backdrop: string;
+            monitored: boolean;
+            /** Format: int64 */
+            qualityProfileId: number;
+            /** Format: int64 */
+            rootFolderId?: number;
+            path: string;
+            tags: string[];
+            /** Format: date-time */
+            addedAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            refreshedAt?: string;
+            stats: components["schemas"]["SeriesStats"];
+            /** @description Downloads under way for its episodes. */
+            downloading: number;
+        };
+        SeasonInfo: {
+            /** Format: int64 */
+            id: number;
+            itemRef: string;
+            number: number;
+            monitored: boolean;
+            title: string;
+            overview: string;
+            poster: string;
+            airDate: string;
+            stats: components["schemas"]["SeriesStats"];
+        };
+        SeriesDetail: components["schemas"]["Series"] & {
+            seasons: components["schemas"]["SeasonInfo"][];
+        };
+        EpisodeFile: {
+            /** Format: int64 */
+            id: number;
+            path: string;
+            /** Format: int64 */
+            sizeBytes: number;
+            quality: components["schemas"]["Quality"];
+            revision: number;
+            customFormats: string[];
+            score: number;
+            releaseGroup: string;
+            languages: string[];
+            mediaInfo: components["schemas"]["MediaInfo"];
+            sceneName: string;
+            /** Format: int64 */
+            downloadId?: number;
+            /** Format: date-time */
+            addedAt: string;
+        };
+        Episode: {
+            /** Format: int64 */
+            id: number;
+            /** @description Timeline reference, e.g. "episode:42". */
+            itemRef: string;
+            /** Format: int64 */
+            seriesId: number;
+            /** Format: int64 */
+            seasonId: number;
+            seasonNumber: number;
+            episodeNumber: number;
+            absoluteNumber: number;
+            title: string;
+            overview: string;
+            /** @description YYYY-MM-DD in the network's time zone; empty = not announced. */
+            airDate: string;
+            /** Format: date-time */
+            airDateUtc?: string;
+            runtime: number;
+            monitored: boolean;
+            aired: boolean;
+            /** @description The provider no longer lists it; kept because it has a file. */
+            removed: boolean;
+            sceneSeason?: number;
+            sceneEpisode?: number;
+            sceneAbsolute?: number;
+            /** @enum {string} */
+            wanted: "missing" | "upgrade" | "none";
+            cutoffMet: boolean;
+            file?: components["schemas"]["EpisodeFile"];
+            download?: components["schemas"]["MovieDownload"];
+        };
+        SeriesList: {
+            total: number;
+            items: components["schemas"]["Series"][];
+        };
+        SeriesLookup: {
+            /** Format: int64 */
+            tmdbId: number;
+            /** Format: int64 */
+            tvdbId: number;
+            /** @enum {string} */
+            source: "tmdb" | "tvdb";
+            title: string;
+            originalTitle: string;
+            year: number;
+            firstAired: string;
+            overview: string;
+            poster: string;
+            backdrop: string;
+            network: string;
+            status: string;
+            /** Format: double */
+            rating: number;
+            /**
+             * Format: int64
+             * @description Set when the series is in the library.
+             */
+            seriesId?: number;
+        };
+        SeriesAddOptions: {
+            /** Format: int64 */
+            rootFolderId: number;
+            /** Format: int64 */
+            qualityProfileId: number;
+            seriesType?: components["schemas"]["SeriesType"];
+            /** @default true */
+            seasonFolder: boolean;
+            monitor?: components["schemas"]["MonitorOption"];
+            monitorNewSeasons?: components["schemas"]["MonitorNewSeasons"];
+            /** @default true */
+            monitored: boolean;
+            tags?: string[];
+            /** @default false */
+            searchOnAdd: boolean;
+        };
+        AddSeriesRequest: components["schemas"]["SeriesAddOptions"] & {
+            /** Format: int64 */
+            tmdbId?: number;
+            /** Format: int64 */
+            tvdbId?: number;
+            /** @description Folder inside the root folder; empty = from the naming template. */
+            path?: string;
+        };
+        SeriesUpdate: {
+            monitored?: boolean;
+            /** Format: int64 */
+            qualityProfileId?: number;
+            seriesType?: components["schemas"]["SeriesType"];
+            seasonFolder?: boolean;
+            monitorNewSeasons?: components["schemas"]["MonitorNewSeasons"];
+            monitor?: components["schemas"]["MonitorOption"];
+            tags?: string[];
+            /** Format: int64 */
+            rootFolderId?: number;
+            path?: string;
+        };
+        SeasonUpdate: {
+            monitored: boolean;
+        };
+        EpisodeUpdate: {
+            monitored?: boolean;
+            sceneSeason?: number;
+            sceneEpisode?: number;
+            sceneAbsolute?: number;
+            /** @description Remove the scene numbering (releases use the provider's numbers again). */
+            clearScene?: boolean;
+        };
+        SeriesIdsRequest: {
+            seriesIds: number[];
+        };
+        EpisodeIdsRequest: {
+            episodeIds: number[];
+        };
+        MonitorEpisodesRequest: {
+            episodeIds: number[];
+            monitored: boolean;
+        };
+        SeriesRenameItem: {
+            /** Format: int64 */
+            seriesId: number;
+            title: string;
+            from: string;
+            to: string;
+        };
+        ExistingSeriesFolder: {
+            path: string;
+            name: string;
+            title: string;
+            year: number;
+            videos: number;
+            match?: components["schemas"]["SeriesLookup"];
+            candidates: components["schemas"]["SeriesLookup"][];
+            error?: string;
+        };
+        ImportExistingSeriesRequest: {
+            items: (components["schemas"]["SeriesAddOptions"] & {
+                path: string;
+                /** Format: int64 */
+                tmdbId?: number;
+                /** Format: int64 */
+                tvdbId?: number;
+            })[];
+        };
+        ImportExistingSeriesResult: {
+            path: string;
+            series?: components["schemas"]["Series"];
+            episodeFiles: number;
+            error?: components["schemas"]["Error"];
+        };
+        EpisodeBrief: {
+            /** Format: int64 */
+            id: number;
+            seasonNumber: number;
+            episodeNumber: number;
+            title: string;
+        };
+        SeriesImportCandidate: {
+            path: string;
+            relativePath: string;
+            /** Format: int64 */
+            sizeBytes: number;
+            /** Format: int64 */
+            seriesId?: number;
+            seriesTitle?: string;
+            episodes: components["schemas"]["EpisodeBrief"][];
+            quality?: components["schemas"]["Quality"];
+            releaseGroup?: string;
+            rejection?: components["schemas"]["Error"];
+            sidecars: string[];
+        };
+        SeriesManualImportRequest: {
+            items: {
+                path: string;
+                /** Format: int64 */
+                seriesId: number;
+                episodeIds?: number[];
+                mode?: components["schemas"]["TransferMode"];
+                sidecars?: string[];
+            }[];
+        };
+        SeriesManualImportResult: {
+            path: string;
+            /** Format: int64 */
+            seriesId: number;
+            episodeIds: number[];
+            importedPath?: string;
+            mode?: string;
+            upgraded?: boolean;
+            recycled?: string[];
+            error?: components["schemas"]["Error"];
+        };
+        WantedEpisodeItem: components["schemas"]["Episode"] & {
+            seriesTitle: string;
+            poster: string;
+            seriesType: components["schemas"]["SeriesType"];
+        };
+        WantedEpisodeList: {
+            total: number;
+            items: components["schemas"]["WantedEpisodeItem"][];
+        };
+        /**
+         * @description extend S01E01-E02-E03, duplicate S01E01.S01E02, repeat S01E01E02, scene S01E01-02-03, range S01E01-03, prefixed_range S01E01-E03.
+         * @enum {string}
+         */
+        MultiEpisodeStyle: "extend" | "duplicate" | "repeat" | "scene" | "range" | "prefixed_range";
+        SeriesNamingSettings: {
+            renameEpisodes: boolean;
+            seriesFolderFormat: string;
+            seasonFolderFormat: string;
+            specialsFolderFormat: string;
+            standardEpisodeFormat: string;
+            dailyEpisodeFormat: string;
+            animeEpisodeFormat: string;
+            multiEpisodeStyle: components["schemas"]["MultiEpisodeStyle"];
+            /** @description Wanted episodes in a season that make Locarr search the whole season. */
+            seasonPackThreshold: number;
+            searchOnAddDefault: boolean;
+            colonReplacement?: components["schemas"]["ColonReplacement"];
+        };
+        SeriesNamingPreview: {
+            seriesFolder: string;
+            seasonFolder: string;
+            specialsFolder: string;
+            standard: string;
+            multiEpisode: string;
+            daily: string;
+            anime: string;
+            /** @description Template errors by field name. */
+            errors: {
                 [key: string]: string;
             };
             tokens: components["schemas"]["NamingToken"][];
@@ -7733,6 +8529,679 @@ export interface operations {
             default: components["responses"]["Error"];
         };
     };
+    listSeries: {
+        parameters: {
+            query?: {
+                monitored?: boolean;
+                status?: components["schemas"]["SeriesStatus"];
+                missing?: boolean;
+                profileId?: number;
+                tag?: string;
+                q?: string;
+                sort?: "title" | "year" | "added" | "network" | "rating" | "nextAiring" | "previousAiring" | "missing" | "size";
+                desc?: boolean;
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of series */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddSeriesRequest"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Series"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    lookupSeries: {
+        parameters: {
+            query: {
+                term: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Results, marked when already in the library */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesLookup"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchSeriesBulk: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Queued (seasons and episodes) */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    renameSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Renamed files */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesRenameItem"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewRenameSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Planned renames */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesRenameItem"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    scanExistingSeries: {
+        parameters: {
+            query: {
+                rootFolderId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unmapped folders */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExistingSeriesFolder"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    importExistingSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportExistingSeriesRequest"];
+            };
+        };
+        responses: {
+            /** @description One result per folder */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportExistingSeriesResult"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewManualImportSeries: {
+        parameters: {
+            query: {
+                path: string;
+                seriesId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Files with their series, episodes and verdict */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesImportCandidate"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    manualImportSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesManualImportRequest"];
+            };
+        };
+        responses: {
+            /** @description One result per file */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesManualImportResult"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The series */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesDetail"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteSeries: {
+        parameters: {
+            query?: {
+                deleteFiles?: boolean;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesUpdate"];
+            };
+        };
+        responses: {
+            /** @description The series */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Series"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listSeriesEpisodes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Episodes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Episode"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    refreshSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The series */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Series"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSeason: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                number: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeasonUpdate"];
+            };
+        };
+        responses: {
+            /** @description The season */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeasonInfo"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchSeason: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                number: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    interactiveSearchSeason: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                number: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The decision report */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InteractiveSearch"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    grabSeasonRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                number: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualGrabRequest"];
+            };
+        };
+        responses: {
+            /** @description Sent to a download client */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueueItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listWantedEpisodes: {
+        parameters: {
+            query?: {
+                kind?: "missing" | "cutoff_unmet";
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of episodes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WantedEpisodeList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    monitorEpisodes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MonitorEpisodesRequest"];
+            };
+        };
+        responses: {
+            /** @description How many changed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchEpisodes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EpisodeIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getEpisode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The episode */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Episode"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateEpisode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EpisodeUpdate"];
+            };
+        };
+        responses: {
+            /** @description The episode */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Episode"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    interactiveSearchEpisode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The decision report */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InteractiveSearch"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    grabEpisodeRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualGrabRequest"];
+            };
+        };
+        responses: {
+            /** @description Sent to a download client */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueueItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
     getTimeline: {
         parameters: {
             query: {
@@ -8054,6 +9523,77 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MediaManagementSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getSeriesNaming: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesNamingSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSeriesNaming: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesNamingSettings"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesNamingSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewSeriesNaming: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesNamingSettings"];
+            };
+        };
+        responses: {
+            /** @description The example names */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesNamingPreview"];
                 };
             };
             default: components["responses"]["Error"];

@@ -38,6 +38,7 @@ tags:
   - name: profiles
   - name: parse
   - name: movies
+  - name: series
   - name: timeline
   - name: calendar
   - name: images
@@ -2457,6 +2458,529 @@ paths:
           description: Removed
         default:
           $ref: "#/components/responses/Error"
+  /series:
+    get:
+      operationId: listSeries
+      summary: The series library, one page at a time
+      description: |
+        Filters combine. `status` is the series' own status (continuing, ended, upcoming);
+        `missing` keeps series with monitored, aired episodes that have no file.
+      tags: [series]
+      parameters:
+        - {name: monitored, in: query, required: false, schema: {type: boolean}}
+        - {name: status, in: query, required: false, schema: {$ref: "#/components/schemas/SeriesStatus"}}
+        - {name: missing, in: query, required: false, schema: {type: boolean}}
+        - {name: profileId, in: query, required: false, schema: {type: integer, format: int64}}
+        - {name: tag, in: query, required: false, schema: {type: string, maxLength: 100}}
+        - {name: q, in: query, required: false, schema: {type: string, maxLength: 200}}
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [title, year, added, network, rating, nextAiring, previousAiring, missing, size]
+            default: title
+        - {name: desc, in: query, required: false, schema: {type: boolean, default: false}}
+        - {name: offset, in: query, required: false, schema: {type: integer, minimum: 0, default: 0}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        "200":
+          description: A page of series
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesList"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addSeries
+      summary: Add a series from TMDb or TVDB with its seasons and episodes (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddSeriesRequest"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Series"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/lookup:
+    get:
+      operationId: lookupSeries
+      summary: Search the series provider by title, TMDb id ("tmdb:1399"), TVDB id ("tvdb:121361") or IMDb id
+      tags: [series]
+      parameters:
+        - {name: term, in: query, required: true, schema: {type: string, minLength: 1, maxLength: 200}}
+      responses:
+        "200":
+          description: Results, marked when already in the library
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeriesLookup"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/search:
+    post:
+      operationId: searchSeriesBulk
+      summary: Queue searches for every wanted episode of several series (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeriesIdsRequest"
+      responses:
+        "202":
+          description: Queued (seasons and episodes)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/rename:
+    post:
+      operationId: renameSeries
+      summary: Rename episode files by the naming templates (library managers)
+      description: An empty list renames every series. Files stay inside their series folder; nothing is overwritten or deleted.
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeriesIdsRequest"
+      responses:
+        "200":
+          description: Renamed files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeriesRenameItem"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/rename/preview:
+    post:
+      operationId: previewRenameSeries
+      summary: Show which episode files a rename would change
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeriesIdsRequest"
+      responses:
+        "200":
+          description: Planned renames
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeriesRenameItem"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/import/scan:
+    get:
+      operationId: scanExistingSeries
+      summary: Folders in a series root folder that are not in the library, with provider matches (library managers)
+      tags: [series]
+      parameters:
+        - {name: rootFolderId, in: query, required: true, schema: {type: integer, format: int64}}
+      responses:
+        "200":
+          description: Unmapped folders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExistingSeriesFolder"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/import/existing:
+    post:
+      operationId: importExistingSeries
+      summary: Add series for existing folders and register their episode files in place (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportExistingSeriesRequest"
+      responses:
+        "200":
+          description: One result per folder
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ImportExistingSeriesResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/import/manual:
+    get:
+      operationId: previewManualImportSeries
+      summary: Preview importing the episode files of a folder (library managers)
+      tags: [series]
+      parameters:
+        - {name: path, in: query, required: true, schema: {type: string, minLength: 1, maxLength: 4096}}
+        - {name: seriesId, in: query, required: false, schema: {type: integer, format: int64}}
+      responses:
+        "200":
+          description: Files with their series, episodes and verdict
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeriesImportCandidate"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: manualImportSeries
+      summary: Import chosen files into episodes (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeriesManualImportRequest"
+      responses:
+        "200":
+          description: One result per file
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeriesManualImportResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: getSeries
+      summary: One series with its seasons
+      tags: [series]
+      responses:
+        "200":
+          description: The series
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesDetail"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateSeries
+      summary: Change how a series is managed (library managers)
+      description: |
+        `monitor` re-applies a monitor option to every episode (specials keep their own setting).
+        The folder can change only while the series has no files (`has_files`).
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeriesUpdate"
+      responses:
+        "200":
+          description: The series
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Series"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteSeries
+      summary: Remove a series (library managers)
+      description: With `deleteFiles` the series folder goes to the recycle bin; files are never deleted outright.
+      tags: [series]
+      parameters:
+        - {name: deleteFiles, in: query, required: false, schema: {type: boolean, default: false}}
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /series/{id}/episodes:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: listSeriesEpisodes
+      summary: Every episode of a series, in order
+      tags: [series]
+      responses:
+        "200":
+          description: Episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Episode"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/{id}/refresh:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: refreshSeries
+      summary: Reload a series from its provider and merge seasons and episodes (library managers)
+      tags: [series]
+      responses:
+        "200":
+          description: The series
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Series"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/{id}/search:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: searchSeries
+      summary: Queue searches for every wanted season and episode of a series (library managers)
+      tags: [series]
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/{id}/seasons/{number}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+      - {name: number, in: path, required: true, schema: {type: integer, minimum: 0}}
+    patch:
+      operationId: updateSeason
+      summary: Monitor or unmonitor a season and all its episodes (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeasonUpdate"
+      responses:
+        "200":
+          description: The season
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonInfo"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/{id}/seasons/{number}/search:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+      - {name: number, in: path, required: true, schema: {type: integer, minimum: 0}}
+    post:
+      operationId: searchSeason
+      summary: Queue a season search now (season packs preferred) (library managers)
+      tags: [series]
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
+  /series/{id}/seasons/{number}/releases:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+      - {name: number, in: path, required: true, schema: {type: integer, minimum: 0}}
+    get:
+      operationId: interactiveSearchSeason
+      summary: Interactive season search - every release and the decision on it (library managers)
+      tags: [series]
+      responses:
+        "200":
+          description: The decision report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InteractiveSearch"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: grabSeasonRelease
+      summary: Grab a release chosen in an interactive season search (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManualGrabRequest"
+      responses:
+        "201":
+          description: Sent to a download client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueueItem"
+        default:
+          $ref: "#/components/responses/Error"
+  /episodes/wanted:
+    get:
+      operationId: listWantedEpisodes
+      summary: Missing episodes or episodes below the cutoff, oldest air date first
+      tags: [series]
+      parameters:
+        - name: kind
+          in: query
+          required: false
+          schema: {type: string, enum: [missing, cutoff_unmet], default: missing}
+        - {name: offset, in: query, required: false, schema: {type: integer, minimum: 0, default: 0}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        "200":
+          description: A page of episodes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WantedEpisodeList"
+        default:
+          $ref: "#/components/responses/Error"
+  /episodes/monitor:
+    post:
+      operationId: monitorEpisodes
+      summary: Monitor or unmonitor several episodes (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MonitorEpisodesRequest"
+      responses:
+        "200":
+          description: How many changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
+  /episodes/search:
+    post:
+      operationId: searchEpisodes
+      summary: Queue searches for episodes now (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EpisodeIdsRequest"
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
+  /episodes/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: getEpisode
+      summary: One episode
+      tags: [series]
+      responses:
+        "200":
+          description: The episode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Episode"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateEpisode
+      summary: Monitor an episode or set its scene numbering (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EpisodeUpdate"
+      responses:
+        "200":
+          description: The episode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Episode"
+        default:
+          $ref: "#/components/responses/Error"
+  /episodes/{id}/releases:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: interactiveSearchEpisode
+      summary: Interactive episode search - every release and the decision on it (library managers)
+      tags: [series]
+      responses:
+        "200":
+          description: The decision report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InteractiveSearch"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: grabEpisodeRelease
+      summary: Grab a release chosen in an interactive episode search (library managers)
+      tags: [series]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManualGrabRequest"
+      responses:
+        "201":
+          description: Sent to a download client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueueItem"
+        default:
+          $ref: "#/components/responses/Error"
   /timeline:
     get:
       operationId: getTimeline
@@ -2497,7 +3021,7 @@ paths:
   /calendar:
     get:
       operationId: getCalendar
-      summary: Movie dates (in cinemas, digital, physical) between two days
+      summary: Movie dates (in cinemas, digital, physical) and episode air dates between two days
       tags: [calendar]
       parameters:
         - {name: start, in: query, required: true, schema: {type: string, format: date}}
@@ -2688,6 +3212,59 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaManagementSettings"
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/mediamanagement/series:
+    get:
+      operationId: getSeriesNaming
+      summary: Series naming and season pack settings (administrators)
+      tags: [settings]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesNamingSettings"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateSeriesNaming
+      summary: Change series naming and season pack settings (administrators)
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeriesNamingSettings"
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesNamingSettings"
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/mediamanagement/series/preview:
+    post:
+      operationId: previewSeriesNaming
+      summary: Render the series templates for standard, multi-episode, daily and anime examples
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeriesNamingSettings"
+      responses:
+        "200":
+          description: The example names
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesNamingPreview"
         default:
           $ref: "#/components/responses/Error"
   /settings/mediamanagement/preview:
@@ -6396,12 +6973,20 @@ components:
           items: {$ref: "#/components/schemas/TimelineEvent"}
     CalendarEntry:
       type: object
-      required: [date, kind, movieId, title, year, hasFile, monitored, poster]
+      description: A movie date (movieId set) or an episode airing (kind episode; seriesId and episodeId set).
+      required: [date, kind, title, year, hasFile, monitored, poster]
       properties:
         date: {type: string, format: date}
-        kind: {type: string, enum: [in_cinemas, digital, physical]}
+        kind: {type: string, enum: [in_cinemas, digital, physical, episode]}
         movieId: {type: integer, format: int64}
-        title: {type: string}
+        seriesId: {type: integer, format: int64}
+        episodeId: {type: integer, format: int64}
+        seasonNumber: {type: integer}
+        episodeNumber: {type: integer}
+        episodeTitle: {type: string}
+        airDateUtc: {type: string, format: date-time}
+        network: {type: string}
+        title: {type: string, description: The movie or series title.}
         year: {type: integer}
         hasFile: {type: boolean}
         monitored: {type: boolean}
@@ -6483,15 +7068,21 @@ components:
           items: {$ref: "#/components/schemas/NamingToken"}
     MetadataSettings:
       type: object
-      required: [tmdbApiKey, language, region]
+      required: [tmdbApiKey, language, region, tvdbApiKey, tvdbPin, seriesProvider]
       properties:
         tmdbApiKey: {$ref: "#/components/schemas/SecretState"}
         language: {type: string}
         region: {type: string}
+        tvdbApiKey: {$ref: "#/components/schemas/SecretState"}
+        tvdbPin: {$ref: "#/components/schemas/SecretState"}
+        seriesProvider: {type: string, enum: [tmdb, tvdb], description: Who answers series lookups (tvdb needs a TVDB key).}
     MetadataSettingsInput:
       type: object
       properties:
         tmdbApiKey: {type: string, maxLength: 512, description: Write-only. v3 API key or v4 read access token; empty removes it.}
+        tvdbApiKey: {type: string, maxLength: 512, description: Write-only TVDB v4 project key; empty removes it (and the PIN).}
+        tvdbPin: {type: string, maxLength: 64, description: Write-only subscriber PIN for user-supported TVDB keys.}
+        seriesProvider: {type: string, enum: [tmdb, tvdb]}
         language: {type: string, pattern: "^[a-z]{2}(-[A-Z]{2})?$"}
         region: {type: string, pattern: "^([A-Z]{2})?$"}
     QueueItemLink:
@@ -6921,6 +7512,410 @@ components:
         multiDiscTrack: {type: string, description: "Path of a track on disc 2 inside the album folder."}
         errors:
           type: object
+          additionalProperties: {type: string}
+        tokens:
+          type: array
+          items: {$ref: "#/components/schemas/NamingToken"}
+    SeriesStatus:
+      type: string
+      enum: [continuing, ended, upcoming]
+    SeriesType:
+      type: string
+      description: "standard (S01E01), daily (by air date) or anime (absolute numbers)."
+      enum: [standard, daily, anime]
+    MonitorOption:
+      type: string
+      description: Which episodes to monitor when adding (specials are never monitored by an option).
+      enum: [all, future, missing, existing, first_season, latest_season, pilot, none]
+    MonitorNewSeasons:
+      type: string
+      enum: [all, none]
+    SeriesStats:
+      type: object
+      required: [seasonCount, episodeCount, episodeFileCount, monitoredEpisodeCount, missingCount, sizeOnDisk]
+      properties:
+        seasonCount: {type: integer}
+        episodeCount: {type: integer, description: Episodes outside specials.}
+        episodeFileCount: {type: integer}
+        monitoredEpisodeCount: {type: integer}
+        missingCount: {type: integer, description: Monitored episodes that have aired and have no file.}
+        sizeOnDisk: {type: integer, format: int64}
+        nextAiring: {type: string, format: date-time}
+        previousAiring: {type: string, format: date-time}
+    Series:
+      type: object
+      required: [id, itemRef, tmdbId, tvdbId, imdbId, tvmazeId, metadataSource, title, originalTitle, originalLanguage, alternateTitles,
+        year, overview, status, network, timeZone, airTime, runtime, genres, certification, rating, votes, firstAired, lastAired,
+        seriesType, seasonFolder, monitorNewSeasons, poster, backdrop, monitored, qualityProfileId, path, tags, addedAt, updatedAt,
+        stats, downloading]
+      properties:
+        id: {type: integer, format: int64}
+        itemRef: {type: string, description: 'Timeline reference, e.g. "series:7".'}
+        tmdbId: {type: integer, format: int64}
+        tvdbId: {type: integer, format: int64}
+        imdbId: {type: string}
+        tvmazeId: {type: integer, format: int64}
+        metadataSource: {type: string, enum: [tmdb, tvdb]}
+        title: {type: string}
+        originalTitle: {type: string}
+        originalLanguage: {type: string}
+        alternateTitles: {type: array, items: {type: string}}
+        year: {type: integer}
+        overview: {type: string}
+        status: {$ref: "#/components/schemas/SeriesStatus"}
+        network: {type: string}
+        timeZone: {type: string, description: The network's IANA time zone.}
+        airTime: {type: string, description: "HH:MM in the network's zone; empty = unknown (20:00 assumed, D-046)."}
+        runtime: {type: integer}
+        genres: {type: array, items: {type: string}}
+        certification: {type: string}
+        rating: {type: number, format: double}
+        votes: {type: integer}
+        firstAired: {type: string}
+        lastAired: {type: string}
+        seriesType: {$ref: "#/components/schemas/SeriesType"}
+        seasonFolder: {type: boolean}
+        monitorNewSeasons: {$ref: "#/components/schemas/MonitorNewSeasons"}
+        poster: {type: string, description: "Image file name for /images/tmdb/{size}/{file}."}
+        backdrop: {type: string}
+        monitored: {type: boolean}
+        qualityProfileId: {type: integer, format: int64}
+        rootFolderId: {type: integer, format: int64}
+        path: {type: string}
+        tags: {type: array, items: {type: string}}
+        addedAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        refreshedAt: {type: string, format: date-time}
+        stats: {$ref: "#/components/schemas/SeriesStats"}
+        downloading: {type: integer, description: Downloads under way for its episodes.}
+    SeasonInfo:
+      type: object
+      required: [id, itemRef, number, monitored, title, overview, poster, airDate, stats]
+      properties:
+        id: {type: integer, format: int64}
+        itemRef: {type: string}
+        number: {type: integer}
+        monitored: {type: boolean}
+        title: {type: string}
+        overview: {type: string}
+        poster: {type: string}
+        airDate: {type: string}
+        stats: {$ref: "#/components/schemas/SeriesStats"}
+    SeriesDetail:
+      allOf:
+        - $ref: "#/components/schemas/Series"
+        - type: object
+          required: [seasons]
+          properties:
+            seasons:
+              type: array
+              items: {$ref: "#/components/schemas/SeasonInfo"}
+    EpisodeFile:
+      type: object
+      required: [id, path, sizeBytes, quality, revision, customFormats, score, releaseGroup, languages, mediaInfo, sceneName, addedAt]
+      properties:
+        id: {type: integer, format: int64}
+        path: {type: string}
+        sizeBytes: {type: integer, format: int64}
+        quality: {$ref: "#/components/schemas/Quality"}
+        revision: {type: integer}
+        customFormats: {type: array, items: {type: string}}
+        score: {type: integer}
+        releaseGroup: {type: string}
+        languages: {type: array, items: {type: string}}
+        mediaInfo: {$ref: "#/components/schemas/MediaInfo"}
+        sceneName: {type: string}
+        downloadId: {type: integer, format: int64}
+        addedAt: {type: string, format: date-time}
+    Episode:
+      type: object
+      required: [id, itemRef, seriesId, seasonId, seasonNumber, episodeNumber, absoluteNumber, title, overview, airDate, runtime,
+        monitored, aired, removed, wanted, cutoffMet]
+      properties:
+        id: {type: integer, format: int64}
+        itemRef: {type: string, description: 'Timeline reference, e.g. "episode:42".'}
+        seriesId: {type: integer, format: int64}
+        seasonId: {type: integer, format: int64}
+        seasonNumber: {type: integer}
+        episodeNumber: {type: integer}
+        absoluteNumber: {type: integer}
+        title: {type: string}
+        overview: {type: string}
+        airDate: {type: string, description: YYYY-MM-DD in the network's time zone; empty = not announced.}
+        airDateUtc: {type: string, format: date-time}
+        runtime: {type: integer}
+        monitored: {type: boolean}
+        aired: {type: boolean}
+        removed: {type: boolean, description: The provider no longer lists it; kept because it has a file.}
+        sceneSeason: {type: integer}
+        sceneEpisode: {type: integer}
+        sceneAbsolute: {type: integer}
+        wanted: {type: string, enum: [missing, upgrade, none]}
+        cutoffMet: {type: boolean}
+        file: {$ref: "#/components/schemas/EpisodeFile"}
+        download: {$ref: "#/components/schemas/MovieDownload"}
+    SeriesList:
+      type: object
+      required: [total, items]
+      properties:
+        total: {type: integer}
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/Series"}
+    SeriesLookup:
+      type: object
+      required: [tmdbId, tvdbId, source, title, originalTitle, year, firstAired, overview, poster, backdrop, network, status, rating]
+      properties:
+        tmdbId: {type: integer, format: int64}
+        tvdbId: {type: integer, format: int64}
+        source: {type: string, enum: [tmdb, tvdb]}
+        title: {type: string}
+        originalTitle: {type: string}
+        year: {type: integer}
+        firstAired: {type: string}
+        overview: {type: string}
+        poster: {type: string}
+        backdrop: {type: string}
+        network: {type: string}
+        status: {type: string}
+        rating: {type: number, format: double}
+        seriesId: {type: integer, format: int64, description: Set when the series is in the library.}
+    SeriesAddOptions:
+      type: object
+      required: [rootFolderId, qualityProfileId]
+      properties:
+        rootFolderId: {type: integer, format: int64}
+        qualityProfileId: {type: integer, format: int64}
+        seriesType: {$ref: "#/components/schemas/SeriesType"}
+        seasonFolder: {type: boolean, default: true}
+        monitor: {$ref: "#/components/schemas/MonitorOption"}
+        monitorNewSeasons: {$ref: "#/components/schemas/MonitorNewSeasons"}
+        monitored: {type: boolean, default: true}
+        tags:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 50}
+        searchOnAdd: {type: boolean, default: false}
+    AddSeriesRequest:
+      allOf:
+        - $ref: "#/components/schemas/SeriesAddOptions"
+        - type: object
+          properties:
+            tmdbId: {type: integer, format: int64, minimum: 0}
+            tvdbId: {type: integer, format: int64, minimum: 0}
+            path: {type: string, maxLength: 4096, description: Folder inside the root folder; empty = from the naming template.}
+    SeriesUpdate:
+      type: object
+      properties:
+        monitored: {type: boolean}
+        qualityProfileId: {type: integer, format: int64}
+        seriesType: {$ref: "#/components/schemas/SeriesType"}
+        seasonFolder: {type: boolean}
+        monitorNewSeasons: {$ref: "#/components/schemas/MonitorNewSeasons"}
+        monitor: {$ref: "#/components/schemas/MonitorOption"}
+        tags:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 50}
+        rootFolderId: {type: integer, format: int64}
+        path: {type: string, maxLength: 4096}
+    SeasonUpdate:
+      type: object
+      required: [monitored]
+      properties:
+        monitored: {type: boolean}
+    EpisodeUpdate:
+      type: object
+      properties:
+        monitored: {type: boolean}
+        sceneSeason: {type: integer, minimum: 0, maximum: 100000}
+        sceneEpisode: {type: integer, minimum: 0, maximum: 100000}
+        sceneAbsolute: {type: integer, minimum: 0, maximum: 100000}
+        clearScene: {type: boolean, description: Remove the scene numbering (releases use the provider's numbers again).}
+    SeriesIdsRequest:
+      type: object
+      required: [seriesIds]
+      properties:
+        seriesIds:
+          type: array
+          maxItems: 20000
+          items: {type: integer, format: int64}
+    EpisodeIdsRequest:
+      type: object
+      required: [episodeIds]
+      properties:
+        episodeIds:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          items: {type: integer, format: int64}
+    MonitorEpisodesRequest:
+      type: object
+      required: [episodeIds, monitored]
+      properties:
+        episodeIds:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          items: {type: integer, format: int64}
+        monitored: {type: boolean}
+    SeriesRenameItem:
+      type: object
+      required: [seriesId, title, from, to]
+      properties:
+        seriesId: {type: integer, format: int64}
+        title: {type: string}
+        from: {type: string}
+        to: {type: string}
+    ExistingSeriesFolder:
+      type: object
+      required: [path, name, title, year, videos, candidates]
+      properties:
+        path: {type: string}
+        name: {type: string}
+        title: {type: string}
+        year: {type: integer}
+        videos: {type: integer}
+        match: {$ref: "#/components/schemas/SeriesLookup"}
+        candidates:
+          type: array
+          items: {$ref: "#/components/schemas/SeriesLookup"}
+        error: {type: string}
+    ImportExistingSeriesRequest:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            allOf:
+              - $ref: "#/components/schemas/SeriesAddOptions"
+              - type: object
+                required: [path]
+                properties:
+                  path: {type: string, maxLength: 4096}
+                  tmdbId: {type: integer, format: int64, minimum: 0}
+                  tvdbId: {type: integer, format: int64, minimum: 0}
+    ImportExistingSeriesResult:
+      type: object
+      required: [path, episodeFiles]
+      properties:
+        path: {type: string}
+        series: {$ref: "#/components/schemas/Series"}
+        episodeFiles: {type: integer}
+        error: {$ref: "#/components/schemas/Error"}
+    EpisodeBrief:
+      type: object
+      required: [id, seasonNumber, episodeNumber, title]
+      properties:
+        id: {type: integer, format: int64}
+        seasonNumber: {type: integer}
+        episodeNumber: {type: integer}
+        title: {type: string}
+    SeriesImportCandidate:
+      type: object
+      required: [path, relativePath, sizeBytes, episodes, sidecars]
+      properties:
+        path: {type: string}
+        relativePath: {type: string}
+        sizeBytes: {type: integer, format: int64}
+        seriesId: {type: integer, format: int64}
+        seriesTitle: {type: string}
+        episodes:
+          type: array
+          items: {$ref: "#/components/schemas/EpisodeBrief"}
+        quality: {$ref: "#/components/schemas/Quality"}
+        releaseGroup: {type: string}
+        rejection: {$ref: "#/components/schemas/Error"}
+        sidecars: {type: array, items: {type: string}}
+    SeriesManualImportRequest:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            type: object
+            required: [path, seriesId]
+            properties:
+              path: {type: string, maxLength: 4096}
+              seriesId: {type: integer, format: int64}
+              episodeIds:
+                type: array
+                maxItems: 50
+                items: {type: integer, format: int64}
+              mode: {$ref: "#/components/schemas/TransferMode"}
+              sidecars:
+                type: array
+                maxItems: 50
+                items: {type: string, maxLength: 4096}
+    SeriesManualImportResult:
+      type: object
+      required: [path, seriesId, episodeIds]
+      properties:
+        path: {type: string}
+        seriesId: {type: integer, format: int64}
+        episodeIds: {type: array, items: {type: integer, format: int64}}
+        importedPath: {type: string}
+        mode: {type: string}
+        upgraded: {type: boolean}
+        recycled: {type: array, items: {type: string}}
+        error: {$ref: "#/components/schemas/Error"}
+    WantedEpisodeItem:
+      allOf:
+        - $ref: "#/components/schemas/Episode"
+        - type: object
+          required: [seriesTitle, poster, seriesType]
+          properties:
+            seriesTitle: {type: string}
+            poster: {type: string}
+            seriesType: {$ref: "#/components/schemas/SeriesType"}
+    WantedEpisodeList:
+      type: object
+      required: [total, items]
+      properties:
+        total: {type: integer}
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/WantedEpisodeItem"}
+    MultiEpisodeStyle:
+      type: string
+      description: "extend S01E01-E02-E03, duplicate S01E01.S01E02, repeat S01E01E02, scene S01E01-02-03, range S01E01-03, prefixed_range S01E01-E03."
+      enum: [extend, duplicate, repeat, scene, range, prefixed_range]
+    SeriesNamingSettings:
+      type: object
+      required: [renameEpisodes, seriesFolderFormat, seasonFolderFormat, specialsFolderFormat, standardEpisodeFormat, dailyEpisodeFormat,
+        animeEpisodeFormat, multiEpisodeStyle, seasonPackThreshold, searchOnAddDefault]
+      properties:
+        renameEpisodes: {type: boolean}
+        seriesFolderFormat: {type: string, maxLength: 500}
+        seasonFolderFormat: {type: string, maxLength: 500}
+        specialsFolderFormat: {type: string, maxLength: 500}
+        standardEpisodeFormat: {type: string, maxLength: 500}
+        dailyEpisodeFormat: {type: string, maxLength: 500}
+        animeEpisodeFormat: {type: string, maxLength: 500}
+        multiEpisodeStyle: {$ref: "#/components/schemas/MultiEpisodeStyle"}
+        seasonPackThreshold: {type: integer, minimum: 2, maximum: 100, description: Wanted episodes in a season that make Locarr search the whole season.}
+        searchOnAddDefault: {type: boolean}
+        colonReplacement: {$ref: "#/components/schemas/ColonReplacement"}
+    SeriesNamingPreview:
+      type: object
+      required: [seriesFolder, seasonFolder, specialsFolder, standard, multiEpisode, daily, anime, errors, tokens]
+      properties:
+        seriesFolder: {type: string}
+        seasonFolder: {type: string}
+        specialsFolder: {type: string}
+        standard: {type: string}
+        multiEpisode: {type: string}
+        daily: {type: string}
+        anime: {type: string}
+        errors:
+          type: object
+          description: Template errors by field name.
           additionalProperties: {type: string}
         tokens:
           type: array

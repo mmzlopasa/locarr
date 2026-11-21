@@ -8,7 +8,7 @@ import { formatBytes } from "@/components/format";
 import { Badge, Button, Checkbox, ErrorAlert, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 import { useCurrentUser } from "@/features/auth/hooks";
 import { HistoryTab } from "@/features/movies/HistoryTab";
-import { InteractiveSearch } from "@/features/movies/InteractiveSearch";
+import { albumReleases, InteractiveSearch } from "@/features/movies/InteractiveSearch";
 import { AlbumStatusBadge, Cover, formatLength, musicKeys, typeKey, type AlbumDetail, type AlbumRelease, type MusicImportPreview } from "./common";
 
 export function useAlbum(id: number) {
@@ -96,7 +96,7 @@ export function AlbumDetailPage() {
         ))}
       </div>
       {tab === "tracks" ? <Tracks d={d} /> : null}
-      {tab === "search" ? <InteractiveSearch movieId={albumId} itemRef={a.itemRef} kind="album" /> : null}
+      {tab === "search" ? <InteractiveSearch source={albumReleases(albumId)} itemRef={a.itemRef} /> : null}
       {tab === "import" ? <ManualImport albumId={albumId} /> : null}
       {drawer ? (
         <div className="fixed inset-0 z-40 flex justify-end bg-black/50" role="dialog" aria-modal="true" aria-label={t("music.history")}

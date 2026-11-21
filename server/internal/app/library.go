@@ -14,9 +14,11 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/library"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
+	"github.com/mmzlopasa/locarr/server/internal/library/series"
 	"github.com/mmzlopasa/locarr/server/internal/mediaserver"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/tmdb"
+	"github.com/mmzlopasa/locarr/server/internal/metadata/tvdb"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 	"github.com/mmzlopasa/locarr/server/internal/timeline"
 	"github.com/mmzlopasa/locarr/server/internal/wanted"
@@ -28,6 +30,7 @@ const (
 	TaskRefreshMovies  = "refresh-movies"
 	TaskImportLists    = "import-lists-sync"
 	TaskRecycleCleanup = "recycle-bin-cleanup"
+	TaskRefreshSeries  = "refresh-series"
 )
 
 type importArgs struct {
@@ -58,6 +61,38 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 		}
 	}
 	d.Wanted.Register(movies.WantedSource{S: d.Movies})
+
+	// Series (P5): TMDb TV, optionally TVDB, episodes and season packs.
+	d.TVDB = tvdb.New(cfg.TVDBURL, func(ctx context.Context) (tvdb.Credentials, error) {
+		key, _, err := d.Settings.Secret(ctx, settings.TVDBAPIKey)
+		if err != nil {
+			return tvdb.Credentials{}, err
+		}
+		pin, _, err := d.Settings.Secret(ctx, settings.TVDBPin)
+		return tvdb.Credentials{Key: key, PIN: pin}, err
+	}, d.MetaCache)
+	d.TVDB.Language = client.Language
+	d.Series = &series.Service{DB: d.DB, Settings: d.Settings, TMDb: client, TVDB: d.TVDB, Quality: d.Quality, Formats: d.Formats,
+		Roots: d.Roots, DataRoots: cfg.DataRoots, Timeline: d.Timeline, Recycle: d.Recycle, Downloads: d.Downloads,
+		Notifier: mediaserver.Noop{}, Log: log}
+	d.Series.SearchRequested = func(ctx context.Context, ref library.Ref, reason string) {
+		refs := []library.Ref{ref}
+		if ref.Kind == library.RefSeries {
+			var err error
+			if refs, err = d.Series.SearchTargets(ctx, ref.ID); err != nil {
+				log.Warn("series search targets", "series", ref.ID, "err", err)
+				return
+			}
+		}
+		for _, r := range refs {
+			if err := d.Wanted.Enqueue(ctx, r, reason); err != nil {
+				log.Warn("queue search", "item", r.String(), "err", err)
+			}
+		}
+	}
+	d.Series.MakeDue = d.Wanted.ResetBackoff
+	d.Wanted.Register(series.EpisodeSource{S: d.Series})
+	d.Wanted.Register(series.SeasonSource{S: d.Series})
 	if err := d.Wanted.RegisterTasks(ctx); err != nil {
 		return err
 	}
@@ -66,8 +101,24 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 		if err := j.Decode(&a); err != nil {
 			return jobs.Permanent(err)
 		}
+		dl, err := d.Downloads.Get(ctx, a.DownloadID)
+		if err != nil {
+			return jobs.Permanent(err)
+		}
+		switch library.RefFromJSON(dl.ItemRef).Kind {
+		case library.RefEpisode, library.RefSeason, library.RefSeries:
+			return d.Series.ImportDownload(ctx, a.DownloadID)
+		}
 		return d.Movies.ImportDownload(ctx, a.DownloadID)
 	}, jobs.KindOptions{MaxAttempts: 3, Timeout: 2 * time.Hour})
+	d.Jobs.Register(TaskRefreshSeries, func(ctx context.Context, _ *jobs.Job) error {
+		n, err := d.Series.RefreshAll(ctx)
+		log.Info("series refreshed", "count", n)
+		if err != nil {
+			return jobs.Permanent(err)
+		}
+		return nil
+	}, jobs.KindOptions{MaxAttempts: 1, Timeout: 4 * time.Hour})
 	d.Jobs.Register(TaskRefreshMovies, func(ctx context.Context, _ *jobs.Job) error {
 		n, err := d.Movies.RefreshAll(ctx)
 		log.Info("movies refreshed", "count", n)
@@ -96,6 +147,7 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 		return err
 	}, jobs.KindOptions{MaxAttempts: 2, Timeout: 30 * time.Minute})
 	d.Jobs.Schedule(TaskRefreshMovies, TaskRefreshMovies, 24*time.Hour)
+	d.Jobs.Schedule(TaskRefreshSeries, TaskRefreshSeries, 12*time.Hour)
 	d.Jobs.Schedule(TaskImportLists, TaskImportLists, 6*time.Hour)
 	d.Jobs.Schedule(TaskRecycleCleanup, TaskRecycleCleanup, 24*time.Hour)
 
@@ -104,7 +156,9 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 	d.Downloads.Bus.Subscribe(func(ctx context.Context, ev downloads.Event) {
 		switch ev.Type {
 		case downloads.EventCompleted:
-			if library.RefFromJSON(ev.Download.ItemRef).Kind != library.RefMovie {
+			switch library.RefFromJSON(ev.Download.ItemRef).Kind {
+			case library.RefMovie, library.RefEpisode, library.RefSeason, library.RefSeries:
+			default:
 				return
 			}
 			if _, _, err := d.Jobs.Enqueue(ctx, TaskImportDownload, importArgs{DownloadID: ev.Download.ID},
@@ -121,7 +175,7 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 // NewHandler builds the API handler for the services.
 func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger) *api.Handler {
 	h := &api.Handler{DB: d.DB, Auth: d.Auth, Settings: d.Settings, Jobs: d.Jobs, RootFolders: d.Roots, Downloads: d.Downloads,
-		Indexers: d.Indexers, Quality: d.Quality, Formats: d.Formats, Movies: d.Movies, Wanted: d.Wanted, Timeline: d.Timeline,
+		Indexers: d.Indexers, Quality: d.Quality, Formats: d.Formats, Movies: d.Movies, Series: d.Series, TVDB: d.TVDB, Wanted: d.Wanted, Timeline: d.Timeline,
 		Recycle: d.Recycle, Images: d.Images, TMDb: d.TMDb, MetaCache: d.MetaCache,
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
 	attachMusic(h, d, log)

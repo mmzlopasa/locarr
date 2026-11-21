@@ -1919,6 +1919,146 @@ func decodeDeleteRootFolderParams(args [1]string, argsEscaped bool, r *http.Requ
 	return params, nil
 }
 
+// DeleteSeriesParams is parameters of deleteSeries operation.
+type DeleteSeriesParams struct {
+	DeleteFiles OptBool `json:",omitempty,omitzero"`
+	ID          int64
+}
+
+func unpackDeleteSeriesParams(packed middleware.Parameters) (params DeleteSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "deleteFiles",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.DeleteFiles = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeDeleteSeriesParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteSeriesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Set default value for query: deleteFiles.
+	{
+		val := bool(false)
+		params.DeleteFiles.SetTo(val)
+	}
+	// Decode query: deleteFiles.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "deleteFiles",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotDeleteFilesVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotDeleteFilesVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.DeleteFiles.SetTo(paramsDotDeleteFilesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "deleteFiles",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // DeleteUserParams is parameters of deleteUser operation.
 type DeleteUserParams struct {
 	ID int64
@@ -3272,6 +3412,89 @@ func decodeGetDownloadClientParams(args [1]string, argsEscaped bool, r *http.Req
 	return params, nil
 }
 
+// GetEpisodeParams is parameters of getEpisode operation.
+type GetEpisodeParams struct {
+	ID int64
+}
+
+func unpackGetEpisodeParams(packed middleware.Parameters) (params GetEpisodeParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeGetEpisodeParams(args [1]string, argsEscaped bool, r *http.Request) (params GetEpisodeParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetIndexerParams is parameters of getIndexer operation.
 type GetIndexerParams struct {
 	ID int64
@@ -3768,6 +3991,89 @@ func decodeGetQueueParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 		return params, &ogenerrors.DecodeParamError{
 			Name: "includeUnknown",
 			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetSeriesParams is parameters of getSeries operation.
+type GetSeriesParams struct {
+	ID int64
+}
+
+func unpackGetSeriesParams(packed middleware.Parameters) (params GetSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeGetSeriesParams(args [1]string, argsEscaped bool, r *http.Request) (params GetSeriesParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
 			Err:  err,
 		}
 	}
@@ -4321,6 +4627,89 @@ func decodeGrabAlbumReleaseParams(args [1]string, argsEscaped bool, r *http.Requ
 	return params, nil
 }
 
+// GrabEpisodeReleaseParams is parameters of grabEpisodeRelease operation.
+type GrabEpisodeReleaseParams struct {
+	ID int64
+}
+
+func unpackGrabEpisodeReleaseParams(packed middleware.Parameters) (params GrabEpisodeReleaseParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeGrabEpisodeReleaseParams(args [1]string, argsEscaped bool, r *http.Request) (params GrabEpisodeReleaseParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GrabMovieReleaseParams is parameters of grabMovieRelease operation.
 type GrabMovieReleaseParams struct {
 	ID int64
@@ -4404,6 +4793,160 @@ func decodeGrabMovieReleaseParams(args [1]string, argsEscaped bool, r *http.Requ
 	return params, nil
 }
 
+// GrabSeasonReleaseParams is parameters of grabSeasonRelease operation.
+type GrabSeasonReleaseParams struct {
+	ID     int64
+	Number int
+}
+
+func unpackGrabSeasonReleaseParams(packed middleware.Parameters) (params GrabSeasonReleaseParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "number",
+			In:   "path",
+		}
+		params.Number = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGrabSeasonReleaseParams(args [2]string, argsEscaped bool, r *http.Request) (params GrabSeasonReleaseParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: number.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "number",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.Number = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.Number)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "number",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // InteractiveSearchAlbumParams is parameters of interactiveSearchAlbum operation.
 type InteractiveSearchAlbumParams struct {
 	ID int64
@@ -4421,6 +4964,89 @@ func unpackInteractiveSearchAlbumParams(packed middleware.Parameters) (params In
 }
 
 func decodeInteractiveSearchAlbumParams(args [1]string, argsEscaped bool, r *http.Request) (params InteractiveSearchAlbumParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// InteractiveSearchEpisodeParams is parameters of interactiveSearchEpisode operation.
+type InteractiveSearchEpisodeParams struct {
+	ID int64
+}
+
+func unpackInteractiveSearchEpisodeParams(packed middleware.Parameters) (params InteractiveSearchEpisodeParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeInteractiveSearchEpisodeParams(args [1]string, argsEscaped bool, r *http.Request) (params InteractiveSearchEpisodeParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]
@@ -4563,6 +5189,160 @@ func decodeInteractiveSearchMovieParams(args [1]string, argsEscaped bool, r *htt
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// InteractiveSearchSeasonParams is parameters of interactiveSearchSeason operation.
+type InteractiveSearchSeasonParams struct {
+	ID     int64
+	Number int
+}
+
+func unpackInteractiveSearchSeasonParams(packed middleware.Parameters) (params InteractiveSearchSeasonParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "number",
+			In:   "path",
+		}
+		params.Number = packed[key].(int)
+	}
+	return params
+}
+
+func decodeInteractiveSearchSeasonParams(args [2]string, argsEscaped bool, r *http.Request) (params InteractiveSearchSeasonParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: number.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "number",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.Number = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.Number)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "number",
 			In:   "path",
 			Err:  err,
 		}
@@ -6137,6 +6917,766 @@ func decodeListSearchLogParams(args [0]string, argsEscaped bool, r *http.Request
 	return params, nil
 }
 
+// ListSeriesParams is parameters of listSeries operation.
+type ListSeriesParams struct {
+	Monitored OptBool           `json:",omitempty,omitzero"`
+	Status    OptSeriesStatus   `json:",omitempty,omitzero"`
+	Missing   OptBool           `json:",omitempty,omitzero"`
+	ProfileId OptInt64          `json:",omitempty,omitzero"`
+	Tag       OptString         `json:",omitempty,omitzero"`
+	Q         OptString         `json:",omitempty,omitzero"`
+	Sort      OptListSeriesSort `json:",omitempty,omitzero"`
+	Desc      OptBool           `json:",omitempty,omitzero"`
+	Offset    OptInt            `json:",omitempty,omitzero"`
+	Limit     OptInt            `json:",omitempty,omitzero"`
+}
+
+func unpackListSeriesParams(packed middleware.Parameters) (params ListSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "monitored",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Monitored = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "status",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Status = v.(OptSeriesStatus)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "missing",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Missing = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "profileId",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ProfileId = v.(OptInt64)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "tag",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Tag = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Q = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Sort = v.(OptListSeriesSort)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "desc",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Desc = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "offset",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Offset = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Limit = v.(OptInt)
+		}
+	}
+	return params
+}
+
+func decodeListSeriesParams(args [0]string, argsEscaped bool, r *http.Request) (params ListSeriesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: monitored.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "monitored",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotMonitoredVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotMonitoredVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Monitored.SetTo(paramsDotMonitoredVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "monitored",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: status.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "status",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotStatusVal SeriesStatus
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotStatusVal = SeriesStatus(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Status.SetTo(paramsDotStatusVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Status.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "status",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: missing.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "missing",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotMissingVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotMissingVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Missing.SetTo(paramsDotMissingVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "missing",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: profileId.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "profileId",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotProfileIdVal int64
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt64(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotProfileIdVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.ProfileId.SetTo(paramsDotProfileIdVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "profileId",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: tag.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "tag",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTagVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotTagVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Tag.SetTo(paramsDotTagVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Tag.Get(); ok {
+					if err := func() error {
+						if err := (validate.String{
+							MinLength:     0,
+							MinLengthSet:  false,
+							MaxLength:     100,
+							MaxLengthSet:  true,
+							Email:         false,
+							Hostname:      false,
+							Regex:         nil,
+							MinNumeric:    0,
+							MinNumericSet: false,
+							MaxNumeric:    0,
+							MaxNumericSet: false,
+						}).Validate(string(value)); err != nil {
+							return errors.Wrap(err, "string")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tag",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotQVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotQVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Q.SetTo(paramsDotQVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Q.Get(); ok {
+					if err := func() error {
+						if err := (validate.String{
+							MinLength:     0,
+							MinLengthSet:  false,
+							MaxLength:     200,
+							MaxLengthSet:  true,
+							Email:         false,
+							Hostname:      false,
+							Regex:         nil,
+							MinNumeric:    0,
+							MinNumericSet: false,
+							MaxNumeric:    0,
+							MaxNumericSet: false,
+						}).Validate(string(value)); err != nil {
+							return errors.Wrap(err, "string")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: sort.
+	{
+		val := ListSeriesSort("title")
+		params.Sort.SetTo(val)
+	}
+	// Decode query: sort.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortVal ListSeriesSort
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortVal = ListSeriesSort(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Sort.SetTo(paramsDotSortVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Sort.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: desc.
+	{
+		val := bool(false)
+		params.Desc.SetTo(val)
+	}
+	// Decode query: desc.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "desc",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotDescVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotDescVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Desc.SetTo(paramsDotDescVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "desc",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: offset.
+	{
+		val := int(0)
+		params.Offset.SetTo(val)
+	}
+	// Decode query: offset.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotOffsetVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOffsetVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Offset.SetTo(paramsDotOffsetVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Offset.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           0,
+							MaxSet:        false,
+							Max:           0,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "offset",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: limit.
+	{
+		val := int(100)
+		params.Limit.SetTo(val)
+	}
+	// Decode query: limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Limit.SetTo(paramsDotLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Limit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           1000,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "limit",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListSeriesEpisodesParams is parameters of listSeriesEpisodes operation.
+type ListSeriesEpisodesParams struct {
+	ID int64
+}
+
+func unpackListSeriesEpisodesParams(packed middleware.Parameters) (params ListSeriesEpisodesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeListSeriesEpisodesParams(args [1]string, argsEscaped bool, r *http.Request) (params ListSeriesEpisodesParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // ListTasksParams is parameters of listTasks operation.
 type ListTasksParams struct {
 	State OptJobState `json:",omitempty,omitzero"`
@@ -6543,6 +8083,252 @@ func decodeListWantedAlbumsParams(args [0]string, argsEscaped bool, r *http.Requ
 	return params, nil
 }
 
+// ListWantedEpisodesParams is parameters of listWantedEpisodes operation.
+type ListWantedEpisodesParams struct {
+	Kind   OptListWantedEpisodesKind `json:",omitempty,omitzero"`
+	Offset OptInt                    `json:",omitempty,omitzero"`
+	Limit  OptInt                    `json:",omitempty,omitzero"`
+}
+
+func unpackListWantedEpisodesParams(packed middleware.Parameters) (params ListWantedEpisodesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "kind",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Kind = v.(OptListWantedEpisodesKind)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "offset",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Offset = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Limit = v.(OptInt)
+		}
+	}
+	return params
+}
+
+func decodeListWantedEpisodesParams(args [0]string, argsEscaped bool, r *http.Request) (params ListWantedEpisodesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Set default value for query: kind.
+	{
+		val := ListWantedEpisodesKind("missing")
+		params.Kind.SetTo(val)
+	}
+	// Decode query: kind.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "kind",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotKindVal ListWantedEpisodesKind
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotKindVal = ListWantedEpisodesKind(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Kind.SetTo(paramsDotKindVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Kind.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "kind",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: offset.
+	{
+		val := int(0)
+		params.Offset.SetTo(val)
+	}
+	// Decode query: offset.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotOffsetVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOffsetVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Offset.SetTo(paramsDotOffsetVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Offset.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           0,
+							MaxSet:        false,
+							Max:           0,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "offset",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: limit.
+	{
+		val := int(100)
+		params.Limit.SetTo(val)
+	}
+	// Decode query: limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Limit.SetTo(paramsDotLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Limit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           1000,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "limit",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // LookupArtistsParams is parameters of lookupArtists operation.
 type LookupArtistsParams struct {
 	Term string
@@ -6637,6 +8423,83 @@ func unpackLookupMoviesParams(packed middleware.Parameters) (params LookupMovies
 }
 
 func decodeLookupMoviesParams(args [0]string, argsEscaped bool, r *http.Request) (params LookupMoviesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: term.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "term",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Term = c
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.String{
+					MinLength:     1,
+					MinLengthSet:  true,
+					MaxLength:     200,
+					MaxLengthSet:  true,
+					Email:         false,
+					Hostname:      false,
+					Regex:         nil,
+					MinNumeric:    0,
+					MinNumericSet: false,
+					MaxNumeric:    0,
+					MaxNumericSet: false,
+				}).Validate(string(params.Term)); err != nil {
+					return errors.Wrap(err, "string")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "term",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// LookupSeriesParams is parameters of lookupSeries operation.
+type LookupSeriesParams struct {
+	Term string
+}
+
+func unpackLookupSeriesParams(packed middleware.Parameters) (params LookupSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "term",
+			In:   "query",
+		}
+		params.Term = packed[key].(string)
+	}
+	return params
+}
+
+func decodeLookupSeriesParams(args [0]string, argsEscaped bool, r *http.Request) (params LookupSeriesParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
 	// Decode query: term.
 	if err := func() error {
@@ -6901,6 +8764,134 @@ func decodePreviewManualImportParams(args [0]string, argsEscaped bool, r *http.R
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "movieId",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PreviewManualImportSeriesParams is parameters of previewManualImportSeries operation.
+type PreviewManualImportSeriesParams struct {
+	Path     string
+	SeriesId OptInt64 `json:",omitempty,omitzero"`
+}
+
+func unpackPreviewManualImportSeriesParams(packed middleware.Parameters) (params PreviewManualImportSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "path",
+			In:   "query",
+		}
+		params.Path = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "seriesId",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SeriesId = v.(OptInt64)
+		}
+	}
+	return params
+}
+
+func decodePreviewManualImportSeriesParams(args [0]string, argsEscaped bool, r *http.Request) (params PreviewManualImportSeriesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: path.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "path",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Path = c
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.String{
+					MinLength:     1,
+					MinLengthSet:  true,
+					MaxLength:     4096,
+					MaxLengthSet:  true,
+					Email:         false,
+					Hostname:      false,
+					Regex:         nil,
+					MinNumeric:    0,
+					MinNumericSet: false,
+					MaxNumeric:    0,
+					MaxNumericSet: false,
+				}).Validate(string(params.Path)); err != nil {
+					return errors.Wrap(err, "string")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "path",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: seriesId.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "seriesId",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSeriesIdVal int64
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt64(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSeriesIdVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SeriesId.SetTo(paramsDotSeriesIdVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "seriesId",
 			In:   "query",
 			Err:  err,
 		}
@@ -7180,6 +9171,89 @@ func unpackRefreshMovieParams(packed middleware.Parameters) (params RefreshMovie
 }
 
 func decodeRefreshMovieParams(args [1]string, argsEscaped bool, r *http.Request) (params RefreshMovieParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RefreshSeriesParams is parameters of refreshSeries operation.
+type RefreshSeriesParams struct {
+	ID int64
+}
+
+func unpackRefreshSeriesParams(packed middleware.Parameters) (params RefreshSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeRefreshSeriesParams(args [1]string, argsEscaped bool, r *http.Request) (params RefreshSeriesParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]
@@ -8094,6 +10168,63 @@ func unpackScanExistingMusicParams(packed middleware.Parameters) (params ScanExi
 }
 
 func decodeScanExistingMusicParams(args [0]string, argsEscaped bool, r *http.Request) (params ScanExistingMusicParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: rootFolderId.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "rootFolderId",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.RootFolderId = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "rootFolderId",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ScanExistingSeriesParams is parameters of scanExistingSeries operation.
+type ScanExistingSeriesParams struct {
+	RootFolderId int64
+}
+
+func unpackScanExistingSeriesParams(packed middleware.Parameters) (params ScanExistingSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "rootFolderId",
+			In:   "query",
+		}
+		params.RootFolderId = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeScanExistingSeriesParams(args [0]string, argsEscaped bool, r *http.Request) (params ScanExistingSeriesParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
 	// Decode query: rootFolderId.
 	if err := func() error {
@@ -9598,6 +11729,243 @@ func unpackSearchMovieParams(packed middleware.Parameters) (params SearchMoviePa
 }
 
 func decodeSearchMovieParams(args [1]string, argsEscaped bool, r *http.Request) (params SearchMovieParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// SearchSeasonParams is parameters of searchSeason operation.
+type SearchSeasonParams struct {
+	ID     int64
+	Number int
+}
+
+func unpackSearchSeasonParams(packed middleware.Parameters) (params SearchSeasonParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "number",
+			In:   "path",
+		}
+		params.Number = packed[key].(int)
+	}
+	return params
+}
+
+func decodeSearchSeasonParams(args [2]string, argsEscaped bool, r *http.Request) (params SearchSeasonParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: number.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "number",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.Number = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.Number)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "number",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// SearchSeriesParams is parameters of searchSeries operation.
+type SearchSeriesParams struct {
+	ID int64
+}
+
+func unpackSearchSeriesParams(packed middleware.Parameters) (params SearchSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeSearchSeriesParams(args [1]string, argsEscaped bool, r *http.Request) (params SearchSeriesParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]
@@ -11692,6 +14060,89 @@ func decodeUpdateDownloadClientParams(args [1]string, argsEscaped bool, r *http.
 	return params, nil
 }
 
+// UpdateEpisodeParams is parameters of updateEpisode operation.
+type UpdateEpisodeParams struct {
+	ID int64
+}
+
+func unpackUpdateEpisodeParams(packed middleware.Parameters) (params UpdateEpisodeParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeUpdateEpisodeParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateEpisodeParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UpdateImportListParams is parameters of updateImportList operation.
 type UpdateImportListParams struct {
 	ID int64
@@ -12207,6 +14658,243 @@ func unpackUpdateRemotePathMappingParams(packed middleware.Parameters) (params U
 }
 
 func decodeUpdateRemotePathMappingParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateRemotePathMappingParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateSeasonParams is parameters of updateSeason operation.
+type UpdateSeasonParams struct {
+	ID     int64
+	Number int
+}
+
+func unpackUpdateSeasonParams(packed middleware.Parameters) (params UpdateSeasonParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "number",
+			In:   "path",
+		}
+		params.Number = packed[key].(int)
+	}
+	return params
+}
+
+func decodeUpdateSeasonParams(args [2]string, argsEscaped bool, r *http.Request) (params UpdateSeasonParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: number.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "number",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.Number = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.Number)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "number",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateSeriesParams is parameters of updateSeries operation.
+type UpdateSeriesParams struct {
+	ID int64
+}
+
+func unpackUpdateSeriesParams(packed middleware.Parameters) (params UpdateSeriesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeUpdateSeriesParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateSeriesParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]

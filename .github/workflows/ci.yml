@@ -99,7 +99,7 @@ jobs:
             echo "LOCARR_MUSICBRAINZ_URL=http://fake-indexer:9117/musicbrainz"
             echo "LOCARR_COVERART_URL=http://fake-indexer:9117/musicbrainz/coverart"
           } >> .env
-          mkdir -p "$RUNNER_TEMP/locarr/data/media/movies" "$RUNNER_TEMP/locarr/data/media/music" "$RUNNER_TEMP/locarr/data/downloads/fake-seed"
+          mkdir -p "$RUNNER_TEMP/locarr/data/media/movies" "$RUNNER_TEMP/locarr/data/media/tv" "$RUNNER_TEMP/locarr/data/media/music" "$RUNNER_TEMP/locarr/data/downloads/fake-seed"
           docker compose -f docker-compose.yml -f compose.dev.yml up -d --build --wait
           curl -fsS http://127.0.0.1:8484/api/v1/system/info
       - name: Start the fake indexers and TMDb

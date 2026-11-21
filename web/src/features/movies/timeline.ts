@@ -18,6 +18,7 @@ export function eventTone(e: TimelineEvent): "success" | "danger" | "warning" | 
     case "cover_saved":
       return "success";
     case "import_failed":
+    case "import_skipped":
     case "download_import_failed":
     case "download_failed":
     case "grab_failed":
@@ -84,6 +85,9 @@ export function describeEvent(t: TFunction, e: TimelineEvent): string {
       return t("timeline.events.found", { quality: str(d.quality), path: str(d.path) });
     case "import_failed":
       return t("timeline.events.importFailed", { message: e.message });
+    case "import_skipped":
+      return t(`timeline.skipped.${str(d.code)}`, { defaultValue: t("timeline.events.importSkipped", { message: e.message }), download: str(d.download),
+        path: str(d.path).split("/").pop() });
     case "renamed":
       if (typeof d.count === "number") return t("timeline.events.renamedTracks", { count: d.count, example: str(d.example) });
       return t("timeline.events.renamed", { from: str(d.from).split("/").pop(), to: str(d.to).split("/").pop() });

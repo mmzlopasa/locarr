@@ -49,10 +49,12 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Podaci o zapisima iz same datoteke (ffprobe); danas iz imena (D-033)
 
 ## Serije (P5)
-- [ ] TMDb (i TVDB po izboru): serije, sezone, epizode, specijali
-- [ ] Vrste: standardne, dnevne, anime (apsolutna numeracija, mapiranje scene numeracije)
-- [ ] Sezonski paketi, višestruke epizode, praćenje novih sezona
-- [ ] Kalendar (web + iCal feed), nadolazeće epizode
+- [x] TMDb (i TVDB po izboru): serije, sezone, epizode, specijali, vrijeme emitiranja u zoni mreže, osvježavanje s prenumeriranjem (D-046, D-050, D-053)
+- [x] Vrste: standardne, dnevne, anime (apsolutna numeracija, ručno mapiranje scenske numeracije; javni izvor mapiranja nije uključen, D-047)
+- [x] Sezonski paketi, višestruke epizode, praćenje novih sezona, mogućnosti praćenja pri dodavanju (D-049, D-051)
+- [x] Uvoz epizoda (sezonski paketi, djelomični paketi, više epizoda u datoteci, mape sezona i specijala, nadogradnje u koš), uvoz postojeće biblioteke, ručni uvoz, preimenovanje (D-048, D-052)
+- [x] Kalendar (web + iCal feed), nadolazeće epizode
+- [ ] Slike serija dodanih s TVDB-a (samo TMDb slike se prikazuju, D-053)
 
 ## Glazba (P6)
 - [x] MusicBrainz izvođači (pretraga s pojašnjenjem), albumi, izdanja i pjesme, profili metapodataka (glavne i dodatne vrste, statusi izdanja), praćenje novih izdanja (svi / budući / ništa), osvježavanje koje ne briše datoteke
@@ -85,7 +87,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Pregled prije uvoza, izvori se nikad ne mijenjaju
 
 ## Vremenska crta i nadzor (P11)
-- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove radi od P4, za albume od P6; serije s P5)
+- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
 - [ ] „Zašto nije stiglo": jedan ekran koji objašnjava trenutno stanje svakog nedostajućeg naslova (za filmove na stranici filma od P4)
 - [ ] Aktivnost (red preuzimanja), povijest, blokirana izdanja, nedostajuće/ispod granice
 - [ ] Zdravlje sustava (indexeri, klijenti, disk, putanje, prava), logovi, zadaci

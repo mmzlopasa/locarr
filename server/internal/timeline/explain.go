@@ -238,13 +238,25 @@ func Explain(st ItemState, f Facts) Explanation {
 // Facts loads what the database knows about ref's way to the library.
 // kindCategory is the indexers.categories key ("movies", "tv", "music").
 func (s *Store) Facts(ctx context.Context, ref, kindCategory string) (Facts, error) {
+	return s.FactsRefs(ctx, []string{ref}, kindCategory)
+}
+
+// FactsRefs is Facts for an item seen through several refs: the first is the
+// item (its downloads, including season packs that cover it), the others are
+// related items whose searches and decisions also concern it (an episode's
+// season). Searches add up; the latest decision of any ref counts.
+func (s *Store) FactsRefs(ctx context.Context, refs []string, kindCategory string) (Facts, error) {
 	var f Facts
+	if len(refs) == 0 {
+		return f, nil
+	}
+	ref := refs[0]
 	var (
 		d       DownloadFact
 		updated int64
 	)
 	err := s.DB.R.QueryRowContext(ctx, `SELECT id, title, status, state, progress, message, updated_at FROM downloads
-		WHERE json_extract(item_ref, '$.ref') = ? ORDER BY added_at DESC, id DESC LIMIT 1`, ref).
+		WHERE id IN (SELECT download_id FROM download_refs WHERE item_ref = ?) ORDER BY added_at DESC, id DESC LIMIT 1`, ref).
 		Scan(&d.ID, &d.Title, &d.Status, &d.State, &d.Progress, &d.Message, &updated)
 	switch {
 	case err == nil:
@@ -260,26 +272,42 @@ func (s *Store) Facts(ctx context.Context, ref, kindCategory string) (Facts, err
 	case !errors.Is(err, sql.ErrNoRows):
 		return f, err
 	}
+	marks, args := placeholders(refs)
 	var p PendingFact
 	var retry int64
-	err = s.DB.R.QueryRowContext(ctx, `SELECT title, reason, retry_at FROM pending_releases WHERE item_ref = ? ORDER BY retry_at LIMIT 1`, ref).
-		Scan(&p.Title, &p.Reason, &retry)
+	err = s.DB.R.QueryRowContext(ctx, `SELECT title, reason, retry_at FROM pending_releases WHERE item_ref IN (`+marks+`) ORDER BY retry_at LIMIT 1`, args...). // #nosec G202 -- placeholders only
+																					Scan(&p.Title, &p.Reason, &retry)
 	if err == nil {
 		p.RetryAt = db.Time(retry)
 		f.Pending = &p
 	} else if !errors.Is(err, sql.ErrNoRows) {
 		return f, err
 	}
-	var last, next sql.NullInt64
-	err = s.DB.R.QueryRowContext(ctx, `SELECT searches, last_search_at, next_search_at FROM search_state WHERE item_ref = ?`, ref).
-		Scan(&f.Searches, &last, &next)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	rows, err := s.DB.R.QueryContext(ctx, `SELECT searches, last_search_at, next_search_at FROM search_state WHERE item_ref IN (`+marks+`)`, args...) // #nosec G202 -- placeholders only
+	if err != nil {
 		return f, err
 	}
-	f.LastSearch, f.NextSearch = db.NullTime(last), db.NullTime(next)
+	for rows.Next() {
+		var (
+			n          int
+			last, next sql.NullInt64
+		)
+		if err := rows.Scan(&n, &last, &next); err != nil {
+			_ = rows.Close()
+			return f, err
+		}
+		f.Searches += n
+		if t := db.NullTime(last); t != nil && (f.LastSearch == nil || t.After(*f.LastSearch)) {
+			f.LastSearch = t
+		}
+		if t := db.NullTime(next); t != nil && (f.NextSearch == nil || t.Before(*f.NextSearch)) {
+			f.NextSearch = t
+		}
+	}
+	_ = rows.Close()
 	var data string
-	err = s.DB.R.QueryRowContext(ctx, `SELECT data FROM timeline_events WHERE item_ref = ? AND type = ? ORDER BY at DESC, id DESC LIMIT 1`,
-		ref, TypeDecision).Scan(&data)
+	err = s.DB.R.QueryRowContext(ctx, `SELECT data FROM timeline_events WHERE item_ref IN (`+marks+`) AND type = ? ORDER BY at DESC, id DESC LIMIT 1`, // #nosec G202 -- placeholders only
+		append(args, TypeDecision)...).Scan(&data)
 	if err == nil {
 		var wrap struct {
 			Summary DecisionSummary `json:"summary"`

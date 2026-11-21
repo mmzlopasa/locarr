@@ -12,5 +12,6 @@ services:
     environment:
       # Only for verification against the fake services (scripts/dev-fakes.sh).
       LOCARR_TMDB_URL: ${LOCARR_TMDB_URL:-}
+      LOCARR_TVDB_URL: ${LOCARR_TVDB_URL:-}
       LOCARR_MUSICBRAINZ_URL: ${LOCARR_MUSICBRAINZ_URL:-}
       LOCARR_COVERART_URL: ${LOCARR_COVERART_URL:-}

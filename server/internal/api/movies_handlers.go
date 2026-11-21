@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
@@ -360,7 +361,7 @@ func (h *Handler) GrabMovieRelease(ctx context.Context, req *gen.ManualGrabReque
 
 // linkItems adds the library item a download belongs to.
 func (h *Handler) linkItems(ctx context.Context, items []*gen.QueueItem) {
-	cache := map[int64]*gen.QueueItemLink{}
+	cache := map[library.Ref]*gen.QueueItemLink{}
 	for _, it := range items {
 		ref := library.RefFromJSON([]byte(it.ItemRef))
 		if ref.Kind == library.RefAlbum {
@@ -369,15 +370,27 @@ func (h *Handler) linkItems(ctx context.Context, items []*gen.QueueItem) {
 			}
 			continue
 		}
-		if ref.Kind != library.RefMovie {
+		if ref.IsZero() {
 			continue
 		}
-		link, ok := cache[ref.ID]
+		link, ok := cache[ref]
 		if !ok {
-			if m, err := h.Movies.Get(ctx, ref.ID); err == nil {
-				link = &gen.QueueItemLink{Ref: ref.String(), Kind: ref.Kind, ID: ref.ID, Title: m.Title, Year: gen.NewOptInt(m.Year)}
+			switch ref.Kind {
+			case library.RefMovie:
+				if m, err := h.Movies.Get(ctx, ref.ID); err == nil {
+					link = &gen.QueueItemLink{Ref: ref.String(), Kind: ref.Kind, ID: ref.ID, Title: m.Title, Year: gen.NewOptInt(m.Year)}
+				}
+			case library.RefEpisode, library.RefSeason:
+				if h.Series != nil {
+					if es, err := h.Series.Explain(ctx, ref); err == nil {
+						link = &gen.QueueItemLink{Ref: ref.String(), Kind: ref.Kind, ID: ref.ID, Title: es.Title}
+						if n := len(library.CoversFromJSON([]byte(it.ItemRef))); n > 1 {
+							link.Title = fmt.Sprintf("%s (%d episodes)", es.Title, n)
+						}
+					}
+				}
 			}
-			cache[ref.ID] = link
+			cache[ref] = link
 		}
 		if link != nil {
 			it.Item = gen.NewOptQueueItemLink(*link)

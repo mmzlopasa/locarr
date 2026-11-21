@@ -28,6 +28,9 @@ type SecretKey struct{ Name string }
 var (
 	InstanceName = Key[string]{Name: "general.instanceName", Default: "Locarr"}
 	TMDbAPIKey   = SecretKey{Name: "metadata.tmdbApiKey"}
+	// TVDBAPIKey and TVDBPin are the optional TVDB v4 project key and subscriber PIN.
+	TVDBAPIKey = SecretKey{Name: "metadata.tvdbApiKey"}
+	TVDBPin    = SecretKey{Name: "metadata.tvdbPin"}
 )
 
 // Store reads and writes settings.

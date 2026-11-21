@@ -18,6 +18,7 @@ import (
 const (
 	RefMovie   = "movie"
 	RefSeries  = "series"
+	RefSeason  = "season"
 	RefEpisode = "episode"
 	RefArtist  = "artist"
 	RefAlbum   = "album"
@@ -37,6 +38,15 @@ type Ref struct {
 // MovieRef is the ref of a movie.
 func MovieRef(id int64) Ref { return Ref{Kind: RefMovie, ID: id} }
 
+// SeriesRef is the ref of a series.
+func SeriesRef(id int64) Ref { return Ref{Kind: RefSeries, ID: id} }
+
+// SeasonRef is the ref of a season.
+func SeasonRef(id int64) Ref { return Ref{Kind: RefSeason, ID: id} }
+
+// EpisodeRef is the ref of an episode.
+func EpisodeRef(id int64) Ref { return Ref{Kind: RefEpisode, ID: id} }
+
 func (r Ref) String() string { return r.Kind + ":" + strconv.FormatInt(r.ID, 10) }
 
 // IsZero reports an empty ref.
@@ -44,7 +54,7 @@ func (r Ref) IsZero() bool { return r.Kind == "" && r.ID == 0 }
 
 func validKind(k string) bool {
 	switch k {
-	case RefMovie, RefSeries, RefEpisode, RefArtist, RefAlbum:
+	case RefMovie, RefSeries, RefSeason, RefEpisode, RefArtist, RefAlbum:
 		return true
 	}
 	return false
@@ -63,15 +73,45 @@ func ParseRef(s string) (Ref, error) {
 	return Ref{Kind: kind, ID: n}, nil
 }
 
-// refJSON is the shape of downloads.item_ref.
+// refJSON is the shape of downloads.item_ref. Covers lists the other items
+// one download is for: the episodes of a season pack or a multi-episode
+// release (D-045). A trigger copies ref and covers into download_refs.
 type refJSON struct {
-	Ref string `json:"ref"`
+	Ref    string   `json:"ref"`
+	Covers []string `json:"covers,omitempty"`
 }
 
 // JSON is the ref as the opaque item_ref a download carries.
 func (r Ref) JSON() json.RawMessage {
 	b, _ := json.Marshal(refJSON{Ref: r.String()})
 	return b
+}
+
+// JSONWith is the item_ref of a download for r that also covers other items.
+func (r Ref) JSONWith(covers []Ref) json.RawMessage {
+	v := refJSON{Ref: r.String()}
+	for _, c := range covers {
+		if c != r {
+			v.Covers = append(v.Covers, c.String())
+		}
+	}
+	b, _ := json.Marshal(v)
+	return b
+}
+
+// CoversFromJSON returns the items a download's item_ref covers besides its ref.
+func CoversFromJSON(raw json.RawMessage) []Ref {
+	var v refJSON
+	if len(raw) == 0 || json.Unmarshal(raw, &v) != nil {
+		return nil
+	}
+	var out []Ref
+	for _, c := range v.Covers {
+		if r, err := ParseRef(c); err == nil {
+			out = append(out, r)
+		}
+	}
+	return out
 }
 
 // RefFromJSON reads a download's item_ref (zero Ref when it names no item).

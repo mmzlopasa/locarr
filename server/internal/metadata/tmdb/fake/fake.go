@@ -4,6 +4,7 @@
 //
 //	/3/configuration  /3/search/movie  /3/movie/{id}  /3/find/{imdb}
 //	/3/collection/{id}  /3/list/{id}  /t/p/{size}/{file}
+//	/3/search/tv  /3/tv/{id}  /3/tv/{id}/season/{n}
 //
 // The catalog matches the fake indexer's movies (internal/indexers/fake).
 package fake
@@ -85,6 +86,7 @@ func catalog(now time.Time) []Movie {
 type Server struct {
 	mu       sync.Mutex
 	Movies   []Movie
+	Series   []TVSeries
 	Requests map[string]int // path -> count
 	// ImageBase is advertised by /3/configuration (default: this server).
 	ImageBase string
@@ -92,7 +94,8 @@ type Server struct {
 
 // New returns a fake with the default catalog.
 func New() *Server {
-	return &Server{Movies: catalog(time.Now().UTC()), Requests: map[string]int{}}
+	now := time.Now().UTC()
+	return &Server{Movies: catalog(now), Series: tvCatalog(now), Requests: map[string]int{}}
 }
 
 // Count returns how often a path was requested.
@@ -201,6 +204,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	parts := strings.Split(strings.Trim(path, "/"), "/")
+	if s.serveTV(w, r, path, parts) {
+		return
+	}
 	switch {
 	case path == "/3/configuration":
 		base := s.ImageBase
@@ -246,12 +252,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		var results []map[string]any
 		s.mu.Lock()
 		for _, m := range s.Movies {
-			if strings.EqualFold(m.IMDb, parts[2]) {
+			if r.URL.Query().Get("external_source") != "tvdb_id" && strings.EqualFold(m.IMDb, parts[2]) {
 				results = append(results, m.result())
 			}
 		}
 		s.mu.Unlock()
-		writeJSON(w, http.StatusOK, map[string]any{"movie_results": orEmpty(results), "tv_results": []any{}})
+		writeJSON(w, http.StatusOK, map[string]any{"movie_results": orEmpty(results),
+			"tv_results": s.findTVResults(r.URL.Query().Get("external_source"), parts[2])})
 	case len(parts) == 3 && parts[0] == "3" && parts[1] == "collection":
 		id, _ := strconv.ParseInt(parts[2], 10, 64)
 		if id != CollectionID {

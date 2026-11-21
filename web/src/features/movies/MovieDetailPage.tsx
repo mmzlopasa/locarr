@@ -10,7 +10,7 @@ import { useCurrentUser } from "@/features/auth/hooks";
 import { splitTags } from "./AddMoviePage";
 import { AVAILABILITIES, Poster, StatusBadge, movieFacts, useMovie, useQualityProfiles } from "./common";
 import { HistoryTab } from "./HistoryTab";
-import { InteractiveSearch } from "./InteractiveSearch";
+import { InteractiveSearch, movieReleases } from "./InteractiveSearch";
 
 type TabKey = "overview" | "search" | "history";
 
@@ -39,7 +39,7 @@ export function MovieDetailPage() {
       </div>
       <div role="tabpanel">
         {tab === "overview" ? <Overview m={m} /> : null}
-        {tab === "search" ? <InteractiveSearch movieId={m.id} itemRef={m.itemRef ?? `movie:${m.id}`} /> : null}
+        {tab === "search" ? <InteractiveSearch source={movieReleases(m.id)} itemRef={m.itemRef ?? `movie:${m.id}`} /> : null}
         {tab === "history" ? <HistoryTab itemRef={m.itemRef ?? `movie:${m.id}`} /> : null}
       </div>
     </div>

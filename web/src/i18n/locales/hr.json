@@ -88,7 +88,10 @@
     "no_video_file": "Nije pronađena nijedna video datoteka.",
     "disc_structure": "Strukture diska (BDMV, VIDEO_TS, slike diska) ne uvoze se automatski.",
     "no_matching_movie": "Nijedan film u biblioteci ne odgovara ovoj datoteci; odaberi ga.",
-    "already_imported": "Ovo je već datoteka tog filma."
+    "already_imported": "Ovo je već datoteka tog filma.",
+    "has_files": "Serija ima datoteke; najprije ih premjestite ili obrišite.",
+    "no_matching_episode": "Ni jedna epizoda ne odgovara imenu datoteke.",
+    "no_matching_series": "Ni jedna serija u biblioteci ne odgovara imenu."
   },
   "errorPage": {
     "title": "Ova stranica se ne može prikazati",
@@ -1112,7 +1115,9 @@
     "indexer_disabled": "Indexer {{indexer}} se za ovo ne koristi.",
     "indexer_limited": "Indexer {{indexer}} je na ograničenju do {{until}}.",
     "protocol_disabled": "{{protocol}} je isključen u profilu kašnjenja {{profile}}.",
-    "delayed": "Čeka se još {{remaining}} ({{protocol}} kašnjenje {{delay}}, {{profile}})."
+    "delayed": "Čeka se još {{remaining}} ({{protocol}} kašnjenje {{delay}}, {{profile}}).",
+    "season_pack_not_wanted": "Sezonski paket, a traži se jedna epizoda",
+    "episode_not_wanted": "Ni jedna epizoda iz izdanja nije tražena"
   },
   "languageNames": {
     "en": "engleski",
@@ -1355,7 +1360,9 @@
     "indexer_disabled": "indexer isključen",
     "indexer_limited": "indexer na limitu",
     "protocol_disabled": "protokol isključen",
-    "delayed": "odgođeno"
+    "delayed": "odgođeno",
+    "season_pack_not_wanted": "Sezonski paket za jednu epizodu",
+    "episode_not_wanted": "Nema tražene epizode"
   },
   "timeline": {
     "title": "Vremenska crta",
@@ -1419,10 +1426,16 @@
       "releaseChanged": "Izdanje promijenjeno: {{message}}",
       "coverSaved": "Omot spremljen ({{source}})",
       "albumAdded": "Novi album na MusicBrainzu: {{title}}",
-      "albumRemoved": "{{message}}"
+      "albumRemoved": "{{message}}",
+      "importSkipped": "Nije uvezeno: {{message}}"
     },
     "coverSources": {
       "download": "iz preuzimanja"
+    },
+    "skipped": {
+      "no_matching_episode": "Iz {{download}} nije uvezeno: {{path}} ne odgovara ni jednoj epizodi serije",
+      "not_an_upgrade": "{{path}} nije uvezen: nije bolji od postojećeg",
+      "already_imported": "{{path}} je već u biblioteci"
     }
   },
   "interactive": {
@@ -1470,15 +1483,18 @@
     "previous": "Prethodna",
     "next": "Sljedeća",
     "page": "Stranica {{page}} od {{pages}}",
-    "media": "Mediji",
+    "media": "Filmovi, epizode ili albumi",
     "mediaKinds": {
       "movies": "Filmovi",
-      "albums": "Albumi"
+      "albums": "Albumi",
+      "episodes": "Epizode"
     },
-    "albumsDescription": "Praćeni albumi koji su izašli, a nedostaju im pjesme ili su ispod granice profila."
+    "albumsDescription": "Praćeni albumi koji su izašli, a nedostaju im pjesme ili su ispod granice profila.",
+    "episodesDescription": "Praćene epizode koje su emitirane, a nemaju datoteku ili su ispod granice profila.",
+    "emptyEpisodes": "Ovdje nema traženih epizoda."
   },
   "calendar": {
-    "description": "Datumi filmova i izlasci albuma iz biblioteke.",
+    "description": "Datumi izlaska filmova i albuma te emitiranja epizoda u biblioteci.",
     "previous": "Prethodno",
     "next": "Sljedeće",
     "today": "Danas",
@@ -1492,7 +1508,8 @@
       "in_cinemas": "U kinima",
       "digital": "Digitalno",
       "physical": "Fizičko",
-      "album": "Izlazak albuma"
+      "album": "Izlazak albuma",
+      "episode": "Epizoda"
     },
     "empty": "Nema datuma u ovom razdoblju.",
     "feed": {
@@ -1624,7 +1641,16 @@
     "save": "Spremi",
     "removeKey": "Ukloni ključ",
     "removeKeyConfirm": "Ukloni",
-    "attribution": "Ovaj proizvod koristi TMDb API, ali ga TMDb ne podržava niti certificira."
+    "attribution": "Ovaj proizvod koristi TMDb API, ali ga TMDb ne podržava niti certificira.",
+    "tvdb": {
+      "title": "TVDB (po izboru)",
+      "description": "TVDB ima apsolutne brojeve epizoda i vrijeme emitiranja; korisno za anime. Treba vaš vlastiti TVDB v4 projektni ključ.",
+      "key": "TVDB v4 API ključ",
+      "pin": "PIN pretplatnika",
+      "pinHint": "Samo za ključeve koje plaća korisnik",
+      "provider": "Serije se traže na",
+      "providerHint": "Nove serije traže se i dodaju s ovog izvora; postojeće zadržavaju izvor s kojeg su dodane."
+    }
   },
   "lists": {
     "title": "Popisi za uvoz",
@@ -1861,5 +1887,179 @@
     "minScoreHint": "40–100. Ispod toga preuzimanje se ne uvozi automatski.",
     "contact": "Kontakt za MusicBrainz",
     "contactHint": "E-mail ili web adresa koja ide uz svaki zahtjev MusicBrainzu (traže ga od svake aplikacije). Prazno: stranica projekta."
+  },
+  "series": {
+    "status": {
+      "continuing": "Traje",
+      "ended": "Završena",
+      "upcoming": "Najavljena"
+    },
+    "importExisting": "Uvezi postojeće",
+    "add": "Dodaj seriju",
+    "empty": "Još nema serija. Dodajte seriju ili uvezite postojeću biblioteku.",
+    "filter": {
+      "searchHint": "Naslov, mreža ili ID",
+      "status": "Stanje serije",
+      "episodes": "Epizode",
+      "missing": "Nedostaju epizode"
+    },
+    "sort": {
+      "title": "Naslov",
+      "year": "Godina",
+      "added": "Dodano",
+      "network": "Mreža",
+      "rating": "Ocjena",
+      "nextAiring": "Sljedeće emitiranje",
+      "previousAiring": "Zadnje emitirano",
+      "missing": "Nedostaje epizoda",
+      "size": "Veličina"
+    },
+    "columns": {
+      "network": "Mreža",
+      "episodes": "Epizode",
+      "missing": "Nedostaje",
+      "nextAiring": "Sljedeće emitiranje"
+    },
+    "episodeFiles": "Datoteke epizoda / epizode",
+    "history": "Povijest · {{title}}",
+    "releasesFor": "Izdanja · {{title}}",
+    "actions": {
+      "searchMissing": "Traži što nedostaje",
+      "history": "Povijest",
+      "searchSeason": "Traži sezonu",
+      "interactiveSeason": "Odaberi izdanje za sezonu"
+    },
+    "seasonQueued": "Pretraga sezone je pokrenuta.",
+    "reapplyMonitor": "Ponovno primijeni praćenje",
+    "keepMonitoring": "Ostavi kako jest",
+    "pathLocked": "Mapa se može promijeniti samo dok serija nema datoteka.",
+    "delete": {
+      "files": "Premjesti mapu serije u koš"
+    },
+    "seasons": "Sezone",
+    "expandAll": "Otvori sve",
+    "collapseAll": "Zatvori sve",
+    "clearSelection": "Poništi",
+    "specials": "Specijali",
+    "season": "Sezona {{number}}",
+    "selectSeason": "Odaberi sve epizode: {{name}}",
+    "downloading": "Preuzima se: {{count}}",
+    "missingCount": "Nedostaje: {{count}}",
+    "searchQueued": "Pokrenute pretrage: {{count}}.",
+    "selected": "Odabrane epizode: {{count}}"
+  },
+  "episode": {
+    "state": {
+      "downloading": "Preuzima se",
+      "downloaded": "Preuzeto",
+      "upgrade": "Ispod granice",
+      "missing": "Nedostaje",
+      "unaired": "Nije emitirano",
+      "unmonitored": "Ne prati se",
+      "tba": "Nepoznato"
+    },
+    "airs": "Emitiranje",
+    "monitor": "Prati {{code}}",
+    "unmonitor": "Prestani pratiti {{code}}",
+    "tba": "Bit će objavljeno",
+    "removed": "Izvor je više ne navodi (zadržana jer ima datoteku)",
+    "scene": "Izdanja: {{code}}",
+    "search": "Traži ovu epizodu",
+    "interactive": "Odaberi izdanje",
+    "why": "Povijest i zašto nije stigla"
+  },
+  "monitor": {
+    "all": "Sve epizode",
+    "future": "Buduće epizode",
+    "missing": "Epizode koje nedostaju",
+    "existing": "Postojeće epizode",
+    "first_season": "Prva sezona",
+    "latest_season": "Zadnja sezona",
+    "pilot": "Samo pilot",
+    "none": "Ništa"
+  },
+  "monitorHint": {
+    "all": "Svaka epizoda se traži i nadograđuje.",
+    "future": "Samo epizode koje još nisu emitirane.",
+    "missing": "Epizode bez datoteke.",
+    "existing": "Samo epizode koje već imaju datoteku (nadogradnje).",
+    "first_season": "Sve epizode prve sezone.",
+    "latest_season": "Sve epizode zadnje sezone.",
+    "pilot": "Samo prva epizoda.",
+    "none": "Ništa se ne traži dok ne označite epizode za praćenje."
+  },
+  "seriesType": {
+    "standard": "Standardna (S01E01)",
+    "daily": "Dnevna (po datumu)",
+    "anime": "Anime (apsolutni brojevi)"
+  },
+  "addSeries": {
+    "title": "Dodaj seriju",
+    "description": "Traži na TMDb-u (ili TVDB-u) po naslovu, tmdb:id, tvdb:id ili IMDb ID-u.",
+    "searchHint": "The Expanse, tvdb:280619, tt3230854",
+    "noRoot": "Najprije dodajte root mapu za serije:",
+    "monitor": "Praćenje",
+    "type": "Vrsta serije",
+    "newSeasons": "Nove sezone",
+    "newSeasonsAll": "Prati nove sezone",
+    "newSeasonsNone": "Ne prati nove sezone",
+    "seasonFolder": "Mape sezona",
+    "seasonFolderHint": "Epizode idu u „Season 01“, „Season 02“…",
+    "monitoredHint": "Automatski se traže samo praćene serije.",
+    "searchOnAddHint": "Traži praćene epizode čim je serija dodana.",
+    "optionsDescription": "Kako se serijom upravlja. Sve se može kasnije promijeniti.",
+    "specialsHint": "Specijali se nikad ne prate automatski.",
+    "add": "Dodaj seriju"
+  },
+  "seriesImport": {
+    "title": "Uvoz postojećih serija",
+    "description": "Dodajte serije koje su već na disku, uvezite datoteke iz bilo koje mape ili preimenujte epizode.",
+    "existing": {
+      "title": "Postojeća biblioteka",
+      "description": "Mape u root mapi za serije koje još nisu u biblioteci, uparene s izvorom. Datoteke epizoda se pronađu i ostaju gdje jesu.",
+      "videos": "Video datoteke",
+      "result": "Dodano {{ok}} (pronađeno {{files}} datoteka epizoda), neuspjelo {{failed}}."
+    },
+    "manual": {
+      "description": "Pregledajte datoteke epizoda u mapi i koje epizode svaka sadrži, pa ih uvezite.",
+      "mode": "Prijenos",
+      "result": "Uvezeno {{ok}}, neuspjelo {{failed}}."
+    },
+    "rename": {
+      "description": "Primijeni predloške epizoda na datoteke koje su već u biblioteci (unutar mape serije; titlovi idu s njima)."
+    }
+  },
+  "seriesNaming": {
+    "title": "Imena serija",
+    "description": "Kako se pri uvozu i preimenovanju zovu mape serija i sezona te datoteke epizoda.",
+    "rename": "Preimenuj datoteke epizoda",
+    "fields": {
+      "seriesFolderFormat": "Mapa serije",
+      "seasonFolderFormat": "Mapa sezone",
+      "specialsFolderFormat": "Mapa specijala",
+      "standardEpisodeFormat": "Standardna epizoda",
+      "dailyEpisodeFormat": "Dnevna epizoda",
+      "animeEpisodeFormat": "Anime epizoda"
+    },
+    "multiStyle": "Više epizoda u datoteci",
+    "styles": {
+      "prefixed_range": "Raspon s E (S01E01-E03)",
+      "range": "Raspon (S01E01-03)",
+      "extend": "Proširi (S01E01-E02-E03)",
+      "duplicate": "Ponovi oznaku (S01E01.S01E02)",
+      "repeat": "Nanizaj (S01E01E02E03)",
+      "scene": "Scenski (S01E01-02-03)"
+    },
+    "packThreshold": "Sezonski paket od",
+    "packThresholdHint": "Broj traženih epizoda sezone od kojeg Locarr traži cijelu sezonu (i kad je sezona završila).",
+    "searchOnAdd": "Odmah traži nove serije",
+    "examples": {
+      "folder": "Mape",
+      "standard": "Standardna",
+      "multi": "Dvije epizode",
+      "daily": "Dnevna",
+      "anime": "Anime",
+      "specials": "Specijali"
+    }
   }
 }

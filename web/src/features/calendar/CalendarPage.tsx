@@ -10,7 +10,7 @@ import { monthGrid, rangeFor, step, weekDays, ymd, type CalendarView } from "./d
 
 type Item = { kind: "movie"; e: CalendarEntry } | { kind: "album"; e: AlbumCalendarEntry };
 
-const itemKey = (i: Item) => (i.kind === "movie" ? `m${i.e.movieId}-${i.e.kind}` : `a${i.e.albumId}`);
+const itemKey = (i: Item) => (i.kind === "movie" ? entryKey(i.e) : `a${i.e.albumId}`);
 
 function AlbumEntry({ e, compact }: { e: AlbumCalendarEntry; compact?: boolean }) {
   const { t } = useTranslation();
@@ -31,10 +31,26 @@ const kindTone: Record<CalendarEntry["kind"], string> = {
   in_cinemas: "border-l-warning",
   digital: "border-l-info",
   physical: "border-l-accent",
+  episode: "border-l-muted",
 };
 
+const code = (e: CalendarEntry) => `S${String(e.seasonNumber ?? 0).padStart(2, "0")}E${String(e.episodeNumber ?? 0).padStart(2, "0")}`;
+
+const entryKey = (e: CalendarEntry) => (e.kind === "episode" ? `e${e.episodeId}` : `${e.movieId}-${e.kind}`);
+
 function Entry({ e, compact }: { e: CalendarEntry; compact?: boolean }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  if (e.kind === "episode") {
+    const time = e.airDateUtc ? new Intl.DateTimeFormat(i18n.language, { timeStyle: "short" }).format(new Date(e.airDateUtc)) : "";
+    return (
+      <Link to="/series/$id" params={{ id: String(e.seriesId) }} data-testid="calendar-entry" data-kind="episode"
+        className={`block truncate rounded border border-line border-l-2 ${kindTone.episode} bg-surface-2 px-1.5 py-0.5 text-[12px] hover:bg-surface-3 ${e.hasFile ? "text-muted line-through decoration-faint" : "text-fg"}`}
+        title={`${e.title} ${code(e)} ${e.episodeTitle ?? ""}${time ? ` · ${time}` : ""}${e.network ? ` · ${e.network}` : ""}`}>
+        {e.title} <span className="tabular-nums text-muted">{code(e)}</span>
+        {compact ? "" : <span className="ml-1 text-faint">{e.episodeTitle ? `· ${e.episodeTitle}` : ""}{time ? ` · ${time}` : ""}</span>}
+      </Link>
+    );
+  }
   return (
     <Link to="/movies/$id" params={{ id: String(e.movieId) }} data-testid="calendar-entry"
       className={`block truncate rounded border border-line border-l-2 ${kindTone[e.kind]} bg-surface-2 px-1.5 py-0.5 text-[12px] hover:bg-surface-3 ${e.hasFile ? "text-muted line-through decoration-faint" : "text-fg"}`}
@@ -128,7 +144,7 @@ export function CalendarPage() {
         </ol>
       ) : null}
       <div className="mt-3 flex flex-wrap gap-3 text-[12px] text-muted">
-        {(["in_cinemas", "digital", "physical"] as const).map((k) => (
+        {(["in_cinemas", "digital", "physical", "episode"] as const).map((k) => (
           <span key={k} className={`border-l-2 pl-1.5 ${kindTone[k]}`}>{t(`calendar.kinds.${k}`)}</span>
         ))}
         <span className="border-l-2 border-l-success pl-1.5">{t("calendar.kinds.album")}</span>

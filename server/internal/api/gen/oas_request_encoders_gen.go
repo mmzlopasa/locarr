@@ -66,6 +66,20 @@ func encodeAddMovieCollectionRequest(
 	return nil
 }
 
+func encodeAddSeriesRequest(
+	req *AddSeriesRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeChangePasswordRequest(
 	req *ChangePasswordRequest,
 	r *http.Request,
@@ -318,6 +332,20 @@ func encodeGrabAlbumReleaseRequest(
 	return nil
 }
 
+func encodeGrabEpisodeReleaseRequest(
+	req *ManualGrabRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeGrabMovieReleaseRequest(
 	req *ManualGrabRequest,
 	r *http.Request,
@@ -334,6 +362,20 @@ func encodeGrabMovieReleaseRequest(
 
 func encodeGrabReleaseRequest(
 	req *GrabRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeGrabSeasonReleaseRequest(
+	req *ManualGrabRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -388,6 +430,20 @@ func encodeImportExistingMusicRequest(
 	return nil
 }
 
+func encodeImportExistingSeriesRequest(
+	req *ImportExistingSeriesRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeLoginRequest(
 	req *LoginRequest,
 	r *http.Request,
@@ -416,8 +472,36 @@ func encodeManualImportRequest(
 	return nil
 }
 
+func encodeManualImportSeriesRequest(
+	req *SeriesManualImportRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeMonitorAlbumsRequest(
 	req *AlbumMonitorRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeMonitorEpisodesRequest(
+	req *MonitorEpisodesRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -514,6 +598,34 @@ func encodePreviewRenameMoviesRequest(
 	return nil
 }
 
+func encodePreviewRenameSeriesRequest(
+	req *SeriesIdsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodePreviewSeriesNamingRequest(
+	req *SeriesNamingSettings,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeRegenerateRecoveryCodesRequest(
 	req *PasswordConfirm,
 	r *http.Request,
@@ -530,6 +642,20 @@ func encodeRegenerateRecoveryCodesRequest(
 
 func encodeRenameMoviesRequest(
 	req *MovieIdsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeRenameSeriesRequest(
+	req *SeriesIdsRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -598,8 +724,36 @@ func encodeSearchAlbumsRequest(
 	return nil
 }
 
+func encodeSearchEpisodesRequest(
+	req *EpisodeIdsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeSearchMoviesRequest(
 	req *MovieIdsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeSearchSeriesBulkRequest(
+	req *SeriesIdsRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -740,6 +894,20 @@ func encodeUpdateDownloadClientRequest(
 
 func encodeUpdateDownloadSettingsRequest(
 	req *UpdateDownloadSettings,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateEpisodeRequest(
+	req *EpisodeUpdate,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -922,6 +1090,48 @@ func encodeUpdateReleaseProfileRequest(
 
 func encodeUpdateRemotePathMappingRequest(
 	req *RemotePathMappingInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSeasonRequest(
+	req *SeasonUpdate,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSeriesRequest(
+	req *SeriesUpdate,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSeriesNamingRequest(
+	req *SeriesNamingSettings,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

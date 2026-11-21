@@ -50,6 +50,15 @@ func (UnimplementedHandler) AddMovieCollection(ctx context.Context, req *AddOpti
 	return r, ht.ErrNotImplemented
 }
 
+// AddSeries implements addSeries operation.
+//
+// Add a series from TMDb or TVDB with its seasons and episodes (library managers).
+//
+// POST /series
+func (UnimplementedHandler) AddSeries(ctx context.Context, req *AddSeriesRequest) (r *Series, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // BrowseFilesystem implements browseFilesystem operation.
 //
 // Without `path`, lists the data roots themselves.
@@ -375,6 +384,15 @@ func (UnimplementedHandler) DeleteRootFolder(ctx context.Context, params DeleteR
 	return ht.ErrNotImplemented
 }
 
+// DeleteSeries implements deleteSeries operation.
+//
+// With `deleteFiles` the series folder goes to the recycle bin; files are never deleted outright.
+//
+// DELETE /series/{id}
+func (UnimplementedHandler) DeleteSeries(ctx context.Context, params DeleteSeriesParams) error {
+	return ht.ErrNotImplemented
+}
+
 // DeleteUser implements deleteUser operation.
 //
 // Not the caller's own account and not the last enabled administrator.
@@ -471,7 +489,7 @@ func (UnimplementedHandler) GetArtist(ctx context.Context, params GetArtistParam
 
 // GetCalendar implements getCalendar operation.
 //
-// Movie dates (in cinemas, digital, physical) between two days.
+// Movie dates (in cinemas, digital, physical) and episode air dates between two days.
 //
 // GET /calendar
 func (UnimplementedHandler) GetCalendar(ctx context.Context, params GetCalendarParams) (r []CalendarEntry, _ error) {
@@ -538,6 +556,15 @@ func (UnimplementedHandler) GetDownloadClient(ctx context.Context, params GetDow
 //
 // GET /downloadclients/settings
 func (UnimplementedHandler) GetDownloadSettings(ctx context.Context) (r *DownloadSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetEpisode implements getEpisode operation.
+//
+// One episode.
+//
+// GET /episodes/{id}
+func (UnimplementedHandler) GetEpisode(ctx context.Context, params GetEpisodeParams) (r *Episode, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -651,6 +678,24 @@ func (UnimplementedHandler) GetRecycleBin(ctx context.Context) (r *RecycleBin, _
 	return r, ht.ErrNotImplemented
 }
 
+// GetSeries implements getSeries operation.
+//
+// One series with its seasons.
+//
+// GET /series/{id}
+func (UnimplementedHandler) GetSeries(ctx context.Context, params GetSeriesParams) (r *SeriesDetail, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetSeriesNaming implements getSeriesNaming operation.
+//
+// Series naming and season pack settings (administrators).
+//
+// GET /settings/mediamanagement/series
+func (UnimplementedHandler) GetSeriesNaming(ctx context.Context) (r *SeriesNamingSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetSettings implements getSettings operation.
 //
 // Secret fields only say whether they are set; their values never leave the server.
@@ -716,6 +761,15 @@ func (UnimplementedHandler) GrabAlbumRelease(ctx context.Context, req *ManualGra
 	return r, ht.ErrNotImplemented
 }
 
+// GrabEpisodeRelease implements grabEpisodeRelease operation.
+//
+// Grab a release chosen in an interactive episode search (library managers).
+//
+// POST /episodes/{id}/releases
+func (UnimplementedHandler) GrabEpisodeRelease(ctx context.Context, req *ManualGrabRequest, params GrabEpisodeReleaseParams) (r *QueueItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GrabMovieRelease implements grabMovieRelease operation.
 //
 // Grab a release chosen in an interactive search (library managers).
@@ -734,6 +788,15 @@ func (UnimplementedHandler) GrabMovieRelease(ctx context.Context, req *ManualGra
 //
 // POST /queue/grab
 func (UnimplementedHandler) GrabRelease(ctx context.Context, req *GrabRequest) (r *QueueItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GrabSeasonRelease implements grabSeasonRelease operation.
+//
+// Grab a release chosen in an interactive season search (library managers).
+//
+// POST /series/{id}/seasons/{number}/releases
+func (UnimplementedHandler) GrabSeasonRelease(ctx context.Context, req *ManualGrabRequest, params GrabSeasonReleaseParams) (r *QueueItem, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -766,6 +829,15 @@ func (UnimplementedHandler) ImportExistingMusic(ctx context.Context, req *Import
 	return r, ht.ErrNotImplemented
 }
 
+// ImportExistingSeries implements importExistingSeries operation.
+//
+// Add series for existing folders and register their episode files in place (library managers).
+//
+// POST /series/import/existing
+func (UnimplementedHandler) ImportExistingSeries(ctx context.Context, req *ImportExistingSeriesRequest) (r []ImportExistingSeriesResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // InteractiveSearchAlbum implements interactiveSearchAlbum operation.
 //
 // Interactive search for an album - every release and the decision on it (library managers).
@@ -775,12 +847,30 @@ func (UnimplementedHandler) InteractiveSearchAlbum(ctx context.Context, params I
 	return r, ht.ErrNotImplemented
 }
 
+// InteractiveSearchEpisode implements interactiveSearchEpisode operation.
+//
+// Interactive episode search - every release and the decision on it (library managers).
+//
+// GET /episodes/{id}/releases
+func (UnimplementedHandler) InteractiveSearchEpisode(ctx context.Context, params InteractiveSearchEpisodeParams) (r *InteractiveSearch, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // InteractiveSearchMovie implements interactiveSearchMovie operation.
 //
 // Interactive search - every release and the decision on it (library managers).
 //
 // GET /movies/{id}/releases
 func (UnimplementedHandler) InteractiveSearchMovie(ctx context.Context, params InteractiveSearchMovieParams) (r *InteractiveSearch, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// InteractiveSearchSeason implements interactiveSearchSeason operation.
+//
+// Interactive season search - every release and the decision on it (library managers).
+//
+// GET /series/{id}/seasons/{number}/releases
+func (UnimplementedHandler) InteractiveSearchSeason(ctx context.Context, params InteractiveSearchSeasonParams) (r *InteractiveSearch, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -992,6 +1082,25 @@ func (UnimplementedHandler) ListSearchLog(ctx context.Context, params ListSearch
 	return r, ht.ErrNotImplemented
 }
 
+// ListSeries implements listSeries operation.
+//
+// Filters combine. `status` is the series' own status (continuing, ended, upcoming); `missing` keeps
+// series with monitored, aired episodes that have no file.
+//
+// GET /series
+func (UnimplementedHandler) ListSeries(ctx context.Context, params ListSeriesParams) (r *SeriesList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListSeriesEpisodes implements listSeriesEpisodes operation.
+//
+// Every episode of a series, in order.
+//
+// GET /series/{id}/episodes
+func (UnimplementedHandler) ListSeriesEpisodes(ctx context.Context, params ListSeriesEpisodesParams) (r []Episode, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListSessions implements listSessions operation.
 //
 // Own signed-in devices.
@@ -1025,6 +1134,15 @@ func (UnimplementedHandler) ListUsers(ctx context.Context) (r []User, _ error) {
 //
 // GET /music/albums
 func (UnimplementedHandler) ListWantedAlbums(ctx context.Context, params ListWantedAlbumsParams) (r *AlbumList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListWantedEpisodes implements listWantedEpisodes operation.
+//
+// Missing episodes or episodes below the cutoff, oldest air date first.
+//
+// GET /episodes/wanted
+func (UnimplementedHandler) ListWantedEpisodes(ctx context.Context, params ListWantedEpisodesParams) (r *WantedEpisodeList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1065,6 +1183,15 @@ func (UnimplementedHandler) LookupMovies(ctx context.Context, params LookupMovie
 	return r, ht.ErrNotImplemented
 }
 
+// LookupSeries implements lookupSeries operation.
+//
+// Search the series provider by title, TMDb id ("tmdb:1399"), TVDB id ("tvdb:121361") or IMDb id.
+//
+// GET /series/lookup
+func (UnimplementedHandler) LookupSeries(ctx context.Context, params LookupSeriesParams) (r []SeriesLookup, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ManualImport implements manualImport operation.
 //
 // Import chosen files into movies (library managers).
@@ -1074,12 +1201,30 @@ func (UnimplementedHandler) ManualImport(ctx context.Context, req *ManualImportR
 	return r, ht.ErrNotImplemented
 }
 
+// ManualImportSeries implements manualImportSeries operation.
+//
+// Import chosen files into episodes (library managers).
+//
+// POST /series/import/manual
+func (UnimplementedHandler) ManualImportSeries(ctx context.Context, req *SeriesManualImportRequest) (r []SeriesManualImportResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // MonitorAlbums implements monitorAlbums operation.
 //
 // Monitor or unmonitor several albums (library managers).
 //
 // PUT /music/albums/monitor
 func (UnimplementedHandler) MonitorAlbums(ctx context.Context, req *AlbumMonitorRequest) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// MonitorEpisodes implements monitorEpisodes operation.
+//
+// Monitor or unmonitor several episodes (library managers).
+//
+// POST /episodes/monitor
+func (UnimplementedHandler) MonitorEpisodes(ctx context.Context, req *MonitorEpisodesRequest) (r *QueuedCount, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1130,6 +1275,15 @@ func (UnimplementedHandler) PreviewManualImport(ctx context.Context, params Prev
 	return r, ht.ErrNotImplemented
 }
 
+// PreviewManualImportSeries implements previewManualImportSeries operation.
+//
+// Preview importing the episode files of a folder (library managers).
+//
+// GET /series/import/manual
+func (UnimplementedHandler) PreviewManualImportSeries(ctx context.Context, params PreviewManualImportSeriesParams) (r []SeriesImportCandidate, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // PreviewMusicImport implements previewMusicImport operation.
 //
 // How a folder's files match an album's editions, with scores (library managers).
@@ -1166,6 +1320,24 @@ func (UnimplementedHandler) PreviewRenameMovies(ctx context.Context, req *MovieI
 	return r, ht.ErrNotImplemented
 }
 
+// PreviewRenameSeries implements previewRenameSeries operation.
+//
+// Show which episode files a rename would change.
+//
+// POST /series/rename/preview
+func (UnimplementedHandler) PreviewRenameSeries(ctx context.Context, req *SeriesIdsRequest) (r []SeriesRenameItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// PreviewSeriesNaming implements previewSeriesNaming operation.
+//
+// Render the series templates for standard, multi-episode, daily and anime examples.
+//
+// POST /settings/mediamanagement/series/preview
+func (UnimplementedHandler) PreviewSeriesNaming(ctx context.Context, req *SeriesNamingSettings) (r *SeriesNamingPreview, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RefreshArtist implements refreshArtist operation.
 //
 // Albums are synced at once; editions and track lists follow in the background.
@@ -1193,6 +1365,15 @@ func (UnimplementedHandler) RefreshQueue(ctx context.Context) error {
 	return ht.ErrNotImplemented
 }
 
+// RefreshSeries implements refreshSeries operation.
+//
+// Reload a series from its provider and merge seasons and episodes (library managers).
+//
+// POST /series/{id}/refresh
+func (UnimplementedHandler) RefreshSeries(ctx context.Context, params RefreshSeriesParams) (r *Series, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RegenerateRecoveryCodes implements regenerateRecoveryCodes operation.
 //
 // Replace the recovery codes.
@@ -1218,6 +1399,16 @@ func (UnimplementedHandler) RemoveQueueItem(ctx context.Context, params RemoveQu
 //
 // POST /movies/rename
 func (UnimplementedHandler) RenameMovies(ctx context.Context, req *MovieIdsRequest) (r []RenameItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RenameSeries implements renameSeries operation.
+//
+// An empty list renames every series. Files stay inside their series folder; nothing is overwritten or
+// deleted.
+//
+// POST /series/rename
+func (UnimplementedHandler) RenameSeries(ctx context.Context, req *SeriesIdsRequest) (r []SeriesRenameItem, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1312,6 +1503,16 @@ func (UnimplementedHandler) ScanExistingMusic(ctx context.Context, params ScanEx
 	return r, ht.ErrNotImplemented
 }
 
+// ScanExistingSeries implements scanExistingSeries operation.
+//
+// Folders in a series root folder that are not in the library, with provider matches (library
+// managers).
+//
+// GET /series/import/scan
+func (UnimplementedHandler) ScanExistingSeries(ctx context.Context, params ScanExistingSeriesParams) (r []ExistingSeriesFolder, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // Search implements search operation.
 //
 // Indexers are asked in parallel, each with its own timeout and request limit. Results are
@@ -1350,6 +1551,15 @@ func (UnimplementedHandler) SearchArtist(ctx context.Context, params SearchArtis
 	return r, ht.ErrNotImplemented
 }
 
+// SearchEpisodes implements searchEpisodes operation.
+//
+// Queue searches for episodes now (library managers).
+//
+// POST /episodes/search
+func (UnimplementedHandler) SearchEpisodes(ctx context.Context, req *EpisodeIdsRequest) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // SearchMovie implements searchMovie operation.
 //
 // The search, the decision and any grab appear on the movie's timeline.
@@ -1365,6 +1575,33 @@ func (UnimplementedHandler) SearchMovie(ctx context.Context, params SearchMovieP
 //
 // POST /movies/search
 func (UnimplementedHandler) SearchMovies(ctx context.Context, req *MovieIdsRequest) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchSeason implements searchSeason operation.
+//
+// Queue a season search now (season packs preferred) (library managers).
+//
+// POST /series/{id}/seasons/{number}/search
+func (UnimplementedHandler) SearchSeason(ctx context.Context, params SearchSeasonParams) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchSeries implements searchSeries operation.
+//
+// Queue searches for every wanted season and episode of a series (library managers).
+//
+// POST /series/{id}/search
+func (UnimplementedHandler) SearchSeries(ctx context.Context, params SearchSeriesParams) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchSeriesBulk implements searchSeriesBulk operation.
+//
+// Queue searches for every wanted episode of several series (library managers).
+//
+// POST /series/search
+func (UnimplementedHandler) SearchSeriesBulk(ctx context.Context, req *SeriesIdsRequest) (r *QueuedCount, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1517,6 +1754,15 @@ func (UnimplementedHandler) UpdateDownloadSettings(ctx context.Context, req *Upd
 	return r, ht.ErrNotImplemented
 }
 
+// UpdateEpisode implements updateEpisode operation.
+//
+// Monitor an episode or set its scene numbering (library managers).
+//
+// PATCH /episodes/{id}
+func (UnimplementedHandler) UpdateEpisode(ctx context.Context, req *EpisodeUpdate, params UpdateEpisodeParams) (r *Episode, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateImportList implements updateImportList operation.
 //
 // Change an import list (administrators).
@@ -1632,6 +1878,34 @@ func (UnimplementedHandler) UpdateReleaseProfile(ctx context.Context, req *Relea
 //
 // PUT /remotepathmappings/{id}
 func (UnimplementedHandler) UpdateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput, params UpdateRemotePathMappingParams) (r *RemotePathMapping, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSeason implements updateSeason operation.
+//
+// Monitor or unmonitor a season and all its episodes (library managers).
+//
+// PATCH /series/{id}/seasons/{number}
+func (UnimplementedHandler) UpdateSeason(ctx context.Context, req *SeasonUpdate, params UpdateSeasonParams) (r *SeasonInfo, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSeries implements updateSeries operation.
+//
+// `monitor` re-applies a monitor option to every episode (specials keep their own setting). The folder
+// can change only while the series has no files (`has_files`).
+//
+// PATCH /series/{id}
+func (UnimplementedHandler) UpdateSeries(ctx context.Context, req *SeriesUpdate, params UpdateSeriesParams) (r *Series, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSeriesNaming implements updateSeriesNaming operation.
+//
+// Change series naming and season pack settings (administrators).
+//
+// PUT /settings/mediamanagement/series
+func (UnimplementedHandler) UpdateSeriesNaming(ctx context.Context, req *SeriesNamingSettings) (r *SeriesNamingSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
