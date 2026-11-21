@@ -104,3 +104,33 @@
 **Kontekst:** izdanje koje nije uspjelo ili ga je korisnik odbio ne smije se ponovno grabati, a odluka o izdanju (P2) prolazi tisuće kandidata.
 **Odluka:** tablica `blocklist` (naslov, protokol, indexer, info hash, GUID, razlog, poruka, `item_ref`, preuzimanje). Kandidat je blokiran ako se poklapa hash, ili GUID, ili naslov (bez razlike velikih slova i razmaka) s istog indexera (ili istog protokola kad indexer nije poznat). Provjera ide iz memorije (`BlocklistChecker.IsBlocklisted`), indeks se puni iz baze pri prvoj upotrebi i nakon svake promjene. Akcija „ukloni i blokiraj" u redu radi oboje odjednom.
 **Posljedice:** brisanje zapisa iz blokiranih odmah dopušta ponovni grab.
+
+## D-022 Parser imena izdanja: tokeni, rječnici i nekoliko čuvanih regexa (2026-11-21)
+**Kontekst:** parser se poziva za svako izdanje iz RSS-a i pretrage (cilj: 1000 imena < 50 ms) i mora biti objašnjiv; clean-room (D-002) isključuje tuđe parsere.
+**Odluka:** ime se rastavlja na tokene (točka, razmak, podvlaka, zagrade; točka ostaje u „5.1", „H.264", „44.1kHz"), sezone/epizode/datumi/anime brojevi traže se nekolicinom regexa koji se pokreću samo kad brzi pregled znakova pokaže da ima smisla, a sve ostalo su rječnici (pojedinačne riječi i fraze). Naslov završava na prvoj „jakoj" oznaci (rezolucija, izvor, kodek, epizoda…) ili godini prije nje (zadnja godina koja nije prvi token, pa „1917.2019" i „Blade.Runner.2049.2017" rade); višeznačne riječi (Web, Cam, TS, Opus, DV…) računaju se samo velikim slovima ili iza naslova; jezici, verzije i zastavice na kraju naslova se odrežu. Nepoznati dijelovi idu u `unparsed` i smanjuju `confidence`. Ime bez oznake jezika smatra se engleskim. Golden testovi: 1381 ime (generirani skupovi s poznatom istinom iz `testdata/generate.go` + ručno pisani rubni slučajevi), fuzz i test brzine (~35 ms za 1000 imena).
+**Posljedice:** novo pravilo = redak u rječniku + golden slučaj. Ime bez izvora a s rezolucijom pogađa se kao HDTV (epizode) ili WEB-DL (ostalo), uz manju pouzdanost.
+
+## D-023 Fiksna ljestvica kvaliteta, veličine u MB po minuti (2026-11-21)
+**Kontekst:** profili, custom formati i odluke trebaju stabilne ID-jeve kvaliteta; korisnici misle u GB za film ili epizodu.
+**Odluka:** ljestvica je u kodu (`internal/quality`, ID-jevi poput `bluray-1080p`, `remux-2160p`, `flac-24`), video i glazba odvojeno. Definicije veličina (najmanje/željeno/najviše, MB po minuti; 0 = bez granice/bez želje) su po vrsti sadržaja (filmovi, serije, glazba), spremaju se u bazu i vraćaju na zadano. Sezonski paket množi trajanje brojem traženih epizoda te sezone.
+**Posljedice:** nova kvaliteta je promjena koda i nova migracija nije potrebna (nedostajuće definicije dodaju se pri pokretanju).
+
+## D-024 Jezici unutar profila kvalitete, ne zasebni jezični profili (2026-11-21)
+**Kontekst:** brief dopušta oba; zasebni jezični profili za audio su još jedan izbornik koji se uvijek veže 1:1 s profilom kvalitete.
+**Odluka:** profil kvalitete ima popis prihvaćenih jezika (`original`, ISO kodovi; prazno = svi). Multi/dual audio izdanja prolaze za „izvorni jezik". Jezični profili za titlove ostaju za P7.
+**Posljedice:** `/api/v1/languages` daje katalog; nema `/languageprofiles`.
+
+## D-025 Custom formati: semantika uvjeta i dijeljeni JSON (2026-11-21)
+**Kontekst:** korisnici lijepe formate iz javnih vodiča; regexi u njima koriste lookaround.
+**Odluka:** format vrijedi kad za svaku vrstu uvjeta prođu svi obavezni i (ako ih ima) barem jedan neobavezni; negacija obrće pojedini uvjet. Regexi idu kroz .NET-kompatibilan `regexp2` s timeoutom 50 ms. Uvoz prima objekt ili niz, `fields` kao objekt ili stari oblik liste, brojčane vrijednosti prevodi prema „okusu" (numeracija izvora alata za filmove 0–9 ili za serije 0–7); pohranjujemo imena (`webdl`, `remux`, `hr`). Nepoznata implementacija se čuva i prijavljuje: neobavezna se zanemaruje, obavezna sprječava da format ikad vrijedi. Uz javne vrste imamo vlastite: video kodek, HDR, audio, streaming servis.
+**Posljedice:** izvoz vraća brojeve u odabranom okusu, pa se formati mogu vratiti u druge alate.
+
+## D-026 Odluka: svi uvjeti uvijek, privremena odbijanja, deterministički poredak (2026-11-21)
+**Kontekst:** „zašto nije stiglo" traži svaki razlog, ne samo prvi; P4/P11 spremaju rezultat.
+**Odluka:** `decision.Evaluate(ctx, Context, []Candidate) Report` pokreće sve provjere na svakom kandidatu; svako odbijanje ima stabilan kod, englesku poruku s vrijednostima i `params` (web ih prevodi). Odbijanja koja mogu proći kasnije (kašnjenje, minimalna starost, limit indexera) su `temporary` → status `pending`. Poredak prihvaćenih: položaj kvalitete u profilu, bodovi custom formata, revizija, preferirani protokol, prioritet indexera, seederi, blizina željenoj veličini, noviji, pa naziv. `decision.Candidate` je naš tip; P4 piše tanki adapter iz `indexers.Release`, a blocklist je sučelje `Blocked(ctx, *Candidate, *parser.Release)` koje P4 spaja na `downloads.BlocklistChecker`. Interaktivna pretraga ne čeka na profile kašnjenja.
+**Posljedice:** oblik `DecisionReport` je u specifikaciji; motor ništa ne sprema.
+
+## D-027 Oznake (tagovi) u profilima kao tekst (2026-11-21)
+**Kontekst:** profili izdanja i kašnjenja vežu se uz oznake naslova, a naslovi stižu u P4/P5.
+**Odluka:** oznake su mala slova, bez razmaka na rubovima; profil kašnjenja bez oznaka postoji samo jedan (zadani, uvijek zadnji, ne briše se), ostali se provjeravaju redom i prvi koji odgovara vrijedi.
+**Posljedice:** kad uvedemo tablicu oznaka, migracija preslikava tekst u ID-jeve.
