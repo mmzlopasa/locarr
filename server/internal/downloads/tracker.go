@@ -264,6 +264,10 @@ func (s *Service) update(ctx context.Context, c Client, cl downloaders.Client, d
 		if d.State != before.State {
 			recs = append(recs, rec{EventState, string(before.State), string(d.State), it.Message})
 		}
+		// Quarter milestones for the per-title timeline.
+		if d.Status == StatusActive && d.Progress < 1 && int(d.Progress*4) > int(before.Progress*4) {
+			recs = append(recs, rec{EventProgress, string(d.State), string(d.State), fmt.Sprintf("%d%% downloaded", int(d.Progress*4)*25)})
+		}
 		msg := it.Message
 		if d.Status == StatusActive {
 			switch {

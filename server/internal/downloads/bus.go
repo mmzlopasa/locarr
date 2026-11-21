@@ -19,6 +19,8 @@ const (
 	EventImported     EventType = "imported"
 	EventImportFailed EventType = "import_failed"
 	EventBlocklisted  EventType = "blocklisted"
+	// EventProgress marks 25, 50 and 75 % (recorded, not published).
+	EventProgress EventType = "progress"
 )
 
 // Event is published on the bus after the change is committed.
