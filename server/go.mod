@@ -5,6 +5,7 @@ go 1.26.4
 tool github.com/ogen-go/ogen/cmd/ogen
 
 require (
+	github.com/dlclark/regexp2 v1.12.0
 	github.com/go-chi/chi/v5 v5.5.0
 	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
@@ -22,7 +23,6 @@ require (
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/dlclark/regexp2 v1.12.0 // indirect
 	github.com/dustin/go-humanize v1.1.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect

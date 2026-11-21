@@ -32,6 +32,10 @@ tags:
   - name: downloadclients
   - name: remotepathmappings
   - name: queue
+  - name: quality
+  - name: customformats
+  - name: profiles
+  - name: parse
 security:
   - sessionToken: []
 paths:
@@ -1440,6 +1444,532 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/DownloadEvent"
+        default:
+          $ref: "#/components/responses/Error"
+  /qualities:
+    get:
+      operationId: listQualities
+      summary: The fixed quality ladder (worst first)
+      tags: [quality]
+      responses:
+        "200":
+          description: Qualities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quality"
+        default:
+          $ref: "#/components/responses/Error"
+  /qualitydefinitions:
+    get:
+      operationId: listQualityDefinitions
+      summary: Size limits per quality and media kind
+      tags: [quality]
+      responses:
+        "200":
+          description: Definitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QualityDefinition"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateQualityDefinitions
+      summary: Change size limits (administrators)
+      description: All or nothing; returns every definition afterwards.
+      tags: [quality]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateQualityDefinitionsRequest"
+      responses:
+        "200":
+          description: Definitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QualityDefinition"
+        default:
+          $ref: "#/components/responses/Error"
+  /qualitydefinitions/reset:
+    post:
+      operationId: resetQualityDefinitions
+      summary: Restore the shipped size limits (administrators)
+      tags: [quality]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetQualityDefinitionsRequest"
+      responses:
+        "200":
+          description: Definitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QualityDefinition"
+        default:
+          $ref: "#/components/responses/Error"
+  /qualityprofiles:
+    get:
+      operationId: listQualityProfiles
+      summary: Quality profiles
+      tags: [quality]
+      responses:
+        "200":
+          description: Profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QualityProfile"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createQualityProfile
+      summary: Add a quality profile (administrators)
+      description: Qualities of the kind that the item list leaves out are added at the end as not allowed.
+      tags: [quality]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QualityProfileInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QualityProfile"
+        default:
+          $ref: "#/components/responses/Error"
+  /qualityprofiles/{id}:
+    get:
+      operationId: getQualityProfile
+      summary: One quality profile
+      tags: [quality]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QualityProfile"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateQualityProfile
+      summary: Replace a quality profile (administrators)
+      description: The media kind cannot change.
+      tags: [quality]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QualityProfileInput"
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QualityProfile"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteQualityProfile
+      summary: Remove a quality profile (administrators)
+      tags: [quality]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /customformats:
+    get:
+      operationId: listCustomFormats
+      summary: Custom formats
+      tags: [customformats]
+      responses:
+        "200":
+          description: Formats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomFormat"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createCustomFormat
+      summary: Add a custom format (administrators)
+      tags: [customformats]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomFormatInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomFormat"
+        default:
+          $ref: "#/components/responses/Error"
+  /customformats/schema:
+    get:
+      operationId: getCustomFormatSchema
+      summary: Condition types and the values they accept (for building conditions)
+      tags: [customformats]
+      responses:
+        "200":
+          description: Schema
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomFormatSchema"
+        default:
+          $ref: "#/components/responses/Error"
+  /customformats/import:
+    post:
+      operationId: importCustomFormats
+      summary: Import custom formats from shared JSON (administrators)
+      description: |
+        Accepts one format object or an array in the commonly shared shape (`name`,
+        `specifications[]` with `implementation`, `negate`, `required`, `fields`). Numeric values
+        follow the `flavor` numbering. Unknown implementations are kept and reported in `warnings`.
+        With `dryRun` nothing is stored.
+      tags: [customformats]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportCustomFormatsRequest"
+      responses:
+        "200":
+          description: Imported (or checked)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportCustomFormatsResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /customformats/{id}:
+    get:
+      operationId: getCustomFormat
+      summary: One custom format
+      tags: [customformats]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomFormat"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateCustomFormat
+      summary: Replace a custom format (administrators)
+      tags: [customformats]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomFormatInput"
+      responses:
+        "200":
+          description: Format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomFormat"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteCustomFormat
+      summary: Remove a custom format (administrators)
+      description: Profiles that scored it simply stop seeing it.
+      tags: [customformats]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /customformats/{id}/export:
+    get:
+      operationId: exportCustomFormat
+      summary: A custom format as shared JSON
+      tags: [customformats]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+        - name: flavor
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/CustomFormatFlavor"
+      responses:
+        "200":
+          description: Shared JSON
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedCustomFormat"
+        default:
+          $ref: "#/components/responses/Error"
+  /releaseprofiles:
+    get:
+      operationId: listReleaseProfiles
+      summary: Release profiles (required and ignored terms)
+      tags: [profiles]
+      responses:
+        "200":
+          description: Profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReleaseProfile"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createReleaseProfile
+      summary: Add a release profile (administrators)
+      tags: [profiles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReleaseProfileInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReleaseProfile"
+        default:
+          $ref: "#/components/responses/Error"
+  /releaseprofiles/{id}:
+    put:
+      operationId: updateReleaseProfile
+      summary: Replace a release profile (administrators)
+      tags: [profiles]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReleaseProfileInput"
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReleaseProfile"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteReleaseProfile
+      summary: Remove a release profile (administrators)
+      tags: [profiles]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /delayprofiles:
+    get:
+      operationId: listDelayProfiles
+      summary: Delay profiles in evaluation order (the default last)
+      tags: [profiles]
+      responses:
+        "200":
+          description: Profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DelayProfile"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createDelayProfile
+      summary: Add a delay profile before the default (administrators)
+      tags: [profiles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DelayProfileInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DelayProfile"
+        default:
+          $ref: "#/components/responses/Error"
+  /delayprofiles/order:
+    put:
+      operationId: reorderDelayProfiles
+      summary: Set the evaluation order of the non-default delay profiles (administrators)
+      tags: [profiles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReorderRequest"
+      responses:
+        "200":
+          description: Profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DelayProfile"
+        default:
+          $ref: "#/components/responses/Error"
+  /delayprofiles/{id}:
+    put:
+      operationId: updateDelayProfile
+      summary: Replace a delay profile (administrators)
+      tags: [profiles]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DelayProfileInput"
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DelayProfile"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteDelayProfile
+      summary: Remove a delay profile (administrators; never the default)
+      tags: [profiles]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /languages:
+    get:
+      operationId: listLanguages
+      summary: Known languages
+      tags: [profiles]
+      responses:
+        "200":
+          description: Languages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LanguageInfo"
+        default:
+          $ref: "#/components/responses/Error"
+  /parse:
+    post:
+      operationId: parseRelease
+      summary: Parse a release name; optionally score and decide it against a profile
+      description: |
+        Returns every parsed field and how each custom format did. With `profileId` the
+        release is also scored for that profile and decided (as an interactive search) against
+        the optional `wanted` item; every rejection carries a code, an English message and its values.
+      tags: [parse]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParseRequest"
+      responses:
+        "200":
+          description: Result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParseResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /decisions/evaluate:
+    post:
+      operationId: evaluateReleases
+      summary: Decide on a list of releases for a wanted item (administrators)
+      description: |
+        Runs the decision engine on the given candidates and returns the report
+        (accepted ones ranked first). Nothing is stored or grabbed.
+      tags: [parse]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluateRequest"
+      responses:
+        "200":
+          description: Report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DecisionReport"
         default:
           $ref: "#/components/responses/Error"
 components:
@@ -3245,3 +3775,919 @@ components:
         toState: {type: string}
         message: {type: string}
         data: {}
+    Quality:
+      type: object
+      required: [id, name, source, rank, music]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        source:
+          type: string
+        resolution:
+          type: integer
+        modifier:
+          type: string
+          description: remux, brdisk, rawhd, regional, screener or dvdr
+        music:
+          type: boolean
+        rank:
+          type: integer
+          description: Ladder position (higher is better).
+    QualityDefinition:
+      type: object
+      description: Size limits in MB per minute of runtime. `max` 0 = no limit; `preferred` 0 = no preference.
+      required: [kind, quality, min, preferred, max]
+      properties:
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        quality:
+          type: string
+        min:
+          type: number
+          minimum: 0
+          maximum: 2000
+        preferred:
+          type: number
+          minimum: 0
+          maximum: 2000
+        max:
+          type: number
+          minimum: 0
+          maximum: 2000
+    UpdateQualityDefinitionsRequest:
+      type: object
+      required: [definitions]
+      properties:
+        definitions:
+          type: array
+          maxItems: 500
+          items:
+            $ref: "#/components/schemas/QualityDefinition"
+    ResetQualityDefinitionsRequest:
+      type: object
+      properties:
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+    QualityProfileItem:
+      type: object
+      description: A single quality (`quality`) or a group of equal qualities (`name` + `qualities`).
+      required: [allowed]
+      properties:
+        quality:
+          type: string
+        name:
+          type: string
+          maxLength: 100
+        qualities:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+        allowed:
+          type: boolean
+    FormatScore:
+      type: object
+      required: [formatId, score]
+      properties:
+        formatId:
+          type: integer
+          format: int64
+        score:
+          type: integer
+          minimum: -1000000
+          maximum: 1000000
+    QualityProfileInput:
+      type: object
+      required: [name, kind, items, cutoff, upgradesAllowed]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        items:
+          type: array
+          maxItems: 100
+          description: Best first.
+          items:
+            $ref: "#/components/schemas/QualityProfileItem"
+        cutoff:
+          type: string
+          description: A quality id, or `group:<name>` for a group.
+        upgradesAllowed:
+          type: boolean
+        minFormatScore:
+          type: integer
+        cutoffFormatScore:
+          type: integer
+          description: Upgrades stop once the cutoff quality and this score are reached (0 = quality only).
+        formatScores:
+          type: array
+          maxItems: 1000
+          items:
+            $ref: "#/components/schemas/FormatScore"
+        languages:
+          type: array
+          maxItems: 60
+          description: Accepted languages (ISO codes, `original`, `any`); empty accepts any.
+          items:
+            type: string
+    QualityProfile:
+      type: object
+      required: [id, name, kind, items, cutoff, upgradesAllowed, minFormatScore, cutoffFormatScore, formatScores, languages]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/QualityProfileItem"
+        cutoff:
+          type: string
+        upgradesAllowed:
+          type: boolean
+        minFormatScore:
+          type: integer
+        cutoffFormatScore:
+          type: integer
+        formatScores:
+          type: array
+          items:
+            $ref: "#/components/schemas/FormatScore"
+        languages:
+          type: array
+          items:
+            type: string
+    CustomFormatSpec:
+      type: object
+      required: [implementation, fields]
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        implementation:
+          type: string
+          maxLength: 100
+        negate:
+          type: boolean
+        required:
+          type: boolean
+        fields:
+          type: object
+          additionalProperties: true
+          description: '`value` for most conditions; `min`/`max` for sizes (GB) and years.'
+    CustomFormatInput:
+      type: object
+      required: [name, specifications]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        includeWhenRenaming:
+          type: boolean
+        specifications:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/CustomFormatSpec"
+    CustomFormat:
+      type: object
+      required: [id, name, includeWhenRenaming, specifications, unsupported]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        includeWhenRenaming:
+          type: boolean
+        specifications:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomFormatSpec"
+        unsupported:
+          type: array
+          description: Conditions whose implementation Locarr does not know (ignored when optional; a required one stops the format applying).
+          items:
+            type: string
+    CustomFormatFlavor:
+      type: string
+      enum: [movies, series]
+      description: Which numbering shared JSON uses for sources (movie-oriented or series-oriented tools).
+    CustomFormatImplementation:
+      type: object
+      required: [implementation, valueType]
+      properties:
+        implementation:
+          type: string
+        valueType:
+          type: string
+          enum: [regex, enum, number, range, language]
+        values:
+          type: array
+          items:
+            type: string
+    CustomFormatSchema:
+      type: object
+      required: [implementations]
+      properties:
+        implementations:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomFormatImplementation"
+    ImportCustomFormatsRequest:
+      type: object
+      required: [json]
+      properties:
+        json:
+          type: string
+          maxLength: 900000
+        flavor:
+          $ref: "#/components/schemas/CustomFormatFlavor"
+        replace:
+          type: boolean
+          description: Replace formats with the same name instead of failing.
+        dryRun:
+          type: boolean
+    ImportCustomFormatsResult:
+      type: object
+      required: [formats, warnings, stored]
+      properties:
+        formats:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomFormat"
+        warnings:
+          type: array
+          items:
+            type: string
+        stored:
+          type: boolean
+    SharedCustomFormat:
+      type: object
+      additionalProperties: true
+      description: The commonly shared custom-format JSON shape.
+    ReleaseProfileInput:
+      type: object
+      required: [name, enabled, required, ignored]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        enabled:
+          type: boolean
+        required:
+          type: array
+          maxItems: 200
+          description: The name must contain at least one (plain text, or /regex/).
+          items:
+            type: string
+        ignored:
+          type: array
+          maxItems: 200
+          description: The name must contain none.
+          items:
+            type: string
+        tags:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+        indexerId:
+          type: integer
+          format: int64
+          description: Only for this indexer (0 or absent = all).
+    ReleaseProfile:
+      type: object
+      required: [id, name, enabled, required, ignored, tags, indexerId]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        enabled:
+          type: boolean
+        required:
+          type: array
+          items:
+            type: string
+        ignored:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        indexerId:
+          type: integer
+          format: int64
+    DelayProfileInput:
+      type: object
+      required: [name, enabled, preferredProtocol, usenetEnabled, torrentEnabled, usenetDelay, torrentDelay]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        enabled:
+          type: boolean
+        preferredProtocol:
+          $ref: "#/components/schemas/Protocol"
+        usenetEnabled:
+          type: boolean
+        torrentEnabled:
+          type: boolean
+        usenetDelay:
+          type: integer
+          minimum: 0
+          maximum: 525600
+          description: Minutes.
+        torrentDelay:
+          type: integer
+          minimum: 0
+          maximum: 525600
+        bypassIfHighestQuality:
+          type: boolean
+        bypassIfAboveScore:
+          type: boolean
+        minimumScore:
+          type: integer
+        tags:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+    DelayProfile:
+      type: object
+      required: [id, name, order, enabled, preferredProtocol, usenetEnabled, torrentEnabled, usenetDelay, torrentDelay,
+        bypassIfHighestQuality, bypassIfAboveScore, minimumScore, tags, default]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        order:
+          type: integer
+        enabled:
+          type: boolean
+        preferredProtocol:
+          $ref: "#/components/schemas/Protocol"
+        usenetEnabled:
+          type: boolean
+        torrentEnabled:
+          type: boolean
+        usenetDelay:
+          type: integer
+        torrentDelay:
+          type: integer
+        bypassIfHighestQuality:
+          type: boolean
+        bypassIfAboveScore:
+          type: boolean
+        minimumScore:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+        default:
+          type: boolean
+          description: The catch-all profile; it has no tags and cannot be removed.
+    ReorderRequest:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          maxItems: 500
+          items:
+            type: integer
+            format: int64
+    LanguageInfo:
+      type: object
+      required: [code, name, native]
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        native:
+          type: string
+    ParsedVideo:
+      type: object
+      properties:
+        source:
+          type: string
+        resolution:
+          type: integer
+        interlaced:
+          type: boolean
+        uhd:
+          type: boolean
+        codec:
+          type: string
+        encoder:
+          type: string
+        bitDepth:
+          type: integer
+        hdr:
+          type: array
+          items:
+            type: string
+        dolbyVisionProfile:
+          type: string
+    ParsedAudio:
+      type: object
+      properties:
+        codecs:
+          type: array
+          items:
+            type: string
+        channels:
+          type: string
+        atmos:
+          type: boolean
+        bitrate:
+          type: string
+        bitDepth:
+          type: integer
+        sampleRateKHz:
+          type: number
+    ParsedRevision:
+      type: object
+      required: [version]
+      properties:
+        version:
+          type: integer
+        real:
+          type: integer
+        proper:
+          type: boolean
+        repack:
+          type: boolean
+    ParsedMusic:
+      type: object
+      properties:
+        artist:
+          type: string
+        album:
+          type: string
+        source:
+          type: string
+        discs:
+          type: integer
+        disc:
+          type: integer
+    ParsedRelease:
+      type: object
+      required: [input, kind, title, video, audio, revision, confidence]
+      properties:
+        input:
+          type: string
+        kind:
+          type: string
+          enum: [unknown, movie, series, music]
+        title:
+          type: string
+        alternateTitles:
+          type: array
+          items:
+            type: string
+        year:
+          type: integer
+        seasons:
+          type: array
+          items:
+            type: integer
+        episodes:
+          type: array
+          items:
+            type: integer
+        absoluteEpisodes:
+          type: array
+          items:
+            type: integer
+        airDate:
+          type: string
+        episodeTitle:
+          type: string
+        fullSeason:
+          type: boolean
+        multiSeason:
+          type: boolean
+        completeSeries:
+          type: boolean
+        special:
+          type: boolean
+        anime:
+          type: boolean
+        editions:
+          type: array
+          items:
+            type: string
+        threeD:
+          type: boolean
+        music:
+          $ref: "#/components/schemas/ParsedMusic"
+        video:
+          $ref: "#/components/schemas/ParsedVideo"
+        audio:
+          $ref: "#/components/schemas/ParsedAudio"
+        streamingService:
+          type: string
+        languages:
+          type: array
+          items:
+            type: string
+        multiAudio:
+          type: boolean
+        dualAudio:
+          type: boolean
+        subtitleLanguages:
+          type: array
+          items:
+            type: string
+        multiSubs:
+          type: boolean
+        hardcodedSubs:
+          type: boolean
+        group:
+          type: string
+        hash:
+          type: string
+        revision:
+          $ref: "#/components/schemas/ParsedRevision"
+        flags:
+          type: array
+          items:
+            type: string
+        extension:
+          type: string
+        sample:
+          type: boolean
+        obfuscated:
+          type: boolean
+        confidence:
+          type: number
+          description: 0..1, how much of the name was understood.
+        unparsed:
+          type: array
+          description: Parts after the title that were not understood.
+          items:
+            type: string
+    WantedEpisode:
+      type: object
+      required: [season, episode]
+      properties:
+        season:
+          type: integer
+        episode:
+          type: integer
+        absolute:
+          type: integer
+        airDate:
+          type: string
+    CurrentFile:
+      type: object
+      required: [quality]
+      properties:
+        quality:
+          type: string
+        revision:
+          $ref: "#/components/schemas/ParsedRevision"
+        score:
+          type: integer
+    ExternalIds:
+      type: object
+      properties:
+        tmdb:
+          type: integer
+        tvdb:
+          type: integer
+        imdb:
+          type: string
+        musicBrainz:
+          type: string
+    WantedItem:
+      type: object
+      description: The item a release is decided for. Fields left out are not checked.
+      properties:
+        title:
+          type: string
+          maxLength: 300
+        alternateTitles:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+        year:
+          type: integer
+        ids:
+          $ref: "#/components/schemas/ExternalIds"
+        seriesType:
+          type: string
+          enum: [standard, daily, anime]
+        episodes:
+          type: array
+          maxItems: 2000
+          items:
+            $ref: "#/components/schemas/WantedEpisode"
+        artist:
+          type: string
+        album:
+          type: string
+        runtimeMinutes:
+          type: integer
+          minimum: 0
+          maximum: 10000
+        originalLanguage:
+          type: string
+        tags:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+        current:
+          $ref: "#/components/schemas/CurrentFile"
+    ParseRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        profileId:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Bytes.
+        protocol:
+          $ref: "#/components/schemas/Protocol"
+        indexerFlags:
+          type: array
+          maxItems: 20
+          items:
+            type: string
+        wanted:
+          $ref: "#/components/schemas/WantedItem"
+    ConditionResult:
+      type: object
+      required: [name, implementation, required, negate, passed]
+      properties:
+        name:
+          type: string
+        implementation:
+          type: string
+        required:
+          type: boolean
+        negate:
+          type: boolean
+        passed:
+          type: boolean
+        unsupported:
+          type: boolean
+    CustomFormatEvaluation:
+      type: object
+      required: [id, name, matched, score, conditions]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        matched:
+          type: boolean
+        score:
+          type: integer
+          description: The chosen profile's score for the format (0 without a profile).
+        conditions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConditionResult"
+    ParseResult:
+      type: object
+      required: [release, quality, customFormats, score]
+      properties:
+        release:
+          $ref: "#/components/schemas/ParsedRelease"
+        quality:
+          $ref: "#/components/schemas/Quality"
+        customFormats:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomFormatEvaluation"
+        score:
+          type: integer
+          description: Total score of the matching formats for the profile.
+        decision:
+          $ref: "#/components/schemas/Decision"
+    Rejection:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: |
+            Stable code: parse_failed, wrong_kind, wrong_ids, wrong_title, wrong_year, wrong_season,
+            wrong_episode, quality_not_allowed, upgrades_disabled, cutoff_met, not_an_upgrade,
+            custom_format_score_too_low, size_too_small, size_too_large, language_not_wanted,
+            must_contain_missing, must_not_contain_found, blocklisted, not_enough_seeders, too_old,
+            too_new, sample, hardcoded_subs, three_d, indexer_disabled, indexer_limited,
+            protocol_disabled, delayed.
+        message:
+          type: string
+          description: English, with the values (e.g. "18.4 GB > 12 GB max for Bluray-1080p (110 min)").
+        temporary:
+          type: boolean
+          description: May pass later (delay, minimum age, indexer limit).
+        params:
+          type: object
+          additionalProperties: true
+    MatchedFormat:
+      type: object
+      required: [id, name, score]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        score:
+          type: integer
+    Candidate:
+      type: object
+      required: [title]
+      properties:
+        guid:
+          type: string
+        title:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        size:
+          type: integer
+          format: int64
+        protocol:
+          $ref: "#/components/schemas/Protocol"
+        indexerId:
+          type: integer
+          format: int64
+        indexerName:
+          type: string
+        indexerPriority:
+          type: integer
+        indexerFlags:
+          type: array
+          items:
+            type: string
+        indexerDisabled:
+          type: boolean
+        indexerRssDisabled:
+          type: boolean
+        indexerAutomaticSearchDisabled:
+          type: boolean
+        indexerInteractiveSearchDisabled:
+          type: boolean
+        indexerLimitedUntil:
+          type: string
+          format: date-time
+        minimumSeeders:
+          type: integer
+        seeders:
+          type: integer
+        peers:
+          type: integer
+        publishDate:
+          type: string
+          format: date-time
+        ids:
+          $ref: "#/components/schemas/ExternalIds"
+        downloadUrl:
+          type: string
+        infoUrl:
+          type: string
+    RankKey:
+      type: object
+      required: [qualityPosition, score, revision, protocolPreferred, indexerPriority, seeders, sizeDistance, ageMinutes]
+      properties:
+        qualityPosition:
+          type: integer
+        score:
+          type: integer
+        revision:
+          type: integer
+        protocolPreferred:
+          type: boolean
+        indexerPriority:
+          type: integer
+        seeders:
+          type: integer
+        sizeDistance:
+          type: integer
+          format: int64
+        ageMinutes:
+          type: integer
+          format: int64
+    Decision:
+      type: object
+      required: [candidate, release, quality, customFormats, score, status, rejections, rankKey]
+      properties:
+        candidate:
+          $ref: "#/components/schemas/Candidate"
+        release:
+          $ref: "#/components/schemas/ParsedRelease"
+        quality:
+          $ref: "#/components/schemas/Quality"
+        customFormats:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchedFormat"
+        score:
+          type: integer
+        status:
+          type: string
+          enum: [accepted, pending, rejected]
+        rank:
+          type: integer
+          description: 1 = best; accepted decisions only.
+        rejections:
+          type: array
+          items:
+            $ref: "#/components/schemas/Rejection"
+        rankKey:
+          $ref: "#/components/schemas/RankKey"
+    DecisionReport:
+      type: object
+      description: The engine's result for a list of candidates; P4/P11 store it in the timeline.
+      required: [kind, profileId, profileName, mode, evaluatedAt, accepted, pending, rejected, decisions]
+      properties:
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        profileId:
+          type: integer
+          format: int64
+        profileName:
+          type: string
+        mode:
+          type: string
+          enum: [rss, search, interactive]
+        evaluatedAt:
+          type: string
+          format: date-time
+        accepted:
+          type: integer
+        pending:
+          type: integer
+        rejected:
+          type: integer
+        bestGuid:
+          type: string
+        decisions:
+          type: array
+          description: Accepted (ranked), then pending, then rejected.
+          items:
+            $ref: "#/components/schemas/Decision"
+    EvaluateRequest:
+      type: object
+      required: [kind, profileId, candidates]
+      properties:
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        profileId:
+          type: integer
+          format: int64
+        mode:
+          type: string
+          enum: [rss, search, interactive]
+        wanted:
+          $ref: "#/components/schemas/WantedItem"
+        minimumSeeders:
+          type: integer
+        retentionDays:
+          type: integer
+        minimumAgeMinutes:
+          type: integer
+        candidates:
+          type: array
+          maxItems: 2000
+          items:
+            $ref: "#/components/schemas/Candidate"

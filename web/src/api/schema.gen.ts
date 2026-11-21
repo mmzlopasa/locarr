@@ -1111,6 +1111,350 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/qualities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The fixed quality ladder (worst first) */
+        get: operations["listQualities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/qualitydefinitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Size limits per quality and media kind */
+        get: operations["listQualityDefinitions"];
+        /**
+         * Change size limits (administrators)
+         * @description All or nothing; returns every definition afterwards.
+         */
+        put: operations["updateQualityDefinitions"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/qualitydefinitions/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore the shipped size limits (administrators) */
+        post: operations["resetQualityDefinitions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/qualityprofiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Quality profiles */
+        get: operations["listQualityProfiles"];
+        put?: never;
+        /**
+         * Add a quality profile (administrators)
+         * @description Qualities of the kind that the item list leaves out are added at the end as not allowed.
+         */
+        post: operations["createQualityProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/qualityprofiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One quality profile */
+        get: operations["getQualityProfile"];
+        /**
+         * Replace a quality profile (administrators)
+         * @description The media kind cannot change.
+         */
+        put: operations["updateQualityProfile"];
+        post?: never;
+        /** Remove a quality profile (administrators) */
+        delete: operations["deleteQualityProfile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/customformats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Custom formats */
+        get: operations["listCustomFormats"];
+        put?: never;
+        /** Add a custom format (administrators) */
+        post: operations["createCustomFormat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/customformats/schema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Condition types and the values they accept (for building conditions) */
+        get: operations["getCustomFormatSchema"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/customformats/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import custom formats from shared JSON (administrators)
+         * @description Accepts one format object or an array in the commonly shared shape (`name`,
+         *     `specifications[]` with `implementation`, `negate`, `required`, `fields`). Numeric values
+         *     follow the `flavor` numbering. Unknown implementations are kept and reported in `warnings`.
+         *     With `dryRun` nothing is stored.
+         */
+        post: operations["importCustomFormats"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/customformats/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One custom format */
+        get: operations["getCustomFormat"];
+        /** Replace a custom format (administrators) */
+        put: operations["updateCustomFormat"];
+        post?: never;
+        /**
+         * Remove a custom format (administrators)
+         * @description Profiles that scored it simply stop seeing it.
+         */
+        delete: operations["deleteCustomFormat"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/customformats/{id}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A custom format as shared JSON */
+        get: operations["exportCustomFormat"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/releaseprofiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Release profiles (required and ignored terms) */
+        get: operations["listReleaseProfiles"];
+        put?: never;
+        /** Add a release profile (administrators) */
+        post: operations["createReleaseProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/releaseprofiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace a release profile (administrators) */
+        put: operations["updateReleaseProfile"];
+        post?: never;
+        /** Remove a release profile (administrators) */
+        delete: operations["deleteReleaseProfile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/delayprofiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Delay profiles in evaluation order (the default last) */
+        get: operations["listDelayProfiles"];
+        put?: never;
+        /** Add a delay profile before the default (administrators) */
+        post: operations["createDelayProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/delayprofiles/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set the evaluation order of the non-default delay profiles (administrators) */
+        put: operations["reorderDelayProfiles"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/delayprofiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace a delay profile (administrators) */
+        put: operations["updateDelayProfile"];
+        post?: never;
+        /** Remove a delay profile (administrators; never the default) */
+        delete: operations["deleteDelayProfile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/languages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Known languages */
+        get: operations["listLanguages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Parse a release name; optionally score and decide it against a profile
+         * @description Returns every parsed field and how each custom format did. With `profileId` the
+         *     release is also scored for that profile and decided (as an interactive search) against
+         *     the optional `wanted` item; every rejection carries a code, an English message and its values.
+         */
+        post: operations["parseRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/decisions/evaluate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Decide on a list of releases for a wanted item (administrators)
+         * @description Runs the decision engine on the given candidates and returns the report
+         *     (accepted ones ranked first). Nothing is stored or grabbed.
+         */
+        post: operations["evaluateReleases"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1994,6 +2338,439 @@ export interface components {
             toState: string;
             message: string;
             data?: unknown;
+        };
+        Quality: {
+            id: string;
+            name: string;
+            source: string;
+            resolution?: number;
+            /** @description remux, brdisk, rawhd, regional, screener or dvdr */
+            modifier?: string;
+            music: boolean;
+            /** @description Ladder position (higher is better). */
+            rank: number;
+        };
+        /** @description Size limits in MB per minute of runtime. `max` 0 = no limit; `preferred` 0 = no preference. */
+        QualityDefinition: {
+            kind: components["schemas"]["MediaKind"];
+            quality: string;
+            min: number;
+            preferred: number;
+            max: number;
+        };
+        UpdateQualityDefinitionsRequest: {
+            definitions: components["schemas"]["QualityDefinition"][];
+        };
+        ResetQualityDefinitionsRequest: {
+            kind?: components["schemas"]["MediaKind"];
+        };
+        /** @description A single quality (`quality`) or a group of equal qualities (`name` + `qualities`). */
+        QualityProfileItem: {
+            quality?: string;
+            name?: string;
+            qualities?: string[];
+            allowed: boolean;
+        };
+        FormatScore: {
+            /** Format: int64 */
+            formatId: number;
+            score: number;
+        };
+        QualityProfileInput: {
+            name: string;
+            kind: components["schemas"]["MediaKind"];
+            /** @description Best first. */
+            items: components["schemas"]["QualityProfileItem"][];
+            /** @description A quality id, or `group:<name>` for a group. */
+            cutoff: string;
+            upgradesAllowed: boolean;
+            minFormatScore?: number;
+            /** @description Upgrades stop once the cutoff quality and this score are reached (0 = quality only). */
+            cutoffFormatScore?: number;
+            formatScores?: components["schemas"]["FormatScore"][];
+            /** @description Accepted languages (ISO codes, `original`, `any`); empty accepts any. */
+            languages?: string[];
+        };
+        QualityProfile: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            kind: components["schemas"]["MediaKind"];
+            items: components["schemas"]["QualityProfileItem"][];
+            cutoff: string;
+            upgradesAllowed: boolean;
+            minFormatScore: number;
+            cutoffFormatScore: number;
+            formatScores: components["schemas"]["FormatScore"][];
+            languages: string[];
+        };
+        CustomFormatSpec: {
+            name?: string;
+            implementation: string;
+            negate?: boolean;
+            required?: boolean;
+            /** @description `value` for most conditions; `min`/`max` for sizes (GB) and years. */
+            fields: {
+                [key: string]: unknown;
+            };
+        };
+        CustomFormatInput: {
+            name: string;
+            includeWhenRenaming?: boolean;
+            specifications: components["schemas"]["CustomFormatSpec"][];
+        };
+        CustomFormat: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            includeWhenRenaming: boolean;
+            specifications: components["schemas"]["CustomFormatSpec"][];
+            /** @description Conditions whose implementation Locarr does not know (ignored when optional; a required one stops the format applying). */
+            unsupported: string[];
+        };
+        /**
+         * @description Which numbering shared JSON uses for sources (movie-oriented or series-oriented tools).
+         * @enum {string}
+         */
+        CustomFormatFlavor: "movies" | "series";
+        CustomFormatImplementation: {
+            implementation: string;
+            /** @enum {string} */
+            valueType: "regex" | "enum" | "number" | "range" | "language";
+            values?: string[];
+        };
+        CustomFormatSchema: {
+            implementations: components["schemas"]["CustomFormatImplementation"][];
+        };
+        ImportCustomFormatsRequest: {
+            json: string;
+            flavor?: components["schemas"]["CustomFormatFlavor"];
+            /** @description Replace formats with the same name instead of failing. */
+            replace?: boolean;
+            dryRun?: boolean;
+        };
+        ImportCustomFormatsResult: {
+            formats: components["schemas"]["CustomFormat"][];
+            warnings: string[];
+            stored: boolean;
+        };
+        /** @description The commonly shared custom-format JSON shape. */
+        SharedCustomFormat: {
+            [key: string]: unknown;
+        };
+        ReleaseProfileInput: {
+            name: string;
+            enabled: boolean;
+            /** @description The name must contain at least one (plain text, or /regex/). */
+            required: string[];
+            /** @description The name must contain none. */
+            ignored: string[];
+            tags?: string[];
+            /**
+             * Format: int64
+             * @description Only for this indexer (0 or absent = all).
+             */
+            indexerId?: number;
+        };
+        ReleaseProfile: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            enabled: boolean;
+            required: string[];
+            ignored: string[];
+            tags: string[];
+            /** Format: int64 */
+            indexerId: number;
+        };
+        DelayProfileInput: {
+            name: string;
+            enabled: boolean;
+            preferredProtocol: components["schemas"]["Protocol"];
+            usenetEnabled: boolean;
+            torrentEnabled: boolean;
+            /** @description Minutes. */
+            usenetDelay: number;
+            torrentDelay: number;
+            bypassIfHighestQuality?: boolean;
+            bypassIfAboveScore?: boolean;
+            minimumScore?: number;
+            tags?: string[];
+        };
+        DelayProfile: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            order: number;
+            enabled: boolean;
+            preferredProtocol: components["schemas"]["Protocol"];
+            usenetEnabled: boolean;
+            torrentEnabled: boolean;
+            usenetDelay: number;
+            torrentDelay: number;
+            bypassIfHighestQuality: boolean;
+            bypassIfAboveScore: boolean;
+            minimumScore: number;
+            tags: string[];
+            /** @description The catch-all profile; it has no tags and cannot be removed. */
+            default: boolean;
+        };
+        ReorderRequest: {
+            ids: number[];
+        };
+        LanguageInfo: {
+            code: string;
+            name: string;
+            native: string;
+        };
+        ParsedVideo: {
+            source?: string;
+            resolution?: number;
+            interlaced?: boolean;
+            uhd?: boolean;
+            codec?: string;
+            encoder?: string;
+            bitDepth?: number;
+            hdr?: string[];
+            dolbyVisionProfile?: string;
+        };
+        ParsedAudio: {
+            codecs?: string[];
+            channels?: string;
+            atmos?: boolean;
+            bitrate?: string;
+            bitDepth?: number;
+            sampleRateKHz?: number;
+        };
+        ParsedRevision: {
+            version: number;
+            real?: number;
+            proper?: boolean;
+            repack?: boolean;
+        };
+        ParsedMusic: {
+            artist?: string;
+            album?: string;
+            source?: string;
+            discs?: number;
+            disc?: number;
+        };
+        ParsedRelease: {
+            input: string;
+            /** @enum {string} */
+            kind: "unknown" | "movie" | "series" | "music";
+            title: string;
+            alternateTitles?: string[];
+            year?: number;
+            seasons?: number[];
+            episodes?: number[];
+            absoluteEpisodes?: number[];
+            airDate?: string;
+            episodeTitle?: string;
+            fullSeason?: boolean;
+            multiSeason?: boolean;
+            completeSeries?: boolean;
+            special?: boolean;
+            anime?: boolean;
+            editions?: string[];
+            threeD?: boolean;
+            music?: components["schemas"]["ParsedMusic"];
+            video: components["schemas"]["ParsedVideo"];
+            audio: components["schemas"]["ParsedAudio"];
+            streamingService?: string;
+            languages?: string[];
+            multiAudio?: boolean;
+            dualAudio?: boolean;
+            subtitleLanguages?: string[];
+            multiSubs?: boolean;
+            hardcodedSubs?: boolean;
+            group?: string;
+            hash?: string;
+            revision: components["schemas"]["ParsedRevision"];
+            flags?: string[];
+            extension?: string;
+            sample?: boolean;
+            obfuscated?: boolean;
+            /** @description 0..1, how much of the name was understood. */
+            confidence: number;
+            /** @description Parts after the title that were not understood. */
+            unparsed?: string[];
+        };
+        WantedEpisode: {
+            season: number;
+            episode: number;
+            absolute?: number;
+            airDate?: string;
+        };
+        CurrentFile: {
+            quality: string;
+            revision?: components["schemas"]["ParsedRevision"];
+            score?: number;
+        };
+        ExternalIds: {
+            tmdb?: number;
+            tvdb?: number;
+            imdb?: string;
+            musicBrainz?: string;
+        };
+        /** @description The item a release is decided for. Fields left out are not checked. */
+        WantedItem: {
+            title?: string;
+            alternateTitles?: string[];
+            year?: number;
+            ids?: components["schemas"]["ExternalIds"];
+            /** @enum {string} */
+            seriesType?: "standard" | "daily" | "anime";
+            episodes?: components["schemas"]["WantedEpisode"][];
+            artist?: string;
+            album?: string;
+            runtimeMinutes?: number;
+            originalLanguage?: string;
+            tags?: string[];
+            current?: components["schemas"]["CurrentFile"];
+        };
+        ParseRequest: {
+            title: string;
+            kind?: components["schemas"]["MediaKind"];
+            /** Format: int64 */
+            profileId?: number;
+            /**
+             * Format: int64
+             * @description Bytes.
+             */
+            size?: number;
+            protocol?: components["schemas"]["Protocol"];
+            indexerFlags?: string[];
+            wanted?: components["schemas"]["WantedItem"];
+        };
+        ConditionResult: {
+            name: string;
+            implementation: string;
+            required: boolean;
+            negate: boolean;
+            passed: boolean;
+            unsupported?: boolean;
+        };
+        CustomFormatEvaluation: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            matched: boolean;
+            /** @description The chosen profile's score for the format (0 without a profile). */
+            score: number;
+            conditions: components["schemas"]["ConditionResult"][];
+        };
+        ParseResult: {
+            release: components["schemas"]["ParsedRelease"];
+            quality: components["schemas"]["Quality"];
+            customFormats: components["schemas"]["CustomFormatEvaluation"][];
+            /** @description Total score of the matching formats for the profile. */
+            score: number;
+            decision?: components["schemas"]["Decision"];
+        };
+        Rejection: {
+            /**
+             * @description Stable code: parse_failed, wrong_kind, wrong_ids, wrong_title, wrong_year, wrong_season,
+             *     wrong_episode, quality_not_allowed, upgrades_disabled, cutoff_met, not_an_upgrade,
+             *     custom_format_score_too_low, size_too_small, size_too_large, language_not_wanted,
+             *     must_contain_missing, must_not_contain_found, blocklisted, not_enough_seeders, too_old,
+             *     too_new, sample, hardcoded_subs, three_d, indexer_disabled, indexer_limited,
+             *     protocol_disabled, delayed.
+             */
+            code: string;
+            /** @description English, with the values (e.g. "18.4 GB > 12 GB max for Bluray-1080p (110 min)"). */
+            message: string;
+            /** @description May pass later (delay, minimum age, indexer limit). */
+            temporary?: boolean;
+            params?: {
+                [key: string]: unknown;
+            };
+        };
+        MatchedFormat: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            score: number;
+        };
+        Candidate: {
+            guid?: string;
+            title: string;
+            /** Format: int64 */
+            size?: number;
+            protocol?: components["schemas"]["Protocol"];
+            /** Format: int64 */
+            indexerId?: number;
+            indexerName?: string;
+            indexerPriority?: number;
+            indexerFlags?: string[];
+            indexerDisabled?: boolean;
+            indexerRssDisabled?: boolean;
+            indexerAutomaticSearchDisabled?: boolean;
+            indexerInteractiveSearchDisabled?: boolean;
+            /** Format: date-time */
+            indexerLimitedUntil?: string;
+            minimumSeeders?: number;
+            seeders?: number;
+            peers?: number;
+            /** Format: date-time */
+            publishDate?: string;
+            ids?: components["schemas"]["ExternalIds"];
+            downloadUrl?: string;
+            infoUrl?: string;
+        };
+        RankKey: {
+            qualityPosition: number;
+            score: number;
+            revision: number;
+            protocolPreferred: boolean;
+            indexerPriority: number;
+            seeders: number;
+            /** Format: int64 */
+            sizeDistance: number;
+            /** Format: int64 */
+            ageMinutes: number;
+        };
+        Decision: {
+            candidate: components["schemas"]["Candidate"];
+            release: components["schemas"]["ParsedRelease"];
+            quality: components["schemas"]["Quality"];
+            customFormats: components["schemas"]["MatchedFormat"][];
+            score: number;
+            /** @enum {string} */
+            status: "accepted" | "pending" | "rejected";
+            /** @description 1 = best; accepted decisions only. */
+            rank?: number;
+            rejections: components["schemas"]["Rejection"][];
+            rankKey: components["schemas"]["RankKey"];
+        };
+        /** @description The engine's result for a list of candidates; P4/P11 store it in the timeline. */
+        DecisionReport: {
+            kind: components["schemas"]["MediaKind"];
+            /** Format: int64 */
+            profileId: number;
+            profileName: string;
+            /** @enum {string} */
+            mode: "rss" | "search" | "interactive";
+            /** Format: date-time */
+            evaluatedAt: string;
+            accepted: number;
+            pending: number;
+            rejected: number;
+            bestGuid?: string;
+            /** @description Accepted (ranked), then pending, then rejected. */
+            decisions: components["schemas"]["Decision"][];
+        };
+        EvaluateRequest: {
+            kind: components["schemas"]["MediaKind"];
+            /** Format: int64 */
+            profileId: number;
+            /** @enum {string} */
+            mode?: "rss" | "search" | "interactive";
+            wanted?: components["schemas"]["WantedItem"];
+            minimumSeeders?: number;
+            retentionDays?: number;
+            minimumAgeMinutes?: number;
+            candidates: components["schemas"]["Candidate"][];
         };
     };
     responses: {
@@ -3817,6 +4594,687 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DownloadEvent"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listQualities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Qualities */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quality"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listQualityDefinitions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Definitions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityDefinition"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateQualityDefinitions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateQualityDefinitionsRequest"];
+            };
+        };
+        responses: {
+            /** @description Definitions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityDefinition"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    resetQualityDefinitions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetQualityDefinitionsRequest"];
+            };
+        };
+        responses: {
+            /** @description Definitions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityDefinition"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listQualityProfiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profiles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityProfile"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createQualityProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QualityProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getQualityProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateQualityProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QualityProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteQualityProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listCustomFormats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Formats */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFormat"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createCustomFormat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomFormatInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFormat"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getCustomFormatSchema: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Schema */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFormatSchema"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    importCustomFormats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportCustomFormatsRequest"];
+            };
+        };
+        responses: {
+            /** @description Imported (or checked) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportCustomFormatsResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getCustomFormat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Format */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFormat"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateCustomFormat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomFormatInput"];
+            };
+        };
+        responses: {
+            /** @description Format */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFormat"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteCustomFormat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    exportCustomFormat: {
+        parameters: {
+            query?: {
+                flavor?: components["schemas"]["CustomFormatFlavor"];
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Shared JSON */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SharedCustomFormat"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listReleaseProfiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profiles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleaseProfile"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createReleaseProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReleaseProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleaseProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateReleaseProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReleaseProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleaseProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteReleaseProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listDelayProfiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profiles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DelayProfile"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createDelayProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DelayProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DelayProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    reorderDelayProfiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderRequest"];
+            };
+        };
+        responses: {
+            /** @description Profiles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DelayProfile"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateDelayProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DelayProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DelayProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteDelayProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listLanguages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Languages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LanguageInfo"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    parseRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseRequest"];
+            };
+        };
+        responses: {
+            /** @description Result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParseResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    evaluateReleases: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvaluateRequest"];
+            };
+        };
+        responses: {
+            /** @description Report */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DecisionReport"];
                 };
             };
             default: components["responses"]["Error"];

@@ -1,0 +1,7107 @@
+[
+  {
+    "name": "Breaking.Bad.S01E04.720p.HDTV.x264-SPARKS",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "SPARKS",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Breaking Bad",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "breaking.bad.2x04.hdtv.xvid-edith",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "edith",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "breaking bad",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Breaking.Bad.S03E04.REPACK.1080p.WEB.h264-playWEB",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        3
+      ],
+      "title": "Breaking Bad",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Breaking.Bad.S04E04.GERMAN.DL.1080p.WEB.h264-FGT",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "FGT",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        4
+      ],
+      "title": "Breaking Bad",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Breaking.Bad.S05E04.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-DRONES",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "DRONES",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Breaking Bad",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Breaking.Bad.S06E04-E06.1080p.WEB-DL.DD5.1.H.264-MeGusta",
+    "expect": {
+      "episodes": [
+        4,
+        5,
+        6
+      ],
+      "group": "MeGusta",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Breaking Bad",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Breaking.Bad.S00E04.Special.720p.HDTV.x264-CtrlHD",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "CtrlHD",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Breaking Bad",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Game.of.Thrones.S02E04E05.720p.HDTV.x264-TEPES",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "TEPES",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Game of Thrones",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Game.of.Thrones.S01-S04.COMPLETE.720p.BluRay.x264-GECKOS",
+    "expect": {
+      "fullSeason": true,
+      "group": "GECKOS",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "title": "Game of Thrones",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Game.of.Thrones.S04E06.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-KOGi",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "KOGi",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Netflix",
+      "title": "Game of Thrones",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Game.of.Thrones.S05E07.1080p.DSNP.WEB-DL.DDP5.1.H.264-SuccessfulCrab[TGx]",
+    "expect": {
+      "episodes": [
+        7
+      ],
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Disney+",
+      "title": "Game of Thrones",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Game.of.Thrones.S06E08.Pretty.Much.Dead.Already.1080p.AMZN.WEB-DL.DDP5.1.H.264-HiFi",
+    "expect": {
+      "episodeTitle": "Pretty Much Dead Already",
+      "episodes": [
+        8
+      ],
+      "group": "HiFi",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Amazon",
+      "title": "Game of Thrones",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Game.of.Thrones.Season.1.1080p.WEB-DL.DD5.1.H.264-LOL",
+    "expect": {
+      "fullSeason": true,
+      "group": "LOL",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Game of Thrones",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Game.of.Thrones.S02E10.MULTi.1080p.WEB.x264-AVS",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "AVS",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        2
+      ],
+      "title": "Game of Thrones",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Office.US.S03.1080p.BluRay.x264-BAE",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "BAE",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "The Office US",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Office.US.S04E06.PROPER.720p.HDTV.x264-ROVERS",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "ROVERS",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        4
+      ],
+      "title": "The Office US",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Office.US.S05E08.HRV.720p.WEB-DL.x264-DON",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "DON",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        5
+      ],
+      "title": "The Office US",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Office.US.S06E10.720p.HDTV.x264-DIMENSION",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "DIMENSION",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "The Office US",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "the.office.us.1x12.hdtv.xvid-sva",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "sva",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "the office us",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "The.Office.US.S02E14.REPACK.1080p.WEB.h264-BHDStudio",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "BHDStudio",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        2
+      ],
+      "title": "The Office US",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Office.US.S03E16.GERMAN.DL.1080p.WEB.h264-GGEZ",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        16
+      ],
+      "group": "GGEZ",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        3
+      ],
+      "title": "The Office US",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Doctor.Who.2005.S00E04.Special.720p.HDTV.x264-EbP",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "EbP",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Doctor Who",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "Doctor Who 2005 S05E07 1080p WEB H264-KILLERS",
+    "expect": {
+      "episodes": [
+        7
+      ],
+      "group": "KILLERS",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Doctor Who",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "Doctor.Who.2005.S06E10.720p.WEB.x265-FLEET[eztv]",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "FLEET",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Doctor Who",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "Doctor.Who.2005.S01E13E14.720p.HDTV.x264-NOGRP",
+    "expect": {
+      "episodes": [
+        13,
+        14
+      ],
+      "group": "NOGRP",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Doctor Who",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "Doctor.Who.2005.S01-S03.COMPLETE.720p.BluRay.x264-SYNCOPY",
+    "expect": {
+      "fullSeason": true,
+      "group": "SYNCOPY",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3
+      ],
+      "title": "Doctor Who",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "Doctor.Who.2005.S03E19.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-Kitsune",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "Kitsune",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Netflix",
+      "title": "Doctor Who",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2005
+    }
+  },
+  {
+    "name": "Doctor.Who.2005.S04E02.1080p.DSNP.WEB-DL.DDP5.1.H.264-HONE[TGx]",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "HONE",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Disney+",
+      "title": "Doctor Who",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "Stranger.Things.S05E04.MULTi.1080p.WEB.x264-MiNX",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "MiNX",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        5
+      ],
+      "title": "Stranger Things",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Stranger Things - S06E08 - Pretty Much Dead Already (1080p WEB-DL x265 ETHEL)",
+    "expect": {
+      "episodeTitle": "Pretty Much Dead Already",
+      "episodes": [
+        8
+      ],
+      "group": "ETHEL",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Stranger Things",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Stranger.Things.S01E12.1080p.WEB.h264-W4NK3R",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "W4NK3R",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Stranger Things",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Stranger.Things.S02.1080p.BluRay.x264-PECULATE",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "PECULATE",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Stranger Things",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Stranger.Things.S03E20.PROPER.720p.HDTV.x264-WELP",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "WELP",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        3
+      ],
+      "title": "Stranger Things",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Stranger.Things.S04E04.HRV.720p.WEB-DL.x264-RAWR",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "RAWR",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        4
+      ],
+      "title": "Stranger Things",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Stranger.Things.S05E08.720p.HDTV.x264-STRiFE",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "STRiFE",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Stranger Things",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "The.Last.of.Us.S06E04.GERMAN.DL.1080p.WEB.h264-BLOOM",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "BLOOM",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        6
+      ],
+      "title": "The Last of Us",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Last.of.Us.S01E09.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-SMURF",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "SMURF",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Apple TV+",
+      "title": "The Last of Us",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "The.Last.of.Us.S02E14-E16.1080p.WEB-DL.DD5.1.H.264-APEX",
+    "expect": {
+      "episodes": [
+        14,
+        15,
+        16
+      ],
+      "group": "APEX",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "The Last of Us",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Last.of.Us.S00E19.Special.720p.HDTV.x264-BYNDR",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "BYNDR",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "The Last of Us",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The Last of Us S04E04 1080p WEB H264-SPARKS",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "SPARKS",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "The Last of Us",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Last.of.Us.S05E09.720p.WEB.x265-EDITH[eztv]",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "EDITH",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "The Last of Us",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Last.of.Us.S06E14E15.720p.HDTV.x264-playWEB",
+    "expect": {
+      "episodes": [
+        14,
+        15
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "The Last of Us",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "House.of.the.Dragon.S01E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-TOMMY[TGx]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "TOMMY",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Disney+",
+      "title": "House of the Dragon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "House.of.the.Dragon.S02E10.Ozymandias.1080p.AMZN.WEB-DL.DDP5.1.H.264-NAISU",
+    "expect": {
+      "episodeTitle": "Ozymandias",
+      "episodes": [
+        10
+      ],
+      "group": "NAISU",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Amazon",
+      "title": "House of the Dragon",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "House.of.the.Dragon.Season.3.1080p.WEB-DL.DD5.1.H.264-FLUX",
+    "expect": {
+      "fullSeason": true,
+      "group": "FLUX",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "House of the Dragon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "House.of.the.Dragon.S04E02.MULTi.1080p.WEB.x264-CMRG",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "CMRG",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        4
+      ],
+      "title": "House of the Dragon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "House of the Dragon - S05E08 - Long Long Time (1080p WEB-DL x265 TEPES)",
+    "expect": {
+      "episodeTitle": "Long Long Time",
+      "episodes": [
+        8
+      ],
+      "group": "TEPES",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "House of the Dragon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "House.of.the.Dragon.S06E14.1080p.WEB.h264-GECKOS",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "GECKOS",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "House of the Dragon",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "House.of.the.Dragon.S01.1080p.BluRay.x264-KOGi",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "KOGi",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "House of the Dragon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mr.Robot.S02E04.720p.HDTV.x264-NTb",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "NTb",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Mr Robot",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "mr.robot.3x11.hdtv.xvid-kings",
+    "expect": {
+      "episodes": [
+        11
+      ],
+      "group": "kings",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "mr robot",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Mr.Robot.S04E18.REPACK.1080p.WEB.h264-SiGMA",
+    "expect": {
+      "episodes": [
+        18
+      ],
+      "group": "SiGMA",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        4
+      ],
+      "title": "Mr Robot",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mr.Robot.S05E05.GERMAN.DL.1080p.WEB.h264-AMIABLE",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        5
+      ],
+      "group": "AMIABLE",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        5
+      ],
+      "title": "Mr Robot",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mr.Robot.S06E12.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-BAE",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "BAE",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Mr Robot",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Mr.Robot.S01E19-E21.1080p.WEB-DL.DD5.1.H.264-ROVERS",
+    "expect": {
+      "episodes": [
+        19,
+        20,
+        21
+      ],
+      "group": "ROVERS",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Mr Robot",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mr.Robot.S00E06.Special.720p.HDTV.x264-DON",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "DON",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Mr Robot",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "9-1-1.S03E04E05.720p.HDTV.x264-FGT",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "FGT",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "9-1-1",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "9-1-1.S01-S05.COMPLETE.720p.BluRay.x264-DRONES",
+    "expect": {
+      "fullSeason": true,
+      "group": "DRONES",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "title": "9-1-1",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "9-1-1.S05E20.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-MeGusta",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "MeGusta",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Netflix",
+      "title": "9-1-1",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "9-1-1.S06E08.1080p.DSNP.WEB-DL.DDP5.1.H.264-CtrlHD[TGx]",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "CtrlHD",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Disney+",
+      "title": "9-1-1",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "9-1-1.S01E16.Pilot.1080p.AMZN.WEB-DL.DDP5.1.H.264-EbP",
+    "expect": {
+      "episodeTitle": "Pilot",
+      "episodes": [
+        16
+      ],
+      "group": "EbP",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Amazon",
+      "title": "9-1-1",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "9-1-1.Season.2.1080p.WEB-DL.DD5.1.H.264-KILLERS",
+    "expect": {
+      "fullSeason": true,
+      "group": "KILLERS",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "9-1-1",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "9-1-1.S03E12.MULTi.1080p.WEB.x264-FLEET",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "FLEET",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        3
+      ],
+      "title": "9-1-1",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "24.S04.1080p.BluRay.x264-SuccessfulCrab",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "24",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "24.S05E13.PROPER.720p.HDTV.x264-HiFi",
+    "expect": {
+      "episodes": [
+        13
+      ],
+      "group": "HiFi",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        5
+      ],
+      "title": "24",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "24.S06E02.HRV.720p.WEB-DL.x264-LOL",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "LOL",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        6
+      ],
+      "title": "24",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "24.S01E11.720p.HDTV.x264-AVS",
+    "expect": {
+      "episodes": [
+        11
+      ],
+      "group": "AVS",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "24",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "24.2x20.hdtv.xvid-minx",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "minx",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "24",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "24.S03E09.REPACK.1080p.WEB.h264-ETHEL",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "ETHEL",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        3
+      ],
+      "title": "24",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "24.S04E18.GERMAN.DL.1080p.WEB.h264-W4NK3R",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        18
+      ],
+      "group": "W4NK3R",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        4
+      ],
+      "title": "24",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Greys.Anatomy.S00E04.Special.720p.HDTV.x264-DIMENSION",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "DIMENSION",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Greys Anatomy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Greys Anatomy S06E14 1080p WEB H264-SVA",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "SVA",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Greys Anatomy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Greys.Anatomy.S01E04.720p.WEB.x265-BHDStudio[eztv]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "BHDStudio",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Greys Anatomy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Greys.Anatomy.S02E14E15.720p.HDTV.x264-GGEZ",
+    "expect": {
+      "episodes": [
+        14,
+        15
+      ],
+      "group": "GGEZ",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Greys Anatomy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Greys.Anatomy.S01-S04.COMPLETE.720p.BluRay.x264-BLOOM",
+    "expect": {
+      "fullSeason": true,
+      "group": "BLOOM",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "title": "Greys Anatomy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Greys.Anatomy.S04E14.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-SMURF",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "SMURF",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Netflix",
+      "title": "Greys Anatomy",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Greys.Anatomy.S05E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-APEX[TGx]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "APEX",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Disney+",
+      "title": "Greys Anatomy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Boys.S06E04.MULTi.1080p.WEB.x264-NOGRP",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "NOGRP",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        6
+      ],
+      "title": "The Boys",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The Boys - S01E15 - Pilot (1080p WEB-DL x265 SYNCOPY)",
+    "expect": {
+      "episodeTitle": "Pilot",
+      "episodes": [
+        15
+      ],
+      "group": "SYNCOPY",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "The Boys",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Boys.S02E06.1080p.WEB.h264-Kitsune",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "Kitsune",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "The Boys",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "The.Boys.S03.1080p.BluRay.x264-HONE",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "HONE",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "The Boys",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Boys.S04E08.PROPER.720p.HDTV.x264-TOMMY",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "TOMMY",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        4
+      ],
+      "title": "The Boys",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Boys.S05E19.HRV.720p.WEB-DL.x264-NAISU",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "NAISU",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        5
+      ],
+      "title": "The Boys",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Boys.S06E10.720p.HDTV.x264-FLUX",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "FLUX",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "The Boys",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "Fargo.S01E04.GERMAN.DL.1080p.WEB.h264-PECULATE",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "PECULATE",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        1
+      ],
+      "title": "Fargo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fargo.S02E16.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-WELP",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "WELP",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Fargo",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Fargo.S03E08-E10.1080p.WEB-DL.DD5.1.H.264-RAWR",
+    "expect": {
+      "episodes": [
+        8,
+        9,
+        10
+      ],
+      "group": "RAWR",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Fargo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fargo.S00E20.Special.720p.HDTV.x264-STRiFE",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "STRiFE",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Fargo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fargo S05E12 1080p WEB H264-NTb",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "NTb",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Fargo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fargo.S06E04.720p.WEB.x265-KiNGS[eztv]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "KiNGS",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Fargo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fargo.S01E16E17.720p.HDTV.x264-SiGMA",
+    "expect": {
+      "episodes": [
+        16,
+        17
+      ],
+      "group": "SiGMA",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Fargo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Succession.S02E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-BYNDR[TGx]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "BYNDR",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Disney+",
+      "title": "Succession",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Succession.S03E17.Chapter.One.1080p.AMZN.WEB-DL.DDP5.1.H.264-SPARKS",
+    "expect": {
+      "episodeTitle": "Chapter One",
+      "episodes": [
+        17
+      ],
+      "group": "SPARKS",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Amazon",
+      "title": "Succession",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Succession.Season.4.1080p.WEB-DL.DD5.1.H.264-EDITH",
+    "expect": {
+      "fullSeason": true,
+      "group": "EDITH",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Succession",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Succession.S05E03.MULTi.1080p.WEB.x264-playWEB",
+    "expect": {
+      "episodes": [
+        3
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        5
+      ],
+      "title": "Succession",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Succession - S06E16 - Pretty Much Dead Already (1080p WEB-DL x265 FGT)",
+    "expect": {
+      "episodeTitle": "Pretty Much Dead Already",
+      "episodes": [
+        16
+      ],
+      "group": "FGT",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Succession",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Succession.S01E09.1080p.WEB.h264-DRONES",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "DRONES",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Succession",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Succession.S02.1080p.BluRay.x264-MeGusta",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "MeGusta",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Succession",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Severance.S03E04.720p.HDTV.x264-CMRG",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "CMRG",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Severance",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "severance.4x18.hdtv.xvid-tepes",
+    "expect": {
+      "episodes": [
+        18
+      ],
+      "group": "tepes",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "severance",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Severance.S05E12.REPACK.1080p.WEB.h264-GECKOS",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "GECKOS",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        5
+      ],
+      "title": "Severance",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Severance.S06E06.GERMAN.DL.1080p.WEB.h264-KOGi",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        6
+      ],
+      "group": "KOGi",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        6
+      ],
+      "title": "Severance",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Severance.S01E20.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-SuccessfulCrab",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Severance",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Severance.S02E14-E16.1080p.WEB-DL.DD5.1.H.264-HiFi",
+    "expect": {
+      "episodes": [
+        14,
+        15,
+        16
+      ],
+      "group": "HiFi",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Severance",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Severance.S00E08.Special.720p.HDTV.x264-LOL",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "LOL",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Severance",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ted.Lasso.S04E04E05.720p.HDTV.x264-AMIABLE",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "AMIABLE",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Ted Lasso",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ted.Lasso.S01-S06.COMPLETE.720p.BluRay.x264-BAE",
+    "expect": {
+      "fullSeason": true,
+      "group": "BAE",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "title": "Ted Lasso",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ted.Lasso.S06E14.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-ROVERS",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "ROVERS",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Netflix",
+      "title": "Ted Lasso",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Ted.Lasso.S01E09.1080p.DSNP.WEB-DL.DDP5.1.H.264-DON[TGx]",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "DON",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Disney+",
+      "title": "Ted Lasso",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ted.Lasso.S02E04.Ozymandias.1080p.AMZN.WEB-DL.DDP5.1.H.264-DIMENSION",
+    "expect": {
+      "episodeTitle": "Ozymandias",
+      "episodes": [
+        4
+      ],
+      "group": "DIMENSION",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Amazon",
+      "title": "Ted Lasso",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Ted.Lasso.Season.3.1080p.WEB-DL.DD5.1.H.264-SVA",
+    "expect": {
+      "fullSeason": true,
+      "group": "SVA",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Ted Lasso",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ted.Lasso.S04E14.MULTi.1080p.WEB.x264-BHDStudio",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "BHDStudio",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        4
+      ],
+      "title": "Ted Lasso",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Bear.S05.1080p.BluRay.x264-CtrlHD",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "CtrlHD",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "The Bear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Bear.S06E20.PROPER.720p.HDTV.x264-EbP",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "EbP",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        6
+      ],
+      "title": "The Bear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Bear.S01E16.HRV.720p.WEB-DL.x264-KILLERS",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "KILLERS",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        1
+      ],
+      "title": "The Bear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Bear.S02E12.720p.HDTV.x264-FLEET",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "FLEET",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "The Bear",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "the.bear.3x08.hdtv.xvid-nogrp",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "nogrp",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "the bear",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "The.Bear.S04E04.REPACK.1080p.WEB.h264-SYNCOPY",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "SYNCOPY",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        4
+      ],
+      "title": "The Bear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Bear.S05E20.GERMAN.DL.1080p.WEB.h264-Kitsune",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        20
+      ],
+      "group": "Kitsune",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        5
+      ],
+      "title": "The Bear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Shogun.2024.S00E04.Special.720p.HDTV.x264-AVS",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "AVS",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Shogun",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Shogun 2024 S01E01 1080p WEB H264-MiNX",
+    "expect": {
+      "episodes": [
+        1
+      ],
+      "group": "MiNX",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Shogun",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Shogun.2024.S02E18.720p.WEB.x265-ETHEL[eztv]",
+    "expect": {
+      "episodes": [
+        18
+      ],
+      "group": "ETHEL",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Shogun",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Shogun.2024.S03E15E16.720p.HDTV.x264-W4NK3R",
+    "expect": {
+      "episodes": [
+        15,
+        16
+      ],
+      "group": "W4NK3R",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Shogun",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Shogun.2024.S01-S05.COMPLETE.720p.BluRay.x264-PECULATE",
+    "expect": {
+      "fullSeason": true,
+      "group": "PECULATE",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "title": "Shogun",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Shogun.2024.S05E09.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-WELP",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "WELP",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Netflix",
+      "title": "Shogun",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "Shogun.2024.S06E06.1080p.DSNP.WEB-DL.DDP5.1.H.264-RAWR[TGx]",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "RAWR",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Disney+",
+      "title": "Shogun",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Slow.Horses.S01E04.MULTi.1080p.WEB.x264-GGEZ",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "GGEZ",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        1
+      ],
+      "title": "Slow Horses",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Slow Horses - S02E02 - Ozymandias (1080p WEB-DL x265 BLOOM)",
+    "expect": {
+      "episodeTitle": "Ozymandias",
+      "episodes": [
+        2
+      ],
+      "group": "BLOOM",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Slow Horses",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Slow.Horses.S03E20.1080p.WEB.h264-SMURF",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "SMURF",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Slow Horses",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Slow.Horses.S04.1080p.BluRay.x264-APEX",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "APEX",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Slow Horses",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Slow.Horses.S05E16.PROPER.720p.HDTV.x264-BYNDR",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "BYNDR",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        5
+      ],
+      "title": "Slow Horses",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Slow.Horses.S06E14.HRV.720p.WEB-DL.x264-SPARKS",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "SPARKS",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        6
+      ],
+      "title": "Slow Horses",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Slow.Horses.S01E12.720p.HDTV.x264-EDITH",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "EDITH",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Slow Horses",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "Only.Murders.in.the.Building.S02E04.GERMAN.DL.1080p.WEB.h264-HONE",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "HONE",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        2
+      ],
+      "title": "Only Murders in the Building",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Only.Murders.in.the.Building.S03E03.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-TOMMY",
+    "expect": {
+      "episodes": [
+        3
+      ],
+      "group": "TOMMY",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Only Murders in the Building",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Only.Murders.in.the.Building.S04E02-E04.1080p.WEB-DL.DD5.1.H.264-NAISU",
+    "expect": {
+      "episodes": [
+        2,
+        3,
+        4
+      ],
+      "group": "NAISU",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Only Murders in the Building",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Only.Murders.in.the.Building.S00E01.Special.720p.HDTV.x264-FLUX",
+    "expect": {
+      "episodes": [
+        1
+      ],
+      "group": "FLUX",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Only Murders in the Building",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Only Murders in the Building S06E20 1080p WEB H264-CMRG",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "CMRG",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Only Murders in the Building",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Only.Murders.in.the.Building.S01E19.720p.WEB.x265-TEPES[eztv]",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "TEPES",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Only Murders in the Building",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Only.Murders.in.the.Building.S02E18E19.720p.HDTV.x264-GECKOS",
+    "expect": {
+      "episodes": [
+        18,
+        19
+      ],
+      "group": "GECKOS",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Only Murders in the Building",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Mandalorian.S03E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-STRiFE[TGx]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "STRiFE",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Disney+",
+      "title": "The Mandalorian",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Mandalorian.S04E04.Hard.Times.1080p.AMZN.WEB-DL.DDP5.1.H.264-NTb",
+    "expect": {
+      "episodeTitle": "Hard Times",
+      "episodes": [
+        4
+      ],
+      "group": "NTb",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Amazon",
+      "title": "The Mandalorian",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "The.Mandalorian.Season.5.1080p.WEB-DL.DD5.1.H.264-KiNGS",
+    "expect": {
+      "fullSeason": true,
+      "group": "KiNGS",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "The Mandalorian",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Mandalorian.S06E04.MULTi.1080p.WEB.x264-SiGMA",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "SiGMA",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        6
+      ],
+      "title": "The Mandalorian",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The Mandalorian - S01E04 - Pilot (1080p WEB-DL x265 AMIABLE)",
+    "expect": {
+      "episodeTitle": "Pilot",
+      "episodes": [
+        4
+      ],
+      "group": "AMIABLE",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "The Mandalorian",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Mandalorian.S02E04.1080p.WEB.h264-BAE",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "BAE",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "The Mandalorian",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "The.Mandalorian.S03.1080p.BluRay.x264-ROVERS",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "ROVERS",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "The Mandalorian",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Andor.S04E04.720p.HDTV.x264-playWEB",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Andor",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "andor.5x05.hdtv.xvid-fgt",
+    "expect": {
+      "episodes": [
+        5
+      ],
+      "group": "fgt",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "andor",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Andor.S06E06.REPACK.1080p.WEB.h264-DRONES",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "DRONES",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        6
+      ],
+      "title": "Andor",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Andor.S01E07.GERMAN.DL.1080p.WEB.h264-MeGusta",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        7
+      ],
+      "group": "MeGusta",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        1
+      ],
+      "title": "Andor",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Andor.S02E08.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-CtrlHD",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "CtrlHD",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Andor",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Andor.S03E09-E11.1080p.WEB-DL.DD5.1.H.264-EbP",
+    "expect": {
+      "episodes": [
+        9,
+        10,
+        11
+      ],
+      "group": "EbP",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Andor",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Andor.S00E10.Special.720p.HDTV.x264-KILLERS",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "KILLERS",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Andor",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Reacher.S05E04E05.720p.HDTV.x264-KOGi",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "KOGi",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Reacher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Reacher.S01-S07.COMPLETE.720p.BluRay.x264-SuccessfulCrab",
+    "expect": {
+      "fullSeason": true,
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "title": "Reacher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Reacher.S01E08.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-HiFi",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "HiFi",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Netflix",
+      "title": "Reacher",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Reacher.S02E10.1080p.DSNP.WEB-DL.DDP5.1.H.264-LOL[TGx]",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "LOL",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Disney+",
+      "title": "Reacher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Reacher.S03E12.Chapter.One.1080p.AMZN.WEB-DL.DDP5.1.H.264-AVS",
+    "expect": {
+      "episodeTitle": "Chapter One",
+      "episodes": [
+        12
+      ],
+      "group": "AVS",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Amazon",
+      "title": "Reacher",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Reacher.Season.4.1080p.WEB-DL.DD5.1.H.264-MiNX",
+    "expect": {
+      "fullSeason": true,
+      "group": "MiNX",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Reacher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Reacher.S05E16.MULTi.1080p.WEB.x264-ETHEL",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "ETHEL",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        5
+      ],
+      "title": "Reacher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Witcher.S06.1080p.BluRay.x264-DON",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "DON",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "The Witcher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Witcher.S01E07.PROPER.720p.HDTV.x264-DIMENSION",
+    "expect": {
+      "episodes": [
+        7
+      ],
+      "group": "DIMENSION",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        1
+      ],
+      "title": "The Witcher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Witcher.S02E10.HRV.720p.WEB-DL.x264-SVA",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "SVA",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        2
+      ],
+      "title": "The Witcher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Witcher.S03E13.720p.HDTV.x264-BHDStudio",
+    "expect": {
+      "episodes": [
+        13
+      ],
+      "group": "BHDStudio",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "The Witcher",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "the.witcher.4x16.hdtv.xvid-ggez",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "ggez",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "the witcher",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "The.Witcher.S05E19.REPACK.1080p.WEB.h264-BLOOM",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "BLOOM",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        5
+      ],
+      "title": "The Witcher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Witcher.S06E02.GERMAN.DL.1080p.WEB.h264-SMURF",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        2
+      ],
+      "group": "SMURF",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        6
+      ],
+      "title": "The Witcher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dark.S00E04.Special.720p.HDTV.x264-FLEET",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "FLEET",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Dark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dark S02E08 1080p WEB H264-NOGRP",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "NOGRP",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Dark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dark.S03E12.720p.WEB.x265-SYNCOPY[eztv]",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "SYNCOPY",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Dark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dark.S04E16E17.720p.HDTV.x264-Kitsune",
+    "expect": {
+      "episodes": [
+        16,
+        17
+      ],
+      "group": "Kitsune",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Dark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dark.S01-S06.COMPLETE.720p.BluRay.x264-HONE",
+    "expect": {
+      "fullSeason": true,
+      "group": "HONE",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "title": "Dark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dark.S06E04.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-TOMMY",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "TOMMY",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Netflix",
+      "title": "Dark",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Dark.S01E08.1080p.DSNP.WEB-DL.DDP5.1.H.264-NAISU[TGx]",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "NAISU",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Disney+",
+      "title": "Dark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Money.Heist.S02E04.MULTi.1080p.WEB.x264-W4NK3R",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "W4NK3R",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        2
+      ],
+      "title": "Money Heist",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Money Heist - S03E09 - Chapter One (1080p WEB-DL x265 PECULATE)",
+    "expect": {
+      "episodeTitle": "Chapter One",
+      "episodes": [
+        9
+      ],
+      "group": "PECULATE",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Money Heist",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Money.Heist.S04E14.1080p.WEB.h264-WELP",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "WELP",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Money Heist",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Money.Heist.S05.1080p.BluRay.x264-RAWR",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "RAWR",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Money Heist",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Money.Heist.S06E04.PROPER.720p.HDTV.x264-STRiFE",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "STRiFE",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        6
+      ],
+      "title": "Money Heist",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Money.Heist.S01E09.HRV.720p.WEB-DL.x264-NTb",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "NTb",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        1
+      ],
+      "title": "Money Heist",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Money.Heist.S02E14.720p.HDTV.x264-KiNGS",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "KiNGS",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Money Heist",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "Squid.Game.S03E04.GERMAN.DL.1080p.WEB.h264-APEX",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "APEX",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        3
+      ],
+      "title": "Squid Game",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Squid.Game.S04E10.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-BYNDR",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "BYNDR",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Squid Game",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Squid.Game.S05E16-E18.1080p.WEB-DL.DD5.1.H.264-SPARKS",
+    "expect": {
+      "episodes": [
+        16,
+        17,
+        18
+      ],
+      "group": "SPARKS",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Squid Game",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Squid.Game.S00E02.Special.720p.HDTV.x264-EDITH",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "EDITH",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Squid Game",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Squid Game S01E08 1080p WEB H264-playWEB",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Squid Game",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Squid.Game.S02E14.720p.WEB.x265-FGT[eztv]",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "FGT",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Squid Game",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Squid.Game.S03E20E21.720p.HDTV.x264-DRONES",
+    "expect": {
+      "episodes": [
+        20,
+        21
+      ],
+      "group": "DRONES",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Squid Game",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Bluey.2018.S04E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-FLUX[TGx]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "FLUX",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Disney+",
+      "title": "Bluey",
+      "unparsed": [],
+      "year": 2018
+    }
+  },
+  {
+    "name": "Bluey.2018.S05E11.Winter.Is.Coming.1080p.AMZN.WEB-DL.DDP5.1.H.264-CMRG",
+    "expect": {
+      "episodeTitle": "Winter Is Coming",
+      "episodes": [
+        11
+      ],
+      "group": "CMRG",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Amazon",
+      "title": "Bluey",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      },
+      "year": 2018
+    }
+  },
+  {
+    "name": "Bluey.2018.Season.6.1080p.WEB-DL.DD5.1.H.264-TEPES",
+    "expect": {
+      "fullSeason": true,
+      "group": "TEPES",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Bluey",
+      "unparsed": [],
+      "year": 2018
+    }
+  },
+  {
+    "name": "Bluey.2018.S01E05.MULTi.1080p.WEB.x264-GECKOS",
+    "expect": {
+      "episodes": [
+        5
+      ],
+      "group": "GECKOS",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        1
+      ],
+      "title": "Bluey",
+      "unparsed": [],
+      "year": 2018
+    }
+  },
+  {
+    "name": "Bluey 2018 - S02E12 - Ozymandias (1080p WEB-DL x265 KOGi)",
+    "expect": {
+      "episodeTitle": "Ozymandias",
+      "episodes": [
+        12
+      ],
+      "group": "KOGi",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Bluey",
+      "unparsed": [],
+      "year": 2018
+    }
+  },
+  {
+    "name": "Bluey.2018.S03E19.1080p.WEB.h264-SuccessfulCrab",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Bluey",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      },
+      "year": 2018
+    }
+  },
+  {
+    "name": "Bluey.2018.S04.1080p.BluRay.x264-HiFi",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "HiFi",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Bluey",
+      "unparsed": [],
+      "year": 2018
+    }
+  },
+  {
+    "name": "Top.Gear.S05E04.720p.HDTV.x264-SiGMA",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "SiGMA",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Top Gear",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "top.gear.6x12.hdtv.xvid-amiable",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "amiable",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "top gear",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Top.Gear.S01E20.REPACK.1080p.WEB.h264-BAE",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "BAE",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        1
+      ],
+      "title": "Top Gear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Top.Gear.S02E08.GERMAN.DL.1080p.WEB.h264-ROVERS",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        8
+      ],
+      "group": "ROVERS",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        2
+      ],
+      "title": "Top Gear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Top.Gear.S03E16.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-DON",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "DON",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Top Gear",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Top.Gear.S04E04-E06.1080p.WEB-DL.DD5.1.H.264-DIMENSION",
+    "expect": {
+      "episodes": [
+        4,
+        5,
+        6
+      ],
+      "group": "DIMENSION",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Top Gear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Top.Gear.S00E12.Special.720p.HDTV.x264-SVA",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "SVA",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Top Gear",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Simpsons.S06E04E05.720p.HDTV.x264-MeGusta",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "MeGusta",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "The Simpsons",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Simpsons.S01-S02.COMPLETE.720p.BluRay.x264-CtrlHD",
+    "expect": {
+      "fullSeason": true,
+      "group": "CtrlHD",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2
+      ],
+      "title": "The Simpsons",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Simpsons.S02E02.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-EbP",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "EbP",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Netflix",
+      "title": "The Simpsons",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "The.Simpsons.S03E11.1080p.DSNP.WEB-DL.DDP5.1.H.264-KILLERS[TGx]",
+    "expect": {
+      "episodes": [
+        11
+      ],
+      "group": "KILLERS",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Disney+",
+      "title": "The Simpsons",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Simpsons.S04E20.Hard.Times.1080p.AMZN.WEB-DL.DDP5.1.H.264-FLEET",
+    "expect": {
+      "episodeTitle": "Hard Times",
+      "episodes": [
+        20
+      ],
+      "group": "FLEET",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Amazon",
+      "title": "The Simpsons",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "The.Simpsons.Season.5.1080p.WEB-DL.DD5.1.H.264-NOGRP",
+    "expect": {
+      "fullSeason": true,
+      "group": "NOGRP",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "The Simpsons",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Simpsons.S06E18.MULTi.1080p.WEB.x264-SYNCOPY",
+    "expect": {
+      "episodes": [
+        18
+      ],
+      "group": "SYNCOPY",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        6
+      ],
+      "title": "The Simpsons",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Law.and.Order.SVU.S01.1080p.BluRay.x264-LOL",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "LOL",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Law and Order SVU",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Law.and.Order.SVU.S02E14.PROPER.720p.HDTV.x264-AVS",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "AVS",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        2
+      ],
+      "title": "Law and Order SVU",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Law.and.Order.SVU.S03E04.HRV.720p.WEB-DL.x264-MiNX",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "MiNX",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        3
+      ],
+      "title": "Law and Order SVU",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Law.and.Order.SVU.S04E14.720p.HDTV.x264-ETHEL",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "ETHEL",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Law and Order SVU",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "law.and.order.svu.5x04.hdtv.xvid-w4nk3r",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "w4nk3r",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "law and order svu",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Law.and.Order.SVU.S06E14.REPACK.1080p.WEB.h264-PECULATE",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "PECULATE",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        6
+      ],
+      "title": "Law and Order SVU",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Law.and.Order.SVU.S01E04.GERMAN.DL.1080p.WEB.h264-WELP",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "WELP",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        1
+      ],
+      "title": "Law and Order SVU",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Star.Trek.Discovery.S00E04.Special.720p.HDTV.x264-BHDStudio",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "BHDStudio",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Star Trek Discovery",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Star Trek Discovery S03E15 1080p WEB H264-GGEZ",
+    "expect": {
+      "episodes": [
+        15
+      ],
+      "group": "GGEZ",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Star Trek Discovery",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Star.Trek.Discovery.S04E06.720p.WEB.x265-BLOOM[eztv]",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "BLOOM",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Star Trek Discovery",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Star.Trek.Discovery.S05E17E18.720p.HDTV.x264-SMURF",
+    "expect": {
+      "episodes": [
+        17,
+        18
+      ],
+      "group": "SMURF",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Star Trek Discovery",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Star.Trek.Discovery.S01-S07.COMPLETE.720p.BluRay.x264-APEX",
+    "expect": {
+      "fullSeason": true,
+      "group": "APEX",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "title": "Star Trek Discovery",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Star.Trek.Discovery.S01E19.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-BYNDR",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "BYNDR",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Netflix",
+      "title": "Star Trek Discovery",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Star.Trek.Discovery.S02E10.1080p.DSNP.WEB-DL.DDP5.1.H.264-SPARKS[TGx]",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "SPARKS",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Disney+",
+      "title": "Star Trek Discovery",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Better.Call.Saul.S03E04.MULTi.1080p.WEB.x264-Kitsune",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "Kitsune",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        3
+      ],
+      "title": "Better Call Saul",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Better Call Saul - S04E16 - Hard Times (1080p WEB-DL x265 HONE)",
+    "expect": {
+      "episodeTitle": "Hard Times",
+      "episodes": [
+        16
+      ],
+      "group": "HONE",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Better Call Saul",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Better.Call.Saul.S05E08.1080p.WEB.h264-TOMMY",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "TOMMY",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Better Call Saul",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Better.Call.Saul.S06.1080p.BluRay.x264-NAISU",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "NAISU",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Better Call Saul",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Better.Call.Saul.S01E12.PROPER.720p.HDTV.x264-FLUX",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "FLUX",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        1
+      ],
+      "title": "Better Call Saul",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Better.Call.Saul.S02E04.HRV.720p.WEB-DL.x264-CMRG",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "CMRG",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        2
+      ],
+      "title": "Better Call Saul",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Better.Call.Saul.S03E16.720p.HDTV.x264-TEPES",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "TEPES",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Better Call Saul",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "Peaky.Blinders.S04E04.GERMAN.DL.1080p.WEB.h264-RAWR",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "RAWR",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        4
+      ],
+      "title": "Peaky Blinders",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Peaky.Blinders.S05E17.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-STRiFE",
+    "expect": {
+      "episodes": [
+        17
+      ],
+      "group": "STRiFE",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Peaky Blinders",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Peaky.Blinders.S06E10-E12.1080p.WEB-DL.DD5.1.H.264-NTb",
+    "expect": {
+      "episodes": [
+        10,
+        11,
+        12
+      ],
+      "group": "NTb",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Peaky Blinders",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Peaky.Blinders.S00E03.Special.720p.HDTV.x264-KiNGS",
+    "expect": {
+      "episodes": [
+        3
+      ],
+      "group": "KiNGS",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Peaky Blinders",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Peaky Blinders S02E16 1080p WEB H264-SiGMA",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "SiGMA",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Peaky Blinders",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Peaky.Blinders.S03E09.720p.WEB.x265-AMIABLE[eztv]",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "AMIABLE",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Peaky Blinders",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Peaky.Blinders.S04E02E03.720p.HDTV.x264-BAE",
+    "expect": {
+      "episodes": [
+        2,
+        3
+      ],
+      "group": "BAE",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Peaky Blinders",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Black.Mirror.S05E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-EDITH[TGx]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "EDITH",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Disney+",
+      "title": "Black Mirror",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Black.Mirror.S06E18.Inside.Job.1080p.AMZN.WEB-DL.DDP5.1.H.264-playWEB",
+    "expect": {
+      "episodeTitle": "Inside Job",
+      "episodes": [
+        18
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Amazon",
+      "title": "Black Mirror",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Black.Mirror.Season.1.1080p.WEB-DL.DD5.1.H.264-FGT",
+    "expect": {
+      "fullSeason": true,
+      "group": "FGT",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Black Mirror",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Black.Mirror.S02E06.MULTi.1080p.WEB.x264-DRONES",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "DRONES",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        2
+      ],
+      "title": "Black Mirror",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Black Mirror - S03E20 - Chapter One (1080p WEB-DL x265 MeGusta)",
+    "expect": {
+      "episodeTitle": "Chapter One",
+      "episodes": [
+        20
+      ],
+      "group": "MeGusta",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Black Mirror",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Black.Mirror.S04E14.1080p.WEB.h264-CtrlHD",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "CtrlHD",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Black Mirror",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Black.Mirror.S05.1080p.BluRay.x264-EbP",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "EbP",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Black Mirror",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Westworld.S06E04.720p.HDTV.x264-GECKOS",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "GECKOS",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Westworld",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "westworld.1x19.hdtv.xvid-kogi",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "kogi",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "westworld",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Westworld.S02E14.REPACK.1080p.WEB.h264-SuccessfulCrab",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        2
+      ],
+      "title": "Westworld",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Westworld.S03E09.GERMAN.DL.1080p.WEB.h264-HiFi",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        9
+      ],
+      "group": "HiFi",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        3
+      ],
+      "title": "Westworld",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Westworld.S04E04.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-LOL",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "LOL",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Westworld",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Westworld.S05E19-E21.1080p.WEB-DL.DD5.1.H.264-AVS",
+    "expect": {
+      "episodes": [
+        19,
+        20,
+        21
+      ],
+      "group": "AVS",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Westworld",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Westworld.S00E14.Special.720p.HDTV.x264-MiNX",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "MiNX",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Westworld",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Chernobyl.S01E04E05.720p.HDTV.x264-ROVERS",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "ROVERS",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Chernobyl",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Chernobyl.S01-S03.COMPLETE.720p.BluRay.x264-DON",
+    "expect": {
+      "fullSeason": true,
+      "group": "DON",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3
+      ],
+      "title": "Chernobyl",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Chernobyl.S03E16.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-DIMENSION",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "DIMENSION",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Netflix",
+      "title": "Chernobyl",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Chernobyl.S04E12.1080p.DSNP.WEB-DL.DDP5.1.H.264-SVA[TGx]",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "SVA",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Disney+",
+      "title": "Chernobyl",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Chernobyl.S05E08.Winter.Is.Coming.1080p.AMZN.WEB-DL.DDP5.1.H.264-BHDStudio",
+    "expect": {
+      "episodeTitle": "Winter Is Coming",
+      "episodes": [
+        8
+      ],
+      "group": "BHDStudio",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Amazon",
+      "title": "Chernobyl",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Chernobyl.Season.6.1080p.WEB-DL.DD5.1.H.264-GGEZ",
+    "expect": {
+      "fullSeason": true,
+      "group": "GGEZ",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Chernobyl",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Chernobyl.S01E20.MULTi.1080p.WEB.x264-BLOOM",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "BLOOM",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        1
+      ],
+      "title": "Chernobyl",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "True.Detective.S02.1080p.BluRay.x264-KILLERS",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "KILLERS",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "True Detective",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "True.Detective.S03E01.PROPER.720p.HDTV.x264-FLEET",
+    "expect": {
+      "episodes": [
+        1
+      ],
+      "group": "FLEET",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        3
+      ],
+      "title": "True Detective",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "True.Detective.S04E18.HRV.720p.WEB-DL.x264-NOGRP",
+    "expect": {
+      "episodes": [
+        18
+      ],
+      "group": "NOGRP",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        4
+      ],
+      "title": "True Detective",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "True.Detective.S05E15.720p.HDTV.x264-SYNCOPY",
+    "expect": {
+      "episodes": [
+        15
+      ],
+      "group": "SYNCOPY",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "True Detective",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "true.detective.6x12.hdtv.xvid-kitsune",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "kitsune",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "true detective",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "True.Detective.S01E09.REPACK.1080p.WEB.h264-HONE",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "HONE",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        1
+      ],
+      "title": "True Detective",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "True.Detective.S02E06.GERMAN.DL.1080p.WEB.h264-TOMMY",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        6
+      ],
+      "group": "TOMMY",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        2
+      ],
+      "title": "True Detective",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Expanse.S00E04.Special.720p.HDTV.x264-ETHEL",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "ETHEL",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "The Expanse",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The Expanse S04E02 1080p WEB H264-W4NK3R",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "W4NK3R",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "The Expanse",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Expanse.S05E20.720p.WEB.x265-PECULATE[eztv]",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "PECULATE",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "The Expanse",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Expanse.S06E18E19.720p.HDTV.x264-WELP",
+    "expect": {
+      "episodes": [
+        18,
+        19
+      ],
+      "group": "WELP",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "The Expanse",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Expanse.S01-S02.COMPLETE.720p.BluRay.x264-RAWR",
+    "expect": {
+      "fullSeason": true,
+      "group": "RAWR",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2
+      ],
+      "title": "The Expanse",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Expanse.S02E14.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-STRiFE",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "STRiFE",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Netflix",
+      "title": "The Expanse",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "The.Expanse.S03E12.1080p.DSNP.WEB-DL.DDP5.1.H.264-NTb[TGx]",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "NTb",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Disney+",
+      "title": "The Expanse",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Foundation.S04E04.MULTi.1080p.WEB.x264-SMURF",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "SMURF",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        4
+      ],
+      "title": "Foundation",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Foundation - S05E03 - Winter Is Coming (1080p WEB-DL x265 APEX)",
+    "expect": {
+      "episodeTitle": "Winter Is Coming",
+      "episodes": [
+        3
+      ],
+      "group": "APEX",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Foundation",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Foundation.S06E02.1080p.WEB.h264-BYNDR",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "BYNDR",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Foundation",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Foundation.S01.1080p.BluRay.x264-SPARKS",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "SPARKS",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Foundation",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Foundation.S02E20.PROPER.720p.HDTV.x264-EDITH",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "EDITH",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        2
+      ],
+      "title": "Foundation",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Foundation.S03E19.HRV.720p.WEB-DL.x264-playWEB",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        3
+      ],
+      "title": "Foundation",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Foundation.S04E18.720p.HDTV.x264-FGT",
+    "expect": {
+      "episodes": [
+        18
+      ],
+      "group": "FGT",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Foundation",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "Silo.S05E04.GERMAN.DL.1080p.WEB.h264-NAISU",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "NAISU",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        5
+      ],
+      "title": "Silo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Silo.S06E04.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-FLUX",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "FLUX",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Silo",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Silo.S01E04-E06.1080p.WEB-DL.DD5.1.H.264-CMRG",
+    "expect": {
+      "episodes": [
+        4,
+        5,
+        6
+      ],
+      "group": "CMRG",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Silo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Silo.S00E04.Special.720p.HDTV.x264-TEPES",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "TEPES",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Silo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Silo S03E04 1080p WEB H264-GECKOS",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "GECKOS",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Silo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Silo.S04E04.720p.WEB.x265-KOGi[eztv]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "KOGi",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Silo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Silo.S05E04E05.720p.HDTV.x264-SuccessfulCrab",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Silo",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fallout.S06E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-KiNGS[TGx]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "KiNGS",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Disney+",
+      "title": "Fallout",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fallout.S01E05.The.Rains.of.Castamere.1080p.AMZN.WEB-DL.DDP5.1.H.264-SiGMA",
+    "expect": {
+      "episodeTitle": "The Rains of Castamere",
+      "episodes": [
+        5
+      ],
+      "group": "SiGMA",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Amazon",
+      "title": "Fallout",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Fallout.Season.2.1080p.WEB-DL.DD5.1.H.264-AMIABLE",
+    "expect": {
+      "fullSeason": true,
+      "group": "AMIABLE",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Fallout",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fallout.S03E07.MULTi.1080p.WEB.x264-BAE",
+    "expect": {
+      "episodes": [
+        7
+      ],
+      "group": "BAE",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        3
+      ],
+      "title": "Fallout",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fallout - S04E08 - Hard Times (1080p WEB-DL x265 ROVERS)",
+    "expect": {
+      "episodeTitle": "Hard Times",
+      "episodes": [
+        8
+      ],
+      "group": "ROVERS",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Fallout",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Fallout.S05E09.1080p.WEB.h264-DON",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "DON",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Fallout",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Fallout.S06.1080p.BluRay.x264-DIMENSION",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "DIMENSION",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Fallout",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Loki.S01E04.720p.HDTV.x264-DRONES",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "DRONES",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Loki",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "loki.2x06.hdtv.xvid-megusta",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "megusta",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "loki",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Loki.S03E08.REPACK.1080p.WEB.h264-CtrlHD",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "CtrlHD",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        3
+      ],
+      "title": "Loki",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Loki.S04E10.GERMAN.DL.1080p.WEB.h264-EbP",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        10
+      ],
+      "group": "EbP",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        4
+      ],
+      "title": "Loki",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Loki.S05E12.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-KILLERS",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "KILLERS",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Loki",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Loki.S06E14-E16.1080p.WEB-DL.DD5.1.H.264-FLEET",
+    "expect": {
+      "episodes": [
+        14,
+        15,
+        16
+      ],
+      "group": "FLEET",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Loki",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Loki.S00E16.Special.720p.HDTV.x264-NOGRP",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "NOGRP",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Loki",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Wednesday.S02E04E05.720p.HDTV.x264-HiFi",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "HiFi",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Wednesday",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Wednesday.S01-S04.COMPLETE.720p.BluRay.x264-LOL",
+    "expect": {
+      "fullSeason": true,
+      "group": "LOL",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "title": "Wednesday",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Wednesday.S04E10.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-AVS",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "AVS",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Netflix",
+      "title": "Wednesday",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Wednesday.S05E13.1080p.DSNP.WEB-DL.DDP5.1.H.264-MiNX[TGx]",
+    "expect": {
+      "episodes": [
+        13
+      ],
+      "group": "MiNX",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Disney+",
+      "title": "Wednesday",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Wednesday.S06E16.Inside.Job.1080p.AMZN.WEB-DL.DDP5.1.H.264-ETHEL",
+    "expect": {
+      "episodeTitle": "Inside Job",
+      "episodes": [
+        16
+      ],
+      "group": "ETHEL",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Amazon",
+      "title": "Wednesday",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Wednesday.Season.1.1080p.WEB-DL.DD5.1.H.264-W4NK3R",
+    "expect": {
+      "fullSeason": true,
+      "group": "W4NK3R",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Wednesday",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Wednesday.S02E02.MULTi.1080p.WEB.x264-PECULATE",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "PECULATE",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        2
+      ],
+      "title": "Wednesday",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Yellowstone.S03.1080p.BluRay.x264-SVA",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "SVA",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Yellowstone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Yellowstone.S04E08.PROPER.720p.HDTV.x264-BHDStudio",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "BHDStudio",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        4
+      ],
+      "title": "Yellowstone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Yellowstone.S05E12.HRV.720p.WEB-DL.x264-GGEZ",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "GGEZ",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        5
+      ],
+      "title": "Yellowstone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Yellowstone.S06E16.720p.HDTV.x264-BLOOM",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "BLOOM",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Yellowstone",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "yellowstone.1x20.hdtv.xvid-smurf",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "smurf",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "yellowstone",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Yellowstone.S02E04.REPACK.1080p.WEB.h264-APEX",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "APEX",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        2
+      ],
+      "title": "Yellowstone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Yellowstone.S03E08.GERMAN.DL.1080p.WEB.h264-BYNDR",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        8
+      ],
+      "group": "BYNDR",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        3
+      ],
+      "title": "Yellowstone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ozark.S00E04.Special.720p.HDTV.x264-SYNCOPY",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "SYNCOPY",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Ozark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ozark S05E09 1080p WEB H264-Kitsune",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "Kitsune",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Ozark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ozark.S06E14.720p.WEB.x265-HONE[eztv]",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "HONE",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Ozark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ozark.S01E19E20.720p.HDTV.x264-TOMMY",
+    "expect": {
+      "episodes": [
+        19,
+        20
+      ],
+      "group": "TOMMY",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Ozark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ozark.S01-S03.COMPLETE.720p.BluRay.x264-NAISU",
+    "expect": {
+      "fullSeason": true,
+      "group": "NAISU",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3
+      ],
+      "title": "Ozark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Ozark.S03E09.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-FLUX",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "FLUX",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "streamingService": "Netflix",
+      "title": "Ozark",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Ozark.S04E14.1080p.DSNP.WEB-DL.DDP5.1.H.264-CMRG[TGx]",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "CMRG",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Disney+",
+      "title": "Ozark",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Lost.S05E04.MULTi.1080p.WEB.x264-WELP",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "WELP",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        5
+      ],
+      "title": "Lost",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Lost - S06E10 - Inside Job (1080p WEB-DL x265 RAWR)",
+    "expect": {
+      "episodeTitle": "Inside Job",
+      "episodes": [
+        10
+      ],
+      "group": "RAWR",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Lost",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Lost.S01E16.1080p.WEB.h264-STRiFE",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "STRiFE",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Lost",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Lost.S02.1080p.BluRay.x264-NTb",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "NTb",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Lost",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Lost.S03E08.PROPER.720p.HDTV.x264-KiNGS",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "KiNGS",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        3
+      ],
+      "title": "Lost",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Lost.S04E14.HRV.720p.WEB-DL.x264-SiGMA",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "SiGMA",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        4
+      ],
+      "title": "Lost",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Lost.S05E20.720p.HDTV.x264-AMIABLE",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "AMIABLE",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Lost",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "Friends.S06E04.GERMAN.DL.1080p.WEB.h264-SPARKS",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "SPARKS",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        6
+      ],
+      "title": "Friends",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Friends.S01E11.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-EDITH",
+    "expect": {
+      "episodes": [
+        11
+      ],
+      "group": "EDITH",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Friends",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Friends.S02E18-E20.1080p.WEB-DL.DD5.1.H.264-playWEB",
+    "expect": {
+      "episodes": [
+        18,
+        19,
+        20
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Friends",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Friends.S00E05.Special.720p.HDTV.x264-FGT",
+    "expect": {
+      "episodes": [
+        5
+      ],
+      "group": "FGT",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Friends",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Friends S04E12 1080p WEB H264-DRONES",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "DRONES",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Friends",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Friends.S05E19.720p.WEB.x265-MeGusta[eztv]",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "MeGusta",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Friends",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Friends.S06E06E07.720p.HDTV.x264-CtrlHD",
+    "expect": {
+      "episodes": [
+        6,
+        7
+      ],
+      "group": "CtrlHD",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Friends",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dexter.S01E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-TEPES[TGx]",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "TEPES",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Disney+",
+      "title": "Dexter",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dexter.S02E12.The.Long.Night.1080p.AMZN.WEB-DL.DDP5.1.H.264-GECKOS",
+    "expect": {
+      "episodeTitle": "The Long Night",
+      "episodes": [
+        12
+      ],
+      "group": "GECKOS",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Amazon",
+      "title": "Dexter",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Dexter.Season.3.1080p.WEB-DL.DD5.1.H.264-KOGi",
+    "expect": {
+      "fullSeason": true,
+      "group": "KOGi",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Dexter",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dexter.S04E08.MULTi.1080p.WEB.x264-SuccessfulCrab",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        4
+      ],
+      "title": "Dexter",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dexter - S05E16 - Winter Is Coming (1080p WEB-DL x265 HiFi)",
+    "expect": {
+      "episodeTitle": "Winter Is Coming",
+      "episodes": [
+        16
+      ],
+      "group": "HiFi",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Dexter",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dexter.S06E04.1080p.WEB.h264-LOL",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "LOL",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Dexter",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Dexter.S01.1080p.BluRay.x264-AVS",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "AVS",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Dexter",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Battlestar.Galactica.2004.S02E04.720p.HDTV.x264-BAE",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "BAE",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Battlestar Galactica",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2004
+    }
+  },
+  {
+    "name": "battlestar.galactica.2004.3x13.hdtv.xvid-rovers",
+    "expect": {
+      "episodes": [
+        13
+      ],
+      "group": "rovers",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "battlestar galactica",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      },
+      "year": 2004
+    }
+  },
+  {
+    "name": "Battlestar.Galactica.2004.S04E02.REPACK.1080p.WEB.h264-DON",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "DON",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        4
+      ],
+      "title": "Battlestar Galactica",
+      "unparsed": [],
+      "year": 2004
+    }
+  },
+  {
+    "name": "Battlestar.Galactica.2004.S05E11.GERMAN.DL.1080p.WEB.h264-DIMENSION",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        11
+      ],
+      "group": "DIMENSION",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        5
+      ],
+      "title": "Battlestar Galactica",
+      "unparsed": [],
+      "year": 2004
+    }
+  },
+  {
+    "name": "Battlestar.Galactica.2004.S06E20.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-SVA",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "SVA",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Battlestar Galactica",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      },
+      "year": 2004
+    }
+  },
+  {
+    "name": "Battlestar.Galactica.2004.S01E09-E11.1080p.WEB-DL.DD5.1.H.264-BHDStudio",
+    "expect": {
+      "episodes": [
+        9,
+        10,
+        11
+      ],
+      "group": "BHDStudio",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Battlestar Galactica",
+      "unparsed": [],
+      "year": 2004
+    }
+  },
+  {
+    "name": "Battlestar.Galactica.2004.S00E18.Special.720p.HDTV.x264-GGEZ",
+    "expect": {
+      "episodes": [
+        18
+      ],
+      "group": "GGEZ",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Battlestar Galactica",
+      "unparsed": [],
+      "year": 2004
+    }
+  },
+  {
+    "name": "Room.104.S03E04E05.720p.HDTV.x264-EbP",
+    "expect": {
+      "episodes": [
+        4,
+        5
+      ],
+      "group": "EbP",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Room 104",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Room.104.S01-S05.COMPLETE.720p.BluRay.x264-KILLERS",
+    "expect": {
+      "fullSeason": true,
+      "group": "KILLERS",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "title": "Room 104",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Room.104.S05E04.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-FLEET",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "FLEET",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Netflix",
+      "title": "Room 104",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Room.104.S06E14.1080p.DSNP.WEB-DL.DDP5.1.H.264-NOGRP[TGx]",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "NOGRP",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "streamingService": "Disney+",
+      "title": "Room 104",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Room.104.S01E04.The.Rains.of.Castamere.1080p.AMZN.WEB-DL.DDP5.1.H.264-SYNCOPY",
+    "expect": {
+      "episodeTitle": "The Rains of Castamere",
+      "episodes": [
+        4
+      ],
+      "group": "SYNCOPY",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Amazon",
+      "title": "Room 104",
+      "unparsed": [],
+      "video": {
+        "source": "webdl"
+      }
+    }
+  },
+  {
+    "name": "Room.104.Season.2.1080p.WEB-DL.DD5.1.H.264-Kitsune",
+    "expect": {
+      "fullSeason": true,
+      "group": "Kitsune",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Room 104",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Room.104.S03E04.MULTi.1080p.WEB.x264-HONE",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "HONE",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        3
+      ],
+      "title": "Room 104",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mob.Psycho.100.S04.1080p.BluRay.x264-MiNX",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "MiNX",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mob.Psycho.100.S05E15.PROPER.720p.HDTV.x264-ETHEL",
+    "expect": {
+      "episodes": [
+        15
+      ],
+      "group": "ETHEL",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        5
+      ],
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mob.Psycho.100.S06E06.HRV.720p.WEB-DL.x264-W4NK3R",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "W4NK3R",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        6
+      ],
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mob.Psycho.100.S01E17.720p.HDTV.x264-PECULATE",
+    "expect": {
+      "episodes": [
+        17
+      ],
+      "group": "PECULATE",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Mob Psycho 100",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "mob.psycho.100.2x08.hdtv.xvid-welp",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "welp",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "mob psycho 100",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid"
+      }
+    }
+  },
+  {
+    "name": "Mob.Psycho.100.S03E19.REPACK.1080p.WEB.h264-RAWR",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "RAWR",
+      "kind": "series",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "seasons": [
+        3
+      ],
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mob.Psycho.100.S04E10.GERMAN.DL.1080p.WEB.h264-STRiFE",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        10
+      ],
+      "group": "STRiFE",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        4
+      ],
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Rings.of.Power.S00E04.Special.720p.HDTV.x264-BLOOM",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "BLOOM",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "The Rings of Power",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The Rings of Power S06E16 1080p WEB H264-SMURF",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "SMURF",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "The Rings of Power",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Rings.of.Power.S01E08.720p.WEB.x265-APEX[eztv]",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "APEX",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "The Rings of Power",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Rings.of.Power.S02E20E21.720p.HDTV.x264-BYNDR",
+    "expect": {
+      "episodes": [
+        20,
+        21
+      ],
+      "group": "BYNDR",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "The Rings of Power",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Rings.of.Power.S01-S04.COMPLETE.720p.BluRay.x264-SPARKS",
+    "expect": {
+      "fullSeason": true,
+      "group": "SPARKS",
+      "kind": "series",
+      "multiSeason": true,
+      "seasons": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "title": "The Rings of Power",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Rings.of.Power.S04E04.2160p.NF.WEB-DL.DDP5.1.HDR.HEVC-EDITH",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "EDITH",
+      "kind": "series",
+      "seasons": [
+        4
+      ],
+      "streamingService": "Netflix",
+      "title": "The Rings of Power",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "The.Rings.of.Power.S05E16.1080p.DSNP.WEB-DL.DDP5.1.H.264-playWEB[TGx]",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "playWEB",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "streamingService": "Disney+",
+      "title": "The Rings of Power",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Gen.V.S06E04.MULTi.1080p.WEB.x264-TOMMY",
+    "expect": {
+      "episodes": [
+        4
+      ],
+      "group": "TOMMY",
+      "kind": "series",
+      "multiAudio": true,
+      "seasons": [
+        6
+      ],
+      "title": "Gen V",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Gen V - S01E17 - The Rains of Castamere (1080p WEB-DL x265 NAISU)",
+    "expect": {
+      "episodeTitle": "The Rains of Castamere",
+      "episodes": [
+        17
+      ],
+      "group": "NAISU",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Gen V",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Gen.V.S02E10.1080p.WEB.h264-FLUX",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "FLUX",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Gen V",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Gen.V.S03.1080p.BluRay.x264-CMRG",
+    "expect": {
+      "episodes": [],
+      "fullSeason": true,
+      "group": "CMRG",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Gen V",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Gen.V.S04E16.PROPER.720p.HDTV.x264-TEPES",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "TEPES",
+      "kind": "series",
+      "revision": {
+        "proper": true
+      },
+      "seasons": [
+        4
+      ],
+      "title": "Gen V",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Gen.V.S05E09.HRV.720p.WEB-DL.x264-GECKOS",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "GECKOS",
+      "kind": "series",
+      "languages": [
+        "hr"
+      ],
+      "seasons": [
+        5
+      ],
+      "title": "Gen V",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Gen.V.S06E02.720p.HDTV.x264-KOGi",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "KOGi",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Gen V",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      }
+    }
+  },
+  {
+    "name": "Kaos.S01E04.GERMAN.DL.1080p.WEB.h264-NTb",
+    "expect": {
+      "dualAudio": true,
+      "episodes": [
+        4
+      ],
+      "group": "NTb",
+      "kind": "series",
+      "languages": [
+        "de"
+      ],
+      "seasons": [
+        1
+      ],
+      "title": "Kaos",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Kaos.S02E18.1080p.ATVP.WEB-DL.DDP5.1.Atmos.DV.H.265-KiNGS",
+    "expect": {
+      "episodes": [
+        18
+      ],
+      "group": "KiNGS",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "streamingService": "Apple TV+",
+      "title": "Kaos",
+      "unparsed": [],
+      "video": {
+        "dolbyVisionProfile": "5",
+        "hdr": [
+          "DV"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Kaos.S03E12-E14.1080p.WEB-DL.DD5.1.H.264-SiGMA",
+    "expect": {
+      "episodes": [
+        12,
+        13,
+        14
+      ],
+      "group": "SiGMA",
+      "kind": "series",
+      "seasons": [
+        3
+      ],
+      "title": "Kaos",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Kaos.S00E06.Special.720p.HDTV.x264-AMIABLE",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "AMIABLE",
+      "kind": "series",
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "title": "Kaos",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Kaos S05E20 1080p WEB H264-BAE",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "BAE",
+      "kind": "series",
+      "seasons": [
+        5
+      ],
+      "title": "Kaos",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Kaos.S06E14.720p.WEB.x265-ROVERS[eztv]",
+    "expect": {
+      "episodes": [
+        14
+      ],
+      "group": "ROVERS",
+      "kind": "series",
+      "seasons": [
+        6
+      ],
+      "title": "Kaos",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Kaos.S01E08E09.720p.HDTV.x264-DON",
+    "expect": {
+      "episodes": [
+        8,
+        9
+      ],
+      "group": "DON",
+      "kind": "series",
+      "seasons": [
+        1
+      ],
+      "title": "Kaos",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Daily.Show.2019.01.01.Margot.Robbie.720p.WEB.h264-SPARKS",
+    "expect": {
+      "airDate": "2019-01-01",
+      "episodeTitle": "Margot Robbie",
+      "group": "SPARKS",
+      "kind": "series",
+      "title": "The Daily Show",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The Daily Show 2020-02-06 1080p HDTV H264-AMIABLE",
+    "expect": {
+      "airDate": "2020-02-06",
+      "group": "AMIABLE",
+      "kind": "series",
+      "title": "The Daily Show",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Daily.Show.2021.03.11.1080p.PCOK.WEB-DL.AAC2.0.H.264-LOL",
+    "expect": {
+      "airDate": "2021-03-11",
+      "group": "LOL",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "The Daily Show",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Daily.Show.16.04.2022.720p.HDTV.x264-SYNCOPY",
+    "expect": {
+      "airDate": "2022-04-16",
+      "group": "SYNCOPY",
+      "kind": "series",
+      "title": "The Daily Show",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Last.Week.Tonight.with.John.Oliver.2020.04.08.Ryan.Gosling.720p.WEB.h264-FLUX",
+    "expect": {
+      "airDate": "2020-04-08",
+      "episodeTitle": "Ryan Gosling",
+      "group": "FLUX",
+      "kind": "series",
+      "title": "Last Week Tonight with John Oliver",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Last Week Tonight with John Oliver 2021-05-13 1080p HDTV H264-DRONES",
+    "expect": {
+      "airDate": "2021-05-13",
+      "group": "DRONES",
+      "kind": "series",
+      "title": "Last Week Tonight with John Oliver",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Last.Week.Tonight.with.John.Oliver.2022.06.18.1080p.PCOK.WEB-DL.AAC2.0.H.264-DIMENSION",
+    "expect": {
+      "airDate": "2022-06-18",
+      "group": "DIMENSION",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "Last Week Tonight with John Oliver",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Last.Week.Tonight.with.John.Oliver.23.07.2023.720p.HDTV.x264-W4NK3R",
+    "expect": {
+      "airDate": "2023-07-23",
+      "group": "W4NK3R",
+      "kind": "series",
+      "title": "Last Week Tonight with John Oliver",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Tonight.Show.Starring.Jimmy.Fallon.2021.07.15.720p.WEB.h264-NTb",
+    "expect": {
+      "airDate": "2021-07-15",
+      "group": "NTb",
+      "kind": "series",
+      "title": "The Tonight Show Starring Jimmy Fallon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The Tonight Show Starring Jimmy Fallon 2022-08-20 1080p HDTV H264-KOGi",
+    "expect": {
+      "airDate": "2022-08-20",
+      "group": "KOGi",
+      "kind": "series",
+      "title": "The Tonight Show Starring Jimmy Fallon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Tonight.Show.Starring.Jimmy.Fallon.2023.09.25.1080p.PCOK.WEB-DL.AAC2.0.H.264-KILLERS",
+    "expect": {
+      "airDate": "2023-09-25",
+      "group": "KILLERS",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "The Tonight Show Starring Jimmy Fallon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Tonight.Show.Starring.Jimmy.Fallon.02.10.2024.720p.HDTV.x264-BLOOM",
+    "expect": {
+      "airDate": "2024-10-02",
+      "group": "BLOOM",
+      "kind": "series",
+      "title": "The Tonight Show Starring Jimmy Fallon",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Jeopardy.2022.10.22.Zendaya.720p.WEB.h264-EDITH",
+    "expect": {
+      "airDate": "2022-10-22",
+      "episodeTitle": "Zendaya",
+      "group": "EDITH",
+      "kind": "series",
+      "title": "Jeopardy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Jeopardy 2023-11-27 1080p HDTV H264-BAE",
+    "expect": {
+      "airDate": "2023-11-27",
+      "group": "BAE",
+      "kind": "series",
+      "title": "Jeopardy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Jeopardy.2024.12.04.1080p.PCOK.WEB-DL.AAC2.0.H.264-AVS",
+    "expect": {
+      "airDate": "2024-12-04",
+      "group": "AVS",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "Jeopardy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Jeopardy.09.01.2019.720p.HDTV.x264-Kitsune",
+    "expect": {
+      "airDate": "2019-01-09",
+      "group": "Kitsune",
+      "kind": "series",
+      "title": "Jeopardy",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "WWE.Monday.Night.RAW.2023.01.01.720p.WEB.h264-CMRG",
+    "expect": {
+      "airDate": "2023-01-01",
+      "group": "CMRG",
+      "kind": "series",
+      "title": "WWE Monday Night RAW",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "WWE Monday Night RAW 2024-02-06 1080p HDTV H264-MeGusta",
+    "expect": {
+      "airDate": "2024-02-06",
+      "group": "MeGusta",
+      "kind": "series",
+      "title": "WWE Monday Night RAW",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "WWE.Monday.Night.RAW.2019.03.11.1080p.PCOK.WEB-DL.AAC2.0.H.264-SVA",
+    "expect": {
+      "airDate": "2019-03-11",
+      "group": "SVA",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "WWE Monday Night RAW",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "WWE.Monday.Night.RAW.16.04.2020.720p.HDTV.x264-PECULATE",
+    "expect": {
+      "airDate": "2020-04-16",
+      "group": "PECULATE",
+      "kind": "series",
+      "title": "WWE Monday Night RAW",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Late.Night.with.Seth.Meyers.2024.04.08.Keanu.Reeves.720p.WEB.h264-KiNGS",
+    "expect": {
+      "airDate": "2024-04-08",
+      "episodeTitle": "Keanu Reeves",
+      "group": "KiNGS",
+      "kind": "series",
+      "title": "Late Night with Seth Meyers",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Late Night with Seth Meyers 2019-05-13 1080p HDTV H264-SuccessfulCrab",
+    "expect": {
+      "airDate": "2019-05-13",
+      "group": "SuccessfulCrab",
+      "kind": "series",
+      "title": "Late Night with Seth Meyers",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Late.Night.with.Seth.Meyers.2020.06.18.1080p.PCOK.WEB-DL.AAC2.0.H.264-FLEET",
+    "expect": {
+      "airDate": "2020-06-18",
+      "group": "FLEET",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "Late Night with Seth Meyers",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Late.Night.with.Seth.Meyers.23.07.2021.720p.HDTV.x264-SMURF",
+    "expect": {
+      "airDate": "2021-07-23",
+      "group": "SMURF",
+      "kind": "series",
+      "title": "Late Night with Seth Meyers",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Late.Show.with.Stephen.Colbert.2019.07.15.Margot.Robbie.720p.WEB.h264-playWEB",
+    "expect": {
+      "airDate": "2019-07-15",
+      "episodeTitle": "Margot Robbie",
+      "group": "playWEB",
+      "kind": "series",
+      "title": "The Late Show with Stephen Colbert",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The Late Show with Stephen Colbert 2020-08-20 1080p HDTV H264-ROVERS",
+    "expect": {
+      "airDate": "2020-08-20",
+      "group": "ROVERS",
+      "kind": "series",
+      "title": "The Late Show with Stephen Colbert",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Late.Show.with.Stephen.Colbert.2021.09.25.1080p.PCOK.WEB-DL.AAC2.0.H.264-MiNX",
+    "expect": {
+      "airDate": "2021-09-25",
+      "group": "MiNX",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "The Late Show with Stephen Colbert",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "The.Late.Show.with.Stephen.Colbert.02.10.2022.720p.HDTV.x264-HONE",
+    "expect": {
+      "airDate": "2022-10-02",
+      "group": "HONE",
+      "kind": "series",
+      "title": "The Late Show with Stephen Colbert",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Real.Time.with.Bill.Maher.2020.10.22.Ryan.Gosling.720p.WEB.h264-TEPES",
+    "expect": {
+      "airDate": "2020-10-22",
+      "episodeTitle": "Ryan Gosling",
+      "group": "TEPES",
+      "kind": "series",
+      "title": "Real Time with Bill Maher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Real Time with Bill Maher 2021-11-27 1080p HDTV H264-CtrlHD",
+    "expect": {
+      "airDate": "2021-11-27",
+      "group": "CtrlHD",
+      "kind": "series",
+      "title": "Real Time with Bill Maher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Real.Time.with.Bill.Maher.2022.12.04.1080p.PCOK.WEB-DL.AAC2.0.H.264-BHDStudio",
+    "expect": {
+      "airDate": "2022-12-04",
+      "group": "BHDStudio",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "Real Time with Bill Maher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Real.Time.with.Bill.Maher.09.01.2023.720p.HDTV.x264-WELP",
+    "expect": {
+      "airDate": "2023-01-09",
+      "group": "WELP",
+      "kind": "series",
+      "title": "Real Time with Bill Maher",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dnevnik.HRT.2021.01.01.720p.WEB.h264-SiGMA",
+    "expect": {
+      "airDate": "2021-01-01",
+      "group": "SiGMA",
+      "kind": "series",
+      "title": "Dnevnik HRT",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dnevnik HRT 2022-02-06 1080p HDTV H264-HiFi",
+    "expect": {
+      "airDate": "2022-02-06",
+      "group": "HiFi",
+      "kind": "series",
+      "title": "Dnevnik HRT",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dnevnik.HRT.2023.03.11.1080p.PCOK.WEB-DL.AAC2.0.H.264-NOGRP",
+    "expect": {
+      "airDate": "2023-03-11",
+      "group": "NOGRP",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "Dnevnik HRT",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dnevnik.HRT.16.04.2024.720p.HDTV.x264-APEX",
+    "expect": {
+      "airDate": "2024-04-16",
+      "group": "APEX",
+      "kind": "series",
+      "title": "Dnevnik HRT",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Good.Mythical.Morning.2022.04.08.Zendaya.720p.WEB.h264-FGT",
+    "expect": {
+      "airDate": "2022-04-08",
+      "episodeTitle": "Zendaya",
+      "group": "FGT",
+      "kind": "series",
+      "title": "Good Mythical Morning",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Good Mythical Morning 2023-05-13 1080p HDTV H264-DON",
+    "expect": {
+      "airDate": "2023-05-13",
+      "group": "DON",
+      "kind": "series",
+      "title": "Good Mythical Morning",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Good.Mythical.Morning.2024.06.18.1080p.PCOK.WEB-DL.AAC2.0.H.264-ETHEL",
+    "expect": {
+      "airDate": "2024-06-18",
+      "group": "ETHEL",
+      "kind": "series",
+      "streamingService": "Peacock",
+      "title": "Good Mythical Morning",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Good.Mythical.Morning.23.07.2019.720p.HDTV.x264-TOMMY",
+    "expect": {
+      "airDate": "2019-07-23",
+      "group": "TOMMY",
+      "kind": "series",
+      "title": "Good Mythical Morning",
+      "unparsed": []
+    }
+  }
+]

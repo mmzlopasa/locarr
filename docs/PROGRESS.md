@@ -1,7 +1,15 @@
 # Napredak
 
 ## Trenutna faza
-P3 — download klijenti: gotovo (branch `phase/P3-downloaders`). P0 i P1 gotovi; P2 se radi usporedno.
+P0–P3 gotovi. Sljedeće: P4 filmovi (koristi parser, profile i `decision.Evaluate`).
+
+## Gotovo u P2 (branch `phase/P2-decisions`)
+- `internal/parser` (D-022): naslov i alternativni naslovi, godina, vrsta (film/serija/glazba), SxxEyy i višestruke epizode, 1x01, sezonski i višesezonski paketi („Season 1", „Sezona 1", „Staffel 2", „S01-S03", „Complete Series"), dnevne emisije, specijali, anime (`- 012`, `[012]`, `E1012`, verzije v2), izdanja filmova, 3D, glazba (izvođač, album, FLAC 16/24-bit, MP3 320/V0, diskovi, scenska imena), izvor, rezolucija, kodek, HDR/DV s profilom, dubina boje, audio i kanali, streaming servisi, jezici (uklj. hrvatski, srpski, bosanski), titlovi i utisnuti titlovi, grupa (i anime grupe u zagradama), hash, PROPER/REPACK/REAL, ekstenzije, uzorci, zamaskirana imena; `ParsePath` za putanje datoteka. 1381 golden ime (`testdata/*.json`), fuzz, ~35 ms za 1000 imena.
+- `internal/quality` (D-023, D-027): ljestvica kvaliteta, definicije veličina po vrsti, profili kvalitete s grupama, granicom, nadogradnjom, bodovima i jezicima (D-024), profili izdanja (izrazi i `/regex/`), profili kašnjenja (redoslijed, zadani); početni profili („Any", „HD-720p/1080p", „HD-1080p", „UHD", glazba „Lossless", „Lossy", „Any"). Migracija `00004_profiles.sql`.
+- `internal/customformats` (D-025): uvjeti s negacijom/obaveznošću, bodovanje, uvoz/izvoz dijeljenog JSON-a.
+- `internal/decision` (D-026): 17 provjera, 28 kodova razloga, privremena odbijanja, rangiranje; 1000 kandidata daleko ispod 1 s.
+- API: `/qualities`, `/qualitydefinitions*`, `/qualityprofiles*`, `/customformats*` (uz `/schema`, `/import`, `/{id}/export`), `/releaseprofiles*`, `/delayprofiles*` (uz `/order`), `/languages`, `/parse`, `/decisions/evaluate` (`DecisionReport`).
+- Web (Postavke): Profili kvalitete (povlačenje, grupe, granica, bodovi, jezici), Veličine (klizači i pregled za 22/45/110/180 min ili vlastito trajanje), Custom formati (graditelj uvjeta, uvoz s provjerom, izvoz), Pravila izdanja (profili izdanja i kašnjenja), Provjera izdanja (uživo). Vitest i Playwright (`e2e/release-tester.spec.ts`). Korisnička dokumentacija `docs/user/profiles.md`.
 
 ## Gotovo u P3
 - `internal/downloaders`: zajedničko sučelje, normalizirana stanja i mogućnosti (D-017), klijent za odlazne veze s politikom adresa, timeoutima, ograničenjem odgovora i bez preusmjerenja na drugi host (D-020), parser .torrent/magnet, `testkit` (mali torrenti i NZB-ovi), `contracttest`.
@@ -43,8 +51,9 @@ P3 — download klijenti: gotovo (branch `phase/P3-downloaders`). P0 i P1 gotovi
 1. P0 ostatak:
    - Prvo pokretanje: korak za odabir mape za medije u čarobnjaku (danas se root mape dodaju u Postavke → Mape za medije odmah nakon postavljanja).
    - Backup i vraćanje (automatski i ručno); migracije pri pokretanju već rade.
-2. P2 parser i odluke (provjera blokiranih: `downloads.BlocklistChecker`); zatim P4 filmovi (uvoz se pretplaćuje na `downloads.Bus`).
-3. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
+2. P4 filmovi: adapter `indexers.Release` → `decision.Candidate` (naslov, veličina, protokol, indexer i njegove postavke, seederi, datum, ID-jevi, zastavice), adapter `decision.Blocklist` → `downloads.BlocklistChecker`, poziv `decision.Evaluate` za RSS i pretragu, spremanje `DecisionReport` u vremensku crtu; uvoz se pretplaćuje na `downloads.Bus`.
+3. P2 ostatak: zastavice indexera (freeleech…) treba P1 adapter preslikati u nazive iz `customformats.IndexerFlags`; profili izdanja po indexeru u webu (API već prima `indexerId`).
+4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
 - Download klijenti: uklanjanje nakon uvoza i ciljevi seedanja provjereni su samo s lažnim klijentom dok ne stigne uvoz (P4). Usenet klijenti su testirani bez news servera, pa su završena i neuspjela preuzimanja pokrivena samo testovima s fixturama. NZBGet kategorije se ne mogu stvoriti kroz API.

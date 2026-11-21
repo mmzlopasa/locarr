@@ -19,10 +19,11 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Proxyji po indexeru (HTTP/SOCKS5), FlareSolverr po izboru (ugrađeno; FlareSolverr testiran s lažnim servisom, proxyji još nisu testirani end-to-end)
 
 ## Parser i odluke (P2)
-- [ ] Parser imena izdanja: naslov, godina, sezona/epizoda (SxxEyy, višestruke, sezonski paketi, apsolutno, dnevno), kvaliteta, izvor, rezolucija, kodek, HDR/DV, audio, jezici, grupa, proper/repack, verzija
-- [ ] Profili kvalitete (redoslijed, granica nadogradnje), definicije veličina
-- [ ] Custom formati s bodovima, jezični profili, obavezni/zabranjeni izrazi, profili kašnjenja
-- [ ] Odluka sa zapisanim razlogom za svako odbijeno izdanje
+- [x] Parser imena izdanja: naslov, godina, sezona/epizoda (SxxEyy, višestruke, sezonski paketi, apsolutno, dnevno), kvaliteta, izvor, rezolucija, kodek, HDR/DV, audio, jezici, grupa, proper/repack, verzija
+- [x] Profili kvalitete (redoslijed, granica nadogradnje), definicije veličina
+- [x] Custom formati s bodovima (uvoz/izvoz dijeljenog JSON-a), jezici u profilima, obavezni/zabranjeni izrazi, profili kašnjenja
+- [x] Provjera izdanja: sva pročitana polja, custom formati i odluka s razlozima za odabrani profil
+- [ ] Odluka sa zapisanim razlogom za svako odbijeno izdanje (motor i razlozi gotovi u P2; zapis u vremensku crtu dolazi s P4/P11)
 - [ ] Blokirana izdanja, ponovni pokušaj s idućim najboljim izdanjem
 
 ## Download klijenti (P3)

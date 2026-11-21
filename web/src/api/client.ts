@@ -50,6 +50,26 @@ export type SearchType = Schemas["SearchType"];
 export type SearchIndexerResult = Schemas["SearchIndexerResult"];
 export type SearchStreamIndexerEvent = Schemas["SearchStreamIndexerEvent"];
 export type SearchStreamDone = Schemas["SearchStreamDone"];
+export type Quality = Schemas["Quality"];
+export type QualityDefinition = Schemas["QualityDefinition"];
+export type QualityProfile = Schemas["QualityProfile"];
+export type QualityProfileInput = Schemas["QualityProfileInput"];
+export type QualityProfileItem = Schemas["QualityProfileItem"];
+export type CustomFormat = Schemas["CustomFormat"];
+export type CustomFormatInput = Schemas["CustomFormatInput"];
+export type CustomFormatSpec = Schemas["CustomFormatSpec"];
+export type CustomFormatSchema = Schemas["CustomFormatSchema"];
+export type CustomFormatImplementation = Schemas["CustomFormatImplementation"];
+export type ReleaseProfile = Schemas["ReleaseProfile"];
+export type ReleaseProfileInput = Schemas["ReleaseProfileInput"];
+export type DelayProfile = Schemas["DelayProfile"];
+export type DelayProfileInput = Schemas["DelayProfileInput"];
+export type LanguageInfo = Schemas["LanguageInfo"];
+export type ParseRequest = Schemas["ParseRequest"];
+export type ParseResult = Schemas["ParseResult"];
+export type ParsedRelease = Schemas["ParsedRelease"];
+export type Decision = Schemas["Decision"];
+export type Rejection = Schemas["Rejection"];
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -127,6 +147,14 @@ export const queryKeys = {
   settings: ["settings"] as const,
   rootFolders: ["rootfolders"] as const,
   folders: (path: string) => ["filesystem", path] as const,
+  qualities: ["qualities"] as const,
+  qualityDefinitions: ["qualitydefinitions"] as const,
+  qualityProfiles: ["qualityprofiles"] as const,
+  customFormats: ["customformats"] as const,
+  customFormatSchema: ["customformats", "schema"] as const,
+  releaseProfiles: ["releaseprofiles"] as const,
+  delayProfiles: ["delayprofiles"] as const,
+  languages: ["languages"] as const,
   downloadClients: ["downloadclients"] as const,
   downloadImplementations: ["downloadclients", "implementations"] as const,
   downloadSettings: ["downloadclients", "settings"] as const,

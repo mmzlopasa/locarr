@@ -355,6 +355,230 @@ func (s *BlocklistInput) SetItemRef(val jx.Raw) {
 // CancelJobNoContent is response for CancelJob operation.
 type CancelJobNoContent struct{}
 
+// Ref: #/components/schemas/Candidate
+type Candidate struct {
+	GUID                             OptString      `json:"guid"`
+	Title                            string         `json:"title"`
+	Size                             OptInt64       `json:"size"`
+	Protocol                         OptProtocol    `json:"protocol"`
+	IndexerId                        OptInt64       `json:"indexerId"`
+	IndexerName                      OptString      `json:"indexerName"`
+	IndexerPriority                  OptInt         `json:"indexerPriority"`
+	IndexerFlags                     []string       `json:"indexerFlags"`
+	IndexerDisabled                  OptBool        `json:"indexerDisabled"`
+	IndexerRssDisabled               OptBool        `json:"indexerRssDisabled"`
+	IndexerAutomaticSearchDisabled   OptBool        `json:"indexerAutomaticSearchDisabled"`
+	IndexerInteractiveSearchDisabled OptBool        `json:"indexerInteractiveSearchDisabled"`
+	IndexerLimitedUntil              OptDateTime    `json:"indexerLimitedUntil"`
+	MinimumSeeders                   OptInt         `json:"minimumSeeders"`
+	Seeders                          OptInt         `json:"seeders"`
+	Peers                            OptInt         `json:"peers"`
+	PublishDate                      OptDateTime    `json:"publishDate"`
+	Ids                              OptExternalIds `json:"ids"`
+	DownloadUrl                      OptString      `json:"downloadUrl"`
+	InfoUrl                          OptString      `json:"infoUrl"`
+}
+
+// GetGUID returns the value of GUID.
+func (s *Candidate) GetGUID() OptString {
+	return s.GUID
+}
+
+// GetTitle returns the value of Title.
+func (s *Candidate) GetTitle() string {
+	return s.Title
+}
+
+// GetSize returns the value of Size.
+func (s *Candidate) GetSize() OptInt64 {
+	return s.Size
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *Candidate) GetProtocol() OptProtocol {
+	return s.Protocol
+}
+
+// GetIndexerId returns the value of IndexerId.
+func (s *Candidate) GetIndexerId() OptInt64 {
+	return s.IndexerId
+}
+
+// GetIndexerName returns the value of IndexerName.
+func (s *Candidate) GetIndexerName() OptString {
+	return s.IndexerName
+}
+
+// GetIndexerPriority returns the value of IndexerPriority.
+func (s *Candidate) GetIndexerPriority() OptInt {
+	return s.IndexerPriority
+}
+
+// GetIndexerFlags returns the value of IndexerFlags.
+func (s *Candidate) GetIndexerFlags() []string {
+	return s.IndexerFlags
+}
+
+// GetIndexerDisabled returns the value of IndexerDisabled.
+func (s *Candidate) GetIndexerDisabled() OptBool {
+	return s.IndexerDisabled
+}
+
+// GetIndexerRssDisabled returns the value of IndexerRssDisabled.
+func (s *Candidate) GetIndexerRssDisabled() OptBool {
+	return s.IndexerRssDisabled
+}
+
+// GetIndexerAutomaticSearchDisabled returns the value of IndexerAutomaticSearchDisabled.
+func (s *Candidate) GetIndexerAutomaticSearchDisabled() OptBool {
+	return s.IndexerAutomaticSearchDisabled
+}
+
+// GetIndexerInteractiveSearchDisabled returns the value of IndexerInteractiveSearchDisabled.
+func (s *Candidate) GetIndexerInteractiveSearchDisabled() OptBool {
+	return s.IndexerInteractiveSearchDisabled
+}
+
+// GetIndexerLimitedUntil returns the value of IndexerLimitedUntil.
+func (s *Candidate) GetIndexerLimitedUntil() OptDateTime {
+	return s.IndexerLimitedUntil
+}
+
+// GetMinimumSeeders returns the value of MinimumSeeders.
+func (s *Candidate) GetMinimumSeeders() OptInt {
+	return s.MinimumSeeders
+}
+
+// GetSeeders returns the value of Seeders.
+func (s *Candidate) GetSeeders() OptInt {
+	return s.Seeders
+}
+
+// GetPeers returns the value of Peers.
+func (s *Candidate) GetPeers() OptInt {
+	return s.Peers
+}
+
+// GetPublishDate returns the value of PublishDate.
+func (s *Candidate) GetPublishDate() OptDateTime {
+	return s.PublishDate
+}
+
+// GetIds returns the value of Ids.
+func (s *Candidate) GetIds() OptExternalIds {
+	return s.Ids
+}
+
+// GetDownloadUrl returns the value of DownloadUrl.
+func (s *Candidate) GetDownloadUrl() OptString {
+	return s.DownloadUrl
+}
+
+// GetInfoUrl returns the value of InfoUrl.
+func (s *Candidate) GetInfoUrl() OptString {
+	return s.InfoUrl
+}
+
+// SetGUID sets the value of GUID.
+func (s *Candidate) SetGUID(val OptString) {
+	s.GUID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Candidate) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetSize sets the value of Size.
+func (s *Candidate) SetSize(val OptInt64) {
+	s.Size = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *Candidate) SetProtocol(val OptProtocol) {
+	s.Protocol = val
+}
+
+// SetIndexerId sets the value of IndexerId.
+func (s *Candidate) SetIndexerId(val OptInt64) {
+	s.IndexerId = val
+}
+
+// SetIndexerName sets the value of IndexerName.
+func (s *Candidate) SetIndexerName(val OptString) {
+	s.IndexerName = val
+}
+
+// SetIndexerPriority sets the value of IndexerPriority.
+func (s *Candidate) SetIndexerPriority(val OptInt) {
+	s.IndexerPriority = val
+}
+
+// SetIndexerFlags sets the value of IndexerFlags.
+func (s *Candidate) SetIndexerFlags(val []string) {
+	s.IndexerFlags = val
+}
+
+// SetIndexerDisabled sets the value of IndexerDisabled.
+func (s *Candidate) SetIndexerDisabled(val OptBool) {
+	s.IndexerDisabled = val
+}
+
+// SetIndexerRssDisabled sets the value of IndexerRssDisabled.
+func (s *Candidate) SetIndexerRssDisabled(val OptBool) {
+	s.IndexerRssDisabled = val
+}
+
+// SetIndexerAutomaticSearchDisabled sets the value of IndexerAutomaticSearchDisabled.
+func (s *Candidate) SetIndexerAutomaticSearchDisabled(val OptBool) {
+	s.IndexerAutomaticSearchDisabled = val
+}
+
+// SetIndexerInteractiveSearchDisabled sets the value of IndexerInteractiveSearchDisabled.
+func (s *Candidate) SetIndexerInteractiveSearchDisabled(val OptBool) {
+	s.IndexerInteractiveSearchDisabled = val
+}
+
+// SetIndexerLimitedUntil sets the value of IndexerLimitedUntil.
+func (s *Candidate) SetIndexerLimitedUntil(val OptDateTime) {
+	s.IndexerLimitedUntil = val
+}
+
+// SetMinimumSeeders sets the value of MinimumSeeders.
+func (s *Candidate) SetMinimumSeeders(val OptInt) {
+	s.MinimumSeeders = val
+}
+
+// SetSeeders sets the value of Seeders.
+func (s *Candidate) SetSeeders(val OptInt) {
+	s.Seeders = val
+}
+
+// SetPeers sets the value of Peers.
+func (s *Candidate) SetPeers(val OptInt) {
+	s.Peers = val
+}
+
+// SetPublishDate sets the value of PublishDate.
+func (s *Candidate) SetPublishDate(val OptDateTime) {
+	s.PublishDate = val
+}
+
+// SetIds sets the value of Ids.
+func (s *Candidate) SetIds(val OptExternalIds) {
+	s.Ids = val
+}
+
+// SetDownloadUrl sets the value of DownloadUrl.
+func (s *Candidate) SetDownloadUrl(val OptString) {
+	s.DownloadUrl = val
+}
+
+// SetInfoUrl sets the value of InfoUrl.
+func (s *Candidate) SetInfoUrl(val OptString) {
+	s.InfoUrl = val
+}
+
 // ChangePasswordNoContent is response for ChangePassword operation.
 type ChangePasswordNoContent struct{}
 
@@ -382,6 +606,76 @@ func (s *ChangePasswordRequest) SetCurrentPassword(val string) {
 // SetNewPassword sets the value of NewPassword.
 func (s *ChangePasswordRequest) SetNewPassword(val Password) {
 	s.NewPassword = val
+}
+
+// Ref: #/components/schemas/ConditionResult
+type ConditionResult struct {
+	Name           string  `json:"name"`
+	Implementation string  `json:"implementation"`
+	Required       bool    `json:"required"`
+	Negate         bool    `json:"negate"`
+	Passed         bool    `json:"passed"`
+	Unsupported    OptBool `json:"unsupported"`
+}
+
+// GetName returns the value of Name.
+func (s *ConditionResult) GetName() string {
+	return s.Name
+}
+
+// GetImplementation returns the value of Implementation.
+func (s *ConditionResult) GetImplementation() string {
+	return s.Implementation
+}
+
+// GetRequired returns the value of Required.
+func (s *ConditionResult) GetRequired() bool {
+	return s.Required
+}
+
+// GetNegate returns the value of Negate.
+func (s *ConditionResult) GetNegate() bool {
+	return s.Negate
+}
+
+// GetPassed returns the value of Passed.
+func (s *ConditionResult) GetPassed() bool {
+	return s.Passed
+}
+
+// GetUnsupported returns the value of Unsupported.
+func (s *ConditionResult) GetUnsupported() OptBool {
+	return s.Unsupported
+}
+
+// SetName sets the value of Name.
+func (s *ConditionResult) SetName(val string) {
+	s.Name = val
+}
+
+// SetImplementation sets the value of Implementation.
+func (s *ConditionResult) SetImplementation(val string) {
+	s.Implementation = val
+}
+
+// SetRequired sets the value of Required.
+func (s *ConditionResult) SetRequired(val bool) {
+	s.Required = val
+}
+
+// SetNegate sets the value of Negate.
+func (s *ConditionResult) SetNegate(val bool) {
+	s.Negate = val
+}
+
+// SetPassed sets the value of Passed.
+func (s *ConditionResult) SetPassed(val bool) {
+	s.Passed = val
+}
+
+// SetUnsupported sets the value of Unsupported.
+func (s *ConditionResult) SetUnsupported(val OptBool) {
+	s.Unsupported = val
 }
 
 // Ref: #/components/schemas/CreateApiKeyRequest
@@ -537,11 +831,1042 @@ func (s *CreatedCategories) SetCategories(val []string) {
 	s.Categories = val
 }
 
+// Ref: #/components/schemas/CurrentFile
+type CurrentFile struct {
+	Quality  string            `json:"quality"`
+	Revision OptParsedRevision `json:"revision"`
+	Score    OptInt            `json:"score"`
+}
+
+// GetQuality returns the value of Quality.
+func (s *CurrentFile) GetQuality() string {
+	return s.Quality
+}
+
+// GetRevision returns the value of Revision.
+func (s *CurrentFile) GetRevision() OptParsedRevision {
+	return s.Revision
+}
+
+// GetScore returns the value of Score.
+func (s *CurrentFile) GetScore() OptInt {
+	return s.Score
+}
+
+// SetQuality sets the value of Quality.
+func (s *CurrentFile) SetQuality(val string) {
+	s.Quality = val
+}
+
+// SetRevision sets the value of Revision.
+func (s *CurrentFile) SetRevision(val OptParsedRevision) {
+	s.Revision = val
+}
+
+// SetScore sets the value of Score.
+func (s *CurrentFile) SetScore(val OptInt) {
+	s.Score = val
+}
+
+// Ref: #/components/schemas/CustomFormat
+type CustomFormat struct {
+	ID                  int64              `json:"id"`
+	Name                string             `json:"name"`
+	IncludeWhenRenaming bool               `json:"includeWhenRenaming"`
+	Specifications      []CustomFormatSpec `json:"specifications"`
+	// Conditions whose implementation Locarr does not know (ignored when optional; a required one stops
+	// the format applying).
+	Unsupported []string `json:"unsupported"`
+}
+
+// GetID returns the value of ID.
+func (s *CustomFormat) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CustomFormat) GetName() string {
+	return s.Name
+}
+
+// GetIncludeWhenRenaming returns the value of IncludeWhenRenaming.
+func (s *CustomFormat) GetIncludeWhenRenaming() bool {
+	return s.IncludeWhenRenaming
+}
+
+// GetSpecifications returns the value of Specifications.
+func (s *CustomFormat) GetSpecifications() []CustomFormatSpec {
+	return s.Specifications
+}
+
+// GetUnsupported returns the value of Unsupported.
+func (s *CustomFormat) GetUnsupported() []string {
+	return s.Unsupported
+}
+
+// SetID sets the value of ID.
+func (s *CustomFormat) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CustomFormat) SetName(val string) {
+	s.Name = val
+}
+
+// SetIncludeWhenRenaming sets the value of IncludeWhenRenaming.
+func (s *CustomFormat) SetIncludeWhenRenaming(val bool) {
+	s.IncludeWhenRenaming = val
+}
+
+// SetSpecifications sets the value of Specifications.
+func (s *CustomFormat) SetSpecifications(val []CustomFormatSpec) {
+	s.Specifications = val
+}
+
+// SetUnsupported sets the value of Unsupported.
+func (s *CustomFormat) SetUnsupported(val []string) {
+	s.Unsupported = val
+}
+
+// Ref: #/components/schemas/CustomFormatEvaluation
+type CustomFormatEvaluation struct {
+	ID      int64  `json:"id"`
+	Name    string `json:"name"`
+	Matched bool   `json:"matched"`
+	// The chosen profile's score for the format (0 without a profile).
+	Score      int               `json:"score"`
+	Conditions []ConditionResult `json:"conditions"`
+}
+
+// GetID returns the value of ID.
+func (s *CustomFormatEvaluation) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CustomFormatEvaluation) GetName() string {
+	return s.Name
+}
+
+// GetMatched returns the value of Matched.
+func (s *CustomFormatEvaluation) GetMatched() bool {
+	return s.Matched
+}
+
+// GetScore returns the value of Score.
+func (s *CustomFormatEvaluation) GetScore() int {
+	return s.Score
+}
+
+// GetConditions returns the value of Conditions.
+func (s *CustomFormatEvaluation) GetConditions() []ConditionResult {
+	return s.Conditions
+}
+
+// SetID sets the value of ID.
+func (s *CustomFormatEvaluation) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CustomFormatEvaluation) SetName(val string) {
+	s.Name = val
+}
+
+// SetMatched sets the value of Matched.
+func (s *CustomFormatEvaluation) SetMatched(val bool) {
+	s.Matched = val
+}
+
+// SetScore sets the value of Score.
+func (s *CustomFormatEvaluation) SetScore(val int) {
+	s.Score = val
+}
+
+// SetConditions sets the value of Conditions.
+func (s *CustomFormatEvaluation) SetConditions(val []ConditionResult) {
+	s.Conditions = val
+}
+
+// Which numbering shared JSON uses for sources (movie-oriented or series-oriented tools).
+// Ref: #/components/schemas/CustomFormatFlavor
+type CustomFormatFlavor string
+
+const (
+	CustomFormatFlavorMovies CustomFormatFlavor = "movies"
+	CustomFormatFlavorSeries CustomFormatFlavor = "series"
+)
+
+// AllValues returns all CustomFormatFlavor values.
+func (CustomFormatFlavor) AllValues() []CustomFormatFlavor {
+	return []CustomFormatFlavor{
+		CustomFormatFlavorMovies,
+		CustomFormatFlavorSeries,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CustomFormatFlavor) MarshalText() ([]byte, error) {
+	switch s {
+	case CustomFormatFlavorMovies:
+		return []byte(s), nil
+	case CustomFormatFlavorSeries:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CustomFormatFlavor) UnmarshalText(data []byte) error {
+	switch CustomFormatFlavor(data) {
+	case CustomFormatFlavorMovies:
+		*s = CustomFormatFlavorMovies
+		return nil
+	case CustomFormatFlavorSeries:
+		*s = CustomFormatFlavorSeries
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/CustomFormatImplementation
+type CustomFormatImplementation struct {
+	Implementation string                              `json:"implementation"`
+	ValueType      CustomFormatImplementationValueType `json:"valueType"`
+	Values         []string                            `json:"values"`
+}
+
+// GetImplementation returns the value of Implementation.
+func (s *CustomFormatImplementation) GetImplementation() string {
+	return s.Implementation
+}
+
+// GetValueType returns the value of ValueType.
+func (s *CustomFormatImplementation) GetValueType() CustomFormatImplementationValueType {
+	return s.ValueType
+}
+
+// GetValues returns the value of Values.
+func (s *CustomFormatImplementation) GetValues() []string {
+	return s.Values
+}
+
+// SetImplementation sets the value of Implementation.
+func (s *CustomFormatImplementation) SetImplementation(val string) {
+	s.Implementation = val
+}
+
+// SetValueType sets the value of ValueType.
+func (s *CustomFormatImplementation) SetValueType(val CustomFormatImplementationValueType) {
+	s.ValueType = val
+}
+
+// SetValues sets the value of Values.
+func (s *CustomFormatImplementation) SetValues(val []string) {
+	s.Values = val
+}
+
+type CustomFormatImplementationValueType string
+
+const (
+	CustomFormatImplementationValueTypeRegex    CustomFormatImplementationValueType = "regex"
+	CustomFormatImplementationValueTypeEnum     CustomFormatImplementationValueType = "enum"
+	CustomFormatImplementationValueTypeNumber   CustomFormatImplementationValueType = "number"
+	CustomFormatImplementationValueTypeRange    CustomFormatImplementationValueType = "range"
+	CustomFormatImplementationValueTypeLanguage CustomFormatImplementationValueType = "language"
+)
+
+// AllValues returns all CustomFormatImplementationValueType values.
+func (CustomFormatImplementationValueType) AllValues() []CustomFormatImplementationValueType {
+	return []CustomFormatImplementationValueType{
+		CustomFormatImplementationValueTypeRegex,
+		CustomFormatImplementationValueTypeEnum,
+		CustomFormatImplementationValueTypeNumber,
+		CustomFormatImplementationValueTypeRange,
+		CustomFormatImplementationValueTypeLanguage,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CustomFormatImplementationValueType) MarshalText() ([]byte, error) {
+	switch s {
+	case CustomFormatImplementationValueTypeRegex:
+		return []byte(s), nil
+	case CustomFormatImplementationValueTypeEnum:
+		return []byte(s), nil
+	case CustomFormatImplementationValueTypeNumber:
+		return []byte(s), nil
+	case CustomFormatImplementationValueTypeRange:
+		return []byte(s), nil
+	case CustomFormatImplementationValueTypeLanguage:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CustomFormatImplementationValueType) UnmarshalText(data []byte) error {
+	switch CustomFormatImplementationValueType(data) {
+	case CustomFormatImplementationValueTypeRegex:
+		*s = CustomFormatImplementationValueTypeRegex
+		return nil
+	case CustomFormatImplementationValueTypeEnum:
+		*s = CustomFormatImplementationValueTypeEnum
+		return nil
+	case CustomFormatImplementationValueTypeNumber:
+		*s = CustomFormatImplementationValueTypeNumber
+		return nil
+	case CustomFormatImplementationValueTypeRange:
+		*s = CustomFormatImplementationValueTypeRange
+		return nil
+	case CustomFormatImplementationValueTypeLanguage:
+		*s = CustomFormatImplementationValueTypeLanguage
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/CustomFormatInput
+type CustomFormatInput struct {
+	Name                string             `json:"name"`
+	IncludeWhenRenaming OptBool            `json:"includeWhenRenaming"`
+	Specifications      []CustomFormatSpec `json:"specifications"`
+}
+
+// GetName returns the value of Name.
+func (s *CustomFormatInput) GetName() string {
+	return s.Name
+}
+
+// GetIncludeWhenRenaming returns the value of IncludeWhenRenaming.
+func (s *CustomFormatInput) GetIncludeWhenRenaming() OptBool {
+	return s.IncludeWhenRenaming
+}
+
+// GetSpecifications returns the value of Specifications.
+func (s *CustomFormatInput) GetSpecifications() []CustomFormatSpec {
+	return s.Specifications
+}
+
+// SetName sets the value of Name.
+func (s *CustomFormatInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetIncludeWhenRenaming sets the value of IncludeWhenRenaming.
+func (s *CustomFormatInput) SetIncludeWhenRenaming(val OptBool) {
+	s.IncludeWhenRenaming = val
+}
+
+// SetSpecifications sets the value of Specifications.
+func (s *CustomFormatInput) SetSpecifications(val []CustomFormatSpec) {
+	s.Specifications = val
+}
+
+// Ref: #/components/schemas/CustomFormatSchema
+type CustomFormatSchema struct {
+	Implementations []CustomFormatImplementation `json:"implementations"`
+}
+
+// GetImplementations returns the value of Implementations.
+func (s *CustomFormatSchema) GetImplementations() []CustomFormatImplementation {
+	return s.Implementations
+}
+
+// SetImplementations sets the value of Implementations.
+func (s *CustomFormatSchema) SetImplementations(val []CustomFormatImplementation) {
+	s.Implementations = val
+}
+
+// Ref: #/components/schemas/CustomFormatSpec
+type CustomFormatSpec struct {
+	Name           OptString `json:"name"`
+	Implementation string    `json:"implementation"`
+	Negate         OptBool   `json:"negate"`
+	Required       OptBool   `json:"required"`
+	// `value` for most conditions; `min`/`max` for sizes (GB) and years.
+	Fields CustomFormatSpecFields `json:"fields"`
+}
+
+// GetName returns the value of Name.
+func (s *CustomFormatSpec) GetName() OptString {
+	return s.Name
+}
+
+// GetImplementation returns the value of Implementation.
+func (s *CustomFormatSpec) GetImplementation() string {
+	return s.Implementation
+}
+
+// GetNegate returns the value of Negate.
+func (s *CustomFormatSpec) GetNegate() OptBool {
+	return s.Negate
+}
+
+// GetRequired returns the value of Required.
+func (s *CustomFormatSpec) GetRequired() OptBool {
+	return s.Required
+}
+
+// GetFields returns the value of Fields.
+func (s *CustomFormatSpec) GetFields() CustomFormatSpecFields {
+	return s.Fields
+}
+
+// SetName sets the value of Name.
+func (s *CustomFormatSpec) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetImplementation sets the value of Implementation.
+func (s *CustomFormatSpec) SetImplementation(val string) {
+	s.Implementation = val
+}
+
+// SetNegate sets the value of Negate.
+func (s *CustomFormatSpec) SetNegate(val OptBool) {
+	s.Negate = val
+}
+
+// SetRequired sets the value of Required.
+func (s *CustomFormatSpec) SetRequired(val OptBool) {
+	s.Required = val
+}
+
+// SetFields sets the value of Fields.
+func (s *CustomFormatSpec) SetFields(val CustomFormatSpecFields) {
+	s.Fields = val
+}
+
+// `value` for most conditions; `min`/`max` for sizes (GB) and years.
+type CustomFormatSpecFields map[string]jx.Raw
+
+func (s *CustomFormatSpecFields) init() CustomFormatSpecFields {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/Decision
+type Decision struct {
+	Candidate     Candidate       `json:"candidate"`
+	Release       ParsedRelease   `json:"release"`
+	Quality       Quality         `json:"quality"`
+	CustomFormats []MatchedFormat `json:"customFormats"`
+	Score         int             `json:"score"`
+	Status        DecisionStatus  `json:"status"`
+	// 1 = best; accepted decisions only.
+	Rank       OptInt      `json:"rank"`
+	Rejections []Rejection `json:"rejections"`
+	RankKey    RankKey     `json:"rankKey"`
+}
+
+// GetCandidate returns the value of Candidate.
+func (s *Decision) GetCandidate() Candidate {
+	return s.Candidate
+}
+
+// GetRelease returns the value of Release.
+func (s *Decision) GetRelease() ParsedRelease {
+	return s.Release
+}
+
+// GetQuality returns the value of Quality.
+func (s *Decision) GetQuality() Quality {
+	return s.Quality
+}
+
+// GetCustomFormats returns the value of CustomFormats.
+func (s *Decision) GetCustomFormats() []MatchedFormat {
+	return s.CustomFormats
+}
+
+// GetScore returns the value of Score.
+func (s *Decision) GetScore() int {
+	return s.Score
+}
+
+// GetStatus returns the value of Status.
+func (s *Decision) GetStatus() DecisionStatus {
+	return s.Status
+}
+
+// GetRank returns the value of Rank.
+func (s *Decision) GetRank() OptInt {
+	return s.Rank
+}
+
+// GetRejections returns the value of Rejections.
+func (s *Decision) GetRejections() []Rejection {
+	return s.Rejections
+}
+
+// GetRankKey returns the value of RankKey.
+func (s *Decision) GetRankKey() RankKey {
+	return s.RankKey
+}
+
+// SetCandidate sets the value of Candidate.
+func (s *Decision) SetCandidate(val Candidate) {
+	s.Candidate = val
+}
+
+// SetRelease sets the value of Release.
+func (s *Decision) SetRelease(val ParsedRelease) {
+	s.Release = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *Decision) SetQuality(val Quality) {
+	s.Quality = val
+}
+
+// SetCustomFormats sets the value of CustomFormats.
+func (s *Decision) SetCustomFormats(val []MatchedFormat) {
+	s.CustomFormats = val
+}
+
+// SetScore sets the value of Score.
+func (s *Decision) SetScore(val int) {
+	s.Score = val
+}
+
+// SetStatus sets the value of Status.
+func (s *Decision) SetStatus(val DecisionStatus) {
+	s.Status = val
+}
+
+// SetRank sets the value of Rank.
+func (s *Decision) SetRank(val OptInt) {
+	s.Rank = val
+}
+
+// SetRejections sets the value of Rejections.
+func (s *Decision) SetRejections(val []Rejection) {
+	s.Rejections = val
+}
+
+// SetRankKey sets the value of RankKey.
+func (s *Decision) SetRankKey(val RankKey) {
+	s.RankKey = val
+}
+
+// The engine's result for a list of candidates; P4/P11 store it in the timeline.
+// Ref: #/components/schemas/DecisionReport
+type DecisionReport struct {
+	Kind        MediaKind          `json:"kind"`
+	ProfileId   int64              `json:"profileId"`
+	ProfileName string             `json:"profileName"`
+	Mode        DecisionReportMode `json:"mode"`
+	EvaluatedAt time.Time          `json:"evaluatedAt"`
+	Accepted    int                `json:"accepted"`
+	Pending     int                `json:"pending"`
+	Rejected    int                `json:"rejected"`
+	BestGuid    OptString          `json:"bestGuid"`
+	// Accepted (ranked), then pending, then rejected.
+	Decisions []Decision `json:"decisions"`
+}
+
+// GetKind returns the value of Kind.
+func (s *DecisionReport) GetKind() MediaKind {
+	return s.Kind
+}
+
+// GetProfileId returns the value of ProfileId.
+func (s *DecisionReport) GetProfileId() int64 {
+	return s.ProfileId
+}
+
+// GetProfileName returns the value of ProfileName.
+func (s *DecisionReport) GetProfileName() string {
+	return s.ProfileName
+}
+
+// GetMode returns the value of Mode.
+func (s *DecisionReport) GetMode() DecisionReportMode {
+	return s.Mode
+}
+
+// GetEvaluatedAt returns the value of EvaluatedAt.
+func (s *DecisionReport) GetEvaluatedAt() time.Time {
+	return s.EvaluatedAt
+}
+
+// GetAccepted returns the value of Accepted.
+func (s *DecisionReport) GetAccepted() int {
+	return s.Accepted
+}
+
+// GetPending returns the value of Pending.
+func (s *DecisionReport) GetPending() int {
+	return s.Pending
+}
+
+// GetRejected returns the value of Rejected.
+func (s *DecisionReport) GetRejected() int {
+	return s.Rejected
+}
+
+// GetBestGuid returns the value of BestGuid.
+func (s *DecisionReport) GetBestGuid() OptString {
+	return s.BestGuid
+}
+
+// GetDecisions returns the value of Decisions.
+func (s *DecisionReport) GetDecisions() []Decision {
+	return s.Decisions
+}
+
+// SetKind sets the value of Kind.
+func (s *DecisionReport) SetKind(val MediaKind) {
+	s.Kind = val
+}
+
+// SetProfileId sets the value of ProfileId.
+func (s *DecisionReport) SetProfileId(val int64) {
+	s.ProfileId = val
+}
+
+// SetProfileName sets the value of ProfileName.
+func (s *DecisionReport) SetProfileName(val string) {
+	s.ProfileName = val
+}
+
+// SetMode sets the value of Mode.
+func (s *DecisionReport) SetMode(val DecisionReportMode) {
+	s.Mode = val
+}
+
+// SetEvaluatedAt sets the value of EvaluatedAt.
+func (s *DecisionReport) SetEvaluatedAt(val time.Time) {
+	s.EvaluatedAt = val
+}
+
+// SetAccepted sets the value of Accepted.
+func (s *DecisionReport) SetAccepted(val int) {
+	s.Accepted = val
+}
+
+// SetPending sets the value of Pending.
+func (s *DecisionReport) SetPending(val int) {
+	s.Pending = val
+}
+
+// SetRejected sets the value of Rejected.
+func (s *DecisionReport) SetRejected(val int) {
+	s.Rejected = val
+}
+
+// SetBestGuid sets the value of BestGuid.
+func (s *DecisionReport) SetBestGuid(val OptString) {
+	s.BestGuid = val
+}
+
+// SetDecisions sets the value of Decisions.
+func (s *DecisionReport) SetDecisions(val []Decision) {
+	s.Decisions = val
+}
+
+type DecisionReportMode string
+
+const (
+	DecisionReportModeRss         DecisionReportMode = "rss"
+	DecisionReportModeSearch      DecisionReportMode = "search"
+	DecisionReportModeInteractive DecisionReportMode = "interactive"
+)
+
+// AllValues returns all DecisionReportMode values.
+func (DecisionReportMode) AllValues() []DecisionReportMode {
+	return []DecisionReportMode{
+		DecisionReportModeRss,
+		DecisionReportModeSearch,
+		DecisionReportModeInteractive,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DecisionReportMode) MarshalText() ([]byte, error) {
+	switch s {
+	case DecisionReportModeRss:
+		return []byte(s), nil
+	case DecisionReportModeSearch:
+		return []byte(s), nil
+	case DecisionReportModeInteractive:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DecisionReportMode) UnmarshalText(data []byte) error {
+	switch DecisionReportMode(data) {
+	case DecisionReportModeRss:
+		*s = DecisionReportModeRss
+		return nil
+	case DecisionReportModeSearch:
+		*s = DecisionReportModeSearch
+		return nil
+	case DecisionReportModeInteractive:
+		*s = DecisionReportModeInteractive
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type DecisionStatus string
+
+const (
+	DecisionStatusAccepted DecisionStatus = "accepted"
+	DecisionStatusPending  DecisionStatus = "pending"
+	DecisionStatusRejected DecisionStatus = "rejected"
+)
+
+// AllValues returns all DecisionStatus values.
+func (DecisionStatus) AllValues() []DecisionStatus {
+	return []DecisionStatus{
+		DecisionStatusAccepted,
+		DecisionStatusPending,
+		DecisionStatusRejected,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DecisionStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DecisionStatusAccepted:
+		return []byte(s), nil
+	case DecisionStatusPending:
+		return []byte(s), nil
+	case DecisionStatusRejected:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DecisionStatus) UnmarshalText(data []byte) error {
+	switch DecisionStatus(data) {
+	case DecisionStatusAccepted:
+		*s = DecisionStatusAccepted
+		return nil
+	case DecisionStatusPending:
+		*s = DecisionStatusPending
+		return nil
+	case DecisionStatusRejected:
+		*s = DecisionStatusRejected
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/DelayProfile
+type DelayProfile struct {
+	ID                     int64    `json:"id"`
+	Name                   string   `json:"name"`
+	Order                  int      `json:"order"`
+	Enabled                bool     `json:"enabled"`
+	PreferredProtocol      Protocol `json:"preferredProtocol"`
+	UsenetEnabled          bool     `json:"usenetEnabled"`
+	TorrentEnabled         bool     `json:"torrentEnabled"`
+	UsenetDelay            int      `json:"usenetDelay"`
+	TorrentDelay           int      `json:"torrentDelay"`
+	BypassIfHighestQuality bool     `json:"bypassIfHighestQuality"`
+	BypassIfAboveScore     bool     `json:"bypassIfAboveScore"`
+	MinimumScore           int      `json:"minimumScore"`
+	Tags                   []string `json:"tags"`
+	// The catch-all profile; it has no tags and cannot be removed.
+	Default bool `json:"default"`
+}
+
+// GetID returns the value of ID.
+func (s *DelayProfile) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *DelayProfile) GetName() string {
+	return s.Name
+}
+
+// GetOrder returns the value of Order.
+func (s *DelayProfile) GetOrder() int {
+	return s.Order
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *DelayProfile) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetPreferredProtocol returns the value of PreferredProtocol.
+func (s *DelayProfile) GetPreferredProtocol() Protocol {
+	return s.PreferredProtocol
+}
+
+// GetUsenetEnabled returns the value of UsenetEnabled.
+func (s *DelayProfile) GetUsenetEnabled() bool {
+	return s.UsenetEnabled
+}
+
+// GetTorrentEnabled returns the value of TorrentEnabled.
+func (s *DelayProfile) GetTorrentEnabled() bool {
+	return s.TorrentEnabled
+}
+
+// GetUsenetDelay returns the value of UsenetDelay.
+func (s *DelayProfile) GetUsenetDelay() int {
+	return s.UsenetDelay
+}
+
+// GetTorrentDelay returns the value of TorrentDelay.
+func (s *DelayProfile) GetTorrentDelay() int {
+	return s.TorrentDelay
+}
+
+// GetBypassIfHighestQuality returns the value of BypassIfHighestQuality.
+func (s *DelayProfile) GetBypassIfHighestQuality() bool {
+	return s.BypassIfHighestQuality
+}
+
+// GetBypassIfAboveScore returns the value of BypassIfAboveScore.
+func (s *DelayProfile) GetBypassIfAboveScore() bool {
+	return s.BypassIfAboveScore
+}
+
+// GetMinimumScore returns the value of MinimumScore.
+func (s *DelayProfile) GetMinimumScore() int {
+	return s.MinimumScore
+}
+
+// GetTags returns the value of Tags.
+func (s *DelayProfile) GetTags() []string {
+	return s.Tags
+}
+
+// GetDefault returns the value of Default.
+func (s *DelayProfile) GetDefault() bool {
+	return s.Default
+}
+
+// SetID sets the value of ID.
+func (s *DelayProfile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *DelayProfile) SetName(val string) {
+	s.Name = val
+}
+
+// SetOrder sets the value of Order.
+func (s *DelayProfile) SetOrder(val int) {
+	s.Order = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *DelayProfile) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetPreferredProtocol sets the value of PreferredProtocol.
+func (s *DelayProfile) SetPreferredProtocol(val Protocol) {
+	s.PreferredProtocol = val
+}
+
+// SetUsenetEnabled sets the value of UsenetEnabled.
+func (s *DelayProfile) SetUsenetEnabled(val bool) {
+	s.UsenetEnabled = val
+}
+
+// SetTorrentEnabled sets the value of TorrentEnabled.
+func (s *DelayProfile) SetTorrentEnabled(val bool) {
+	s.TorrentEnabled = val
+}
+
+// SetUsenetDelay sets the value of UsenetDelay.
+func (s *DelayProfile) SetUsenetDelay(val int) {
+	s.UsenetDelay = val
+}
+
+// SetTorrentDelay sets the value of TorrentDelay.
+func (s *DelayProfile) SetTorrentDelay(val int) {
+	s.TorrentDelay = val
+}
+
+// SetBypassIfHighestQuality sets the value of BypassIfHighestQuality.
+func (s *DelayProfile) SetBypassIfHighestQuality(val bool) {
+	s.BypassIfHighestQuality = val
+}
+
+// SetBypassIfAboveScore sets the value of BypassIfAboveScore.
+func (s *DelayProfile) SetBypassIfAboveScore(val bool) {
+	s.BypassIfAboveScore = val
+}
+
+// SetMinimumScore sets the value of MinimumScore.
+func (s *DelayProfile) SetMinimumScore(val int) {
+	s.MinimumScore = val
+}
+
+// SetTags sets the value of Tags.
+func (s *DelayProfile) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetDefault sets the value of Default.
+func (s *DelayProfile) SetDefault(val bool) {
+	s.Default = val
+}
+
+// Ref: #/components/schemas/DelayProfileInput
+type DelayProfileInput struct {
+	Name              string   `json:"name"`
+	Enabled           bool     `json:"enabled"`
+	PreferredProtocol Protocol `json:"preferredProtocol"`
+	UsenetEnabled     bool     `json:"usenetEnabled"`
+	TorrentEnabled    bool     `json:"torrentEnabled"`
+	// Minutes.
+	UsenetDelay            int      `json:"usenetDelay"`
+	TorrentDelay           int      `json:"torrentDelay"`
+	BypassIfHighestQuality OptBool  `json:"bypassIfHighestQuality"`
+	BypassIfAboveScore     OptBool  `json:"bypassIfAboveScore"`
+	MinimumScore           OptInt   `json:"minimumScore"`
+	Tags                   []string `json:"tags"`
+}
+
+// GetName returns the value of Name.
+func (s *DelayProfileInput) GetName() string {
+	return s.Name
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *DelayProfileInput) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetPreferredProtocol returns the value of PreferredProtocol.
+func (s *DelayProfileInput) GetPreferredProtocol() Protocol {
+	return s.PreferredProtocol
+}
+
+// GetUsenetEnabled returns the value of UsenetEnabled.
+func (s *DelayProfileInput) GetUsenetEnabled() bool {
+	return s.UsenetEnabled
+}
+
+// GetTorrentEnabled returns the value of TorrentEnabled.
+func (s *DelayProfileInput) GetTorrentEnabled() bool {
+	return s.TorrentEnabled
+}
+
+// GetUsenetDelay returns the value of UsenetDelay.
+func (s *DelayProfileInput) GetUsenetDelay() int {
+	return s.UsenetDelay
+}
+
+// GetTorrentDelay returns the value of TorrentDelay.
+func (s *DelayProfileInput) GetTorrentDelay() int {
+	return s.TorrentDelay
+}
+
+// GetBypassIfHighestQuality returns the value of BypassIfHighestQuality.
+func (s *DelayProfileInput) GetBypassIfHighestQuality() OptBool {
+	return s.BypassIfHighestQuality
+}
+
+// GetBypassIfAboveScore returns the value of BypassIfAboveScore.
+func (s *DelayProfileInput) GetBypassIfAboveScore() OptBool {
+	return s.BypassIfAboveScore
+}
+
+// GetMinimumScore returns the value of MinimumScore.
+func (s *DelayProfileInput) GetMinimumScore() OptInt {
+	return s.MinimumScore
+}
+
+// GetTags returns the value of Tags.
+func (s *DelayProfileInput) GetTags() []string {
+	return s.Tags
+}
+
+// SetName sets the value of Name.
+func (s *DelayProfileInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *DelayProfileInput) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetPreferredProtocol sets the value of PreferredProtocol.
+func (s *DelayProfileInput) SetPreferredProtocol(val Protocol) {
+	s.PreferredProtocol = val
+}
+
+// SetUsenetEnabled sets the value of UsenetEnabled.
+func (s *DelayProfileInput) SetUsenetEnabled(val bool) {
+	s.UsenetEnabled = val
+}
+
+// SetTorrentEnabled sets the value of TorrentEnabled.
+func (s *DelayProfileInput) SetTorrentEnabled(val bool) {
+	s.TorrentEnabled = val
+}
+
+// SetUsenetDelay sets the value of UsenetDelay.
+func (s *DelayProfileInput) SetUsenetDelay(val int) {
+	s.UsenetDelay = val
+}
+
+// SetTorrentDelay sets the value of TorrentDelay.
+func (s *DelayProfileInput) SetTorrentDelay(val int) {
+	s.TorrentDelay = val
+}
+
+// SetBypassIfHighestQuality sets the value of BypassIfHighestQuality.
+func (s *DelayProfileInput) SetBypassIfHighestQuality(val OptBool) {
+	s.BypassIfHighestQuality = val
+}
+
+// SetBypassIfAboveScore sets the value of BypassIfAboveScore.
+func (s *DelayProfileInput) SetBypassIfAboveScore(val OptBool) {
+	s.BypassIfAboveScore = val
+}
+
+// SetMinimumScore sets the value of MinimumScore.
+func (s *DelayProfileInput) SetMinimumScore(val OptInt) {
+	s.MinimumScore = val
+}
+
+// SetTags sets the value of Tags.
+func (s *DelayProfileInput) SetTags(val []string) {
+	s.Tags = val
+}
+
 // DeleteApiKeyNoContent is response for DeleteApiKey operation.
 type DeleteApiKeyNoContent struct{}
 
 // DeleteBlocklistEntryNoContent is response for DeleteBlocklistEntry operation.
 type DeleteBlocklistEntryNoContent struct{}
+
+// DeleteCustomFormatNoContent is response for DeleteCustomFormat operation.
+type DeleteCustomFormatNoContent struct{}
+
+// DeleteDelayProfileNoContent is response for DeleteDelayProfile operation.
+type DeleteDelayProfileNoContent struct{}
 
 // DeleteDownloadClientNoContent is response for DeleteDownloadClient operation.
 type DeleteDownloadClientNoContent struct{}
@@ -551,6 +1876,12 @@ type DeleteIndexerNoContent struct{}
 
 // DeleteIndexerSourceNoContent is response for DeleteIndexerSource operation.
 type DeleteIndexerSourceNoContent struct{}
+
+// DeleteQualityProfileNoContent is response for DeleteQualityProfile operation.
+type DeleteQualityProfileNoContent struct{}
+
+// DeleteReleaseProfileNoContent is response for DeleteReleaseProfile operation.
+type DeleteReleaseProfileNoContent struct{}
 
 // DeleteRemotePathMappingNoContent is response for DeleteRemotePathMapping operation.
 type DeleteRemotePathMappingNoContent struct{}
@@ -2134,6 +3465,194 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/EvaluateRequest
+type EvaluateRequest struct {
+	Kind              MediaKind              `json:"kind"`
+	ProfileId         int64                  `json:"profileId"`
+	Mode              OptEvaluateRequestMode `json:"mode"`
+	Wanted            OptWantedItem          `json:"wanted"`
+	MinimumSeeders    OptInt                 `json:"minimumSeeders"`
+	RetentionDays     OptInt                 `json:"retentionDays"`
+	MinimumAgeMinutes OptInt                 `json:"minimumAgeMinutes"`
+	Candidates        []Candidate            `json:"candidates"`
+}
+
+// GetKind returns the value of Kind.
+func (s *EvaluateRequest) GetKind() MediaKind {
+	return s.Kind
+}
+
+// GetProfileId returns the value of ProfileId.
+func (s *EvaluateRequest) GetProfileId() int64 {
+	return s.ProfileId
+}
+
+// GetMode returns the value of Mode.
+func (s *EvaluateRequest) GetMode() OptEvaluateRequestMode {
+	return s.Mode
+}
+
+// GetWanted returns the value of Wanted.
+func (s *EvaluateRequest) GetWanted() OptWantedItem {
+	return s.Wanted
+}
+
+// GetMinimumSeeders returns the value of MinimumSeeders.
+func (s *EvaluateRequest) GetMinimumSeeders() OptInt {
+	return s.MinimumSeeders
+}
+
+// GetRetentionDays returns the value of RetentionDays.
+func (s *EvaluateRequest) GetRetentionDays() OptInt {
+	return s.RetentionDays
+}
+
+// GetMinimumAgeMinutes returns the value of MinimumAgeMinutes.
+func (s *EvaluateRequest) GetMinimumAgeMinutes() OptInt {
+	return s.MinimumAgeMinutes
+}
+
+// GetCandidates returns the value of Candidates.
+func (s *EvaluateRequest) GetCandidates() []Candidate {
+	return s.Candidates
+}
+
+// SetKind sets the value of Kind.
+func (s *EvaluateRequest) SetKind(val MediaKind) {
+	s.Kind = val
+}
+
+// SetProfileId sets the value of ProfileId.
+func (s *EvaluateRequest) SetProfileId(val int64) {
+	s.ProfileId = val
+}
+
+// SetMode sets the value of Mode.
+func (s *EvaluateRequest) SetMode(val OptEvaluateRequestMode) {
+	s.Mode = val
+}
+
+// SetWanted sets the value of Wanted.
+func (s *EvaluateRequest) SetWanted(val OptWantedItem) {
+	s.Wanted = val
+}
+
+// SetMinimumSeeders sets the value of MinimumSeeders.
+func (s *EvaluateRequest) SetMinimumSeeders(val OptInt) {
+	s.MinimumSeeders = val
+}
+
+// SetRetentionDays sets the value of RetentionDays.
+func (s *EvaluateRequest) SetRetentionDays(val OptInt) {
+	s.RetentionDays = val
+}
+
+// SetMinimumAgeMinutes sets the value of MinimumAgeMinutes.
+func (s *EvaluateRequest) SetMinimumAgeMinutes(val OptInt) {
+	s.MinimumAgeMinutes = val
+}
+
+// SetCandidates sets the value of Candidates.
+func (s *EvaluateRequest) SetCandidates(val []Candidate) {
+	s.Candidates = val
+}
+
+type EvaluateRequestMode string
+
+const (
+	EvaluateRequestModeRss         EvaluateRequestMode = "rss"
+	EvaluateRequestModeSearch      EvaluateRequestMode = "search"
+	EvaluateRequestModeInteractive EvaluateRequestMode = "interactive"
+)
+
+// AllValues returns all EvaluateRequestMode values.
+func (EvaluateRequestMode) AllValues() []EvaluateRequestMode {
+	return []EvaluateRequestMode{
+		EvaluateRequestModeRss,
+		EvaluateRequestModeSearch,
+		EvaluateRequestModeInteractive,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s EvaluateRequestMode) MarshalText() ([]byte, error) {
+	switch s {
+	case EvaluateRequestModeRss:
+		return []byte(s), nil
+	case EvaluateRequestModeSearch:
+		return []byte(s), nil
+	case EvaluateRequestModeInteractive:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *EvaluateRequestMode) UnmarshalText(data []byte) error {
+	switch EvaluateRequestMode(data) {
+	case EvaluateRequestModeRss:
+		*s = EvaluateRequestModeRss
+		return nil
+	case EvaluateRequestModeSearch:
+		*s = EvaluateRequestModeSearch
+		return nil
+	case EvaluateRequestModeInteractive:
+		*s = EvaluateRequestModeInteractive
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/ExternalIds
+type ExternalIds struct {
+	Tmdb        OptInt    `json:"tmdb"`
+	Tvdb        OptInt    `json:"tvdb"`
+	Imdb        OptString `json:"imdb"`
+	MusicBrainz OptString `json:"musicBrainz"`
+}
+
+// GetTmdb returns the value of Tmdb.
+func (s *ExternalIds) GetTmdb() OptInt {
+	return s.Tmdb
+}
+
+// GetTvdb returns the value of Tvdb.
+func (s *ExternalIds) GetTvdb() OptInt {
+	return s.Tvdb
+}
+
+// GetImdb returns the value of Imdb.
+func (s *ExternalIds) GetImdb() OptString {
+	return s.Imdb
+}
+
+// GetMusicBrainz returns the value of MusicBrainz.
+func (s *ExternalIds) GetMusicBrainz() OptString {
+	return s.MusicBrainz
+}
+
+// SetTmdb sets the value of Tmdb.
+func (s *ExternalIds) SetTmdb(val OptInt) {
+	s.Tmdb = val
+}
+
+// SetTvdb sets the value of Tvdb.
+func (s *ExternalIds) SetTvdb(val OptInt) {
+	s.Tvdb = val
+}
+
+// SetImdb sets the value of Imdb.
+func (s *ExternalIds) SetImdb(val OptString) {
+	s.Imdb = val
+}
+
+// SetMusicBrainz sets the value of MusicBrainz.
+func (s *ExternalIds) SetMusicBrainz(val OptString) {
+	s.MusicBrainz = val
+}
+
 // Ref: #/components/schemas/FolderEntry
 type FolderEntry struct {
 	Name string `json:"name"`
@@ -2197,6 +3716,32 @@ func (s *FolderListing) SetParent(val OptString) {
 // SetEntries sets the value of Entries.
 func (s *FolderListing) SetEntries(val []FolderEntry) {
 	s.Entries = val
+}
+
+// Ref: #/components/schemas/FormatScore
+type FormatScore struct {
+	FormatId int64 `json:"formatId"`
+	Score    int   `json:"score"`
+}
+
+// GetFormatId returns the value of FormatId.
+func (s *FormatScore) GetFormatId() int64 {
+	return s.FormatId
+}
+
+// GetScore returns the value of Score.
+func (s *FormatScore) GetScore() int {
+	return s.Score
+}
+
+// SetFormatId sets the value of FormatId.
+func (s *FormatScore) SetFormatId(val int64) {
+	s.FormatId = val
+}
+
+// SetScore sets the value of Score.
+func (s *FormatScore) SetScore(val int) {
+	s.Score = val
 }
 
 // One of `downloadUrl` or `downloadToken`. With `indexerId`, http(s) links and tokens are fetched
@@ -2361,6 +3906,92 @@ func (s *GrabRequest) SetSeedTimeMinutes(val OptInt) {
 // SetPublishedAt sets the value of PublishedAt.
 func (s *GrabRequest) SetPublishedAt(val OptDateTime) {
 	s.PublishedAt = val
+}
+
+// Ref: #/components/schemas/ImportCustomFormatsRequest
+type ImportCustomFormatsRequest struct {
+	JSON   string                `json:"json"`
+	Flavor OptCustomFormatFlavor `json:"flavor"`
+	// Replace formats with the same name instead of failing.
+	Replace OptBool `json:"replace"`
+	DryRun  OptBool `json:"dryRun"`
+}
+
+// GetJSON returns the value of JSON.
+func (s *ImportCustomFormatsRequest) GetJSON() string {
+	return s.JSON
+}
+
+// GetFlavor returns the value of Flavor.
+func (s *ImportCustomFormatsRequest) GetFlavor() OptCustomFormatFlavor {
+	return s.Flavor
+}
+
+// GetReplace returns the value of Replace.
+func (s *ImportCustomFormatsRequest) GetReplace() OptBool {
+	return s.Replace
+}
+
+// GetDryRun returns the value of DryRun.
+func (s *ImportCustomFormatsRequest) GetDryRun() OptBool {
+	return s.DryRun
+}
+
+// SetJSON sets the value of JSON.
+func (s *ImportCustomFormatsRequest) SetJSON(val string) {
+	s.JSON = val
+}
+
+// SetFlavor sets the value of Flavor.
+func (s *ImportCustomFormatsRequest) SetFlavor(val OptCustomFormatFlavor) {
+	s.Flavor = val
+}
+
+// SetReplace sets the value of Replace.
+func (s *ImportCustomFormatsRequest) SetReplace(val OptBool) {
+	s.Replace = val
+}
+
+// SetDryRun sets the value of DryRun.
+func (s *ImportCustomFormatsRequest) SetDryRun(val OptBool) {
+	s.DryRun = val
+}
+
+// Ref: #/components/schemas/ImportCustomFormatsResult
+type ImportCustomFormatsResult struct {
+	Formats  []CustomFormat `json:"formats"`
+	Warnings []string       `json:"warnings"`
+	Stored   bool           `json:"stored"`
+}
+
+// GetFormats returns the value of Formats.
+func (s *ImportCustomFormatsResult) GetFormats() []CustomFormat {
+	return s.Formats
+}
+
+// GetWarnings returns the value of Warnings.
+func (s *ImportCustomFormatsResult) GetWarnings() []string {
+	return s.Warnings
+}
+
+// GetStored returns the value of Stored.
+func (s *ImportCustomFormatsResult) GetStored() bool {
+	return s.Stored
+}
+
+// SetFormats sets the value of Formats.
+func (s *ImportCustomFormatsResult) SetFormats(val []CustomFormat) {
+	s.Formats = val
+}
+
+// SetWarnings sets the value of Warnings.
+func (s *ImportCustomFormatsResult) SetWarnings(val []string) {
+	s.Warnings = val
+}
+
+// SetStored sets the value of Stored.
+func (s *ImportCustomFormatsResult) SetStored(val bool) {
+	s.Stored = val
 }
 
 // Ref: #/components/schemas/Indexer
@@ -4297,6 +5928,43 @@ func (s *Language) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/LanguageInfo
+type LanguageInfo struct {
+	Code   string `json:"code"`
+	Name   string `json:"name"`
+	Native string `json:"native"`
+}
+
+// GetCode returns the value of Code.
+func (s *LanguageInfo) GetCode() string {
+	return s.Code
+}
+
+// GetName returns the value of Name.
+func (s *LanguageInfo) GetName() string {
+	return s.Name
+}
+
+// GetNative returns the value of Native.
+func (s *LanguageInfo) GetNative() string {
+	return s.Native
+}
+
+// SetCode sets the value of Code.
+func (s *LanguageInfo) SetCode(val string) {
+	s.Code = val
+}
+
+// SetName sets the value of Name.
+func (s *LanguageInfo) SetName(val string) {
+	s.Name = val
+}
+
+// SetNative sets the value of Native.
+func (s *LanguageInfo) SetNative(val string) {
+	s.Native = val
+}
+
 // Ref: #/components/schemas/LoginRequest
 type LoginRequest struct {
 	Username     string        `json:"username"`
@@ -4380,6 +6048,43 @@ func (s *LogoutNoContent) GetSetCookie() OptString {
 // SetSetCookie sets the value of SetCookie.
 func (s *LogoutNoContent) SetSetCookie(val OptString) {
 	s.SetCookie = val
+}
+
+// Ref: #/components/schemas/MatchedFormat
+type MatchedFormat struct {
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Score int    `json:"score"`
+}
+
+// GetID returns the value of ID.
+func (s *MatchedFormat) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *MatchedFormat) GetName() string {
+	return s.Name
+}
+
+// GetScore returns the value of Score.
+func (s *MatchedFormat) GetScore() int {
+	return s.Score
+}
+
+// SetID sets the value of ID.
+func (s *MatchedFormat) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *MatchedFormat) SetName(val string) {
+	s.Name = val
+}
+
+// SetScore sets the value of Score.
+func (s *MatchedFormat) SetScore(val int) {
+	s.Score = val
 }
 
 // Ref: #/components/schemas/MediaKind
@@ -4477,6 +6182,98 @@ func (o OptBool) Or(d bool) bool {
 	return d
 }
 
+// NewOptCurrentFile returns new OptCurrentFile with value set to v.
+func NewOptCurrentFile(v CurrentFile) OptCurrentFile {
+	return OptCurrentFile{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCurrentFile is optional CurrentFile.
+type OptCurrentFile struct {
+	Value CurrentFile
+	Set   bool
+}
+
+// IsSet returns true if OptCurrentFile was set.
+func (o OptCurrentFile) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCurrentFile) Reset() {
+	var v CurrentFile
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCurrentFile) SetTo(v CurrentFile) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCurrentFile) Get() (v CurrentFile, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCurrentFile) Or(d CurrentFile) CurrentFile {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCustomFormatFlavor returns new OptCustomFormatFlavor with value set to v.
+func NewOptCustomFormatFlavor(v CustomFormatFlavor) OptCustomFormatFlavor {
+	return OptCustomFormatFlavor{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCustomFormatFlavor is optional CustomFormatFlavor.
+type OptCustomFormatFlavor struct {
+	Value CustomFormatFlavor
+	Set   bool
+}
+
+// IsSet returns true if OptCustomFormatFlavor was set.
+func (o OptCustomFormatFlavor) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCustomFormatFlavor) Reset() {
+	var v CustomFormatFlavor
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCustomFormatFlavor) SetTo(v CustomFormatFlavor) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCustomFormatFlavor) Get() (v CustomFormatFlavor, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCustomFormatFlavor) Or(d CustomFormatFlavor) CustomFormatFlavor {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptDateTime returns new OptDateTime with value set to v.
 func NewOptDateTime(v time.Time) OptDateTime {
 	return OptDateTime{
@@ -4517,6 +6314,52 @@ func (o OptDateTime) Get() (v time.Time, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDecision returns new OptDecision with value set to v.
+func NewOptDecision(v Decision) OptDecision {
+	return OptDecision{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDecision is optional Decision.
+type OptDecision struct {
+	Value Decision
+	Set   bool
+}
+
+// IsSet returns true if OptDecision was set.
+func (o OptDecision) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDecision) Reset() {
+	var v Decision
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDecision) SetTo(v Decision) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDecision) Get() (v Decision, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDecision) Or(d Decision) Decision {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -4701,6 +6544,98 @@ func (o OptDownloadProtocol) Get() (v DownloadProtocol, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDownloadProtocol) Or(d DownloadProtocol) DownloadProtocol {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEvaluateRequestMode returns new OptEvaluateRequestMode with value set to v.
+func NewOptEvaluateRequestMode(v EvaluateRequestMode) OptEvaluateRequestMode {
+	return OptEvaluateRequestMode{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEvaluateRequestMode is optional EvaluateRequestMode.
+type OptEvaluateRequestMode struct {
+	Value EvaluateRequestMode
+	Set   bool
+}
+
+// IsSet returns true if OptEvaluateRequestMode was set.
+func (o OptEvaluateRequestMode) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEvaluateRequestMode) Reset() {
+	var v EvaluateRequestMode
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEvaluateRequestMode) SetTo(v EvaluateRequestMode) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEvaluateRequestMode) Get() (v EvaluateRequestMode, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEvaluateRequestMode) Or(d EvaluateRequestMode) EvaluateRequestMode {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptExternalIds returns new OptExternalIds with value set to v.
+func NewOptExternalIds(v ExternalIds) OptExternalIds {
+	return OptExternalIds{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptExternalIds is optional ExternalIds.
+type OptExternalIds struct {
+	Value ExternalIds
+	Set   bool
+}
+
+// IsSet returns true if OptExternalIds was set.
+func (o OptExternalIds) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptExternalIds) Reset() {
+	var v ExternalIds
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptExternalIds) SetTo(v ExternalIds) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptExternalIds) Get() (v ExternalIds, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptExternalIds) Or(d ExternalIds) ExternalIds {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -5167,6 +7102,98 @@ func (o OptMediaKind) Or(d MediaKind) MediaKind {
 	return d
 }
 
+// NewOptParsedMusic returns new OptParsedMusic with value set to v.
+func NewOptParsedMusic(v ParsedMusic) OptParsedMusic {
+	return OptParsedMusic{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptParsedMusic is optional ParsedMusic.
+type OptParsedMusic struct {
+	Value ParsedMusic
+	Set   bool
+}
+
+// IsSet returns true if OptParsedMusic was set.
+func (o OptParsedMusic) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptParsedMusic) Reset() {
+	var v ParsedMusic
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptParsedMusic) SetTo(v ParsedMusic) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptParsedMusic) Get() (v ParsedMusic, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptParsedMusic) Or(d ParsedMusic) ParsedMusic {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptParsedRevision returns new OptParsedRevision with value set to v.
+func NewOptParsedRevision(v ParsedRevision) OptParsedRevision {
+	return OptParsedRevision{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptParsedRevision is optional ParsedRevision.
+type OptParsedRevision struct {
+	Value ParsedRevision
+	Set   bool
+}
+
+// IsSet returns true if OptParsedRevision was set.
+func (o OptParsedRevision) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptParsedRevision) Reset() {
+	var v ParsedRevision
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptParsedRevision) SetTo(v ParsedRevision) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptParsedRevision) Get() (v ParsedRevision, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptParsedRevision) Or(d ParsedRevision) ParsedRevision {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptPermissions returns new OptPermissions with value set to v.
 func NewOptPermissions(v Permissions) OptPermissions {
 	return OptPermissions{
@@ -5213,6 +7240,52 @@ func (o OptPermissions) Or(d Permissions) Permissions {
 	return d
 }
 
+// NewOptProtocol returns new OptProtocol with value set to v.
+func NewOptProtocol(v Protocol) OptProtocol {
+	return OptProtocol{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptProtocol is optional Protocol.
+type OptProtocol struct {
+	Value Protocol
+	Set   bool
+}
+
+// IsSet returns true if OptProtocol was set.
+func (o OptProtocol) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptProtocol) Reset() {
+	var v Protocol
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptProtocol) SetTo(v Protocol) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptProtocol) Get() (v Protocol, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptProtocol) Or(d Protocol) Protocol {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptQueuePriority returns new OptQueuePriority with value set to v.
 func NewOptQueuePriority(v QueuePriority) OptQueuePriority {
 	return OptQueuePriority{
@@ -5253,6 +7326,52 @@ func (o OptQueuePriority) Get() (v QueuePriority, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptQueuePriority) Or(d QueuePriority) QueuePriority {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRejectionParams returns new OptRejectionParams with value set to v.
+func NewOptRejectionParams(v RejectionParams) OptRejectionParams {
+	return OptRejectionParams{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRejectionParams is optional RejectionParams.
+type OptRejectionParams struct {
+	Value RejectionParams
+	Set   bool
+}
+
+// IsSet returns true if OptRejectionParams was set.
+func (o OptRejectionParams) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRejectionParams) Reset() {
+	var v RejectionParams
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRejectionParams) SetTo(v RejectionParams) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRejectionParams) Get() (v RejectionParams, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRejectionParams) Or(d RejectionParams) RejectionParams {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -5395,6 +7514,977 @@ func (o OptString) Or(d string) string {
 		return v
 	}
 	return d
+}
+
+// NewOptWantedItem returns new OptWantedItem with value set to v.
+func NewOptWantedItem(v WantedItem) OptWantedItem {
+	return OptWantedItem{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptWantedItem is optional WantedItem.
+type OptWantedItem struct {
+	Value WantedItem
+	Set   bool
+}
+
+// IsSet returns true if OptWantedItem was set.
+func (o OptWantedItem) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptWantedItem) Reset() {
+	var v WantedItem
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptWantedItem) SetTo(v WantedItem) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptWantedItem) Get() (v WantedItem, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptWantedItem) Or(d WantedItem) WantedItem {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptWantedItemSeriesType returns new OptWantedItemSeriesType with value set to v.
+func NewOptWantedItemSeriesType(v WantedItemSeriesType) OptWantedItemSeriesType {
+	return OptWantedItemSeriesType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptWantedItemSeriesType is optional WantedItemSeriesType.
+type OptWantedItemSeriesType struct {
+	Value WantedItemSeriesType
+	Set   bool
+}
+
+// IsSet returns true if OptWantedItemSeriesType was set.
+func (o OptWantedItemSeriesType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptWantedItemSeriesType) Reset() {
+	var v WantedItemSeriesType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptWantedItemSeriesType) SetTo(v WantedItemSeriesType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptWantedItemSeriesType) Get() (v WantedItemSeriesType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptWantedItemSeriesType) Or(d WantedItemSeriesType) WantedItemSeriesType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// Ref: #/components/schemas/ParseRequest
+type ParseRequest struct {
+	Title     string       `json:"title"`
+	Kind      OptMediaKind `json:"kind"`
+	ProfileId OptInt64     `json:"profileId"`
+	// Bytes.
+	Size         OptInt64      `json:"size"`
+	Protocol     OptProtocol   `json:"protocol"`
+	IndexerFlags []string      `json:"indexerFlags"`
+	Wanted       OptWantedItem `json:"wanted"`
+}
+
+// GetTitle returns the value of Title.
+func (s *ParseRequest) GetTitle() string {
+	return s.Title
+}
+
+// GetKind returns the value of Kind.
+func (s *ParseRequest) GetKind() OptMediaKind {
+	return s.Kind
+}
+
+// GetProfileId returns the value of ProfileId.
+func (s *ParseRequest) GetProfileId() OptInt64 {
+	return s.ProfileId
+}
+
+// GetSize returns the value of Size.
+func (s *ParseRequest) GetSize() OptInt64 {
+	return s.Size
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *ParseRequest) GetProtocol() OptProtocol {
+	return s.Protocol
+}
+
+// GetIndexerFlags returns the value of IndexerFlags.
+func (s *ParseRequest) GetIndexerFlags() []string {
+	return s.IndexerFlags
+}
+
+// GetWanted returns the value of Wanted.
+func (s *ParseRequest) GetWanted() OptWantedItem {
+	return s.Wanted
+}
+
+// SetTitle sets the value of Title.
+func (s *ParseRequest) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetKind sets the value of Kind.
+func (s *ParseRequest) SetKind(val OptMediaKind) {
+	s.Kind = val
+}
+
+// SetProfileId sets the value of ProfileId.
+func (s *ParseRequest) SetProfileId(val OptInt64) {
+	s.ProfileId = val
+}
+
+// SetSize sets the value of Size.
+func (s *ParseRequest) SetSize(val OptInt64) {
+	s.Size = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *ParseRequest) SetProtocol(val OptProtocol) {
+	s.Protocol = val
+}
+
+// SetIndexerFlags sets the value of IndexerFlags.
+func (s *ParseRequest) SetIndexerFlags(val []string) {
+	s.IndexerFlags = val
+}
+
+// SetWanted sets the value of Wanted.
+func (s *ParseRequest) SetWanted(val OptWantedItem) {
+	s.Wanted = val
+}
+
+// Ref: #/components/schemas/ParseResult
+type ParseResult struct {
+	Release       ParsedRelease            `json:"release"`
+	Quality       Quality                  `json:"quality"`
+	CustomFormats []CustomFormatEvaluation `json:"customFormats"`
+	// Total score of the matching formats for the profile.
+	Score    int         `json:"score"`
+	Decision OptDecision `json:"decision"`
+}
+
+// GetRelease returns the value of Release.
+func (s *ParseResult) GetRelease() ParsedRelease {
+	return s.Release
+}
+
+// GetQuality returns the value of Quality.
+func (s *ParseResult) GetQuality() Quality {
+	return s.Quality
+}
+
+// GetCustomFormats returns the value of CustomFormats.
+func (s *ParseResult) GetCustomFormats() []CustomFormatEvaluation {
+	return s.CustomFormats
+}
+
+// GetScore returns the value of Score.
+func (s *ParseResult) GetScore() int {
+	return s.Score
+}
+
+// GetDecision returns the value of Decision.
+func (s *ParseResult) GetDecision() OptDecision {
+	return s.Decision
+}
+
+// SetRelease sets the value of Release.
+func (s *ParseResult) SetRelease(val ParsedRelease) {
+	s.Release = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *ParseResult) SetQuality(val Quality) {
+	s.Quality = val
+}
+
+// SetCustomFormats sets the value of CustomFormats.
+func (s *ParseResult) SetCustomFormats(val []CustomFormatEvaluation) {
+	s.CustomFormats = val
+}
+
+// SetScore sets the value of Score.
+func (s *ParseResult) SetScore(val int) {
+	s.Score = val
+}
+
+// SetDecision sets the value of Decision.
+func (s *ParseResult) SetDecision(val OptDecision) {
+	s.Decision = val
+}
+
+// Ref: #/components/schemas/ParsedAudio
+type ParsedAudio struct {
+	Codecs        []string   `json:"codecs"`
+	Channels      OptString  `json:"channels"`
+	Atmos         OptBool    `json:"atmos"`
+	Bitrate       OptString  `json:"bitrate"`
+	BitDepth      OptInt     `json:"bitDepth"`
+	SampleRateKHz OptFloat64 `json:"sampleRateKHz"`
+}
+
+// GetCodecs returns the value of Codecs.
+func (s *ParsedAudio) GetCodecs() []string {
+	return s.Codecs
+}
+
+// GetChannels returns the value of Channels.
+func (s *ParsedAudio) GetChannels() OptString {
+	return s.Channels
+}
+
+// GetAtmos returns the value of Atmos.
+func (s *ParsedAudio) GetAtmos() OptBool {
+	return s.Atmos
+}
+
+// GetBitrate returns the value of Bitrate.
+func (s *ParsedAudio) GetBitrate() OptString {
+	return s.Bitrate
+}
+
+// GetBitDepth returns the value of BitDepth.
+func (s *ParsedAudio) GetBitDepth() OptInt {
+	return s.BitDepth
+}
+
+// GetSampleRateKHz returns the value of SampleRateKHz.
+func (s *ParsedAudio) GetSampleRateKHz() OptFloat64 {
+	return s.SampleRateKHz
+}
+
+// SetCodecs sets the value of Codecs.
+func (s *ParsedAudio) SetCodecs(val []string) {
+	s.Codecs = val
+}
+
+// SetChannels sets the value of Channels.
+func (s *ParsedAudio) SetChannels(val OptString) {
+	s.Channels = val
+}
+
+// SetAtmos sets the value of Atmos.
+func (s *ParsedAudio) SetAtmos(val OptBool) {
+	s.Atmos = val
+}
+
+// SetBitrate sets the value of Bitrate.
+func (s *ParsedAudio) SetBitrate(val OptString) {
+	s.Bitrate = val
+}
+
+// SetBitDepth sets the value of BitDepth.
+func (s *ParsedAudio) SetBitDepth(val OptInt) {
+	s.BitDepth = val
+}
+
+// SetSampleRateKHz sets the value of SampleRateKHz.
+func (s *ParsedAudio) SetSampleRateKHz(val OptFloat64) {
+	s.SampleRateKHz = val
+}
+
+// Ref: #/components/schemas/ParsedMusic
+type ParsedMusic struct {
+	Artist OptString `json:"artist"`
+	Album  OptString `json:"album"`
+	Source OptString `json:"source"`
+	Discs  OptInt    `json:"discs"`
+	Disc   OptInt    `json:"disc"`
+}
+
+// GetArtist returns the value of Artist.
+func (s *ParsedMusic) GetArtist() OptString {
+	return s.Artist
+}
+
+// GetAlbum returns the value of Album.
+func (s *ParsedMusic) GetAlbum() OptString {
+	return s.Album
+}
+
+// GetSource returns the value of Source.
+func (s *ParsedMusic) GetSource() OptString {
+	return s.Source
+}
+
+// GetDiscs returns the value of Discs.
+func (s *ParsedMusic) GetDiscs() OptInt {
+	return s.Discs
+}
+
+// GetDisc returns the value of Disc.
+func (s *ParsedMusic) GetDisc() OptInt {
+	return s.Disc
+}
+
+// SetArtist sets the value of Artist.
+func (s *ParsedMusic) SetArtist(val OptString) {
+	s.Artist = val
+}
+
+// SetAlbum sets the value of Album.
+func (s *ParsedMusic) SetAlbum(val OptString) {
+	s.Album = val
+}
+
+// SetSource sets the value of Source.
+func (s *ParsedMusic) SetSource(val OptString) {
+	s.Source = val
+}
+
+// SetDiscs sets the value of Discs.
+func (s *ParsedMusic) SetDiscs(val OptInt) {
+	s.Discs = val
+}
+
+// SetDisc sets the value of Disc.
+func (s *ParsedMusic) SetDisc(val OptInt) {
+	s.Disc = val
+}
+
+// Ref: #/components/schemas/ParsedRelease
+type ParsedRelease struct {
+	Input             string            `json:"input"`
+	Kind              ParsedReleaseKind `json:"kind"`
+	Title             string            `json:"title"`
+	AlternateTitles   []string          `json:"alternateTitles"`
+	Year              OptInt            `json:"year"`
+	Seasons           []int             `json:"seasons"`
+	Episodes          []int             `json:"episodes"`
+	AbsoluteEpisodes  []int             `json:"absoluteEpisodes"`
+	AirDate           OptString         `json:"airDate"`
+	EpisodeTitle      OptString         `json:"episodeTitle"`
+	FullSeason        OptBool           `json:"fullSeason"`
+	MultiSeason       OptBool           `json:"multiSeason"`
+	CompleteSeries    OptBool           `json:"completeSeries"`
+	Special           OptBool           `json:"special"`
+	Anime             OptBool           `json:"anime"`
+	Editions          []string          `json:"editions"`
+	ThreeD            OptBool           `json:"threeD"`
+	Music             OptParsedMusic    `json:"music"`
+	Video             ParsedVideo       `json:"video"`
+	Audio             ParsedAudio       `json:"audio"`
+	StreamingService  OptString         `json:"streamingService"`
+	Languages         []string          `json:"languages"`
+	MultiAudio        OptBool           `json:"multiAudio"`
+	DualAudio         OptBool           `json:"dualAudio"`
+	SubtitleLanguages []string          `json:"subtitleLanguages"`
+	MultiSubs         OptBool           `json:"multiSubs"`
+	HardcodedSubs     OptBool           `json:"hardcodedSubs"`
+	Group             OptString         `json:"group"`
+	Hash              OptString         `json:"hash"`
+	Revision          ParsedRevision    `json:"revision"`
+	Flags             []string          `json:"flags"`
+	Extension         OptString         `json:"extension"`
+	Sample            OptBool           `json:"sample"`
+	Obfuscated        OptBool           `json:"obfuscated"`
+	// 0..1, how much of the name was understood.
+	Confidence float64 `json:"confidence"`
+	// Parts after the title that were not understood.
+	Unparsed []string `json:"unparsed"`
+}
+
+// GetInput returns the value of Input.
+func (s *ParsedRelease) GetInput() string {
+	return s.Input
+}
+
+// GetKind returns the value of Kind.
+func (s *ParsedRelease) GetKind() ParsedReleaseKind {
+	return s.Kind
+}
+
+// GetTitle returns the value of Title.
+func (s *ParsedRelease) GetTitle() string {
+	return s.Title
+}
+
+// GetAlternateTitles returns the value of AlternateTitles.
+func (s *ParsedRelease) GetAlternateTitles() []string {
+	return s.AlternateTitles
+}
+
+// GetYear returns the value of Year.
+func (s *ParsedRelease) GetYear() OptInt {
+	return s.Year
+}
+
+// GetSeasons returns the value of Seasons.
+func (s *ParsedRelease) GetSeasons() []int {
+	return s.Seasons
+}
+
+// GetEpisodes returns the value of Episodes.
+func (s *ParsedRelease) GetEpisodes() []int {
+	return s.Episodes
+}
+
+// GetAbsoluteEpisodes returns the value of AbsoluteEpisodes.
+func (s *ParsedRelease) GetAbsoluteEpisodes() []int {
+	return s.AbsoluteEpisodes
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *ParsedRelease) GetAirDate() OptString {
+	return s.AirDate
+}
+
+// GetEpisodeTitle returns the value of EpisodeTitle.
+func (s *ParsedRelease) GetEpisodeTitle() OptString {
+	return s.EpisodeTitle
+}
+
+// GetFullSeason returns the value of FullSeason.
+func (s *ParsedRelease) GetFullSeason() OptBool {
+	return s.FullSeason
+}
+
+// GetMultiSeason returns the value of MultiSeason.
+func (s *ParsedRelease) GetMultiSeason() OptBool {
+	return s.MultiSeason
+}
+
+// GetCompleteSeries returns the value of CompleteSeries.
+func (s *ParsedRelease) GetCompleteSeries() OptBool {
+	return s.CompleteSeries
+}
+
+// GetSpecial returns the value of Special.
+func (s *ParsedRelease) GetSpecial() OptBool {
+	return s.Special
+}
+
+// GetAnime returns the value of Anime.
+func (s *ParsedRelease) GetAnime() OptBool {
+	return s.Anime
+}
+
+// GetEditions returns the value of Editions.
+func (s *ParsedRelease) GetEditions() []string {
+	return s.Editions
+}
+
+// GetThreeD returns the value of ThreeD.
+func (s *ParsedRelease) GetThreeD() OptBool {
+	return s.ThreeD
+}
+
+// GetMusic returns the value of Music.
+func (s *ParsedRelease) GetMusic() OptParsedMusic {
+	return s.Music
+}
+
+// GetVideo returns the value of Video.
+func (s *ParsedRelease) GetVideo() ParsedVideo {
+	return s.Video
+}
+
+// GetAudio returns the value of Audio.
+func (s *ParsedRelease) GetAudio() ParsedAudio {
+	return s.Audio
+}
+
+// GetStreamingService returns the value of StreamingService.
+func (s *ParsedRelease) GetStreamingService() OptString {
+	return s.StreamingService
+}
+
+// GetLanguages returns the value of Languages.
+func (s *ParsedRelease) GetLanguages() []string {
+	return s.Languages
+}
+
+// GetMultiAudio returns the value of MultiAudio.
+func (s *ParsedRelease) GetMultiAudio() OptBool {
+	return s.MultiAudio
+}
+
+// GetDualAudio returns the value of DualAudio.
+func (s *ParsedRelease) GetDualAudio() OptBool {
+	return s.DualAudio
+}
+
+// GetSubtitleLanguages returns the value of SubtitleLanguages.
+func (s *ParsedRelease) GetSubtitleLanguages() []string {
+	return s.SubtitleLanguages
+}
+
+// GetMultiSubs returns the value of MultiSubs.
+func (s *ParsedRelease) GetMultiSubs() OptBool {
+	return s.MultiSubs
+}
+
+// GetHardcodedSubs returns the value of HardcodedSubs.
+func (s *ParsedRelease) GetHardcodedSubs() OptBool {
+	return s.HardcodedSubs
+}
+
+// GetGroup returns the value of Group.
+func (s *ParsedRelease) GetGroup() OptString {
+	return s.Group
+}
+
+// GetHash returns the value of Hash.
+func (s *ParsedRelease) GetHash() OptString {
+	return s.Hash
+}
+
+// GetRevision returns the value of Revision.
+func (s *ParsedRelease) GetRevision() ParsedRevision {
+	return s.Revision
+}
+
+// GetFlags returns the value of Flags.
+func (s *ParsedRelease) GetFlags() []string {
+	return s.Flags
+}
+
+// GetExtension returns the value of Extension.
+func (s *ParsedRelease) GetExtension() OptString {
+	return s.Extension
+}
+
+// GetSample returns the value of Sample.
+func (s *ParsedRelease) GetSample() OptBool {
+	return s.Sample
+}
+
+// GetObfuscated returns the value of Obfuscated.
+func (s *ParsedRelease) GetObfuscated() OptBool {
+	return s.Obfuscated
+}
+
+// GetConfidence returns the value of Confidence.
+func (s *ParsedRelease) GetConfidence() float64 {
+	return s.Confidence
+}
+
+// GetUnparsed returns the value of Unparsed.
+func (s *ParsedRelease) GetUnparsed() []string {
+	return s.Unparsed
+}
+
+// SetInput sets the value of Input.
+func (s *ParsedRelease) SetInput(val string) {
+	s.Input = val
+}
+
+// SetKind sets the value of Kind.
+func (s *ParsedRelease) SetKind(val ParsedReleaseKind) {
+	s.Kind = val
+}
+
+// SetTitle sets the value of Title.
+func (s *ParsedRelease) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetAlternateTitles sets the value of AlternateTitles.
+func (s *ParsedRelease) SetAlternateTitles(val []string) {
+	s.AlternateTitles = val
+}
+
+// SetYear sets the value of Year.
+func (s *ParsedRelease) SetYear(val OptInt) {
+	s.Year = val
+}
+
+// SetSeasons sets the value of Seasons.
+func (s *ParsedRelease) SetSeasons(val []int) {
+	s.Seasons = val
+}
+
+// SetEpisodes sets the value of Episodes.
+func (s *ParsedRelease) SetEpisodes(val []int) {
+	s.Episodes = val
+}
+
+// SetAbsoluteEpisodes sets the value of AbsoluteEpisodes.
+func (s *ParsedRelease) SetAbsoluteEpisodes(val []int) {
+	s.AbsoluteEpisodes = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *ParsedRelease) SetAirDate(val OptString) {
+	s.AirDate = val
+}
+
+// SetEpisodeTitle sets the value of EpisodeTitle.
+func (s *ParsedRelease) SetEpisodeTitle(val OptString) {
+	s.EpisodeTitle = val
+}
+
+// SetFullSeason sets the value of FullSeason.
+func (s *ParsedRelease) SetFullSeason(val OptBool) {
+	s.FullSeason = val
+}
+
+// SetMultiSeason sets the value of MultiSeason.
+func (s *ParsedRelease) SetMultiSeason(val OptBool) {
+	s.MultiSeason = val
+}
+
+// SetCompleteSeries sets the value of CompleteSeries.
+func (s *ParsedRelease) SetCompleteSeries(val OptBool) {
+	s.CompleteSeries = val
+}
+
+// SetSpecial sets the value of Special.
+func (s *ParsedRelease) SetSpecial(val OptBool) {
+	s.Special = val
+}
+
+// SetAnime sets the value of Anime.
+func (s *ParsedRelease) SetAnime(val OptBool) {
+	s.Anime = val
+}
+
+// SetEditions sets the value of Editions.
+func (s *ParsedRelease) SetEditions(val []string) {
+	s.Editions = val
+}
+
+// SetThreeD sets the value of ThreeD.
+func (s *ParsedRelease) SetThreeD(val OptBool) {
+	s.ThreeD = val
+}
+
+// SetMusic sets the value of Music.
+func (s *ParsedRelease) SetMusic(val OptParsedMusic) {
+	s.Music = val
+}
+
+// SetVideo sets the value of Video.
+func (s *ParsedRelease) SetVideo(val ParsedVideo) {
+	s.Video = val
+}
+
+// SetAudio sets the value of Audio.
+func (s *ParsedRelease) SetAudio(val ParsedAudio) {
+	s.Audio = val
+}
+
+// SetStreamingService sets the value of StreamingService.
+func (s *ParsedRelease) SetStreamingService(val OptString) {
+	s.StreamingService = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *ParsedRelease) SetLanguages(val []string) {
+	s.Languages = val
+}
+
+// SetMultiAudio sets the value of MultiAudio.
+func (s *ParsedRelease) SetMultiAudio(val OptBool) {
+	s.MultiAudio = val
+}
+
+// SetDualAudio sets the value of DualAudio.
+func (s *ParsedRelease) SetDualAudio(val OptBool) {
+	s.DualAudio = val
+}
+
+// SetSubtitleLanguages sets the value of SubtitleLanguages.
+func (s *ParsedRelease) SetSubtitleLanguages(val []string) {
+	s.SubtitleLanguages = val
+}
+
+// SetMultiSubs sets the value of MultiSubs.
+func (s *ParsedRelease) SetMultiSubs(val OptBool) {
+	s.MultiSubs = val
+}
+
+// SetHardcodedSubs sets the value of HardcodedSubs.
+func (s *ParsedRelease) SetHardcodedSubs(val OptBool) {
+	s.HardcodedSubs = val
+}
+
+// SetGroup sets the value of Group.
+func (s *ParsedRelease) SetGroup(val OptString) {
+	s.Group = val
+}
+
+// SetHash sets the value of Hash.
+func (s *ParsedRelease) SetHash(val OptString) {
+	s.Hash = val
+}
+
+// SetRevision sets the value of Revision.
+func (s *ParsedRelease) SetRevision(val ParsedRevision) {
+	s.Revision = val
+}
+
+// SetFlags sets the value of Flags.
+func (s *ParsedRelease) SetFlags(val []string) {
+	s.Flags = val
+}
+
+// SetExtension sets the value of Extension.
+func (s *ParsedRelease) SetExtension(val OptString) {
+	s.Extension = val
+}
+
+// SetSample sets the value of Sample.
+func (s *ParsedRelease) SetSample(val OptBool) {
+	s.Sample = val
+}
+
+// SetObfuscated sets the value of Obfuscated.
+func (s *ParsedRelease) SetObfuscated(val OptBool) {
+	s.Obfuscated = val
+}
+
+// SetConfidence sets the value of Confidence.
+func (s *ParsedRelease) SetConfidence(val float64) {
+	s.Confidence = val
+}
+
+// SetUnparsed sets the value of Unparsed.
+func (s *ParsedRelease) SetUnparsed(val []string) {
+	s.Unparsed = val
+}
+
+type ParsedReleaseKind string
+
+const (
+	ParsedReleaseKindUnknown ParsedReleaseKind = "unknown"
+	ParsedReleaseKindMovie   ParsedReleaseKind = "movie"
+	ParsedReleaseKindSeries  ParsedReleaseKind = "series"
+	ParsedReleaseKindMusic   ParsedReleaseKind = "music"
+)
+
+// AllValues returns all ParsedReleaseKind values.
+func (ParsedReleaseKind) AllValues() []ParsedReleaseKind {
+	return []ParsedReleaseKind{
+		ParsedReleaseKindUnknown,
+		ParsedReleaseKindMovie,
+		ParsedReleaseKindSeries,
+		ParsedReleaseKindMusic,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ParsedReleaseKind) MarshalText() ([]byte, error) {
+	switch s {
+	case ParsedReleaseKindUnknown:
+		return []byte(s), nil
+	case ParsedReleaseKindMovie:
+		return []byte(s), nil
+	case ParsedReleaseKindSeries:
+		return []byte(s), nil
+	case ParsedReleaseKindMusic:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ParsedReleaseKind) UnmarshalText(data []byte) error {
+	switch ParsedReleaseKind(data) {
+	case ParsedReleaseKindUnknown:
+		*s = ParsedReleaseKindUnknown
+		return nil
+	case ParsedReleaseKindMovie:
+		*s = ParsedReleaseKindMovie
+		return nil
+	case ParsedReleaseKindSeries:
+		*s = ParsedReleaseKindSeries
+		return nil
+	case ParsedReleaseKindMusic:
+		*s = ParsedReleaseKindMusic
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/ParsedRevision
+type ParsedRevision struct {
+	Version int     `json:"version"`
+	Real    OptInt  `json:"real"`
+	Proper  OptBool `json:"proper"`
+	Repack  OptBool `json:"repack"`
+}
+
+// GetVersion returns the value of Version.
+func (s *ParsedRevision) GetVersion() int {
+	return s.Version
+}
+
+// GetReal returns the value of Real.
+func (s *ParsedRevision) GetReal() OptInt {
+	return s.Real
+}
+
+// GetProper returns the value of Proper.
+func (s *ParsedRevision) GetProper() OptBool {
+	return s.Proper
+}
+
+// GetRepack returns the value of Repack.
+func (s *ParsedRevision) GetRepack() OptBool {
+	return s.Repack
+}
+
+// SetVersion sets the value of Version.
+func (s *ParsedRevision) SetVersion(val int) {
+	s.Version = val
+}
+
+// SetReal sets the value of Real.
+func (s *ParsedRevision) SetReal(val OptInt) {
+	s.Real = val
+}
+
+// SetProper sets the value of Proper.
+func (s *ParsedRevision) SetProper(val OptBool) {
+	s.Proper = val
+}
+
+// SetRepack sets the value of Repack.
+func (s *ParsedRevision) SetRepack(val OptBool) {
+	s.Repack = val
+}
+
+// Ref: #/components/schemas/ParsedVideo
+type ParsedVideo struct {
+	Source             OptString `json:"source"`
+	Resolution         OptInt    `json:"resolution"`
+	Interlaced         OptBool   `json:"interlaced"`
+	Uhd                OptBool   `json:"uhd"`
+	Codec              OptString `json:"codec"`
+	Encoder            OptString `json:"encoder"`
+	BitDepth           OptInt    `json:"bitDepth"`
+	Hdr                []string  `json:"hdr"`
+	DolbyVisionProfile OptString `json:"dolbyVisionProfile"`
+}
+
+// GetSource returns the value of Source.
+func (s *ParsedVideo) GetSource() OptString {
+	return s.Source
+}
+
+// GetResolution returns the value of Resolution.
+func (s *ParsedVideo) GetResolution() OptInt {
+	return s.Resolution
+}
+
+// GetInterlaced returns the value of Interlaced.
+func (s *ParsedVideo) GetInterlaced() OptBool {
+	return s.Interlaced
+}
+
+// GetUhd returns the value of Uhd.
+func (s *ParsedVideo) GetUhd() OptBool {
+	return s.Uhd
+}
+
+// GetCodec returns the value of Codec.
+func (s *ParsedVideo) GetCodec() OptString {
+	return s.Codec
+}
+
+// GetEncoder returns the value of Encoder.
+func (s *ParsedVideo) GetEncoder() OptString {
+	return s.Encoder
+}
+
+// GetBitDepth returns the value of BitDepth.
+func (s *ParsedVideo) GetBitDepth() OptInt {
+	return s.BitDepth
+}
+
+// GetHdr returns the value of Hdr.
+func (s *ParsedVideo) GetHdr() []string {
+	return s.Hdr
+}
+
+// GetDolbyVisionProfile returns the value of DolbyVisionProfile.
+func (s *ParsedVideo) GetDolbyVisionProfile() OptString {
+	return s.DolbyVisionProfile
+}
+
+// SetSource sets the value of Source.
+func (s *ParsedVideo) SetSource(val OptString) {
+	s.Source = val
+}
+
+// SetResolution sets the value of Resolution.
+func (s *ParsedVideo) SetResolution(val OptInt) {
+	s.Resolution = val
+}
+
+// SetInterlaced sets the value of Interlaced.
+func (s *ParsedVideo) SetInterlaced(val OptBool) {
+	s.Interlaced = val
+}
+
+// SetUhd sets the value of Uhd.
+func (s *ParsedVideo) SetUhd(val OptBool) {
+	s.Uhd = val
+}
+
+// SetCodec sets the value of Codec.
+func (s *ParsedVideo) SetCodec(val OptString) {
+	s.Codec = val
+}
+
+// SetEncoder sets the value of Encoder.
+func (s *ParsedVideo) SetEncoder(val OptString) {
+	s.Encoder = val
+}
+
+// SetBitDepth sets the value of BitDepth.
+func (s *ParsedVideo) SetBitDepth(val OptInt) {
+	s.BitDepth = val
+}
+
+// SetHdr sets the value of Hdr.
+func (s *ParsedVideo) SetHdr(val []string) {
+	s.Hdr = val
+}
+
+// SetDolbyVisionProfile sets the value of DolbyVisionProfile.
+func (s *ParsedVideo) SetDolbyVisionProfile(val OptString) {
+	s.DolbyVisionProfile = val
 }
 
 type Password string
@@ -5557,6 +8647,419 @@ func (s *Protocol) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/Quality
+type Quality struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Source     string `json:"source"`
+	Resolution OptInt `json:"resolution"`
+	// Remux, brdisk, rawhd, regional, screener or dvdr.
+	Modifier OptString `json:"modifier"`
+	Music    bool      `json:"music"`
+	// Ladder position (higher is better).
+	Rank int `json:"rank"`
+}
+
+// GetID returns the value of ID.
+func (s *Quality) GetID() string {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *Quality) GetName() string {
+	return s.Name
+}
+
+// GetSource returns the value of Source.
+func (s *Quality) GetSource() string {
+	return s.Source
+}
+
+// GetResolution returns the value of Resolution.
+func (s *Quality) GetResolution() OptInt {
+	return s.Resolution
+}
+
+// GetModifier returns the value of Modifier.
+func (s *Quality) GetModifier() OptString {
+	return s.Modifier
+}
+
+// GetMusic returns the value of Music.
+func (s *Quality) GetMusic() bool {
+	return s.Music
+}
+
+// GetRank returns the value of Rank.
+func (s *Quality) GetRank() int {
+	return s.Rank
+}
+
+// SetID sets the value of ID.
+func (s *Quality) SetID(val string) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *Quality) SetName(val string) {
+	s.Name = val
+}
+
+// SetSource sets the value of Source.
+func (s *Quality) SetSource(val string) {
+	s.Source = val
+}
+
+// SetResolution sets the value of Resolution.
+func (s *Quality) SetResolution(val OptInt) {
+	s.Resolution = val
+}
+
+// SetModifier sets the value of Modifier.
+func (s *Quality) SetModifier(val OptString) {
+	s.Modifier = val
+}
+
+// SetMusic sets the value of Music.
+func (s *Quality) SetMusic(val bool) {
+	s.Music = val
+}
+
+// SetRank sets the value of Rank.
+func (s *Quality) SetRank(val int) {
+	s.Rank = val
+}
+
+// Size limits in MB per minute of runtime. `max` 0 = no limit; `preferred` 0 = no preference.
+// Ref: #/components/schemas/QualityDefinition
+type QualityDefinition struct {
+	Kind      MediaKind `json:"kind"`
+	Quality   string    `json:"quality"`
+	Min       float64   `json:"min"`
+	Preferred float64   `json:"preferred"`
+	Max       float64   `json:"max"`
+}
+
+// GetKind returns the value of Kind.
+func (s *QualityDefinition) GetKind() MediaKind {
+	return s.Kind
+}
+
+// GetQuality returns the value of Quality.
+func (s *QualityDefinition) GetQuality() string {
+	return s.Quality
+}
+
+// GetMin returns the value of Min.
+func (s *QualityDefinition) GetMin() float64 {
+	return s.Min
+}
+
+// GetPreferred returns the value of Preferred.
+func (s *QualityDefinition) GetPreferred() float64 {
+	return s.Preferred
+}
+
+// GetMax returns the value of Max.
+func (s *QualityDefinition) GetMax() float64 {
+	return s.Max
+}
+
+// SetKind sets the value of Kind.
+func (s *QualityDefinition) SetKind(val MediaKind) {
+	s.Kind = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *QualityDefinition) SetQuality(val string) {
+	s.Quality = val
+}
+
+// SetMin sets the value of Min.
+func (s *QualityDefinition) SetMin(val float64) {
+	s.Min = val
+}
+
+// SetPreferred sets the value of Preferred.
+func (s *QualityDefinition) SetPreferred(val float64) {
+	s.Preferred = val
+}
+
+// SetMax sets the value of Max.
+func (s *QualityDefinition) SetMax(val float64) {
+	s.Max = val
+}
+
+// Ref: #/components/schemas/QualityProfile
+type QualityProfile struct {
+	ID                int64                `json:"id"`
+	Name              string               `json:"name"`
+	Kind              MediaKind            `json:"kind"`
+	Items             []QualityProfileItem `json:"items"`
+	Cutoff            string               `json:"cutoff"`
+	UpgradesAllowed   bool                 `json:"upgradesAllowed"`
+	MinFormatScore    int                  `json:"minFormatScore"`
+	CutoffFormatScore int                  `json:"cutoffFormatScore"`
+	FormatScores      []FormatScore        `json:"formatScores"`
+	Languages         []string             `json:"languages"`
+}
+
+// GetID returns the value of ID.
+func (s *QualityProfile) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *QualityProfile) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *QualityProfile) GetKind() MediaKind {
+	return s.Kind
+}
+
+// GetItems returns the value of Items.
+func (s *QualityProfile) GetItems() []QualityProfileItem {
+	return s.Items
+}
+
+// GetCutoff returns the value of Cutoff.
+func (s *QualityProfile) GetCutoff() string {
+	return s.Cutoff
+}
+
+// GetUpgradesAllowed returns the value of UpgradesAllowed.
+func (s *QualityProfile) GetUpgradesAllowed() bool {
+	return s.UpgradesAllowed
+}
+
+// GetMinFormatScore returns the value of MinFormatScore.
+func (s *QualityProfile) GetMinFormatScore() int {
+	return s.MinFormatScore
+}
+
+// GetCutoffFormatScore returns the value of CutoffFormatScore.
+func (s *QualityProfile) GetCutoffFormatScore() int {
+	return s.CutoffFormatScore
+}
+
+// GetFormatScores returns the value of FormatScores.
+func (s *QualityProfile) GetFormatScores() []FormatScore {
+	return s.FormatScores
+}
+
+// GetLanguages returns the value of Languages.
+func (s *QualityProfile) GetLanguages() []string {
+	return s.Languages
+}
+
+// SetID sets the value of ID.
+func (s *QualityProfile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *QualityProfile) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *QualityProfile) SetKind(val MediaKind) {
+	s.Kind = val
+}
+
+// SetItems sets the value of Items.
+func (s *QualityProfile) SetItems(val []QualityProfileItem) {
+	s.Items = val
+}
+
+// SetCutoff sets the value of Cutoff.
+func (s *QualityProfile) SetCutoff(val string) {
+	s.Cutoff = val
+}
+
+// SetUpgradesAllowed sets the value of UpgradesAllowed.
+func (s *QualityProfile) SetUpgradesAllowed(val bool) {
+	s.UpgradesAllowed = val
+}
+
+// SetMinFormatScore sets the value of MinFormatScore.
+func (s *QualityProfile) SetMinFormatScore(val int) {
+	s.MinFormatScore = val
+}
+
+// SetCutoffFormatScore sets the value of CutoffFormatScore.
+func (s *QualityProfile) SetCutoffFormatScore(val int) {
+	s.CutoffFormatScore = val
+}
+
+// SetFormatScores sets the value of FormatScores.
+func (s *QualityProfile) SetFormatScores(val []FormatScore) {
+	s.FormatScores = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *QualityProfile) SetLanguages(val []string) {
+	s.Languages = val
+}
+
+// Ref: #/components/schemas/QualityProfileInput
+type QualityProfileInput struct {
+	Name string    `json:"name"`
+	Kind MediaKind `json:"kind"`
+	// Best first.
+	Items []QualityProfileItem `json:"items"`
+	// A quality id, or `group:<name>` for a group.
+	Cutoff          string `json:"cutoff"`
+	UpgradesAllowed bool   `json:"upgradesAllowed"`
+	MinFormatScore  OptInt `json:"minFormatScore"`
+	// Upgrades stop once the cutoff quality and this score are reached (0 = quality only).
+	CutoffFormatScore OptInt        `json:"cutoffFormatScore"`
+	FormatScores      []FormatScore `json:"formatScores"`
+	// Accepted languages (ISO codes, `original`, `any`); empty accepts any.
+	Languages []string `json:"languages"`
+}
+
+// GetName returns the value of Name.
+func (s *QualityProfileInput) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *QualityProfileInput) GetKind() MediaKind {
+	return s.Kind
+}
+
+// GetItems returns the value of Items.
+func (s *QualityProfileInput) GetItems() []QualityProfileItem {
+	return s.Items
+}
+
+// GetCutoff returns the value of Cutoff.
+func (s *QualityProfileInput) GetCutoff() string {
+	return s.Cutoff
+}
+
+// GetUpgradesAllowed returns the value of UpgradesAllowed.
+func (s *QualityProfileInput) GetUpgradesAllowed() bool {
+	return s.UpgradesAllowed
+}
+
+// GetMinFormatScore returns the value of MinFormatScore.
+func (s *QualityProfileInput) GetMinFormatScore() OptInt {
+	return s.MinFormatScore
+}
+
+// GetCutoffFormatScore returns the value of CutoffFormatScore.
+func (s *QualityProfileInput) GetCutoffFormatScore() OptInt {
+	return s.CutoffFormatScore
+}
+
+// GetFormatScores returns the value of FormatScores.
+func (s *QualityProfileInput) GetFormatScores() []FormatScore {
+	return s.FormatScores
+}
+
+// GetLanguages returns the value of Languages.
+func (s *QualityProfileInput) GetLanguages() []string {
+	return s.Languages
+}
+
+// SetName sets the value of Name.
+func (s *QualityProfileInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *QualityProfileInput) SetKind(val MediaKind) {
+	s.Kind = val
+}
+
+// SetItems sets the value of Items.
+func (s *QualityProfileInput) SetItems(val []QualityProfileItem) {
+	s.Items = val
+}
+
+// SetCutoff sets the value of Cutoff.
+func (s *QualityProfileInput) SetCutoff(val string) {
+	s.Cutoff = val
+}
+
+// SetUpgradesAllowed sets the value of UpgradesAllowed.
+func (s *QualityProfileInput) SetUpgradesAllowed(val bool) {
+	s.UpgradesAllowed = val
+}
+
+// SetMinFormatScore sets the value of MinFormatScore.
+func (s *QualityProfileInput) SetMinFormatScore(val OptInt) {
+	s.MinFormatScore = val
+}
+
+// SetCutoffFormatScore sets the value of CutoffFormatScore.
+func (s *QualityProfileInput) SetCutoffFormatScore(val OptInt) {
+	s.CutoffFormatScore = val
+}
+
+// SetFormatScores sets the value of FormatScores.
+func (s *QualityProfileInput) SetFormatScores(val []FormatScore) {
+	s.FormatScores = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *QualityProfileInput) SetLanguages(val []string) {
+	s.Languages = val
+}
+
+// A single quality (`quality`) or a group of equal qualities (`name` + `qualities`).
+// Ref: #/components/schemas/QualityProfileItem
+type QualityProfileItem struct {
+	Quality   OptString `json:"quality"`
+	Name      OptString `json:"name"`
+	Qualities []string  `json:"qualities"`
+	Allowed   bool      `json:"allowed"`
+}
+
+// GetQuality returns the value of Quality.
+func (s *QualityProfileItem) GetQuality() OptString {
+	return s.Quality
+}
+
+// GetName returns the value of Name.
+func (s *QualityProfileItem) GetName() OptString {
+	return s.Name
+}
+
+// GetQualities returns the value of Qualities.
+func (s *QualityProfileItem) GetQualities() []string {
+	return s.Qualities
+}
+
+// GetAllowed returns the value of Allowed.
+func (s *QualityProfileItem) GetAllowed() bool {
+	return s.Allowed
+}
+
+// SetQuality sets the value of Quality.
+func (s *QualityProfileItem) SetQuality(val OptString) {
+	s.Quality = val
+}
+
+// SetName sets the value of Name.
+func (s *QualityProfileItem) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetQualities sets the value of Qualities.
+func (s *QualityProfileItem) SetQualities(val []string) {
+	s.Qualities = val
+}
+
+// SetAllowed sets the value of Allowed.
+func (s *QualityProfileItem) SetAllowed(val bool) {
+	s.Allowed = val
 }
 
 // Ref: #/components/schemas/Queue
@@ -6018,6 +9521,98 @@ func (s *QueuePriority) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/RankKey
+type RankKey struct {
+	QualityPosition   int   `json:"qualityPosition"`
+	Score             int   `json:"score"`
+	Revision          int   `json:"revision"`
+	ProtocolPreferred bool  `json:"protocolPreferred"`
+	IndexerPriority   int   `json:"indexerPriority"`
+	Seeders           int   `json:"seeders"`
+	SizeDistance      int64 `json:"sizeDistance"`
+	AgeMinutes        int64 `json:"ageMinutes"`
+}
+
+// GetQualityPosition returns the value of QualityPosition.
+func (s *RankKey) GetQualityPosition() int {
+	return s.QualityPosition
+}
+
+// GetScore returns the value of Score.
+func (s *RankKey) GetScore() int {
+	return s.Score
+}
+
+// GetRevision returns the value of Revision.
+func (s *RankKey) GetRevision() int {
+	return s.Revision
+}
+
+// GetProtocolPreferred returns the value of ProtocolPreferred.
+func (s *RankKey) GetProtocolPreferred() bool {
+	return s.ProtocolPreferred
+}
+
+// GetIndexerPriority returns the value of IndexerPriority.
+func (s *RankKey) GetIndexerPriority() int {
+	return s.IndexerPriority
+}
+
+// GetSeeders returns the value of Seeders.
+func (s *RankKey) GetSeeders() int {
+	return s.Seeders
+}
+
+// GetSizeDistance returns the value of SizeDistance.
+func (s *RankKey) GetSizeDistance() int64 {
+	return s.SizeDistance
+}
+
+// GetAgeMinutes returns the value of AgeMinutes.
+func (s *RankKey) GetAgeMinutes() int64 {
+	return s.AgeMinutes
+}
+
+// SetQualityPosition sets the value of QualityPosition.
+func (s *RankKey) SetQualityPosition(val int) {
+	s.QualityPosition = val
+}
+
+// SetScore sets the value of Score.
+func (s *RankKey) SetScore(val int) {
+	s.Score = val
+}
+
+// SetRevision sets the value of Revision.
+func (s *RankKey) SetRevision(val int) {
+	s.Revision = val
+}
+
+// SetProtocolPreferred sets the value of ProtocolPreferred.
+func (s *RankKey) SetProtocolPreferred(val bool) {
+	s.ProtocolPreferred = val
+}
+
+// SetIndexerPriority sets the value of IndexerPriority.
+func (s *RankKey) SetIndexerPriority(val int) {
+	s.IndexerPriority = val
+}
+
+// SetSeeders sets the value of Seeders.
+func (s *RankKey) SetSeeders(val int) {
+	s.Seeders = val
+}
+
+// SetSizeDistance sets the value of SizeDistance.
+func (s *RankKey) SetSizeDistance(val int64) {
+	s.SizeDistance = val
+}
+
+// SetAgeMinutes sets the value of AgeMinutes.
+func (s *RankKey) SetAgeMinutes(val int64) {
+	s.AgeMinutes = val
+}
+
 // Ref: #/components/schemas/RecoveryCodes
 type RecoveryCodes struct {
 	Codes []string `json:"codes"`
@@ -6035,6 +9630,72 @@ func (s *RecoveryCodes) SetCodes(val []string) {
 
 // RefreshQueueAccepted is response for RefreshQueue operation.
 type RefreshQueueAccepted struct{}
+
+// Ref: #/components/schemas/Rejection
+type Rejection struct {
+	// Stable code: parse_failed, wrong_kind, wrong_ids, wrong_title, wrong_year, wrong_season,
+	// wrong_episode, quality_not_allowed, upgrades_disabled, cutoff_met, not_an_upgrade,
+	// custom_format_score_too_low, size_too_small, size_too_large, language_not_wanted,
+	// must_contain_missing, must_not_contain_found, blocklisted, not_enough_seeders, too_old, too_new,
+	// sample, hardcoded_subs, three_d, indexer_disabled, indexer_limited, protocol_disabled, delayed.
+	Code string `json:"code"`
+	// English, with the values (e.g. "18.4 GB > 12 GB max for Bluray-1080p (110 min)").
+	Message string `json:"message"`
+	// May pass later (delay, minimum age, indexer limit).
+	Temporary OptBool            `json:"temporary"`
+	Params    OptRejectionParams `json:"params"`
+}
+
+// GetCode returns the value of Code.
+func (s *Rejection) GetCode() string {
+	return s.Code
+}
+
+// GetMessage returns the value of Message.
+func (s *Rejection) GetMessage() string {
+	return s.Message
+}
+
+// GetTemporary returns the value of Temporary.
+func (s *Rejection) GetTemporary() OptBool {
+	return s.Temporary
+}
+
+// GetParams returns the value of Params.
+func (s *Rejection) GetParams() OptRejectionParams {
+	return s.Params
+}
+
+// SetCode sets the value of Code.
+func (s *Rejection) SetCode(val string) {
+	s.Code = val
+}
+
+// SetMessage sets the value of Message.
+func (s *Rejection) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetTemporary sets the value of Temporary.
+func (s *Rejection) SetTemporary(val OptBool) {
+	s.Temporary = val
+}
+
+// SetParams sets the value of Params.
+func (s *Rejection) SetParams(val OptRejectionParams) {
+	s.Params = val
+}
+
+type RejectionParams map[string]jx.Raw
+
+func (s *RejectionParams) init() RejectionParams {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
 
 // Ref: #/components/schemas/Release
 type Release struct {
@@ -6362,6 +10023,160 @@ func (s *Release) SetFlags(val []string) {
 	s.Flags = val
 }
 
+// Ref: #/components/schemas/ReleaseProfile
+type ReleaseProfile struct {
+	ID        int64    `json:"id"`
+	Name      string   `json:"name"`
+	Enabled   bool     `json:"enabled"`
+	Required  []string `json:"required"`
+	Ignored   []string `json:"ignored"`
+	Tags      []string `json:"tags"`
+	IndexerId int64    `json:"indexerId"`
+}
+
+// GetID returns the value of ID.
+func (s *ReleaseProfile) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *ReleaseProfile) GetName() string {
+	return s.Name
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *ReleaseProfile) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetRequired returns the value of Required.
+func (s *ReleaseProfile) GetRequired() []string {
+	return s.Required
+}
+
+// GetIgnored returns the value of Ignored.
+func (s *ReleaseProfile) GetIgnored() []string {
+	return s.Ignored
+}
+
+// GetTags returns the value of Tags.
+func (s *ReleaseProfile) GetTags() []string {
+	return s.Tags
+}
+
+// GetIndexerId returns the value of IndexerId.
+func (s *ReleaseProfile) GetIndexerId() int64 {
+	return s.IndexerId
+}
+
+// SetID sets the value of ID.
+func (s *ReleaseProfile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *ReleaseProfile) SetName(val string) {
+	s.Name = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *ReleaseProfile) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetRequired sets the value of Required.
+func (s *ReleaseProfile) SetRequired(val []string) {
+	s.Required = val
+}
+
+// SetIgnored sets the value of Ignored.
+func (s *ReleaseProfile) SetIgnored(val []string) {
+	s.Ignored = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ReleaseProfile) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetIndexerId sets the value of IndexerId.
+func (s *ReleaseProfile) SetIndexerId(val int64) {
+	s.IndexerId = val
+}
+
+// Ref: #/components/schemas/ReleaseProfileInput
+type ReleaseProfileInput struct {
+	Name    string `json:"name"`
+	Enabled bool   `json:"enabled"`
+	// The name must contain at least one (plain text, or /regex/).
+	Required []string `json:"required"`
+	// The name must contain none.
+	Ignored []string `json:"ignored"`
+	Tags    []string `json:"tags"`
+	// Only for this indexer (0 or absent = all).
+	IndexerId OptInt64 `json:"indexerId"`
+}
+
+// GetName returns the value of Name.
+func (s *ReleaseProfileInput) GetName() string {
+	return s.Name
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *ReleaseProfileInput) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetRequired returns the value of Required.
+func (s *ReleaseProfileInput) GetRequired() []string {
+	return s.Required
+}
+
+// GetIgnored returns the value of Ignored.
+func (s *ReleaseProfileInput) GetIgnored() []string {
+	return s.Ignored
+}
+
+// GetTags returns the value of Tags.
+func (s *ReleaseProfileInput) GetTags() []string {
+	return s.Tags
+}
+
+// GetIndexerId returns the value of IndexerId.
+func (s *ReleaseProfileInput) GetIndexerId() OptInt64 {
+	return s.IndexerId
+}
+
+// SetName sets the value of Name.
+func (s *ReleaseProfileInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *ReleaseProfileInput) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetRequired sets the value of Required.
+func (s *ReleaseProfileInput) SetRequired(val []string) {
+	s.Required = val
+}
+
+// SetIgnored sets the value of Ignored.
+func (s *ReleaseProfileInput) SetIgnored(val []string) {
+	s.Ignored = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ReleaseProfileInput) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetIndexerId sets the value of IndexerId.
+func (s *ReleaseProfileInput) SetIndexerId(val OptInt64) {
+	s.IndexerId = val
+}
+
 // Ref: #/components/schemas/RemotePathMapping
 type RemotePathMapping struct {
 	ID         int64  `json:"id"`
@@ -6450,6 +10265,21 @@ func (s *RemotePathMappingInput) SetLocalPath(val string) {
 // RemoveQueueItemNoContent is response for RemoveQueueItem operation.
 type RemoveQueueItemNoContent struct{}
 
+// Ref: #/components/schemas/ReorderRequest
+type ReorderRequest struct {
+	Ids []int64 `json:"ids"`
+}
+
+// GetIds returns the value of Ids.
+func (s *ReorderRequest) GetIds() []int64 {
+	return s.Ids
+}
+
+// SetIds sets the value of Ids.
+func (s *ReorderRequest) SetIds(val []int64) {
+	s.Ids = val
+}
+
 // Ref: #/components/schemas/ResetPasswordRequest
 type ResetPasswordRequest struct {
 	Password Password `json:"password"`
@@ -6463,6 +10293,21 @@ func (s *ResetPasswordRequest) GetPassword() Password {
 // SetPassword sets the value of Password.
 func (s *ResetPasswordRequest) SetPassword(val Password) {
 	s.Password = val
+}
+
+// Ref: #/components/schemas/ResetQualityDefinitionsRequest
+type ResetQualityDefinitionsRequest struct {
+	Kind OptMediaKind `json:"kind"`
+}
+
+// GetKind returns the value of Kind.
+func (s *ResetQualityDefinitionsRequest) GetKind() OptMediaKind {
+	return s.Kind
+}
+
+// SetKind sets the value of Kind.
+func (s *ResetQualityDefinitionsRequest) SetKind(val OptMediaKind) {
+	s.Kind = val
 }
 
 // ResetUserPasswordNoContent is response for ResetUserPassword operation.
@@ -7378,6 +11223,19 @@ func (s *SetupRequest) SetUseCookie(val OptBool) {
 	s.UseCookie = val
 }
 
+// The commonly shared custom-format JSON shape.
+// Ref: #/components/schemas/SharedCustomFormat
+type SharedCustomFormat map[string]jx.Raw
+
+func (s *SharedCustomFormat) init() SharedCustomFormat {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
 // SignedInHeaders wraps AuthResult with response headers.
 type SignedInHeaders struct {
 	SetCookie OptString
@@ -7771,6 +11629,21 @@ func (s *UpdateMeRequest) SetLanguage(val OptLanguage) {
 	s.Language = val
 }
 
+// Ref: #/components/schemas/UpdateQualityDefinitionsRequest
+type UpdateQualityDefinitionsRequest struct {
+	Definitions []QualityDefinition `json:"definitions"`
+}
+
+// GetDefinitions returns the value of Definitions.
+func (s *UpdateQualityDefinitionsRequest) GetDefinitions() []QualityDefinition {
+	return s.Definitions
+}
+
+// SetDefinitions sets the value of Definitions.
+func (s *UpdateQualityDefinitionsRequest) SetDefinitions(val []QualityDefinition) {
+	s.Definitions = val
+}
+
 // Ref: #/components/schemas/UpdateSettingsRequest
 type UpdateSettingsRequest struct {
 	InstanceName OptString `json:"instanceName"`
@@ -7951,3 +11824,236 @@ func (s *User) SetLastLoginAt(val OptDateTime) {
 }
 
 type Username string
+
+// Ref: #/components/schemas/WantedEpisode
+type WantedEpisode struct {
+	Season   int       `json:"season"`
+	Episode  int       `json:"episode"`
+	Absolute OptInt    `json:"absolute"`
+	AirDate  OptString `json:"airDate"`
+}
+
+// GetSeason returns the value of Season.
+func (s *WantedEpisode) GetSeason() int {
+	return s.Season
+}
+
+// GetEpisode returns the value of Episode.
+func (s *WantedEpisode) GetEpisode() int {
+	return s.Episode
+}
+
+// GetAbsolute returns the value of Absolute.
+func (s *WantedEpisode) GetAbsolute() OptInt {
+	return s.Absolute
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *WantedEpisode) GetAirDate() OptString {
+	return s.AirDate
+}
+
+// SetSeason sets the value of Season.
+func (s *WantedEpisode) SetSeason(val int) {
+	s.Season = val
+}
+
+// SetEpisode sets the value of Episode.
+func (s *WantedEpisode) SetEpisode(val int) {
+	s.Episode = val
+}
+
+// SetAbsolute sets the value of Absolute.
+func (s *WantedEpisode) SetAbsolute(val OptInt) {
+	s.Absolute = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *WantedEpisode) SetAirDate(val OptString) {
+	s.AirDate = val
+}
+
+// The item a release is decided for. Fields left out are not checked.
+// Ref: #/components/schemas/WantedItem
+type WantedItem struct {
+	Title            OptString               `json:"title"`
+	AlternateTitles  []string                `json:"alternateTitles"`
+	Year             OptInt                  `json:"year"`
+	Ids              OptExternalIds          `json:"ids"`
+	SeriesType       OptWantedItemSeriesType `json:"seriesType"`
+	Episodes         []WantedEpisode         `json:"episodes"`
+	Artist           OptString               `json:"artist"`
+	Album            OptString               `json:"album"`
+	RuntimeMinutes   OptInt                  `json:"runtimeMinutes"`
+	OriginalLanguage OptString               `json:"originalLanguage"`
+	Tags             []string                `json:"tags"`
+	Current          OptCurrentFile          `json:"current"`
+}
+
+// GetTitle returns the value of Title.
+func (s *WantedItem) GetTitle() OptString {
+	return s.Title
+}
+
+// GetAlternateTitles returns the value of AlternateTitles.
+func (s *WantedItem) GetAlternateTitles() []string {
+	return s.AlternateTitles
+}
+
+// GetYear returns the value of Year.
+func (s *WantedItem) GetYear() OptInt {
+	return s.Year
+}
+
+// GetIds returns the value of Ids.
+func (s *WantedItem) GetIds() OptExternalIds {
+	return s.Ids
+}
+
+// GetSeriesType returns the value of SeriesType.
+func (s *WantedItem) GetSeriesType() OptWantedItemSeriesType {
+	return s.SeriesType
+}
+
+// GetEpisodes returns the value of Episodes.
+func (s *WantedItem) GetEpisodes() []WantedEpisode {
+	return s.Episodes
+}
+
+// GetArtist returns the value of Artist.
+func (s *WantedItem) GetArtist() OptString {
+	return s.Artist
+}
+
+// GetAlbum returns the value of Album.
+func (s *WantedItem) GetAlbum() OptString {
+	return s.Album
+}
+
+// GetRuntimeMinutes returns the value of RuntimeMinutes.
+func (s *WantedItem) GetRuntimeMinutes() OptInt {
+	return s.RuntimeMinutes
+}
+
+// GetOriginalLanguage returns the value of OriginalLanguage.
+func (s *WantedItem) GetOriginalLanguage() OptString {
+	return s.OriginalLanguage
+}
+
+// GetTags returns the value of Tags.
+func (s *WantedItem) GetTags() []string {
+	return s.Tags
+}
+
+// GetCurrent returns the value of Current.
+func (s *WantedItem) GetCurrent() OptCurrentFile {
+	return s.Current
+}
+
+// SetTitle sets the value of Title.
+func (s *WantedItem) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetAlternateTitles sets the value of AlternateTitles.
+func (s *WantedItem) SetAlternateTitles(val []string) {
+	s.AlternateTitles = val
+}
+
+// SetYear sets the value of Year.
+func (s *WantedItem) SetYear(val OptInt) {
+	s.Year = val
+}
+
+// SetIds sets the value of Ids.
+func (s *WantedItem) SetIds(val OptExternalIds) {
+	s.Ids = val
+}
+
+// SetSeriesType sets the value of SeriesType.
+func (s *WantedItem) SetSeriesType(val OptWantedItemSeriesType) {
+	s.SeriesType = val
+}
+
+// SetEpisodes sets the value of Episodes.
+func (s *WantedItem) SetEpisodes(val []WantedEpisode) {
+	s.Episodes = val
+}
+
+// SetArtist sets the value of Artist.
+func (s *WantedItem) SetArtist(val OptString) {
+	s.Artist = val
+}
+
+// SetAlbum sets the value of Album.
+func (s *WantedItem) SetAlbum(val OptString) {
+	s.Album = val
+}
+
+// SetRuntimeMinutes sets the value of RuntimeMinutes.
+func (s *WantedItem) SetRuntimeMinutes(val OptInt) {
+	s.RuntimeMinutes = val
+}
+
+// SetOriginalLanguage sets the value of OriginalLanguage.
+func (s *WantedItem) SetOriginalLanguage(val OptString) {
+	s.OriginalLanguage = val
+}
+
+// SetTags sets the value of Tags.
+func (s *WantedItem) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetCurrent sets the value of Current.
+func (s *WantedItem) SetCurrent(val OptCurrentFile) {
+	s.Current = val
+}
+
+type WantedItemSeriesType string
+
+const (
+	WantedItemSeriesTypeStandard WantedItemSeriesType = "standard"
+	WantedItemSeriesTypeDaily    WantedItemSeriesType = "daily"
+	WantedItemSeriesTypeAnime    WantedItemSeriesType = "anime"
+)
+
+// AllValues returns all WantedItemSeriesType values.
+func (WantedItemSeriesType) AllValues() []WantedItemSeriesType {
+	return []WantedItemSeriesType{
+		WantedItemSeriesTypeStandard,
+		WantedItemSeriesTypeDaily,
+		WantedItemSeriesTypeAnime,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s WantedItemSeriesType) MarshalText() ([]byte, error) {
+	switch s {
+	case WantedItemSeriesTypeStandard:
+		return []byte(s), nil
+	case WantedItemSeriesTypeDaily:
+		return []byte(s), nil
+	case WantedItemSeriesTypeAnime:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *WantedItemSeriesType) UnmarshalText(data []byte) error {
+	switch WantedItemSeriesType(data) {
+	case WantedItemSeriesTypeStandard:
+		*s = WantedItemSeriesTypeStandard
+		return nil
+	case WantedItemSeriesTypeDaily:
+		*s = WantedItemSeriesTypeDaily
+		return nil
+	case WantedItemSeriesTypeAnime:
+		*s = WantedItemSeriesTypeAnime
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
