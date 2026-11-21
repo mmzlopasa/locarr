@@ -70,12 +70,12 @@ func TestErrors(t *testing.T) {
 		t.Fatalf("%v", err)
 	}
 	cases := map[string]Kind{
-		`<error code="101" description="Account suspended"/>`:     KindDisabled,
-		`<error code="910" description="API disabled"/>`:          KindDisabled,
-		`<error code="203" description="Function not available"/>`: KindUnsupported,
-		`<error code="500" description="Request limit reached"/>`: KindRateLimit,
-		`<error code="501" description="Download limit reached"/>`: KindRateLimit,
-		`<error code="300" description="No such item"/>`:          KindNotFound,
+		`<error code="101" description="Account suspended"/>`:                KindDisabled,
+		`<error code="910" description="API disabled"/>`:                     KindDisabled,
+		`<error code="203" description="Function not available"/>`:           KindUnsupported,
+		`<error code="500" description="Request limit reached"/>`:            KindRateLimit,
+		`<error code="501" description="Download limit reached"/>`:           KindRateLimit,
+		`<error code="300" description="No such item"/>`:                     KindNotFound,
 		`<?xml version="1.0"?>` + "\n" + `<error code="900">Unknown</error>`: KindUnknown,
 	}
 	for body, want := range cases {

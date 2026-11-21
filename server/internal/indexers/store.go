@@ -130,7 +130,7 @@ type Indexer struct {
 func (i *Indexer) Protocol() Protocol { return i.Kind.Protocol() }
 
 // HealthStatus summarises Health at now.
-func (i *Indexer) HealthStatus(now time.Time) string {
+func (i *Indexer) HealthStatus() string {
 	switch {
 	case !i.Enabled:
 		return HealthDisabled

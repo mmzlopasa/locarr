@@ -89,7 +89,7 @@ func toIndexer(i indexers.Indexer, now time.Time) gen.Indexer {
 		TimeoutSeconds: i.TimeoutSeconds, ProxyUrl: optStr(i.ProxyURL), ProxyUsername: optStr(i.ProxyUsername),
 		ProxyPassword: gen.SecretState{Configured: i.HasProxyPassword}, FlaresolverrUrl: optStr(i.FlareSolverrURL),
 		CapsUpdatedAt: optTime(i.CapsUpdatedAt), CreatedAt: i.CreatedAt, UpdatedAt: i.UpdatedAt,
-		Health: gen.IndexerHealth{Status: gen.IndexerHealthStatus(i.HealthStatus(now)), Failures: i.Health.Failures,
+		Health: gen.IndexerHealth{Status: gen.IndexerHealthStatus(i.HealthStatus()), Failures: i.Health.Failures,
 			LastError: optStr(i.Health.LastError), LastErrorCode: optStr(i.Health.LastErrorCode),
 			LastErrorAt: optTime(i.Health.LastErrorAt), LastSuccessAt: optTime(i.Health.LastSuccessAt)},
 	}

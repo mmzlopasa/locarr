@@ -103,7 +103,7 @@ func (s *Service) storeSeen(ctx context.Context, indexerID int64, releases []Rel
 		if err != nil {
 			return err
 		}
-		defer stmt.Close()
+		defer func() { _ = stmt.Close() }()
 		for _, r := range releases {
 			data, err := json.Marshal(r)
 			if err != nil {

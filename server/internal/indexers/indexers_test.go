@@ -2,6 +2,7 @@ package indexers
 
 import (
 	"context"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http/httptest"
@@ -166,7 +167,7 @@ func TestSearchAgainstFakes(t *testing.T) {
 		}
 	}
 	b, _ := s.Get(ctx, broken.ID)
-	if b.Health.Failures != 1 || b.HealthStatus(time.Now()) != HealthFailing || !b.InBackoff(time.Now()) || b.Health.LastErrorCode == "" {
+	if b.Health.Failures != 1 || b.HealthStatus() != HealthFailing || !b.InBackoff(time.Now()) || b.Health.LastErrorCode == "" {
 		t.Fatalf("health: %+v", b.Health)
 	}
 	// Second identical search: from the cache, Broken skipped while in backoff.
@@ -205,7 +206,7 @@ func TestSearchAgainstFakes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := s.FetchToken(ctx, tz.ID, tok); err != ErrBadToken {
+	if _, err := s.FetchToken(ctx, tz.ID, tok); !errors.Is(err, ErrBadToken) {
 		t.Fatal("token for another indexer accepted")
 	}
 	if n, _ := s.GrabsToday(ctx, nz.ID); n != 1 {
@@ -218,7 +219,7 @@ func TestSearchAgainstFakes(t *testing.T) {
 	if _, err := s.Update(ctx, nz.ID, in); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := s.Fetch(ctx, nzbRel); err != ErrGrabLimit {
+	if _, err := s.Fetch(ctx, nzbRel); !errors.Is(err, ErrGrabLimit) {
 		t.Fatal(err)
 	}
 

@@ -125,8 +125,9 @@ func (s *Service) SearchLog(ctx context.Context, itemRef string, limit int) ([]L
 	if itemRef != "" {
 		where, args = "WHERE item_ref = ?", append(args, itemRef)
 	}
+	// where is one of two constant strings; values are bound parameters.
 	rows, err := s.DB.R.QueryContext(ctx, `SELECT id, started_at, duration_ms, source, search_type, query, item_ref, user_id,
-		result_count, error_count FROM search_log `+where+` ORDER BY started_at DESC, id DESC LIMIT ?`, append(args, limit)...)
+		result_count, error_count FROM search_log `+where+` ORDER BY started_at DESC, id DESC LIMIT ?`, append(args, limit)...) // #nosec G202 -- constant clause
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +164,7 @@ func (s *Service) SearchLog(ctx context.Context, itemRef string, limit int) ([]L
 		marks = append(marks, "?")
 	}
 	irows, err := s.DB.R.QueryContext(ctx, `SELECT search_id, indexer_id, indexer_name, status, result_count, cached, duration_ms,
-		error_code, error FROM search_log_indexers WHERE search_id IN (`+strings.Join(marks, ",")+`) ORDER BY indexer_name`, ids...)
+		error_code, error FROM search_log_indexers WHERE search_id IN (`+strings.Join(marks, ",")+`) ORDER BY indexer_name`, ids...) // #nosec G202 -- only placeholders are joined
 	if err != nil {
 		return nil, err
 	}

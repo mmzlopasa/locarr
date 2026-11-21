@@ -71,7 +71,7 @@ func (c *Client) solve(ctx context.Context, target string) error {
 	}
 	cl := &clearance{host: u.Host, userAgent: out.Solution.UserAgent, expires: time.Now().Add(30 * time.Minute)}
 	for _, ck := range out.Solution.Cookies {
-		cl.cookies = append(cl.cookies, &http.Cookie{Name: ck.Name, Value: ck.Value})
+		cl.cookies = append(cl.cookies, &http.Cookie{Name: ck.Name, Value: ck.Value}) // #nosec G124 -- sent to a server, not set in a browser
 	}
 	c.mu.Lock()
 	c.cf = cl

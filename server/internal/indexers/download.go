@@ -16,7 +16,7 @@ import (
 // tokenTTL is how long a download link from a search stays valid.
 const tokenTTL = 24 * time.Hour
 
-const tokenAAD = "indexers:download"
+const tokenAAD = "indexers:download" // #nosec G101 -- an AAD label, not a credential
 
 type tokenBody struct {
 	I int64  `json:"i"`

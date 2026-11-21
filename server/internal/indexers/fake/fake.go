@@ -292,14 +292,14 @@ func (s *Server) download(w http.ResponseWriter, r *http.Request, name, key, n s
 	if Indexers[name] == "newznab" {
 		w.Header().Set("Content-Type", "application/x-nzb")
 		w.Header().Set("Content-Disposition", `attachment; filename="`+rel.Title+`.nzb"`)
-		fmt.Fprintf(w, `<?xml version="1.0" encoding="UTF-8"?><nzb xmlns="http://www.newzbin.com/DTD/2003/nzb"><head><meta type="title">%s</meta></head></nzb>`,
+		_, _ = fmt.Fprintf(w, `<?xml version="1.0" encoding="UTF-8"?><nzb xmlns="http://www.newzbin.com/DTD/2003/nzb"><head><meta type="title">%s</meta></head></nzb>`,
 			html.EscapeString(rel.Title))
 		return
 	}
 	w.Header().Set("Content-Type", "application/x-bittorrent")
 	w.Header().Set("Content-Disposition", `attachment; filename="`+rel.Title+`.torrent"`)
 	info := fmt.Sprintf("d6:lengthi%de4:name%d:%s12:piece lengthi262144e6:pieces0:e", rel.Size, len(rel.Title), rel.Title)
-	fmt.Fprintf(w, "d8:announce%d:%s4:info%se", len("http://tracker.invalid/announce"), "http://tracker.invalid/announce", info)
+	_, _ = fmt.Fprintf(w, "d8:announce%d:%s4:info%se", len("http://tracker.invalid/announce"), "http://tracker.invalid/announce", info)
 }
 
 func caps(name string) string {
