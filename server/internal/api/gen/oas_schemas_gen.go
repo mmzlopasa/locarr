@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/jx"
 )
 
 func (s *ErrorStatusCode) Error() string {
@@ -110,6 +111,245 @@ func (s *AuthResult) SetUser(val User) {
 // SetToken sets the value of Token.
 func (s *AuthResult) SetToken(val OptString) {
 	s.Token = val
+}
+
+// Ref: #/components/schemas/BlocklistEntry
+type BlocklistEntry struct {
+	ID         int64     `json:"id"`
+	Title      string    `json:"title"`
+	Protocol   string    `json:"protocol"`
+	IndexerId  OptInt64  `json:"indexerId"`
+	Indexer    string    `json:"indexer"`
+	InfoHash   string    `json:"infoHash"`
+	GUID       string    `json:"guid"`
+	Reason     string    `json:"reason"`
+	Message    string    `json:"message"`
+	ItemRef    jx.Raw    `json:"itemRef"`
+	DownloadId OptInt64  `json:"downloadId"`
+	CreatedAt  time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *BlocklistEntry) GetID() int64 {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *BlocklistEntry) GetTitle() string {
+	return s.Title
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *BlocklistEntry) GetProtocol() string {
+	return s.Protocol
+}
+
+// GetIndexerId returns the value of IndexerId.
+func (s *BlocklistEntry) GetIndexerId() OptInt64 {
+	return s.IndexerId
+}
+
+// GetIndexer returns the value of Indexer.
+func (s *BlocklistEntry) GetIndexer() string {
+	return s.Indexer
+}
+
+// GetInfoHash returns the value of InfoHash.
+func (s *BlocklistEntry) GetInfoHash() string {
+	return s.InfoHash
+}
+
+// GetGUID returns the value of GUID.
+func (s *BlocklistEntry) GetGUID() string {
+	return s.GUID
+}
+
+// GetReason returns the value of Reason.
+func (s *BlocklistEntry) GetReason() string {
+	return s.Reason
+}
+
+// GetMessage returns the value of Message.
+func (s *BlocklistEntry) GetMessage() string {
+	return s.Message
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *BlocklistEntry) GetItemRef() jx.Raw {
+	return s.ItemRef
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *BlocklistEntry) GetDownloadId() OptInt64 {
+	return s.DownloadId
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *BlocklistEntry) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *BlocklistEntry) SetID(val int64) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *BlocklistEntry) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *BlocklistEntry) SetProtocol(val string) {
+	s.Protocol = val
+}
+
+// SetIndexerId sets the value of IndexerId.
+func (s *BlocklistEntry) SetIndexerId(val OptInt64) {
+	s.IndexerId = val
+}
+
+// SetIndexer sets the value of Indexer.
+func (s *BlocklistEntry) SetIndexer(val string) {
+	s.Indexer = val
+}
+
+// SetInfoHash sets the value of InfoHash.
+func (s *BlocklistEntry) SetInfoHash(val string) {
+	s.InfoHash = val
+}
+
+// SetGUID sets the value of GUID.
+func (s *BlocklistEntry) SetGUID(val string) {
+	s.GUID = val
+}
+
+// SetReason sets the value of Reason.
+func (s *BlocklistEntry) SetReason(val string) {
+	s.Reason = val
+}
+
+// SetMessage sets the value of Message.
+func (s *BlocklistEntry) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *BlocklistEntry) SetItemRef(val jx.Raw) {
+	s.ItemRef = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *BlocklistEntry) SetDownloadId(val OptInt64) {
+	s.DownloadId = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *BlocklistEntry) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// Ref: #/components/schemas/BlocklistInput
+type BlocklistInput struct {
+	Title     string              `json:"title"`
+	Protocol  OptDownloadProtocol `json:"protocol"`
+	IndexerId OptInt64            `json:"indexerId"`
+	Indexer   OptString           `json:"indexer"`
+	InfoHash  OptString           `json:"infoHash"`
+	GUID      OptString           `json:"guid"`
+	Reason    OptString           `json:"reason"`
+	Message   OptString           `json:"message"`
+	ItemRef   jx.Raw              `json:"itemRef"`
+}
+
+// GetTitle returns the value of Title.
+func (s *BlocklistInput) GetTitle() string {
+	return s.Title
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *BlocklistInput) GetProtocol() OptDownloadProtocol {
+	return s.Protocol
+}
+
+// GetIndexerId returns the value of IndexerId.
+func (s *BlocklistInput) GetIndexerId() OptInt64 {
+	return s.IndexerId
+}
+
+// GetIndexer returns the value of Indexer.
+func (s *BlocklistInput) GetIndexer() OptString {
+	return s.Indexer
+}
+
+// GetInfoHash returns the value of InfoHash.
+func (s *BlocklistInput) GetInfoHash() OptString {
+	return s.InfoHash
+}
+
+// GetGUID returns the value of GUID.
+func (s *BlocklistInput) GetGUID() OptString {
+	return s.GUID
+}
+
+// GetReason returns the value of Reason.
+func (s *BlocklistInput) GetReason() OptString {
+	return s.Reason
+}
+
+// GetMessage returns the value of Message.
+func (s *BlocklistInput) GetMessage() OptString {
+	return s.Message
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *BlocklistInput) GetItemRef() jx.Raw {
+	return s.ItemRef
+}
+
+// SetTitle sets the value of Title.
+func (s *BlocklistInput) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *BlocklistInput) SetProtocol(val OptDownloadProtocol) {
+	s.Protocol = val
+}
+
+// SetIndexerId sets the value of IndexerId.
+func (s *BlocklistInput) SetIndexerId(val OptInt64) {
+	s.IndexerId = val
+}
+
+// SetIndexer sets the value of Indexer.
+func (s *BlocklistInput) SetIndexer(val OptString) {
+	s.Indexer = val
+}
+
+// SetInfoHash sets the value of InfoHash.
+func (s *BlocklistInput) SetInfoHash(val OptString) {
+	s.InfoHash = val
+}
+
+// SetGUID sets the value of GUID.
+func (s *BlocklistInput) SetGUID(val OptString) {
+	s.GUID = val
+}
+
+// SetReason sets the value of Reason.
+func (s *BlocklistInput) SetReason(val OptString) {
+	s.Reason = val
+}
+
+// SetMessage sets the value of Message.
+func (s *BlocklistInput) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *BlocklistInput) SetItemRef(val jx.Raw) {
+	s.ItemRef = val
 }
 
 // CancelJobNoContent is response for CancelJob operation.
@@ -282,14 +522,38 @@ func (s *CreatedApiKey) SetKey(val string) {
 	s.Key = val
 }
 
+// Ref: #/components/schemas/CreatedCategories
+type CreatedCategories struct {
+	Categories []string `json:"categories"`
+}
+
+// GetCategories returns the value of Categories.
+func (s *CreatedCategories) GetCategories() []string {
+	return s.Categories
+}
+
+// SetCategories sets the value of Categories.
+func (s *CreatedCategories) SetCategories(val []string) {
+	s.Categories = val
+}
+
 // DeleteApiKeyNoContent is response for DeleteApiKey operation.
 type DeleteApiKeyNoContent struct{}
+
+// DeleteBlocklistEntryNoContent is response for DeleteBlocklistEntry operation.
+type DeleteBlocklistEntryNoContent struct{}
+
+// DeleteDownloadClientNoContent is response for DeleteDownloadClient operation.
+type DeleteDownloadClientNoContent struct{}
 
 // DeleteIndexerNoContent is response for DeleteIndexer operation.
 type DeleteIndexerNoContent struct{}
 
 // DeleteIndexerSourceNoContent is response for DeleteIndexerSource operation.
 type DeleteIndexerSourceNoContent struct{}
+
+// DeleteRemotePathMappingNoContent is response for DeleteRemotePathMapping operation.
+type DeleteRemotePathMappingNoContent struct{}
 
 // DeleteRootFolderNoContent is response for DeleteRootFolder operation.
 type DeleteRootFolderNoContent struct{}
@@ -325,6 +589,1286 @@ func (s *DeviceInfo) SetClient(val OptString) {
 
 // DisableTotpNoContent is response for DisableTotp operation.
 type DisableTotpNoContent struct{}
+
+// Ref: #/components/schemas/DownloadClient
+type DownloadClient struct {
+	ID              int64                      `json:"id"`
+	Name            string                     `json:"name"`
+	Implementation  string                     `json:"implementation"`
+	Protocol        DownloadProtocol           `json:"protocol"`
+	Enabled         bool                       `json:"enabled"`
+	Priority        int                        `json:"priority"`
+	Host            string                     `json:"host"`
+	Port            int                        `json:"port"`
+	UseTls          bool                       `json:"useTls"`
+	AllowSelfSigned bool                       `json:"allowSelfSigned"`
+	UrlBase         string                     `json:"urlBase"`
+	Username        string                     `json:"username"`
+	Password        SecretState                `json:"password"`
+	ApiKey          SecretState                `json:"apiKey"`
+	Directory       string                     `json:"directory"`
+	Categories      DownloadClientCategories   `json:"categories"`
+	RecentPriority  QueuePriority              `json:"recentPriority"`
+	OlderPriority   QueuePriority              `json:"olderPriority"`
+	InitialState    DownloadClientInitialState `json:"initialState"`
+	RemoveCompleted bool                       `json:"removeCompleted"`
+	Sequential      bool                       `json:"sequential"`
+	FirstLastPiece  bool                       `json:"firstLastPiece"`
+	Tags            []string                   `json:"tags"`
+	Status          DownloadClientStatus       `json:"status"`
+	CreatedAt       time.Time                  `json:"createdAt"`
+	UpdatedAt       time.Time                  `json:"updatedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *DownloadClient) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *DownloadClient) GetName() string {
+	return s.Name
+}
+
+// GetImplementation returns the value of Implementation.
+func (s *DownloadClient) GetImplementation() string {
+	return s.Implementation
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *DownloadClient) GetProtocol() DownloadProtocol {
+	return s.Protocol
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *DownloadClient) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetPriority returns the value of Priority.
+func (s *DownloadClient) GetPriority() int {
+	return s.Priority
+}
+
+// GetHost returns the value of Host.
+func (s *DownloadClient) GetHost() string {
+	return s.Host
+}
+
+// GetPort returns the value of Port.
+func (s *DownloadClient) GetPort() int {
+	return s.Port
+}
+
+// GetUseTls returns the value of UseTls.
+func (s *DownloadClient) GetUseTls() bool {
+	return s.UseTls
+}
+
+// GetAllowSelfSigned returns the value of AllowSelfSigned.
+func (s *DownloadClient) GetAllowSelfSigned() bool {
+	return s.AllowSelfSigned
+}
+
+// GetUrlBase returns the value of UrlBase.
+func (s *DownloadClient) GetUrlBase() string {
+	return s.UrlBase
+}
+
+// GetUsername returns the value of Username.
+func (s *DownloadClient) GetUsername() string {
+	return s.Username
+}
+
+// GetPassword returns the value of Password.
+func (s *DownloadClient) GetPassword() SecretState {
+	return s.Password
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *DownloadClient) GetApiKey() SecretState {
+	return s.ApiKey
+}
+
+// GetDirectory returns the value of Directory.
+func (s *DownloadClient) GetDirectory() string {
+	return s.Directory
+}
+
+// GetCategories returns the value of Categories.
+func (s *DownloadClient) GetCategories() DownloadClientCategories {
+	return s.Categories
+}
+
+// GetRecentPriority returns the value of RecentPriority.
+func (s *DownloadClient) GetRecentPriority() QueuePriority {
+	return s.RecentPriority
+}
+
+// GetOlderPriority returns the value of OlderPriority.
+func (s *DownloadClient) GetOlderPriority() QueuePriority {
+	return s.OlderPriority
+}
+
+// GetInitialState returns the value of InitialState.
+func (s *DownloadClient) GetInitialState() DownloadClientInitialState {
+	return s.InitialState
+}
+
+// GetRemoveCompleted returns the value of RemoveCompleted.
+func (s *DownloadClient) GetRemoveCompleted() bool {
+	return s.RemoveCompleted
+}
+
+// GetSequential returns the value of Sequential.
+func (s *DownloadClient) GetSequential() bool {
+	return s.Sequential
+}
+
+// GetFirstLastPiece returns the value of FirstLastPiece.
+func (s *DownloadClient) GetFirstLastPiece() bool {
+	return s.FirstLastPiece
+}
+
+// GetTags returns the value of Tags.
+func (s *DownloadClient) GetTags() []string {
+	return s.Tags
+}
+
+// GetStatus returns the value of Status.
+func (s *DownloadClient) GetStatus() DownloadClientStatus {
+	return s.Status
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *DownloadClient) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *DownloadClient) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *DownloadClient) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *DownloadClient) SetName(val string) {
+	s.Name = val
+}
+
+// SetImplementation sets the value of Implementation.
+func (s *DownloadClient) SetImplementation(val string) {
+	s.Implementation = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *DownloadClient) SetProtocol(val DownloadProtocol) {
+	s.Protocol = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *DownloadClient) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetPriority sets the value of Priority.
+func (s *DownloadClient) SetPriority(val int) {
+	s.Priority = val
+}
+
+// SetHost sets the value of Host.
+func (s *DownloadClient) SetHost(val string) {
+	s.Host = val
+}
+
+// SetPort sets the value of Port.
+func (s *DownloadClient) SetPort(val int) {
+	s.Port = val
+}
+
+// SetUseTls sets the value of UseTls.
+func (s *DownloadClient) SetUseTls(val bool) {
+	s.UseTls = val
+}
+
+// SetAllowSelfSigned sets the value of AllowSelfSigned.
+func (s *DownloadClient) SetAllowSelfSigned(val bool) {
+	s.AllowSelfSigned = val
+}
+
+// SetUrlBase sets the value of UrlBase.
+func (s *DownloadClient) SetUrlBase(val string) {
+	s.UrlBase = val
+}
+
+// SetUsername sets the value of Username.
+func (s *DownloadClient) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetPassword sets the value of Password.
+func (s *DownloadClient) SetPassword(val SecretState) {
+	s.Password = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *DownloadClient) SetApiKey(val SecretState) {
+	s.ApiKey = val
+}
+
+// SetDirectory sets the value of Directory.
+func (s *DownloadClient) SetDirectory(val string) {
+	s.Directory = val
+}
+
+// SetCategories sets the value of Categories.
+func (s *DownloadClient) SetCategories(val DownloadClientCategories) {
+	s.Categories = val
+}
+
+// SetRecentPriority sets the value of RecentPriority.
+func (s *DownloadClient) SetRecentPriority(val QueuePriority) {
+	s.RecentPriority = val
+}
+
+// SetOlderPriority sets the value of OlderPriority.
+func (s *DownloadClient) SetOlderPriority(val QueuePriority) {
+	s.OlderPriority = val
+}
+
+// SetInitialState sets the value of InitialState.
+func (s *DownloadClient) SetInitialState(val DownloadClientInitialState) {
+	s.InitialState = val
+}
+
+// SetRemoveCompleted sets the value of RemoveCompleted.
+func (s *DownloadClient) SetRemoveCompleted(val bool) {
+	s.RemoveCompleted = val
+}
+
+// SetSequential sets the value of Sequential.
+func (s *DownloadClient) SetSequential(val bool) {
+	s.Sequential = val
+}
+
+// SetFirstLastPiece sets the value of FirstLastPiece.
+func (s *DownloadClient) SetFirstLastPiece(val bool) {
+	s.FirstLastPiece = val
+}
+
+// SetTags sets the value of Tags.
+func (s *DownloadClient) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetStatus sets the value of Status.
+func (s *DownloadClient) SetStatus(val DownloadClientStatus) {
+	s.Status = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *DownloadClient) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *DownloadClient) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// Ref: #/components/schemas/DownloadClientCapabilities
+type DownloadClientCapabilities struct {
+	Categories       bool `json:"categories"`
+	CreateCategories bool `json:"createCategories"`
+	// No categories in the client; each category is a sub-folder of the download folder.
+	DirectoryCategories bool `json:"directoryCategories"`
+	Tags                bool `json:"tags"`
+	SeedLimits          bool `json:"seedLimits"`
+	Sequential          bool `json:"sequential"`
+	FirstLastPiece      bool `json:"firstLastPiece"`
+	Priority            bool `json:"priority"`
+	SavePath            bool `json:"savePath"`
+	FreeSpace           bool `json:"freeSpace"`
+	DeletesData         bool `json:"deletesData"`
+}
+
+// GetCategories returns the value of Categories.
+func (s *DownloadClientCapabilities) GetCategories() bool {
+	return s.Categories
+}
+
+// GetCreateCategories returns the value of CreateCategories.
+func (s *DownloadClientCapabilities) GetCreateCategories() bool {
+	return s.CreateCategories
+}
+
+// GetDirectoryCategories returns the value of DirectoryCategories.
+func (s *DownloadClientCapabilities) GetDirectoryCategories() bool {
+	return s.DirectoryCategories
+}
+
+// GetTags returns the value of Tags.
+func (s *DownloadClientCapabilities) GetTags() bool {
+	return s.Tags
+}
+
+// GetSeedLimits returns the value of SeedLimits.
+func (s *DownloadClientCapabilities) GetSeedLimits() bool {
+	return s.SeedLimits
+}
+
+// GetSequential returns the value of Sequential.
+func (s *DownloadClientCapabilities) GetSequential() bool {
+	return s.Sequential
+}
+
+// GetFirstLastPiece returns the value of FirstLastPiece.
+func (s *DownloadClientCapabilities) GetFirstLastPiece() bool {
+	return s.FirstLastPiece
+}
+
+// GetPriority returns the value of Priority.
+func (s *DownloadClientCapabilities) GetPriority() bool {
+	return s.Priority
+}
+
+// GetSavePath returns the value of SavePath.
+func (s *DownloadClientCapabilities) GetSavePath() bool {
+	return s.SavePath
+}
+
+// GetFreeSpace returns the value of FreeSpace.
+func (s *DownloadClientCapabilities) GetFreeSpace() bool {
+	return s.FreeSpace
+}
+
+// GetDeletesData returns the value of DeletesData.
+func (s *DownloadClientCapabilities) GetDeletesData() bool {
+	return s.DeletesData
+}
+
+// SetCategories sets the value of Categories.
+func (s *DownloadClientCapabilities) SetCategories(val bool) {
+	s.Categories = val
+}
+
+// SetCreateCategories sets the value of CreateCategories.
+func (s *DownloadClientCapabilities) SetCreateCategories(val bool) {
+	s.CreateCategories = val
+}
+
+// SetDirectoryCategories sets the value of DirectoryCategories.
+func (s *DownloadClientCapabilities) SetDirectoryCategories(val bool) {
+	s.DirectoryCategories = val
+}
+
+// SetTags sets the value of Tags.
+func (s *DownloadClientCapabilities) SetTags(val bool) {
+	s.Tags = val
+}
+
+// SetSeedLimits sets the value of SeedLimits.
+func (s *DownloadClientCapabilities) SetSeedLimits(val bool) {
+	s.SeedLimits = val
+}
+
+// SetSequential sets the value of Sequential.
+func (s *DownloadClientCapabilities) SetSequential(val bool) {
+	s.Sequential = val
+}
+
+// SetFirstLastPiece sets the value of FirstLastPiece.
+func (s *DownloadClientCapabilities) SetFirstLastPiece(val bool) {
+	s.FirstLastPiece = val
+}
+
+// SetPriority sets the value of Priority.
+func (s *DownloadClientCapabilities) SetPriority(val bool) {
+	s.Priority = val
+}
+
+// SetSavePath sets the value of SavePath.
+func (s *DownloadClientCapabilities) SetSavePath(val bool) {
+	s.SavePath = val
+}
+
+// SetFreeSpace sets the value of FreeSpace.
+func (s *DownloadClientCapabilities) SetFreeSpace(val bool) {
+	s.FreeSpace = val
+}
+
+// SetDeletesData sets the value of DeletesData.
+func (s *DownloadClientCapabilities) SetDeletesData(val bool) {
+	s.DeletesData = val
+}
+
+// Ref: #/components/schemas/DownloadClientCategories
+type DownloadClientCategories struct {
+	Movies string `json:"movies"`
+	Series string `json:"series"`
+	Music  string `json:"music"`
+}
+
+// GetMovies returns the value of Movies.
+func (s *DownloadClientCategories) GetMovies() string {
+	return s.Movies
+}
+
+// GetSeries returns the value of Series.
+func (s *DownloadClientCategories) GetSeries() string {
+	return s.Series
+}
+
+// GetMusic returns the value of Music.
+func (s *DownloadClientCategories) GetMusic() string {
+	return s.Music
+}
+
+// SetMovies sets the value of Movies.
+func (s *DownloadClientCategories) SetMovies(val string) {
+	s.Movies = val
+}
+
+// SetSeries sets the value of Series.
+func (s *DownloadClientCategories) SetSeries(val string) {
+	s.Series = val
+}
+
+// SetMusic sets the value of Music.
+func (s *DownloadClientCategories) SetMusic(val string) {
+	s.Music = val
+}
+
+// Ref: #/components/schemas/DownloadClientField
+type DownloadClientField string
+
+const (
+	DownloadClientFieldHost            DownloadClientField = "host"
+	DownloadClientFieldPort            DownloadClientField = "port"
+	DownloadClientFieldUseTls          DownloadClientField = "useTls"
+	DownloadClientFieldUrlBase         DownloadClientField = "urlBase"
+	DownloadClientFieldUsername        DownloadClientField = "username"
+	DownloadClientFieldPassword        DownloadClientField = "password"
+	DownloadClientFieldApiKey          DownloadClientField = "apiKey"
+	DownloadClientFieldDirectory       DownloadClientField = "directory"
+	DownloadClientFieldAllowSelfSigned DownloadClientField = "allowSelfSigned"
+)
+
+// AllValues returns all DownloadClientField values.
+func (DownloadClientField) AllValues() []DownloadClientField {
+	return []DownloadClientField{
+		DownloadClientFieldHost,
+		DownloadClientFieldPort,
+		DownloadClientFieldUseTls,
+		DownloadClientFieldUrlBase,
+		DownloadClientFieldUsername,
+		DownloadClientFieldPassword,
+		DownloadClientFieldApiKey,
+		DownloadClientFieldDirectory,
+		DownloadClientFieldAllowSelfSigned,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DownloadClientField) MarshalText() ([]byte, error) {
+	switch s {
+	case DownloadClientFieldHost:
+		return []byte(s), nil
+	case DownloadClientFieldPort:
+		return []byte(s), nil
+	case DownloadClientFieldUseTls:
+		return []byte(s), nil
+	case DownloadClientFieldUrlBase:
+		return []byte(s), nil
+	case DownloadClientFieldUsername:
+		return []byte(s), nil
+	case DownloadClientFieldPassword:
+		return []byte(s), nil
+	case DownloadClientFieldApiKey:
+		return []byte(s), nil
+	case DownloadClientFieldDirectory:
+		return []byte(s), nil
+	case DownloadClientFieldAllowSelfSigned:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DownloadClientField) UnmarshalText(data []byte) error {
+	switch DownloadClientField(data) {
+	case DownloadClientFieldHost:
+		*s = DownloadClientFieldHost
+		return nil
+	case DownloadClientFieldPort:
+		*s = DownloadClientFieldPort
+		return nil
+	case DownloadClientFieldUseTls:
+		*s = DownloadClientFieldUseTls
+		return nil
+	case DownloadClientFieldUrlBase:
+		*s = DownloadClientFieldUrlBase
+		return nil
+	case DownloadClientFieldUsername:
+		*s = DownloadClientFieldUsername
+		return nil
+	case DownloadClientFieldPassword:
+		*s = DownloadClientFieldPassword
+		return nil
+	case DownloadClientFieldApiKey:
+		*s = DownloadClientFieldApiKey
+		return nil
+	case DownloadClientFieldDirectory:
+		*s = DownloadClientFieldDirectory
+		return nil
+	case DownloadClientFieldAllowSelfSigned:
+		*s = DownloadClientFieldAllowSelfSigned
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/DownloadClientImplementation
+type DownloadClientImplementation struct {
+	Name            string                     `json:"name"`
+	DisplayName     string                     `json:"displayName"`
+	Protocol        DownloadProtocol           `json:"protocol"`
+	DefaultPort     int                        `json:"defaultPort"`
+	DefaultUrlBase  string                     `json:"defaultUrlBase"`
+	DefaultUsername string                     `json:"defaultUsername"`
+	Fields          []DownloadClientField      `json:"fields"`
+	Required        []DownloadClientField      `json:"required"`
+	Capabilities    DownloadClientCapabilities `json:"capabilities"`
+}
+
+// GetName returns the value of Name.
+func (s *DownloadClientImplementation) GetName() string {
+	return s.Name
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *DownloadClientImplementation) GetDisplayName() string {
+	return s.DisplayName
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *DownloadClientImplementation) GetProtocol() DownloadProtocol {
+	return s.Protocol
+}
+
+// GetDefaultPort returns the value of DefaultPort.
+func (s *DownloadClientImplementation) GetDefaultPort() int {
+	return s.DefaultPort
+}
+
+// GetDefaultUrlBase returns the value of DefaultUrlBase.
+func (s *DownloadClientImplementation) GetDefaultUrlBase() string {
+	return s.DefaultUrlBase
+}
+
+// GetDefaultUsername returns the value of DefaultUsername.
+func (s *DownloadClientImplementation) GetDefaultUsername() string {
+	return s.DefaultUsername
+}
+
+// GetFields returns the value of Fields.
+func (s *DownloadClientImplementation) GetFields() []DownloadClientField {
+	return s.Fields
+}
+
+// GetRequired returns the value of Required.
+func (s *DownloadClientImplementation) GetRequired() []DownloadClientField {
+	return s.Required
+}
+
+// GetCapabilities returns the value of Capabilities.
+func (s *DownloadClientImplementation) GetCapabilities() DownloadClientCapabilities {
+	return s.Capabilities
+}
+
+// SetName sets the value of Name.
+func (s *DownloadClientImplementation) SetName(val string) {
+	s.Name = val
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *DownloadClientImplementation) SetDisplayName(val string) {
+	s.DisplayName = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *DownloadClientImplementation) SetProtocol(val DownloadProtocol) {
+	s.Protocol = val
+}
+
+// SetDefaultPort sets the value of DefaultPort.
+func (s *DownloadClientImplementation) SetDefaultPort(val int) {
+	s.DefaultPort = val
+}
+
+// SetDefaultUrlBase sets the value of DefaultUrlBase.
+func (s *DownloadClientImplementation) SetDefaultUrlBase(val string) {
+	s.DefaultUrlBase = val
+}
+
+// SetDefaultUsername sets the value of DefaultUsername.
+func (s *DownloadClientImplementation) SetDefaultUsername(val string) {
+	s.DefaultUsername = val
+}
+
+// SetFields sets the value of Fields.
+func (s *DownloadClientImplementation) SetFields(val []DownloadClientField) {
+	s.Fields = val
+}
+
+// SetRequired sets the value of Required.
+func (s *DownloadClientImplementation) SetRequired(val []DownloadClientField) {
+	s.Required = val
+}
+
+// SetCapabilities sets the value of Capabilities.
+func (s *DownloadClientImplementation) SetCapabilities(val DownloadClientCapabilities) {
+	s.Capabilities = val
+}
+
+type DownloadClientInitialState string
+
+const (
+	DownloadClientInitialStateStart DownloadClientInitialState = "start"
+	DownloadClientInitialStatePause DownloadClientInitialState = "pause"
+)
+
+// AllValues returns all DownloadClientInitialState values.
+func (DownloadClientInitialState) AllValues() []DownloadClientInitialState {
+	return []DownloadClientInitialState{
+		DownloadClientInitialStateStart,
+		DownloadClientInitialStatePause,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DownloadClientInitialState) MarshalText() ([]byte, error) {
+	switch s {
+	case DownloadClientInitialStateStart:
+		return []byte(s), nil
+	case DownloadClientInitialStatePause:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DownloadClientInitialState) UnmarshalText(data []byte) error {
+	switch DownloadClientInitialState(data) {
+	case DownloadClientInitialStateStart:
+		*s = DownloadClientInitialStateStart
+		return nil
+	case DownloadClientInitialStatePause:
+		*s = DownloadClientInitialStatePause
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/DownloadClientInput
+type DownloadClientInput struct {
+	Name            string    `json:"name"`
+	Implementation  string    `json:"implementation"`
+	Enabled         OptBool   `json:"enabled"`
+	Priority        OptInt    `json:"priority"`
+	Host            string    `json:"host"`
+	Port            OptInt    `json:"port"`
+	UseTls          OptBool   `json:"useTls"`
+	AllowSelfSigned OptBool   `json:"allowSelfSigned"`
+	UrlBase         OptString `json:"urlBase"`
+	Username        OptString `json:"username"`
+	// Write-only. Omit to keep, "" to clear.
+	Password OptString `json:"password"`
+	// Write-only. Omit to keep, "" to clear.
+	ApiKey          OptString                          `json:"apiKey"`
+	Directory       OptString                          `json:"directory"`
+	Categories      OptDownloadClientCategories        `json:"categories"`
+	RecentPriority  OptQueuePriority                   `json:"recentPriority"`
+	OlderPriority   OptQueuePriority                   `json:"olderPriority"`
+	InitialState    OptDownloadClientInputInitialState `json:"initialState"`
+	RemoveCompleted OptBool                            `json:"removeCompleted"`
+	Sequential      OptBool                            `json:"sequential"`
+	FirstLastPiece  OptBool                            `json:"firstLastPiece"`
+	Tags            []string                           `json:"tags"`
+}
+
+// GetName returns the value of Name.
+func (s *DownloadClientInput) GetName() string {
+	return s.Name
+}
+
+// GetImplementation returns the value of Implementation.
+func (s *DownloadClientInput) GetImplementation() string {
+	return s.Implementation
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *DownloadClientInput) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetPriority returns the value of Priority.
+func (s *DownloadClientInput) GetPriority() OptInt {
+	return s.Priority
+}
+
+// GetHost returns the value of Host.
+func (s *DownloadClientInput) GetHost() string {
+	return s.Host
+}
+
+// GetPort returns the value of Port.
+func (s *DownloadClientInput) GetPort() OptInt {
+	return s.Port
+}
+
+// GetUseTls returns the value of UseTls.
+func (s *DownloadClientInput) GetUseTls() OptBool {
+	return s.UseTls
+}
+
+// GetAllowSelfSigned returns the value of AllowSelfSigned.
+func (s *DownloadClientInput) GetAllowSelfSigned() OptBool {
+	return s.AllowSelfSigned
+}
+
+// GetUrlBase returns the value of UrlBase.
+func (s *DownloadClientInput) GetUrlBase() OptString {
+	return s.UrlBase
+}
+
+// GetUsername returns the value of Username.
+func (s *DownloadClientInput) GetUsername() OptString {
+	return s.Username
+}
+
+// GetPassword returns the value of Password.
+func (s *DownloadClientInput) GetPassword() OptString {
+	return s.Password
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *DownloadClientInput) GetApiKey() OptString {
+	return s.ApiKey
+}
+
+// GetDirectory returns the value of Directory.
+func (s *DownloadClientInput) GetDirectory() OptString {
+	return s.Directory
+}
+
+// GetCategories returns the value of Categories.
+func (s *DownloadClientInput) GetCategories() OptDownloadClientCategories {
+	return s.Categories
+}
+
+// GetRecentPriority returns the value of RecentPriority.
+func (s *DownloadClientInput) GetRecentPriority() OptQueuePriority {
+	return s.RecentPriority
+}
+
+// GetOlderPriority returns the value of OlderPriority.
+func (s *DownloadClientInput) GetOlderPriority() OptQueuePriority {
+	return s.OlderPriority
+}
+
+// GetInitialState returns the value of InitialState.
+func (s *DownloadClientInput) GetInitialState() OptDownloadClientInputInitialState {
+	return s.InitialState
+}
+
+// GetRemoveCompleted returns the value of RemoveCompleted.
+func (s *DownloadClientInput) GetRemoveCompleted() OptBool {
+	return s.RemoveCompleted
+}
+
+// GetSequential returns the value of Sequential.
+func (s *DownloadClientInput) GetSequential() OptBool {
+	return s.Sequential
+}
+
+// GetFirstLastPiece returns the value of FirstLastPiece.
+func (s *DownloadClientInput) GetFirstLastPiece() OptBool {
+	return s.FirstLastPiece
+}
+
+// GetTags returns the value of Tags.
+func (s *DownloadClientInput) GetTags() []string {
+	return s.Tags
+}
+
+// SetName sets the value of Name.
+func (s *DownloadClientInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetImplementation sets the value of Implementation.
+func (s *DownloadClientInput) SetImplementation(val string) {
+	s.Implementation = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *DownloadClientInput) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetPriority sets the value of Priority.
+func (s *DownloadClientInput) SetPriority(val OptInt) {
+	s.Priority = val
+}
+
+// SetHost sets the value of Host.
+func (s *DownloadClientInput) SetHost(val string) {
+	s.Host = val
+}
+
+// SetPort sets the value of Port.
+func (s *DownloadClientInput) SetPort(val OptInt) {
+	s.Port = val
+}
+
+// SetUseTls sets the value of UseTls.
+func (s *DownloadClientInput) SetUseTls(val OptBool) {
+	s.UseTls = val
+}
+
+// SetAllowSelfSigned sets the value of AllowSelfSigned.
+func (s *DownloadClientInput) SetAllowSelfSigned(val OptBool) {
+	s.AllowSelfSigned = val
+}
+
+// SetUrlBase sets the value of UrlBase.
+func (s *DownloadClientInput) SetUrlBase(val OptString) {
+	s.UrlBase = val
+}
+
+// SetUsername sets the value of Username.
+func (s *DownloadClientInput) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// SetPassword sets the value of Password.
+func (s *DownloadClientInput) SetPassword(val OptString) {
+	s.Password = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *DownloadClientInput) SetApiKey(val OptString) {
+	s.ApiKey = val
+}
+
+// SetDirectory sets the value of Directory.
+func (s *DownloadClientInput) SetDirectory(val OptString) {
+	s.Directory = val
+}
+
+// SetCategories sets the value of Categories.
+func (s *DownloadClientInput) SetCategories(val OptDownloadClientCategories) {
+	s.Categories = val
+}
+
+// SetRecentPriority sets the value of RecentPriority.
+func (s *DownloadClientInput) SetRecentPriority(val OptQueuePriority) {
+	s.RecentPriority = val
+}
+
+// SetOlderPriority sets the value of OlderPriority.
+func (s *DownloadClientInput) SetOlderPriority(val OptQueuePriority) {
+	s.OlderPriority = val
+}
+
+// SetInitialState sets the value of InitialState.
+func (s *DownloadClientInput) SetInitialState(val OptDownloadClientInputInitialState) {
+	s.InitialState = val
+}
+
+// SetRemoveCompleted sets the value of RemoveCompleted.
+func (s *DownloadClientInput) SetRemoveCompleted(val OptBool) {
+	s.RemoveCompleted = val
+}
+
+// SetSequential sets the value of Sequential.
+func (s *DownloadClientInput) SetSequential(val OptBool) {
+	s.Sequential = val
+}
+
+// SetFirstLastPiece sets the value of FirstLastPiece.
+func (s *DownloadClientInput) SetFirstLastPiece(val OptBool) {
+	s.FirstLastPiece = val
+}
+
+// SetTags sets the value of Tags.
+func (s *DownloadClientInput) SetTags(val []string) {
+	s.Tags = val
+}
+
+type DownloadClientInputInitialState string
+
+const (
+	DownloadClientInputInitialStateStart DownloadClientInputInitialState = "start"
+	DownloadClientInputInitialStatePause DownloadClientInputInitialState = "pause"
+)
+
+// AllValues returns all DownloadClientInputInitialState values.
+func (DownloadClientInputInitialState) AllValues() []DownloadClientInputInitialState {
+	return []DownloadClientInputInitialState{
+		DownloadClientInputInitialStateStart,
+		DownloadClientInputInitialStatePause,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DownloadClientInputInitialState) MarshalText() ([]byte, error) {
+	switch s {
+	case DownloadClientInputInitialStateStart:
+		return []byte(s), nil
+	case DownloadClientInputInitialStatePause:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DownloadClientInputInitialState) UnmarshalText(data []byte) error {
+	switch DownloadClientInputInitialState(data) {
+	case DownloadClientInputInitialStateStart:
+		*s = DownloadClientInputInitialStateStart
+		return nil
+	case DownloadClientInputInitialStatePause:
+		*s = DownloadClientInputInitialStatePause
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The last poll. Absent `checkedAt` = not polled yet (or disabled).
+// Ref: #/components/schemas/DownloadClientStatus
+type DownloadClientStatus struct {
+	Ok             bool        `json:"ok"`
+	CheckedAt      OptDateTime `json:"checkedAt"`
+	ErrorCode      OptString   `json:"errorCode"`
+	Error          OptString   `json:"error"`
+	Version        OptString   `json:"version"`
+	FreeSpaceBytes OptInt64    `json:"freeSpaceBytes"`
+}
+
+// GetOk returns the value of Ok.
+func (s *DownloadClientStatus) GetOk() bool {
+	return s.Ok
+}
+
+// GetCheckedAt returns the value of CheckedAt.
+func (s *DownloadClientStatus) GetCheckedAt() OptDateTime {
+	return s.CheckedAt
+}
+
+// GetErrorCode returns the value of ErrorCode.
+func (s *DownloadClientStatus) GetErrorCode() OptString {
+	return s.ErrorCode
+}
+
+// GetError returns the value of Error.
+func (s *DownloadClientStatus) GetError() OptString {
+	return s.Error
+}
+
+// GetVersion returns the value of Version.
+func (s *DownloadClientStatus) GetVersion() OptString {
+	return s.Version
+}
+
+// GetFreeSpaceBytes returns the value of FreeSpaceBytes.
+func (s *DownloadClientStatus) GetFreeSpaceBytes() OptInt64 {
+	return s.FreeSpaceBytes
+}
+
+// SetOk sets the value of Ok.
+func (s *DownloadClientStatus) SetOk(val bool) {
+	s.Ok = val
+}
+
+// SetCheckedAt sets the value of CheckedAt.
+func (s *DownloadClientStatus) SetCheckedAt(val OptDateTime) {
+	s.CheckedAt = val
+}
+
+// SetErrorCode sets the value of ErrorCode.
+func (s *DownloadClientStatus) SetErrorCode(val OptString) {
+	s.ErrorCode = val
+}
+
+// SetError sets the value of Error.
+func (s *DownloadClientStatus) SetError(val OptString) {
+	s.Error = val
+}
+
+// SetVersion sets the value of Version.
+func (s *DownloadClientStatus) SetVersion(val OptString) {
+	s.Version = val
+}
+
+// SetFreeSpaceBytes sets the value of FreeSpaceBytes.
+func (s *DownloadClientStatus) SetFreeSpaceBytes(val OptInt64) {
+	s.FreeSpaceBytes = val
+}
+
+// Ref: #/components/schemas/DownloadClientTestRequest
+type DownloadClientTestRequest struct {
+	// A stored client whose password / API key are used when left out.
+	ID     OptInt64            `json:"id"`
+	Client DownloadClientInput `json:"client"`
+}
+
+// GetID returns the value of ID.
+func (s *DownloadClientTestRequest) GetID() OptInt64 {
+	return s.ID
+}
+
+// GetClient returns the value of Client.
+func (s *DownloadClientTestRequest) GetClient() DownloadClientInput {
+	return s.Client
+}
+
+// SetID sets the value of ID.
+func (s *DownloadClientTestRequest) SetID(val OptInt64) {
+	s.ID = val
+}
+
+// SetClient sets the value of Client.
+func (s *DownloadClientTestRequest) SetClient(val DownloadClientInput) {
+	s.Client = val
+}
+
+// Ref: #/components/schemas/DownloadClientTestResult
+type DownloadClientTestResult struct {
+	Ok                  bool      `json:"ok"`
+	ErrorCode           OptString `json:"errorCode"`
+	Message             OptString `json:"message"`
+	Version             OptString `json:"version"`
+	FreeSpaceBytes      OptInt64  `json:"freeSpaceBytes"`
+	MissingCategories   []string  `json:"missingCategories"`
+	CanCreateCategories bool      `json:"canCreateCategories"`
+}
+
+// GetOk returns the value of Ok.
+func (s *DownloadClientTestResult) GetOk() bool {
+	return s.Ok
+}
+
+// GetErrorCode returns the value of ErrorCode.
+func (s *DownloadClientTestResult) GetErrorCode() OptString {
+	return s.ErrorCode
+}
+
+// GetMessage returns the value of Message.
+func (s *DownloadClientTestResult) GetMessage() OptString {
+	return s.Message
+}
+
+// GetVersion returns the value of Version.
+func (s *DownloadClientTestResult) GetVersion() OptString {
+	return s.Version
+}
+
+// GetFreeSpaceBytes returns the value of FreeSpaceBytes.
+func (s *DownloadClientTestResult) GetFreeSpaceBytes() OptInt64 {
+	return s.FreeSpaceBytes
+}
+
+// GetMissingCategories returns the value of MissingCategories.
+func (s *DownloadClientTestResult) GetMissingCategories() []string {
+	return s.MissingCategories
+}
+
+// GetCanCreateCategories returns the value of CanCreateCategories.
+func (s *DownloadClientTestResult) GetCanCreateCategories() bool {
+	return s.CanCreateCategories
+}
+
+// SetOk sets the value of Ok.
+func (s *DownloadClientTestResult) SetOk(val bool) {
+	s.Ok = val
+}
+
+// SetErrorCode sets the value of ErrorCode.
+func (s *DownloadClientTestResult) SetErrorCode(val OptString) {
+	s.ErrorCode = val
+}
+
+// SetMessage sets the value of Message.
+func (s *DownloadClientTestResult) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetVersion sets the value of Version.
+func (s *DownloadClientTestResult) SetVersion(val OptString) {
+	s.Version = val
+}
+
+// SetFreeSpaceBytes sets the value of FreeSpaceBytes.
+func (s *DownloadClientTestResult) SetFreeSpaceBytes(val OptInt64) {
+	s.FreeSpaceBytes = val
+}
+
+// SetMissingCategories sets the value of MissingCategories.
+func (s *DownloadClientTestResult) SetMissingCategories(val []string) {
+	s.MissingCategories = val
+}
+
+// SetCanCreateCategories sets the value of CanCreateCategories.
+func (s *DownloadClientTestResult) SetCanCreateCategories(val bool) {
+	s.CanCreateCategories = val
+}
+
+// Ref: #/components/schemas/DownloadEvent
+type DownloadEvent struct {
+	ID         int64     `json:"id"`
+	DownloadId int64     `json:"downloadId"`
+	At         time.Time `json:"at"`
+	// Grabbed, state, completed, failed, removed, imported, import_failed or blocklisted.
+	Type      string `json:"type"`
+	FromState string `json:"fromState"`
+	ToState   string `json:"toState"`
+	Message   string `json:"message"`
+	Data      jx.Raw `json:"data"`
+}
+
+// GetID returns the value of ID.
+func (s *DownloadEvent) GetID() int64 {
+	return s.ID
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *DownloadEvent) GetDownloadId() int64 {
+	return s.DownloadId
+}
+
+// GetAt returns the value of At.
+func (s *DownloadEvent) GetAt() time.Time {
+	return s.At
+}
+
+// GetType returns the value of Type.
+func (s *DownloadEvent) GetType() string {
+	return s.Type
+}
+
+// GetFromState returns the value of FromState.
+func (s *DownloadEvent) GetFromState() string {
+	return s.FromState
+}
+
+// GetToState returns the value of ToState.
+func (s *DownloadEvent) GetToState() string {
+	return s.ToState
+}
+
+// GetMessage returns the value of Message.
+func (s *DownloadEvent) GetMessage() string {
+	return s.Message
+}
+
+// GetData returns the value of Data.
+func (s *DownloadEvent) GetData() jx.Raw {
+	return s.Data
+}
+
+// SetID sets the value of ID.
+func (s *DownloadEvent) SetID(val int64) {
+	s.ID = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *DownloadEvent) SetDownloadId(val int64) {
+	s.DownloadId = val
+}
+
+// SetAt sets the value of At.
+func (s *DownloadEvent) SetAt(val time.Time) {
+	s.At = val
+}
+
+// SetType sets the value of Type.
+func (s *DownloadEvent) SetType(val string) {
+	s.Type = val
+}
+
+// SetFromState sets the value of FromState.
+func (s *DownloadEvent) SetFromState(val string) {
+	s.FromState = val
+}
+
+// SetToState sets the value of ToState.
+func (s *DownloadEvent) SetToState(val string) {
+	s.ToState = val
+}
+
+// SetMessage sets the value of Message.
+func (s *DownloadEvent) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetData sets the value of Data.
+func (s *DownloadEvent) SetData(val jx.Raw) {
+	s.Data = val
+}
+
+// Ref: #/components/schemas/DownloadProtocol
+type DownloadProtocol string
+
+const (
+	DownloadProtocolTorrent DownloadProtocol = "torrent"
+	DownloadProtocolUsenet  DownloadProtocol = "usenet"
+)
+
+// AllValues returns all DownloadProtocol values.
+func (DownloadProtocol) AllValues() []DownloadProtocol {
+	return []DownloadProtocol{
+		DownloadProtocolTorrent,
+		DownloadProtocolUsenet,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DownloadProtocol) MarshalText() ([]byte, error) {
+	switch s {
+	case DownloadProtocolTorrent:
+		return []byte(s), nil
+	case DownloadProtocolUsenet:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DownloadProtocol) UnmarshalText(data []byte) error {
+	switch DownloadProtocol(data) {
+	case DownloadProtocolTorrent:
+		*s = DownloadProtocolTorrent
+		return nil
+	case DownloadProtocolUsenet:
+		*s = DownloadProtocolUsenet
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
 
 type DownloadReleaseOK struct {
 	Data io.Reader
@@ -364,6 +1908,177 @@ func (s *DownloadReleaseOKHeaders) SetContentDisposition(val OptString) {
 // SetResponse sets the value of Response.
 func (s *DownloadReleaseOKHeaders) SetResponse(val DownloadReleaseOK) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/DownloadSettings
+type DownloadSettings struct {
+	// How often clients are polled (faster while the queue is open).
+	PollSeconds int `json:"pollSeconds"`
+	// A torrent with no progress and no seeds for this long fails (0 = never).
+	StalledHours int `json:"stalledHours"`
+}
+
+// GetPollSeconds returns the value of PollSeconds.
+func (s *DownloadSettings) GetPollSeconds() int {
+	return s.PollSeconds
+}
+
+// GetStalledHours returns the value of StalledHours.
+func (s *DownloadSettings) GetStalledHours() int {
+	return s.StalledHours
+}
+
+// SetPollSeconds sets the value of PollSeconds.
+func (s *DownloadSettings) SetPollSeconds(val int) {
+	s.PollSeconds = val
+}
+
+// SetStalledHours sets the value of StalledHours.
+func (s *DownloadSettings) SetStalledHours(val int) {
+	s.StalledHours = val
+}
+
+// The client's state, normalised (the raw one is in `rawState`).
+// Ref: #/components/schemas/DownloadState
+type DownloadState string
+
+const (
+	DownloadStateQueued      DownloadState = "queued"
+	DownloadStateDownloading DownloadState = "downloading"
+	DownloadStatePaused      DownloadState = "paused"
+	DownloadStateSeeding     DownloadState = "seeding"
+	DownloadStateCompleted   DownloadState = "completed"
+	DownloadStateFailed      DownloadState = "failed"
+	DownloadStateWarning     DownloadState = "warning"
+)
+
+// AllValues returns all DownloadState values.
+func (DownloadState) AllValues() []DownloadState {
+	return []DownloadState{
+		DownloadStateQueued,
+		DownloadStateDownloading,
+		DownloadStatePaused,
+		DownloadStateSeeding,
+		DownloadStateCompleted,
+		DownloadStateFailed,
+		DownloadStateWarning,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DownloadState) MarshalText() ([]byte, error) {
+	switch s {
+	case DownloadStateQueued:
+		return []byte(s), nil
+	case DownloadStateDownloading:
+		return []byte(s), nil
+	case DownloadStatePaused:
+		return []byte(s), nil
+	case DownloadStateSeeding:
+		return []byte(s), nil
+	case DownloadStateCompleted:
+		return []byte(s), nil
+	case DownloadStateFailed:
+		return []byte(s), nil
+	case DownloadStateWarning:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DownloadState) UnmarshalText(data []byte) error {
+	switch DownloadState(data) {
+	case DownloadStateQueued:
+		*s = DownloadStateQueued
+		return nil
+	case DownloadStateDownloading:
+		*s = DownloadStateDownloading
+		return nil
+	case DownloadStatePaused:
+		*s = DownloadStatePaused
+		return nil
+	case DownloadStateSeeding:
+		*s = DownloadStateSeeding
+		return nil
+	case DownloadStateCompleted:
+		*s = DownloadStateCompleted
+		return nil
+	case DownloadStateFailed:
+		*s = DownloadStateFailed
+		return nil
+	case DownloadStateWarning:
+		*s = DownloadStateWarning
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Where the download is in Locarr: `active` (in the client), `completed` (finished and visible
+// locally: ready to import), `imported`, `failed`, `removed`.
+// Ref: #/components/schemas/DownloadStatus
+type DownloadStatus string
+
+const (
+	DownloadStatusActive    DownloadStatus = "active"
+	DownloadStatusCompleted DownloadStatus = "completed"
+	DownloadStatusImported  DownloadStatus = "imported"
+	DownloadStatusFailed    DownloadStatus = "failed"
+	DownloadStatusRemoved   DownloadStatus = "removed"
+)
+
+// AllValues returns all DownloadStatus values.
+func (DownloadStatus) AllValues() []DownloadStatus {
+	return []DownloadStatus{
+		DownloadStatusActive,
+		DownloadStatusCompleted,
+		DownloadStatusImported,
+		DownloadStatusFailed,
+		DownloadStatusRemoved,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DownloadStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DownloadStatusActive:
+		return []byte(s), nil
+	case DownloadStatusCompleted:
+		return []byte(s), nil
+	case DownloadStatusImported:
+		return []byte(s), nil
+	case DownloadStatusFailed:
+		return []byte(s), nil
+	case DownloadStatusRemoved:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DownloadStatus) UnmarshalText(data []byte) error {
+	switch DownloadStatus(data) {
+	case DownloadStatusActive:
+		*s = DownloadStatusActive
+		return nil
+	case DownloadStatusCompleted:
+		*s = DownloadStatusCompleted
+		return nil
+	case DownloadStatusImported:
+		*s = DownloadStatusImported
+		return nil
+	case DownloadStatusFailed:
+		*s = DownloadStatusFailed
+		return nil
+	case DownloadStatusRemoved:
+		*s = DownloadStatusRemoved
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/Error
@@ -482,6 +2197,170 @@ func (s *FolderListing) SetParent(val OptString) {
 // SetEntries sets the value of Entries.
 func (s *FolderListing) SetEntries(val []FolderEntry) {
 	s.Entries = val
+}
+
+// One of `downloadUrl` or `downloadToken`. With `indexerId`, http(s) links and tokens are fetched
+// through that indexer (its credentials, grab limit and seeding goals apply).
+// Ref: #/components/schemas/GrabRequest
+type GrabRequest struct {
+	// An http(s) link to a .torrent or .nzb, or a magnet link.
+	DownloadUrl OptString `json:"downloadUrl"`
+	// The `token` of a search result's `downloadLink` (needs `indexerId`).
+	DownloadToken OptString        `json:"downloadToken"`
+	Protocol      DownloadProtocol `json:"protocol"`
+	Title         string           `json:"title"`
+	IndexerId     OptInt64         `json:"indexerId"`
+	Indexer       OptString        `json:"indexer"`
+	GUID          OptString        `json:"guid"`
+	MediaKind     OptMediaKind     `json:"mediaKind"`
+	// Opaque JSON for the importer (up to 16 KiB).
+	ItemRef  jx.Raw   `json:"itemRef"`
+	Tags     []string `json:"tags"`
+	ClientId OptInt64 `json:"clientId"`
+	// Seeding goal from the indexer settings (overrides the client's).
+	SeedRatio       OptFloat64  `json:"seedRatio"`
+	SeedTimeMinutes OptInt      `json:"seedTimeMinutes"`
+	PublishedAt     OptDateTime `json:"publishedAt"`
+}
+
+// GetDownloadUrl returns the value of DownloadUrl.
+func (s *GrabRequest) GetDownloadUrl() OptString {
+	return s.DownloadUrl
+}
+
+// GetDownloadToken returns the value of DownloadToken.
+func (s *GrabRequest) GetDownloadToken() OptString {
+	return s.DownloadToken
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *GrabRequest) GetProtocol() DownloadProtocol {
+	return s.Protocol
+}
+
+// GetTitle returns the value of Title.
+func (s *GrabRequest) GetTitle() string {
+	return s.Title
+}
+
+// GetIndexerId returns the value of IndexerId.
+func (s *GrabRequest) GetIndexerId() OptInt64 {
+	return s.IndexerId
+}
+
+// GetIndexer returns the value of Indexer.
+func (s *GrabRequest) GetIndexer() OptString {
+	return s.Indexer
+}
+
+// GetGUID returns the value of GUID.
+func (s *GrabRequest) GetGUID() OptString {
+	return s.GUID
+}
+
+// GetMediaKind returns the value of MediaKind.
+func (s *GrabRequest) GetMediaKind() OptMediaKind {
+	return s.MediaKind
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *GrabRequest) GetItemRef() jx.Raw {
+	return s.ItemRef
+}
+
+// GetTags returns the value of Tags.
+func (s *GrabRequest) GetTags() []string {
+	return s.Tags
+}
+
+// GetClientId returns the value of ClientId.
+func (s *GrabRequest) GetClientId() OptInt64 {
+	return s.ClientId
+}
+
+// GetSeedRatio returns the value of SeedRatio.
+func (s *GrabRequest) GetSeedRatio() OptFloat64 {
+	return s.SeedRatio
+}
+
+// GetSeedTimeMinutes returns the value of SeedTimeMinutes.
+func (s *GrabRequest) GetSeedTimeMinutes() OptInt {
+	return s.SeedTimeMinutes
+}
+
+// GetPublishedAt returns the value of PublishedAt.
+func (s *GrabRequest) GetPublishedAt() OptDateTime {
+	return s.PublishedAt
+}
+
+// SetDownloadUrl sets the value of DownloadUrl.
+func (s *GrabRequest) SetDownloadUrl(val OptString) {
+	s.DownloadUrl = val
+}
+
+// SetDownloadToken sets the value of DownloadToken.
+func (s *GrabRequest) SetDownloadToken(val OptString) {
+	s.DownloadToken = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *GrabRequest) SetProtocol(val DownloadProtocol) {
+	s.Protocol = val
+}
+
+// SetTitle sets the value of Title.
+func (s *GrabRequest) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetIndexerId sets the value of IndexerId.
+func (s *GrabRequest) SetIndexerId(val OptInt64) {
+	s.IndexerId = val
+}
+
+// SetIndexer sets the value of Indexer.
+func (s *GrabRequest) SetIndexer(val OptString) {
+	s.Indexer = val
+}
+
+// SetGUID sets the value of GUID.
+func (s *GrabRequest) SetGUID(val OptString) {
+	s.GUID = val
+}
+
+// SetMediaKind sets the value of MediaKind.
+func (s *GrabRequest) SetMediaKind(val OptMediaKind) {
+	s.MediaKind = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *GrabRequest) SetItemRef(val jx.Raw) {
+	s.ItemRef = val
+}
+
+// SetTags sets the value of Tags.
+func (s *GrabRequest) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetClientId sets the value of ClientId.
+func (s *GrabRequest) SetClientId(val OptInt64) {
+	s.ClientId = val
+}
+
+// SetSeedRatio sets the value of SeedRatio.
+func (s *GrabRequest) SetSeedRatio(val OptFloat64) {
+	s.SeedRatio = val
+}
+
+// SetSeedTimeMinutes sets the value of SeedTimeMinutes.
+func (s *GrabRequest) SetSeedTimeMinutes(val OptInt) {
+	s.SeedTimeMinutes = val
+}
+
+// SetPublishedAt sets the value of PublishedAt.
+func (s *GrabRequest) SetPublishedAt(val OptDateTime) {
+	s.PublishedAt = val
 }
 
 // Ref: #/components/schemas/Indexer
@@ -2690,6 +4569,144 @@ func (o OptDeviceInfo) Or(d DeviceInfo) DeviceInfo {
 	return d
 }
 
+// NewOptDownloadClientCategories returns new OptDownloadClientCategories with value set to v.
+func NewOptDownloadClientCategories(v DownloadClientCategories) OptDownloadClientCategories {
+	return OptDownloadClientCategories{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDownloadClientCategories is optional DownloadClientCategories.
+type OptDownloadClientCategories struct {
+	Value DownloadClientCategories
+	Set   bool
+}
+
+// IsSet returns true if OptDownloadClientCategories was set.
+func (o OptDownloadClientCategories) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDownloadClientCategories) Reset() {
+	var v DownloadClientCategories
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDownloadClientCategories) SetTo(v DownloadClientCategories) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDownloadClientCategories) Get() (v DownloadClientCategories, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDownloadClientCategories) Or(d DownloadClientCategories) DownloadClientCategories {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDownloadClientInputInitialState returns new OptDownloadClientInputInitialState with value set to v.
+func NewOptDownloadClientInputInitialState(v DownloadClientInputInitialState) OptDownloadClientInputInitialState {
+	return OptDownloadClientInputInitialState{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDownloadClientInputInitialState is optional DownloadClientInputInitialState.
+type OptDownloadClientInputInitialState struct {
+	Value DownloadClientInputInitialState
+	Set   bool
+}
+
+// IsSet returns true if OptDownloadClientInputInitialState was set.
+func (o OptDownloadClientInputInitialState) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDownloadClientInputInitialState) Reset() {
+	var v DownloadClientInputInitialState
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDownloadClientInputInitialState) SetTo(v DownloadClientInputInitialState) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDownloadClientInputInitialState) Get() (v DownloadClientInputInitialState, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDownloadClientInputInitialState) Or(d DownloadClientInputInitialState) DownloadClientInputInitialState {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDownloadProtocol returns new OptDownloadProtocol with value set to v.
+func NewOptDownloadProtocol(v DownloadProtocol) OptDownloadProtocol {
+	return OptDownloadProtocol{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDownloadProtocol is optional DownloadProtocol.
+type OptDownloadProtocol struct {
+	Value DownloadProtocol
+	Set   bool
+}
+
+// IsSet returns true if OptDownloadProtocol was set.
+func (o OptDownloadProtocol) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDownloadProtocol) Reset() {
+	var v DownloadProtocol
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDownloadProtocol) SetTo(v DownloadProtocol) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDownloadProtocol) Get() (v DownloadProtocol, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDownloadProtocol) Or(d DownloadProtocol) DownloadProtocol {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptFloat64 returns new OptFloat64 with value set to v.
 func NewOptFloat64(v float64) OptFloat64 {
 	return OptFloat64{
@@ -3104,6 +5121,52 @@ func (o OptLanguage) Or(d Language) Language {
 	return d
 }
 
+// NewOptMediaKind returns new OptMediaKind with value set to v.
+func NewOptMediaKind(v MediaKind) OptMediaKind {
+	return OptMediaKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMediaKind is optional MediaKind.
+type OptMediaKind struct {
+	Value MediaKind
+	Set   bool
+}
+
+// IsSet returns true if OptMediaKind was set.
+func (o OptMediaKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMediaKind) Reset() {
+	var v MediaKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMediaKind) SetTo(v MediaKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMediaKind) Get() (v MediaKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMediaKind) Or(d MediaKind) MediaKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptPermissions returns new OptPermissions with value set to v.
 func NewOptPermissions(v Permissions) OptPermissions {
 	return OptPermissions{
@@ -3144,6 +5207,52 @@ func (o OptPermissions) Get() (v Permissions, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptPermissions) Or(d Permissions) Permissions {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptQueuePriority returns new OptQueuePriority with value set to v.
+func NewOptQueuePriority(v QueuePriority) OptQueuePriority {
+	return OptQueuePriority{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptQueuePriority is optional QueuePriority.
+type OptQueuePriority struct {
+	Value QueuePriority
+	Set   bool
+}
+
+// IsSet returns true if OptQueuePriority was set.
+func (o OptQueuePriority) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptQueuePriority) Reset() {
+	var v QueuePriority
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptQueuePriority) SetTo(v QueuePriority) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptQueuePriority) Get() (v QueuePriority, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptQueuePriority) Or(d QueuePriority) QueuePriority {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -3305,6 +5414,9 @@ func (s *PasswordConfirm) SetPassword(val string) {
 	s.Password = val
 }
 
+// PauseQueueItemNoContent is response for PauseQueueItem operation.
+type PauseQueueItemNoContent struct{}
+
 // What a non-administrator may do. Administrators may do everything regardless.
 // Ref: #/components/schemas/Permissions
 type Permissions struct {
@@ -3390,6 +5502,21 @@ func (s *Permissions) SetManageRequests(val bool) {
 	s.ManageRequests = val
 }
 
+// Ref: #/components/schemas/PriorityRequest
+type PriorityRequest struct {
+	Priority QueuePriority `json:"priority"`
+}
+
+// GetPriority returns the value of Priority.
+func (s *PriorityRequest) GetPriority() QueuePriority {
+	return s.Priority
+}
+
+// SetPriority sets the value of Priority.
+func (s *PriorityRequest) SetPriority(val QueuePriority) {
+	s.Priority = val
+}
+
 // Ref: #/components/schemas/Protocol
 type Protocol string
 
@@ -3432,6 +5559,465 @@ func (s *Protocol) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/Queue
+type Queue struct {
+	Items   []QueueItem   `json:"items"`
+	Clients []QueueClient `json:"clients"`
+}
+
+// GetItems returns the value of Items.
+func (s *Queue) GetItems() []QueueItem {
+	return s.Items
+}
+
+// GetClients returns the value of Clients.
+func (s *Queue) GetClients() []QueueClient {
+	return s.Clients
+}
+
+// SetItems sets the value of Items.
+func (s *Queue) SetItems(val []QueueItem) {
+	s.Items = val
+}
+
+// SetClients sets the value of Clients.
+func (s *Queue) SetClients(val []QueueClient) {
+	s.Clients = val
+}
+
+// Ref: #/components/schemas/QueueClient
+type QueueClient struct {
+	ID            int64                `json:"id"`
+	Name          string               `json:"name"`
+	Protocol      DownloadProtocol     `json:"protocol"`
+	Enabled       bool                 `json:"enabled"`
+	CanPrioritise OptBool              `json:"canPrioritise"`
+	Status        DownloadClientStatus `json:"status"`
+}
+
+// GetID returns the value of ID.
+func (s *QueueClient) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *QueueClient) GetName() string {
+	return s.Name
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *QueueClient) GetProtocol() DownloadProtocol {
+	return s.Protocol
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *QueueClient) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetCanPrioritise returns the value of CanPrioritise.
+func (s *QueueClient) GetCanPrioritise() OptBool {
+	return s.CanPrioritise
+}
+
+// GetStatus returns the value of Status.
+func (s *QueueClient) GetStatus() DownloadClientStatus {
+	return s.Status
+}
+
+// SetID sets the value of ID.
+func (s *QueueClient) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *QueueClient) SetName(val string) {
+	s.Name = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *QueueClient) SetProtocol(val DownloadProtocol) {
+	s.Protocol = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *QueueClient) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetCanPrioritise sets the value of CanPrioritise.
+func (s *QueueClient) SetCanPrioritise(val OptBool) {
+	s.CanPrioritise = val
+}
+
+// SetStatus sets the value of Status.
+func (s *QueueClient) SetStatus(val DownloadClientStatus) {
+	s.Status = val
+}
+
+// Ref: #/components/schemas/QueueItem
+type QueueItem struct {
+	// 0 for unknown items (added outside Locarr).
+	ID              int64            `json:"id"`
+	Unknown         bool             `json:"unknown"`
+	ClientId        OptInt64         `json:"clientId"`
+	ClientName      string           `json:"clientName"`
+	ClientItemId    string           `json:"clientItemId"`
+	Protocol        DownloadProtocol `json:"protocol"`
+	Title           string           `json:"title"`
+	Indexer         OptString        `json:"indexer"`
+	MediaKind       OptString        `json:"mediaKind"`
+	Category        string           `json:"category"`
+	Status          DownloadStatus   `json:"status"`
+	State           DownloadState    `json:"state"`
+	RawState        string           `json:"rawState"`
+	Progress        float64          `json:"progress"`
+	SizeBytes       int64            `json:"sizeBytes"`
+	DownloadedBytes int64            `json:"downloadedBytes"`
+	DownloadSpeed   int64            `json:"downloadSpeed"`
+	UploadSpeed     int64            `json:"uploadSpeed"`
+	EtaSeconds      OptInt64         `json:"etaSeconds"`
+	Ratio           float64          `json:"ratio"`
+	SeedingSeconds  int64            `json:"seedingSeconds"`
+	ContentPath     OptString        `json:"contentPath"`
+	LocalPath       OptString        `json:"localPath"`
+	Message         string           `json:"message"`
+	// Opaque JSON from whoever grabbed the release.
+	ItemRef     jx.Raw      `json:"itemRef"`
+	AddedAt     time.Time   `json:"addedAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
+	CompletedAt OptDateTime `json:"completedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *QueueItem) GetID() int64 {
+	return s.ID
+}
+
+// GetUnknown returns the value of Unknown.
+func (s *QueueItem) GetUnknown() bool {
+	return s.Unknown
+}
+
+// GetClientId returns the value of ClientId.
+func (s *QueueItem) GetClientId() OptInt64 {
+	return s.ClientId
+}
+
+// GetClientName returns the value of ClientName.
+func (s *QueueItem) GetClientName() string {
+	return s.ClientName
+}
+
+// GetClientItemId returns the value of ClientItemId.
+func (s *QueueItem) GetClientItemId() string {
+	return s.ClientItemId
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *QueueItem) GetProtocol() DownloadProtocol {
+	return s.Protocol
+}
+
+// GetTitle returns the value of Title.
+func (s *QueueItem) GetTitle() string {
+	return s.Title
+}
+
+// GetIndexer returns the value of Indexer.
+func (s *QueueItem) GetIndexer() OptString {
+	return s.Indexer
+}
+
+// GetMediaKind returns the value of MediaKind.
+func (s *QueueItem) GetMediaKind() OptString {
+	return s.MediaKind
+}
+
+// GetCategory returns the value of Category.
+func (s *QueueItem) GetCategory() string {
+	return s.Category
+}
+
+// GetStatus returns the value of Status.
+func (s *QueueItem) GetStatus() DownloadStatus {
+	return s.Status
+}
+
+// GetState returns the value of State.
+func (s *QueueItem) GetState() DownloadState {
+	return s.State
+}
+
+// GetRawState returns the value of RawState.
+func (s *QueueItem) GetRawState() string {
+	return s.RawState
+}
+
+// GetProgress returns the value of Progress.
+func (s *QueueItem) GetProgress() float64 {
+	return s.Progress
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *QueueItem) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetDownloadedBytes returns the value of DownloadedBytes.
+func (s *QueueItem) GetDownloadedBytes() int64 {
+	return s.DownloadedBytes
+}
+
+// GetDownloadSpeed returns the value of DownloadSpeed.
+func (s *QueueItem) GetDownloadSpeed() int64 {
+	return s.DownloadSpeed
+}
+
+// GetUploadSpeed returns the value of UploadSpeed.
+func (s *QueueItem) GetUploadSpeed() int64 {
+	return s.UploadSpeed
+}
+
+// GetEtaSeconds returns the value of EtaSeconds.
+func (s *QueueItem) GetEtaSeconds() OptInt64 {
+	return s.EtaSeconds
+}
+
+// GetRatio returns the value of Ratio.
+func (s *QueueItem) GetRatio() float64 {
+	return s.Ratio
+}
+
+// GetSeedingSeconds returns the value of SeedingSeconds.
+func (s *QueueItem) GetSeedingSeconds() int64 {
+	return s.SeedingSeconds
+}
+
+// GetContentPath returns the value of ContentPath.
+func (s *QueueItem) GetContentPath() OptString {
+	return s.ContentPath
+}
+
+// GetLocalPath returns the value of LocalPath.
+func (s *QueueItem) GetLocalPath() OptString {
+	return s.LocalPath
+}
+
+// GetMessage returns the value of Message.
+func (s *QueueItem) GetMessage() string {
+	return s.Message
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *QueueItem) GetItemRef() jx.Raw {
+	return s.ItemRef
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *QueueItem) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *QueueItem) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetCompletedAt returns the value of CompletedAt.
+func (s *QueueItem) GetCompletedAt() OptDateTime {
+	return s.CompletedAt
+}
+
+// SetID sets the value of ID.
+func (s *QueueItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetUnknown sets the value of Unknown.
+func (s *QueueItem) SetUnknown(val bool) {
+	s.Unknown = val
+}
+
+// SetClientId sets the value of ClientId.
+func (s *QueueItem) SetClientId(val OptInt64) {
+	s.ClientId = val
+}
+
+// SetClientName sets the value of ClientName.
+func (s *QueueItem) SetClientName(val string) {
+	s.ClientName = val
+}
+
+// SetClientItemId sets the value of ClientItemId.
+func (s *QueueItem) SetClientItemId(val string) {
+	s.ClientItemId = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *QueueItem) SetProtocol(val DownloadProtocol) {
+	s.Protocol = val
+}
+
+// SetTitle sets the value of Title.
+func (s *QueueItem) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetIndexer sets the value of Indexer.
+func (s *QueueItem) SetIndexer(val OptString) {
+	s.Indexer = val
+}
+
+// SetMediaKind sets the value of MediaKind.
+func (s *QueueItem) SetMediaKind(val OptString) {
+	s.MediaKind = val
+}
+
+// SetCategory sets the value of Category.
+func (s *QueueItem) SetCategory(val string) {
+	s.Category = val
+}
+
+// SetStatus sets the value of Status.
+func (s *QueueItem) SetStatus(val DownloadStatus) {
+	s.Status = val
+}
+
+// SetState sets the value of State.
+func (s *QueueItem) SetState(val DownloadState) {
+	s.State = val
+}
+
+// SetRawState sets the value of RawState.
+func (s *QueueItem) SetRawState(val string) {
+	s.RawState = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *QueueItem) SetProgress(val float64) {
+	s.Progress = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *QueueItem) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetDownloadedBytes sets the value of DownloadedBytes.
+func (s *QueueItem) SetDownloadedBytes(val int64) {
+	s.DownloadedBytes = val
+}
+
+// SetDownloadSpeed sets the value of DownloadSpeed.
+func (s *QueueItem) SetDownloadSpeed(val int64) {
+	s.DownloadSpeed = val
+}
+
+// SetUploadSpeed sets the value of UploadSpeed.
+func (s *QueueItem) SetUploadSpeed(val int64) {
+	s.UploadSpeed = val
+}
+
+// SetEtaSeconds sets the value of EtaSeconds.
+func (s *QueueItem) SetEtaSeconds(val OptInt64) {
+	s.EtaSeconds = val
+}
+
+// SetRatio sets the value of Ratio.
+func (s *QueueItem) SetRatio(val float64) {
+	s.Ratio = val
+}
+
+// SetSeedingSeconds sets the value of SeedingSeconds.
+func (s *QueueItem) SetSeedingSeconds(val int64) {
+	s.SeedingSeconds = val
+}
+
+// SetContentPath sets the value of ContentPath.
+func (s *QueueItem) SetContentPath(val OptString) {
+	s.ContentPath = val
+}
+
+// SetLocalPath sets the value of LocalPath.
+func (s *QueueItem) SetLocalPath(val OptString) {
+	s.LocalPath = val
+}
+
+// SetMessage sets the value of Message.
+func (s *QueueItem) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *QueueItem) SetItemRef(val jx.Raw) {
+	s.ItemRef = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *QueueItem) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *QueueItem) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetCompletedAt sets the value of CompletedAt.
+func (s *QueueItem) SetCompletedAt(val OptDateTime) {
+	s.CompletedAt = val
+}
+
+// Ref: #/components/schemas/QueuePriority
+type QueuePriority string
+
+const (
+	QueuePriorityNormal QueuePriority = "normal"
+	QueuePriorityTop    QueuePriority = "top"
+	QueuePriorityLast   QueuePriority = "last"
+)
+
+// AllValues returns all QueuePriority values.
+func (QueuePriority) AllValues() []QueuePriority {
+	return []QueuePriority{
+		QueuePriorityNormal,
+		QueuePriorityTop,
+		QueuePriorityLast,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s QueuePriority) MarshalText() ([]byte, error) {
+	switch s {
+	case QueuePriorityNormal:
+		return []byte(s), nil
+	case QueuePriorityTop:
+		return []byte(s), nil
+	case QueuePriorityLast:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *QueuePriority) UnmarshalText(data []byte) error {
+	switch QueuePriority(data) {
+	case QueuePriorityNormal:
+		*s = QueuePriorityNormal
+		return nil
+	case QueuePriorityTop:
+		*s = QueuePriorityTop
+		return nil
+	case QueuePriorityLast:
+		*s = QueuePriorityLast
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/RecoveryCodes
 type RecoveryCodes struct {
 	Codes []string `json:"codes"`
@@ -3446,6 +6032,9 @@ func (s *RecoveryCodes) GetCodes() []string {
 func (s *RecoveryCodes) SetCodes(val []string) {
 	s.Codes = val
 }
+
+// RefreshQueueAccepted is response for RefreshQueue operation.
+type RefreshQueueAccepted struct{}
 
 // Ref: #/components/schemas/Release
 type Release struct {
@@ -3773,6 +6362,94 @@ func (s *Release) SetFlags(val []string) {
 	s.Flags = val
 }
 
+// Ref: #/components/schemas/RemotePathMapping
+type RemotePathMapping struct {
+	ID         int64  `json:"id"`
+	Host       string `json:"host"`
+	RemotePath string `json:"remotePath"`
+	LocalPath  string `json:"localPath"`
+}
+
+// GetID returns the value of ID.
+func (s *RemotePathMapping) GetID() int64 {
+	return s.ID
+}
+
+// GetHost returns the value of Host.
+func (s *RemotePathMapping) GetHost() string {
+	return s.Host
+}
+
+// GetRemotePath returns the value of RemotePath.
+func (s *RemotePathMapping) GetRemotePath() string {
+	return s.RemotePath
+}
+
+// GetLocalPath returns the value of LocalPath.
+func (s *RemotePathMapping) GetLocalPath() string {
+	return s.LocalPath
+}
+
+// SetID sets the value of ID.
+func (s *RemotePathMapping) SetID(val int64) {
+	s.ID = val
+}
+
+// SetHost sets the value of Host.
+func (s *RemotePathMapping) SetHost(val string) {
+	s.Host = val
+}
+
+// SetRemotePath sets the value of RemotePath.
+func (s *RemotePathMapping) SetRemotePath(val string) {
+	s.RemotePath = val
+}
+
+// SetLocalPath sets the value of LocalPath.
+func (s *RemotePathMapping) SetLocalPath(val string) {
+	s.LocalPath = val
+}
+
+// Ref: #/components/schemas/RemotePathMappingInput
+type RemotePathMappingInput struct {
+	Host       string `json:"host"`
+	RemotePath string `json:"remotePath"`
+	LocalPath  string `json:"localPath"`
+}
+
+// GetHost returns the value of Host.
+func (s *RemotePathMappingInput) GetHost() string {
+	return s.Host
+}
+
+// GetRemotePath returns the value of RemotePath.
+func (s *RemotePathMappingInput) GetRemotePath() string {
+	return s.RemotePath
+}
+
+// GetLocalPath returns the value of LocalPath.
+func (s *RemotePathMappingInput) GetLocalPath() string {
+	return s.LocalPath
+}
+
+// SetHost sets the value of Host.
+func (s *RemotePathMappingInput) SetHost(val string) {
+	s.Host = val
+}
+
+// SetRemotePath sets the value of RemotePath.
+func (s *RemotePathMappingInput) SetRemotePath(val string) {
+	s.RemotePath = val
+}
+
+// SetLocalPath sets the value of LocalPath.
+func (s *RemotePathMappingInput) SetLocalPath(val string) {
+	s.LocalPath = val
+}
+
+// RemoveQueueItemNoContent is response for RemoveQueueItem operation.
+type RemoveQueueItemNoContent struct{}
+
 // Ref: #/components/schemas/ResetPasswordRequest
 type ResetPasswordRequest struct {
 	Password Password `json:"password"`
@@ -3790,6 +6467,9 @@ func (s *ResetPasswordRequest) SetPassword(val Password) {
 
 // ResetUserPasswordNoContent is response for ResetUserPassword operation.
 type ResetUserPasswordNoContent struct{}
+
+// ResumeQueueItemNoContent is response for ResumeQueueItem operation.
+type ResumeQueueItemNoContent struct{}
 
 // RevokeSessionNoContent is response for RevokeSession operation.
 type RevokeSessionNoContent struct{}
@@ -4587,6 +7267,9 @@ func (s *SessionToken) SetRoles(val []string) {
 	s.Roles = val
 }
 
+// SetQueueItemPriorityNoContent is response for SetQueueItemPriority operation.
+type SetQueueItemPriorityNoContent struct{}
+
 // Ref: #/components/schemas/Settings
 type Settings struct {
 	InstanceName string      `json:"instanceName"`
@@ -4975,6 +7658,32 @@ func (s *TotpSetup) SetSecret(val string) {
 // SetURI sets the value of URI.
 func (s *TotpSetup) SetURI(val string) {
 	s.URI = val
+}
+
+// Ref: #/components/schemas/UpdateDownloadSettings
+type UpdateDownloadSettings struct {
+	PollSeconds  OptInt `json:"pollSeconds"`
+	StalledHours OptInt `json:"stalledHours"`
+}
+
+// GetPollSeconds returns the value of PollSeconds.
+func (s *UpdateDownloadSettings) GetPollSeconds() OptInt {
+	return s.PollSeconds
+}
+
+// GetStalledHours returns the value of StalledHours.
+func (s *UpdateDownloadSettings) GetStalledHours() OptInt {
+	return s.StalledHours
+}
+
+// SetPollSeconds sets the value of PollSeconds.
+func (s *UpdateDownloadSettings) SetPollSeconds(val OptInt) {
+	s.PollSeconds = val
+}
+
+// SetStalledHours sets the value of StalledHours.
+func (s *UpdateDownloadSettings) SetStalledHours(val OptInt) {
+	s.StalledHours = val
 }
 
 // Ref: #/components/schemas/UpdateIndexerSettingsRequest

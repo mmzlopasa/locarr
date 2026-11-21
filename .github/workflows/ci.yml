@@ -59,6 +59,22 @@ jobs:
       - run: pnpm test
       - run: pnpm build
 
+  clients:
+    # The shared download client contract suite against real clients (the
+    # cheap ones; scripts/test-clients.sh runs all seven locally).
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - name: Contract suite against qBittorrent, Transmission and SABnzbd
+        env:
+          LOCARR_CLIENTS_TMP: ${{ runner.temp }}
+        run: ./scripts/test-clients.sh qbittorrent transmission sabnzbd
+
   e2e:
     runs-on: ubuntu-latest
     needs: [server, web]
@@ -83,6 +99,10 @@ jobs:
           curl -fsS http://127.0.0.1:8484/api/v1/system/info
       - name: Start the fake indexers
         run: ./scripts/dev-fakes.sh up
+      - name: Start Transmission for the download client tests
+        run: |
+          docker run -d --name transmission --network locarr-net -e PUID="$(id -u)" -e PGID="$(id -g)" \
+            -e USER=locarr -e PASS=locarr-e2e lscr.io/linuxserver/transmission:latest
       - uses: pnpm/action-setup@v4
         with:
           package_json_file: web/package.json
@@ -104,3 +124,4 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f compose.dev.yml logs
           docker logs locarr-fakes || true
+          docker logs transmission || true

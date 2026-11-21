@@ -47,7 +47,17 @@
     "generic": "Zahtjev nije uspio (HTTP {{status}}).",
     "network": "Server nije dostupan. Provjeri vezu.",
     "unknown": "Nešto je pošlo po zlu.",
-    "name_taken": "Indexer s tim nazivom već postoji.",
+    "name_taken": "Klijent za preuzimanje s tim imenom već postoji.",
+    "no_download_client": "Nijedan uključeni klijent za preuzimanje ne može preuzeti ovo izdanje. Dodajte ga pod Klijenti za preuzimanje.",
+    "already_queued": "Ovo izdanje je već u redu preuzimanja.",
+    "fetch_failed": "Datoteku izdanja nije bilo moguće preuzeti s indexera.",
+    "auth_failed": "Klijent za preuzimanje odbio je korisničko ime, lozinku ili API ključ.",
+    "unreachable": "Klijent za preuzimanje nije dostupan. Provjerite adresu i port.",
+    "tls_untrusted": "HTTPS certifikat klijenta nije pouzdan.",
+    "wrong_url": "Nešto je odgovorilo, ali to nije API klijenta. Provjerite port i osnovni URL.",
+    "address_blocked": "Ta adresa nije dopuštena (link-local ili metapodaci oblaka).",
+    "client_error": "Klijent za preuzimanje vratio je grešku.",
+    "unsupported": "Ovaj klijent za preuzimanje to ne podržava.",
     "source_error": "Izvor se ne može pročitati. Provjeri URL i API ključ.",
     "grab_limit": "Dosegnut je dnevni limit preuzimanja za indexer.",
     "bad_token": "Poveznica za preuzimanje nije valjana ili je istekla. Pretraži ponovno.",
@@ -77,16 +87,14 @@
   "comingSoon": {
     "badge": "Uskoro",
     "title": "Još nije izgrađeno: stiže u fazi {{phase}}",
-    "now": "Locarr se gradi u fazama. Računi, sigurnost, postavke, mape za medije i pozadinski zadaci rade već danas.",
+    "now": "Locarr se gradi u fazama. Računi, sigurnost, postavke, mape za medije, pozadinski zadaci, klijenti za preuzimanje i red preuzimanja rade već danas.",
     "sections": {
       "movies": "Pretraga TMDb-a, dodavanje i praćenje filmova, preuzimanje izdanja i uvoz u biblioteku pomoću hardlinkova.",
       "series": "Praćenje serija, sezona i epizoda, uključujući sezonske pakete, anime numeraciju i dnevne emisije.",
       "music": "Praćenje izvođača i albuma s MusicBrainza i uvoz izdanja s tagovima i omotima.",
       "requests": "Korisnici traže filmove, serije i albume; administratori ih odobravaju ili ih propuštaju automatski.",
-      "activity": "Red preuzimanja, povijest i vremenska crta po naslovu koja objašnjava zašto je nešto stiglo ili nije.",
       "calendar": "Nadolazeće epizode i izdanja, na webu i kao iCal feed.",
-      "wanted": "Naslovi koji nedostaju ili su ispod granice kvalitete, s pretragom na jedan klik.",
-      "downloaders": "qBittorrent, Transmission, Deluge, rTorrent, aria2, SABnzbd i NZBGet."
+      "wanted": "Naslovi koji nedostaju ili su ispod granice kvalitete, s pretragom na jedan klik."
     }
   },
   "nav": {
@@ -359,6 +367,184 @@
       "housekeeping": "Održavanje"
     }
   },
+  "downloaders": {
+    "testErrors": {
+      "auth_failed": "Prijava odbijena: provjerite korisničko ime, lozinku ili API ključ.",
+      "unreachable": "Nema veze: provjerite adresu, port i radi li klijent.",
+      "tls_untrusted": "HTTPS certifikat nije pouzdan. Koristite pouzdan certifikat ili dopustite samopotpisane.",
+      "wrong_url": "Nešto je odgovorilo, ali to nije API ovog klijenta: provjerite port i osnovni URL.",
+      "address_blocked": "Ova adresa nije dopuštena (link-local ili metapodaci oblaka).",
+      "client_error": "Klijent je vratio grešku.",
+      "unsupported": "Klijent to ne podržava.",
+      "invalid": "Neke postavke nisu ispravne.",
+      "category_missing": "Veza radi, ali neke kategorije nedostaju."
+    },
+    "title": "Klijenti za preuzimanje",
+    "subtitle": "Torrent i usenet klijenti kojima Locarr šalje izdanja i kako pronalazi njihove datoteke.",
+    "add": "Dodaj klijenta",
+    "edit": "Uredi",
+    "list": "Klijenti",
+    "none": "Još nema klijenata za preuzimanje. Dodajte qBittorrent, SABnzbd ili neki drugi klijent da biste počeli preuzimati.",
+    "version": "verzija {{version}}",
+    "free": "slobodno {{free}}",
+    "categoriesList": "kategorije: {{categories}}",
+    "priorityShort": "prioritet {{priority}}",
+    "protocols": {
+      "torrent": "Torrent",
+      "usenet": "Usenet"
+    },
+    "status": {
+      "ok": "Povezan",
+      "unchecked": "Još nije provjeren",
+      "disabled": "Isključen"
+    },
+    "pick": {
+      "title": "Koji klijent?",
+      "subtitle": "Obrazac traži samo ono što taj klijent treba."
+    },
+    "form": {
+      "addTitle": "Dodaj {{name}}",
+      "editTitle": "Uredi {{name}}",
+      "name": "Naziv",
+      "priority": "Prioritet",
+      "priorityHint": "1 se pokušava prvi; klijenti s istim prioritetom izmjenjuju se.",
+      "enabled": "Uključen",
+      "secretKeep": "Spremljeno — ostavite prazno da ostane",
+      "categories": "Kategorije",
+      "categoriesHint": "Locarr stavlja svoja preuzimanja u ove kategorije i gleda samo njih. Nedostajuće se stvaraju pri prvom preuzimanju.",
+      "directoryCategories": "Ovaj klijent nema kategorije: svaka je podmapa njegove mape za preuzimanja.",
+      "noCategories": "Ovaj klijent nema kategorije. Locarr svoja preuzimanja raspoznaje po ID-u.",
+      "behaviour": "Ponašanje",
+      "recentPriority": "Prioritet za nova izdanja",
+      "olderPriority": "Prioritet za starija izdanja",
+      "initialState": "Nakon dodavanja",
+      "initialStart": "Počni preuzimati",
+      "initialPause": "Dodaj pauzirano",
+      "removeCompleted": "Ukloni preuzimanja nakon uvoza",
+      "removeCompletedHint": "Tek kad se ispune ciljevi seedanja (omjer ili vrijeme); uvezene datoteke ostaju u biblioteci.",
+      "sequential": "Preuzimaj redom",
+      "firstLastPiece": "Prvo prvi i zadnji dijelovi",
+      "tags": "Oznake",
+      "tagsHint": "Odvojene zarezom. Klijent s oznakama koristi se samo za izdanja s nekom od njih.",
+      "delete": "Obriši klijenta",
+      "deleteConfirm": "Obriši"
+    },
+    "fields": {
+      "host": "Adresa",
+      "hostHint": "Samo naziv ili IP adresa, bez http://.",
+      "port": "Port",
+      "urlBase": "Osnovni URL",
+      "urlBaseHint": "Samo ako je klijent iza putanje reverse proxyja.",
+      "username": "Korisničko ime",
+      "password": "Lozinka",
+      "apiKey": "API ključ ili RPC tajna",
+      "directory": "Mapa za preuzimanja (kako je vidi klijent)",
+      "directoryHint": "Ostavite prazno za postavku samog klijenta.",
+      "useTls": "Koristi HTTPS",
+      "allowSelfSigned": "Dopusti samopotpisani certifikat",
+      "allowSelfSignedHint": "Isključuje provjeru certifikata samo za ovaj klijent. Koristite samo na vlastitoj mreži."
+    },
+    "priorities": {
+      "normal": "Normalno",
+      "top": "Prvo",
+      "last": "Zadnje"
+    },
+    "test": {
+      "button": "Provjeri",
+      "ok": "Povezano s verzijom {{version}}.",
+      "freeSpace": "Slobodno: {{free}}.",
+      "missingCategories": "Povezano, ali ove kategorije nedostaju: {{categories}}.",
+      "createdOnGrab": "Locarr ih stvara pri prvom preuzimanju, ili ih stvorite sada.",
+      "createByHand": "Stvorite ih u samom klijentu (za Deluge uključite dodatak Label).",
+      "createCategories": "Stvori nedostajuće kategorije"
+    }
+  },
+  "mappings": {
+    "title": "Mapiranje udaljenih putanja",
+    "subtitle": "Kad klijent radi na drugom računalu ili kontejneru i vidi datoteke pod drugom putanjom.",
+    "host": "Adresa klijenta",
+    "remotePath": "Putanja u klijentu",
+    "localPath": "Putanja u Locarru",
+    "add": "Dodaj mapiranje",
+    "none": "Nema mapiranja. S jednom /data montažom (vidi upute za postavljanje) nisu potrebna.",
+    "remove": "Ukloni",
+    "removeConfirm": "Ukloni"
+  },
+  "tracking": {
+    "title": "Praćenje preuzimanja",
+    "subtitle": "Kako Locarr prati preuzimanja u klijentima.",
+    "pollSeconds": "Provjeravaj svakih (sekundi)",
+    "stalledHours": "Označi zapele torrente kao neuspjele nakon (sati)",
+    "hint": "Dok je red otvoren, klijenti se provjeravaju svakih nekoliko sekundi. 0 sati = zapeli torrenti nikad nisu neuspjeli."
+  },
+  "activity": {
+    "tabs": {
+      "queue": "Red",
+      "blocklist": "Blokirana izdanja"
+    },
+    "forbidden": "Red preuzimanja vide samo upravitelji biblioteke."
+  },
+  "queue": {
+    "readyToImport": "Spremno za uvoz",
+    "unknown": "Nije dodao Locarr",
+    "notOurs": "Nije dodao Locarr",
+    "clientError": "{{name}}: {{error}}",
+    "noClients": "Još nema klijenata za preuzimanje. Dodajte ga pod Klijenti za preuzimanje.",
+    "empty": "Trenutno se ništa ne preuzima.",
+    "noMatch": "Nijedno preuzimanje ne odgovara filtrima.",
+    "refresh": "Osvježi",
+    "filters": {
+      "search": "Traži",
+      "client": "Klijent",
+      "state": "Stanje",
+      "all": "Sve"
+    },
+    "columns": {
+      "title": "Izdanje",
+      "client": "Klijent",
+      "state": "Stanje",
+      "progress": "Napredak",
+      "speed": "Brzina",
+      "eta": "Preostalo",
+      "size": "Veličina",
+      "ratio": "Omjer",
+      "actions": "Radnje"
+    },
+    "actions": {
+      "pause": "Pauziraj",
+      "resume": "Nastavi",
+      "top": "Pomakni na vrh",
+      "last": "Pomakni na dno",
+      "remove": "Ukloni",
+      "removeConfirm": "Ukloni iz klijenta",
+      "removeData": "Ukloni + obriši datoteke",
+      "removeDataConfirm": "Obriši datoteke",
+      "blocklist": "Ukloni + blokiraj",
+      "blocklistConfirm": "Blokiraj izdanje"
+    }
+  },
+  "downloadStates": {
+    "queued": "Na čekanju",
+    "downloading": "Preuzima se",
+    "paused": "Pauzirano",
+    "seeding": "Seeda se",
+    "completed": "Završeno",
+    "failed": "Neuspjelo",
+    "warning": "Upozorenje"
+  },
+  "blocklist": {
+    "title": "Blokirana izdanja",
+    "subtitle": "Locarr ova izdanja više nikad ne preuzima.",
+    "none": "Ništa nije blokirano.",
+    "unblock": "Odblokiraj",
+    "unblockConfirm": "Odblokiraj",
+    "reasons": {
+      "manual": "Ručno blokirano",
+      "download_failed": "Preuzimanje nije uspjelo",
+      "stalled": "Zapelo",
+      "import_failed": "Uvoz nije uspio"
+    }
+  },
   "search": {
     "title": "Pretraga",
     "subtitle": "Pitaj sve indexere odjednom. Rezultati se pojavljuju čim koji indexer odgovori.",
@@ -416,9 +602,10 @@
     "magnet": "Magnet poveznica",
     "download": "Preuzmi datoteku",
     "grab": "Preuzmi",
-    "grabLater": "Dostupno nakon download klijenata (P3)",
     "noResults": "Nema rezultata.",
-    "noIndexers": "Nijedan indexer nije uključen za pretragu. Dodaj ga pod Indexeri."
+    "noIndexers": "Nijedan indexer nije uključen za pretragu. Dodaj ga pod Indexeri.",
+    "grabbed": "Poslano",
+    "grabRetry": "Pokušaj ponovno"
   },
   "indexers": {
     "title": "Indexeri",

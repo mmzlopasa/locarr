@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 
-export type Tab = { to: "/settings" | "/settings/media" | "/settings/users" | "/system/status" | "/system/tasks"; label: string };
+export type Tab = { to: "/settings" | "/settings/media" | "/settings/users" | "/system/status" | "/system/tasks" | "/activity/queue" | "/activity/blocklist"; label: string };
 
 /** Section tabs rendered as links (each tab is its own address). */
 export function Tabs({ tabs, label }: { tabs: Tab[]; label: string }) {

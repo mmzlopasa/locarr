@@ -47,7 +47,17 @@
     "generic": "The request failed (HTTP {{status}}).",
     "network": "Cannot reach the server. Check your connection.",
     "unknown": "Something went wrong.",
-    "name_taken": "An indexer with this name already exists.",
+    "name_taken": "A download client with this name already exists.",
+    "no_download_client": "No enabled download client can take this release. Add one under Downloaders.",
+    "already_queued": "This release is already in the download queue.",
+    "fetch_failed": "The release file could not be downloaded from the indexer.",
+    "auth_failed": "The download client refused the username, password or API key.",
+    "unreachable": "The download client cannot be reached. Check the host and port.",
+    "tls_untrusted": "The client's HTTPS certificate is not trusted.",
+    "wrong_url": "Something answered, but not the client's API. Check the port and URL base.",
+    "address_blocked": "That address is not allowed (link-local or cloud metadata).",
+    "client_error": "The download client returned an error.",
+    "unsupported": "This download client cannot do that.",
     "source_error": "The source could not be read. Check its URL and API key.",
     "grab_limit": "The indexer's daily grab limit is reached.",
     "bad_token": "The download link is invalid or has expired. Search again.",
@@ -77,16 +87,14 @@
   "comingSoon": {
     "badge": "Coming soon",
     "title": "Not built yet: arrives in phase {{phase}}",
-    "now": "Locarr is being built in phases. Accounts, security, settings, media folders and background tasks work today.",
+    "now": "Locarr is being built in phases. Accounts, security, settings, media folders, background tasks, download clients and the download queue work today.",
     "sections": {
       "movies": "Search TMDb, add and monitor movies, grab releases and import them into your library with hardlinks.",
       "series": "Follow series, seasons and episodes, including season packs, anime numbering and daily shows.",
       "music": "Follow artists and albums from MusicBrainz and import releases with their tags and covers.",
       "requests": "Users ask for movies, series and albums; administrators approve them or let them through automatically.",
-      "activity": "The download queue, history and a timeline per title explaining why something did or did not arrive.",
       "calendar": "Upcoming episodes and releases, on the web and as an iCal feed.",
-      "wanted": "Missing titles and titles below their quality cutoff, with one-click searches.",
-      "downloaders": "qBittorrent, Transmission, Deluge, rTorrent, aria2, SABnzbd and NZBGet."
+      "wanted": "Missing titles and titles below their quality cutoff, with one-click searches."
     }
   },
   "nav": {
@@ -359,6 +367,184 @@
       "housekeeping": "Housekeeping"
     }
   },
+  "downloaders": {
+    "testErrors": {
+      "auth_failed": "Sign-in refused: check the username, password or API key.",
+      "unreachable": "Cannot connect: check the host, port and that the client is running.",
+      "tls_untrusted": "The HTTPS certificate is not trusted. Use a trusted certificate or allow self-signed certificates.",
+      "wrong_url": "Something answered, but not this client's API: check the port and URL base.",
+      "address_blocked": "This address is not allowed (link-local or cloud metadata).",
+      "client_error": "The client returned an error.",
+      "unsupported": "The client does not support this.",
+      "invalid": "Some settings are not valid.",
+      "category_missing": "Connected, but some categories are missing."
+    },
+    "title": "Download clients",
+    "subtitle": "Torrent and usenet clients Locarr sends releases to, and how it finds their files.",
+    "add": "Add client",
+    "edit": "Edit",
+    "list": "Clients",
+    "none": "No download clients yet. Add qBittorrent, SABnzbd or another client to start downloading.",
+    "version": "version {{version}}",
+    "free": "{{free}} free",
+    "categoriesList": "categories: {{categories}}",
+    "priorityShort": "priority {{priority}}",
+    "protocols": {
+      "torrent": "Torrent",
+      "usenet": "Usenet"
+    },
+    "status": {
+      "ok": "Connected",
+      "unchecked": "Not checked yet",
+      "disabled": "Disabled"
+    },
+    "pick": {
+      "title": "Which client?",
+      "subtitle": "The form only asks for what that client needs."
+    },
+    "form": {
+      "addTitle": "Add {{name}}",
+      "editTitle": "Edit {{name}}",
+      "name": "Name",
+      "priority": "Priority",
+      "priorityHint": "1 is tried first; clients with the same priority take turns.",
+      "enabled": "Enabled",
+      "secretKeep": "Saved — leave empty to keep",
+      "categories": "Categories",
+      "categoriesHint": "Locarr puts its downloads in these categories and only looks at them. Missing ones are created on the first download.",
+      "directoryCategories": "This client has no categories: each one is a sub-folder of its download folder.",
+      "noCategories": "This client has no categories. Locarr tells its own downloads apart by their ID.",
+      "behaviour": "Behaviour",
+      "recentPriority": "Priority for recent releases",
+      "olderPriority": "Priority for older releases",
+      "initialState": "When added",
+      "initialStart": "Start downloading",
+      "initialPause": "Add paused",
+      "removeCompleted": "Remove downloads after import",
+      "removeCompletedHint": "Only after the seeding goals (ratio or time) are met; the imported files stay in the library.",
+      "sequential": "Download in order",
+      "firstLastPiece": "First and last pieces first",
+      "tags": "Tags",
+      "tagsHint": "Comma-separated. A client with tags is only used for releases with one of them.",
+      "delete": "Delete client",
+      "deleteConfirm": "Delete it"
+    },
+    "fields": {
+      "host": "Host",
+      "hostHint": "Name or IP address only, without http://.",
+      "port": "Port",
+      "urlBase": "URL base",
+      "urlBaseHint": "Only when the client is behind a reverse proxy path.",
+      "username": "Username",
+      "password": "Password",
+      "apiKey": "API key or RPC secret",
+      "directory": "Download folder (as the client sees it)",
+      "directoryHint": "Leave empty to use the client's own setting.",
+      "useTls": "Use HTTPS",
+      "allowSelfSigned": "Allow a self-signed certificate",
+      "allowSelfSignedHint": "Turns certificate checks off for this client only. Use it only on your own network."
+    },
+    "priorities": {
+      "normal": "Normal",
+      "top": "First",
+      "last": "Last"
+    },
+    "test": {
+      "button": "Test",
+      "ok": "Connected to version {{version}}.",
+      "freeSpace": "{{free}} free.",
+      "missingCategories": "Connected, but these categories are missing: {{categories}}.",
+      "createdOnGrab": "Locarr creates them on the first download, or create them now.",
+      "createByHand": "Create them in the client itself (for Deluge, turn on the Label plugin).",
+      "createCategories": "Create missing categories"
+    }
+  },
+  "mappings": {
+    "title": "Remote path mappings",
+    "subtitle": "When a client runs on another machine or container and sees the files under another path.",
+    "host": "Client host",
+    "remotePath": "Path in the client",
+    "localPath": "Path in Locarr",
+    "add": "Add mapping",
+    "none": "No mappings. With the single /data mount (see the setup guide) none are needed.",
+    "remove": "Remove",
+    "removeConfirm": "Remove it"
+  },
+  "tracking": {
+    "title": "Download tracking",
+    "subtitle": "How Locarr follows downloads in the clients.",
+    "pollSeconds": "Check every (seconds)",
+    "stalledHours": "Fail stalled torrents after (hours)",
+    "hint": "While the queue is open, clients are checked every few seconds. 0 hours = never fail stalled torrents."
+  },
+  "activity": {
+    "tabs": {
+      "queue": "Queue",
+      "blocklist": "Blocklist"
+    },
+    "forbidden": "Only library managers can see the download queue."
+  },
+  "queue": {
+    "readyToImport": "Ready to import",
+    "unknown": "Not added by Locarr",
+    "notOurs": "Not added by Locarr",
+    "clientError": "{{name}}: {{error}}",
+    "noClients": "No download clients yet. Add one under Downloaders.",
+    "empty": "Nothing is downloading right now.",
+    "noMatch": "No downloads match the filters.",
+    "refresh": "Refresh",
+    "filters": {
+      "search": "Search",
+      "client": "Client",
+      "state": "State",
+      "all": "All"
+    },
+    "columns": {
+      "title": "Release",
+      "client": "Client",
+      "state": "State",
+      "progress": "Progress",
+      "speed": "Speed",
+      "eta": "Time left",
+      "size": "Size",
+      "ratio": "Ratio",
+      "actions": "Actions"
+    },
+    "actions": {
+      "pause": "Pause",
+      "resume": "Resume",
+      "top": "Move to the top",
+      "last": "Move to the bottom",
+      "remove": "Remove",
+      "removeConfirm": "Remove from client",
+      "removeData": "Remove + delete files",
+      "removeDataConfirm": "Delete the files",
+      "blocklist": "Remove + block",
+      "blocklistConfirm": "Block this release"
+    }
+  },
+  "downloadStates": {
+    "queued": "Queued",
+    "downloading": "Downloading",
+    "paused": "Paused",
+    "seeding": "Seeding",
+    "completed": "Completed",
+    "failed": "Failed",
+    "warning": "Warning"
+  },
+  "blocklist": {
+    "title": "Blocked releases",
+    "subtitle": "Locarr never grabs these releases again.",
+    "none": "Nothing is blocked.",
+    "unblock": "Unblock",
+    "unblockConfirm": "Unblock it",
+    "reasons": {
+      "manual": "Blocked by hand",
+      "download_failed": "Download failed",
+      "stalled": "Stalled",
+      "import_failed": "Import failed"
+    }
+  },
   "search": {
     "title": "Search",
     "subtitle": "Ask every indexer at once. Results appear as each indexer answers.",
@@ -416,9 +602,10 @@
     "magnet": "Magnet link",
     "download": "Download file",
     "grab": "Grab",
-    "grabLater": "Available after download clients (P3)",
     "noResults": "No results.",
-    "noIndexers": "No indexer is enabled for searching. Add one under Indexers."
+    "noIndexers": "No indexer is enabled for searching. Add one under Indexers.",
+    "grabbed": "Sent",
+    "grabRetry": "Retry grab"
   },
   "indexers": {
     "title": "Indexers",

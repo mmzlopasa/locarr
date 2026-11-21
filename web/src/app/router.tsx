@@ -22,6 +22,10 @@ import { RootFoldersPage } from "@/features/settings/RootFoldersPage";
 import { SystemLayout } from "@/features/system/SystemLayout";
 import { StatusPage } from "@/features/system/StatusPage";
 import { TasksPage } from "@/features/system/TasksPage";
+import { DownloadersPage } from "@/features/downloaders/DownloadersPage";
+import { ActivityLayout } from "@/features/activity/ActivityLayout";
+import { QueuePage } from "@/features/activity/QueuePage";
+import { BlocklistPage } from "@/features/activity/BlocklistPage";
 import { IndexersPage } from "@/features/indexers/IndexersPage";
 import { SearchPage } from "@/features/search/SearchPage";
 
@@ -80,10 +84,8 @@ export const UPCOMING = [
   { path: "/series", key: "series", phase: "P5" },
   { path: "/music", key: "music", phase: "P6" },
   { path: "/requests", key: "requests", phase: "P8" },
-  { path: "/activity", key: "activity", phase: "P11" },
   { path: "/calendar", key: "calendar", phase: "P5" },
   { path: "/wanted", key: "wanted", phase: "P4" },
-  { path: "/downloaders", key: "downloaders", phase: "P3" },
 ] as const;
 
 const upcomingRoutes = UPCOMING.map((s) =>
@@ -94,6 +96,16 @@ const upcomingRoutes = UPCOMING.map((s) =>
   }),
 );
 
+const activityRoute = createRoute({ getParentRoute: () => appRoute, path: "/activity", component: ActivityLayout });
+const activityIndexRoute = createRoute({
+  getParentRoute: () => activityRoute,
+  path: "/",
+  beforeLoad: () => {
+    throw redirect({ to: "/activity/queue" });
+  },
+});
+const queueRoute = createRoute({ getParentRoute: () => activityRoute, path: "/queue", component: QueuePage });
+const blocklistRoute = createRoute({ getParentRoute: () => activityRoute, path: "/blocklist", component: BlocklistPage });
 const searchRoute = createRoute({ getParentRoute: () => appRoute, path: "/search", component: SearchPage });
 
 const accountRoute = createRoute({ getParentRoute: () => appRoute, path: "/account", component: AccountPage });
@@ -107,6 +119,8 @@ const adminRoute = createRoute({
   },
   component: Outlet,
 });
+
+const downloadersRoute = createRoute({ getParentRoute: () => adminRoute, path: "/downloaders", component: DownloadersPage });
 
 const indexersRoute = createRoute({ getParentRoute: () => adminRoute, path: "/indexers", component: IndexersPage });
 const settingsRoute = createRoute({ getParentRoute: () => adminRoute, path: "/settings", component: SettingsLayout });
@@ -131,9 +145,11 @@ export const routeTree = rootRoute.addChildren([
   appRoute.addChildren([
     indexRoute,
     ...upcomingRoutes,
+    activityRoute.addChildren([activityIndexRoute, queueRoute, blocklistRoute]),
     searchRoute,
     accountRoute,
     adminRoute.addChildren([
+      downloadersRoute,
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),

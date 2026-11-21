@@ -10,6 +10,20 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
+func encodeAddBlocklistEntryRequest(
+	req *BlocklistInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeChangePasswordRequest(
 	req *ChangePasswordRequest,
 	r *http.Request,
@@ -38,6 +52,20 @@ func encodeCreateApiKeyRequest(
 	return nil
 }
 
+func encodeCreateDownloadClientRequest(
+	req *DownloadClientInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateIndexerRequest(
 	req *IndexerInput,
 	r *http.Request,
@@ -54,6 +82,20 @@ func encodeCreateIndexerRequest(
 
 func encodeCreateIndexerSourceRequest(
 	req *IndexerSourceInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeCreateRemotePathMappingRequest(
+	req *RemotePathMappingInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -122,6 +164,20 @@ func encodeEnableTotpRequest(
 	return nil
 }
 
+func encodeGrabReleaseRequest(
+	req *GrabRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeLoginRequest(
 	req *LoginRequest,
 	r *http.Request,
@@ -178,6 +234,20 @@ func encodeResetUserPasswordRequest(
 	return nil
 }
 
+func encodeSetQueueItemPriorityRequest(
+	req *PriorityRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeSetupRequest(
 	req *SetupRequest,
 	r *http.Request,
@@ -192,8 +262,50 @@ func encodeSetupRequest(
 	return nil
 }
 
+func encodeTestDownloadClientRequest(
+	req *DownloadClientTestRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeTestIndexerConfigRequest(
 	req *IndexerTestRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateDownloadClientRequest(
+	req *DownloadClientInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateDownloadSettingsRequest(
+	req *UpdateDownloadSettings,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -236,6 +348,20 @@ func encodeUpdateIndexerSettingsRequest(
 
 func encodeUpdateMeRequest(
 	req *UpdateMeRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateRemotePathMappingRequest(
+	req *RemotePathMappingInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

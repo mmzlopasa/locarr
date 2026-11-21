@@ -766,6 +766,351 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/downloadclients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download clients with their last status (administrators) */
+        get: operations["listDownloadClients"];
+        put?: never;
+        /** Add a download client (administrators) */
+        post: operations["createDownloadClient"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloadclients/implementations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Supported clients, the fields each needs and what each can do (administrators) */
+        get: operations["listDownloadClientImplementations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloadclients/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Test a client configuration (administrators)
+         * @description Always answers 200 with the outcome. With `id`, password and API key left out
+         *     are taken from that stored client. `errorCode` is one of `auth_failed`,
+         *     `unreachable`, `tls_untrusted`, `wrong_url`, `address_blocked`, `client_error`,
+         *     `unsupported`, `invalid` or `category_missing` (then `ok` is true and
+         *     `missingCategories` lists them).
+         */
+        post: operations["testDownloadClient"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloadclients/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download tracking settings (administrators) */
+        get: operations["getDownloadSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change download tracking settings (administrators) */
+        patch: operations["updateDownloadSettings"];
+        trace?: never;
+    };
+    "/downloadclients/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One download client (administrators) */
+        get: operations["getDownloadClient"];
+        /**
+         * Replace a download client's settings (administrators)
+         * @description Leave `password` / `apiKey` out to keep them; send "" to clear.
+         */
+        put: operations["updateDownloadClient"];
+        post?: never;
+        /**
+         * Remove a download client (administrators)
+         * @description Nothing in the client is touched; its downloads stay in the history.
+         */
+        delete: operations["deleteDownloadClient"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloadclients/{id}/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create the client's missing categories (administrators) */
+        post: operations["createDownloadClientCategories"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/remotepathmappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Remote path mappings (administrators) */
+        get: operations["listRemotePathMappings"];
+        put?: never;
+        /**
+         * Add a remote path mapping (administrators)
+         * @description The local path must lie inside the allowed data roots.
+         */
+        post: operations["createRemotePathMapping"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/remotepathmappings/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace a remote path mapping (administrators) */
+        put: operations["updateRemotePathMapping"];
+        post?: never;
+        /** Remove a remote path mapping (administrators) */
+        delete: operations["deleteRemotePathMapping"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The download queue with live progress (library managers)
+         * @description Tracked downloads that are still in a client, plus items other programs put in
+         *     Locarr's categories (`unknown`: shown, never touched). Asking for the queue
+         *     makes the tracker poll every few seconds for a short while.
+         */
+        get: operations["getQueue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Poll every client now (library managers) */
+        post: operations["refreshQueue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/grab": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a release to a download client (library managers)
+         * @description The server fetches the .torrent / .nzb itself (size cap, timeout, no
+         *     redirects to another host, no link-local or metadata addresses); magnet
+         *     links go to the client directly. The client is chosen by protocol, tags
+         *     and priority unless `clientId` is given. Errors: `no_download_client`,
+         *     `already_queued`, `fetch_failed`, and the client errors of the test action.
+         */
+        post: operations["grabRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/blocklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Blocked releases (library managers) */
+        get: operations["listBlocklist"];
+        put?: never;
+        /** Block a release (library managers) */
+        post: operations["addBlocklistEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/blocklist/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Unblock a release (library managers) */
+        delete: operations["deleteBlocklistEntry"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a download from its client (library managers)
+         * @description `deleteData` also deletes the downloaded files (by the client, or by Locarr
+         *     inside the data roots when the client cannot). `blocklist` blocks the release.
+         */
+        delete: operations["removeQueueItem"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/{id}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pause a download (library managers) */
+        post: operations["pauseQueueItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/{id}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resume a download (library managers) */
+        post: operations["resumeQueueItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/{id}/priority": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a download in its client's queue (library managers) */
+        post: operations["setQueueItemPriority"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/queue/{id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** State history of one download (library managers) */
+        get: operations["listQueueItemEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1345,6 +1690,310 @@ export interface components {
             resultCount: number;
             errorCount: number;
             indexers: components["schemas"]["SearchIndexerResult"][];
+        };
+        /** @enum {string} */
+        DownloadProtocol: "torrent" | "usenet";
+        /**
+         * @description The client's state, normalised (the raw one is in `rawState`).
+         * @enum {string}
+         */
+        DownloadState: "queued" | "downloading" | "paused" | "seeding" | "completed" | "failed" | "warning";
+        /**
+         * @description Where the download is in Locarr: `active` (in the client), `completed`
+         *     (finished and visible locally: ready to import), `imported`, `failed`, `removed`.
+         * @enum {string}
+         */
+        DownloadStatus: "active" | "completed" | "imported" | "failed" | "removed";
+        /** @enum {string} */
+        QueuePriority: "normal" | "top" | "last";
+        /** @enum {string} */
+        DownloadClientField: "host" | "port" | "useTls" | "urlBase" | "username" | "password" | "apiKey" | "directory" | "allowSelfSigned";
+        DownloadClientCapabilities: {
+            categories: boolean;
+            createCategories: boolean;
+            /** @description No categories in the client; each category is a sub-folder of the download folder. */
+            directoryCategories: boolean;
+            tags: boolean;
+            seedLimits: boolean;
+            sequential: boolean;
+            firstLastPiece: boolean;
+            priority: boolean;
+            savePath: boolean;
+            freeSpace: boolean;
+            deletesData: boolean;
+        };
+        DownloadClientImplementation: {
+            name: string;
+            displayName: string;
+            protocol: components["schemas"]["DownloadProtocol"];
+            defaultPort: number;
+            defaultUrlBase: string;
+            defaultUsername: string;
+            fields: components["schemas"]["DownloadClientField"][];
+            required: components["schemas"]["DownloadClientField"][];
+            capabilities: components["schemas"]["DownloadClientCapabilities"];
+        };
+        DownloadClientCategories: {
+            movies: string;
+            series: string;
+            music: string;
+        };
+        /** @description The last poll. Absent `checkedAt` = not polled yet (or disabled). */
+        DownloadClientStatus: {
+            ok: boolean;
+            /** Format: date-time */
+            checkedAt?: string;
+            errorCode?: string;
+            error?: string;
+            version?: string;
+            /** Format: int64 */
+            freeSpaceBytes?: number;
+        };
+        DownloadClient: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            implementation: string;
+            protocol: components["schemas"]["DownloadProtocol"];
+            enabled: boolean;
+            priority: number;
+            host: string;
+            port: number;
+            useTls: boolean;
+            allowSelfSigned: boolean;
+            urlBase: string;
+            username: string;
+            password: components["schemas"]["SecretState"];
+            apiKey: components["schemas"]["SecretState"];
+            directory: string;
+            categories: components["schemas"]["DownloadClientCategories"];
+            recentPriority: components["schemas"]["QueuePriority"];
+            olderPriority: components["schemas"]["QueuePriority"];
+            /** @enum {string} */
+            initialState: "start" | "pause";
+            removeCompleted: boolean;
+            sequential: boolean;
+            firstLastPiece: boolean;
+            tags: string[];
+            status: components["schemas"]["DownloadClientStatus"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        DownloadClientInput: {
+            name: string;
+            implementation: string;
+            /** @default true */
+            enabled: boolean;
+            /** @default 1 */
+            priority: number;
+            host: string;
+            port?: number;
+            /** @default false */
+            useTls: boolean;
+            /** @default false */
+            allowSelfSigned: boolean;
+            urlBase?: string;
+            username?: string;
+            /** @description Write-only. Omit to keep, "" to clear. */
+            password?: string;
+            /** @description Write-only. Omit to keep, "" to clear. */
+            apiKey?: string;
+            directory?: string;
+            categories?: components["schemas"]["DownloadClientCategories"];
+            recentPriority?: components["schemas"]["QueuePriority"];
+            olderPriority?: components["schemas"]["QueuePriority"];
+            /** @enum {string} */
+            initialState?: "start" | "pause";
+            /** @default false */
+            removeCompleted: boolean;
+            /** @default false */
+            sequential: boolean;
+            /** @default false */
+            firstLastPiece: boolean;
+            tags?: string[];
+        };
+        DownloadClientTestRequest: {
+            /**
+             * Format: int64
+             * @description A stored client whose password / API key are used when left out.
+             */
+            id?: number;
+            client: components["schemas"]["DownloadClientInput"];
+        };
+        DownloadClientTestResult: {
+            ok: boolean;
+            errorCode?: string;
+            message?: string;
+            version?: string;
+            /** Format: int64 */
+            freeSpaceBytes?: number;
+            missingCategories: string[];
+            canCreateCategories: boolean;
+        };
+        CreatedCategories: {
+            categories: string[];
+        };
+        DownloadSettings: {
+            /** @description How often clients are polled (faster while the queue is open). */
+            pollSeconds: number;
+            /** @description A torrent with no progress and no seeds for this long fails (0 = never). */
+            stalledHours: number;
+        };
+        UpdateDownloadSettings: {
+            pollSeconds?: number;
+            stalledHours?: number;
+        };
+        RemotePathMapping: {
+            /** Format: int64 */
+            id: number;
+            host: string;
+            remotePath: string;
+            localPath: string;
+        };
+        RemotePathMappingInput: {
+            host: string;
+            remotePath: string;
+            localPath: string;
+        };
+        QueueItem: {
+            /**
+             * Format: int64
+             * @description 0 for unknown items (added outside Locarr).
+             */
+            id: number;
+            unknown: boolean;
+            /** Format: int64 */
+            clientId?: number;
+            clientName: string;
+            clientItemId: string;
+            protocol: components["schemas"]["DownloadProtocol"];
+            title: string;
+            indexer?: string;
+            mediaKind?: string;
+            category: string;
+            status: components["schemas"]["DownloadStatus"];
+            state: components["schemas"]["DownloadState"];
+            rawState: string;
+            /** Format: double */
+            progress: number;
+            /** Format: int64 */
+            sizeBytes: number;
+            /** Format: int64 */
+            downloadedBytes: number;
+            /** Format: int64 */
+            downloadSpeed: number;
+            /** Format: int64 */
+            uploadSpeed: number;
+            /** Format: int64 */
+            etaSeconds?: number;
+            /** Format: double */
+            ratio: number;
+            /** Format: int64 */
+            seedingSeconds: number;
+            contentPath?: string;
+            localPath?: string;
+            message: string;
+            /** @description Opaque JSON from whoever grabbed the release. */
+            itemRef?: unknown;
+            /** Format: date-time */
+            addedAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            completedAt?: string;
+        };
+        QueueClient: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            protocol: components["schemas"]["DownloadProtocol"];
+            enabled: boolean;
+            canPrioritise?: boolean;
+            status: components["schemas"]["DownloadClientStatus"];
+        };
+        Queue: {
+            items: components["schemas"]["QueueItem"][];
+            clients: components["schemas"]["QueueClient"][];
+        };
+        /**
+         * @description One of `downloadUrl` or `downloadToken`. With `indexerId`, http(s) links and
+         *     tokens are fetched through that indexer (its credentials, grab limit and
+         *     seeding goals apply).
+         */
+        GrabRequest: {
+            /** @description An http(s) link to a .torrent or .nzb, or a magnet link. */
+            downloadUrl?: string;
+            /** @description The `token` of a search result's `downloadLink` (needs `indexerId`). */
+            downloadToken?: string;
+            protocol: components["schemas"]["DownloadProtocol"];
+            title: string;
+            /** Format: int64 */
+            indexerId?: number;
+            indexer?: string;
+            guid?: string;
+            mediaKind?: components["schemas"]["MediaKind"];
+            /** @description Opaque JSON for the importer (up to 16 KiB). */
+            itemRef?: unknown;
+            tags?: string[];
+            /** Format: int64 */
+            clientId?: number;
+            /**
+             * Format: double
+             * @description Seeding goal from the indexer settings (overrides the client's).
+             */
+            seedRatio?: number;
+            seedTimeMinutes?: number;
+            /** Format: date-time */
+            publishedAt?: string;
+        };
+        BlocklistEntry: {
+            /** Format: int64 */
+            id: number;
+            title: string;
+            protocol: string;
+            /** Format: int64 */
+            indexerId?: number;
+            indexer: string;
+            infoHash: string;
+            guid: string;
+            reason: string;
+            message: string;
+            itemRef?: unknown;
+            /** Format: int64 */
+            downloadId?: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        BlocklistInput: {
+            title: string;
+            protocol?: components["schemas"]["DownloadProtocol"];
+            /** Format: int64 */
+            indexerId?: number;
+            indexer?: string;
+            infoHash?: string;
+            guid?: string;
+            reason?: string;
+            message?: string;
+            itemRef?: unknown;
+        };
+        PriorityRequest: {
+            priority: components["schemas"]["QueuePriority"];
+        };
+        DownloadEvent: {
+            /** Format: int64 */
+            id: number;
+            /** Format: int64 */
+            downloadId: number;
+            /** Format: date-time */
+            at: string;
+            /** @description grabbed, state, completed, failed, removed, imported, import_failed or blocklisted. */
+            type: string;
+            fromState: string;
+            toState: string;
+            message: string;
+            data?: unknown;
         };
     };
     responses: {
@@ -2591,6 +3240,583 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SearchLogEntry"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listDownloadClients: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Clients */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadClient"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createDownloadClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DownloadClientInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadClient"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listDownloadClientImplementations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Implementations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadClientImplementation"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testDownloadClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DownloadClientTestRequest"];
+            };
+        };
+        responses: {
+            /** @description Outcome */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadClientTestResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDownloadSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateDownloadSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDownloadSettings"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDownloadClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Client */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadClient"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateDownloadClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DownloadClientInput"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadClient"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteDownloadClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createDownloadClientCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Categories that now exist */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedCategories"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listRemotePathMappings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Mappings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RemotePathMapping"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createRemotePathMapping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RemotePathMappingInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RemotePathMapping"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateRemotePathMapping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RemotePathMappingInput"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RemotePathMapping"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteRemotePathMapping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getQueue: {
+        parameters: {
+            query?: {
+                includeUnknown?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Queue"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    refreshQueue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Polling */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    grabRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrabRequest"];
+            };
+        };
+        responses: {
+            /** @description Sent to the client */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueueItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listBlocklist: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Entries */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlocklistEntry"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addBlocklistEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlocklistInput"];
+            };
+        };
+        responses: {
+            /** @description Blocked */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlocklistEntry"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteBlocklistEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    removeQueueItem: {
+        parameters: {
+            query?: {
+                deleteData?: boolean;
+                blocklist?: boolean;
+                reason?: string;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    pauseQueueItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paused */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    resumeQueueItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Resumed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    setQueueItemPriority: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PriorityRequest"];
+            };
+        };
+        responses: {
+            /** @description Moved */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listQueueItemEvents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Events, oldest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadEvent"][];
                 };
             };
             default: components["responses"]["Error"];

@@ -8,6 +8,12 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AddBlocklistEntry implements addBlocklistEntry operation.
+	//
+	// Block a release (library managers).
+	//
+	// POST /queue/blocklist
+	AddBlocklistEntry(ctx context.Context, req *BlocklistInput) (*BlocklistEntry, error)
 	// BrowseFilesystem implements browseFilesystem operation.
 	//
 	// Without `path`, lists the data roots themselves.
@@ -32,6 +38,18 @@ type Handler interface {
 	//
 	// POST /auth/apikeys
 	CreateApiKey(ctx context.Context, req *CreateApiKeyRequest) (*CreatedApiKey, error)
+	// CreateDownloadClient implements createDownloadClient operation.
+	//
+	// Add a download client (administrators).
+	//
+	// POST /downloadclients
+	CreateDownloadClient(ctx context.Context, req *DownloadClientInput) (*DownloadClient, error)
+	// CreateDownloadClientCategories implements createDownloadClientCategories operation.
+	//
+	// Create the client's missing categories (administrators).
+	//
+	// POST /downloadclients/{id}/categories
+	CreateDownloadClientCategories(ctx context.Context, params CreateDownloadClientCategoriesParams) (*CreatedCategories, error)
 	// CreateIndexer implements createIndexer operation.
 	//
 	// Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
@@ -45,6 +63,12 @@ type Handler interface {
 	//
 	// POST /indexers/sources
 	CreateIndexerSource(ctx context.Context, req *IndexerSourceInput) (*IndexerSourceSyncResult, error)
+	// CreateRemotePathMapping implements createRemotePathMapping operation.
+	//
+	// The local path must lie inside the allowed data roots.
+	//
+	// POST /remotepathmappings
+	CreateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput) (*RemotePathMapping, error)
 	// CreateRootFolder implements createRootFolder operation.
 	//
 	// The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
@@ -63,6 +87,18 @@ type Handler interface {
 	//
 	// DELETE /auth/apikeys/{id}
 	DeleteApiKey(ctx context.Context, params DeleteApiKeyParams) error
+	// DeleteBlocklistEntry implements deleteBlocklistEntry operation.
+	//
+	// Unblock a release (library managers).
+	//
+	// DELETE /queue/blocklist/{id}
+	DeleteBlocklistEntry(ctx context.Context, params DeleteBlocklistEntryParams) error
+	// DeleteDownloadClient implements deleteDownloadClient operation.
+	//
+	// Nothing in the client is touched; its downloads stay in the history.
+	//
+	// DELETE /downloadclients/{id}
+	DeleteDownloadClient(ctx context.Context, params DeleteDownloadClientParams) error
 	// DeleteIndexer implements deleteIndexer operation.
 	//
 	// Remove an indexer (administrators).
@@ -75,6 +111,12 @@ type Handler interface {
 	//
 	// DELETE /indexers/sources/{id}
 	DeleteIndexerSource(ctx context.Context, params DeleteIndexerSourceParams) error
+	// DeleteRemotePathMapping implements deleteRemotePathMapping operation.
+	//
+	// Remove a remote path mapping (administrators).
+	//
+	// DELETE /remotepathmappings/{id}
+	DeleteRemotePathMapping(ctx context.Context, params DeleteRemotePathMappingParams) error
 	// DeleteRootFolder implements deleteRootFolder operation.
 	//
 	// Only forgets the folder; nothing on disk is touched.
@@ -107,6 +149,18 @@ type Handler interface {
 	//
 	// POST /auth/totp/enable
 	EnableTotp(ctx context.Context, req *TotpCodeRequest) (*RecoveryCodes, error)
+	// GetDownloadClient implements getDownloadClient operation.
+	//
+	// One download client (administrators).
+	//
+	// GET /downloadclients/{id}
+	GetDownloadClient(ctx context.Context, params GetDownloadClientParams) (*DownloadClient, error)
+	// GetDownloadSettings implements getDownloadSettings operation.
+	//
+	// Download tracking settings (administrators).
+	//
+	// GET /downloadclients/settings
+	GetDownloadSettings(ctx context.Context) (*DownloadSettings, error)
 	// GetIndexer implements getIndexer operation.
 	//
 	// One indexer (administrators).
@@ -125,6 +179,14 @@ type Handler interface {
 	//
 	// GET /auth/me
 	GetMe(ctx context.Context) (*User, error)
+	// GetQueue implements getQueue operation.
+	//
+	// Tracked downloads that are still in a client, plus items other programs put in Locarr's categories
+	// (`unknown`: shown, never touched). Asking for the queue makes the tracker poll every few seconds for
+	// a short while.
+	//
+	// GET /queue
+	GetQueue(ctx context.Context, params GetQueueParams) (*Queue, error)
 	// GetSettings implements getSettings operation.
 	//
 	// Secret fields only say whether they are set; their values never leave the server.
@@ -149,12 +211,39 @@ type Handler interface {
 	//
 	// GET /users/{id}
 	GetUser(ctx context.Context, params GetUserParams) (*User, error)
+	// GrabRelease implements grabRelease operation.
+	//
+	// The server fetches the .torrent / .nzb itself (size cap, timeout, no redirects to another host, no
+	// link-local or metadata addresses); magnet links go to the client directly. The client is chosen by
+	// protocol, tags and priority unless `clientId` is given. Errors: `no_download_client`,
+	// `already_queued`, `fetch_failed`, and the client errors of the test action.
+	//
+	// POST /queue/grab
+	GrabRelease(ctx context.Context, req *GrabRequest) (*QueueItem, error)
 	// ListApiKeys implements listApiKeys operation.
 	//
 	// Own API keys.
 	//
 	// GET /auth/apikeys
 	ListApiKeys(ctx context.Context) ([]ApiKey, error)
+	// ListBlocklist implements listBlocklist operation.
+	//
+	// Blocked releases (library managers).
+	//
+	// GET /queue/blocklist
+	ListBlocklist(ctx context.Context, params ListBlocklistParams) ([]BlocklistEntry, error)
+	// ListDownloadClientImplementations implements listDownloadClientImplementations operation.
+	//
+	// Supported clients, the fields each needs and what each can do (administrators).
+	//
+	// GET /downloadclients/implementations
+	ListDownloadClientImplementations(ctx context.Context) ([]DownloadClientImplementation, error)
+	// ListDownloadClients implements listDownloadClients operation.
+	//
+	// Download clients with their last status (administrators).
+	//
+	// GET /downloadclients
+	ListDownloadClients(ctx context.Context) ([]DownloadClient, error)
 	// ListIndexerSources implements listIndexerSources operation.
 	//
 	// Prowlarr and Jackett instances indexers are imported from (administrators).
@@ -167,6 +256,18 @@ type Handler interface {
 	//
 	// GET /indexers
 	ListIndexers(ctx context.Context) ([]Indexer, error)
+	// ListQueueItemEvents implements listQueueItemEvents operation.
+	//
+	// State history of one download (library managers).
+	//
+	// GET /queue/{id}/events
+	ListQueueItemEvents(ctx context.Context, params ListQueueItemEventsParams) ([]DownloadEvent, error)
+	// ListRemotePathMappings implements listRemotePathMappings operation.
+	//
+	// Remote path mappings (administrators).
+	//
+	// GET /remotepathmappings
+	ListRemotePathMappings(ctx context.Context) ([]RemotePathMapping, error)
 	// ListRootFolders implements listRootFolders operation.
 	//
 	// Root folders with free space (administrators).
@@ -210,18 +311,37 @@ type Handler interface {
 	//
 	// POST /auth/logout
 	Logout(ctx context.Context) (*LogoutNoContent, error)
+	// PauseQueueItem implements pauseQueueItem operation.
+	//
+	// Pause a download (library managers).
+	//
+	// POST /queue/{id}/pause
+	PauseQueueItem(ctx context.Context, params PauseQueueItemParams) error
 	// PreviewIndexerSource implements previewIndexerSource operation.
 	//
 	// List what a Prowlarr or Jackett source would import (administrators).
 	//
 	// POST /indexers/sources/preview
 	PreviewIndexerSource(ctx context.Context, req *IndexerSourcePreviewRequest) (*IndexerSourcePreview, error)
+	// RefreshQueue implements refreshQueue operation.
+	//
+	// Poll every client now (library managers).
+	//
+	// POST /queue/refresh
+	RefreshQueue(ctx context.Context) error
 	// RegenerateRecoveryCodes implements regenerateRecoveryCodes operation.
 	//
 	// Replace the recovery codes.
 	//
 	// POST /auth/totp/recovery-codes
 	RegenerateRecoveryCodes(ctx context.Context, req *PasswordConfirm) (*RecoveryCodes, error)
+	// RemoveQueueItem implements removeQueueItem operation.
+	//
+	// `deleteData` also deletes the downloaded files (by the client, or by Locarr inside the data roots
+	// when the client cannot). `blocklist` blocks the release.
+	//
+	// DELETE /queue/{id}
+	RemoveQueueItem(ctx context.Context, params RemoveQueueItemParams) error
 	// ResetIndexerHealth implements resetIndexerHealth operation.
 	//
 	// Clear failures and backoff (administrators).
@@ -234,6 +354,12 @@ type Handler interface {
 	//
 	// POST /users/{id}/password
 	ResetUserPassword(ctx context.Context, req *ResetPasswordRequest, params ResetUserPasswordParams) error
+	// ResumeQueueItem implements resumeQueueItem operation.
+	//
+	// Resume a download (library managers).
+	//
+	// POST /queue/{id}/resume
+	ResumeQueueItem(ctx context.Context, params ResumeQueueItemParams) error
 	// RevokeSession implements revokeSession operation.
 	//
 	// Sign out a device.
@@ -267,6 +393,12 @@ type Handler interface {
 	//
 	// GET /search/stream
 	SearchStream(ctx context.Context, params SearchStreamParams) (SearchStreamOK, error)
+	// SetQueueItemPriority implements setQueueItemPriority operation.
+	//
+	// Move a download in its client's queue (library managers).
+	//
+	// POST /queue/{id}/priority
+	SetQueueItemPriority(ctx context.Context, req *PriorityRequest, params SetQueueItemPriorityParams) error
 	// Setup implements setup operation.
 	//
 	// Only works while no administrator exists. Needs the setup code the server prints to its log on
@@ -288,6 +420,15 @@ type Handler interface {
 	//
 	// POST /indexers/sources/{id}/sync
 	SyncIndexerSource(ctx context.Context, params SyncIndexerSourceParams) (*IndexerSourceSyncResult, error)
+	// TestDownloadClient implements testDownloadClient operation.
+	//
+	// Always answers 200 with the outcome. With `id`, password and API key left out are taken from that
+	// stored client. `errorCode` is one of `auth_failed`, `unreachable`, `tls_untrusted`, `wrong_url`,
+	// `address_blocked`, `client_error`, `unsupported`, `invalid` or `category_missing` (then `ok` is true
+	// and `missingCategories` lists them).
+	//
+	// POST /downloadclients/test
+	TestDownloadClient(ctx context.Context, req *DownloadClientTestRequest) (*DownloadClientTestResult, error)
 	// TestIndexer implements testIndexer operation.
 	//
 	// Fetches the capabilities and runs a probe search. Success clears the indexer's failures; the
@@ -301,6 +442,18 @@ type Handler interface {
 	//
 	// POST /indexers/test
 	TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (*IndexerTestResult, error)
+	// UpdateDownloadClient implements updateDownloadClient operation.
+	//
+	// Leave `password` / `apiKey` out to keep them; send "" to clear.
+	//
+	// PUT /downloadclients/{id}
+	UpdateDownloadClient(ctx context.Context, req *DownloadClientInput, params UpdateDownloadClientParams) (*DownloadClient, error)
+	// UpdateDownloadSettings implements updateDownloadSettings operation.
+	//
+	// Change download tracking settings (administrators).
+	//
+	// PATCH /downloadclients/settings
+	UpdateDownloadSettings(ctx context.Context, req *UpdateDownloadSettings) (*DownloadSettings, error)
 	// UpdateIndexer implements updateIndexer operation.
 	//
 	// Write-only fields (`apiKey`, `proxyPassword`) keep their stored value when absent; an empty string
@@ -320,6 +473,12 @@ type Handler interface {
 	//
 	// PATCH /auth/me
 	UpdateMe(ctx context.Context, req *UpdateMeRequest) (*User, error)
+	// UpdateRemotePathMapping implements updateRemotePathMapping operation.
+	//
+	// Replace a remote path mapping (administrators).
+	//
+	// PUT /remotepathmappings/{id}
+	UpdateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput, params UpdateRemotePathMappingParams) (*RemotePathMapping, error)
 	// UpdateSettings implements updateSettings operation.
 	//
 	// Change server settings (administrators).
