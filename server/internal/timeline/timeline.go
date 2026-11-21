@@ -9,6 +9,7 @@ import (
 	"context"
 	"encoding/json"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
@@ -31,6 +32,9 @@ const (
 	TypeNotified     = "notified"
 	TypeRetry        = "retry"
 	TypeFileFound    = "file_found"
+	// TypeImportSkipped: a file of a download that was not imported (no
+	// matching episode, not an upgrade) while others were.
+	TypeImportSkipped = "import_skipped"
 )
 
 // Types derived from other tables.
@@ -85,14 +89,35 @@ func (s *Store) Delete(ctx context.Context, ref string) error {
 	return err
 }
 
+// placeholders returns "?, ?, …" for n values and the values as arguments.
+func placeholders(refs []string) (string, []any) {
+	args := make([]any, len(refs))
+	marks := make([]string, len(refs))
+	for i, r := range refs {
+		args[i], marks[i] = r, "?"
+	}
+	return strings.Join(marks, ", "), args
+}
+
 // List returns an item's timeline, newest first (at most limit entries).
 func (s *Store) List(ctx context.Context, ref string, limit int) ([]Event, error) {
+	return s.ListRefs(ctx, []string{ref}, limit)
+}
+
+// ListRefs returns one timeline for several related refs (an episode with
+// its season and series), newest first. Downloads are those any of the refs
+// is part of (download_refs), so a season pack shows on each episode.
+func (s *Store) ListRefs(ctx context.Context, refs []string, limit int) ([]Event, error) {
 	if limit <= 0 || limit > 2000 {
 		limit = 500
 	}
+	if len(refs) == 0 {
+		return []Event{}, nil
+	}
+	marks, args := placeholders(refs)
 	out := []Event{}
-	rows, err := s.DB.R.QueryContext(ctx, `SELECT id, at, type, message, data, download_id FROM timeline_events
-		WHERE item_ref = ? ORDER BY at DESC, id DESC LIMIT ?`, ref, limit)
+	rows, err := s.DB.R.QueryContext(ctx, `SELECT id, item_ref, at, type, message, data, download_id FROM timeline_events
+		WHERE item_ref IN (`+marks+`) ORDER BY at DESC, id DESC LIMIT ?`, append(args, limit)...) // #nosec G202 -- placeholders only
 	if err != nil {
 		return nil, err
 	}
@@ -102,22 +127,22 @@ func (s *Store) List(ctx context.Context, ref string, limit int) ([]Event, error
 			at   int64
 			data string
 		)
-		if err := rows.Scan(&e.ID, &at, &e.Type, &e.Message, &data, &e.DownloadID); err != nil {
+		if err := rows.Scan(&e.ID, &e.ItemRef, &at, &e.Type, &e.Message, &data, &e.DownloadID); err != nil {
 			_ = rows.Close()
 			return nil, err
 		}
-		e.ItemRef, e.At, e.Data, e.Source = ref, db.Time(at), json.RawMessage(data), "timeline"
+		e.At, e.Data, e.Source = db.Time(at), json.RawMessage(data), "timeline"
 		out = append(out, e)
 	}
 	_ = rows.Close()
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	searches, err := s.searches(ctx, ref, limit)
+	searches, err := s.searches(ctx, refs, limit)
 	if err != nil {
 		return nil, err
 	}
-	downloads, err := s.downloadEvents(ctx, ref, limit)
+	downloads, err := s.downloadEvents(ctx, refs, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -155,14 +180,16 @@ type SearchData struct {
 	Indexers    []SearchIndexer `json:"indexers"`
 }
 
-func (s *Store) searches(ctx context.Context, ref string, limit int) ([]Event, error) {
-	rows, err := s.DB.R.QueryContext(ctx, `SELECT id, started_at, duration_ms, source, query, result_count, error_count
-		FROM search_log WHERE item_ref = ? ORDER BY started_at DESC LIMIT ?`, ref, limit)
+func (s *Store) searches(ctx context.Context, refs []string, limit int) ([]Event, error) {
+	marks, args := placeholders(refs)
+	rows, err := s.DB.R.QueryContext(ctx, `SELECT id, item_ref, started_at, duration_ms, source, query, result_count, error_count
+		FROM search_log WHERE item_ref IN (`+marks+`) ORDER BY started_at DESC LIMIT ?`, append(args, limit)...) // #nosec G202 -- placeholders only
 	if err != nil {
 		return nil, err
 	}
 	type row struct {
 		id  int64
+		ref string
 		at  int64
 		sd  SearchData
 		dur int64
@@ -170,7 +197,7 @@ func (s *Store) searches(ctx context.Context, ref string, limit int) ([]Event, e
 	var list []row
 	for rows.Next() {
 		var r row
-		if err := rows.Scan(&r.id, &r.at, &r.dur, &r.sd.Source, &r.sd.Query, &r.sd.ResultCount, &r.sd.ErrorCount); err != nil {
+		if err := rows.Scan(&r.id, &r.ref, &r.at, &r.dur, &r.sd.Source, &r.sd.Query, &r.sd.ResultCount, &r.sd.ErrorCount); err != nil {
 			_ = rows.Close()
 			return nil, err
 		}
@@ -197,7 +224,7 @@ func (s *Store) searches(ctx context.Context, ref string, limit int) ([]Event, e
 		}
 		_ = irows.Close()
 		data, _ := json.Marshal(r.sd)
-		out = append(out, Event{ID: r.id, ItemRef: ref, At: db.Time(r.at), Type: TypeSearch, Message: r.sd.Query, Data: data, Source: "search"})
+		out = append(out, Event{ID: r.id, ItemRef: r.ref, At: db.Time(r.at), Type: TypeSearch, Message: r.sd.Query, Data: data, Source: "search"})
 	}
 	return out, nil
 }
@@ -214,11 +241,13 @@ type DownloadData struct {
 	Progress   float64 `json:"progress"`
 }
 
-func (s *Store) downloadEvents(ctx context.Context, ref string, limit int) ([]Event, error) {
+func (s *Store) downloadEvents(ctx context.Context, refs []string, limit int) ([]Event, error) {
+	marks, args := placeholders(refs)
 	rows, err := s.DB.R.QueryContext(ctx, `SELECT e.id, e.at, e.type, e.from_state, e.to_state, e.message, d.id, d.title, d.indexer,
-		d.client_name, d.protocol, d.progress
+		d.client_name, d.protocol, d.progress, COALESCE(json_extract(d.item_ref, '$.ref'), '')
 		FROM downloads d JOIN download_events e ON e.download_id = d.id
-		WHERE json_extract(d.item_ref, '$.ref') = ? ORDER BY e.at DESC, e.id DESC LIMIT ?`, ref, limit)
+		WHERE d.id IN (SELECT download_id FROM download_refs WHERE item_ref IN (`+marks+`))
+		ORDER BY e.at DESC, e.id DESC LIMIT ?`, append(args, limit)...) // #nosec G202 -- placeholders only
 	if err != nil {
 		return nil, err
 	}
@@ -232,12 +261,12 @@ func (s *Store) downloadEvents(ctx context.Context, ref string, limit int) ([]Ev
 			dd  DownloadData
 		)
 		if err := rows.Scan(&e.ID, &at, &typ, &dd.FromState, &dd.ToState, &e.Message, &dd.DownloadID, &dd.Title, &dd.Indexer,
-			&dd.Client, &dd.Protocol, &dd.Progress); err != nil {
+			&dd.Client, &dd.Protocol, &dd.Progress, &e.ItemRef); err != nil {
 			return nil, err
 		}
 		id := dd.DownloadID
 		data, _ := json.Marshal(dd)
-		e.ItemRef, e.At, e.Type, e.Data, e.DownloadID, e.Source = ref, db.Time(at), TypeDownload+typ, data, &id, "download"
+		e.At, e.Type, e.Data, e.DownloadID, e.Source = db.Time(at), TypeDownload+typ, data, &id, "download"
 		out = append(out, e)
 	}
 	return out, rows.Err()

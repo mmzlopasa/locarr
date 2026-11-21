@@ -53,6 +53,19 @@ type Release struct {
 	Hash     string
 	Age      time.Duration
 	Freelech bool
+	// Files makes the release a folder of these files (a season pack);
+	// empty = one file "<Title>.mkv".
+	Files []string
+}
+
+// packFiles are the files of the fake season pack.
+var packFiles = []string{
+	"Cosmos.Laundromat.S01E01.720p.WEB-DL.AAC2.0.x264-LOCARR.mkv",
+	"Cosmos.Laundromat.S01E02.720p.WEB-DL.AAC2.0.x264-LOCARR.mkv",
+	"Cosmos.Laundromat.S01E03.720p.WEB-DL.AAC2.0.x264-LOCARR.mkv",
+	"Sample/cosmos.laundromat.s01e01.sample.mkv",
+	"Cosmos.Laundromat.S01E01.720p.WEB-DL.AAC2.0.x264-LOCARR.en.srt",
+	"cosmos.laundromat.s01.nfo",
 }
 
 // Catalog is the shared set of releases every indexer offers (each in its own way).
@@ -68,7 +81,13 @@ var Catalog = []Release{
 	{Title: "Elephants.Dream.S01E02.1080p.WEB.h264-LOCARR", Cat: 5040, Size: 1_073_741_824, Seeders: 25, Peers: 27, Grabs: 100,
 		TVDB: 424242, Season: "1", Episode: "2", Hash: "e1b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 4 * time.Hour},
 	{Title: "Cosmos.Laundromat.S01.720p.WEB-DL.AAC2.0.x264-LOCARR", Cat: 5030, Size: 3_221_225_472, Seeders: 12, Peers: 14, Grabs: 60,
-		TVDB: 434343, Season: "1", Hash: "f1b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 240 * time.Hour},
+		TVDB: 434343, Season: "1", Hash: "f1b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 240 * time.Hour, Files: packFiles},
+	{Title: "Cosmos.Laundromat.S01E02.720p.HDTV.x264-LOCARR", Cat: 5030, Size: 1_073_741_824, Seeders: 9, Peers: 9, Grabs: 20,
+		TVDB: 434343, Season: "1", Episode: "2", Hash: "f2b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 200 * time.Hour},
+	{Title: "[LOCARR] Spring Kurenai - 03 [1080p]", Cat: 5070, Size: 734_003_200, Seeders: 15, Peers: 16, Grabs: 30,
+		TVDB: 454545, Hash: "f3b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 30 * time.Hour},
+	{Title: "The.Open.Desk.2025.03.14.720p.WEB.h264-LOCARR", Cat: 5030, Size: 524_288_000, Seeders: 7, Peers: 7, Grabs: 9,
+		TVDB: 464646, Season: "2025", Episode: "03/14", Hash: "f4b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 50 * time.Hour},
 	{Title: "Open Source Artist - Free Album (2020) [FLAC]", Cat: 3040, Size: 419_430_400, Seeders: 6, Peers: 6, Grabs: 15,
 		Artist: "Open Source Artist", Album: "Free Album", Hash: "a2b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 48 * time.Hour},
 	{Title: "Public Domain Author - A Free Book (EPUB)", Cat: 7020, Size: 2_097_152, Seeders: 3, Peers: 3, Grabs: 4,
@@ -307,6 +326,15 @@ func (s *Server) download(w http.ResponseWriter, r *http.Request, name, key, n s
 	}
 	w.Header().Set("Content-Type", "application/x-bittorrent")
 	w.Header().Set("Content-Disposition", `attachment; filename="`+rel.Title+`.torrent"`)
+	if s.SeedDir != "" && len(rel.Files) > 0 {
+		t, err := SeedPack(s.SeedDir, rel.Title, rel.Files)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		_, _ = w.Write(t)
+		return
+	}
 	if s.SeedDir != "" {
 		t, err := SeedTorrent(s.SeedDir, rel.Title)
 		if err != nil {
@@ -323,7 +351,7 @@ func (s *Server) download(w http.ResponseWriter, r *http.Request, name, key, n s
 func caps(name string) string {
 	cats := `<categories>
   <category id="2000" name="Movies"><subcat id="2040" name="Movies/HD"/><subcat id="2045" name="Movies/UHD"/></category>
-  <category id="5000" name="TV"><subcat id="5030" name="TV/SD"/><subcat id="5040" name="TV/HD"/></category>
+  <category id="5000" name="TV"><subcat id="5030" name="TV/SD"/><subcat id="5040" name="TV/HD"/><subcat id="5070" name="TV/Anime"/></category>
   <category id="3000" name="Audio"><subcat id="3040" name="Audio/Lossless"/><subcat id="3030" name="Audio/Audiobook"/></category>
   <category id="7000" name="Books"><subcat id="7020" name="Books/EBook"/></category>
   <category id="100001" name="Custom tracker category"/>
@@ -508,6 +536,43 @@ func (s *Server) feed(name string, idx []int, key, base string, q url.Values) st
 		b.WriteString("</channel></rss>")
 	}
 	return b.String()
+}
+
+// ReleaseFiles returns the files a release unpacks to (relative paths):
+// the pack's files, or "<title>.mkv".
+func ReleaseFiles(title string) []string {
+	for _, r := range Catalog {
+		if r.Title == title && len(r.Files) > 0 {
+			return append([]string{}, r.Files...)
+		}
+	}
+	return []string{title + ".mkv"}
+}
+
+// SeedPack writes the folder "<title>/<files…>" into dir and returns a
+// multi-file torrent for it.
+func SeedPack(dir, title string, files []string) ([]byte, error) {
+	var tf []testkit.TorrentFile
+	for _, f := range files {
+		data := SeedPayload(title + "/" + f)
+		if strings.HasSuffix(f, ".srt") || strings.HasSuffix(f, ".nfo") || strings.Contains(strings.ToLower(f), "sample") {
+			data = data[:16<<10]
+		}
+		p := filepath.Join(dir, title, filepath.FromSlash(f))
+		if err := os.MkdirAll(filepath.Dir(p), 0o777); err != nil { // #nosec G301 -- test data shared with the client container
+			return nil, err
+		}
+		_ = os.Chmod(filepath.Dir(p), 0o777) // #nosec G302 -- see above
+		if st, err := os.Stat(p); err != nil || st.Size() != int64(len(data)) {
+			if err := os.WriteFile(p, data, 0o666); err != nil { // #nosec G306 -- test data the client and Locarr must read and link
+				return nil, err
+			}
+			_ = os.Chmod(p, 0o666) // #nosec G302 -- see above
+		}
+		tf = append(tf, testkit.TorrentFile{Path: f, Data: data})
+	}
+	_ = os.Chmod(filepath.Join(dir, title), 0o777) // #nosec G302 -- see above
+	return testkit.MakeMultiTorrent(title, tf).File, nil
 }
 
 // SeedPayload is the deterministic content of a seeded release (1 MiB).

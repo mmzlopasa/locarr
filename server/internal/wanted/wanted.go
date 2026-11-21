@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -79,6 +80,24 @@ type Item struct {
 	Query     indexers.Query
 	// MediaKind is the download clients' category kind (movies, series, music).
 	MediaKind string
+	// Covers lists what the item wants when one item stands for several (a
+	// season: its wanted episodes). Empty = the item itself.
+	Covers []library.Ref
+	// PreferPacks ranks releases that cover all of Covers first (season packs).
+	PreferPacks bool
+	// Busy: a download for (part of) the item is under way.
+	Busy bool
+}
+
+// Multi is implemented by sources where one release may cover several items
+// (episodes: season packs and multi-episode releases).
+type Multi interface {
+	// Covers names the item a release is grabbed for and every item it
+	// covers; a zero ref means the release is of no use for it.
+	Covers(ctx context.Context, it Item, d *decision.Decision) (library.Ref, []library.Ref)
+	// Refine may reject decisions the engine cannot judge (for example a
+	// season pack offered to a single-episode search).
+	Refine(ctx context.Context, it Item, rep *decision.Report)
 }
 
 // Matcher maps an RSS release to the wanted items it may be.
@@ -242,6 +261,12 @@ func (s *Service) evaluate(ctx context.Context, it Item, mode decision.Mode, rel
 		cands = append(cands, Candidate(&r, inds[r.IndexerID]))
 	}
 	ev.Report = decision.Evaluate(ctx, dc, cands)
+	if src, err := s.source(it.Ref.Kind); err == nil {
+		if m, ok := src.(Multi); ok {
+			m.Refine(ctx, it, &ev.Report)
+			ev.Report.Finalize()
+		}
+	}
 	return ev, nil
 }
 
@@ -252,12 +277,16 @@ type Outcome struct {
 	Accepted int
 	Pending  int
 	Grabbed  *downloads.Download
-	Skipped  string // why nothing was searched
+	// Grabs counts every release sent (a season search may grab several).
+	Grabs   int
+	Skipped string // why nothing was searched
 }
 
+// activeDownload reports a download under way that is for ref or covers it.
 func (s *Service) activeDownload(ctx context.Context, ref string) bool {
 	var n int
-	_ = s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM downloads WHERE json_extract(item_ref, '$.ref') = ? AND status IN ('active', 'completed')`, ref).Scan(&n)
+	_ = s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM downloads WHERE status IN ('active', 'completed')
+		AND id IN (SELECT download_id FROM download_refs WHERE item_ref = ?)`, ref).Scan(&n)
 	return n > 0
 }
 
@@ -279,7 +308,7 @@ func (s *Service) Search(ctx context.Context, ref library.Ref, reason string) (O
 		return Outcome{Skipped: "not_available"}, nil
 	case it.HasFile && it.CutoffMet && !manual:
 		return Outcome{Skipped: "cutoff_met"}, nil
-	case s.activeDownload(ctx, ref.String()):
+	case it.Busy || s.activeDownload(ctx, ref.String()):
 		return Outcome{Skipped: "downloading"}, nil
 	}
 	q := it.Query
@@ -296,11 +325,11 @@ func (s *Service) Search(ctx context.Context, ref library.Ref, reason string) (O
 	sum := timeline.Summarize(ev.Report)
 	s.record(ctx, ref.String(), timeline.TypeDecision, decisionMessage(sum, reason), map[string]any{"summary": sum, "reason": reason})
 	out := Outcome{Searched: true, Found: len(res.Releases), Accepted: ev.Report.Accepted, Pending: ev.Report.Pending}
-	d, err := s.act(ctx, it, &ev)
+	d, n, err := s.act(ctx, it, &ev)
 	if err != nil {
 		return out, err
 	}
-	out.Grabbed = d
+	out.Grabbed, out.Grabs = d, n
 	s.updateState(ctx, ref.String(), d != nil, sum)
 	return out, nil
 }
@@ -341,45 +370,121 @@ func (s *Service) ResetBackoff(ctx context.Context, ref library.Ref) {
 }
 
 // act grabs the best accepted release (trying the next on failure) and keeps
-// pending ones for later.
-func (s *Service) act(ctx context.Context, it Item, ev *Evaluation) (*downloads.Download, error) {
+// pending ones for later. For a Multi source it keeps going until everything
+// the item wants is covered: a season pack, or the season's episodes one by
+// one, never two releases for the same episode. It returns the first grab and
+// how many releases were sent.
+func (s *Service) act(ctx context.Context, it Item, ev *Evaluation) (*downloads.Download, int, error) {
 	ref := it.Ref.String()
+	var multi Multi
+	if src, err := s.source(it.Ref.Kind); err == nil {
+		multi, _ = src.(Multi)
+	}
+	type option struct {
+		d      *decision.Decision
+		ref    library.Ref
+		covers []library.Ref
+	}
+	wanted := map[library.Ref]bool{}
+	for _, c := range it.Covers {
+		wanted[c] = true
+	}
+	var opts []option
 	for i := range ev.Report.Decisions {
 		d := &ev.Report.Decisions[i]
 		if !d.Accepted() {
 			break
 		}
-		r, ok := ev.Release(d)
+		o := option{d: d, ref: it.Ref}
+		if multi != nil {
+			o.ref, o.covers = multi.Covers(ctx, it, d)
+			if o.ref.IsZero() {
+				continue
+			}
+		}
+		if len(o.covers) == 0 {
+			o.covers = []library.Ref{o.ref}
+		}
+		opts = append(opts, o)
+	}
+	full := func(o option) bool {
+		if len(wanted) == 0 {
+			return false
+		}
+		have := map[library.Ref]bool{}
+		for _, c := range o.covers {
+			have[c] = true
+		}
+		for w := range wanted {
+			if !have[w] {
+				return false
+			}
+		}
+		return true
+	}
+	if it.PreferPacks {
+		sort.SliceStable(opts, func(i, j int) bool { return full(opts[i]) && !full(opts[j]) })
+	}
+	covered := map[library.Ref]bool{}
+	var first *downloads.Download
+	grabs := 0
+	for _, o := range opts {
+		overlap := false
+		for _, c := range o.covers {
+			overlap = overlap || covered[c]
+		}
+		if overlap {
+			continue
+		}
+		r, ok := ev.Release(o.d)
 		if !ok {
 			continue
 		}
-		dl, err := s.grab(ctx, it, &r, d)
+		dl, err := s.grab(ctx, it, o.ref, o.covers, &r)
 		if err != nil {
 			if errors.Is(err, downloads.ErrNoClient) {
 				s.record(ctx, ref, timeline.TypeGrabFailed, "no download client takes this release: "+err.Error(),
 					map[string]any{"title": r.Title, "indexer": r.IndexerName, "error": err.Error()})
-				return nil, nil
+				return first, grabs, nil
 			}
 			s.record(ctx, ref, timeline.TypeGrabFailed, fmt.Sprintf("could not grab %s: %v; trying the next release", r.Title, err),
 				map[string]any{"title": r.Title, "indexer": r.IndexerName, "error": err.Error()})
 			continue
 		}
-		// A grab supersedes anything held back.
-		_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM pending_releases WHERE item_ref = ?`, ref)
-		return &dl, nil
+		grabs++
+		if first == nil {
+			first = &dl
+			// A grab supersedes anything held back.
+			_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM pending_releases WHERE item_ref = ?`, ref)
+		}
+		for _, c := range o.covers {
+			covered[c] = true
+		}
+		if multi == nil {
+			return first, grabs, nil
+		}
+		done := len(wanted) > 0
+		for w := range wanted {
+			done = done && covered[w]
+		}
+		if done || len(wanted) == 0 {
+			break
+		}
 	}
-	s.keepPending(ctx, it, ev)
-	return nil, nil
+	if first == nil {
+		s.keepPending(ctx, it, ev)
+	}
+	return first, grabs, nil
 }
 
-func (s *Service) grab(ctx context.Context, it Item, r *indexers.Release, d *decision.Decision) (downloads.Download, error) {
+func (s *Service) grab(ctx context.Context, it Item, ref library.Ref, covers []library.Ref, r *indexers.Release) (downloads.Download, error) {
 	link := r.DownloadURL
 	if link == "" {
 		link = r.MagnetURL
 	}
 	id := r.IndexerID
 	req := downloads.GrabRequest{DownloadURL: link, Protocol: downloaders.Protocol(r.Protocol), Title: r.Title, IndexerID: &id,
-		Indexer: r.IndexerName, GUID: r.GUID, ItemRef: it.Ref.JSON(), MediaKind: it.MediaKind}
+		Indexer: r.IndexerName, GUID: r.GUID, ItemRef: ref.JSONWith(covers), MediaKind: it.MediaKind}
 	if len(it.Wanted.Tags) > 0 {
 		// Item tags select clients too (with the indexer's own tags).
 		tags := append([]string{}, it.Wanted.Tags...)
@@ -392,7 +497,6 @@ func (s *Service) grab(ctx context.Context, it Item, r *indexers.Release, d *dec
 		p := r.PublishDate
 		req.PublishedAt = &p
 	}
-	_ = d
 	return s.Downloads.Grab(ctx, req)
 }
 
@@ -474,7 +578,7 @@ func (s *Service) retryItem(ctx context.Context, ref library.Ref) (bool, error) 
 		_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM pending_releases WHERE item_ref = ?`, ref.String())
 		return false, err
 	}
-	if !it.Monitored || (it.HasFile && it.CutoffMet) || s.activeDownload(ctx, ref.String()) {
+	if !it.Monitored || (it.HasFile && it.CutoffMet) || it.Busy || s.activeDownload(ctx, ref.String()) {
 		_, err := s.DB.W.ExecContext(ctx, `DELETE FROM pending_releases WHERE item_ref = ?`, ref.String())
 		return false, err
 	}
@@ -506,7 +610,7 @@ func (s *Service) retryItem(ctx context.Context, ref library.Ref) (bool, error) 
 		s.record(ctx, ref.String(), timeline.TypeDecision, decisionMessage(timeline.Summarize(ev.Report), "pending"),
 			map[string]any{"summary": timeline.Summarize(ev.Report), "reason": "pending"})
 	}
-	d, err := s.act(ctx, it, &ev)
+	d, _, err := s.act(ctx, it, &ev)
 	return d != nil, err
 }
 

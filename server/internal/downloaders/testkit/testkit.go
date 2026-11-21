@@ -8,6 +8,7 @@ import (
 	"crypto/sha1" // #nosec G505 -- BitTorrent v1 pieces are SHA-1 by definition
 	"encoding/hex"
 	"fmt"
+	"strings"
 
 	"github.com/mmzlopasa/locarr/server/internal/downloaders"
 )
@@ -36,6 +37,41 @@ func MakeTorrent(name string, data []byte) Torrent {
 		panic(err)
 	}
 	return Torrent{Name: name, Data: data, File: file, InfoHash: ti.InfoHash}
+}
+
+// TorrentFile is one file of a multi-file torrent (Path below the folder, "/"-separated).
+type TorrentFile struct {
+	Path string
+	Data []byte
+}
+
+// MakeMultiTorrent builds a private, trackerless torrent of a folder with
+// several files (a season pack).
+func MakeMultiTorrent(folder string, files []TorrentFile) Torrent {
+	const pieceLen = 16 << 10
+	var all []byte
+	list := make([]any, 0, len(files))
+	for _, f := range files {
+		all = append(all, f.Data...)
+		var segs []any
+		for _, p := range strings.Split(f.Path, "/") {
+			segs = append(segs, p)
+		}
+		list = append(list, map[string]any{"length": len(f.Data), "path": segs})
+	}
+	var pieces []byte
+	for off := 0; off < len(all); off += pieceLen {
+		end := min(off+pieceLen, len(all))
+		sum := sha1.Sum(all[off:end]) // #nosec G401
+		pieces = append(pieces, sum[:]...)
+	}
+	info := map[string]any{"name": folder, "files": list, "piece length": pieceLen, "pieces": pieces, "private": 1}
+	file := downloaders.Bencode(map[string]any{"announce": "http://127.0.0.1:1/announce", "created by": "locarr-test", "info": info})
+	ti, err := downloaders.ParseTorrent(file)
+	if err != nil {
+		panic(err)
+	}
+	return Torrent{Name: folder, Data: all, File: file, InfoHash: ti.InfoHash}
 }
 
 // RandomTorrent makes a torrent of n random bytes with a unique name.
