@@ -41,12 +41,16 @@ docker compose up -d
 docker compose logs locarr | grep "setup code"
 ```
 
-Otvorite `http://127.0.0.1:8484`, upišite setup kod iz loga i napravite administratorski račun.
+Otvorite `http://<lan-ip-servera>:8484` (na samom serveru `http://127.0.0.1:8484`), upišite setup kod iz loga i napravite administratorski račun.
 Setup kod vrijedi dok ne postoji administrator; nakon toga `/setup` više ne radi.
 
-## 3. Pristup izvana
+## 3. Kućna mreža i pristup izvana
 
-Zadano Locarr sluša samo na `127.0.0.1:8484`. Za pristup s interneta stavite reverse proxy (nginx, Caddy,
+Zadano Locarr sluša na portu 8484 na svim mrežnim sučeljima servera, pa ga uređaji u kućnoj mreži
+(računalo, mobitel, aplikacije) otvaraju na `http://<lan-ip-servera>:8484`. Da sluša samo na kućnoj
+mreži, u `.env` postavite `HTTP_PORT=<lan-ip-servera>:8484`. Port 8484 ne otvarajte na routeru.
+
+Ako ipak želite pristup s interneta, postavite `HTTP_PORT=127.0.0.1:8484` i reverse proxy (nginx, Caddy,
 Traefik) s HTTPS-om ispred njega i u `.env` postavite `LOCARR_TRUSTED_PROXIES` na adresu proxyja, da bi
 ograničenje prijava vidjelo stvarne adrese klijenata.
 
