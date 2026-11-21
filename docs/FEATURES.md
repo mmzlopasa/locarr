@@ -49,10 +49,12 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Podaci o zapisima iz same datoteke (ffprobe); danas iz imena (D-033)
 
 ## Serije (P5)
-- [ ] TMDb (i TVDB po izboru): serije, sezone, epizode, specijali
-- [ ] Vrste: standardne, dnevne, anime (apsolutna numeracija, mapiranje scene numeracije)
-- [ ] Sezonski paketi, višestruke epizode, praćenje novih sezona
-- [ ] Kalendar (web + iCal feed), nadolazeće epizode
+- [x] TMDb (i TVDB po izboru): serije, sezone, epizode, specijali, vrijeme emitiranja u zoni mreže, osvježavanje s prenumeriranjem (D-039, D-043, D-046)
+- [x] Vrste: standardne, dnevne, anime (apsolutna numeracija, ručno mapiranje scenske numeracije; javni izvor mapiranja nije uključen, D-040)
+- [x] Sezonski paketi, višestruke epizode, praćenje novih sezona, mogućnosti praćenja pri dodavanju (D-042, D-044)
+- [x] Uvoz epizoda (sezonski paketi, djelomični paketi, više epizoda u datoteci, mape sezona i specijala, nadogradnje u koš), uvoz postojeće biblioteke, ručni uvoz, preimenovanje (D-041, D-045)
+- [x] Kalendar (web + iCal feed), nadolazeće epizode
+- [ ] Slike serija dodanih s TVDB-a (samo TMDb slike se prikazuju, D-046)
 
 ## Glazba (P6)
 - [ ] MusicBrainz izvođači, albumi, vrste izdanja (album, EP, singl), praćenje novih izdanja
@@ -82,7 +84,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Pregled prije uvoza, izvori se nikad ne mijenjaju
 
 ## Vremenska crta i nadzor (P11)
-- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove radi od P4; serije i glazba s P5/P6)
+- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5; glazba s P6)
 - [ ] „Zašto nije stiglo": jedan ekran koji objašnjava trenutno stanje svakog nedostajućeg naslova (za filmove na stranici filma od P4)
 - [ ] Aktivnost (red preuzimanja), povijest, blokirana izdanja, nedostajuće/ispod granice
 - [ ] Zdravlje sustava (indexeri, klijenti, disk, putanje, prava), logovi, zadaci

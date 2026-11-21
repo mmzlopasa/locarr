@@ -184,3 +184,48 @@
 **Kontekst:** kalendar se čita iz aplikacija koje ne znaju za prijavu; popisi dodaju filmove sami.
 **Odluka:** iCal feed (`/calendar/feed.ics?token=…`) koristi osobni token po korisniku spremljen kao SHA-256 (prikazan jednom, nova poveznica gasi staru, isključeni korisnik gubi feed). Popisi za uvoz su za sada TMDb javni popisi i kolekcije (sync svakih 6 h); film obrisan uz „ne dodaj ponovno" ide u `import_exclusions`. Mapa filma može se promijeniti samo dok film nema datoteku.
 **Posljedice:** Trakt i IMDb popisi dolaze kasnije, istim sučeljem.
+
+## D-038 Oznake sezona i epizoda, preuzimanja koja pokrivaju više stavki (2026-11-21)
+**Kontekst:** sezonski paket ili datoteka s više epizoda jedno su preuzimanje za više epizoda, a vremenska crta, „zašto nije stiglo" i provjera „već se preuzima" rade po stavci.
+**Odluka:** uz `series:` i `episode:` uvodimo `season:` (ID retka u `seasons`). Preuzimanje sezonskog paketa nosi `{"ref":"season:12","covers":["episode:101","episode:102",…]}`, a izdanje s više epizoda `{"ref":"episode:101","covers":["episode:102"]}`. Okidači na `downloads` pune tablicu `download_refs` (ref i sve iz `covers`) s indeksom, pa se preuzimanja stavke traže po indeksu umjesto po JSON-u; postojeća preuzimanja filmova su prepisana u migraciji. Vremenska crta epizode čita i događaje njezine sezone (pretraga i odluka za sezonu tiču se epizode). `wanted.Source` može dodatno ostvariti `wanted.Multi` (`Covers`, `Refine`), pa jedna pretraga sezone može poslati više izdanja dok nije pokrivena svaka tražena epizoda, nikad dva za istu epizodu.
+**Posljedice:** filmovi rade bez promjena; P6 može isto koristiti za albume s više diskova.
+
+## D-039 Vrijeme emitiranja u vremenskoj zoni mreže (2026-11-21)
+**Kontekst:** TMDb daje samo datum epizode, bez vremena i zone; TVDB daje vrijeme (`airsTime`) i zemlju mreže.
+**Odluka:** zona je zona zemlje mreže (mala tablica zemlja → IANA zona; SAD = New York), vrijeme je TVDB-ovo kad je izvor TVDB, inače 20:00 lokalno. Iz toga se računa `air_date_utc`; epizoda je „emitirana" (i traži se) od tog trenutka. Binarij nosi `time/tzdata`, pa zone rade i u minimalnoj slici.
+**Posljedice:** za TMDb serije vrijeme na kalendaru je procjena; datum je točan.
+
+## D-040 Numeracija: standardna, dnevna, anime; scenska samo ručno (2026-11-21)
+**Kontekst:** izdanja epizode označavaju sa S01E01, datumom (dnevne emisije) ili apsolutnim brojem (anime), a scenska numeracija se ponekad razlikuje od TMDb/TVDB numeracije.
+**Odluka:** vrsta serije bira uparivanje: dnevne po datumu emitiranja, anime po apsolutnom broju (osim kad ime ima i sezonu i epizodu), ostale po sezoni i epizodi. TVDB daje apsolutne brojeve; za TMDb ih računamo redom kroz sezone (bez specijala). Scensko mapiranje je ručno po epizodi (`scene_season`, `scene_episode`, `scene_absolute`): ima prednost pri uparivanju i u pretrazi indexera. Javni izvor mapiranja nismo uključili: najpoznatiji zajednički izvor nema izričitu licencu koja dopušta ponovnu upotrebu podataka, pa ostaje samo ručno mapiranje.
+**Posljedice:** serija čija numeracija odstupa traži par ručnih unosa (u webu i kroz `PATCH /episodes/{id}`).
+
+## D-041 Imena serija i epizoda (2026-11-21)
+**Kontekst:** epizode trebaju mapu serije, mapu sezone, mapu specijala i tri oblika imena (standardno, dnevno, anime), a datoteka može sadržavati više epizoda.
+**Odluka:** iste sintaksne pravila kao D-035, s oznakama `{SeriesTitle}`, `{SeriesTitleYear}`, `{Season}` (dvoznamenkasto), `{Episode}`, `{EpisodeCode}`, `{Absolute}`, `{AirDate}`, `{EpisodeTitle}` i oznakama kvalitete. Stilovi više epizoda: prefixed range (zadano, `S01E01-E03`), range, extend, duplicate, repeat i scene. Naslovi „Pilot (1)" i „Pilot (2)" spajaju se u „Pilot", ostali s „ + ". Postavke serija imaju vlastiti endpoint `/settings/mediamanagement/series` (uz pregled za sva četiri primjera), da se postojeći obrazac za filmove ne mijenja.
+**Posljedice:** preimenovanje postojećih epizoda smije premjestiti datoteku u drugu mapu sezone, ali samo unutar mape serije.
+
+## D-042 Praćenje: mogućnosti pri dodavanju, specijali i nove sezone (2026-11-21)
+**Kontekst:** korisnik bira što prati: sve, buduće, nedostajuće, postojeće, prvu ili zadnju sezonu, pilot ili ništa.
+**Odluka:** mogućnost se primjenjuje na epizode pri dodavanju (i ponovno na zahtjev iz uređivanja); sezona je praćena kad je praćena barem jedna njezina epizoda, a sezona bez epizoda kad mogućnost gleda unaprijed. Specijali (sezona 0) se nikad ne prate automatski. Praćenje sezone uključuje ili isključuje sve njezine epizode, a praćenje epizode uključuje i njezinu sezonu, pa vrijedi: praćena epizoda ima praćenu sezonu. „Nove sezone" (sve / ništa) odlučuje o sezonama koje stignu osvježavanjem.
+**Posljedice:** popis „nedostaje" i filtri ne trebaju spajati tablicu sezona.
+
+## D-043 Osvježavanje serije (2026-11-21)
+**Kontekst:** izvori dodaju epizode, mijenjaju numeraciju i brišu epizode; datoteke se nikad ne smiju izgubiti.
+**Odluka:** epizode se uparuju najprije po ID-u epizode kod izvora, zatim po sezoni i broju. Epizoda s istim ID-em a drugim brojevima se prenumerira i zadržava datoteku i praćenje (zapis na vremensku crtu). Nove epizode prate praćenje svoje sezone (nove sezone postavku „nove sezone"). Epizoda koje više nema briše se samo bez datoteke; s datotekom ostaje označena kao uklonjena i neprati se. Datoteke kojih više nema na disku se odvezuju. Posao `refresh-series` ide svakih 12 h.
+**Posljedice:** zamjena brojeva dvije epizode prolazi kroz privremeni negativni broj unutar jedne transakcije.
+
+## D-044 Pretraga serija: epizode i sezonski paketi (2026-11-21)
+**Kontekst:** epizode treba tražiti jednu po jednu, ali cijelu sezonu kao paket kad se isplati.
+**Odluka:** sezona (osim specijala i dnevnih emisija) se traži kao cjelina kad joj je traženo barem `series.seasonPackThreshold` epizoda (zadano 3, najmanje 2) ili kad je završila s emitiranjem, a tražene su barem dvije; tada se njezine nedostajuće epizode ne traže zasebno. Pretraga sezone prvo uzima izdanja koja pokrivaju sve tražene epizode (paket), zatim po redu odluke pojedinačne epizode dok sve nisu pokrivene. Pretraga jedne epizode odbija sezonske pakete (`season_pack_not_wanted`); pretraga sezone odbija izdanja bez ijedne tražene epizode (`episode_not_wanted`). Nadogradnje ispod granice profila uvijek se traže po epizodi. Upit indexeru nosi samo najjači ID (TVDB, pa TVmaze, IMDb, TMDb), jer indexeri više ID-eva spajaju s „i", uz naslov za indexere bez pretrage po ID-u; dnevne emisije šalju `season=YYYY&ep=MM/DD`, anime naslov i apsolutni broj. RSS uparuje izdanje sa serijom po TVDB/IMDb ID-u, naslovu ili alternativnom naslovu, a zatim s epizodama ili sezonom.
+**Posljedice:** ručna pretraga sezone radi i kad pravilo paketa ne vrijedi.
+
+## D-045 Uvoz epizoda (2026-11-21)
+**Kontekst:** preuzimanje može biti jedna epizoda, datoteka s više epizoda, sezonski paket ili djelomičan paket.
+**Odluka:** uvoznik pronalazi sve video datoteke (uzorci i dodaci se preskaču, D-034) i svaku uparuje s epizodama iz imena datoteke; ime izdanja pomaže samo kad je datoteka jedina ili kad ime datoteke ne kaže kvalitetu. Uvozi se svaka datoteka čija je svaka epizoda bez datoteke ili je nova datoteka bolja; ostale se prijavljuju (`import_skipped`) i ne diraju. Titlovi idu s datotekom istog imena. Datoteka ide u mapu serije / mapu sezone (ili specijala) pod imenom iz predloška; stara datoteka koju više ni jedna epizoda ne koristi ide u koš. Preuzimanje se jednom označi kao uvezeno (`MarkImported`) kad je uvezena barem jedna datoteka, s porukom koliko datoteka i epizoda; inače `MarkImportFailed`. Tražene epizode kojih nije bilo u preuzimanju odmah su ponovno na redu za pretragu.
+**Posljedice:** „zašto nije stiglo" za epizodu vidi preuzimanje sezone kroz `download_refs`.
+
+## D-046 TVDB kao izborni izvor (2026-11-21)
+**Kontekst:** TMDb je zadani izvor (isti ključ kao za filmove), ali za anime i neke mreže TVDB ima bolju numeraciju.
+**Odluka:** TVDB v4 klijent (prijava projektnim ključem i PIN-om, token u memoriji, ponovna prijava na 401, predmemorija i ograničenje kao D-029) uključuje se ključem i postavkom „serije se traže na". Serija zadržava izvor s kojim je dodana i s njim se osvježava; ključ se prije spremanja provjerava. Adresu mijenja samo `LOCARR_TVDB_URL` (testovi).
+**Posljedice:** slike za serije s TVDB-a se za sada ne prikazuju (CSP dopušta samo slike preko poslužitelja, a posrednik za TVDB slike nije napravljen).
