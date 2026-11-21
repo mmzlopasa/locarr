@@ -81,6 +81,8 @@ jobs:
           mkdir -p "$RUNNER_TEMP/locarr/data/media/movies" "$RUNNER_TEMP/locarr/data/downloads"
           docker compose -f docker-compose.yml -f compose.dev.yml up -d --build --wait
           curl -fsS http://127.0.0.1:8484/api/v1/system/info
+      - name: Start the fake indexers
+        run: ./scripts/dev-fakes.sh up
       - uses: pnpm/action-setup@v4
         with:
           package_json_file: web/package.json
@@ -99,4 +101,6 @@ jobs:
       - name: Compose logs on failure
         if: failure()
         working-directory: deploy
-        run: docker compose -f docker-compose.yml -f compose.dev.yml logs
+        run: |
+          docker compose -f docker-compose.yml -f compose.dev.yml logs
+          docker logs locarr-fakes || true

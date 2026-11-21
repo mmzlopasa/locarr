@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:newznab="http://www.newznab.com/DTD/2010/feeds/attributes/">
+<channel>
+<newznab:response offset="0" total="2"/>
+<item>
+  <title>Some.Show.S02E05.720p.HDTV.x264-GRP</title>
+  <guid isPermaLink="true">https://nz.example/details/abc</guid>
+  <link>https://nz.example/getnzb/abc.nzb&amp;i=1&amp;r=SECRETKEY</link>
+  <comments>https://nz.example/details/abc#comments</comments>
+  <pubDate>Sat, 07 Nov 2026 10:00:00 +0000</pubDate>
+  <category>TV &gt; HD</category>
+  <description>Caf&#233; caf&eacute;</description>
+  <enclosure url="https://nz.example/getnzb/abc.nzb&amp;i=1&amp;r=SECRETKEY" length="123456" type="application/x-nzb" />
+  <newznab:attr name="category" value="5000" />
+  <newznab:attr name="category" value="5040" />
+  <newznab:attr name="size" value="987654321" />
+  <newznab:attr name="grabs" value="17" />
+  <newznab:attr name="tvdbid" value="12345" />
+  <newznab:attr name="imdb" value="0944947" />
+  <newznab:attr name="season" value="S02" />
+  <newznab:attr name="episode" value="E05" />
+  <newznab:attr name="usenetdate" value="Sat, 07 Nov 2026 09:00:00 +0000" />
+</item>
+<item>
+  <title>Caf&#xE9; Movie 2020 1080p</title>
+  <link>https://nz.example/getnzb/def.nzb</link>
+  <pubDate>garbage</pubDate>
+  <newznab:attr name="usenetdate" value="2026-11-01T12:00:00Z" />
+  <newznab:attr name="category" value="2040" />
+</item>
+<item>
+  <title></title>
+  <link>https://nz.example/getnzb/empty.nzb</link>
+</item>
+<item>
+  <title>No link at all</title>
+</item>
+</channel>
+</rss>

@@ -49,6 +49,25 @@ func (UnimplementedHandler) CreateApiKey(ctx context.Context, req *CreateApiKeyR
 	return r, ht.ErrNotImplemented
 }
 
+// CreateIndexer implements createIndexer operation.
+//
+// Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
+// key is write-only.
+//
+// POST /indexers
+func (UnimplementedHandler) CreateIndexer(ctx context.Context, req *IndexerInput) (r *Indexer, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateIndexerSource implements createIndexerSource operation.
+//
+// Imports every indexer the source lists except those in `exclude`. Nothing is changed on the source.
+//
+// POST /indexers/sources
+func (UnimplementedHandler) CreateIndexerSource(ctx context.Context, req *IndexerSourceInput) (r *IndexerSourceSyncResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateRootFolder implements createRootFolder operation.
 //
 // The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
@@ -73,6 +92,24 @@ func (UnimplementedHandler) CreateUser(ctx context.Context, req *CreateUserReque
 //
 // DELETE /auth/apikeys/{id}
 func (UnimplementedHandler) DeleteApiKey(ctx context.Context, params DeleteApiKeyParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteIndexer implements deleteIndexer operation.
+//
+// Remove an indexer (administrators).
+//
+// DELETE /indexers/{id}
+func (UnimplementedHandler) DeleteIndexer(ctx context.Context, params DeleteIndexerParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteIndexerSource implements deleteIndexerSource operation.
+//
+// Its imported indexers stay and become ordinary indexers.
+//
+// DELETE /indexers/sources/{id}
+func (UnimplementedHandler) DeleteIndexerSource(ctx context.Context, params DeleteIndexerSourceParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -103,12 +140,41 @@ func (UnimplementedHandler) DisableTotp(ctx context.Context, req *PasswordConfir
 	return ht.ErrNotImplemented
 }
 
+// DownloadRelease implements downloadRelease operation.
+//
+// `token` comes from a search result's `downloadLink`. The server fetches the .torrent or .nzb with
+// the indexer's credentials, so the API key never reaches the browser. Counts as a grab for the
+// indexer's daily limit.
+//
+// GET /indexers/{id}/download
+func (UnimplementedHandler) DownloadRelease(ctx context.Context, params DownloadReleaseParams) (r *DownloadReleaseOKHeaders, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // EnableTotp implements enableTotp operation.
 //
 // Confirm two-factor setup with a code.
 //
 // POST /auth/totp/enable
 func (UnimplementedHandler) EnableTotp(ctx context.Context, req *TotpCodeRequest) (r *RecoveryCodes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetIndexer implements getIndexer operation.
+//
+// One indexer (administrators).
+//
+// GET /indexers/{id}
+func (UnimplementedHandler) GetIndexer(ctx context.Context, params GetIndexerParams) (r *Indexer, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetIndexerSettings implements getIndexerSettings operation.
+//
+// Indexer-wide settings (administrators).
+//
+// GET /indexers/settings
+func (UnimplementedHandler) GetIndexerSettings(ctx context.Context) (r *IndexerSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -166,12 +232,39 @@ func (UnimplementedHandler) ListApiKeys(ctx context.Context) (r []ApiKey, _ erro
 	return r, ht.ErrNotImplemented
 }
 
+// ListIndexerSources implements listIndexerSources operation.
+//
+// Prowlarr and Jackett instances indexers are imported from (administrators).
+//
+// GET /indexers/sources
+func (UnimplementedHandler) ListIndexerSources(ctx context.Context) (r []IndexerSource, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListIndexers implements listIndexers operation.
+//
+// Indexers with their health (administrators).
+//
+// GET /indexers
+func (UnimplementedHandler) ListIndexers(ctx context.Context) (r []Indexer, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListRootFolders implements listRootFolders operation.
 //
 // Root folders with free space (administrators).
 //
 // GET /rootfolders
 func (UnimplementedHandler) ListRootFolders(ctx context.Context) (r []RootFolder, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListSearchLog implements listSearchLog operation.
+//
+// Recent searches with per-indexer outcomes (administrators).
+//
+// GET /search/log
+func (UnimplementedHandler) ListSearchLog(ctx context.Context, params ListSearchLogParams) (r []SearchLogEntry, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -221,12 +314,30 @@ func (UnimplementedHandler) Logout(ctx context.Context) (r *LogoutNoContent, _ e
 	return r, ht.ErrNotImplemented
 }
 
+// PreviewIndexerSource implements previewIndexerSource operation.
+//
+// List what a Prowlarr or Jackett source would import (administrators).
+//
+// POST /indexers/sources/preview
+func (UnimplementedHandler) PreviewIndexerSource(ctx context.Context, req *IndexerSourcePreviewRequest) (r *IndexerSourcePreview, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RegenerateRecoveryCodes implements regenerateRecoveryCodes operation.
 //
 // Replace the recovery codes.
 //
 // POST /auth/totp/recovery-codes
 func (UnimplementedHandler) RegenerateRecoveryCodes(ctx context.Context, req *PasswordConfirm) (r *RecoveryCodes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ResetIndexerHealth implements resetIndexerHealth operation.
+//
+// Clear failures and backoff (administrators).
+//
+// POST /indexers/{id}/health/reset
+func (UnimplementedHandler) ResetIndexerHealth(ctx context.Context, params ResetIndexerHealthParams) (r *Indexer, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -257,6 +368,33 @@ func (UnimplementedHandler) RunTask(ctx context.Context, params RunTaskParams) (
 	return r, ht.ErrNotImplemented
 }
 
+// Search implements search operation.
+//
+// Indexers are asked in parallel, each with its own timeout and request limit. Results are
+// de-duplicated by GUID and info hash. Download links and magnets are only included for administrators
+// and managers.
+//
+// GET /search
+func (UnimplementedHandler) Search(ctx context.Context, params SearchParams) (r *SearchResponse, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchStream implements searchStream operation.
+//
+// Same parameters as `/search`. The answer is a Server-Sent Events stream (`text/event-stream`). Each
+// event's `data` is one line of JSON:
+//
+//   - `event: indexer` — one indexer answered (or was skipped): a `SearchStreamIndexerEvent` with
+//     that indexer's status and its releases not already sent.
+//   - `event: done` — every indexer is finished: a `SearchStreamDone`. The stream then ends.
+//
+// Browsers can read it with `EventSource` (the session cookie is sent) or `fetch`.
+//
+// GET /search/stream
+func (UnimplementedHandler) SearchStream(ctx context.Context, params SearchStreamParams) (r SearchStreamOK, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // Setup implements setup operation.
 //
 // Only works while no administrator exists. Needs the setup code the server prints to its log on
@@ -274,6 +412,54 @@ func (UnimplementedHandler) Setup(ctx context.Context, req *SetupRequest) (r *Si
 //
 // POST /auth/totp/setup
 func (UnimplementedHandler) StartTotpSetup(ctx context.Context) (r *TotpSetup, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SyncIndexerSource implements syncIndexerSource operation.
+//
+// Adds indexers that are new on the source, updates changed ones and disables (never deletes) those
+// the source no longer lists.
+//
+// POST /indexers/sources/{id}/sync
+func (UnimplementedHandler) SyncIndexerSource(ctx context.Context, params SyncIndexerSourceParams) (r *IndexerSourceSyncResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TestIndexer implements testIndexer operation.
+//
+// Fetches the capabilities and runs a probe search. Success clears the indexer's failures; the
+// capabilities are stored.
+//
+// POST /indexers/{id}/test
+func (UnimplementedHandler) TestIndexer(ctx context.Context, params TestIndexerParams) (r *IndexerTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TestIndexerConfig implements testIndexerConfig operation.
+//
+// When `indexerId` is set, missing write-only fields are taken from that saved indexer.
+//
+// POST /indexers/test
+func (UnimplementedHandler) TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (r *IndexerTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateIndexer implements updateIndexer operation.
+//
+// Write-only fields (`apiKey`, `proxyPassword`) keep their stored value when absent; an empty string
+// removes it.
+//
+// PUT /indexers/{id}
+func (UnimplementedHandler) UpdateIndexer(ctx context.Context, req *IndexerInput, params UpdateIndexerParams) (r *Indexer, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateIndexerSettings implements updateIndexerSettings operation.
+//
+// Change indexer-wide settings (administrators).
+//
+// PATCH /indexers/settings
+func (UnimplementedHandler) UpdateIndexerSettings(ctx context.Context, req *UpdateIndexerSettingsRequest) (r *IndexerSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

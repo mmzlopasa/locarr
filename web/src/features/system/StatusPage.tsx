@@ -2,7 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { api, queryKeys, unwrap } from "@/api/client";
 import { formatBytes, formatDateTime, formatDuration } from "@/components/format";
-import { ErrorAlert, PageHeader, Panel, Spinner } from "@/components/ui";
+import { Badge, EmptyState, ErrorAlert, PageHeader, Panel, Spinner } from "@/components/ui";
+import { healthTone } from "@/features/indexers/IndexersPage";
+import { Link } from "@tanstack/react-router";
 
 export function StatusPage() {
   const { t, i18n } = useTranslation();
@@ -37,6 +39,32 @@ export function StatusPage() {
           ))}
         </dl>
       </Panel>
+      <IndexerHealthPanel />
     </div>
+  );
+}
+
+function IndexerHealthPanel() {
+  const { t, i18n } = useTranslation();
+  const list = useQuery({ queryKey: queryKeys.indexers, queryFn: async () => unwrap(await api.GET("/indexers")), refetchInterval: 30_000 });
+  return (
+    <Panel title={t("system.status.indexers")} actions={<Link to="/indexers" className="text-[12px] text-info hover:underline">{t("system.status.manageIndexers")}</Link>}>
+      <ErrorAlert error={list.error} />
+      {list.data && !list.data.length ? <EmptyState>{t("indexers.empty")}</EmptyState> : null}
+      <ul className="flex flex-col gap-1.5" data-testid="indexer-health">
+        {list.data?.map((i) => (
+          <li key={i.id} className="flex flex-wrap items-center gap-2 text-[13px]">
+            <span className="text-fg">{i.name}</span>
+            <Badge tone={healthTone(i.health.status)}>{t(`indexers.health.${i.health.status}`)}</Badge>
+            {i.health.lastError && i.health.status !== "healthy" ? (
+              <span className="text-[12px] text-danger">{i.health.lastError}</span>
+            ) : null}
+            {i.health.retryAt ? (
+              <span className="text-[12px] text-faint">{t("indexers.retryAt", { when: formatDateTime(i.health.retryAt, i18n.language), failures: i.health.failures })}</span>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </Panel>
   );
 }

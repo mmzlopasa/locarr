@@ -481,6 +481,291 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/indexers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Indexers with their health (administrators) */
+        get: operations["listIndexers"];
+        put?: never;
+        /**
+         * Add a Torznab or Newznab indexer (administrators)
+         * @description Categories left empty are filled from the indexer's capabilities when they
+         *     can be fetched. The API key is write-only.
+         */
+        post: operations["createIndexer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One indexer (administrators) */
+        get: operations["getIndexer"];
+        /**
+         * Change an indexer (administrators)
+         * @description Write-only fields (`apiKey`, `proxyPassword`) keep their stored value when absent; an empty string removes it.
+         */
+        put: operations["updateIndexer"];
+        post?: never;
+        /** Remove an indexer (administrators) */
+        delete: operations["deleteIndexer"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/{id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Test a saved indexer (administrators)
+         * @description Fetches the capabilities and runs a probe search. Success clears the indexer's failures; the capabilities are stored.
+         */
+        post: operations["testIndexer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/{id}/health/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Clear failures and backoff (administrators) */
+        post: operations["resetIndexerHealth"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/{id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download a release file through the server (administrators and managers)
+         * @description `token` comes from a search result's `downloadLink`. The server fetches the
+         *     .torrent or .nzb with the indexer's credentials, so the API key never
+         *     reaches the browser. Counts as a grab for the indexer's daily limit.
+         */
+        get: operations["downloadRelease"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Test an indexer configuration before saving it (administrators)
+         * @description When `indexerId` is set, missing write-only fields are taken from that saved indexer.
+         */
+        post: operations["testIndexerConfig"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Indexer-wide settings (administrators) */
+        get: operations["getIndexerSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change indexer-wide settings (administrators) */
+        patch: operations["updateIndexerSettings"];
+        trace?: never;
+    };
+    "/indexers/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Prowlarr and Jackett instances indexers are imported from (administrators) */
+        get: operations["listIndexerSources"];
+        put?: never;
+        /**
+         * Add a Prowlarr or Jackett source and import its indexers (administrators)
+         * @description Imports every indexer the source lists except those in `exclude`. Nothing is changed on the source.
+         */
+        post: operations["createIndexerSource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/sources/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** List what a Prowlarr or Jackett source would import (administrators) */
+        post: operations["previewIndexerSource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/sources/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Forget a source (administrators)
+         * @description Its imported indexers stay and become ordinary indexers.
+         */
+        delete: operations["deleteIndexerSource"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/sources/{id}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sync a source again (administrators)
+         * @description Adds indexers that are new on the source, updates changed ones and disables (never deletes) those the source no longer lists.
+         */
+        post: operations["syncIndexerSource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search every eligible indexer and wait for all answers
+         * @description Indexers are asked in parallel, each with its own timeout and request limit.
+         *     Results are de-duplicated by GUID and info hash. Download links and magnets are
+         *     only included for administrators and managers.
+         */
+        get: operations["search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/search/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search every eligible indexer, streaming results as they arrive
+         * @description Same parameters as `/search`. The answer is a Server-Sent Events stream
+         *     (`text/event-stream`). Each event's `data` is one line of JSON:
+         *
+         *     - `event: indexer` — one indexer answered (or was skipped): a `SearchStreamIndexerEvent`
+         *       with that indexer's status and its releases not already sent.
+         *     - `event: done` — every indexer is finished: a `SearchStreamDone`. The stream then ends.
+         *
+         *     Browsers can read it with `EventSource` (the session cookie is sent) or `fetch`.
+         */
+        get: operations["searchStream"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/search/log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recent searches with per-indexer outcomes (administrators) */
+        get: operations["listSearchLog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -743,6 +1028,324 @@ export interface components {
             parent?: string;
             entries: components["schemas"]["FolderEntry"][];
         };
+        /**
+         * @description `torznab` indexers are torrent indexers, `newznab` ones usenet.
+         * @enum {string}
+         */
+        IndexerKind: "torznab" | "newznab";
+        /** @enum {string} */
+        Protocol: "torrent" | "usenet";
+        /** @enum {string} */
+        SearchType: "search" | "tv" | "movie" | "music" | "book";
+        /** @description Newznab category ids used for each kind of media. */
+        IndexerCategories: {
+            movies: number[];
+            tv: number[];
+            music: number[];
+            books: number[];
+        };
+        IndexerCategory: {
+            id: number;
+            name: string;
+            subcategories?: components["schemas"]["IndexerCategory"][];
+        };
+        IndexerSearchCap: {
+            type: components["schemas"]["SearchType"];
+            available: boolean;
+            params: string[];
+        };
+        IndexerCaps: {
+            serverTitle?: string;
+            limitMax?: number;
+            limitDefault?: number;
+            searching: components["schemas"]["IndexerSearchCap"][];
+            categories: components["schemas"]["IndexerCategory"][];
+        };
+        /**
+         * @description `failing`: recent requests failed; the indexer is skipped until `retryAt`
+         *     and then tried again automatically. `disabled`: switched off by an administrator
+         *     or by a source sync. `unknown`: never used yet.
+         * @enum {string}
+         */
+        IndexerHealthStatus: "healthy" | "failing" | "disabled" | "unknown";
+        IndexerHealth: {
+            status: components["schemas"]["IndexerHealthStatus"];
+            failures: number;
+            lastError?: string;
+            lastErrorCode?: string;
+            /** Format: date-time */
+            lastErrorAt?: string;
+            /** Format: date-time */
+            lastSuccessAt?: string;
+            /** Format: date-time */
+            retryAt?: string;
+        };
+        IndexerSourceRef: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            /** @description The indexer's id on the source. */
+            ref: string;
+        };
+        Indexer: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            kind: components["schemas"]["IndexerKind"];
+            protocol: components["schemas"]["Protocol"];
+            baseUrl: string;
+            apiPath: string;
+            apiKey: components["schemas"]["SecretState"];
+            enabled: boolean;
+            enableRss: boolean;
+            enableAutomaticSearch: boolean;
+            enableInteractiveSearch: boolean;
+            /** @description 1 (most preferred) to 50. */
+            priority: number;
+            tags: string[];
+            categories: components["schemas"]["IndexerCategories"];
+            minimumSeeders: number;
+            /** @description Seed ratio goal for torrents from this indexer (used by download clients). */
+            seedRatio?: number;
+            seedTimeMinutes?: number;
+            /** @description At most this many requests per `requestPeriodSeconds`. */
+            requestLimit?: number;
+            requestPeriodSeconds?: number;
+            grabLimitPerDay?: number;
+            timeoutSeconds: number;
+            /** @description http://, https:// or socks5:// proxy, without credentials. */
+            proxyUrl?: string;
+            proxyUsername?: string;
+            proxyPassword: components["schemas"]["SecretState"];
+            flaresolverrUrl?: string;
+            source?: components["schemas"]["IndexerSourceRef"];
+            caps?: components["schemas"]["IndexerCaps"];
+            /** Format: date-time */
+            capsUpdatedAt?: string;
+            health: components["schemas"]["IndexerHealth"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        IndexerInput: {
+            name: string;
+            kind: components["schemas"]["IndexerKind"];
+            baseUrl: string;
+            /** @description Default `/api`. */
+            apiPath?: string;
+            /** @description Write-only. */
+            apiKey?: string;
+            /** @default true */
+            enabled: boolean;
+            /** @default true */
+            enableRss: boolean;
+            /** @default true */
+            enableAutomaticSearch: boolean;
+            /** @default true */
+            enableInteractiveSearch: boolean;
+            /** @default 25 */
+            priority: number;
+            tags?: string[];
+            categories?: components["schemas"]["IndexerCategories"];
+            /** @default 1 */
+            minimumSeeders: number;
+            seedRatio?: number;
+            seedTimeMinutes?: number;
+            requestLimit?: number;
+            requestPeriodSeconds?: number;
+            grabLimitPerDay?: number;
+            /** @default 30 */
+            timeoutSeconds: number;
+            proxyUrl?: string;
+            proxyUsername?: string;
+            /** @description Write-only. */
+            proxyPassword?: string;
+            flaresolverrUrl?: string;
+        };
+        IndexerTestRequest: {
+            indexer: components["schemas"]["IndexerInput"];
+            /** Format: int64 */
+            indexerId?: number;
+        };
+        IndexerTestResult: {
+            ok: boolean;
+            /** Format: int64 */
+            durationMs: number;
+            caps?: components["schemas"]["IndexerCaps"];
+            defaultCategories?: components["schemas"]["IndexerCategories"];
+            /** @description Results of the probe search. */
+            probeResults?: number;
+            /** @description auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked or unknown. */
+            errorCode?: string;
+            error?: string;
+        };
+        IndexerSettings: {
+            /** @description How often RSS feeds are fetched (RSS can be turned off per indexer). */
+            rssSyncIntervalMinutes: number;
+            releaseRetentionDays: number;
+            /** @description Upper bound for a whole search; each indexer also has its own timeout. */
+            searchTimeoutSeconds: number;
+            searchCacheSeconds: number;
+            /** @description Addresses, networks or host names indexers may reach even though they are blocked by default (loopback, link-local). */
+            allowedHosts: string[];
+            /** @description Also refuse private (RFC 1918) addresses. Off by default because Prowlarr and Jackett usually share the Docker network. */
+            blockPrivateNetworks: boolean;
+        };
+        UpdateIndexerSettingsRequest: {
+            rssSyncIntervalMinutes?: number;
+            releaseRetentionDays?: number;
+            searchTimeoutSeconds?: number;
+            searchCacheSeconds?: number;
+            allowedHosts?: string[];
+            blockPrivateNetworks?: boolean;
+        };
+        /** @enum {string} */
+        IndexerSourceKind: "prowlarr" | "jackett";
+        IndexerSource: {
+            /** Format: int64 */
+            id: number;
+            kind: components["schemas"]["IndexerSourceKind"];
+            name: string;
+            url: string;
+            apiKey: components["schemas"]["SecretState"];
+            /** @description Indexer refs on the source that are not imported. */
+            exclude: string[];
+            indexerCount: number;
+            /** Format: date-time */
+            lastSyncAt?: string;
+            lastError?: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        IndexerSourceInput: {
+            kind: components["schemas"]["IndexerSourceKind"];
+            name?: string;
+            url: string;
+            apiKey: string;
+            exclude?: string[];
+        };
+        /** @description Either `sourceId` (a saved source) or `kind`, `url` and `apiKey`. */
+        IndexerSourcePreviewRequest: {
+            /** Format: int64 */
+            sourceId?: number;
+            kind?: components["schemas"]["IndexerSourceKind"];
+            url?: string;
+            apiKey?: string;
+        };
+        /** @enum {string} */
+        IndexerSourceAction: "add" | "update" | "unchanged" | "disable" | "excluded";
+        IndexerSourceItem: {
+            ref: string;
+            name: string;
+            kind: components["schemas"]["IndexerKind"];
+            protocol: components["schemas"]["Protocol"];
+            feedUrl: string;
+            enabledOnSource?: boolean;
+            action: components["schemas"]["IndexerSourceAction"];
+            /** Format: int64 */
+            indexerId?: number;
+        };
+        IndexerSourcePreview: {
+            items: components["schemas"]["IndexerSourceItem"][];
+        };
+        IndexerSourceSyncResult: {
+            source: components["schemas"]["IndexerSource"];
+            added: number;
+            updated: number;
+            disabled: number;
+            unchanged: number;
+        };
+        Release: {
+            guid: string;
+            title: string;
+            /** Format: int64 */
+            indexerId: number;
+            indexerName: string;
+            indexerPriority?: number;
+            protocol: components["schemas"]["Protocol"];
+            /** Format: int64 */
+            size?: number;
+            files?: number;
+            grabs?: number;
+            seeders?: number;
+            leechers?: number;
+            peers?: number;
+            /** Format: date-time */
+            publishDate?: string;
+            categories: number[];
+            /** @description Server URL that fetches the .torrent/.nzb (administrators and managers only). */
+            downloadLink?: string;
+            /** @description Administrators and managers only. */
+            magnetUrl?: string;
+            infoHash?: string;
+            infoUrl?: string;
+            imdbId?: string;
+            /** Format: int64 */
+            tmdbId?: number;
+            /** Format: int64 */
+            tvdbId?: number;
+            /** Format: int64 */
+            tvmazeId?: number;
+            season?: string;
+            episode?: string;
+            downloadVolumeFactor?: number;
+            uploadVolumeFactor?: number;
+            minimumRatio?: number;
+            /** Format: int64 */
+            minimumSeedTimeSeconds?: number;
+            /** @description freeleech, halfleech, doubleupload, internal, scene… (lower-case) */
+            flags: string[];
+        };
+        /** @enum {string} */
+        SearchIndexerStatus: "ok" | "error" | "skipped" | "rate_limited" | "backoff" | "unsupported";
+        SearchIndexerResult: {
+            /** Format: int64 */
+            indexerId: number;
+            indexerName: string;
+            status: components["schemas"]["SearchIndexerStatus"];
+            /** @description Results this indexer returned (before de-duplication). */
+            count: number;
+            cached: boolean;
+            /** Format: int64 */
+            durationMs: number;
+            errorCode?: string;
+            error?: string;
+        };
+        SearchResponse: {
+            releases: components["schemas"]["Release"][];
+            indexers: components["schemas"]["SearchIndexerResult"][];
+            /** Format: int64 */
+            durationMs: number;
+        };
+        SearchStreamIndexerEvent: {
+            indexer: components["schemas"]["SearchIndexerResult"];
+            releases: components["schemas"]["Release"][];
+        };
+        SearchStreamDone: {
+            total: number;
+            /** Format: int64 */
+            durationMs: number;
+        };
+        SearchLogEntry: {
+            /** Format: int64 */
+            id: number;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: int64 */
+            durationMs: number;
+            /** @enum {string} */
+            source: "interactive" | "automatic" | "rss" | "test";
+            type: components["schemas"]["SearchType"];
+            /** @description Human-readable summary of the search terms. */
+            query: string;
+            itemRef?: string;
+            /** Format: int64 */
+            userId?: number;
+            resultCount: number;
+            errorCount: number;
+            indexers: components["schemas"]["SearchIndexerResult"][];
+        };
     };
     responses: {
         /** @description Signed in */
@@ -768,6 +1371,26 @@ export interface components {
     };
     parameters: {
         ID: number;
+        /** @description Free text. */
+        SearchQ: string;
+        SearchType: components["schemas"]["SearchType"];
+        /** @description Newznab category ids; empty = the indexer's categories for the search type. */
+        SearchCategories: number[];
+        /** @description Only these indexers; empty = every enabled one. */
+        SearchIndexerIds: number[];
+        SearchImdbId: string;
+        SearchTmdbId: number;
+        SearchTvdbId: number;
+        SearchTvmazeId: number;
+        SearchSeason: string;
+        SearchEpisode: string;
+        SearchArtist: string;
+        SearchAlbum: string;
+        SearchAuthor: string;
+        SearchTitle: string;
+        /** @description Results asked from each indexer (capped by its own maximum). */
+        SearchLimit: number;
+        SearchOffset: number;
     };
     requestBodies: never;
     headers: never;
@@ -1485,6 +2108,489 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FolderListing"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listIndexers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Indexers, by priority then name */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Indexer"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createIndexer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IndexerInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Indexer"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getIndexer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Indexer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Indexer"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateIndexer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IndexerInput"];
+            };
+        };
+        responses: {
+            /** @description Indexer after the change */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Indexer"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteIndexer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testIndexer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Test result (also when the indexer failed) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerTestResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    resetIndexerHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Indexer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Indexer"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    downloadRelease: {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The release file */
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testIndexerConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IndexerTestRequest"];
+            };
+        };
+        responses: {
+            /** @description Test result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerTestResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getIndexerSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateIndexerSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateIndexerSettingsRequest"];
+            };
+        };
+        responses: {
+            /** @description Settings after the change */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listIndexerSources: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sources */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerSource"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createIndexerSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IndexerSourceInput"];
+            };
+        };
+        responses: {
+            /** @description Added and synced */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerSourceSyncResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewIndexerSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IndexerSourcePreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Preview; nothing is saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerSourcePreview"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteIndexerSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    syncIndexerSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sync result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerSourceSyncResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    search: {
+        parameters: {
+            query?: {
+                /** @description Free text. */
+                q?: components["parameters"]["SearchQ"];
+                type?: components["parameters"]["SearchType"];
+                /** @description Newznab category ids; empty = the indexer's categories for the search type. */
+                categories?: components["parameters"]["SearchCategories"];
+                /** @description Only these indexers; empty = every enabled one. */
+                indexerIds?: components["parameters"]["SearchIndexerIds"];
+                imdbId?: components["parameters"]["SearchImdbId"];
+                tmdbId?: components["parameters"]["SearchTmdbId"];
+                tvdbId?: components["parameters"]["SearchTvdbId"];
+                tvmazeId?: components["parameters"]["SearchTvmazeId"];
+                season?: components["parameters"]["SearchSeason"];
+                episode?: components["parameters"]["SearchEpisode"];
+                artist?: components["parameters"]["SearchArtist"];
+                album?: components["parameters"]["SearchAlbum"];
+                author?: components["parameters"]["SearchAuthor"];
+                title?: components["parameters"]["SearchTitle"];
+                /** @description Results asked from each indexer (capped by its own maximum). */
+                limit?: components["parameters"]["SearchLimit"];
+                offset?: components["parameters"]["SearchOffset"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Results of every indexer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponse"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchStream: {
+        parameters: {
+            query?: {
+                /** @description Free text. */
+                q?: components["parameters"]["SearchQ"];
+                type?: components["parameters"]["SearchType"];
+                /** @description Newznab category ids; empty = the indexer's categories for the search type. */
+                categories?: components["parameters"]["SearchCategories"];
+                /** @description Only these indexers; empty = every enabled one. */
+                indexerIds?: components["parameters"]["SearchIndexerIds"];
+                imdbId?: components["parameters"]["SearchImdbId"];
+                tmdbId?: components["parameters"]["SearchTmdbId"];
+                tvdbId?: components["parameters"]["SearchTvdbId"];
+                tvmazeId?: components["parameters"]["SearchTvmazeId"];
+                season?: components["parameters"]["SearchSeason"];
+                episode?: components["parameters"]["SearchEpisode"];
+                artist?: components["parameters"]["SearchArtist"];
+                album?: components["parameters"]["SearchAlbum"];
+                author?: components["parameters"]["SearchAuthor"];
+                title?: components["parameters"]["SearchTitle"];
+                /** @description Results asked from each indexer (capped by its own maximum). */
+                limit?: components["parameters"]["SearchLimit"];
+                offset?: components["parameters"]["SearchOffset"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Server-Sent Events */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listSearchLog: {
+        parameters: {
+            query?: {
+                limit?: number;
+                itemRef?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Newest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchLogEntry"][];
                 };
             };
             default: components["responses"]["Error"];

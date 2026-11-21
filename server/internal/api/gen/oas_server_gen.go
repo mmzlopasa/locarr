@@ -32,6 +32,19 @@ type Handler interface {
 	//
 	// POST /auth/apikeys
 	CreateApiKey(ctx context.Context, req *CreateApiKeyRequest) (*CreatedApiKey, error)
+	// CreateIndexer implements createIndexer operation.
+	//
+	// Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
+	// key is write-only.
+	//
+	// POST /indexers
+	CreateIndexer(ctx context.Context, req *IndexerInput) (*Indexer, error)
+	// CreateIndexerSource implements createIndexerSource operation.
+	//
+	// Imports every indexer the source lists except those in `exclude`. Nothing is changed on the source.
+	//
+	// POST /indexers/sources
+	CreateIndexerSource(ctx context.Context, req *IndexerSourceInput) (*IndexerSourceSyncResult, error)
 	// CreateRootFolder implements createRootFolder operation.
 	//
 	// The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
@@ -50,6 +63,18 @@ type Handler interface {
 	//
 	// DELETE /auth/apikeys/{id}
 	DeleteApiKey(ctx context.Context, params DeleteApiKeyParams) error
+	// DeleteIndexer implements deleteIndexer operation.
+	//
+	// Remove an indexer (administrators).
+	//
+	// DELETE /indexers/{id}
+	DeleteIndexer(ctx context.Context, params DeleteIndexerParams) error
+	// DeleteIndexerSource implements deleteIndexerSource operation.
+	//
+	// Its imported indexers stay and become ordinary indexers.
+	//
+	// DELETE /indexers/sources/{id}
+	DeleteIndexerSource(ctx context.Context, params DeleteIndexerSourceParams) error
 	// DeleteRootFolder implements deleteRootFolder operation.
 	//
 	// Only forgets the folder; nothing on disk is touched.
@@ -68,12 +93,32 @@ type Handler interface {
 	//
 	// POST /auth/totp/disable
 	DisableTotp(ctx context.Context, req *PasswordConfirm) error
+	// DownloadRelease implements downloadRelease operation.
+	//
+	// `token` comes from a search result's `downloadLink`. The server fetches the .torrent or .nzb with
+	// the indexer's credentials, so the API key never reaches the browser. Counts as a grab for the
+	// indexer's daily limit.
+	//
+	// GET /indexers/{id}/download
+	DownloadRelease(ctx context.Context, params DownloadReleaseParams) (*DownloadReleaseOKHeaders, error)
 	// EnableTotp implements enableTotp operation.
 	//
 	// Confirm two-factor setup with a code.
 	//
 	// POST /auth/totp/enable
 	EnableTotp(ctx context.Context, req *TotpCodeRequest) (*RecoveryCodes, error)
+	// GetIndexer implements getIndexer operation.
+	//
+	// One indexer (administrators).
+	//
+	// GET /indexers/{id}
+	GetIndexer(ctx context.Context, params GetIndexerParams) (*Indexer, error)
+	// GetIndexerSettings implements getIndexerSettings operation.
+	//
+	// Indexer-wide settings (administrators).
+	//
+	// GET /indexers/settings
+	GetIndexerSettings(ctx context.Context) (*IndexerSettings, error)
 	// GetMe implements getMe operation.
 	//
 	// The signed-in user.
@@ -110,12 +155,30 @@ type Handler interface {
 	//
 	// GET /auth/apikeys
 	ListApiKeys(ctx context.Context) ([]ApiKey, error)
+	// ListIndexerSources implements listIndexerSources operation.
+	//
+	// Prowlarr and Jackett instances indexers are imported from (administrators).
+	//
+	// GET /indexers/sources
+	ListIndexerSources(ctx context.Context) ([]IndexerSource, error)
+	// ListIndexers implements listIndexers operation.
+	//
+	// Indexers with their health (administrators).
+	//
+	// GET /indexers
+	ListIndexers(ctx context.Context) ([]Indexer, error)
 	// ListRootFolders implements listRootFolders operation.
 	//
 	// Root folders with free space (administrators).
 	//
 	// GET /rootfolders
 	ListRootFolders(ctx context.Context) ([]RootFolder, error)
+	// ListSearchLog implements listSearchLog operation.
+	//
+	// Recent searches with per-indexer outcomes (administrators).
+	//
+	// GET /search/log
+	ListSearchLog(ctx context.Context, params ListSearchLogParams) ([]SearchLogEntry, error)
 	// ListSessions implements listSessions operation.
 	//
 	// Own signed-in devices.
@@ -147,12 +210,24 @@ type Handler interface {
 	//
 	// POST /auth/logout
 	Logout(ctx context.Context) (*LogoutNoContent, error)
+	// PreviewIndexerSource implements previewIndexerSource operation.
+	//
+	// List what a Prowlarr or Jackett source would import (administrators).
+	//
+	// POST /indexers/sources/preview
+	PreviewIndexerSource(ctx context.Context, req *IndexerSourcePreviewRequest) (*IndexerSourcePreview, error)
 	// RegenerateRecoveryCodes implements regenerateRecoveryCodes operation.
 	//
 	// Replace the recovery codes.
 	//
 	// POST /auth/totp/recovery-codes
 	RegenerateRecoveryCodes(ctx context.Context, req *PasswordConfirm) (*RecoveryCodes, error)
+	// ResetIndexerHealth implements resetIndexerHealth operation.
+	//
+	// Clear failures and backoff (administrators).
+	//
+	// POST /indexers/{id}/health/reset
+	ResetIndexerHealth(ctx context.Context, params ResetIndexerHealthParams) (*Indexer, error)
 	// ResetUserPassword implements resetUserPassword operation.
 	//
 	// Signs the user out everywhere and clears an account lockout.
@@ -171,6 +246,27 @@ type Handler interface {
 	//
 	// POST /system/tasks/{name}/run
 	RunTask(ctx context.Context, params RunTaskParams) (*Job, error)
+	// Search implements search operation.
+	//
+	// Indexers are asked in parallel, each with its own timeout and request limit. Results are
+	// de-duplicated by GUID and info hash. Download links and magnets are only included for administrators
+	// and managers.
+	//
+	// GET /search
+	Search(ctx context.Context, params SearchParams) (*SearchResponse, error)
+	// SearchStream implements searchStream operation.
+	//
+	// Same parameters as `/search`. The answer is a Server-Sent Events stream (`text/event-stream`). Each
+	// event's `data` is one line of JSON:
+	//
+	//  - `event: indexer` — one indexer answered (or was skipped): a `SearchStreamIndexerEvent` with
+	//    that indexer's status and its releases not already sent.
+	//  - `event: done` — every indexer is finished: a `SearchStreamDone`. The stream then ends.
+	//
+	// Browsers can read it with `EventSource` (the session cookie is sent) or `fetch`.
+	//
+	// GET /search/stream
+	SearchStream(ctx context.Context, params SearchStreamParams) (SearchStreamOK, error)
 	// Setup implements setup operation.
 	//
 	// Only works while no administrator exists. Needs the setup code the server prints to its log on
@@ -185,6 +281,39 @@ type Handler interface {
 	//
 	// POST /auth/totp/setup
 	StartTotpSetup(ctx context.Context) (*TotpSetup, error)
+	// SyncIndexerSource implements syncIndexerSource operation.
+	//
+	// Adds indexers that are new on the source, updates changed ones and disables (never deletes) those
+	// the source no longer lists.
+	//
+	// POST /indexers/sources/{id}/sync
+	SyncIndexerSource(ctx context.Context, params SyncIndexerSourceParams) (*IndexerSourceSyncResult, error)
+	// TestIndexer implements testIndexer operation.
+	//
+	// Fetches the capabilities and runs a probe search. Success clears the indexer's failures; the
+	// capabilities are stored.
+	//
+	// POST /indexers/{id}/test
+	TestIndexer(ctx context.Context, params TestIndexerParams) (*IndexerTestResult, error)
+	// TestIndexerConfig implements testIndexerConfig operation.
+	//
+	// When `indexerId` is set, missing write-only fields are taken from that saved indexer.
+	//
+	// POST /indexers/test
+	TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (*IndexerTestResult, error)
+	// UpdateIndexer implements updateIndexer operation.
+	//
+	// Write-only fields (`apiKey`, `proxyPassword`) keep their stored value when absent; an empty string
+	// removes it.
+	//
+	// PUT /indexers/{id}
+	UpdateIndexer(ctx context.Context, req *IndexerInput, params UpdateIndexerParams) (*Indexer, error)
+	// UpdateIndexerSettings implements updateIndexerSettings operation.
+	//
+	// Change indexer-wide settings (administrators).
+	//
+	// PATCH /indexers/settings
+	UpdateIndexerSettings(ctx context.Context, req *UpdateIndexerSettingsRequest) (*IndexerSettings, error)
 	// UpdateMe implements updateMe operation.
 	//
 	// Change own preferences.
