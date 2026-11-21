@@ -583,7 +583,8 @@ func (e *eval) ageMinutes() int64 {
 	if e.c.PublishDate.IsZero() {
 		return -1
 	}
-	return int64(e.ctx.Now.Sub(e.c.PublishDate) / time.Minute)
+	// A publish date in the future (clock skew) counts as "just now".
+	return max(int64(e.ctx.Now.Sub(e.c.PublishDate)/time.Minute), 0)
 }
 
 func specAge(e *eval) {

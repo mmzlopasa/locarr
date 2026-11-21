@@ -14,9 +14,11 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/api"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/config"
+	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
+	"github.com/mmzlopasa/locarr/server/internal/quality"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/secrets"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
@@ -40,6 +42,8 @@ type Deps struct {
 	Settings *settings.Store
 	Jobs     *jobs.Queue
 	Roots    *rootfolders.Service
+	Quality  *quality.Store
+	Formats  *customformats.Store
 }
 
 // Close stops the jobs and closes the database.
@@ -82,7 +86,11 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 		return nil, err
 	}
 	deps := &Deps{DB: d, Box: box, Auth: auth.NewService(d, box, setupCode), Settings: settings.New(d, box),
-		Roots: &rootfolders.Service{DB: d, Roots: cfg.DataRoots}}
+		Roots: &rootfolders.Service{DB: d, Roots: cfg.DataRoots}, Quality: quality.NewStore(d), Formats: customformats.NewStore(d)}
+	if err := deps.Quality.Seed(ctx); err != nil {
+		_ = d.Close()
+		return nil, fmt.Errorf("seed quality profiles: %w", err)
+	}
 	deps.Jobs = jobs.New(d, log, jobs.Options{Concurrency: map[string]int{jobs.DefaultQueue: 2}})
 	registerTasks(deps, log)
 	return deps, nil
@@ -186,6 +194,7 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 		}
 	}
 	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots,
+		Quality: deps.Quality, Formats: deps.Formats,
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
 	router, err := NewRouter(h, opts)
 	if err != nil {

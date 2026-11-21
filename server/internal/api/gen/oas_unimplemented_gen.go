@@ -49,6 +49,42 @@ func (UnimplementedHandler) CreateApiKey(ctx context.Context, req *CreateApiKeyR
 	return r, ht.ErrNotImplemented
 }
 
+// CreateCustomFormat implements createCustomFormat operation.
+//
+// Add a custom format (administrators).
+//
+// POST /customformats
+func (UnimplementedHandler) CreateCustomFormat(ctx context.Context, req *CustomFormatInput) (r *CustomFormat, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateDelayProfile implements createDelayProfile operation.
+//
+// Add a delay profile before the default (administrators).
+//
+// POST /delayprofiles
+func (UnimplementedHandler) CreateDelayProfile(ctx context.Context, req *DelayProfileInput) (r *DelayProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateQualityProfile implements createQualityProfile operation.
+//
+// Qualities of the kind that the item list leaves out are added at the end as not allowed.
+//
+// POST /qualityprofiles
+func (UnimplementedHandler) CreateQualityProfile(ctx context.Context, req *QualityProfileInput) (r *QualityProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateReleaseProfile implements createReleaseProfile operation.
+//
+// Add a release profile (administrators).
+//
+// POST /releaseprofiles
+func (UnimplementedHandler) CreateReleaseProfile(ctx context.Context, req *ReleaseProfileInput) (r *ReleaseProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateRootFolder implements createRootFolder operation.
 //
 // The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
@@ -73,6 +109,42 @@ func (UnimplementedHandler) CreateUser(ctx context.Context, req *CreateUserReque
 //
 // DELETE /auth/apikeys/{id}
 func (UnimplementedHandler) DeleteApiKey(ctx context.Context, params DeleteApiKeyParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteCustomFormat implements deleteCustomFormat operation.
+//
+// Profiles that scored it simply stop seeing it.
+//
+// DELETE /customformats/{id}
+func (UnimplementedHandler) DeleteCustomFormat(ctx context.Context, params DeleteCustomFormatParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteDelayProfile implements deleteDelayProfile operation.
+//
+// Remove a delay profile (administrators; never the default).
+//
+// DELETE /delayprofiles/{id}
+func (UnimplementedHandler) DeleteDelayProfile(ctx context.Context, params DeleteDelayProfileParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteQualityProfile implements deleteQualityProfile operation.
+//
+// Remove a quality profile (administrators).
+//
+// DELETE /qualityprofiles/{id}
+func (UnimplementedHandler) DeleteQualityProfile(ctx context.Context, params DeleteQualityProfileParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteReleaseProfile implements deleteReleaseProfile operation.
+//
+// Remove a release profile (administrators).
+//
+// DELETE /releaseprofiles/{id}
+func (UnimplementedHandler) DeleteReleaseProfile(ctx context.Context, params DeleteReleaseProfileParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -112,12 +184,58 @@ func (UnimplementedHandler) EnableTotp(ctx context.Context, req *TotpCodeRequest
 	return r, ht.ErrNotImplemented
 }
 
+// EvaluateReleases implements evaluateReleases operation.
+//
+// Runs the decision engine on the given candidates and returns the report (accepted ones ranked
+// first). Nothing is stored or grabbed.
+//
+// POST /decisions/evaluate
+func (UnimplementedHandler) EvaluateReleases(ctx context.Context, req *EvaluateRequest) (r *DecisionReport, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ExportCustomFormat implements exportCustomFormat operation.
+//
+// A custom format as shared JSON.
+//
+// GET /customformats/{id}/export
+func (UnimplementedHandler) ExportCustomFormat(ctx context.Context, params ExportCustomFormatParams) (r SharedCustomFormat, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetCustomFormat implements getCustomFormat operation.
+//
+// One custom format.
+//
+// GET /customformats/{id}
+func (UnimplementedHandler) GetCustomFormat(ctx context.Context, params GetCustomFormatParams) (r *CustomFormat, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetCustomFormatSchema implements getCustomFormatSchema operation.
+//
+// Condition types and the values they accept (for building conditions).
+//
+// GET /customformats/schema
+func (UnimplementedHandler) GetCustomFormatSchema(ctx context.Context) (r *CustomFormatSchema, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetMe implements getMe operation.
 //
 // The signed-in user.
 //
 // GET /auth/me
 func (UnimplementedHandler) GetMe(ctx context.Context) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetQualityProfile implements getQualityProfile operation.
+//
+// One quality profile.
+//
+// GET /qualityprofiles/{id}
+func (UnimplementedHandler) GetQualityProfile(ctx context.Context, params GetQualityProfileParams) (r *QualityProfile, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -157,12 +275,86 @@ func (UnimplementedHandler) GetUser(ctx context.Context, params GetUserParams) (
 	return r, ht.ErrNotImplemented
 }
 
+// ImportCustomFormats implements importCustomFormats operation.
+//
+// Accepts one format object or an array in the commonly shared shape (`name`, `specifications[]` with
+// `implementation`, `negate`, `required`, `fields`). Numeric values follow the `flavor` numbering.
+// Unknown implementations are kept and reported in `warnings`. With `dryRun` nothing is stored.
+//
+// POST /customformats/import
+func (UnimplementedHandler) ImportCustomFormats(ctx context.Context, req *ImportCustomFormatsRequest) (r *ImportCustomFormatsResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListApiKeys implements listApiKeys operation.
 //
 // Own API keys.
 //
 // GET /auth/apikeys
 func (UnimplementedHandler) ListApiKeys(ctx context.Context) (r []ApiKey, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListCustomFormats implements listCustomFormats operation.
+//
+// Custom formats.
+//
+// GET /customformats
+func (UnimplementedHandler) ListCustomFormats(ctx context.Context) (r []CustomFormat, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListDelayProfiles implements listDelayProfiles operation.
+//
+// Delay profiles in evaluation order (the default last).
+//
+// GET /delayprofiles
+func (UnimplementedHandler) ListDelayProfiles(ctx context.Context) (r []DelayProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListLanguages implements listLanguages operation.
+//
+// Known languages.
+//
+// GET /languages
+func (UnimplementedHandler) ListLanguages(ctx context.Context) (r []LanguageInfo, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListQualities implements listQualities operation.
+//
+// The fixed quality ladder (worst first).
+//
+// GET /qualities
+func (UnimplementedHandler) ListQualities(ctx context.Context) (r []Quality, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListQualityDefinitions implements listQualityDefinitions operation.
+//
+// Size limits per quality and media kind.
+//
+// GET /qualitydefinitions
+func (UnimplementedHandler) ListQualityDefinitions(ctx context.Context) (r []QualityDefinition, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListQualityProfiles implements listQualityProfiles operation.
+//
+// Quality profiles.
+//
+// GET /qualityprofiles
+func (UnimplementedHandler) ListQualityProfiles(ctx context.Context) (r []QualityProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListReleaseProfiles implements listReleaseProfiles operation.
+//
+// Release profiles (required and ignored terms).
+//
+// GET /releaseprofiles
+func (UnimplementedHandler) ListReleaseProfiles(ctx context.Context) (r []ReleaseProfile, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -221,12 +413,41 @@ func (UnimplementedHandler) Logout(ctx context.Context) (r *LogoutNoContent, _ e
 	return r, ht.ErrNotImplemented
 }
 
+// ParseRelease implements parseRelease operation.
+//
+// Returns every parsed field and how each custom format did. With `profileId` the release is also
+// scored for that profile and decided (as an interactive search) against the optional `wanted` item;
+// every rejection carries a code, an English message and its values.
+//
+// POST /parse
+func (UnimplementedHandler) ParseRelease(ctx context.Context, req *ParseRequest) (r *ParseResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RegenerateRecoveryCodes implements regenerateRecoveryCodes operation.
 //
 // Replace the recovery codes.
 //
 // POST /auth/totp/recovery-codes
 func (UnimplementedHandler) RegenerateRecoveryCodes(ctx context.Context, req *PasswordConfirm) (r *RecoveryCodes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ReorderDelayProfiles implements reorderDelayProfiles operation.
+//
+// Set the evaluation order of the non-default delay profiles (administrators).
+//
+// PUT /delayprofiles/order
+func (UnimplementedHandler) ReorderDelayProfiles(ctx context.Context, req *ReorderRequest) (r []DelayProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ResetQualityDefinitions implements resetQualityDefinitions operation.
+//
+// Restore the shipped size limits (administrators).
+//
+// POST /qualitydefinitions/reset
+func (UnimplementedHandler) ResetQualityDefinitions(ctx context.Context, req *ResetQualityDefinitionsRequest) (r []QualityDefinition, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -277,12 +498,57 @@ func (UnimplementedHandler) StartTotpSetup(ctx context.Context) (r *TotpSetup, _
 	return r, ht.ErrNotImplemented
 }
 
+// UpdateCustomFormat implements updateCustomFormat operation.
+//
+// Replace a custom format (administrators).
+//
+// PUT /customformats/{id}
+func (UnimplementedHandler) UpdateCustomFormat(ctx context.Context, req *CustomFormatInput, params UpdateCustomFormatParams) (r *CustomFormat, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateDelayProfile implements updateDelayProfile operation.
+//
+// Replace a delay profile (administrators).
+//
+// PUT /delayprofiles/{id}
+func (UnimplementedHandler) UpdateDelayProfile(ctx context.Context, req *DelayProfileInput, params UpdateDelayProfileParams) (r *DelayProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateMe implements updateMe operation.
 //
 // Change own preferences.
 //
 // PATCH /auth/me
 func (UnimplementedHandler) UpdateMe(ctx context.Context, req *UpdateMeRequest) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateQualityDefinitions implements updateQualityDefinitions operation.
+//
+// All or nothing; returns every definition afterwards.
+//
+// PUT /qualitydefinitions
+func (UnimplementedHandler) UpdateQualityDefinitions(ctx context.Context, req *UpdateQualityDefinitionsRequest) (r []QualityDefinition, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateQualityProfile implements updateQualityProfile operation.
+//
+// The media kind cannot change.
+//
+// PUT /qualityprofiles/{id}
+func (UnimplementedHandler) UpdateQualityProfile(ctx context.Context, req *QualityProfileInput, params UpdateQualityProfileParams) (r *QualityProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateReleaseProfile implements updateReleaseProfile operation.
+//
+// Replace a release profile (administrators).
+//
+// PUT /releaseprofiles/{id}
+func (UnimplementedHandler) UpdateReleaseProfile(ctx context.Context, req *ReleaseProfileInput, params UpdateReleaseProfileParams) (r *ReleaseProfile, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

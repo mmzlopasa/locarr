@@ -15,79 +15,144 @@ var (
 		"GET":  "Authorization",
 		"POST": "Authorization,Content-Type",
 	}
-	rn12AllowedHeaders = map[string]string{
+	rn17AllowedHeaders = map[string]string{
 		"DELETE": "Authorization",
 	}
-	rn28AllowedHeaders = map[string]string{
+	rn51AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
-	rn30AllowedHeaders = map[string]string{
+	rn53AllowedHeaders = map[string]string{
 		"POST": "Authorization",
 	}
-	rn20AllowedHeaders = map[string]string{
+	rn37AllowedHeaders = map[string]string{
 		"GET":   "Authorization",
 		"PATCH": "Authorization,Content-Type",
 	}
 	rn6AllowedHeaders = map[string]string{
 		"POST": "Authorization,Content-Type",
 	}
-	rn26AllowedHeaders = map[string]string{
+	rn49AllowedHeaders = map[string]string{
 		"GET": "Authorization",
 	}
-	rn34AllowedHeaders = map[string]string{
+	rn60AllowedHeaders = map[string]string{
 		"DELETE": "Authorization",
 	}
-	rn17AllowedHeaders = map[string]string{
+	rn30AllowedHeaders = map[string]string{
 		"POST": "Authorization,Content-Type",
 	}
-	rn19AllowedHeaders = map[string]string{
+	rn32AllowedHeaders = map[string]string{
 		"POST": "Authorization,Content-Type",
 	}
-	rn31AllowedHeaders = map[string]string{
+	rn55AllowedHeaders = map[string]string{
 		"POST": "Authorization,Content-Type",
 	}
-	rn40AllowedHeaders = map[string]string{
+	rn66AllowedHeaders = map[string]string{
 		"POST": "Authorization",
-	}
-	rn1AllowedHeaders = map[string]string{
-		"GET": "Authorization",
 	}
 	rn9AllowedHeaders = map[string]string{
 		"GET":  "Authorization",
 		"POST": "Authorization,Content-Type",
 	}
-	rn14AllowedHeaders = map[string]string{
+	rn43AllowedHeaders = map[string]string{
+		"POST": "Authorization,Content-Type",
+	}
+	rn36AllowedHeaders = map[string]string{
+		"GET": "Authorization",
+	}
+	rn19AllowedHeaders = map[string]string{
 		"DELETE": "Authorization",
+		"GET":    "Authorization",
+		"PUT":    "Authorization,Content-Type",
 	}
-	rn22AllowedHeaders = map[string]string{
-		"GET":   "Authorization",
-		"PATCH": "Authorization,Content-Type",
-	}
-	rn39AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
-	}
-	rn5AllowedHeaders = map[string]string{
-		"POST": "Authorization",
-	}
-	rn25AllowedHeaders = map[string]string{
+	rn35AllowedHeaders = map[string]string{
 		"GET": "Authorization",
 	}
-	rn27AllowedHeaders = map[string]string{
-		"GET": "Authorization",
-	}
-	rn37AllowedHeaders = map[string]string{
-		"POST": "Authorization",
+	rn34AllowedHeaders = map[string]string{
+		"POST": "Authorization,Content-Type",
 	}
 	rn10AllowedHeaders = map[string]string{
 		"GET":  "Authorization",
 		"POST": "Authorization,Content-Type",
 	}
-	rn16AllowedHeaders = map[string]string{
+	rn56AllowedHeaders = map[string]string{
+		"PUT": "Authorization,Content-Type",
+	}
+	rn21AllowedHeaders = map[string]string{
+		"DELETE": "Authorization",
+		"PUT":    "Authorization,Content-Type",
+	}
+	rn1AllowedHeaders = map[string]string{
+		"GET": "Authorization",
+	}
+	rn44AllowedHeaders = map[string]string{
+		"GET": "Authorization",
+	}
+	rn54AllowedHeaders = map[string]string{
+		"POST": "Authorization,Content-Type",
+	}
+	rn46AllowedHeaders = map[string]string{
+		"GET": "Authorization",
+	}
+	rn48AllowedHeaders = map[string]string{
+		"GET": "Authorization",
+		"PUT": "Authorization,Content-Type",
+	}
+	rn57AllowedHeaders = map[string]string{
+		"POST": "Authorization,Content-Type",
+	}
+	rn11AllowedHeaders = map[string]string{
+		"GET":  "Authorization",
+		"POST": "Authorization,Content-Type",
+	}
+	rn23AllowedHeaders = map[string]string{
+		"DELETE": "Authorization",
+		"GET":    "Authorization",
+		"PUT":    "Authorization,Content-Type",
+	}
+	rn12AllowedHeaders = map[string]string{
+		"GET":  "Authorization",
+		"POST": "Authorization,Content-Type",
+	}
+	rn25AllowedHeaders = map[string]string{
+		"DELETE": "Authorization",
+		"PUT":    "Authorization,Content-Type",
+	}
+	rn14AllowedHeaders = map[string]string{
+		"GET":  "Authorization",
+		"POST": "Authorization,Content-Type",
+	}
+	rn27AllowedHeaders = map[string]string{
+		"DELETE": "Authorization",
+	}
+	rn39AllowedHeaders = map[string]string{
+		"GET":   "Authorization",
+		"PATCH": "Authorization,Content-Type",
+	}
+	rn65AllowedHeaders = map[string]string{
+		"POST": "Content-Type",
+	}
+	rn5AllowedHeaders = map[string]string{
+		"POST": "Authorization",
+	}
+	rn42AllowedHeaders = map[string]string{
+		"GET": "Authorization",
+	}
+	rn50AllowedHeaders = map[string]string{
+		"GET": "Authorization",
+	}
+	rn63AllowedHeaders = map[string]string{
+		"POST": "Authorization",
+	}
+	rn15AllowedHeaders = map[string]string{
+		"GET":  "Authorization",
+		"POST": "Authorization,Content-Type",
+	}
+	rn29AllowedHeaders = map[string]string{
 		"DELETE": "Authorization",
 		"GET":    "Authorization",
 		"PATCH":  "Authorization,Content-Type",
 	}
-	rn32AllowedHeaders = map[string]string{
+	rn58AllowedHeaders = map[string]string{
 		"POST": "Authorization,Content-Type",
 	}
 )
@@ -208,7 +273,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "DELETE",
-									allowedHeaders: rn12AllowedHeaders,
+									allowedHeaders: rn17AllowedHeaders,
 									acceptPost:     "",
 									acceptPatch:    "",
 								})
@@ -247,7 +312,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn28AllowedHeaders,
+									allowedHeaders: rn51AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -272,7 +337,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn30AllowedHeaders,
+									allowedHeaders: rn53AllowedHeaders,
 									acceptPost:     "",
 									acceptPatch:    "",
 								})
@@ -301,7 +366,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "GET,PATCH",
-								allowedHeaders: rn20AllowedHeaders,
+								allowedHeaders: rn37AllowedHeaders,
 								acceptPost:     "",
 								acceptPatch:    "application/json",
 							})
@@ -350,7 +415,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "GET",
-								allowedHeaders: rn26AllowedHeaders,
+								allowedHeaders: rn49AllowedHeaders,
 								acceptPost:     "",
 								acceptPatch:    "",
 							})
@@ -386,7 +451,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "DELETE",
-									allowedHeaders: rn34AllowedHeaders,
+									allowedHeaders: rn60AllowedHeaders,
 									acceptPost:     "",
 									acceptPatch:    "",
 								})
@@ -425,7 +490,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn17AllowedHeaders,
+									allowedHeaders: rn30AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -450,7 +515,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn19AllowedHeaders,
+									allowedHeaders: rn32AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -475,7 +540,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn31AllowedHeaders,
+									allowedHeaders: rn55AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -500,7 +565,302 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn40AllowedHeaders,
+									allowedHeaders: rn66AllowedHeaders,
+									acceptPost:     "",
+									acceptPatch:    "",
+								})
+							}
+
+							return
+						}
+
+					}
+
+				}
+
+			case 'c': // Prefix: "customformats"
+
+				if l := len("customformats"); len(elem) >= l && elem[0:l] == "customformats" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch r.Method {
+					case "GET":
+						s.handleListCustomFormatsRequest([0]string{}, elemIsEscaped, w, r)
+					case "POST":
+						s.handleCreateCustomFormatRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "GET,POST",
+							allowedHeaders: rn9AllowedHeaders,
+							acceptPost:     "application/json",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'i': // Prefix: "import"
+						origElem := elem
+						if l := len("import"); len(elem) >= l && elem[0:l] == "import" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleImportCustomFormatsRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, notAllowedParams{
+									allowedMethods: "POST",
+									allowedHeaders: rn43AllowedHeaders,
+									acceptPost:     "application/json",
+									acceptPatch:    "",
+								})
+							}
+
+							return
+						}
+
+						elem = origElem
+					case 's': // Prefix: "schema"
+						origElem := elem
+						if l := len("schema"); len(elem) >= l && elem[0:l] == "schema" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleGetCustomFormatSchemaRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, notAllowedParams{
+									allowedMethods: "GET",
+									allowedHeaders: rn36AllowedHeaders,
+									acceptPost:     "",
+									acceptPatch:    "",
+								})
+							}
+
+							return
+						}
+
+						elem = origElem
+					}
+					// Param: "id"
+					// Match until "/"
+					idx := strings.IndexByte(elem, '/')
+					if idx < 0 {
+						idx = len(elem)
+					}
+					args[0] = elem[:idx]
+					elem = elem[idx:]
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "DELETE":
+							s.handleDeleteCustomFormatRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "GET":
+							s.handleGetCustomFormatRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "PUT":
+							s.handleUpdateCustomFormatRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "DELETE,GET,PUT",
+								allowedHeaders: rn19AllowedHeaders,
+								acceptPost:     "",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/export"
+
+						if l := len("/export"); len(elem) >= l && elem[0:l] == "/export" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleExportCustomFormatRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, notAllowedParams{
+									allowedMethods: "GET",
+									allowedHeaders: rn35AllowedHeaders,
+									acceptPost:     "",
+									acceptPatch:    "",
+								})
+							}
+
+							return
+						}
+
+					}
+
+				}
+
+			case 'd': // Prefix: "de"
+
+				if l := len("de"); len(elem) >= l && elem[0:l] == "de" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'c': // Prefix: "cisions/evaluate"
+
+					if l := len("cisions/evaluate"); len(elem) >= l && elem[0:l] == "cisions/evaluate" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "POST":
+							s.handleEvaluateReleasesRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "POST",
+								allowedHeaders: rn34AllowedHeaders,
+								acceptPost:     "application/json",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+
+				case 'l': // Prefix: "layprofiles"
+
+					if l := len("layprofiles"); len(elem) >= l && elem[0:l] == "layprofiles" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "GET":
+							s.handleListDelayProfilesRequest([0]string{}, elemIsEscaped, w, r)
+						case "POST":
+							s.handleCreateDelayProfileRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "GET,POST",
+								allowedHeaders: rn10AllowedHeaders,
+								acceptPost:     "application/json",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'o': // Prefix: "order"
+							origElem := elem
+							if l := len("order"); len(elem) >= l && elem[0:l] == "order" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "PUT":
+									s.handleReorderDelayProfilesRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, notAllowedParams{
+										allowedMethods: "PUT",
+										allowedHeaders: rn56AllowedHeaders,
+										acceptPost:     "",
+										acceptPatch:    "",
+									})
+								}
+
+								return
+							}
+
+							elem = origElem
+						}
+						// Param: "id"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleDeleteDelayProfileRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleUpdateDelayProfileRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, notAllowedParams{
+									allowedMethods: "DELETE,PUT",
+									allowedHeaders: rn21AllowedHeaders,
 									acceptPost:     "",
 									acceptPatch:    "",
 								})
@@ -538,24 +898,48 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 
-			case 'r': // Prefix: "rootfolders"
+			case 'l': // Prefix: "languages"
 
-				if l := len("rootfolders"); len(elem) >= l && elem[0:l] == "rootfolders" {
+				if l := len("languages"); len(elem) >= l && elem[0:l] == "languages" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch r.Method {
 					case "GET":
-						s.handleListRootFoldersRequest([0]string{}, elemIsEscaped, w, r)
-					case "POST":
-						s.handleCreateRootFolderRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleListLanguagesRequest([0]string{}, elemIsEscaped, w, r)
 					default:
 						s.notAllowed(w, r, notAllowedParams{
-							allowedMethods: "GET,POST",
-							allowedHeaders: rn9AllowedHeaders,
+							allowedMethods: "GET",
+							allowedHeaders: rn44AllowedHeaders,
+							acceptPost:     "",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+
+			case 'p': // Prefix: "parse"
+
+				if l := len("parse"); len(elem) >= l && elem[0:l] == "parse" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleParseReleaseRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "POST",
+							allowedHeaders: rn54AllowedHeaders,
 							acceptPost:     "application/json",
 							acceptPatch:    "",
 						})
@@ -563,41 +947,327 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					return
 				}
-				switch elem[0] {
-				case '/': // Prefix: "/"
 
-					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+			case 'q': // Prefix: "qualit"
+
+				if l := len("qualit"); len(elem) >= l && elem[0:l] == "qualit" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'i': // Prefix: "ies"
+
+					if l := len("ies"); len(elem) >= l && elem[0:l] == "ies" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
-					// Param: "id"
-					// Leaf parameter, slashes are prohibited
-					idx := strings.IndexByte(elem, '/')
-					if idx >= 0 {
-						break
-					}
-					args[0] = elem
-					elem = ""
-
 					if len(elem) == 0 {
 						// Leaf node.
 						switch r.Method {
-						case "DELETE":
-							s.handleDeleteRootFolderRequest([1]string{
-								args[0],
-							}, elemIsEscaped, w, r)
+						case "GET":
+							s.handleListQualitiesRequest([0]string{}, elemIsEscaped, w, r)
 						default:
 							s.notAllowed(w, r, notAllowedParams{
-								allowedMethods: "DELETE",
-								allowedHeaders: rn14AllowedHeaders,
+								allowedMethods: "GET",
+								allowedHeaders: rn46AllowedHeaders,
 								acceptPost:     "",
 								acceptPatch:    "",
 							})
 						}
 
 						return
+					}
+
+				case 'y': // Prefix: "y"
+
+					if l := len("y"); len(elem) >= l && elem[0:l] == "y" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'd': // Prefix: "definitions"
+
+						if l := len("definitions"); len(elem) >= l && elem[0:l] == "definitions" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "GET":
+								s.handleListQualityDefinitionsRequest([0]string{}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleUpdateQualityDefinitionsRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, notAllowedParams{
+									allowedMethods: "GET,PUT",
+									allowedHeaders: rn48AllowedHeaders,
+									acceptPost:     "",
+									acceptPatch:    "",
+								})
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/reset"
+
+							if l := len("/reset"); len(elem) >= l && elem[0:l] == "/reset" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleResetQualityDefinitionsRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, notAllowedParams{
+										allowedMethods: "POST",
+										allowedHeaders: rn57AllowedHeaders,
+										acceptPost:     "application/json",
+										acceptPatch:    "",
+									})
+								}
+
+								return
+							}
+
+						}
+
+					case 'p': // Prefix: "profiles"
+
+						if l := len("profiles"); len(elem) >= l && elem[0:l] == "profiles" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "GET":
+								s.handleListQualityProfilesRequest([0]string{}, elemIsEscaped, w, r)
+							case "POST":
+								s.handleCreateQualityProfileRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, notAllowedParams{
+									allowedMethods: "GET,POST",
+									allowedHeaders: rn11AllowedHeaders,
+									acceptPost:     "application/json",
+									acceptPatch:    "",
+								})
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleDeleteQualityProfileRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleGetQualityProfileRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "PUT":
+									s.handleUpdateQualityProfileRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, notAllowedParams{
+										allowedMethods: "DELETE,GET,PUT",
+										allowedHeaders: rn23AllowedHeaders,
+										acceptPost:     "",
+										acceptPatch:    "",
+									})
+								}
+
+								return
+							}
+
+						}
+
+					}
+
+				}
+
+			case 'r': // Prefix: "r"
+
+				if l := len("r"); len(elem) >= l && elem[0:l] == "r" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'e': // Prefix: "eleaseprofiles"
+
+					if l := len("eleaseprofiles"); len(elem) >= l && elem[0:l] == "eleaseprofiles" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "GET":
+							s.handleListReleaseProfilesRequest([0]string{}, elemIsEscaped, w, r)
+						case "POST":
+							s.handleCreateReleaseProfileRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "GET,POST",
+								allowedHeaders: rn12AllowedHeaders,
+								acceptPost:     "application/json",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "id"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleDeleteReleaseProfileRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleUpdateReleaseProfileRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, notAllowedParams{
+									allowedMethods: "DELETE,PUT",
+									allowedHeaders: rn25AllowedHeaders,
+									acceptPost:     "",
+									acceptPatch:    "",
+								})
+							}
+
+							return
+						}
+
+					}
+
+				case 'o': // Prefix: "ootfolders"
+
+					if l := len("ootfolders"); len(elem) >= l && elem[0:l] == "ootfolders" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "GET":
+							s.handleListRootFoldersRequest([0]string{}, elemIsEscaped, w, r)
+						case "POST":
+							s.handleCreateRootFolderRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "GET,POST",
+								allowedHeaders: rn14AllowedHeaders,
+								acceptPost:     "application/json",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "id"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleDeleteRootFolderRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, notAllowedParams{
+									allowedMethods: "DELETE",
+									allowedHeaders: rn27AllowedHeaders,
+									acceptPost:     "",
+									acceptPatch:    "",
+								})
+							}
+
+							return
+						}
+
 					}
 
 				}
@@ -644,7 +1314,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "GET,PATCH",
-									allowedHeaders: rn22AllowedHeaders,
+									allowedHeaders: rn39AllowedHeaders,
 									acceptPost:     "",
 									acceptPatch:    "application/json",
 								})
@@ -669,7 +1339,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn39AllowedHeaders,
+									allowedHeaders: rn65AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -783,7 +1453,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "GET",
-									allowedHeaders: rn25AllowedHeaders,
+									allowedHeaders: rn42AllowedHeaders,
 									acceptPost:     "",
 									acceptPatch:    "",
 								})
@@ -807,7 +1477,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "GET",
-									allowedHeaders: rn27AllowedHeaders,
+									allowedHeaders: rn50AllowedHeaders,
 									acceptPost:     "",
 									acceptPatch:    "",
 								})
@@ -855,7 +1525,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: rn37AllowedHeaders,
+											allowedHeaders: rn63AllowedHeaders,
 											acceptPost:     "",
 											acceptPatch:    "",
 										})
@@ -889,7 +1559,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					default:
 						s.notAllowed(w, r, notAllowedParams{
 							allowedMethods: "GET,POST",
-							allowedHeaders: rn10AllowedHeaders,
+							allowedHeaders: rn15AllowedHeaders,
 							acceptPost:     "application/json",
 							acceptPatch:    "",
 						})
@@ -932,7 +1602,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "DELETE,GET,PATCH",
-								allowedHeaders: rn16AllowedHeaders,
+								allowedHeaders: rn29AllowedHeaders,
 								acceptPost:     "",
 								acceptPatch:    "application/json",
 							})
@@ -959,7 +1629,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn32AllowedHeaders,
+									allowedHeaders: rn58AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -1452,6 +2122,324 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 				}
 
+			case 'c': // Prefix: "customformats"
+
+				if l := len("customformats"); len(elem) >= l && elem[0:l] == "customformats" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						r.name = ListCustomFormatsOperation
+						r.summary = "Custom formats"
+						r.operationID = "listCustomFormats"
+						r.operationGroup = ""
+						r.pathPattern = "/customformats"
+						r.args = args
+						r.count = 0
+						return r, true
+					case "POST":
+						r.name = CreateCustomFormatOperation
+						r.summary = "Add a custom format (administrators)"
+						r.operationID = "createCustomFormat"
+						r.operationGroup = ""
+						r.pathPattern = "/customformats"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'i': // Prefix: "import"
+						origElem := elem
+						if l := len("import"); len(elem) >= l && elem[0:l] == "import" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = ImportCustomFormatsOperation
+								r.summary = "Import custom formats from shared JSON (administrators)"
+								r.operationID = "importCustomFormats"
+								r.operationGroup = ""
+								r.pathPattern = "/customformats/import"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+						elem = origElem
+					case 's': // Prefix: "schema"
+						origElem := elem
+						if l := len("schema"); len(elem) >= l && elem[0:l] == "schema" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = GetCustomFormatSchemaOperation
+								r.summary = "Condition types and the values they accept (for building conditions)"
+								r.operationID = "getCustomFormatSchema"
+								r.operationGroup = ""
+								r.pathPattern = "/customformats/schema"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+						elem = origElem
+					}
+					// Param: "id"
+					// Match until "/"
+					idx := strings.IndexByte(elem, '/')
+					if idx < 0 {
+						idx = len(elem)
+					}
+					args[0] = elem[:idx]
+					elem = elem[idx:]
+
+					if len(elem) == 0 {
+						switch method {
+						case "DELETE":
+							r.name = DeleteCustomFormatOperation
+							r.summary = "Remove a custom format (administrators)"
+							r.operationID = "deleteCustomFormat"
+							r.operationGroup = ""
+							r.pathPattern = "/customformats/{id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "GET":
+							r.name = GetCustomFormatOperation
+							r.summary = "One custom format"
+							r.operationID = "getCustomFormat"
+							r.operationGroup = ""
+							r.pathPattern = "/customformats/{id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "PUT":
+							r.name = UpdateCustomFormatOperation
+							r.summary = "Replace a custom format (administrators)"
+							r.operationID = "updateCustomFormat"
+							r.operationGroup = ""
+							r.pathPattern = "/customformats/{id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/export"
+
+						if l := len("/export"); len(elem) >= l && elem[0:l] == "/export" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = ExportCustomFormatOperation
+								r.summary = "A custom format as shared JSON"
+								r.operationID = "exportCustomFormat"
+								r.operationGroup = ""
+								r.pathPattern = "/customformats/{id}/export"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
+					}
+
+				}
+
+			case 'd': // Prefix: "de"
+
+				if l := len("de"); len(elem) >= l && elem[0:l] == "de" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'c': // Prefix: "cisions/evaluate"
+
+					if l := len("cisions/evaluate"); len(elem) >= l && elem[0:l] == "cisions/evaluate" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "POST":
+							r.name = EvaluateReleasesOperation
+							r.summary = "Decide on a list of releases for a wanted item (administrators)"
+							r.operationID = "evaluateReleases"
+							r.operationGroup = ""
+							r.pathPattern = "/decisions/evaluate"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				case 'l': // Prefix: "layprofiles"
+
+					if l := len("layprofiles"); len(elem) >= l && elem[0:l] == "layprofiles" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							r.name = ListDelayProfilesOperation
+							r.summary = "Delay profiles in evaluation order (the default last)"
+							r.operationID = "listDelayProfiles"
+							r.operationGroup = ""
+							r.pathPattern = "/delayprofiles"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "POST":
+							r.name = CreateDelayProfileOperation
+							r.summary = "Add a delay profile before the default (administrators)"
+							r.operationID = "createDelayProfile"
+							r.operationGroup = ""
+							r.pathPattern = "/delayprofiles"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'o': // Prefix: "order"
+							origElem := elem
+							if l := len("order"); len(elem) >= l && elem[0:l] == "order" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "PUT":
+									r.name = ReorderDelayProfilesOperation
+									r.summary = "Set the evaluation order of the non-default delay profiles (administrators)"
+									r.operationID = "reorderDelayProfiles"
+									r.operationGroup = ""
+									r.pathPattern = "/delayprofiles/order"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+							elem = origElem
+						}
+						// Param: "id"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "DELETE":
+								r.name = DeleteDelayProfileOperation
+								r.summary = "Remove a delay profile (administrators; never the default)"
+								r.operationID = "deleteDelayProfile"
+								r.operationGroup = ""
+								r.pathPattern = "/delayprofiles/{id}"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "PUT":
+								r.name = UpdateDelayProfileOperation
+								r.summary = "Replace a delay profile (administrators)"
+								r.operationID = "updateDelayProfile"
+								r.operationGroup = ""
+								r.pathPattern = "/delayprofiles/{id}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
+					}
+
+				}
+
 			case 'f': // Prefix: "filesystem"
 
 				if l := len("filesystem"); len(elem) >= l && elem[0:l] == "filesystem" {
@@ -1477,31 +2465,23 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 				}
 
-			case 'r': // Prefix: "rootfolders"
+			case 'l': // Prefix: "languages"
 
-				if l := len("rootfolders"); len(elem) >= l && elem[0:l] == "rootfolders" {
+				if l := len("languages"); len(elem) >= l && elem[0:l] == "languages" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch method {
 					case "GET":
-						r.name = ListRootFoldersOperation
-						r.summary = "Root folders with free space (administrators)"
-						r.operationID = "listRootFolders"
+						r.name = ListLanguagesOperation
+						r.summary = "Known languages"
+						r.operationID = "listLanguages"
 						r.operationGroup = ""
-						r.pathPattern = "/rootfolders"
-						r.args = args
-						r.count = 0
-						return r, true
-					case "POST":
-						r.name = CreateRootFolderOperation
-						r.summary = "Add a root folder (administrators)"
-						r.operationID = "createRootFolder"
-						r.operationGroup = ""
-						r.pathPattern = "/rootfolders"
+						r.pathPattern = "/languages"
 						r.args = args
 						r.count = 0
 						return r, true
@@ -1509,39 +2489,389 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						return
 					}
 				}
-				switch elem[0] {
-				case '/': // Prefix: "/"
 
-					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+			case 'p': // Prefix: "parse"
+
+				if l := len("parse"); len(elem) >= l && elem[0:l] == "parse" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "POST":
+						r.name = ParseReleaseOperation
+						r.summary = "Parse a release name; optionally score and decide it against a profile"
+						r.operationID = "parseRelease"
+						r.operationGroup = ""
+						r.pathPattern = "/parse"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
+			case 'q': // Prefix: "qualit"
+
+				if l := len("qualit"); len(elem) >= l && elem[0:l] == "qualit" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'i': // Prefix: "ies"
+
+					if l := len("ies"); len(elem) >= l && elem[0:l] == "ies" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
-					// Param: "id"
-					// Leaf parameter, slashes are prohibited
-					idx := strings.IndexByte(elem, '/')
-					if idx >= 0 {
-						break
-					}
-					args[0] = elem
-					elem = ""
-
 					if len(elem) == 0 {
 						// Leaf node.
 						switch method {
-						case "DELETE":
-							r.name = DeleteRootFolderOperation
-							r.summary = "Remove a root folder (administrators)"
-							r.operationID = "deleteRootFolder"
+						case "GET":
+							r.name = ListQualitiesOperation
+							r.summary = "The fixed quality ladder (worst first)"
+							r.operationID = "listQualities"
 							r.operationGroup = ""
-							r.pathPattern = "/rootfolders/{id}"
+							r.pathPattern = "/qualities"
 							r.args = args
-							r.count = 1
+							r.count = 0
 							return r, true
 						default:
 							return
 						}
+					}
+
+				case 'y': // Prefix: "y"
+
+					if l := len("y"); len(elem) >= l && elem[0:l] == "y" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'd': // Prefix: "definitions"
+
+						if l := len("definitions"); len(elem) >= l && elem[0:l] == "definitions" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "GET":
+								r.name = ListQualityDefinitionsOperation
+								r.summary = "Size limits per quality and media kind"
+								r.operationID = "listQualityDefinitions"
+								r.operationGroup = ""
+								r.pathPattern = "/qualitydefinitions"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "PUT":
+								r.name = UpdateQualityDefinitionsOperation
+								r.summary = "Change size limits (administrators)"
+								r.operationID = "updateQualityDefinitions"
+								r.operationGroup = ""
+								r.pathPattern = "/qualitydefinitions"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/reset"
+
+							if l := len("/reset"); len(elem) >= l && elem[0:l] == "/reset" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = ResetQualityDefinitionsOperation
+									r.summary = "Restore the shipped size limits (administrators)"
+									r.operationID = "resetQualityDefinitions"
+									r.operationGroup = ""
+									r.pathPattern = "/qualitydefinitions/reset"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 'p': // Prefix: "profiles"
+
+						if l := len("profiles"); len(elem) >= l && elem[0:l] == "profiles" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "GET":
+								r.name = ListQualityProfilesOperation
+								r.summary = "Quality profiles"
+								r.operationID = "listQualityProfiles"
+								r.operationGroup = ""
+								r.pathPattern = "/qualityprofiles"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "POST":
+								r.name = CreateQualityProfileOperation
+								r.summary = "Add a quality profile (administrators)"
+								r.operationID = "createQualityProfile"
+								r.operationGroup = ""
+								r.pathPattern = "/qualityprofiles"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = DeleteQualityProfileOperation
+									r.summary = "Remove a quality profile (administrators)"
+									r.operationID = "deleteQualityProfile"
+									r.operationGroup = ""
+									r.pathPattern = "/qualityprofiles/{id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "GET":
+									r.name = GetQualityProfileOperation
+									r.summary = "One quality profile"
+									r.operationID = "getQualityProfile"
+									r.operationGroup = ""
+									r.pathPattern = "/qualityprofiles/{id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "PUT":
+									r.name = UpdateQualityProfileOperation
+									r.summary = "Replace a quality profile (administrators)"
+									r.operationID = "updateQualityProfile"
+									r.operationGroup = ""
+									r.pathPattern = "/qualityprofiles/{id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					}
+
+				}
+
+			case 'r': // Prefix: "r"
+
+				if l := len("r"); len(elem) >= l && elem[0:l] == "r" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'e': // Prefix: "eleaseprofiles"
+
+					if l := len("eleaseprofiles"); len(elem) >= l && elem[0:l] == "eleaseprofiles" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							r.name = ListReleaseProfilesOperation
+							r.summary = "Release profiles (required and ignored terms)"
+							r.operationID = "listReleaseProfiles"
+							r.operationGroup = ""
+							r.pathPattern = "/releaseprofiles"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "POST":
+							r.name = CreateReleaseProfileOperation
+							r.summary = "Add a release profile (administrators)"
+							r.operationID = "createReleaseProfile"
+							r.operationGroup = ""
+							r.pathPattern = "/releaseprofiles"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "id"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "DELETE":
+								r.name = DeleteReleaseProfileOperation
+								r.summary = "Remove a release profile (administrators)"
+								r.operationID = "deleteReleaseProfile"
+								r.operationGroup = ""
+								r.pathPattern = "/releaseprofiles/{id}"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "PUT":
+								r.name = UpdateReleaseProfileOperation
+								r.summary = "Replace a release profile (administrators)"
+								r.operationID = "updateReleaseProfile"
+								r.operationGroup = ""
+								r.pathPattern = "/releaseprofiles/{id}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
+					}
+
+				case 'o': // Prefix: "ootfolders"
+
+					if l := len("ootfolders"); len(elem) >= l && elem[0:l] == "ootfolders" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							r.name = ListRootFoldersOperation
+							r.summary = "Root folders with free space (administrators)"
+							r.operationID = "listRootFolders"
+							r.operationGroup = ""
+							r.pathPattern = "/rootfolders"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "POST":
+							r.name = CreateRootFolderOperation
+							r.summary = "Add a root folder (administrators)"
+							r.operationID = "createRootFolder"
+							r.operationGroup = ""
+							r.pathPattern = "/rootfolders"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "id"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "DELETE":
+								r.name = DeleteRootFolderOperation
+								r.summary = "Remove a root folder (administrators)"
+								r.operationID = "deleteRootFolder"
+								r.operationGroup = ""
+								r.pathPattern = "/rootfolders/{id}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
 					}
 
 				}

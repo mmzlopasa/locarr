@@ -28,7 +28,7 @@ type Quality struct {
 	Resolution int    `json:"resolution,omitempty"`
 	// Modifier is remux, brdisk, rawhd, regional or screener.
 	Modifier string `json:"modifier,omitempty"`
-	Music    bool   `json:"music,omitempty"`
+	Music    bool   `json:"music"`
 	// Rank orders the ladder (higher is better).
 	Rank int `json:"rank"`
 }

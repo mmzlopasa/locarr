@@ -32,6 +32,30 @@ type Handler interface {
 	//
 	// POST /auth/apikeys
 	CreateApiKey(ctx context.Context, req *CreateApiKeyRequest) (*CreatedApiKey, error)
+	// CreateCustomFormat implements createCustomFormat operation.
+	//
+	// Add a custom format (administrators).
+	//
+	// POST /customformats
+	CreateCustomFormat(ctx context.Context, req *CustomFormatInput) (*CustomFormat, error)
+	// CreateDelayProfile implements createDelayProfile operation.
+	//
+	// Add a delay profile before the default (administrators).
+	//
+	// POST /delayprofiles
+	CreateDelayProfile(ctx context.Context, req *DelayProfileInput) (*DelayProfile, error)
+	// CreateQualityProfile implements createQualityProfile operation.
+	//
+	// Qualities of the kind that the item list leaves out are added at the end as not allowed.
+	//
+	// POST /qualityprofiles
+	CreateQualityProfile(ctx context.Context, req *QualityProfileInput) (*QualityProfile, error)
+	// CreateReleaseProfile implements createReleaseProfile operation.
+	//
+	// Add a release profile (administrators).
+	//
+	// POST /releaseprofiles
+	CreateReleaseProfile(ctx context.Context, req *ReleaseProfileInput) (*ReleaseProfile, error)
 	// CreateRootFolder implements createRootFolder operation.
 	//
 	// The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
@@ -50,6 +74,30 @@ type Handler interface {
 	//
 	// DELETE /auth/apikeys/{id}
 	DeleteApiKey(ctx context.Context, params DeleteApiKeyParams) error
+	// DeleteCustomFormat implements deleteCustomFormat operation.
+	//
+	// Profiles that scored it simply stop seeing it.
+	//
+	// DELETE /customformats/{id}
+	DeleteCustomFormat(ctx context.Context, params DeleteCustomFormatParams) error
+	// DeleteDelayProfile implements deleteDelayProfile operation.
+	//
+	// Remove a delay profile (administrators; never the default).
+	//
+	// DELETE /delayprofiles/{id}
+	DeleteDelayProfile(ctx context.Context, params DeleteDelayProfileParams) error
+	// DeleteQualityProfile implements deleteQualityProfile operation.
+	//
+	// Remove a quality profile (administrators).
+	//
+	// DELETE /qualityprofiles/{id}
+	DeleteQualityProfile(ctx context.Context, params DeleteQualityProfileParams) error
+	// DeleteReleaseProfile implements deleteReleaseProfile operation.
+	//
+	// Remove a release profile (administrators).
+	//
+	// DELETE /releaseprofiles/{id}
+	DeleteReleaseProfile(ctx context.Context, params DeleteReleaseProfileParams) error
 	// DeleteRootFolder implements deleteRootFolder operation.
 	//
 	// Only forgets the folder; nothing on disk is touched.
@@ -74,12 +122,43 @@ type Handler interface {
 	//
 	// POST /auth/totp/enable
 	EnableTotp(ctx context.Context, req *TotpCodeRequest) (*RecoveryCodes, error)
+	// EvaluateReleases implements evaluateReleases operation.
+	//
+	// Runs the decision engine on the given candidates and returns the report (accepted ones ranked
+	// first). Nothing is stored or grabbed.
+	//
+	// POST /decisions/evaluate
+	EvaluateReleases(ctx context.Context, req *EvaluateRequest) (*DecisionReport, error)
+	// ExportCustomFormat implements exportCustomFormat operation.
+	//
+	// A custom format as shared JSON.
+	//
+	// GET /customformats/{id}/export
+	ExportCustomFormat(ctx context.Context, params ExportCustomFormatParams) (SharedCustomFormat, error)
+	// GetCustomFormat implements getCustomFormat operation.
+	//
+	// One custom format.
+	//
+	// GET /customformats/{id}
+	GetCustomFormat(ctx context.Context, params GetCustomFormatParams) (*CustomFormat, error)
+	// GetCustomFormatSchema implements getCustomFormatSchema operation.
+	//
+	// Condition types and the values they accept (for building conditions).
+	//
+	// GET /customformats/schema
+	GetCustomFormatSchema(ctx context.Context) (*CustomFormatSchema, error)
 	// GetMe implements getMe operation.
 	//
 	// The signed-in user.
 	//
 	// GET /auth/me
 	GetMe(ctx context.Context) (*User, error)
+	// GetQualityProfile implements getQualityProfile operation.
+	//
+	// One quality profile.
+	//
+	// GET /qualityprofiles/{id}
+	GetQualityProfile(ctx context.Context, params GetQualityProfileParams) (*QualityProfile, error)
 	// GetSettings implements getSettings operation.
 	//
 	// Secret fields only say whether they are set; their values never leave the server.
@@ -104,12 +183,62 @@ type Handler interface {
 	//
 	// GET /users/{id}
 	GetUser(ctx context.Context, params GetUserParams) (*User, error)
+	// ImportCustomFormats implements importCustomFormats operation.
+	//
+	// Accepts one format object or an array in the commonly shared shape (`name`, `specifications[]` with
+	// `implementation`, `negate`, `required`, `fields`). Numeric values follow the `flavor` numbering.
+	// Unknown implementations are kept and reported in `warnings`. With `dryRun` nothing is stored.
+	//
+	// POST /customformats/import
+	ImportCustomFormats(ctx context.Context, req *ImportCustomFormatsRequest) (*ImportCustomFormatsResult, error)
 	// ListApiKeys implements listApiKeys operation.
 	//
 	// Own API keys.
 	//
 	// GET /auth/apikeys
 	ListApiKeys(ctx context.Context) ([]ApiKey, error)
+	// ListCustomFormats implements listCustomFormats operation.
+	//
+	// Custom formats.
+	//
+	// GET /customformats
+	ListCustomFormats(ctx context.Context) ([]CustomFormat, error)
+	// ListDelayProfiles implements listDelayProfiles operation.
+	//
+	// Delay profiles in evaluation order (the default last).
+	//
+	// GET /delayprofiles
+	ListDelayProfiles(ctx context.Context) ([]DelayProfile, error)
+	// ListLanguages implements listLanguages operation.
+	//
+	// Known languages.
+	//
+	// GET /languages
+	ListLanguages(ctx context.Context) ([]LanguageInfo, error)
+	// ListQualities implements listQualities operation.
+	//
+	// The fixed quality ladder (worst first).
+	//
+	// GET /qualities
+	ListQualities(ctx context.Context) ([]Quality, error)
+	// ListQualityDefinitions implements listQualityDefinitions operation.
+	//
+	// Size limits per quality and media kind.
+	//
+	// GET /qualitydefinitions
+	ListQualityDefinitions(ctx context.Context) ([]QualityDefinition, error)
+	// ListQualityProfiles implements listQualityProfiles operation.
+	//
+	// Quality profiles.
+	//
+	// GET /qualityprofiles
+	ListQualityProfiles(ctx context.Context) ([]QualityProfile, error)
+	// ListReleaseProfiles implements listReleaseProfiles operation.
+	//
+	// Release profiles (required and ignored terms).
+	//
+	// GET /releaseprofiles
+	ListReleaseProfiles(ctx context.Context) ([]ReleaseProfile, error)
 	// ListRootFolders implements listRootFolders operation.
 	//
 	// Root folders with free space (administrators).
@@ -147,12 +276,32 @@ type Handler interface {
 	//
 	// POST /auth/logout
 	Logout(ctx context.Context) (*LogoutNoContent, error)
+	// ParseRelease implements parseRelease operation.
+	//
+	// Returns every parsed field and how each custom format did. With `profileId` the release is also
+	// scored for that profile and decided (as an interactive search) against the optional `wanted` item;
+	// every rejection carries a code, an English message and its values.
+	//
+	// POST /parse
+	ParseRelease(ctx context.Context, req *ParseRequest) (*ParseResult, error)
 	// RegenerateRecoveryCodes implements regenerateRecoveryCodes operation.
 	//
 	// Replace the recovery codes.
 	//
 	// POST /auth/totp/recovery-codes
 	RegenerateRecoveryCodes(ctx context.Context, req *PasswordConfirm) (*RecoveryCodes, error)
+	// ReorderDelayProfiles implements reorderDelayProfiles operation.
+	//
+	// Set the evaluation order of the non-default delay profiles (administrators).
+	//
+	// PUT /delayprofiles/order
+	ReorderDelayProfiles(ctx context.Context, req *ReorderRequest) ([]DelayProfile, error)
+	// ResetQualityDefinitions implements resetQualityDefinitions operation.
+	//
+	// Restore the shipped size limits (administrators).
+	//
+	// POST /qualitydefinitions/reset
+	ResetQualityDefinitions(ctx context.Context, req *ResetQualityDefinitionsRequest) ([]QualityDefinition, error)
 	// ResetUserPassword implements resetUserPassword operation.
 	//
 	// Signs the user out everywhere and clears an account lockout.
@@ -185,12 +334,42 @@ type Handler interface {
 	//
 	// POST /auth/totp/setup
 	StartTotpSetup(ctx context.Context) (*TotpSetup, error)
+	// UpdateCustomFormat implements updateCustomFormat operation.
+	//
+	// Replace a custom format (administrators).
+	//
+	// PUT /customformats/{id}
+	UpdateCustomFormat(ctx context.Context, req *CustomFormatInput, params UpdateCustomFormatParams) (*CustomFormat, error)
+	// UpdateDelayProfile implements updateDelayProfile operation.
+	//
+	// Replace a delay profile (administrators).
+	//
+	// PUT /delayprofiles/{id}
+	UpdateDelayProfile(ctx context.Context, req *DelayProfileInput, params UpdateDelayProfileParams) (*DelayProfile, error)
 	// UpdateMe implements updateMe operation.
 	//
 	// Change own preferences.
 	//
 	// PATCH /auth/me
 	UpdateMe(ctx context.Context, req *UpdateMeRequest) (*User, error)
+	// UpdateQualityDefinitions implements updateQualityDefinitions operation.
+	//
+	// All or nothing; returns every definition afterwards.
+	//
+	// PUT /qualitydefinitions
+	UpdateQualityDefinitions(ctx context.Context, req *UpdateQualityDefinitionsRequest) ([]QualityDefinition, error)
+	// UpdateQualityProfile implements updateQualityProfile operation.
+	//
+	// The media kind cannot change.
+	//
+	// PUT /qualityprofiles/{id}
+	UpdateQualityProfile(ctx context.Context, req *QualityProfileInput, params UpdateQualityProfileParams) (*QualityProfile, error)
+	// UpdateReleaseProfile implements updateReleaseProfile operation.
+	//
+	// Replace a release profile (administrators).
+	//
+	// PUT /releaseprofiles/{id}
+	UpdateReleaseProfile(ctx context.Context, req *ReleaseProfileInput, params UpdateReleaseProfileParams) (*ReleaseProfile, error)
 	// UpdateSettings implements updateSettings operation.
 	//
 	// Change server settings (administrators).
