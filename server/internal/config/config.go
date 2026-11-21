@@ -24,6 +24,9 @@ type Config struct {
 	// TMDbURL replaces TMDb's API address (LOCARR_TMDB_URL; tests and the
 	// fake services only, default https://api.themoviedb.org).
 	TMDbURL string
+	// TVDBURL replaces TVDB's API address (LOCARR_TVDB_URL; tests and the
+	// fake services only, default https://api4.thetvdb.com).
+	TVDBURL string
 	// TrustedProxies are CIDRs whose X-Forwarded-For is believed (LOCARR_TRUSTED_PROXIES).
 	TrustedProxies string
 	// SetupCode fixes the first-run setup code instead of a random one (LOCARR_SETUP_CODE).
@@ -54,6 +57,7 @@ func load(env func(string) string) (Config, error) {
 		TrustedProxies: get("LOCARR_TRUSTED_PROXIES", ""),
 		SetupCode:      get("LOCARR_SETUP_CODE", ""),
 		TMDbURL:        get("LOCARR_TMDB_URL", ""),
+		TVDBURL:        get("LOCARR_TVDB_URL", ""),
 	}
 	switch c.LogLevel {
 	case "debug", "info", "warn", "error":
