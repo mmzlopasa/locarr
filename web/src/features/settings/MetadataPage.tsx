@@ -57,7 +57,54 @@ export function MetadataPage() {
         </div>
         <p className="mt-3 text-[12px] text-faint">{t("metadata.attribution")}</p>
       </Panel>
+      <TvdbPanel />
     </div>
+  );
+}
+
+/** The optional TVDB v4 key and which provider answers series lookups. */
+function TvdbPanel() {
+  const { t } = useTranslation();
+  const qc = useQueryClient();
+  const st = useQuery({ queryKey: queryKeys.metadataSettings, queryFn: async () => unwrap(await api.GET("/settings/metadata")) });
+  const [key, setKey] = useState("");
+  const [pin, setPin] = useState("");
+  const save = useMutation({
+    mutationFn: async (body: { tvdbApiKey?: string; tvdbPin?: string; seriesProvider?: "tmdb" | "tvdb" }) =>
+      unwrap(await api.PUT("/settings/metadata", { body })),
+    onSuccess: (v) => {
+      qc.setQueryData(queryKeys.metadataSettings, v);
+      setKey("");
+      setPin("");
+    },
+  });
+  if (!st.data) return null;
+  const d = st.data;
+  return (
+    <Panel title={t("metadata.tvdb.title")} description={t("metadata.tvdb.description")}>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <TextInput label={t("metadata.tvdb.key")} type="password" autoComplete="off" value={key} onChange={(e) => setKey(e.target.value)}
+          placeholder={d.tvdbApiKey.configured ? t("metadata.keySet") : t("metadata.keyMissing")} />
+        <TextInput label={t("metadata.tvdb.pin")} type="password" autoComplete="off" value={pin} onChange={(e) => setPin(e.target.value)}
+          placeholder={d.tvdbPin.configured ? t("metadata.keySet") : t("metadata.tvdb.pinHint")} />
+        <SelectInput label={t("metadata.tvdb.provider")} value={d.seriesProvider}
+          onChange={(e) => save.mutate({ seriesProvider: e.target.value as "tmdb" | "tvdb" })}>
+          <option value="tmdb">TMDb</option>
+          <option value="tvdb" disabled={!d.tvdbApiKey.configured}>TVDB</option>
+        </SelectInput>
+      </div>
+      <p className="mt-2 text-[12px] text-faint">{t("metadata.tvdb.providerHint")}</p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <Button variant="primary" busy={save.isPending} disabled={!key && !pin}
+          onClick={() => save.mutate({ ...(key ? { tvdbApiKey: key } : {}), ...(pin || key ? { tvdbPin: pin } : {}) })}>{t("metadata.save")}</Button>
+        {d.tvdbApiKey.configured ? (
+          <ConfirmButton label={t("metadata.removeKey")} confirmLabel={t("metadata.removeKeyConfirm")}
+            onConfirm={() => save.mutate({ tvdbApiKey: "", seriesProvider: "tmdb" })} />
+        ) : null}
+        {d.tvdbApiKey.configured ? <Badge tone="success">{t("metadata.configured")}</Badge> : <Badge>{t("metadata.notConfigured")}</Badge>}
+        <ErrorAlert error={save.error} />
+      </div>
+    </Panel>
   );
 }
 

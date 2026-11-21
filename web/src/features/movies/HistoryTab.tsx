@@ -106,6 +106,7 @@ export function HistoryTab({ itemRef }: { itemRef: string }) {
   useEffect(() => {
     if (code === undefined) return;
     void qc.invalidateQueries({ queryKey: ["movies"] });
+    void qc.invalidateQueries({ queryKey: ["series"] });
   }, [code, count, qc]);
   if (tl.isLoading) return <Spinner />;
   if (tl.error) return <ErrorAlert error={tl.error} />;

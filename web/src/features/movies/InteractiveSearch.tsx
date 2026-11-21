@@ -2,22 +2,44 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Download, Search } from "lucide-react";
-import { api, queryKeys, unwrap, type InteractiveDecision } from "@/api/client";
+import { api, queryKeys, unwrap, type InteractiveDecision, type InteractiveSearch as Report } from "@/api/client";
+import type { components } from "@/api/schema.gen";
 import { formatBytes, formatRelative } from "@/components/format";
 import { Badge, Button, EmptyState, ErrorAlert, Spinner } from "@/components/ui";
 import { describeRejection } from "@/features/profiles/rejections";
 
 const tone = { accepted: "success", pending: "warning", rejected: "danger" } as const;
 
-/** Every release the indexers have for a movie, with the decision on each (nothing is grabbed until you choose). */
-export function InteractiveSearch({ movieId, itemRef }: { movieId: number; itemRef: string }) {
+export type GrabBody = components["schemas"]["ManualGrabRequest"];
+
+/** Where an interactive search runs and grabs: a movie, an episode or a season. */
+export type ReleaseSource = {
+  key: readonly unknown[];
+  load: () => Promise<Report>;
+  grab: (body: GrabBody) => Promise<unknown>;
+  /** Query keys to refresh after a grab. */
+  refresh: readonly (readonly unknown[])[];
+};
+
+/** The movie's interactive search. */
+export function movieReleases(movieId: number): ReleaseSource {
+  return {
+    key: ["movies", movieId, "releases"],
+    load: async () => unwrap(await api.GET("/movies/{id}/releases", { params: { path: { id: movieId } } })),
+    grab: async (body) => unwrap(await api.POST("/movies/{id}/releases", { params: { path: { id: movieId } }, body })),
+    refresh: [queryKeys.movie(movieId)],
+  };
+}
+
+/** Every release the indexers have for an item, with the decision on each (nothing is grabbed until you choose). */
+export function InteractiveSearch({ source, itemRef, autoStart = false }: { source: ReleaseSource; itemRef: string; autoStart?: boolean }) {
   const { t, i18n } = useTranslation();
   const qc = useQueryClient();
-  const [run, setRun] = useState(0);
+  const [run, setRun] = useState(autoStart ? 1 : 0);
   const [show, setShow] = useState<"all" | "accepted" | "rejected">("all");
   const search = useQuery({
-    queryKey: ["movies", movieId, "releases", run],
-    queryFn: async () => unwrap(await api.GET("/movies/{id}/releases", { params: { path: { id: movieId } } })),
+    queryKey: [...source.key, run],
+    queryFn: source.load,
     enabled: run > 0,
     staleTime: Infinity,
     retry: false,
@@ -26,15 +48,15 @@ export function InteractiveSearch({ movieId, itemRef }: { movieId: number; itemR
   const grab = useMutation({
     mutationFn: async (d: InteractiveDecision) => {
       const c = d.decision.candidate;
-      return unwrap(await api.POST("/movies/{id}/releases", { params: { path: { id: movieId } }, body: {
+      return source.grab({
         indexerId: c.indexerId ?? 0, title: c.title, protocol: c.protocol ?? "torrent", guid: c.guid,
         ...(d.downloadToken ? { downloadToken: d.downloadToken } : {}), ...(d.magnetUrl ? { magnetUrl: d.magnetUrl } : {}),
-        ...(c.publishDate ? { publishDate: c.publishDate } : {}) } }));
+        ...(c.publishDate ? { publishDate: c.publishDate } : {}) });
     },
     onSuccess: (_, d) => {
       setGrabbed((s) => new Set(s).add(`${d.decision.candidate.indexerId}:${d.decision.candidate.guid}`));
       void qc.invalidateQueries({ queryKey: queryKeys.timeline(itemRef) });
-      void qc.invalidateQueries({ queryKey: queryKeys.movie(movieId) });
+      for (const k of source.refresh) void qc.invalidateQueries({ queryKey: k });
     },
   });
   const rows = useMemo(() => (search.data?.decisions ?? []).filter((d) =>

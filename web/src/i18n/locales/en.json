@@ -88,7 +88,10 @@
     "no_video_file": "No video file was found.",
     "disc_structure": "Disc structures (BDMV, VIDEO_TS, images) are not imported automatically.",
     "no_matching_movie": "No movie in the library matches this file; choose one.",
-    "already_imported": "This is already the movie's file."
+    "already_imported": "This is already the movie's file.",
+    "has_files": "The series has files; move or delete them first.",
+    "no_matching_episode": "No episode matches the file name.",
+    "no_matching_series": "No series in the library matches the name."
   },
   "errorPage": {
     "title": "This page could not be shown",
@@ -1111,7 +1114,9 @@
     "indexer_disabled": "Indexer {{indexer}} is not used for this.",
     "indexer_limited": "Indexer {{indexer}} is at its limit until {{until}}.",
     "protocol_disabled": "{{protocol}} is turned off in delay profile {{profile}}.",
-    "delayed": "Waiting {{remaining}} more ({{protocol}} delay {{delay}}, {{profile}})."
+    "delayed": "Waiting {{remaining}} more ({{protocol}} delay {{delay}}, {{profile}}).",
+    "season_pack_not_wanted": "A season pack; this search is for one episode",
+    "episode_not_wanted": "None of the release's episodes is wanted"
   },
   "languageNames": {
     "en": "English",
@@ -1354,7 +1359,9 @@
     "indexer_disabled": "indexer off",
     "indexer_limited": "indexer at its limit",
     "protocol_disabled": "protocol off",
-    "delayed": "delayed"
+    "delayed": "delayed",
+    "season_pack_not_wanted": "Season pack for one episode",
+    "episode_not_wanted": "No wanted episode"
   },
   "timeline": {
     "title": "Timeline",
@@ -1410,7 +1417,13 @@
       "failed": "Download {{title}} failed: {{message}}",
       "removed": "Download removed: {{message}}",
       "downloadImported": "Download marked imported: {{message}}",
-      "blocklisted": "{{title}} was blocklisted."
+      "blocklisted": "{{title}} was blocklisted.",
+      "importSkipped": "Not imported: {{message}}"
+    },
+    "skipped": {
+      "no_matching_episode": "Not imported from {{download}}: {{path}} matches no episode of the series",
+      "not_an_upgrade": "{{path}} was not imported: it is not an upgrade",
+      "already_imported": "{{path}} is already in the library"
     }
   },
   "interactive": {
@@ -1457,10 +1470,17 @@
     "selectAll": "Select all",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {{page}} of {{pages}}"
+    "page": "Page {{page}} of {{pages}}",
+    "media": "Movies or episodes",
+    "mediaKinds": {
+      "movies": "Movies",
+      "episodes": "Episodes"
+    },
+    "episodesDescription": "Monitored episodes that have aired and are missing, or below their profile's cutoff.",
+    "emptyEpisodes": "No episode is wanted here."
   },
   "calendar": {
-    "description": "Cinema, digital and physical release dates of the movies in the library.",
+    "description": "Release dates of movies and air dates of episodes in the library.",
     "previous": "Previous",
     "next": "Next",
     "today": "Today",
@@ -1473,7 +1493,8 @@
     "kinds": {
       "in_cinemas": "In cinemas",
       "digital": "Digital",
-      "physical": "Physical"
+      "physical": "Physical",
+      "episode": "Episode"
     },
     "empty": "No dates in this period.",
     "feed": {
@@ -1605,7 +1626,16 @@
     "save": "Save",
     "removeKey": "Remove the key",
     "removeKeyConfirm": "Remove",
-    "attribution": "This product uses the TMDb API but is not endorsed or certified by TMDb."
+    "attribution": "This product uses the TMDb API but is not endorsed or certified by TMDb.",
+    "tvdb": {
+      "title": "TVDB (optional)",
+      "description": "TVDB has absolute episode numbers and air times; useful for anime. Needs your own TVDB v4 project key.",
+      "key": "TVDB v4 API key",
+      "pin": "Subscriber PIN",
+      "pinHint": "Only for user-supported keys",
+      "provider": "Series lookups from",
+      "providerHint": "New series are looked up and added from this provider; series keep the provider they were added with."
+    }
   },
   "lists": {
     "title": "Import lists",
@@ -1635,5 +1665,179 @@
     "exclusionsHint": "Movies deleted with “don't add again”; lists skip them.",
     "noExclusions": "None.",
     "allowAgain": "Allow again"
+  },
+  "series": {
+    "status": {
+      "continuing": "Continuing",
+      "ended": "Ended",
+      "upcoming": "Upcoming"
+    },
+    "importExisting": "Import existing",
+    "add": "Add series",
+    "empty": "No series yet. Add one or import your existing library.",
+    "filter": {
+      "searchHint": "Title, network or id",
+      "status": "Series status",
+      "episodes": "Episodes",
+      "missing": "Missing episodes"
+    },
+    "sort": {
+      "title": "Title",
+      "year": "Year",
+      "added": "Added",
+      "network": "Network",
+      "rating": "Rating",
+      "nextAiring": "Next airing",
+      "previousAiring": "Last aired",
+      "missing": "Missing episodes",
+      "size": "Size"
+    },
+    "columns": {
+      "network": "Network",
+      "episodes": "Episodes",
+      "missing": "Missing",
+      "nextAiring": "Next airing"
+    },
+    "episodeFiles": "Episode files / episodes",
+    "history": "History · {{title}}",
+    "releasesFor": "Releases · {{title}}",
+    "actions": {
+      "searchMissing": "Search missing",
+      "history": "History",
+      "searchSeason": "Search the season",
+      "interactiveSeason": "Choose a release for the season"
+    },
+    "seasonQueued": "Season search started.",
+    "reapplyMonitor": "Re-apply monitoring",
+    "keepMonitoring": "Keep as it is",
+    "pathLocked": "The folder can change only while the series has no files.",
+    "delete": {
+      "files": "Move the series folder to the recycle bin"
+    },
+    "seasons": "Seasons",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
+    "clearSelection": "Clear",
+    "specials": "Specials",
+    "season": "Season {{number}}",
+    "selectSeason": "Select every episode of {{name}}",
+    "downloading": "{{count}} downloading",
+    "missingCount": "{{count}} missing",
+    "searchQueued": "Searches started: {{count}}.",
+    "selected": "Selected episodes: {{count}}"
+  },
+  "episode": {
+    "state": {
+      "downloading": "Downloading",
+      "downloaded": "Downloaded",
+      "upgrade": "Below cutoff",
+      "missing": "Missing",
+      "unaired": "Not aired",
+      "unmonitored": "Unmonitored",
+      "tba": "TBA"
+    },
+    "airs": "Airs",
+    "monitor": "Monitor {{code}}",
+    "unmonitor": "Stop monitoring {{code}}",
+    "tba": "To be announced",
+    "removed": "No longer listed by the provider (kept because it has a file)",
+    "scene": "Releases: {{code}}",
+    "search": "Search this episode",
+    "interactive": "Choose a release",
+    "why": "History and why it is not here"
+  },
+  "monitor": {
+    "all": "All episodes",
+    "future": "Future episodes",
+    "missing": "Missing episodes",
+    "existing": "Existing episodes",
+    "first_season": "First season",
+    "latest_season": "Latest season",
+    "pilot": "Pilot only",
+    "none": "None"
+  },
+  "monitorHint": {
+    "all": "Every episode is searched and upgraded.",
+    "future": "Only episodes that have not aired yet.",
+    "missing": "Episodes without a file.",
+    "existing": "Only episodes that already have a file (upgrades).",
+    "first_season": "Every episode of the first season.",
+    "latest_season": "Every episode of the latest season.",
+    "pilot": "Only the first episode.",
+    "none": "Nothing is searched until you monitor episodes."
+  },
+  "seriesType": {
+    "standard": "Standard (S01E01)",
+    "daily": "Daily (by air date)",
+    "anime": "Anime (absolute numbers)"
+  },
+  "addSeries": {
+    "title": "Add series",
+    "description": "Search TMDb (or TVDB) by title, tmdb:id, tvdb:id or an IMDb id.",
+    "searchHint": "The Expanse, tvdb:280619, tt3230854",
+    "noRoot": "Add a root folder for series first:",
+    "monitor": "Monitor",
+    "type": "Series type",
+    "newSeasons": "New seasons",
+    "newSeasonsAll": "Monitor new seasons",
+    "newSeasonsNone": "Do not monitor new seasons",
+    "seasonFolder": "Season folders",
+    "seasonFolderHint": "Episodes go into “Season 01”, “Season 02”…",
+    "monitoredHint": "Only monitored series are searched automatically.",
+    "searchOnAddHint": "Search for the monitored episodes as soon as the series is added.",
+    "optionsDescription": "How the series is managed. You can change everything later.",
+    "specialsHint": "Specials are never monitored automatically.",
+    "add": "Add series"
+  },
+  "seriesImport": {
+    "title": "Import existing series",
+    "description": "Bring series already on disk into the library, import files from any folder or rename episode files.",
+    "existing": {
+      "title": "Existing library",
+      "description": "Folders in a series root folder that are not in the library yet, matched with the provider. Episode files are found and stay where they are.",
+      "videos": "Video files",
+      "result": "{{ok}} added ({{files}} episode files found), {{failed}} failed."
+    },
+    "manual": {
+      "description": "Preview the episode files of a folder with the episodes each one holds, then import them.",
+      "mode": "Transfer",
+      "result": "{{ok}} imported, {{failed}} failed."
+    },
+    "rename": {
+      "description": "Apply the episode templates to files already in the library (inside the series folder; subtitles follow)."
+    }
+  },
+  "seriesNaming": {
+    "title": "Series naming",
+    "description": "How series and season folders and episode files are named on import and rename.",
+    "rename": "Rename episode files",
+    "fields": {
+      "seriesFolderFormat": "Series folder",
+      "seasonFolderFormat": "Season folder",
+      "specialsFolderFormat": "Specials folder",
+      "standardEpisodeFormat": "Standard episode",
+      "dailyEpisodeFormat": "Daily episode",
+      "animeEpisodeFormat": "Anime episode"
+    },
+    "multiStyle": "Multi-episode style",
+    "styles": {
+      "prefixed_range": "Prefixed range (S01E01-E03)",
+      "range": "Range (S01E01-03)",
+      "extend": "Extend (S01E01-E02-E03)",
+      "duplicate": "Duplicate (S01E01.S01E02)",
+      "repeat": "Repeat (S01E01E02E03)",
+      "scene": "Scene (S01E01-02-03)"
+    },
+    "packThreshold": "Season pack from",
+    "packThresholdHint": "Wanted episodes in a season that make Locarr search the whole season (also when the season has finished airing).",
+    "searchOnAdd": "Search new series right away",
+    "examples": {
+      "folder": "Folders",
+      "standard": "Standard",
+      "multi": "Two episodes",
+      "daily": "Daily",
+      "anime": "Anime",
+      "specials": "Specials"
+    }
   }
 }

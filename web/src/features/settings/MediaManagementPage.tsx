@@ -5,6 +5,7 @@ import { api, queryKeys, unwrap, type MediaManagementSettings } from "@/api/clie
 import { formatBytes, formatDateTime } from "@/components/format";
 import { Alert, Button, Checkbox, ConfirmButton, EmptyState, ErrorAlert, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 import { useCurrentUser } from "@/features/auth/hooks";
+import { SeriesNamingPanel } from "./SeriesNamingPanel";
 
 /** Waits until v has not changed for ms. */
 function useDebounced<T>(v: T, ms: number): T {
@@ -78,6 +79,7 @@ export function MediaManagementPage() {
           </details>
         </div>
       </Panel>
+      <SeriesNamingPanel colon={s.colonReplacement} />
 
       <Panel title={t("media.importing.title")} description={t("media.importing.description")}>
         <div className="grid gap-3 sm:grid-cols-2">

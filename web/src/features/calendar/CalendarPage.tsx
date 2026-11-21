@@ -11,10 +11,26 @@ const kindTone: Record<CalendarEntry["kind"], string> = {
   in_cinemas: "border-l-warning",
   digital: "border-l-info",
   physical: "border-l-accent",
+  episode: "border-l-success",
 };
 
+const code = (e: CalendarEntry) => `S${String(e.seasonNumber ?? 0).padStart(2, "0")}E${String(e.episodeNumber ?? 0).padStart(2, "0")}`;
+
+const entryKey = (e: CalendarEntry) => (e.kind === "episode" ? `e${e.episodeId}` : `${e.movieId}-${e.kind}`);
+
 function Entry({ e, compact }: { e: CalendarEntry; compact?: boolean }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  if (e.kind === "episode") {
+    const time = e.airDateUtc ? new Intl.DateTimeFormat(i18n.language, { timeStyle: "short" }).format(new Date(e.airDateUtc)) : "";
+    return (
+      <Link to="/series/$id" params={{ id: String(e.seriesId) }} data-testid="calendar-entry" data-kind="episode"
+        className={`block truncate rounded border border-line border-l-2 ${kindTone.episode} bg-surface-2 px-1.5 py-0.5 text-[12px] hover:bg-surface-3 ${e.hasFile ? "text-muted line-through decoration-faint" : "text-fg"}`}
+        title={`${e.title} ${code(e)} ${e.episodeTitle ?? ""}${time ? ` · ${time}` : ""}${e.network ? ` · ${e.network}` : ""}`}>
+        {e.title} <span className="tabular-nums text-muted">{code(e)}</span>
+        {compact ? "" : <span className="ml-1 text-faint">{e.episodeTitle ? `· ${e.episodeTitle}` : ""}{time ? ` · ${time}` : ""}</span>}
+      </Link>
+    );
+  }
   return (
     <Link to="/movies/$id" params={{ id: String(e.movieId) }} data-testid="calendar-entry"
       className={`block truncate rounded border border-line border-l-2 ${kindTone[e.kind]} bg-surface-2 px-1.5 py-0.5 text-[12px] hover:bg-surface-3 ${e.hasFile ? "text-muted line-through decoration-faint" : "text-fg"}`}
@@ -69,7 +85,7 @@ export function CalendarPage() {
             return (
               <div key={key} className={`min-h-[96px] bg-surface p-1 ${out ? "opacity-50" : ""}`}>
                 <div className={`mb-1 text-right text-[11px] tabular-nums ${key === today ? "font-semibold text-accent" : "text-faint"}`}>{d.getDate()}</div>
-                <div className="space-y-0.5">{(byDay.get(key) ?? []).map((e) => <Entry key={`${e.movieId}-${e.kind}`} e={e} compact />)}</div>
+                <div className="space-y-0.5">{(byDay.get(key) ?? []).map((e) => <Entry key={entryKey(e)} e={e} compact />)}</div>
               </div>
             );
           })}
@@ -82,7 +98,7 @@ export function CalendarPage() {
             return (
               <div key={key} className="min-h-[160px] rounded-ui border border-line bg-surface p-2">
                 <div className={`mb-2 text-[12px] ${key === today ? "font-semibold text-accent" : "text-muted"}`}>{dayName(d)} {d.getDate()}.</div>
-                <div className="space-y-1">{(byDay.get(key) ?? []).map((e) => <Entry key={`${e.movieId}-${e.kind}`} e={e} />)}</div>
+                <div className="space-y-1">{(byDay.get(key) ?? []).map((e) => <Entry key={entryKey(e)} e={e} />)}</div>
               </div>
             );
           })}
@@ -95,14 +111,14 @@ export function CalendarPage() {
               <h3 className="mb-1 text-[12px] font-medium text-muted">
                 {new Intl.DateTimeFormat(i18n.language, { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date(day))}
               </h3>
-              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">{list.map((e) => <Entry key={`${e.movieId}-${e.kind}`} e={e} />)}</div>
+              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">{list.map((e) => <Entry key={entryKey(e)} e={e} />)}</div>
             </li>
           ))}
           {cal.data && cal.data.length === 0 ? <li className="text-[13px] text-faint">{t("calendar.empty")}</li> : null}
         </ol>
       ) : null}
       <div className="mt-3 flex flex-wrap gap-3 text-[12px] text-muted">
-        {(["in_cinemas", "digital", "physical"] as const).map((k) => (
+        {(["in_cinemas", "digital", "physical", "episode"] as const).map((k) => (
           <span key={k} className={`border-l-2 pl-1.5 ${kindTone[k]}`}>{t(`calendar.kinds.${k}`)}</span>
         ))}
       </div>

@@ -44,7 +44,7 @@ describe("route guards", () => {
 
   it("shows honest placeholders for sections of later phases", async () => {
     mockApi(() => undefined);
-    renderApp("/series", { me: testUser() });
-    expect(await screen.findByTestId("coming-soon")).toHaveTextContent("arrives in phase P5");
+    renderApp("/music", { me: testUser() });
+    expect(await screen.findByTestId("coming-soon")).toHaveTextContent("arrives in phase P6");
   });
 });

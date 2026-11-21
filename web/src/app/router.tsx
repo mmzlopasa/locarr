@@ -39,6 +39,10 @@ import { MovieDetailPage } from "@/features/movies/MovieDetailPage";
 import { CollectionPage } from "@/features/movies/CollectionPage";
 import { ImportPage } from "@/features/movies/ImportPage";
 import { WantedPage } from "@/features/wanted/WantedPage";
+import { SeriesPage } from "@/features/series/SeriesPage";
+import { AddSeriesPage } from "@/features/series/AddSeriesPage";
+import { SeriesImportPage } from "@/features/series/SeriesImportPage";
+import { SeriesDetailPage } from "@/features/series/SeriesDetailPage";
 import { CalendarPage } from "@/features/calendar/CalendarPage";
 import { MediaManagementPage } from "@/features/settings/MediaManagementPage";
 import { ImportListsPage, MetadataPage } from "@/features/settings/MetadataPage";
@@ -94,7 +98,6 @@ const indexRoute = createRoute({
 
 /** Sections that later phases fill in; each says honestly when it arrives. */
 export const UPCOMING = [
-  { path: "/series", key: "series", phase: "P5" },
   { path: "/music", key: "music", phase: "P6" },
   { path: "/requests", key: "requests", phase: "P8" },
 ] as const;
@@ -112,6 +115,10 @@ const addMovieRoute = createRoute({ getParentRoute: () => appRoute, path: "/movi
 const importMoviesRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/import", component: ImportPage });
 const movieRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/$id", component: MovieDetailPage });
 const collectionRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/collections/$id", component: CollectionPage });
+const seriesRoute = createRoute({ getParentRoute: () => appRoute, path: "/series", component: SeriesPage });
+const addSeriesRoute = createRoute({ getParentRoute: () => appRoute, path: "/series/add", component: AddSeriesPage });
+const importSeriesRoute = createRoute({ getParentRoute: () => appRoute, path: "/series/import", component: SeriesImportPage });
+const seriesDetailRoute = createRoute({ getParentRoute: () => appRoute, path: "/series/$id", component: SeriesDetailPage });
 const wantedRoute = createRoute({ getParentRoute: () => appRoute, path: "/wanted", component: WantedPage });
 const calendarRoute = createRoute({ getParentRoute: () => appRoute, path: "/calendar", component: CalendarPage });
 
@@ -177,6 +184,10 @@ export const routeTree = rootRoute.addChildren([
     importMoviesRoute,
     movieRoute,
     collectionRoute,
+    seriesRoute,
+    addSeriesRoute,
+    importSeriesRoute,
+    seriesDetailRoute,
     wantedRoute,
     calendarRoute,
     activityRoute.addChildren([activityIndexRoute, queueRoute, blocklistRoute]),
