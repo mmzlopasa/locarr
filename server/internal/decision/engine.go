@@ -365,7 +365,7 @@ func specEpisodes(e *eval) {
 func specQuality(e *eval) {
 	if e.pos < 0 || !e.allowed {
 		e.reject(CodeQualityNotAllowed, fmt.Sprintf("%s is not allowed in profile %s", e.q.Name, e.ctx.Profile.Name),
-			map[string]any{"quality": e.q.ID, "profile": e.ctx.Profile.Name})
+			map[string]any{"quality": e.q.Name, "profile": e.ctx.Profile.Name})
 	}
 }
 
@@ -380,7 +380,7 @@ func specUpgrade(e *eval) {
 	curQ := quality.ByIDMust(cur.Quality)
 	if !p.UpgradesAllowed {
 		e.reject(CodeUpgradesDisabled, fmt.Sprintf("%s is already in the library and profile %s does not upgrade", curQ.Name, p.Name),
-			map[string]any{"current": cur.Quality})
+			map[string]any{"current": curQ.Name})
 		return
 	}
 	curPos, _ := p.Position(cur.Quality)
@@ -389,7 +389,7 @@ func specUpgrade(e *eval) {
 		// The cutoff is met; only a proper/repack of the same quality is still welcome.
 		if !(e.pos == curPos && revisionValue(e.r.Revision) > revisionValue(cur.Revision)) {
 			e.reject(CodeCutoffMet, fmt.Sprintf("%s (score %d) already meets the cutoff %s", curQ.Name, cur.Score, cutoffName(p)),
-				map[string]any{"current": cur.Quality, "currentScore": cur.Score})
+				map[string]any{"current": curQ.Name, "currentScore": cur.Score, "cutoff": cutoffName(p)})
 		}
 		return
 	}
@@ -399,13 +399,13 @@ func specUpgrade(e *eval) {
 	switch {
 	case curPos >= 0 && e.pos > curPos:
 		e.reject(CodeNotAnUpgrade, fmt.Sprintf("%s is worse than %s in the library", e.q.Name, curQ.Name),
-			map[string]any{"quality": e.q.ID, "current": cur.Quality})
+			map[string]any{"quality": e.q.Name, "current": curQ.Name, "score": e.score, "currentScore": cur.Score})
 	case curPos < 0 || e.pos < curPos:
 	case revisionValue(e.r.Revision) > revisionValue(cur.Revision):
 	case e.score > cur.Score:
 	default:
 		e.reject(CodeNotAnUpgrade, fmt.Sprintf("same quality (%s) and no better score (%d, library %d)", e.q.Name, e.score, cur.Score),
-			map[string]any{"quality": e.q.ID, "score": e.score, "currentScore": cur.Score})
+			map[string]any{"quality": e.q.Name, "current": curQ.Name, "score": e.score, "currentScore": cur.Score})
 	}
 }
 
