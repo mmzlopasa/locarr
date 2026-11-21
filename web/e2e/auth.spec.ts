@@ -36,7 +36,7 @@ test("first-run setup, sign-in, creating a user and signing out", async ({ page,
   await signIn(page, adminUser, adminPassword);
   // Sign-in lands on the movie library; sections of later phases say so instead of pretending.
   await expect(page.getByTestId("movie-library")).toBeVisible();
-  await page.getByRole("link", { name: "Series" }).click();
+  await page.getByRole("link", { name: "Requests" }).click();
   await expect(page.getByTestId("coming-soon")).toBeVisible();
 
   const username = `e2e-${Date.now().toString(36)}`;
