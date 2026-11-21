@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, Info, XCircle } from "lucide-react";
 import { api, queryKeys, unwrap, type Explanation, type Rejection, type TimelineEvent } from "@/api/client";
@@ -94,11 +94,19 @@ function Event({ e }: { e: TimelineEvent }) {
 
 export function HistoryTab({ itemRef }: { itemRef: string }) {
   const { t } = useTranslation();
+  const qc = useQueryClient();
   const tl = useQuery({
     queryKey: queryKeys.timeline(itemRef),
     queryFn: async () => unwrap(await api.GET("/timeline", { params: { query: { item: itemRef } } })),
     refetchInterval: 5_000,
   });
+  // New steps on the timeline (a grab, an import) change the movie too.
+  const code = tl.data?.explanation.code;
+  const count = tl.data?.events.length;
+  useEffect(() => {
+    if (code === undefined) return;
+    void qc.invalidateQueries({ queryKey: ["movies"] });
+  }, [code, count, qc]);
   if (tl.isLoading) return <Spinner />;
   if (tl.error) return <ErrorAlert error={tl.error} />;
   if (!tl.data) return null;
