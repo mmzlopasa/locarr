@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 	"io"
 	"log/slog"
 	"net/http"
@@ -14,7 +15,6 @@ import (
 	"testing/fstest"
 	"time"
 
-	"github.com/mmzlopasa/locarr/server/internal/api"
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/webui"
 )
@@ -25,6 +25,7 @@ type env struct {
 	t     *testing.T
 	srv   *httptest.Server
 	deps  *Deps
+	tmdb  *tmdbfake.Server
 	data  string
 	token string // bearer token used by do (empty = none)
 }
@@ -41,7 +42,10 @@ func newEnv(t *testing.T, mod func(*RouterOptions)) *env {
 		}
 	}
 	data, _ = filepath.EvalSymlinks(data)
-	cfg := config.Config{ConfigDir: filepath.Join(base, "config"), DataRoots: []string{data}, LogLevel: "info"}
+	tm := tmdbfake.New()
+	tmdbSrv := httptest.NewServer(tm)
+	t.Cleanup(tmdbSrv.Close)
+	cfg := config.Config{ConfigDir: filepath.Join(base, "config"), DataRoots: []string{data}, LogLevel: "info", TMDbURL: tmdbSrv.URL}
 	ctx := context.Background()
 	deps, err := Bootstrap(ctx, cfg, quietLog(), testSetupCode)
 	if err != nil {
@@ -51,8 +55,7 @@ func newEnv(t *testing.T, mod func(*RouterOptions)) *env {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { _ = deps.Close() })
-	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots, Downloads: deps.Downloads, Indexers: deps.Indexers, Quality: deps.Quality, Formats: deps.Formats,
-		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: time.Now().UTC(), Log: quietLog()}
+	h := NewHandler(deps, cfg, time.Now().UTC(), quietLog())
 	web := webui.FromFS(fstest.MapFS{
 		"index.html":    {Data: []byte("<!doctype html><title>Locarr</title><div id=root></div>")},
 		"assets/app.js": {Data: []byte("console.log(1)")},
@@ -67,7 +70,7 @@ func newEnv(t *testing.T, mod func(*RouterOptions)) *env {
 	}
 	srv := httptest.NewServer(router)
 	t.Cleanup(srv.Close)
-	return &env{t: t, srv: srv, deps: deps, data: data}
+	return &env{t: t, srv: srv, deps: deps, data: data, tmdb: tm}
 }
 
 type resp struct {

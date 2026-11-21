@@ -170,7 +170,8 @@ func TestDownloadClientsQueueAndBlocklistAPI(t *testing.T) {
 	}
 	var events []struct{ Type string }
 	e.expect(e.do("GET", "/api/v1/queue/"+strconv.FormatInt(item.ID, 10)+"/events", nil), 200).json(&events)
-	if len(events) != 4 || events[0].Type != "grabbed" || events[1].Type != "state" || events[2].Type != "removed" || events[3].Type != "blocklisted" {
+	if len(events) != 5 || events[0].Type != "grabbed" || events[1].Type != "state" || events[2].Type != "progress" ||
+		events[3].Type != "removed" || events[4].Type != "blocklisted" {
 		t.Fatalf("events: %+v", events)
 	}
 	var bl []struct {

@@ -14,6 +14,18 @@ type Handler interface {
 	//
 	// POST /queue/blocklist
 	AddBlocklistEntry(ctx context.Context, req *BlocklistInput) (*BlocklistEntry, error)
+	// AddMovie implements addMovie operation.
+	//
+	// Add a movie from TMDb (library managers).
+	//
+	// POST /movies
+	AddMovie(ctx context.Context, req *AddMovieRequest) (*Movie, error)
+	// AddMovieCollection implements addMovieCollection operation.
+	//
+	// Add the collection's missing movies (library managers).
+	//
+	// POST /movies/collections/{tmdbId}
+	AddMovieCollection(ctx context.Context, req *AddOptions, params AddMovieCollectionParams) ([]Movie, error)
 	// BrowseFilesystem implements browseFilesystem operation.
 	//
 	// Without `path`, lists the data roots themselves.
@@ -38,6 +50,12 @@ type Handler interface {
 	//
 	// POST /auth/apikeys
 	CreateApiKey(ctx context.Context, req *CreateApiKeyRequest) (*CreatedApiKey, error)
+	// CreateCalendarToken implements createCalendarToken operation.
+	//
+	// The link is shown once; creating a new one stops the old one.
+	//
+	// POST /calendar/token
+	CreateCalendarToken(ctx context.Context) (*CalendarFeed, error)
 	// CreateCustomFormat implements createCustomFormat operation.
 	//
 	// Add a custom format (administrators).
@@ -62,6 +80,12 @@ type Handler interface {
 	//
 	// POST /downloadclients/{id}/categories
 	CreateDownloadClientCategories(ctx context.Context, params CreateDownloadClientCategoriesParams) (*CreatedCategories, error)
+	// CreateImportList implements createImportList operation.
+	//
+	// Add an import list (administrators).
+	//
+	// POST /movies/importlists
+	CreateImportList(ctx context.Context, req *ImportListInput) (*ImportList, error)
 	// CreateIndexer implements createIndexer operation.
 	//
 	// Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
@@ -117,6 +141,12 @@ type Handler interface {
 	//
 	// DELETE /queue/blocklist/{id}
 	DeleteBlocklistEntry(ctx context.Context, params DeleteBlocklistEntryParams) error
+	// DeleteCalendarToken implements deleteCalendarToken operation.
+	//
+	// Stop the signed-in user's calendar feed link.
+	//
+	// DELETE /calendar/token
+	DeleteCalendarToken(ctx context.Context) error
 	// DeleteCustomFormat implements deleteCustomFormat operation.
 	//
 	// Profiles that scored it simply stop seeing it.
@@ -135,6 +165,18 @@ type Handler interface {
 	//
 	// DELETE /downloadclients/{id}
 	DeleteDownloadClient(ctx context.Context, params DeleteDownloadClientParams) error
+	// DeleteImportExclusion implements deleteImportExclusion operation.
+	//
+	// Let import lists add a movie again (administrators).
+	//
+	// DELETE /movies/exclusions/{tmdbId}
+	DeleteImportExclusion(ctx context.Context, params DeleteImportExclusionParams) error
+	// DeleteImportList implements deleteImportList operation.
+	//
+	// Remove an import list; its movies stay (administrators).
+	//
+	// DELETE /movies/importlists/{id}
+	DeleteImportList(ctx context.Context, params DeleteImportListParams) error
 	// DeleteIndexer implements deleteIndexer operation.
 	//
 	// Remove an indexer (administrators).
@@ -147,12 +189,24 @@ type Handler interface {
 	//
 	// DELETE /indexers/sources/{id}
 	DeleteIndexerSource(ctx context.Context, params DeleteIndexerSourceParams) error
+	// DeleteMovie implements deleteMovie operation.
+	//
+	// With `deleteFiles` the movie folder goes to the recycle bin; files are never deleted outright.
+	//
+	// DELETE /movies/{id}
+	DeleteMovie(ctx context.Context, params DeleteMovieParams) error
 	// DeleteQualityProfile implements deleteQualityProfile operation.
 	//
 	// Remove a quality profile (administrators).
 	//
 	// DELETE /qualityprofiles/{id}
 	DeleteQualityProfile(ctx context.Context, params DeleteQualityProfileParams) error
+	// DeleteRecycleEntry implements deleteRecycleEntry operation.
+	//
+	// Delete one recycle bin entry permanently (administrators).
+	//
+	// DELETE /recyclebin/{id}
+	DeleteRecycleEntry(ctx context.Context, params DeleteRecycleEntryParams) error
 	// DeleteReleaseProfile implements deleteReleaseProfile operation.
 	//
 	// Remove a release profile (administrators).
@@ -191,6 +245,12 @@ type Handler interface {
 	//
 	// GET /indexers/{id}/download
 	DownloadRelease(ctx context.Context, params DownloadReleaseParams) (*DownloadReleaseOKHeaders, error)
+	// EmptyRecycleBin implements emptyRecycleBin operation.
+	//
+	// Delete everything in the recycle bin permanently (administrators).
+	//
+	// DELETE /recyclebin
+	EmptyRecycleBin(ctx context.Context) (*QueuedCount, error)
 	// EnableTotp implements enableTotp operation.
 	//
 	// Confirm two-factor setup with a code.
@@ -204,12 +264,36 @@ type Handler interface {
 	//
 	// POST /decisions/evaluate
 	EvaluateReleases(ctx context.Context, req *EvaluateRequest) (*DecisionReport, error)
+	// ExplainItem implements explainItem operation.
+	//
+	// Why an item is not in the library (yet).
+	//
+	// GET /timeline/explain
+	ExplainItem(ctx context.Context, params ExplainItemParams) (*Explanation, error)
 	// ExportCustomFormat implements exportCustomFormat operation.
 	//
 	// A custom format as shared JSON.
 	//
 	// GET /customformats/{id}/export
 	ExportCustomFormat(ctx context.Context, params ExportCustomFormatParams) (SharedCustomFormat, error)
+	// GetCalendar implements getCalendar operation.
+	//
+	// Movie dates (in cinemas, digital, physical) between two days.
+	//
+	// GET /calendar
+	GetCalendar(ctx context.Context, params GetCalendarParams) ([]CalendarEntry, error)
+	// GetCalendarFeed implements getCalendarFeed operation.
+	//
+	// ICalendar feed (authenticated by the per-user token in the link).
+	//
+	// GET /calendar/feed.ics
+	GetCalendarFeed(ctx context.Context, params GetCalendarFeedParams) (GetCalendarFeedOK, error)
+	// GetCalendarToken implements getCalendarToken operation.
+	//
+	// Whether the signed-in user has a calendar feed link.
+	//
+	// GET /calendar/token
+	GetCalendarToken(ctx context.Context) (*SecretState, error)
 	// GetCustomFormat implements getCustomFormat operation.
 	//
 	// One custom format.
@@ -252,6 +336,30 @@ type Handler interface {
 	//
 	// GET /auth/me
 	GetMe(ctx context.Context) (*User, error)
+	// GetMediaManagement implements getMediaManagement operation.
+	//
+	// Naming, transfer mode, recycle bin and permissions (administrators).
+	//
+	// GET /settings/mediamanagement
+	GetMediaManagement(ctx context.Context) (*MediaManagementSettings, error)
+	// GetMetadataSettings implements getMetadataSettings operation.
+	//
+	// TMDb key state, language and region (administrators).
+	//
+	// GET /settings/metadata
+	GetMetadataSettings(ctx context.Context) (*MetadataSettings, error)
+	// GetMovie implements getMovie operation.
+	//
+	// One movie.
+	//
+	// GET /movies/{id}
+	GetMovie(ctx context.Context, params GetMovieParams) (*Movie, error)
+	// GetMovieCollection implements getMovieCollection operation.
+	//
+	// A TMDb collection and which of its movies are in the library.
+	//
+	// GET /movies/collections/{tmdbId}
+	GetMovieCollection(ctx context.Context, params GetMovieCollectionParams) (*MovieCollection, error)
 	// GetQualityProfile implements getQualityProfile operation.
 	//
 	// One quality profile.
@@ -266,6 +374,12 @@ type Handler interface {
 	//
 	// GET /queue
 	GetQueue(ctx context.Context, params GetQueueParams) (*Queue, error)
+	// GetRecycleBin implements getRecycleBin operation.
+	//
+	// Files in the recycle bin (library managers).
+	//
+	// GET /recyclebin
+	GetRecycleBin(ctx context.Context) (*RecycleBin, error)
 	// GetSettings implements getSettings operation.
 	//
 	// Secret fields only say whether they are set; their values never leave the server.
@@ -284,12 +398,32 @@ type Handler interface {
 	//
 	// GET /system/status
 	GetSystemStatus(ctx context.Context) (*SystemStatus, error)
+	// GetTimeline implements getTimeline operation.
+	//
+	// `item` is an item reference such as `movie:42`. Events are newest first: searches with per-indexer
+	// counts, decisions with the most common rejection reasons, grabs, download milestones, imports,
+	// renames, upgrades, recycled files and media server notifications.
+	//
+	// GET /timeline
+	GetTimeline(ctx context.Context, params GetTimelineParams) (*Timeline, error)
+	// GetTmdbImage implements getTmdbImage operation.
+	//
+	// A TMDb poster or backdrop, cached on the server.
+	//
+	// GET /images/tmdb/{size}/{file}
+	GetTmdbImage(ctx context.Context, params GetTmdbImageParams) (GetTmdbImageRes, error)
 	// GetUser implements getUser operation.
 	//
 	// One user (administrators).
 	//
 	// GET /users/{id}
 	GetUser(ctx context.Context, params GetUserParams) (*User, error)
+	// GrabMovieRelease implements grabMovieRelease operation.
+	//
+	// Grab a release chosen in an interactive search (library managers).
+	//
+	// POST /movies/{id}/releases
+	GrabMovieRelease(ctx context.Context, req *ManualGrabRequest, params GrabMovieReleaseParams) (*QueueItem, error)
 	// GrabRelease implements grabRelease operation.
 	//
 	// The server fetches the .torrent / .nzb itself (size cap, timeout, no redirects to another host, no
@@ -307,6 +441,18 @@ type Handler interface {
 	//
 	// POST /customformats/import
 	ImportCustomFormats(ctx context.Context, req *ImportCustomFormatsRequest) (*ImportCustomFormatsResult, error)
+	// ImportExistingMovies implements importExistingMovies operation.
+	//
+	// Add movies for existing folders; their files stay where they are (library managers).
+	//
+	// POST /movies/import/existing
+	ImportExistingMovies(ctx context.Context, req *ImportExistingRequest) ([]ImportExistingResult, error)
+	// InteractiveSearchMovie implements interactiveSearchMovie operation.
+	//
+	// Interactive search - every release and the decision on it (library managers).
+	//
+	// GET /movies/{id}/releases
+	InteractiveSearchMovie(ctx context.Context, params InteractiveSearchMovieParams) (*InteractiveSearch, error)
 	// ListApiKeys implements listApiKeys operation.
 	//
 	// Own API keys.
@@ -343,6 +489,18 @@ type Handler interface {
 	//
 	// GET /downloadclients
 	ListDownloadClients(ctx context.Context) ([]DownloadClient, error)
+	// ListImportExclusions implements listImportExclusions operation.
+	//
+	// Movies import lists never add again.
+	//
+	// GET /movies/exclusions
+	ListImportExclusions(ctx context.Context) ([]ImportExclusion, error)
+	// ListImportLists implements listImportLists operation.
+	//
+	// Lists that add movies automatically (administrators).
+	//
+	// GET /movies/importlists
+	ListImportLists(ctx context.Context) ([]ImportList, error)
 	// ListIndexerSources implements listIndexerSources operation.
 	//
 	// Prowlarr and Jackett instances indexers are imported from (administrators).
@@ -361,6 +519,13 @@ type Handler interface {
 	//
 	// GET /languages
 	ListLanguages(ctx context.Context) ([]LanguageInfo, error)
+	// ListMovies implements listMovies operation.
+	//
+	// Filters combine. `status`: missing (monitored, available, no file), downloaded, downloading,
+	// cutoff_unmet, unavailable (not yet at minimum availability), unmonitored.
+	//
+	// GET /movies
+	ListMovies(ctx context.Context, params ListMoviesParams) (*MovieList, error)
 	// ListQualities implements listQualities operation.
 	//
 	// The fixed quality ladder (worst first).
@@ -440,6 +605,18 @@ type Handler interface {
 	//
 	// POST /auth/logout
 	Logout(ctx context.Context) (*LogoutNoContent, error)
+	// LookupMovies implements lookupMovies operation.
+	//
+	// Search TMDb by title ("Title 2008"), TMDb id ("tmdb:10378") or IMDb id ("tt1254207").
+	//
+	// GET /movies/lookup
+	LookupMovies(ctx context.Context, params LookupMoviesParams) ([]MovieLookup, error)
+	// ManualImport implements manualImport operation.
+	//
+	// Import chosen files into movies (library managers).
+	//
+	// POST /movies/import/manual
+	ManualImport(ctx context.Context, req *ManualImportRequest) ([]ManualImportResult, error)
 	// ParseRelease implements parseRelease operation.
 	//
 	// Returns every parsed field and how each custom format did. With `profileId` the release is also
@@ -460,6 +637,30 @@ type Handler interface {
 	//
 	// POST /indexers/sources/preview
 	PreviewIndexerSource(ctx context.Context, req *IndexerSourcePreviewRequest) (*IndexerSourcePreview, error)
+	// PreviewManualImport implements previewManualImport operation.
+	//
+	// Preview importing the video files of a folder (library managers).
+	//
+	// GET /movies/import/manual
+	PreviewManualImport(ctx context.Context, params PreviewManualImportParams) ([]ManualImportCandidate, error)
+	// PreviewNaming implements previewNaming operation.
+	//
+	// Render naming templates for an example movie.
+	//
+	// POST /settings/mediamanagement/preview
+	PreviewNaming(ctx context.Context, req *NamingPreviewRequest) (*NamingPreview, error)
+	// PreviewRenameMovies implements previewRenameMovies operation.
+	//
+	// Show which movie files a rename would change.
+	//
+	// POST /movies/rename/preview
+	PreviewRenameMovies(ctx context.Context, req *MovieIdsRequest) ([]RenameItem, error)
+	// RefreshMovie implements refreshMovie operation.
+	//
+	// Reload a movie's metadata and check its file (library managers).
+	//
+	// POST /movies/{id}/refresh
+	RefreshMovie(ctx context.Context, params RefreshMovieParams) (*Movie, error)
 	// RefreshQueue implements refreshQueue operation.
 	//
 	// Poll every client now (library managers).
@@ -479,6 +680,12 @@ type Handler interface {
 	//
 	// DELETE /queue/{id}
 	RemoveQueueItem(ctx context.Context, params RemoveQueueItemParams) error
+	// RenameMovies implements renameMovies operation.
+	//
+	// An empty list renames every movie. Files are renamed in place; nothing is deleted.
+	//
+	// POST /movies/rename
+	RenameMovies(ctx context.Context, req *MovieIdsRequest) ([]RenameItem, error)
 	// ReorderDelayProfiles implements reorderDelayProfiles operation.
 	//
 	// Set the evaluation order of the non-default delay profiles (administrators).
@@ -503,6 +710,12 @@ type Handler interface {
 	//
 	// POST /users/{id}/password
 	ResetUserPassword(ctx context.Context, req *ResetPasswordRequest, params ResetUserPasswordParams) error
+	// RestoreRecycleEntry implements restoreRecycleEntry operation.
+	//
+	// Fails with `restore_conflict` when something else is at the original place.
+	//
+	// POST /recyclebin/{id}/restore
+	RestoreRecycleEntry(ctx context.Context, params RestoreRecycleEntryParams) (*RecycleEntry, error)
 	// ResumeQueueItem implements resumeQueueItem operation.
 	//
 	// Resume a download (library managers).
@@ -521,6 +734,12 @@ type Handler interface {
 	//
 	// POST /system/tasks/{name}/run
 	RunTask(ctx context.Context, params RunTaskParams) (*Job, error)
+	// ScanExistingMovies implements scanExistingMovies operation.
+	//
+	// Folders in a root folder that are not in the library, with TMDb matches (library managers).
+	//
+	// GET /movies/import/scan
+	ScanExistingMovies(ctx context.Context, params ScanExistingMoviesParams) ([]ExistingFolder, error)
 	// Search implements search operation.
 	//
 	// Indexers are asked in parallel, each with its own timeout and request limit. Results are
@@ -529,6 +748,18 @@ type Handler interface {
 	//
 	// GET /search
 	Search(ctx context.Context, params SearchParams) (*SearchResponse, error)
+	// SearchMovie implements searchMovie operation.
+	//
+	// The search, the decision and any grab appear on the movie's timeline.
+	//
+	// POST /movies/{id}/search
+	SearchMovie(ctx context.Context, params SearchMovieParams) (*QueuedCount, error)
+	// SearchMovies implements searchMovies operation.
+	//
+	// Queue automatic searches for several movies (library managers).
+	//
+	// POST /movies/search
+	SearchMovies(ctx context.Context, req *MovieIdsRequest) (*QueuedCount, error)
 	// SearchStream implements searchStream operation.
 	//
 	// Same parameters as `/search`. The answer is a Server-Sent Events stream (`text/event-stream`). Each
@@ -562,6 +793,12 @@ type Handler interface {
 	//
 	// POST /auth/totp/setup
 	StartTotpSetup(ctx context.Context) (*TotpSetup, error)
+	// SyncImportList implements syncImportList operation.
+	//
+	// Add the list's missing movies now (administrators).
+	//
+	// POST /movies/importlists/{id}/sync
+	SyncImportList(ctx context.Context, params SyncImportListParams) (*ImportListSyncResult, error)
 	// SyncIndexerSource implements syncIndexerSource operation.
 	//
 	// Adds indexers that are new on the source, updates changed ones and disables (never deletes) those
@@ -615,6 +852,12 @@ type Handler interface {
 	//
 	// PATCH /downloadclients/settings
 	UpdateDownloadSettings(ctx context.Context, req *UpdateDownloadSettings) (*DownloadSettings, error)
+	// UpdateImportList implements updateImportList operation.
+	//
+	// Change an import list (administrators).
+	//
+	// PUT /movies/importlists/{id}
+	UpdateImportList(ctx context.Context, req *ImportListInput, params UpdateImportListParams) (*ImportList, error)
 	// UpdateIndexer implements updateIndexer operation.
 	//
 	// Write-only fields (`apiKey`, `proxyPassword`) keep their stored value when absent; an empty string
@@ -634,6 +877,24 @@ type Handler interface {
 	//
 	// PATCH /auth/me
 	UpdateMe(ctx context.Context, req *UpdateMeRequest) (*User, error)
+	// UpdateMediaManagement implements updateMediaManagement operation.
+	//
+	// Change naming, transfer mode, recycle bin and permissions (administrators).
+	//
+	// PUT /settings/mediamanagement
+	UpdateMediaManagement(ctx context.Context, req *MediaManagementSettings) (*MediaManagementSettings, error)
+	// UpdateMetadataSettings implements updateMetadataSettings operation.
+	//
+	// A key TMDb refuses is not stored (`metadata_key_invalid`).
+	//
+	// PUT /settings/metadata
+	UpdateMetadataSettings(ctx context.Context, req *MetadataSettingsInput) (*MetadataSettings, error)
+	// UpdateMovie implements updateMovie operation.
+	//
+	// The folder can change only while the movie has no file (`has_file`).
+	//
+	// PATCH /movies/{id}
+	UpdateMovie(ctx context.Context, req *MovieUpdate, params UpdateMovieParams) (*Movie, error)
 	// UpdateQualityDefinitions implements updateQualityDefinitions operation.
 	//
 	// All or nothing; returns every definition afterwards.

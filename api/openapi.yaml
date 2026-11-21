@@ -36,6 +36,11 @@ tags:
   - name: customformats
   - name: profiles
   - name: parse
+  - name: movies
+  - name: timeline
+  - name: calendar
+  - name: images
+  - name: recyclebin
 security:
   - sessionToken: []
 paths:
@@ -1972,6 +1977,772 @@ paths:
                 $ref: "#/components/schemas/DecisionReport"
         default:
           $ref: "#/components/responses/Error"
+  /movies:
+    get:
+      operationId: listMovies
+      summary: The movie library, one page at a time
+      description: |
+        Filters combine. `status`: missing (monitored, available, no file), downloaded,
+        downloading, cutoff_unmet, unavailable (not yet at minimum availability), unmonitored.
+      tags: [movies]
+      parameters:
+        - {name: monitored, in: query, required: false, schema: {type: boolean}}
+        - {name: status, in: query, required: false, schema: {$ref: "#/components/schemas/MovieStatus"}}
+        - {name: profileId, in: query, required: false, schema: {type: integer, format: int64}}
+        - {name: tag, in: query, required: false, schema: {type: string, maxLength: 100}}
+        - {name: q, in: query, required: false, schema: {type: string, maxLength: 200}}
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [title, year, added, rating, popularity, size, inCinemas, digital, physical]
+            default: title
+        - {name: desc, in: query, required: false, schema: {type: boolean, default: false}}
+        - {name: offset, in: query, required: false, schema: {type: integer, minimum: 0, default: 0}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        "200":
+          description: A page of movies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieList"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addMovie
+      summary: Add a movie from TMDb (library managers)
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddMovieRequest"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/lookup:
+    get:
+      operationId: lookupMovies
+      summary: Search TMDb by title ("Title 2008"), TMDb id ("tmdb:10378") or IMDb id ("tt1254207")
+      tags: [movies]
+      parameters:
+        - {name: term, in: query, required: true, schema: {type: string, minLength: 1, maxLength: 200}}
+      responses:
+        "200":
+          description: Results, marked when already in the library
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MovieLookup"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/search:
+    post:
+      operationId: searchMovies
+      summary: Queue automatic searches for several movies (library managers)
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieIdsRequest"
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/rename:
+    post:
+      operationId: renameMovies
+      summary: Rename movie files by the naming template (library managers)
+      description: An empty list renames every movie. Files are renamed in place; nothing is deleted.
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieIdsRequest"
+      responses:
+        "200":
+          description: Renamed files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RenameItem"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/rename/preview:
+    post:
+      operationId: previewRenameMovies
+      summary: Show which movie files a rename would change
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieIdsRequest"
+      responses:
+        "200":
+          description: Planned renames
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RenameItem"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: getMovie
+      summary: One movie
+      tags: [movies]
+      responses:
+        "200":
+          description: The movie
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateMovie
+      summary: Change how a movie is managed (library managers)
+      description: The folder can change only while the movie has no file (`has_file`).
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieUpdate"
+      responses:
+        "200":
+          description: The movie
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteMovie
+      summary: Remove a movie (library managers)
+      description: With `deleteFiles` the movie folder goes to the recycle bin; files are never deleted outright.
+      tags: [movies]
+      parameters:
+        - {name: deleteFiles, in: query, required: false, schema: {type: boolean, default: false}}
+        - {name: exclude, in: query, required: false, schema: {type: boolean, default: false}}
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/{id}/refresh:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: refreshMovie
+      summary: Reload a movie's metadata and check its file (library managers)
+      tags: [movies]
+      responses:
+        "200":
+          description: The movie
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/{id}/search:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: searchMovie
+      summary: Queue an automatic search for a movie now (library managers)
+      description: The search, the decision and any grab appear on the movie's timeline.
+      tags: [movies]
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/{id}/releases:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: interactiveSearchMovie
+      summary: Interactive search - every release and the decision on it (library managers)
+      tags: [movies]
+      responses:
+        "200":
+          description: The decision report (accepted ranked, then pending, then rejected with reasons)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InteractiveSearch"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: grabMovieRelease
+      summary: Grab a release chosen in an interactive search (library managers)
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManualGrabRequest"
+      responses:
+        "201":
+          description: Sent to a download client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueueItem"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/collections/{tmdbId}:
+    parameters:
+      - {name: tmdbId, in: path, required: true, schema: {type: integer, format: int64, minimum: 1}}
+    get:
+      operationId: getMovieCollection
+      summary: A TMDb collection and which of its movies are in the library
+      tags: [movies]
+      responses:
+        "200":
+          description: The collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieCollection"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addMovieCollection
+      summary: Add the collection's missing movies (library managers)
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddOptions"
+      responses:
+        "200":
+          description: The movies added
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Movie"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/import/scan:
+    get:
+      operationId: scanExistingMovies
+      summary: Folders in a root folder that are not in the library, with TMDb matches (library managers)
+      tags: [movies]
+      parameters:
+        - {name: rootFolderId, in: query, required: true, schema: {type: integer, format: int64}}
+      responses:
+        "200":
+          description: Unmapped folders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExistingFolder"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/import/existing:
+    post:
+      operationId: importExistingMovies
+      summary: Add movies for existing folders; their files stay where they are (library managers)
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportExistingRequest"
+      responses:
+        "200":
+          description: One result per folder
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ImportExistingResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/import/manual:
+    get:
+      operationId: previewManualImport
+      summary: Preview importing the video files of a folder (library managers)
+      tags: [movies]
+      parameters:
+        - {name: path, in: query, required: true, schema: {type: string, minLength: 1, maxLength: 4096}}
+        - {name: movieId, in: query, required: false, schema: {type: integer, format: int64}}
+      responses:
+        "200":
+          description: Files with their match and verdict
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ManualImportCandidate"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: manualImport
+      summary: Import chosen files into movies (library managers)
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManualImportRequest"
+      responses:
+        "200":
+          description: One result per file
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ManualImportResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/importlists:
+    get:
+      operationId: listImportLists
+      summary: Lists that add movies automatically (administrators)
+      tags: [movies]
+      responses:
+        "200":
+          description: Import lists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ImportList"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createImportList
+      summary: Add an import list (administrators)
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportListInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportList"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/importlists/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    put:
+      operationId: updateImportList
+      summary: Change an import list (administrators)
+      tags: [movies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportListInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportList"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteImportList
+      summary: Remove an import list; its movies stay (administrators)
+      tags: [movies]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/importlists/{id}/sync:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: syncImportList
+      summary: Add the list's missing movies now (administrators)
+      tags: [movies]
+      responses:
+        "200":
+          description: What the sync did
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportListSyncResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/exclusions:
+    get:
+      operationId: listImportExclusions
+      summary: Movies import lists never add again
+      tags: [movies]
+      responses:
+        "200":
+          description: Exclusions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ImportExclusion"
+        default:
+          $ref: "#/components/responses/Error"
+  /movies/exclusions/{tmdbId}:
+    parameters:
+      - {name: tmdbId, in: path, required: true, schema: {type: integer, format: int64}}
+    delete:
+      operationId: deleteImportExclusion
+      summary: Let import lists add a movie again (administrators)
+      tags: [movies]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /timeline:
+    get:
+      operationId: getTimeline
+      summary: An item's timeline and the answer to "why isn't it here?"
+      description: |
+        `item` is an item reference such as `movie:42`. Events are newest first: searches with
+        per-indexer counts, decisions with the most common rejection reasons, grabs, download
+        milestones, imports, renames, upgrades, recycled files and media server notifications.
+      tags: [timeline]
+      parameters:
+        - {name: item, in: query, required: true, schema: {type: string, maxLength: 64}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 2000, default: 500}}
+      responses:
+        "200":
+          description: The timeline
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Timeline"
+        default:
+          $ref: "#/components/responses/Error"
+  /timeline/explain:
+    get:
+      operationId: explainItem
+      summary: Why an item is not in the library (yet)
+      tags: [timeline]
+      parameters:
+        - {name: item, in: query, required: true, schema: {type: string, maxLength: 64}}
+      responses:
+        "200":
+          description: The current blocking reason
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Explanation"
+        default:
+          $ref: "#/components/responses/Error"
+  /calendar:
+    get:
+      operationId: getCalendar
+      summary: Movie dates (in cinemas, digital, physical) between two days
+      tags: [calendar]
+      parameters:
+        - {name: start, in: query, required: true, schema: {type: string, format: date}}
+        - {name: end, in: query, required: true, schema: {type: string, format: date}}
+      responses:
+        "200":
+          description: Entries by date
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CalendarEntry"
+        default:
+          $ref: "#/components/responses/Error"
+  /calendar/token:
+    get:
+      operationId: getCalendarToken
+      summary: Whether the signed-in user has a calendar feed link
+      tags: [calendar]
+      responses:
+        "200":
+          description: State
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SecretState"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createCalendarToken
+      summary: Create (or replace) the signed-in user's calendar feed link
+      description: The link is shown once; creating a new one stops the old one.
+      tags: [calendar]
+      responses:
+        "201":
+          description: The feed link
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalendarFeed"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteCalendarToken
+      summary: Stop the signed-in user's calendar feed link
+      tags: [calendar]
+      responses:
+        "204":
+          description: Stopped
+        default:
+          $ref: "#/components/responses/Error"
+  /calendar/feed.ics:
+    get:
+      operationId: getCalendarFeed
+      summary: iCalendar feed (authenticated by the per-user token in the link)
+      tags: [calendar]
+      security: []
+      parameters:
+        - {name: token, in: query, required: true, schema: {type: string, minLength: 20, maxLength: 200}}
+        - {name: pastDays, in: query, required: false, schema: {type: integer, minimum: 0, maximum: 365, default: 30}}
+        - {name: futureDays, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 730, default: 365}}
+      responses:
+        "200":
+          description: The feed
+          content:
+            text/calendar:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: "#/components/responses/Error"
+  /images/tmdb/{size}/{file}:
+    get:
+      operationId: getTmdbImage
+      summary: A TMDb poster or backdrop, cached on the server
+      tags: [images]
+      parameters:
+        - {name: size, in: path, required: true, schema: {type: string, enum: [w92, w154, w185, w300, w342, w500, w780, w1280, original]}}
+        - {name: file, in: path, required: true, schema: {type: string, pattern: "^[A-Za-z0-9_-]{1,80}\\.(jpg|jpeg|png|webp)$"}}
+        - {name: If-None-Match, in: header, required: false, schema: {type: string, maxLength: 200}}
+      responses:
+        "200":
+          description: The image
+          headers:
+            ETag:
+              schema: {type: string}
+            Cache-Control:
+              schema: {type: string}
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        "304":
+          description: Not modified
+          headers:
+            ETag:
+              schema: {type: string}
+            Cache-Control:
+              schema: {type: string}
+        default:
+          $ref: "#/components/responses/Error"
+  /recyclebin:
+    get:
+      operationId: getRecycleBin
+      summary: Files in the recycle bin (library managers)
+      tags: [recyclebin]
+      responses:
+        "200":
+          description: The bin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecycleBin"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: emptyRecycleBin
+      summary: Delete everything in the recycle bin permanently (administrators)
+      tags: [recyclebin]
+      responses:
+        "200":
+          description: How many entries were deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
+  /recyclebin/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    delete:
+      operationId: deleteRecycleEntry
+      summary: Delete one recycle bin entry permanently (administrators)
+      tags: [recyclebin]
+      responses:
+        "204":
+          description: Deleted
+        default:
+          $ref: "#/components/responses/Error"
+  /recyclebin/{id}/restore:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: restoreRecycleEntry
+      summary: Put a recycled file back where it was (library managers)
+      description: Fails with `restore_conflict` when something else is at the original place.
+      tags: [recyclebin]
+      responses:
+        "200":
+          description: Restored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecycleEntry"
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/mediamanagement:
+    get:
+      operationId: getMediaManagement
+      summary: Naming, transfer mode, recycle bin and permissions (administrators)
+      tags: [settings]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaManagementSettings"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateMediaManagement
+      summary: Change naming, transfer mode, recycle bin and permissions (administrators)
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MediaManagementSettings"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaManagementSettings"
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/mediamanagement/preview:
+    post:
+      operationId: previewNaming
+      summary: Render naming templates for an example movie
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NamingPreviewRequest"
+      responses:
+        "200":
+          description: Rendered names (or the template error)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NamingPreview"
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/metadata:
+    get:
+      operationId: getMetadataSettings
+      summary: TMDb key state, language and region (administrators)
+      tags: [settings]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetadataSettings"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateMetadataSettings
+      summary: Change the TMDb key (validated with TMDb first), language and region (administrators)
+      description: A key TMDb refuses is not stored (`metadata_key_invalid`).
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MetadataSettingsInput"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetadataSettings"
+        default:
+          $ref: "#/components/responses/Error"
 components:
   securitySchemes:
     sessionToken:
@@ -3606,6 +4377,8 @@ components:
         message: {type: string}
         itemRef:
           description: Opaque JSON from whoever grabbed the release.
+        item:
+          $ref: "#/components/schemas/QueueItemLink"
         addedAt:
           type: string
           format: date-time
@@ -4691,3 +5464,528 @@ components:
           maxItems: 2000
           items:
             $ref: "#/components/schemas/Candidate"
+    MovieStatus:
+      type: string
+      enum: [missing, downloaded, downloading, cutoff_unmet, unavailable, unmonitored]
+    MinimumAvailability:
+      type: string
+      enum: [announced, in_cinemas, released]
+    MovieFile:
+      type: object
+      required: [id, path, sizeBytes, quality, revision, customFormats, score, releaseGroup, edition, languages, mediaInfo, sceneName, addedAt]
+      properties:
+        id: {type: integer, format: int64}
+        path: {type: string}
+        sizeBytes: {type: integer, format: int64}
+        quality: {$ref: "#/components/schemas/Quality"}
+        revision: {type: integer}
+        customFormats: {type: array, items: {type: string}}
+        score: {type: integer}
+        releaseGroup: {type: string}
+        edition: {type: string}
+        languages: {type: array, items: {type: string}}
+        mediaInfo: {$ref: "#/components/schemas/MediaInfo"}
+        sceneName: {type: string}
+        downloadId: {type: integer, format: int64}
+        addedAt: {type: string, format: date-time}
+    MediaInfo:
+      type: object
+      description: Read from the file or release name (`source` = name); see D-033.
+      required: [source]
+      properties:
+        source: {type: string}
+        resolution: {type: integer}
+        videoCodec: {type: string}
+        bitDepth: {type: integer}
+        hdr: {type: array, items: {type: string}}
+        audioCodec: {type: string}
+        audioChannels: {type: string}
+        atmos: {type: boolean}
+        languages: {type: array, items: {type: string}}
+        subtitles: {type: array, items: {type: string}}
+    MovieDownload:
+      type: object
+      required: [id, title, progress, state, status]
+      properties:
+        id: {type: integer, format: int64}
+        title: {type: string}
+        progress: {type: number, format: double}
+        state: {type: string}
+        status: {type: string}
+    Movie:
+      type: object
+      required: [id, tmdbId, imdbId, title, originalTitle, originalLanguage, alternateTitles, year, overview, runtime, status, studio,
+        genres, certification, rating, votes, inCinemas, digitalRelease, physicalRelease, collectionId, collectionName, poster, backdrop,
+        monitored, qualityProfileId, path, minimumAvailability, tags, addedAt, updatedAt, available, cutoffMet, libraryStatus]
+      properties:
+        id: {type: integer, format: int64}
+        itemRef: {type: string, description: 'Timeline reference, e.g. "movie:42".'}
+        tmdbId: {type: integer, format: int64}
+        imdbId: {type: string}
+        title: {type: string}
+        originalTitle: {type: string}
+        originalLanguage: {type: string}
+        alternateTitles: {type: array, items: {type: string}}
+        year: {type: integer}
+        overview: {type: string}
+        runtime: {type: integer, description: Minutes.}
+        status: {type: string, description: "TMDb status: Rumored, Planned, In Production, Post Production, Released, Canceled."}
+        studio: {type: string}
+        genres: {type: array, items: {type: string}}
+        certification: {type: string}
+        rating: {type: number, format: double}
+        votes: {type: integer}
+        inCinemas: {type: string, description: YYYY-MM-DD or empty.}
+        digitalRelease: {type: string}
+        physicalRelease: {type: string}
+        collectionId: {type: integer, format: int64}
+        collectionName: {type: string}
+        poster: {type: string, description: "Image file name for /images/tmdb/{size}/{file}."}
+        backdrop: {type: string}
+        monitored: {type: boolean}
+        qualityProfileId: {type: integer, format: int64}
+        rootFolderId: {type: integer, format: int64}
+        path: {type: string}
+        minimumAvailability: {$ref: "#/components/schemas/MinimumAvailability"}
+        tags: {type: array, items: {type: string}}
+        addedByListId: {type: integer, format: int64}
+        addedAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        refreshedAt: {type: string, format: date-time}
+        available: {type: boolean, description: The movie reached its minimum availability.}
+        availableFrom: {type: string, format: date-time}
+        cutoffMet: {type: boolean}
+        libraryStatus: {$ref: "#/components/schemas/MovieStatus"}
+        file: {$ref: "#/components/schemas/MovieFile"}
+        download: {$ref: "#/components/schemas/MovieDownload"}
+    MovieList:
+      type: object
+      required: [total, items]
+      properties:
+        total: {type: integer}
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/Movie"}
+    MovieLookup:
+      type: object
+      required: [tmdbId, title, originalTitle, year, releaseDate, overview, poster, backdrop, popularity, rating]
+      properties:
+        tmdbId: {type: integer, format: int64}
+        title: {type: string}
+        originalTitle: {type: string}
+        year: {type: integer}
+        releaseDate: {type: string}
+        overview: {type: string}
+        poster: {type: string}
+        backdrop: {type: string}
+        popularity: {type: number, format: double}
+        rating: {type: number, format: double}
+        movieId: {type: integer, format: int64, description: Set when the movie is in the library.}
+    AddOptions:
+      type: object
+      required: [rootFolderId, qualityProfileId]
+      properties:
+        rootFolderId: {type: integer, format: int64}
+        qualityProfileId: {type: integer, format: int64}
+        minimumAvailability: {$ref: "#/components/schemas/MinimumAvailability"}
+        monitored: {type: boolean, default: true}
+        tags:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 50}
+        searchOnAdd: {type: boolean, default: false}
+    AddMovieRequest:
+      allOf:
+        - $ref: "#/components/schemas/AddOptions"
+        - type: object
+          required: [tmdbId]
+          properties:
+            tmdbId: {type: integer, format: int64, minimum: 1}
+            path: {type: string, maxLength: 4096, description: Folder inside the root folder; empty = from the naming template.}
+    MovieUpdate:
+      type: object
+      properties:
+        monitored: {type: boolean}
+        qualityProfileId: {type: integer, format: int64}
+        minimumAvailability: {$ref: "#/components/schemas/MinimumAvailability"}
+        tags:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 50}
+        rootFolderId: {type: integer, format: int64}
+        path: {type: string, maxLength: 4096}
+    MovieIdsRequest:
+      type: object
+      required: [movieIds]
+      properties:
+        movieIds:
+          type: array
+          maxItems: 20000
+          items: {type: integer, format: int64}
+    QueuedCount:
+      type: object
+      required: [count]
+      properties:
+        count: {type: integer}
+    RenameItem:
+      type: object
+      required: [movieId, title, from, to]
+      properties:
+        movieId: {type: integer, format: int64}
+        title: {type: string}
+        from: {type: string}
+        to: {type: string}
+    InteractiveDecision:
+      type: object
+      required: [decision]
+      properties:
+        decision: {$ref: "#/components/schemas/Decision"}
+        downloadToken: {type: string, description: Pass to grabMovieRelease (the link stays on the server).}
+        magnetUrl: {type: string}
+    InteractiveSearch:
+      type: object
+      required: [kind, profileName, accepted, pending, rejected, decisions, indexers, durationMs]
+      properties:
+        kind: {$ref: "#/components/schemas/MediaKind"}
+        profileName: {type: string}
+        accepted: {type: integer}
+        pending: {type: integer}
+        rejected: {type: integer}
+        decisions:
+          type: array
+          items: {$ref: "#/components/schemas/InteractiveDecision"}
+        indexers:
+          type: array
+          items: {$ref: "#/components/schemas/SearchIndexerResult"}
+        durationMs: {type: integer, format: int64}
+    ManualGrabRequest:
+      type: object
+      required: [indexerId, title, protocol]
+      properties:
+        indexerId: {type: integer, format: int64}
+        downloadToken: {type: string, maxLength: 4096}
+        magnetUrl: {type: string, maxLength: 8192}
+        title: {type: string, minLength: 1, maxLength: 500}
+        protocol: {$ref: "#/components/schemas/DownloadProtocol"}
+        guid: {type: string, maxLength: 2000}
+        publishDate: {type: string, format: date-time}
+    MovieCollection:
+      type: object
+      required: [id, name, overview, poster, backdrop, members]
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+        overview: {type: string}
+        poster: {type: string}
+        backdrop: {type: string}
+        members:
+          type: array
+          items: {$ref: "#/components/schemas/MovieLookup"}
+    ExistingFolder:
+      type: object
+      required: [path, name, title, year, candidates]
+      properties:
+        path: {type: string}
+        name: {type: string}
+        title: {type: string}
+        year: {type: integer}
+        video: {type: string}
+        videoSizeBytes: {type: integer, format: int64}
+        match: {$ref: "#/components/schemas/MovieLookup"}
+        candidates:
+          type: array
+          items: {$ref: "#/components/schemas/MovieLookup"}
+        error: {type: string}
+    ImportExistingRequest:
+      type: object
+      required: [rootFolderId, qualityProfileId, items]
+      properties:
+        rootFolderId: {type: integer, format: int64}
+        qualityProfileId: {type: integer, format: int64}
+        minimumAvailability: {$ref: "#/components/schemas/MinimumAvailability"}
+        monitored: {type: boolean, default: true}
+        searchOnAdd: {type: boolean, default: false}
+        tags:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 50}
+        items:
+          type: array
+          maxItems: 500
+          items:
+            type: object
+            required: [path, tmdbId]
+            properties:
+              path: {type: string, maxLength: 4096}
+              tmdbId: {type: integer, format: int64, minimum: 1}
+    ImportExistingResult:
+      type: object
+      required: [path]
+      properties:
+        path: {type: string}
+        movie: {$ref: "#/components/schemas/Movie"}
+        error: {$ref: "#/components/schemas/Error"}
+    ManualImportCandidate:
+      type: object
+      required: [path, relativePath, sizeBytes, sidecars]
+      properties:
+        path: {type: string}
+        relativePath: {type: string}
+        sizeBytes: {type: integer, format: int64}
+        skipped: {type: string, description: "Why the file is left out: sample, extra, smaller_than_main, disc_structure, not_media."}
+        movieId: {type: integer, format: int64}
+        movieTitle: {type: string}
+        movieYear: {type: integer}
+        quality: {$ref: "#/components/schemas/Quality"}
+        releaseGroup: {type: string}
+        rejection: {$ref: "#/components/schemas/Error"}
+        sidecars: {type: array, items: {type: string}}
+    ManualImportRequest:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            type: object
+            required: [path, movieId]
+            properties:
+              path: {type: string, maxLength: 4096}
+              movieId: {type: integer, format: int64}
+              mode: {$ref: "#/components/schemas/TransferMode"}
+              sidecars:
+                type: array
+                maxItems: 50
+                items: {type: string, maxLength: 4096}
+    ManualImportResult:
+      type: object
+      required: [path, movieId]
+      properties:
+        path: {type: string}
+        movieId: {type: integer, format: int64}
+        importedPath: {type: string}
+        mode: {type: string}
+        upgraded: {type: boolean}
+        recycled: {type: array, items: {type: string}}
+        error: {$ref: "#/components/schemas/Error"}
+    TransferMode:
+      type: string
+      enum: [hardlink, copy, move]
+    ImportListKind:
+      type: string
+      enum: [tmdb_list, tmdb_collection]
+    ImportListInput:
+      type: object
+      required: [name, kind, listId, rootFolderId, qualityProfileId]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 100}
+        kind: {$ref: "#/components/schemas/ImportListKind"}
+        listId: {type: string, minLength: 1, maxLength: 100, description: TMDb list id or collection id.}
+        enabled: {type: boolean, default: true}
+        rootFolderId: {type: integer, format: int64}
+        qualityProfileId: {type: integer, format: int64}
+        minimumAvailability: {$ref: "#/components/schemas/MinimumAvailability"}
+        monitored: {type: boolean, default: true}
+        searchOnAdd: {type: boolean, default: false}
+        tags:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 50}
+    ImportList:
+      type: object
+      required: [id, name, kind, listId, enabled, rootFolderId, qualityProfileId, minimumAvailability, monitored, searchOnAdd, tags,
+        lastAdded, lastError, createdAt]
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+        kind: {$ref: "#/components/schemas/ImportListKind"}
+        listId: {type: string}
+        enabled: {type: boolean}
+        rootFolderId: {type: integer, format: int64}
+        qualityProfileId: {type: integer, format: int64}
+        minimumAvailability: {$ref: "#/components/schemas/MinimumAvailability"}
+        monitored: {type: boolean}
+        searchOnAdd: {type: boolean}
+        tags: {type: array, items: {type: string}}
+        lastSyncAt: {type: string, format: date-time}
+        lastAdded: {type: integer}
+        lastError: {type: string}
+        createdAt: {type: string, format: date-time}
+    ImportListSyncResult:
+      type: object
+      required: [listId, found, added, excluded]
+      properties:
+        listId: {type: integer, format: int64}
+        found: {type: integer}
+        added: {type: array, items: {type: string}}
+        excluded: {type: integer}
+        error: {type: string}
+    ImportExclusion:
+      type: object
+      required: [tmdbId, title, year, createdAt]
+      properties:
+        tmdbId: {type: integer, format: int64}
+        title: {type: string}
+        year: {type: integer}
+        createdAt: {type: string, format: date-time}
+    TimelineEvent:
+      type: object
+      required: [id, at, type, source, message, data]
+      properties:
+        id: {type: integer, format: int64}
+        at: {type: string, format: date-time}
+        type:
+          type: string
+          description: |
+            added, edited, refreshed, search, decision, pending, grab_failed, retry,
+            download_grabbed, download_state, download_progress, download_completed, download_failed,
+            download_removed, download_imported, download_import_failed, download_blocklisted,
+            file_imported, file_found, import_failed, renamed, upgraded, recycled, deleted, notified.
+        source: {type: string, enum: [timeline, search, download]}
+        message: {type: string, description: English summary; clients render `type` and `data` themselves.}
+        data: {description: Event details (shape depends on the type).}
+        downloadId: {type: integer, format: int64}
+    ReasonCount:
+      type: object
+      required: [code, count, example]
+      properties:
+        code: {type: string}
+        count: {type: integer}
+        example: {type: string}
+    Explanation:
+      type: object
+      required: [code, tone, message, params, reasons]
+      properties:
+        code:
+          type: string
+          description: |
+            available, downloading, importing, import_failed, not_monitored, not_available_yet,
+            no_indexers, no_download_client, waiting_delay, download_failed, not_searched_yet,
+            all_rejected, nothing_found, upgrade_wanted.
+        tone: {type: string, enum: [success, info, warning, danger]}
+        message: {type: string}
+        params: {type: object, additionalProperties: true}
+        reasons:
+          type: array
+          items: {$ref: "#/components/schemas/ReasonCount"}
+    Timeline:
+      type: object
+      required: [item, explanation, events]
+      properties:
+        item: {type: string}
+        title: {type: string}
+        explanation: {$ref: "#/components/schemas/Explanation"}
+        events:
+          type: array
+          items: {$ref: "#/components/schemas/TimelineEvent"}
+    CalendarEntry:
+      type: object
+      required: [date, kind, movieId, title, year, hasFile, monitored, poster]
+      properties:
+        date: {type: string, format: date}
+        kind: {type: string, enum: [in_cinemas, digital, physical]}
+        movieId: {type: integer, format: int64}
+        title: {type: string}
+        year: {type: integer}
+        hasFile: {type: boolean}
+        monitored: {type: boolean}
+        poster: {type: string}
+    CalendarFeed:
+      type: object
+      required: [token, path]
+      properties:
+        token: {type: string}
+        path: {type: string, description: "Path of the feed on this server, e.g. /api/v1/calendar/feed.ics?token=…"}
+    RecycleEntry:
+      type: object
+      required: [id, originalPath, recycledPath, sizeBytes, isDir, itemRef, reason, recycledAt]
+      properties:
+        id: {type: integer, format: int64}
+        originalPath: {type: string}
+        recycledPath: {type: string}
+        sizeBytes: {type: integer, format: int64}
+        isDir: {type: boolean}
+        itemRef: {type: string}
+        reason: {type: string}
+        recycledAt: {type: string, format: date-time}
+    RecycleBin:
+      type: object
+      required: [folder, retentionDays, entries]
+      properties:
+        folder: {type: string}
+        retentionDays: {type: integer}
+        entries:
+          type: array
+          items: {$ref: "#/components/schemas/RecycleEntry"}
+    ColonReplacement:
+      type: string
+      enum: [delete, dash, space_dash]
+    MediaManagementSettings:
+      type: object
+      required: [renameMovies, movieFolderFormat, movieFileFormat, colonReplacement, transferMode, recycleBinPath, recycleBinRetentionDays,
+        setPermissions, fileMode, folderMode, extraExtensions, availabilityDelayDays, searchOnAddDefault]
+      properties:
+        renameMovies: {type: boolean}
+        movieFolderFormat: {type: string, minLength: 1, maxLength: 500}
+        movieFileFormat: {type: string, minLength: 1, maxLength: 500}
+        colonReplacement: {$ref: "#/components/schemas/ColonReplacement"}
+        transferMode: {$ref: "#/components/schemas/TransferMode"}
+        recycleBinPath: {type: string, maxLength: 4096, description: Empty = recycle-bin under the first data root.}
+        recycleBinRetentionDays: {type: integer, minimum: 0, maximum: 3650, description: 0 = keep until emptied by hand.}
+        setPermissions: {type: boolean}
+        fileMode: {type: string, pattern: "^0?[0-7]{3}$"}
+        folderMode: {type: string, pattern: "^0?[0-7]{3}$"}
+        extraExtensions:
+          type: array
+          maxItems: 30
+          items: {type: string, maxLength: 10}
+        availabilityDelayDays: {type: integer, minimum: -365, maximum: 365}
+        searchOnAddDefault: {type: boolean}
+    NamingToken:
+      type: object
+      required: [name, example]
+      properties:
+        name: {type: string}
+        example: {type: string}
+    NamingPreviewRequest:
+      type: object
+      required: [movieFolderFormat, movieFileFormat]
+      properties:
+        movieFolderFormat: {type: string, maxLength: 500}
+        movieFileFormat: {type: string, maxLength: 500}
+        colonReplacement: {$ref: "#/components/schemas/ColonReplacement"}
+    NamingPreview:
+      type: object
+      required: [folder, file, tokens]
+      properties:
+        folder: {type: string}
+        file: {type: string}
+        folderError: {type: string}
+        fileError: {type: string}
+        tokens:
+          type: array
+          items: {$ref: "#/components/schemas/NamingToken"}
+    MetadataSettings:
+      type: object
+      required: [tmdbApiKey, language, region]
+      properties:
+        tmdbApiKey: {$ref: "#/components/schemas/SecretState"}
+        language: {type: string}
+        region: {type: string}
+    MetadataSettingsInput:
+      type: object
+      properties:
+        tmdbApiKey: {type: string, maxLength: 512, description: Write-only. v3 API key or v4 read access token; empty removes it.}
+        language: {type: string, pattern: "^[a-z]{2}(-[A-Z]{2})?$"}
+        region: {type: string, pattern: "^([A-Z]{2})?$"}
+    QueueItemLink:
+      type: object
+      required: [ref, kind, id, title]
+      properties:
+        ref: {type: string}
+        kind: {type: string}
+        id: {type: integer, format: int64}
+        title: {type: string}
+        year: {type: integer}
