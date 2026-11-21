@@ -1,0 +1,2097 @@
+[
+  {
+    "name": "a8f9e3b2c1d4e5f6a7b8c9d0e1f2a3b4",
+    "expect": {
+      "obfuscated": true,
+      "kind": "unknown",
+      "confidence": 0
+    }
+  },
+  {
+    "name": "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+    "expect": {
+      "obfuscated": true
+    }
+  },
+  {
+    "name": "Xk9mP2qL7vR4tY8wZ3nB",
+    "expect": {
+      "obfuscated": true
+    }
+  },
+  {
+    "name": "ABCDEF0123456789ABCDEF01",
+    "expect": {
+      "obfuscated": true
+    }
+  },
+  {
+    "name": "Interstellar",
+    "expect": {
+      "obfuscated": false,
+      "title": "Interstellar"
+    }
+  },
+  {
+    "name": "/data/downloads/Show.Name.S01E01.1080p.WEB.h264-GRP/a1b2c3d4e5f6a7b8c9d0e1f2.mkv",
+    "path": true,
+    "expect": {
+      "title": "Show Name",
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        1
+      ],
+      "extension": "mkv",
+      "group": "GRP"
+    }
+  },
+  {
+    "name": "/data/downloads/Movie.Title.2020.1080p.BluRay.x264-GRP/Sample/movie.title.2020.1080p.bluray.x264-grp-sample.mkv",
+    "path": true,
+    "expect": {
+      "sample": true,
+      "year": 2020
+    }
+  },
+  {
+    "name": "/data/downloads/Movie.Title.2020.1080p.BluRay.x264-GRP/movie.title.2020.1080p.bluray.x264-grp.mkv",
+    "path": true,
+    "expect": {
+      "title": "movie title",
+      "year": 2020,
+      "extension": "mkv"
+    }
+  },
+  {
+    "name": "C:\\Downloads\\The.Expanse.S03E05.720p.HDTV.x264-AVS\\the.expanse.s03e05.720p.hdtv.x264-avs.mkv",
+    "path": true,
+    "expect": {
+      "seasons": [
+        3
+      ],
+      "episodes": [
+        5
+      ],
+      "extension": "mkv"
+    }
+  },
+  {
+    "name": "/tv/Breaking Bad/Season 01/Breaking Bad - S01E03 - ...And the Bag's in the River.mkv",
+    "path": true,
+    "expect": {
+      "title": "Breaking Bad",
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        3
+      ]
+    }
+  },
+  {
+    "name": "/data/downloads/Movie.2021.2160p.WEB-DL.DDP5.1.HDR.HEVC-GRP/Movie.2021.2160p.WEB-DL.DDP5.1.HDR.HEVC-GRP.ts",
+    "path": true,
+    "expect": {
+      "extension": "ts",
+      "year": 2021
+    }
+  },
+  {
+    "name": "Movie.Title.2019.1080p.BluRay.x264-GRP.sample",
+    "expect": {
+      "sample": true,
+      "year": 2019,
+      "group": "GRP"
+    }
+  },
+  {
+    "name": "Movie.Title.2019.1080p.BluRay.x264-GRP-Sample.mkv",
+    "expect": {
+      "sample": true,
+      "extension": "mkv"
+    }
+  },
+  {
+    "name": "www.Torrenting.com - Movie.Title.2020.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "title": "Movie Title",
+      "year": 2020,
+      "group": "GRP"
+    }
+  },
+  {
+    "name": "[ www.Speed.cd ] -Movie.Title.2018.720p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Movie Title",
+      "year": 2018
+    }
+  },
+  {
+    "name": "Movie.Title.2020.1080p.WEB-DL.x264-GRP-Obfuscated",
+    "expect": {
+      "group": "GRP"
+    }
+  },
+  {
+    "name": "Movie.Title.2020.1080p.WEB-DL.x264-GRP-postbot",
+    "expect": {
+      "group": "GRP"
+    }
+  },
+  {
+    "name": "Movie.Title.2020.1080p.WEB-DL.x264-GRP-xpost",
+    "expect": {
+      "group": "GRP"
+    }
+  },
+  {
+    "name": "Show.S01E01.1080p.WEB.H264-GRP[rarbg]",
+    "expect": {
+      "group": "GRP",
+      "seasons": [
+        1
+      ]
+    }
+  },
+  {
+    "name": "Show.S02E03.720p.HDTV.x264-GRP[ettv]",
+    "expect": {
+      "group": "GRP"
+    }
+  },
+  {
+    "name": "Movie (2019) [1080p] [BluRay] [YTS.LT]",
+    "expect": {
+      "group": "YTS.LT",
+      "year": 2019,
+      "title": "Movie"
+    }
+  },
+  {
+    "name": "Movie.2019.1080p.BluRay.x264-[YTS.AM]",
+    "expect": {
+      "group": "YTS.AM",
+      "title": "Movie"
+    }
+  },
+  {
+    "name": "2001.A.Space.Odyssey.1968.REMASTERED.1080p.BluRay.x264-AMIABLE",
+    "expect": {
+      "title": "2001 A Space Odyssey",
+      "year": 1968,
+      "editions": [
+        "Remastered"
+      ]
+    }
+  },
+  {
+    "name": "Mr.Holland's.Opus.1995.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Mr Holland's Opus",
+      "year": 1995
+    }
+  },
+  {
+    "name": "Charlotte's.Web.2006.720p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Charlotte's Web",
+      "year": 2006
+    }
+  },
+  {
+    "name": "The.Day.After.Tomorrow.2004.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "The Day After Tomorrow"
+    }
+  },
+  {
+    "name": "Cam.2018.WEBRip.x264-GRP",
+    "expect": {
+      "title": "Cam",
+      "year": 2018,
+      "video": {
+        "source": "webrip"
+      }
+    }
+  },
+  {
+    "name": "Us.2019.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Us",
+      "year": 2019
+    }
+  },
+  {
+    "name": "Brazil.1985.Directors.Cut.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Brazil",
+      "editions": [
+        "Director's Cut"
+      ]
+    }
+  },
+  {
+    "name": "The.Italian.Job.2003.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "The Italian Job",
+      "languages": []
+    }
+  },
+  {
+    "name": "The.French.Connection.1971.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "The French Connection",
+      "languages": []
+    }
+  },
+  {
+    "name": "The.German.Doctor.2013.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "The German Doctor",
+      "languages": []
+    }
+  },
+  {
+    "name": "Real.Steel.2011.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Real Steel",
+      "revision": {
+        "real": 0
+      }
+    }
+  },
+  {
+    "name": "Movie.2020.REAL.PROPER.1080p.WEB.h264-GRP",
+    "expect": {
+      "revision": {
+        "real": 1,
+        "proper": true,
+        "version": 2
+      }
+    }
+  },
+  {
+    "name": "Movie.2020.PROPER.REPACK.1080p.WEB.h264-GRP",
+    "expect": {
+      "revision": {
+        "version": 3
+      }
+    }
+  },
+  {
+    "name": "Show.S01E01.REPACK2.720p.HDTV.x264-GRP",
+    "expect": {
+      "revision": {
+        "version": 3,
+        "repack": true
+      }
+    }
+  },
+  {
+    "name": "Super.8.2011.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Super 8",
+      "year": 2011
+    }
+  },
+  {
+    "name": "Blade.Runner.1982.The.Final.Cut.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Blade Runner",
+      "year": 1982,
+      "editions": [
+        "Final Cut"
+      ]
+    }
+  },
+  {
+    "name": "Apocalypse.Now.1979.Redux.1080p.BluRay.x264-GRP",
+    "expect": {
+      "editions": [
+        "Redux"
+      ]
+    }
+  },
+  {
+    "name": "Star.Wars.1977.Despecialized.Edition.720p.x264-GRP",
+    "expect": {
+      "editions": [
+        "Despecialized"
+      ]
+    }
+  },
+  {
+    "name": "Zack.Snyders.Justice.League.2021.Black.and.Chrome.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "editions": [
+        "Black and Chrome"
+      ],
+      "title": "Zack Snyders Justice League"
+    }
+  },
+  {
+    "name": "Movie.Title.Extended.Edition.2003.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Movie Title",
+      "editions": [
+        "Extended"
+      ],
+      "year": 2003
+    }
+  },
+  {
+    "name": "Movie.Title.2016.Theatrical.Cut.720p.BluRay.x264-GRP",
+    "expect": {
+      "editions": [
+        "Theatrical"
+      ]
+    }
+  },
+  {
+    "name": "Movie.Title.2020.Collectors.Edition.1080p.BluRay.x264-GRP",
+    "expect": {
+      "editions": [
+        "Collector's Edition"
+      ]
+    }
+  },
+  {
+    "name": "Movie.Title.1999.25th.Anniversary.Edition.1080p.BluRay.x264-GRP",
+    "expect": {
+      "editions": [
+        "Anniversary"
+      ]
+    }
+  },
+  {
+    "name": "Movie.Title.2019.UNCUT.1080p.BluRay.x264-GRP",
+    "expect": {
+      "editions": [
+        "Uncut"
+      ]
+    }
+  },
+  {
+    "name": "Movie.Title.2010.Criterion.Collection.1080p.BluRay.x264-GRP",
+    "expect": {
+      "editions": [
+        "Criterion"
+      ]
+    }
+  },
+  {
+    "name": "Movie.Title.2010.Special.Edition.1080p.BluRay.x264-GRP",
+    "expect": {
+      "editions": [
+        "Special Edition"
+      ]
+    }
+  },
+  {
+    "name": "Movie AKA Alternate Name 2015 1080p BluRay x264-GRP",
+    "expect": {
+      "title": "Movie",
+      "alternateTitles": [
+        "Alternate Name"
+      ],
+      "year": 2015
+    }
+  },
+  {
+    "name": "Le.Fabuleux.Destin.d'Amelie.Poulain.a.k.a.Amelie.2001.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Le Fabuleux Destin d'Amelie Poulain",
+      "alternateTitles": [
+        "Amelie"
+      ]
+    }
+  },
+  {
+    "name": "Shingeki no Kyojin (Attack on Titan) - 01 [1080p]",
+    "expect": {
+      "title": "Shingeki no Kyojin",
+      "alternateTitles": [
+        "Attack on Titan"
+      ],
+      "absoluteEpisodes": [
+        1
+      ]
+    }
+  },
+  {
+    "name": "Jagten / The Hunt 2012 1080p BluRay x264-GRP",
+    "expect": {
+      "title": "Jagten",
+      "alternateTitles": [
+        "The Hunt"
+      ],
+      "year": 2012
+    }
+  },
+  {
+    "name": "Amélie.2001.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Amélie",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Tár.2022.1080p.WEB-DL.DD5.1.H.264-GRP",
+    "expect": {
+      "title": "Tár"
+    }
+  },
+  {
+    "name": "Léon.1994.Extended.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Léon",
+      "editions": [
+        "Extended"
+      ]
+    }
+  },
+  {
+    "name": "Крик.2022.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "title": "Крик",
+      "year": 2022
+    }
+  },
+  {
+    "name": "千と千尋の神隠し.2001.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "千と千尋の神隠し",
+      "year": 2001
+    }
+  },
+  {
+    "name": "S.W.A.T.2017.S01E01.720p.HDTV.x264-KILLERS",
+    "expect": {
+      "title": "S.W.A.T.",
+      "year": 2017
+    }
+  },
+  {
+    "name": "Marvels.Agents.of.S.H.I.E.L.D.S07E13.1080p.WEB.h264-GRP",
+    "expect": {
+      "title": "Marvels Agents of S.H.I.E.L.D.",
+      "seasons": [
+        7
+      ],
+      "episodes": [
+        13
+      ]
+    }
+  },
+  {
+    "name": "E.T.the.Extra-Terrestrial.1982.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "E.T. the Extra-Terrestrial",
+      "year": 1982
+    }
+  },
+  {
+    "name": "Spider-Man.Across.the.Spider-Verse.2023.2160p.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-GRP",
+    "expect": {
+      "title": "Spider-Man Across the Spider-Verse"
+    }
+  },
+  {
+    "name": "Kingdom.Hearts.1.5.2013.1080p.WEB.x264-GRP",
+    "expect": {
+      "title": "Kingdom Hearts 1.5",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Tron.Legacy.2010.3D.HOU.1080p.BluRay.x264-GRP",
+    "expect": {
+      "threeD": true,
+      "title": "Tron Legacy"
+    }
+  },
+  {
+    "name": "Avatar.2009.3D.Half-SBS.1080p.BluRay.x264-GRP",
+    "expect": {
+      "threeD": true
+    }
+  },
+  {
+    "name": "Gravity.2013.3D.1080p.BluRay.Half-OU.DTS.x264-GRP",
+    "expect": {
+      "threeD": true
+    }
+  },
+  {
+    "name": "Movie.2023.1080p.WEBRip.x264.AAC-GRP",
+    "expect": {
+      "video": {
+        "source": "webrip"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.720p.HDRip.XviD.AC3-GRP",
+    "expect": {
+      "video": {
+        "source": "hdrip"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.HDTC.x264-GRP",
+    "expect": {
+      "video": {
+        "source": "telecine"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.TELESYNC.XviD-GRP",
+    "expect": {
+      "video": {
+        "source": "telesync"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.TS.XviD-GRP",
+    "expect": {
+      "video": {
+        "source": "telesync"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.CAMRip.x264-GRP",
+    "expect": {
+      "video": {
+        "source": "cam"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.WORKPRINT.XviD-GRP",
+    "expect": {
+      "video": {
+        "source": "workprint"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.R5.LiNE.XviD-GRP",
+    "expect": {
+      "video": {
+        "source": "regional"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.BDRip.XviD-GRP",
+    "expect": {
+      "video": {
+        "source": "bdrip"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.BRRip.720p.x264-GRP",
+    "expect": {
+      "video": {
+        "source": "brrip",
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.COMPLETE.UHD.BLURAY-GRP",
+    "expect": {
+      "video": {
+        "source": "brdisk"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.COMPLETE.BLURAY-GRP",
+    "expect": {
+      "video": {
+        "source": "brdisk"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.BD50.1080p.AVC.DTS-HD.MA.5.1-GRP",
+    "expect": {
+      "video": {
+        "source": "brdisk"
+      }
+    }
+  },
+  {
+    "name": "Movie.2023.1080i.HDTV.MPEG2.DD5.1-GRP",
+    "expect": {
+      "video": {
+        "source": "hdtv",
+        "resolution": 1080,
+        "interlaced": true,
+        "codec": "mpeg2"
+      }
+    }
+  },
+  {
+    "name": "Show.S01E01.Raw-HD.1080i.MPEG2-GRP",
+    "expect": {
+      "video": {
+        "source": "rawhd"
+      }
+    }
+  },
+  {
+    "name": "Movie.1080p.BluRay.VC-1.DTS-HD.MA.5.1-GRP",
+    "expect": {
+      "video": {
+        "codec": "vc1"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.2160p.WEB-DL.AV1.Opus.5.1-GRP",
+    "expect": {
+      "video": {
+        "codec": "av1"
+      },
+      "audio": {
+        "codecs": [
+          "opus"
+        ],
+        "channels": "5.1"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.1080p.WEB-DL.VP9.Opus-GRP",
+    "expect": {
+      "video": {
+        "codec": "vp9"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.4K.WEB-DL.x265-GRP",
+    "expect": {
+      "video": {
+        "resolution": 2160
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.8K.WEB.HEVC-GRP",
+    "expect": {
+      "video": {
+        "resolution": 4320
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.4320p.WEB.HEVC-GRP",
+    "expect": {
+      "video": {
+        "resolution": 4320
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.540p.WEB.x264-GRP",
+    "expect": {
+      "video": {
+        "resolution": 540
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.360p.WEB.x264-GRP",
+    "expect": {
+      "video": {
+        "resolution": 360
+      }
+    }
+  },
+  {
+    "name": "Movie 2022 1920x1080 WEB-DL H264",
+    "expect": {
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "Movie 2022 1280x720 WEB-DL H264",
+    "expect": {
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.1080p.Hi10P.BluRay.FLAC-GRP",
+    "expect": {
+      "video": {
+        "bitDepth": 10,
+        "codec": "h264"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.2160p.UHD.BluRay.x265.12bit.HDR.DTS-X.7.1-GRP",
+    "expect": {
+      "video": {
+        "bitDepth": 12
+      },
+      "audio": {
+        "codecs": [
+          "dts:x"
+        ],
+        "channels": "7.1"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.2160p.WEB-DL.DDP5.1.HDR10+.HEVC-GRP",
+    "expect": {
+      "video": {
+        "hdr": [
+          "HDR10+"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.2160p.WEB-DL.DDP5.1.HDR10Plus.HEVC-GRP",
+    "expect": {
+      "video": {
+        "hdr": [
+          "HDR10+"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.2160p.UHD.BluRay.REMUX.DoVi.P7.FEL.HDR10.TrueHD.Atmos.7.1-GRP",
+    "expect": {
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "dolbyVisionProfile": "7"
+      },
+      "audio": {
+        "atmos": true,
+        "codecs": [
+          "truehd"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Show.S01E01.2160p.iP.WEB-DL.AAC2.0.HLG.HEVC-GRP",
+    "expect": {
+      "video": {
+        "hdr": [
+          "HLG"
+        ]
+      },
+      "streamingService": "BBC iPlayer"
+    }
+  },
+  {
+    "name": "Movie.2022.2160p.MA.WEB-DL.DTS-HD.MA.5.1.HEVC-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.1080p.BluRay.DTS-HD.HRA.7.1.x264-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd hra"
+        ],
+        "channels": "7.1"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.1080p.BluRay.DTS-ES.6.1.x264-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-es"
+        ],
+        "channels": "6.1"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.1080p.BluRay.LPCM.2.0.x264-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "pcm"
+        ],
+        "channels": "2.0"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.1080p.BluRay.TrueHD.Atmos.7.1.x264-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "truehd"
+        ],
+        "atmos": true,
+        "channels": "7.1"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.1080p.WEB-DL.DDPA5.1.H.264-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "eac3"
+        ],
+        "atmos": true
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.1080p.WEB-DL.EAC3.5.1.H.264-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "eac3"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.720p.WEB-DL.AAC.2.0.H.264-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ],
+        "channels": "2.0"
+      }
+    }
+  },
+  {
+    "name": "Movie.2022.720p.WEB.DD.5.1.x264-GRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ],
+        "channels": "5.1"
+      }
+    }
+  },
+  {
+    "name": "Movie 2022 1080p BluRay 6CH x265 HEVC-GRP",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      }
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.AMZN.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Amazon",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.NF.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Netflix",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.DSNP.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Disney+",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.ATVP.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Apple TV+",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.HMAX.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "HBO Max",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.MAX.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Max",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.HULU.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Hulu",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.PCOK.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Peacock",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.PMTP.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Paramount+",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.iT.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "iTunes",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.CRAV.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Crave",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.STAN.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Stan",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.SKST.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "SkyShowtime",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.HBO.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "HBO",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Show.S02E04.1080p.ROKU.WEB-DL.DDP5.1.H.264-GRP",
+    "expect": {
+      "streamingService": "Roku",
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        4
+      ],
+      "title": "Show"
+    }
+  },
+  {
+    "name": "Movie.2021.MULTi.TRUEFRENCH.1080p.BluRay.x264-GRP",
+    "expect": {
+      "multiAudio": true,
+      "languages": [
+        "fr"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.VOSTFR.1080p.WEB.x264-GRP",
+    "expect": {
+      "subtitleLanguages": [
+        "fr"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.SPANISH.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "es"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.LATINO.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "es-419"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.PLDUB.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "pl"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.RUS.1080p.BluRay.x264-GRP",
+    "expect": {
+      "languages": [
+        "ru"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.HUN.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "hu"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.KOREAN.1080p.WEB.H264-GRP",
+    "expect": {
+      "languages": [
+        "ko"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.Hindi.1080p.WEB-DL.DD5.1.x264-GRP",
+    "expect": {
+      "languages": [
+        "hi"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.SRB.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "sr"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.BOSNIAN.720p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "bs"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.SLO.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "sk"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.HRV.Titlovi.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "hr"
+      ],
+      "subtitleLanguages": [
+        "hr"
+      ]
+    }
+  },
+  {
+    "name": "Film.2021.Hrvatski.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "hr"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.Dual.Audio.1080p.BluRay.x264-GRP",
+    "expect": {
+      "dualAudio": true
+    }
+  },
+  {
+    "name": "Movie 2021 1080p BluRay Dual-Audio x265-GRP",
+    "expect": {
+      "dualAudio": true
+    }
+  },
+  {
+    "name": "Movie.2021.1080p.WEB-DL.Multi-Subs.x264-GRP",
+    "expect": {
+      "multiSubs": true
+    }
+  },
+  {
+    "name": "Movie.2021.1080p.WEB-DL.ESub.x264-GRP",
+    "expect": {
+      "subtitleLanguages": [
+        "en"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.1080p.WEB-DL.NLSubs.x264-GRP",
+    "expect": {
+      "subtitleLanguages": [
+        "nl"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.KORSUB.720p.HDRip.x264-GRP",
+    "expect": {
+      "hardcodedSubs": true,
+      "subtitleLanguages": [
+        "ko"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.HC.HDRip.XviD-GRP",
+    "expect": {
+      "hardcodedSubs": true
+    }
+  },
+  {
+    "name": "Movie.2021.1080p.HDCAM.HC.HardSub.x264-GRP",
+    "expect": {
+      "hardcodedSubs": true
+    }
+  },
+  {
+    "name": "Movie.2021.German.DL.2160p.UHD.BluRay.HDR.HEVC.Remux-GRP",
+    "expect": {
+      "languages": [
+        "de"
+      ],
+      "dualAudio": true,
+      "video": {
+        "source": "remux"
+      }
+    }
+  },
+  {
+    "name": "Movie.2021.iTALiAN.MD.720p.WEB.x264-GRP",
+    "expect": {
+      "languages": [
+        "it"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.JAPANESE.1080p.BluRay.x264-GRP",
+    "expect": {
+      "languages": [
+        "ja"
+      ]
+    }
+  },
+  {
+    "name": "Movie.2021.CHINESE.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "languages": [
+        "zh"
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E01E02E03.720p.HDTV.x264-GRP",
+    "expect": {
+      "episodes": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E01-03.720p.HDTV.x264-GRP",
+    "expect": {
+      "episodes": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E09-S01E10.720p.HDTV.x264-GRP",
+    "expect": {
+      "episodes": [
+        9,
+        10
+      ],
+      "seasons": [
+        1
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01.E05.720p.HDTV.x264-GRP",
+    "expect": {
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        5
+      ]
+    }
+  },
+  {
+    "name": "Show Name S01 E05 720p HDTV x264-GRP",
+    "expect": {
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        5
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.1x01x02.720p.HDTV.x264-GRP",
+    "expect": {
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.1x01-1x02.HDTV.XviD-GRP",
+    "expect": {
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.Season.2.Episode.5.720p.WEB.x264-GRP",
+    "expect": {
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        5
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S2024E15.1080p.WEB.h264-GRP",
+    "expect": {
+      "seasons": [
+        2024
+      ],
+      "episodes": [
+        15
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E1012.1080p.WEB.h264-GRP",
+    "expect": {
+      "episodes": [
+        1012
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.Seasons.1-3.1080p.BluRay.x264-GRP",
+    "expect": {
+      "seasons": [
+        1,
+        2,
+        3
+      ],
+      "multiSeason": true
+    }
+  },
+  {
+    "name": "Show.Name.S01.S02.S03.1080p.BluRay.x264-GRP",
+    "expect": {
+      "seasons": [
+        1,
+        2,
+        3
+      ],
+      "multiSeason": true
+    }
+  },
+  {
+    "name": "Show Name The Complete Series 1080p BluRay x265-GRP",
+    "expect": {
+      "completeSeries": true,
+      "kind": "series",
+      "title": "Show Name"
+    }
+  },
+  {
+    "name": "Show.Name.COMPLETE.SERIES.720p.WEB-DL.x264-GRP",
+    "expect": {
+      "completeSeries": true
+    }
+  },
+  {
+    "name": "Show.Name.S03.COMPLETE.1080p.WEB.h264-GRP",
+    "expect": {
+      "seasons": [
+        3
+      ],
+      "fullSeason": true
+    }
+  },
+  {
+    "name": "Show.Name.Staffel.2.German.DL.1080p.WEB.x264-GRP",
+    "expect": {
+      "seasons": [
+        2
+      ],
+      "fullSeason": true,
+      "languages": [
+        "de"
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.Saison.3.FRENCH.1080p.WEB.x264-GRP",
+    "expect": {
+      "seasons": [
+        3
+      ],
+      "languages": [
+        "fr"
+      ]
+    }
+  },
+  {
+    "name": "Serija.Sezona.1.HRV.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "seasons": [
+        1
+      ],
+      "title": "Serija",
+      "languages": [
+        "hr"
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.Temporada.4.1080p.WEB-DL.x264-GRP",
+    "expect": {
+      "seasons": [
+        4
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.2nd.Season.1080p.WEB.x264-GRP",
+    "expect": {
+      "seasons": [
+        2
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.Season.One.720p.WEB.x264-GRP",
+    "expect": {
+      "seasons": [
+        1
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S00E00.Pilot.Unaired.720p.WEB.x264-GRP",
+    "expect": {
+      "seasons": [
+        0
+      ],
+      "special": true,
+      "episodes": [
+        0
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.2023.11.05.720p.HDTV.x264-GRP",
+    "expect": {
+      "airDate": "2023-11-05",
+      "year": 0
+    }
+  },
+  {
+    "name": "Show.Name.2023-11-05.720p.HDTV.x264-GRP",
+    "expect": {
+      "airDate": "2023-11-05"
+    }
+  },
+  {
+    "name": "Show.Name.2023.13.05.720p.HDTV.x264-GRP",
+    "expect": {
+      "airDate": null
+    }
+  },
+  {
+    "name": "The.Late.Show.2024.02.30.720p.HDTV.x264-GRP",
+    "expect": {
+      "airDate": "2024-02-30"
+    }
+  },
+  {
+    "name": "Doctor.Who.2005.S13E00.Eve.of.the.Daleks.1080p.WEB-DL.AAC2.0.H.264-GRP",
+    "expect": {
+      "year": 2005,
+      "seasons": [
+        13
+      ],
+      "episodes": [
+        0
+      ],
+      "special": true,
+      "episodeTitle": "Eve of the Daleks"
+    }
+  },
+  {
+    "name": "Show.Name.S03E05.v2.720p.WEB.x264-GRP",
+    "expect": {
+      "revision": {
+        "version": 2
+      }
+    }
+  },
+  {
+    "name": "Show.Name.S03E05v2.720p.WEB.x264-GRP",
+    "expect": {
+      "episodes": [
+        5
+      ],
+      "revision": {
+        "version": 2
+      }
+    }
+  },
+  {
+    "name": "Show.Name.S01E01.INTERNAL.720p.HDTV.x264-GRP",
+    "expect": {
+      "flags": [
+        "internal"
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E01.READNFO.720p.HDTV.x264-GRP",
+    "expect": {
+      "flags": [
+        "readnfo"
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E01.DUBBED.720p.WEB.x264-GRP",
+    "expect": {
+      "flags": [
+        "dubbed"
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E01.iNTERNAL.WEB.x264-GRP",
+    "expect": {
+      "flags": [
+        "internal"
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E01.SUBBED.HDTV.x264-GRP",
+    "expect": {
+      "flags": [
+        "subbed"
+      ]
+    }
+  },
+  {
+    "name": "Show.Name.S01E01.1080p.WEB.H264-D-Z0N3",
+    "expect": {
+      "group": "D-Z0N3"
+    }
+  },
+  {
+    "name": "Show.Name.US.S01E01.720p.HDTV.x264-GRP",
+    "expect": {
+      "title": "Show Name US"
+    }
+  },
+  {
+    "name": "Show.Name.UK.S01E01.720p.HDTV.x264-GRP",
+    "expect": {
+      "title": "Show Name UK"
+    }
+  },
+  {
+    "name": "Show.Name.(2019).S01E01.1080p.WEB.h264-GRP",
+    "expect": {
+      "title": "Show Name",
+      "year": 2019
+    }
+  },
+  {
+    "name": "show_name_s01e01_720p_hdtv_x264-grp",
+    "expect": {
+      "title": "show name",
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        1
+      ],
+      "group": "grp"
+    }
+  },
+  {
+    "name": "Show-Name-S01E01-720p-HDTV-x264-GRP",
+    "expect": {
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        1
+      ],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "Show.Name.Episode.5.720p.WEB.x264-GRP",
+    "expect": {
+      "absoluteEpisodes": [
+        5
+      ]
+    }
+  },
+  {
+    "name": "[SubsPlease] One Piece - 1100 (1080p) [ABCD1234].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        1100
+      ]
+    }
+  },
+  {
+    "name": "[Erai-raws] Kimetsu no Yaiba - 12 [1080p][Multiple Subtitle][ENG][POR-BR]",
+    "expect": {
+      "absoluteEpisodes": [
+        12
+      ],
+      "group": "Erai-raws"
+    }
+  },
+  {
+    "name": "[Judas] Shingeki no Kyojin - S04E28 [1080p][HEVC x265 10bit]",
+    "expect": {
+      "seasons": [
+        4
+      ],
+      "episodes": [
+        28
+      ],
+      "group": "Judas"
+    }
+  },
+  {
+    "name": "[ASW] Title - 01-12 [1080p HEVC]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    }
+  },
+  {
+    "name": "[Group] Title 2nd Season - 05 [1080p]",
+    "expect": {
+      "seasons": [
+        2
+      ],
+      "episodes": [
+        5
+      ]
+    }
+  },
+  {
+    "name": "[Group] Title - 05 [1080p][Dual Audio]",
+    "expect": {
+      "dualAudio": true,
+      "absoluteEpisodes": [
+        5
+      ]
+    }
+  },
+  {
+    "name": "[Group] Title 05 [720p]",
+    "expect": {
+      "absoluteEpisodes": [
+        5
+      ],
+      "title": "Title"
+    }
+  },
+  {
+    "name": "[Group] Title - 05 [BD 1080p FLAC]",
+    "expect": {
+      "absoluteEpisodes": [
+        5
+      ],
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "series"
+    }
+  },
+  {
+    "name": "【Group】Title - 03 [1080p]",
+    "expect": {
+      "group": "Group",
+      "absoluteEpisodes": [
+        3
+      ]
+    }
+  },
+  {
+    "name": "Various Artists - Now Thats What I Call Music 100 (2018) [MP3 320kbps]",
+    "expect": {
+      "music": {
+        "artist": "Various Artists"
+      },
+      "audio": {
+        "bitrate": "320"
+      },
+      "kind": "music"
+    }
+  },
+  {
+    "name": "VA-Ministry_of_Sound_Annual-2CD-2019-GRP",
+    "expect": {
+      "music": {
+        "artist": "VA",
+        "discs": 2
+      },
+      "kind": "music"
+    }
+  },
+  {
+    "name": "Artist - Album (2020) [24B-96kHz] FLAC",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "sampleRateKHz": 96,
+        "codecs": [
+          "flac"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Artist - Album (2020) [ALAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "alac"
+        ]
+      },
+      "kind": "music"
+    }
+  },
+  {
+    "name": "Artist - Album (Deluxe Edition) (2019) [FLAC]",
+    "expect": {
+      "music": {
+        "artist": "Artist"
+      },
+      "kind": "music",
+      "year": 2019
+    }
+  },
+  {
+    "name": "Artist - Album 1995 Vinyl 24-192 FLAC",
+    "expect": {
+      "music": {
+        "source": "vinyl"
+      },
+      "audio": {
+        "bitDepth": 24,
+        "sampleRateKHz": 192
+      }
+    }
+  },
+  {
+    "name": "Artist - Discography (1990-2020) [FLAC]",
+    "expect": {
+      "flags": [
+        "discography",
+        "year-range"
+      ],
+      "kind": "music"
+    }
+  },
+  {
+    "name": "Artist - Album (2021) [MP3 V2]",
+    "expect": {
+      "audio": {
+        "bitrate": "V2"
+      }
+    }
+  },
+  {
+    "name": "Artist - Album (2021) [Opus 160]",
+    "expect": {
+      "kind": "music"
+    }
+  },
+  {
+    "name": "artist-album-web-2022-grp",
+    "expect": {
+      "kind": "music",
+      "group": "grp",
+      "music": {
+        "artist": "artist",
+        "album": "album",
+        "source": "web"
+      }
+    }
+  },
+  {
+    "name": "Dino_Merlin-Hotel_Nacional-CD-FLAC-2014-GRP",
+    "expect": {
+      "music": {
+        "artist": "Dino Merlin",
+        "album": "Hotel Nacional"
+      },
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      }
+    }
+  },
+  {
+    "name": "",
+    "expect": {
+      "title": "",
+      "kind": "unknown"
+    }
+  },
+  {
+    "name": "   ",
+    "expect": {
+      "kind": "unknown"
+    }
+  },
+  {
+    "name": "-",
+    "expect": {
+      "kind": "unknown"
+    }
+  },
+  {
+    "name": "....",
+    "expect": {
+      "kind": "unknown"
+    }
+  },
+  {
+    "name": "[][][]",
+    "expect": {
+      "kind": "unknown"
+    }
+  },
+  {
+    "name": "S01E01",
+    "expect": {
+      "seasons": [
+        1
+      ],
+      "episodes": [
+        1
+      ],
+      "title": ""
+    }
+  },
+  {
+    "name": "1080p",
+    "expect": {
+      "video": {
+        "resolution": 1080
+      },
+      "title": ""
+    }
+  },
+  {
+    "name": "Movie.Title",
+    "expect": {
+      "title": "Movie Title",
+      "kind": "unknown"
+    }
+  },
+  {
+    "name": "The.Movie.2020",
+    "expect": {
+      "title": "The Movie",
+      "year": 2020,
+      "kind": "movie"
+    }
+  },
+  {
+    "name": "Movie.2020.1080p.BluRay.x264-GRP.mkv.part",
+    "expect": {
+      "year": 2020
+    }
+  },
+  {
+    "name": "Movie (2020) 1080p BluRay x264-GRP (Extras)",
+    "expect": {
+      "year": 2020,
+      "flags": [
+        "extras"
+      ]
+    }
+  },
+  {
+    "name": "Movie.Title.2020.1080p.BluRay.x264-GRP-",
+    "expect": {
+      "year": 2020
+    }
+  },
+  {
+    "name": "Movie...Title...2020...1080p",
+    "expect": {
+      "title": "Movie Title",
+      "year": 2020
+    }
+  },
+  {
+    "name": "MOVIE.TITLE.2020.1080P.BLURAY.X264-GRP",
+    "expect": {
+      "title": "MOVIE TITLE",
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      }
+    }
+  },
+  {
+    "name": "Movie_Title_2020_1080p_BluRay_x264-GRP",
+    "expect": {
+      "title": "Movie Title"
+    }
+  },
+  {
+    "name": "Movie Title (2020) [1080p] {imdb-tt1234567}",
+    "expect": {
+      "year": 2020,
+      "title": "Movie Title"
+    }
+  },
+  {
+    "name": "Movie.Title.2020.1080p.BluRay.x264-GRP[ABCD1234]",
+    "expect": {
+      "hash": "ABCD1234"
+    }
+  },
+  {
+    "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "expect": {
+      "kind": "unknown"
+    }
+  },
+  {
+    "name": "S01E01E02E03E04E05E06E07E08E09E10E11E12",
+    "expect": {
+      "episodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    }
+  },
+  {
+    "name": "Show.S01E01-E999999.720p",
+    "expect": {
+      "seasons": [
+        1
+      ]
+    }
+  },
+  {
+    "name": "Movie.2020.1080p.WEB-DL.DDP5.1.H.264-GRP 🎬",
+    "expect": {
+      "year": 2020
+    }
+  },
+  {
+    "name": "Movie.1999.2000.2001.1080p.BluRay.x264-GRP",
+    "expect": {
+      "title": "Movie 1999 2000",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Movie.Title.2020.2160p.WEB-DL.DDP5.1.Atmos.DV.HDR10P.H.265-GRP",
+    "expect": {
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,7133 @@
+[
+  {
+    "name": "1917.2019.1080p.BluRay.x264-SPARKS",
+    "expect": {
+      "group": "SPARKS",
+      "kind": "movie",
+      "title": "1917",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "1917.2019.HDCAM.x264-FLUX",
+    "expect": {
+      "group": "FLUX",
+      "kind": "movie",
+      "title": "1917",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "1917.2019.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-NTb",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "NTb",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "1917",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "1917.2019.PROPER.1080p.WEB.h264-EDITH",
+    "expect": {
+      "group": "EDITH",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "1917",
+      "unparsed": [],
+      "year": 2019
+    }
+  },
+  {
+    "name": "1917.2019.1080p.bluray.x264-cmrg",
+    "expect": {
+      "group": "cmrg",
+      "kind": "movie",
+      "title": "1917",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "1917.2019.576p.PAL.BDRip.x264-KiNGS",
+    "expect": {
+      "group": "KiNGS",
+      "kind": "movie",
+      "title": "1917",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Blade.Runner.2049.2017.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-EDITH",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "EDITH",
+      "kind": "movie",
+      "title": "Blade Runner 2049",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "Blade.Runner.2049.2017.Directors.Cut.1080p.BluRay.x264-CMRG",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "CMRG",
+      "kind": "movie",
+      "title": "Blade Runner 2049",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "Blade.Runner.2049.2017.German.DL.1080p.BluRay.x264-KiNGS",
+    "expect": {
+      "dualAudio": true,
+      "group": "KiNGS",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "Blade Runner 2049",
+      "unparsed": [],
+      "year": 2017
+    }
+  },
+  {
+    "name": "Blade.Runner.2049.2017.Hybrid.1080p.BluRay.DD+5.1.x264-playWEB",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "playWEB",
+      "kind": "movie",
+      "title": "Blade Runner 2049",
+      "unparsed": [],
+      "year": 2017
+    }
+  },
+  {
+    "name": "Blade.Runner.2049.2017.UNRATED.720p.BluRay.x264-TEPES",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "TEPES",
+      "kind": "movie",
+      "title": "Blade Runner 2049",
+      "unparsed": [],
+      "year": 2017
+    }
+  },
+  {
+    "name": "Blade.Runner.2049.2017.1080p.AMZN.WEB-DL.DDP5.1.H.264-SiGMA",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "SiGMA",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Blade Runner 2049",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "2001.A.Space.Odyssey.1968.DVDRip.XviD.AC3-playWEB",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "playWEB",
+      "kind": "movie",
+      "title": "2001 A Space Odyssey",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 1968
+    }
+  },
+  {
+    "name": "2001.A.Space.Odyssey.1968.FRENCH.1080p.WEB.H264-TEPES",
+    "expect": {
+      "group": "TEPES",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "2001 A Space Odyssey",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 1968
+    }
+  },
+  {
+    "name": "2001.A.Space.Odyssey.1968.1080p.WEBRip.x265-SiGMA",
+    "expect": {
+      "group": "SiGMA",
+      "kind": "movie",
+      "title": "2001 A Space Odyssey",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1968
+    }
+  },
+  {
+    "name": "2001 A Space Odyssey (1968) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "2001 A Space Odyssey",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1968
+    }
+  },
+  {
+    "name": "2001.A.Space.Odyssey.1968.1080p.BluRay.x264-GECKOS",
+    "expect": {
+      "group": "GECKOS",
+      "kind": "movie",
+      "title": "2001 A Space Odyssey",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1968
+    }
+  },
+  {
+    "name": "2001.A.Space.Odyssey.1968.HDCAM.x264-AMIABLE",
+    "expect": {
+      "group": "AMIABLE",
+      "kind": "movie",
+      "title": "2001 A Space Odyssey",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 1968
+    }
+  },
+  {
+    "name": "Charlottes.Web.2006.3D.HSBS.1080p.BluRay.x264-FGT",
+    "expect": {
+      "group": "FGT",
+      "kind": "movie",
+      "threeD": true,
+      "title": "Charlottes Web",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "Charlottes.Web.2006.REPACK.2160p.WEB-DL.x265-GECKOS",
+    "expect": {
+      "group": "GECKOS",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "Charlottes Web",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "Charlottes Web (2006) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-AMIABLE",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "AMIABLE",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "Charlottes Web",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "Charlottes.Web.2006.Open.Matte.1080p.WEB-DL.DD5.1.H.264-DRONES",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "DRONES",
+      "kind": "movie",
+      "title": "Charlottes Web",
+      "unparsed": [],
+      "year": 2006
+    }
+  },
+  {
+    "name": "Charlottes.Web.2006.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-KOGi",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "KOGi",
+      "kind": "movie",
+      "title": "Charlottes Web",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "Charlottes.Web.2006.Directors.Cut.1080p.BluRay.x264-BAE",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "BAE",
+      "kind": "movie",
+      "title": "Charlottes Web",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "The.Matrix.1999.CROATIAN.1080p.WEB-DL.x264-DRONES",
+    "expect": {
+      "group": "DRONES",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "The Matrix",
+      "unparsed": [],
+      "year": 1999
+    }
+  },
+  {
+    "name": "The.Matrix.1999.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-KOGi",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "KOGi",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "The Matrix",
+      "unparsed": [],
+      "year": 1999
+    }
+  },
+  {
+    "name": "The.Matrix.1999.1080p.WEB-DL.HC.HEVC-BAE",
+    "expect": {
+      "group": "BAE",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "The Matrix",
+      "unparsed": [],
+      "year": 1999
+    }
+  },
+  {
+    "name": "The.Matrix.1999.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-MeGusta",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "MeGusta",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "The Matrix",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 1999
+    }
+  },
+  {
+    "name": "The.Matrix.1999.DVDRip.XviD.AC3-SuccessfulCrab",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "title": "The Matrix",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 1999
+    }
+  },
+  {
+    "name": "The.Matrix.1999.FRENCH.1080p.WEB.H264-ROVERS",
+    "expect": {
+      "group": "ROVERS",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "The Matrix",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 1999
+    }
+  },
+  {
+    "name": "Mission.Impossible.Dead.Reckoning.Part.One.2023.480p.DVDRip.x264.AAC2.0-MeGusta",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "MeGusta",
+      "kind": "movie",
+      "title": "Mission Impossible Dead Reckoning Part One",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Mission Impossible Dead Reckoning Part One 2023 1080p WEB-DL H264 AAC-SuccessfulCrab",
+    "expect": {
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "title": "Mission Impossible Dead Reckoning Part One",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Mission.Impossible.Dead.Reckoning.Part.One.2023.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-ROVERS",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "ROVERS",
+      "kind": "movie",
+      "title": "Mission Impossible Dead Reckoning Part One",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Mission.Impossible.Dead.Reckoning.Part.One.2023.HDTS.x264.AAC-CtrlHD",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "CtrlHD",
+      "kind": "movie",
+      "title": "Mission Impossible Dead Reckoning Part One",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Mission.Impossible.Dead.Reckoning.Part.One.2023.3D.HSBS.1080p.BluRay.x264-HiFi",
+    "expect": {
+      "group": "HiFi",
+      "kind": "movie",
+      "threeD": true,
+      "title": "Mission Impossible Dead Reckoning Part One",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Mission.Impossible.Dead.Reckoning.Part.One.2023.REPACK.2160p.WEB-DL.x265-DON",
+    "expect": {
+      "group": "DON",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "Mission Impossible Dead Reckoning Part One",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Spider-Man No Way Home (2021) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "Spider-Man No Way Home",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "Spider-Man.No.Way.Home.2021.Criterion.1080p.BluRay.FLAC.1.0.x264-HiFi",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "HiFi",
+      "kind": "movie",
+      "title": "Spider-Man No Way Home",
+      "unparsed": [],
+      "year": 2021
+    }
+  },
+  {
+    "name": "Spider-Man.No.Way.Home.2021.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-DON",
+    "expect": {
+      "group": "DON",
+      "kind": "movie",
+      "title": "Spider-Man No Way Home",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "Spider-Man.No.Way.Home.2021.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-EbP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "EbP",
+      "kind": "movie",
+      "title": "Spider-Man No Way Home",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "Spider-Man.No.Way.Home.2021.CROATIAN.1080p.WEB-DL.x264-LOL",
+    "expect": {
+      "group": "LOL",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "Spider-Man No Way Home",
+      "unparsed": [],
+      "year": 2021
+    }
+  },
+  {
+    "name": "Spider-Man.No.Way.Home.2021.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-DIMENSION",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "DIMENSION",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "Spider-Man No Way Home",
+      "unparsed": [],
+      "year": 2021
+    }
+  },
+  {
+    "name": "Mr.Hollands.Opus.1995.576p.PAL.BDRip.x264-EbP",
+    "expect": {
+      "group": "EbP",
+      "kind": "movie",
+      "title": "Mr Hollands Opus",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Mr.Hollands.Opus.1995.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-LOL",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "LOL",
+      "kind": "movie",
+      "title": "Mr Hollands Opus",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Mr.Hollands.Opus.1995.PAL.DVDR-DIMENSION",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "DIMENSION",
+      "kind": "movie",
+      "title": "Mr Hollands Opus",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Mr.Hollands.Opus.1995.iTALiAN.720p.BluRay.x264-KILLERS",
+    "expect": {
+      "group": "KILLERS",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "Mr Hollands Opus",
+      "unparsed": [],
+      "year": 1995
+    }
+  },
+  {
+    "name": "Mr.Hollands.Opus.1995.480p.DVDRip.x264.AAC2.0-AVS",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "AVS",
+      "kind": "movie",
+      "title": "Mr Hollands Opus",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Mr Hollands Opus 1995 1080p WEB-DL H264 AAC-SVA",
+    "expect": {
+      "group": "SVA",
+      "kind": "movie",
+      "title": "Mr Hollands Opus",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Oppenheimer.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-KILLERS",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "KILLERS",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Oppenheimer",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Oppenheimer.2023.DVDSCR.XviD-AVS",
+    "expect": {
+      "group": "AVS",
+      "kind": "movie",
+      "title": "Oppenheimer",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Oppenheimer.2023.MULTi.1080p.BluRay.x264-SVA",
+    "expect": {
+      "group": "SVA",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "Oppenheimer",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "Oppenheimer.2023.720p.HDTV.x264-FLEET",
+    "expect": {
+      "group": "FLEET",
+      "kind": "movie",
+      "title": "Oppenheimer",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Oppenheimer (2023) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "Oppenheimer",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Oppenheimer.2023.Criterion.1080p.BluRay.FLAC.1.0.x264-BHDStudio",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "BHDStudio",
+      "kind": "movie",
+      "title": "Oppenheimer",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "Dune.Part.Two.2024.HDCAM.x264-FLEET",
+    "expect": {
+      "group": "FLEET",
+      "kind": "movie",
+      "title": "Dune Part Two",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "Dune.Part.Two.2024.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-MiNX",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "MiNX",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "Dune Part Two",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "Dune.Part.Two.2024.PROPER.1080p.WEB.h264-BHDStudio",
+    "expect": {
+      "group": "BHDStudio",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "Dune Part Two",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "dune.part.two.2024.1080p.bluray.x264-nogrp",
+    "expect": {
+      "group": "nogrp",
+      "kind": "movie",
+      "title": "dune part two",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "Dune.Part.Two.2024.576p.PAL.BDRip.x264-ETHEL",
+    "expect": {
+      "group": "ETHEL",
+      "kind": "movie",
+      "title": "Dune Part Two",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "Dune.Part.Two.2024.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-GGEZ",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "GGEZ",
+      "kind": "movie",
+      "title": "Dune Part Two",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.Directors.Cut.1080p.BluRay.x264-NOGRP",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "NOGRP",
+      "kind": "movie",
+      "title": "The Lord of the Rings The Fellowship of the Ring",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.German.DL.1080p.BluRay.x264-ETHEL",
+    "expect": {
+      "dualAudio": true,
+      "group": "ETHEL",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "The Lord of the Rings The Fellowship of the Ring",
+      "unparsed": [],
+      "year": 2001
+    }
+  },
+  {
+    "name": "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.Hybrid.1080p.BluRay.DD+5.1.x264-GGEZ",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "GGEZ",
+      "kind": "movie",
+      "title": "The Lord of the Rings The Fellowship of the Ring",
+      "unparsed": [],
+      "year": 2001
+    }
+  },
+  {
+    "name": "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.UNRATED.720p.BluRay.x264-SYNCOPY",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "SYNCOPY",
+      "kind": "movie",
+      "title": "The Lord of the Rings The Fellowship of the Ring",
+      "unparsed": [],
+      "year": 2001
+    }
+  },
+  {
+    "name": "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.1080p.AMZN.WEB-DL.DDP5.1.H.264-W4NK3R",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "W4NK3R",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "The Lord of the Rings The Fellowship of the Ring",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "The.Lord.of.the.Rings.The.Fellowship.of.the.Ring.2001.DVDSCR.XviD-BLOOM",
+    "expect": {
+      "group": "BLOOM",
+      "kind": "movie",
+      "title": "The Lord of the Rings The Fellowship of the Ring",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "Alien.1979.FRENCH.1080p.WEB.H264-SYNCOPY",
+    "expect": {
+      "group": "SYNCOPY",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "Alien",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 1979
+    }
+  },
+  {
+    "name": "Alien.1979.1080p.WEBRip.x265-W4NK3R",
+    "expect": {
+      "group": "W4NK3R",
+      "kind": "movie",
+      "title": "Alien",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1979
+    }
+  },
+  {
+    "name": "Alien (1979) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Alien",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1979
+    }
+  },
+  {
+    "name": "Alien.1979.1080p.BluRay.x264-Kitsune",
+    "expect": {
+      "group": "Kitsune",
+      "kind": "movie",
+      "title": "Alien",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1979
+    }
+  },
+  {
+    "name": "Alien.1979.HDCAM.x264-PECULATE",
+    "expect": {
+      "group": "PECULATE",
+      "kind": "movie",
+      "title": "Alien",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 1979
+    }
+  },
+  {
+    "name": "Alien.1979.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-SMURF",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "SMURF",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "Alien",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 1979
+    }
+  },
+  {
+    "name": "Se7en.1995.REPACK.2160p.WEB-DL.x265-Kitsune",
+    "expect": {
+      "group": "Kitsune",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "Se7en",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Se7en (1995) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-PECULATE",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "PECULATE",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "Se7en",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Se7en.1995.Open.Matte.1080p.WEB-DL.DD5.1.H.264-SMURF",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "SMURF",
+      "kind": "movie",
+      "title": "Se7en",
+      "unparsed": [],
+      "year": 1995
+    }
+  },
+  {
+    "name": "Se7en.1995.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-HONE",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "HONE",
+      "kind": "movie",
+      "title": "Se7en",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Se7en.1995.Directors.Cut.1080p.BluRay.x264-WELP",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "WELP",
+      "kind": "movie",
+      "title": "Se7en",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Se7en.1995.German.DL.1080p.BluRay.x264-APEX",
+    "expect": {
+      "dualAudio": true,
+      "group": "APEX",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "Se7en",
+      "unparsed": [],
+      "year": 1995
+    }
+  },
+  {
+    "name": "Pans.Labyrinth.2006.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-HONE",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "HONE",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "Pans Labyrinth",
+      "unparsed": [],
+      "year": 2006
+    }
+  },
+  {
+    "name": "Pans.Labyrinth.2006.1080p.WEB-DL.HC.HEVC-WELP",
+    "expect": {
+      "group": "WELP",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "Pans Labyrinth",
+      "unparsed": [],
+      "year": 2006
+    }
+  },
+  {
+    "name": "Pans.Labyrinth.2006.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-APEX",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "APEX",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "Pans Labyrinth",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "Pans.Labyrinth.2006.DVDRip.XviD.AC3-TOMMY",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "TOMMY",
+      "kind": "movie",
+      "title": "Pans Labyrinth",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "Pans.Labyrinth.2006.FRENCH.1080p.WEB.H264-RAWR",
+    "expect": {
+      "group": "RAWR",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "Pans Labyrinth",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "Pans.Labyrinth.2006.1080p.WEBRip.x265-BYNDR",
+    "expect": {
+      "group": "BYNDR",
+      "kind": "movie",
+      "title": "Pans Labyrinth",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "The Good the Bad and the Ugly 1966 1080p WEB-DL H264 AAC-TOMMY",
+    "expect": {
+      "group": "TOMMY",
+      "kind": "movie",
+      "title": "The Good the Bad and the Ugly",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 1966
+    }
+  },
+  {
+    "name": "The.Good.the.Bad.and.the.Ugly.1966.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-RAWR",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "RAWR",
+      "kind": "movie",
+      "title": "The Good the Bad and the Ugly",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 1966
+    }
+  },
+  {
+    "name": "The.Good.the.Bad.and.the.Ugly.1966.HDTS.x264.AAC-BYNDR",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "BYNDR",
+      "kind": "movie",
+      "title": "The Good the Bad and the Ugly",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 1966
+    }
+  },
+  {
+    "name": "The.Good.the.Bad.and.the.Ugly.1966.3D.HSBS.1080p.BluRay.x264-NAISU",
+    "expect": {
+      "group": "NAISU",
+      "kind": "movie",
+      "threeD": true,
+      "title": "The Good the Bad and the Ugly",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1966
+    }
+  },
+  {
+    "name": "The.Good.the.Bad.and.the.Ugly.1966.REPACK.2160p.WEB-DL.x265-STRiFE",
+    "expect": {
+      "group": "STRiFE",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "The Good the Bad and the Ugly",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 1966
+    }
+  },
+  {
+    "name": "The Good the Bad and the Ugly (1966) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-SPARKS",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "SPARKS",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "The Good the Bad and the Ugly",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 1966
+    }
+  },
+  {
+    "name": "Crouching.Tiger.Hidden.Dragon.2000.Criterion.1080p.BluRay.FLAC.1.0.x264-NAISU",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "NAISU",
+      "kind": "movie",
+      "title": "Crouching Tiger Hidden Dragon",
+      "unparsed": [],
+      "year": 2000
+    }
+  },
+  {
+    "name": "Crouching.Tiger.Hidden.Dragon.2000.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-STRiFE",
+    "expect": {
+      "group": "STRiFE",
+      "kind": "movie",
+      "title": "Crouching Tiger Hidden Dragon",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2000
+    }
+  },
+  {
+    "name": "Crouching.Tiger.Hidden.Dragon.2000.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-SPARKS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "SPARKS",
+      "kind": "movie",
+      "title": "Crouching Tiger Hidden Dragon",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2000
+    }
+  },
+  {
+    "name": "Crouching.Tiger.Hidden.Dragon.2000.CROATIAN.1080p.WEB-DL.x264-FLUX",
+    "expect": {
+      "group": "FLUX",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "Crouching Tiger Hidden Dragon",
+      "unparsed": [],
+      "year": 2000
+    }
+  },
+  {
+    "name": "Crouching.Tiger.Hidden.Dragon.2000.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-NTb",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "NTb",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "Crouching Tiger Hidden Dragon",
+      "unparsed": [],
+      "year": 2000
+    }
+  },
+  {
+    "name": "Crouching.Tiger.Hidden.Dragon.2000.1080p.WEB-DL.HC.HEVC-EDITH",
+    "expect": {
+      "group": "EDITH",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "Crouching Tiger Hidden Dragon",
+      "unparsed": [],
+      "year": 2000
+    }
+  },
+  {
+    "name": "Fast.X.2023.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-FLUX",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "FLUX",
+      "kind": "movie",
+      "title": "Fast X",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Fast.X.2023.PAL.DVDR-NTb",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "NTb",
+      "kind": "movie",
+      "title": "Fast X",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Fast.X.2023.iTALiAN.720p.BluRay.x264-EDITH",
+    "expect": {
+      "group": "EDITH",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "Fast X",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "Fast.X.2023.480p.DVDRip.x264.AAC2.0-CMRG",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "CMRG",
+      "kind": "movie",
+      "title": "Fast X",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Fast X 2023 1080p WEB-DL H264 AAC-KiNGS",
+    "expect": {
+      "group": "KiNGS",
+      "kind": "movie",
+      "title": "Fast X",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Fast.X.2023.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-playWEB",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "playWEB",
+      "kind": "movie",
+      "title": "Fast X",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Up.2009.DVDSCR.XviD-CMRG",
+    "expect": {
+      "group": "CMRG",
+      "kind": "movie",
+      "title": "Up",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "Up.2009.MULTi.1080p.BluRay.x264-KiNGS",
+    "expect": {
+      "group": "KiNGS",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "Up",
+      "unparsed": [],
+      "year": 2009
+    }
+  },
+  {
+    "name": "Up.2009.720p.HDTV.x264-playWEB",
+    "expect": {
+      "group": "playWEB",
+      "kind": "movie",
+      "title": "Up",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "Up (2009) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "Up",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "Up.2009.Criterion.1080p.BluRay.FLAC.1.0.x264-SiGMA",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "SiGMA",
+      "kind": "movie",
+      "title": "Up",
+      "unparsed": [],
+      "year": 2009
+    }
+  },
+  {
+    "name": "Up.2009.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-FGT",
+    "expect": {
+      "group": "FGT",
+      "kind": "movie",
+      "title": "Up",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "It.2017.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-TEPES",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "TEPES",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "It",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "It.2017.PROPER.1080p.WEB.h264-SiGMA",
+    "expect": {
+      "group": "SiGMA",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "It",
+      "unparsed": [],
+      "year": 2017
+    }
+  },
+  {
+    "name": "it.2017.1080p.bluray.x264-fgt",
+    "expect": {
+      "group": "fgt",
+      "kind": "movie",
+      "title": "it",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "It.2017.576p.PAL.BDRip.x264-GECKOS",
+    "expect": {
+      "group": "GECKOS",
+      "kind": "movie",
+      "title": "It",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "It.2017.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-AMIABLE",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "AMIABLE",
+      "kind": "movie",
+      "title": "It",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "It.2017.PAL.DVDR-DRONES",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "DRONES",
+      "kind": "movie",
+      "title": "It",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "Her.2013.German.DL.1080p.BluRay.x264-GECKOS",
+    "expect": {
+      "dualAudio": true,
+      "group": "GECKOS",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "Her",
+      "unparsed": [],
+      "year": 2013
+    }
+  },
+  {
+    "name": "Her.2013.Hybrid.1080p.BluRay.DD+5.1.x264-AMIABLE",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "AMIABLE",
+      "kind": "movie",
+      "title": "Her",
+      "unparsed": [],
+      "year": 2013
+    }
+  },
+  {
+    "name": "Her.2013.UNRATED.720p.BluRay.x264-DRONES",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "DRONES",
+      "kind": "movie",
+      "title": "Her",
+      "unparsed": [],
+      "year": 2013
+    }
+  },
+  {
+    "name": "Her.2013.1080p.AMZN.WEB-DL.DDP5.1.H.264-KOGi",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "KOGi",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Her",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2013
+    }
+  },
+  {
+    "name": "Her.2013.DVDSCR.XviD-BAE",
+    "expect": {
+      "group": "BAE",
+      "kind": "movie",
+      "title": "Her",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2013
+    }
+  },
+  {
+    "name": "Her.2013.MULTi.1080p.BluRay.x264-MeGusta",
+    "expect": {
+      "group": "MeGusta",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "Her",
+      "unparsed": [],
+      "year": 2013
+    }
+  },
+  {
+    "name": "Cam.2018.1080p.WEBRip.x265-KOGi",
+    "expect": {
+      "group": "KOGi",
+      "kind": "movie",
+      "title": "Cam",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2018
+    }
+  },
+  {
+    "name": "Cam (2018) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Cam",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2018
+    }
+  },
+  {
+    "name": "Cam.2018.1080p.BluRay.x264-MeGusta",
+    "expect": {
+      "group": "MeGusta",
+      "kind": "movie",
+      "title": "Cam",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2018
+    }
+  },
+  {
+    "name": "Cam.2018.HDCAM.x264-SuccessfulCrab",
+    "expect": {
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "title": "Cam",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2018
+    }
+  },
+  {
+    "name": "Cam.2018.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-ROVERS",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "ROVERS",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "Cam",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2018
+    }
+  },
+  {
+    "name": "Cam.2018.PROPER.1080p.WEB.h264-CtrlHD",
+    "expect": {
+      "group": "CtrlHD",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "Cam",
+      "unparsed": [],
+      "year": 2018
+    }
+  },
+  {
+    "name": "Ted 2 (2015) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-SuccessfulCrab",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "Ted 2",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "Ted.2.2015.Open.Matte.1080p.WEB-DL.DD5.1.H.264-ROVERS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "ROVERS",
+      "kind": "movie",
+      "title": "Ted 2",
+      "unparsed": [],
+      "year": 2015
+    }
+  },
+  {
+    "name": "Ted.2.2015.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-CtrlHD",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "CtrlHD",
+      "kind": "movie",
+      "title": "Ted 2",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "Ted.2.2015.Directors.Cut.1080p.BluRay.x264-HiFi",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "HiFi",
+      "kind": "movie",
+      "title": "Ted 2",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "Ted.2.2015.German.DL.1080p.BluRay.x264-DON",
+    "expect": {
+      "dualAudio": true,
+      "group": "DON",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "Ted 2",
+      "unparsed": [],
+      "year": 2015
+    }
+  },
+  {
+    "name": "Ted.2.2015.Hybrid.1080p.BluRay.DD+5.1.x264-EbP",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "EbP",
+      "kind": "movie",
+      "title": "Ted 2",
+      "unparsed": [],
+      "year": 2015
+    }
+  },
+  {
+    "name": "Toy.Story.4.2019.1080p.WEB-DL.HC.HEVC-HiFi",
+    "expect": {
+      "group": "HiFi",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "Toy Story 4",
+      "unparsed": [],
+      "year": 2019
+    }
+  },
+  {
+    "name": "Toy.Story.4.2019.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-DON",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "DON",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "Toy Story 4",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Toy.Story.4.2019.DVDRip.XviD.AC3-EbP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "EbP",
+      "kind": "movie",
+      "title": "Toy Story 4",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Toy.Story.4.2019.FRENCH.1080p.WEB.H264-LOL",
+    "expect": {
+      "group": "LOL",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "Toy Story 4",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Toy.Story.4.2019.1080p.WEBRip.x265-DIMENSION",
+    "expect": {
+      "group": "DIMENSION",
+      "kind": "movie",
+      "title": "Toy Story 4",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Toy Story 4 (2019) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Toy Story 4",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Rocky.IV.1985.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LOL",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "LOL",
+      "kind": "movie",
+      "title": "Rocky IV",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Rocky.IV.1985.HDTS.x264.AAC-DIMENSION",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "DIMENSION",
+      "kind": "movie",
+      "title": "Rocky IV",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Rocky.IV.1985.3D.HSBS.1080p.BluRay.x264-KILLERS",
+    "expect": {
+      "group": "KILLERS",
+      "kind": "movie",
+      "threeD": true,
+      "title": "Rocky IV",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Rocky.IV.1985.REPACK.2160p.WEB-DL.x265-AVS",
+    "expect": {
+      "group": "AVS",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "Rocky IV",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Rocky IV (1985) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-SVA",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "SVA",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "Rocky IV",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Rocky.IV.1985.Open.Matte.1080p.WEB-DL.DD5.1.H.264-FLEET",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "FLEET",
+      "kind": "movie",
+      "title": "Rocky IV",
+      "unparsed": [],
+      "year": 1985
+    }
+  },
+  {
+    "name": "The.Italian.Job.2003.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-AVS",
+    "expect": {
+      "group": "AVS",
+      "kind": "movie",
+      "title": "The Italian Job",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2003
+    }
+  },
+  {
+    "name": "The.Italian.Job.2003.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-SVA",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "SVA",
+      "kind": "movie",
+      "title": "The Italian Job",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2003
+    }
+  },
+  {
+    "name": "The.Italian.Job.2003.CROATIAN.1080p.WEB-DL.x264-FLEET",
+    "expect": {
+      "group": "FLEET",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "The Italian Job",
+      "unparsed": [],
+      "year": 2003
+    }
+  },
+  {
+    "name": "The.Italian.Job.2003.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-MiNX",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "MiNX",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "The Italian Job",
+      "unparsed": [],
+      "year": 2003
+    }
+  },
+  {
+    "name": "The.Italian.Job.2003.1080p.WEB-DL.HC.HEVC-BHDStudio",
+    "expect": {
+      "group": "BHDStudio",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "The Italian Job",
+      "unparsed": [],
+      "year": 2003
+    }
+  },
+  {
+    "name": "The.Italian.Job.2003.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-NOGRP",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "NOGRP",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "The Italian Job",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 2003
+    }
+  },
+  {
+    "name": "The.French.Dispatch.2021.PAL.DVDR-MiNX",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "MiNX",
+      "kind": "movie",
+      "title": "The French Dispatch",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "The.French.Dispatch.2021.iTALiAN.720p.BluRay.x264-BHDStudio",
+    "expect": {
+      "group": "BHDStudio",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "The French Dispatch",
+      "unparsed": [],
+      "year": 2021
+    }
+  },
+  {
+    "name": "The.French.Dispatch.2021.480p.DVDRip.x264.AAC2.0-NOGRP",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "NOGRP",
+      "kind": "movie",
+      "title": "The French Dispatch",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "The French Dispatch 2021 1080p WEB-DL H264 AAC-ETHEL",
+    "expect": {
+      "group": "ETHEL",
+      "kind": "movie",
+      "title": "The French Dispatch",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "The.French.Dispatch.2021.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-GGEZ",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "GGEZ",
+      "kind": "movie",
+      "title": "The French Dispatch",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "The.French.Dispatch.2021.HDTS.x264.AAC-SYNCOPY",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "SYNCOPY",
+      "kind": "movie",
+      "title": "The French Dispatch",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "Inglourious.Basterds.2009.MULTi.1080p.BluRay.x264-ETHEL",
+    "expect": {
+      "group": "ETHEL",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "Inglourious Basterds",
+      "unparsed": [],
+      "year": 2009
+    }
+  },
+  {
+    "name": "Inglourious.Basterds.2009.720p.HDTV.x264-GGEZ",
+    "expect": {
+      "group": "GGEZ",
+      "kind": "movie",
+      "title": "Inglourious Basterds",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "Inglourious Basterds (2009) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "Inglourious Basterds",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "Inglourious.Basterds.2009.Criterion.1080p.BluRay.FLAC.1.0.x264-W4NK3R",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "W4NK3R",
+      "kind": "movie",
+      "title": "Inglourious Basterds",
+      "unparsed": [],
+      "year": 2009
+    }
+  },
+  {
+    "name": "Inglourious.Basterds.2009.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-BLOOM",
+    "expect": {
+      "group": "BLOOM",
+      "kind": "movie",
+      "title": "Inglourious Basterds",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "Inglourious.Basterds.2009.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-Kitsune",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "Kitsune",
+      "kind": "movie",
+      "title": "Inglourious Basterds",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "Leon.The.Professional.1994.PROPER.1080p.WEB.h264-W4NK3R",
+    "expect": {
+      "group": "W4NK3R",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "Leon The Professional",
+      "unparsed": [],
+      "year": 1994
+    }
+  },
+  {
+    "name": "leon.the.professional.1994.1080p.bluray.x264-bloom",
+    "expect": {
+      "group": "bloom",
+      "kind": "movie",
+      "title": "leon the professional",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1994
+    }
+  },
+  {
+    "name": "Leon.The.Professional.1994.576p.PAL.BDRip.x264-Kitsune",
+    "expect": {
+      "group": "Kitsune",
+      "kind": "movie",
+      "title": "Leon The Professional",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 1994
+    }
+  },
+  {
+    "name": "Leon.The.Professional.1994.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-PECULATE",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "PECULATE",
+      "kind": "movie",
+      "title": "Leon The Professional",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 1994
+    }
+  },
+  {
+    "name": "Leon.The.Professional.1994.PAL.DVDR-SMURF",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "SMURF",
+      "kind": "movie",
+      "title": "Leon The Professional",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 1994
+    }
+  },
+  {
+    "name": "Leon.The.Professional.1994.iTALiAN.720p.BluRay.x264-HONE",
+    "expect": {
+      "group": "HONE",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "Leon The Professional",
+      "unparsed": [],
+      "year": 1994
+    }
+  },
+  {
+    "name": "Die.Hard.1988.Hybrid.1080p.BluRay.DD+5.1.x264-PECULATE",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "PECULATE",
+      "kind": "movie",
+      "title": "Die Hard",
+      "unparsed": [],
+      "year": 1988
+    }
+  },
+  {
+    "name": "Die.Hard.1988.UNRATED.720p.BluRay.x264-SMURF",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "SMURF",
+      "kind": "movie",
+      "title": "Die Hard",
+      "unparsed": [],
+      "year": 1988
+    }
+  },
+  {
+    "name": "Die.Hard.1988.1080p.AMZN.WEB-DL.DDP5.1.H.264-HONE",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "HONE",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Die Hard",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 1988
+    }
+  },
+  {
+    "name": "Die.Hard.1988.DVDSCR.XviD-WELP",
+    "expect": {
+      "group": "WELP",
+      "kind": "movie",
+      "title": "Die Hard",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 1988
+    }
+  },
+  {
+    "name": "Die.Hard.1988.MULTi.1080p.BluRay.x264-APEX",
+    "expect": {
+      "group": "APEX",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "Die Hard",
+      "unparsed": [],
+      "year": 1988
+    }
+  },
+  {
+    "name": "Die.Hard.1988.720p.HDTV.x264-TOMMY",
+    "expect": {
+      "group": "TOMMY",
+      "kind": "movie",
+      "title": "Die Hard",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 1988
+    }
+  },
+  {
+    "name": "Tenet (2020) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Tenet",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2020
+    }
+  },
+  {
+    "name": "Tenet.2020.1080p.BluRay.x264-APEX",
+    "expect": {
+      "group": "APEX",
+      "kind": "movie",
+      "title": "Tenet",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2020
+    }
+  },
+  {
+    "name": "Tenet.2020.HDCAM.x264-TOMMY",
+    "expect": {
+      "group": "TOMMY",
+      "kind": "movie",
+      "title": "Tenet",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2020
+    }
+  },
+  {
+    "name": "Tenet.2020.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-RAWR",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "RAWR",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "Tenet",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2020
+    }
+  },
+  {
+    "name": "Tenet.2020.PROPER.1080p.WEB.h264-BYNDR",
+    "expect": {
+      "group": "BYNDR",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "Tenet",
+      "unparsed": [],
+      "year": 2020
+    }
+  },
+  {
+    "name": "tenet.2020.1080p.bluray.x264-naisu",
+    "expect": {
+      "group": "naisu",
+      "kind": "movie",
+      "title": "tenet",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2020
+    }
+  },
+  {
+    "name": "Arrival.2016.Open.Matte.1080p.WEB-DL.DD5.1.H.264-RAWR",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "RAWR",
+      "kind": "movie",
+      "title": "Arrival",
+      "unparsed": [],
+      "year": 2016
+    }
+  },
+  {
+    "name": "Arrival.2016.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-BYNDR",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "BYNDR",
+      "kind": "movie",
+      "title": "Arrival",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2016
+    }
+  },
+  {
+    "name": "Arrival.2016.Directors.Cut.1080p.BluRay.x264-NAISU",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "NAISU",
+      "kind": "movie",
+      "title": "Arrival",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2016
+    }
+  },
+  {
+    "name": "Arrival.2016.German.DL.1080p.BluRay.x264-STRiFE",
+    "expect": {
+      "dualAudio": true,
+      "group": "STRiFE",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "Arrival",
+      "unparsed": [],
+      "year": 2016
+    }
+  },
+  {
+    "name": "Arrival.2016.Hybrid.1080p.BluRay.DD+5.1.x264-SPARKS",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "SPARKS",
+      "kind": "movie",
+      "title": "Arrival",
+      "unparsed": [],
+      "year": 2016
+    }
+  },
+  {
+    "name": "Arrival.2016.UNRATED.720p.BluRay.x264-FLUX",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "FLUX",
+      "kind": "movie",
+      "title": "Arrival",
+      "unparsed": [],
+      "year": 2016
+    }
+  },
+  {
+    "name": "Heat.1995.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-STRiFE",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "STRiFE",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "Heat",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Heat.1995.DVDRip.XviD.AC3-SPARKS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "SPARKS",
+      "kind": "movie",
+      "title": "Heat",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Heat.1995.FRENCH.1080p.WEB.H264-FLUX",
+    "expect": {
+      "group": "FLUX",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "Heat",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Heat.1995.1080p.WEBRip.x265-NTb",
+    "expect": {
+      "group": "NTb",
+      "kind": "movie",
+      "title": "Heat",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Heat (1995) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Heat",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Heat.1995.1080p.BluRay.x264-CMRG",
+    "expect": {
+      "group": "CMRG",
+      "kind": "movie",
+      "title": "Heat",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Avatar.The.Way.of.Water.2022.HDTS.x264.AAC-NTb",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "NTb",
+      "kind": "movie",
+      "title": "Avatar The Way of Water",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Avatar.The.Way.of.Water.2022.3D.HSBS.1080p.BluRay.x264-EDITH",
+    "expect": {
+      "group": "EDITH",
+      "kind": "movie",
+      "threeD": true,
+      "title": "Avatar The Way of Water",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Avatar.The.Way.of.Water.2022.REPACK.2160p.WEB-DL.x265-CMRG",
+    "expect": {
+      "group": "CMRG",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "Avatar The Way of Water",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Avatar The Way of Water (2022) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-KiNGS",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "KiNGS",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "Avatar The Way of Water",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Avatar.The.Way.of.Water.2022.Open.Matte.1080p.WEB-DL.DD5.1.H.264-playWEB",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "playWEB",
+      "kind": "movie",
+      "title": "Avatar The Way of Water",
+      "unparsed": [],
+      "year": 2022
+    }
+  },
+  {
+    "name": "Avatar.The.Way.of.Water.2022.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-TEPES",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "TEPES",
+      "kind": "movie",
+      "title": "Avatar The Way of Water",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Everything.Everywhere.All.at.Once.2022.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-KiNGS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "KiNGS",
+      "kind": "movie",
+      "title": "Everything Everywhere All at Once",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Everything.Everywhere.All.at.Once.2022.CROATIAN.1080p.WEB-DL.x264-playWEB",
+    "expect": {
+      "group": "playWEB",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "Everything Everywhere All at Once",
+      "unparsed": [],
+      "year": 2022
+    }
+  },
+  {
+    "name": "Everything.Everywhere.All.at.Once.2022.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-TEPES",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "TEPES",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "Everything Everywhere All at Once",
+      "unparsed": [],
+      "year": 2022
+    }
+  },
+  {
+    "name": "Everything.Everywhere.All.at.Once.2022.1080p.WEB-DL.HC.HEVC-SiGMA",
+    "expect": {
+      "group": "SiGMA",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "Everything Everywhere All at Once",
+      "unparsed": [],
+      "year": 2022
+    }
+  },
+  {
+    "name": "Everything.Everywhere.All.at.Once.2022.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-FGT",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "FGT",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "Everything Everywhere All at Once",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Everything.Everywhere.All.at.Once.2022.DVDRip.XviD.AC3-GECKOS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "GECKOS",
+      "kind": "movie",
+      "title": "Everything Everywhere All at Once",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Parasite.2019.iTALiAN.720p.BluRay.x264-SiGMA",
+    "expect": {
+      "group": "SiGMA",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "Parasite",
+      "unparsed": [],
+      "year": 2019
+    }
+  },
+  {
+    "name": "Parasite.2019.480p.DVDRip.x264.AAC2.0-FGT",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "FGT",
+      "kind": "movie",
+      "title": "Parasite",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Parasite 2019 1080p WEB-DL H264 AAC-GECKOS",
+    "expect": {
+      "group": "GECKOS",
+      "kind": "movie",
+      "title": "Parasite",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Parasite.2019.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-AMIABLE",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "AMIABLE",
+      "kind": "movie",
+      "title": "Parasite",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Parasite.2019.HDTS.x264.AAC-DRONES",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "DRONES",
+      "kind": "movie",
+      "title": "Parasite",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Parasite.2019.3D.HSBS.1080p.BluRay.x264-KOGi",
+    "expect": {
+      "group": "KOGi",
+      "kind": "movie",
+      "threeD": true,
+      "title": "Parasite",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "The.Batman.2022.720p.HDTV.x264-AMIABLE",
+    "expect": {
+      "group": "AMIABLE",
+      "kind": "movie",
+      "title": "The Batman",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "The Batman (2022) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "The Batman",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "The.Batman.2022.Criterion.1080p.BluRay.FLAC.1.0.x264-KOGi",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "KOGi",
+      "kind": "movie",
+      "title": "The Batman",
+      "unparsed": [],
+      "year": 2022
+    }
+  },
+  {
+    "name": "The.Batman.2022.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-BAE",
+    "expect": {
+      "group": "BAE",
+      "kind": "movie",
+      "title": "The Batman",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "The.Batman.2022.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-MeGusta",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "MeGusta",
+      "kind": "movie",
+      "title": "The Batman",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "The.Batman.2022.CROATIAN.1080p.WEB-DL.x264-SuccessfulCrab",
+    "expect": {
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "The Batman",
+      "unparsed": [],
+      "year": 2022
+    }
+  },
+  {
+    "name": "top.gun.maverick.2022.1080p.bluray.x264-bae",
+    "expect": {
+      "group": "bae",
+      "kind": "movie",
+      "title": "top gun maverick",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Top.Gun.Maverick.2022.576p.PAL.BDRip.x264-MeGusta",
+    "expect": {
+      "group": "MeGusta",
+      "kind": "movie",
+      "title": "Top Gun Maverick",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Top.Gun.Maverick.2022.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-SuccessfulCrab",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "title": "Top Gun Maverick",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Top.Gun.Maverick.2022.PAL.DVDR-ROVERS",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "ROVERS",
+      "kind": "movie",
+      "title": "Top Gun Maverick",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Top.Gun.Maverick.2022.iTALiAN.720p.BluRay.x264-CtrlHD",
+    "expect": {
+      "group": "CtrlHD",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "Top Gun Maverick",
+      "unparsed": [],
+      "year": 2022
+    }
+  },
+  {
+    "name": "Top.Gun.Maverick.2022.480p.DVDRip.x264.AAC2.0-HiFi",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "HiFi",
+      "kind": "movie",
+      "title": "Top Gun Maverick",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2022
+    }
+  },
+  {
+    "name": "Knives.Out.2019.UNRATED.720p.BluRay.x264-ROVERS",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "ROVERS",
+      "kind": "movie",
+      "title": "Knives Out",
+      "unparsed": [],
+      "year": 2019
+    }
+  },
+  {
+    "name": "Knives.Out.2019.1080p.AMZN.WEB-DL.DDP5.1.H.264-CtrlHD",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "CtrlHD",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Knives Out",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Knives.Out.2019.DVDSCR.XviD-HiFi",
+    "expect": {
+      "group": "HiFi",
+      "kind": "movie",
+      "title": "Knives Out",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Knives.Out.2019.MULTi.1080p.BluRay.x264-DON",
+    "expect": {
+      "group": "DON",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "Knives Out",
+      "unparsed": [],
+      "year": 2019
+    }
+  },
+  {
+    "name": "Knives.Out.2019.720p.HDTV.x264-EbP",
+    "expect": {
+      "group": "EbP",
+      "kind": "movie",
+      "title": "Knives Out",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Knives Out (2019) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "Knives Out",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "No.Time.to.Die.2021.1080p.BluRay.x264-DON",
+    "expect": {
+      "group": "DON",
+      "kind": "movie",
+      "title": "No Time to Die",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "No.Time.to.Die.2021.HDCAM.x264-EbP",
+    "expect": {
+      "group": "EbP",
+      "kind": "movie",
+      "title": "No Time to Die",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "No.Time.to.Die.2021.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-LOL",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "LOL",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "No Time to Die",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "No.Time.to.Die.2021.PROPER.1080p.WEB.h264-DIMENSION",
+    "expect": {
+      "group": "DIMENSION",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "No Time to Die",
+      "unparsed": [],
+      "year": 2021
+    }
+  },
+  {
+    "name": "no.time.to.die.2021.1080p.bluray.x264-killers",
+    "expect": {
+      "group": "killers",
+      "kind": "movie",
+      "title": "no time to die",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "No.Time.to.Die.2021.576p.PAL.BDRip.x264-AVS",
+    "expect": {
+      "group": "AVS",
+      "kind": "movie",
+      "title": "No Time to Die",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2021
+    }
+  },
+  {
+    "name": "Fargo.1996.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-DIMENSION",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "DIMENSION",
+      "kind": "movie",
+      "title": "Fargo",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 1996
+    }
+  },
+  {
+    "name": "Fargo.1996.Directors.Cut.1080p.BluRay.x264-KILLERS",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "KILLERS",
+      "kind": "movie",
+      "title": "Fargo",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1996
+    }
+  },
+  {
+    "name": "Fargo.1996.German.DL.1080p.BluRay.x264-AVS",
+    "expect": {
+      "dualAudio": true,
+      "group": "AVS",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "Fargo",
+      "unparsed": [],
+      "year": 1996
+    }
+  },
+  {
+    "name": "Fargo.1996.Hybrid.1080p.BluRay.DD+5.1.x264-SVA",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "SVA",
+      "kind": "movie",
+      "title": "Fargo",
+      "unparsed": [],
+      "year": 1996
+    }
+  },
+  {
+    "name": "Fargo.1996.UNRATED.720p.BluRay.x264-FLEET",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "FLEET",
+      "kind": "movie",
+      "title": "Fargo",
+      "unparsed": [],
+      "year": 1996
+    }
+  },
+  {
+    "name": "Fargo.1996.1080p.AMZN.WEB-DL.DDP5.1.H.264-MiNX",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "MiNX",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Fargo",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 1996
+    }
+  },
+  {
+    "name": "Joker.2019.DVDRip.XviD.AC3-SVA",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "SVA",
+      "kind": "movie",
+      "title": "Joker",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Joker.2019.FRENCH.1080p.WEB.H264-FLEET",
+    "expect": {
+      "group": "FLEET",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "Joker",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Joker.2019.1080p.WEBRip.x265-MiNX",
+    "expect": {
+      "group": "MiNX",
+      "kind": "movie",
+      "title": "Joker",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Joker (2019) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Joker",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Joker.2019.1080p.BluRay.x264-NOGRP",
+    "expect": {
+      "group": "NOGRP",
+      "kind": "movie",
+      "title": "Joker",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Joker.2019.HDCAM.x264-ETHEL",
+    "expect": {
+      "group": "ETHEL",
+      "kind": "movie",
+      "title": "Joker",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Interstellar.2014.3D.HSBS.1080p.BluRay.x264-BHDStudio",
+    "expect": {
+      "group": "BHDStudio",
+      "kind": "movie",
+      "threeD": true,
+      "title": "Interstellar",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "Interstellar.2014.REPACK.2160p.WEB-DL.x265-NOGRP",
+    "expect": {
+      "group": "NOGRP",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "Interstellar",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "Interstellar (2014) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-ETHEL",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "ETHEL",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "Interstellar",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "Interstellar.2014.Open.Matte.1080p.WEB-DL.DD5.1.H.264-GGEZ",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "GGEZ",
+      "kind": "movie",
+      "title": "Interstellar",
+      "unparsed": [],
+      "year": 2014
+    }
+  },
+  {
+    "name": "Interstellar.2014.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-SYNCOPY",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "SYNCOPY",
+      "kind": "movie",
+      "title": "Interstellar",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "Interstellar.2014.Directors.Cut.1080p.BluRay.x264-W4NK3R",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "W4NK3R",
+      "kind": "movie",
+      "title": "Interstellar",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "Gladiator.II.2024.CROATIAN.1080p.WEB-DL.x264-GGEZ",
+    "expect": {
+      "group": "GGEZ",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "Gladiator II",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Gladiator.II.2024.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-SYNCOPY",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "SYNCOPY",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "Gladiator II",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Gladiator.II.2024.1080p.WEB-DL.HC.HEVC-W4NK3R",
+    "expect": {
+      "group": "W4NK3R",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "Gladiator II",
+      "unparsed": [],
+      "year": 2024
+    }
+  },
+  {
+    "name": "Gladiator.II.2024.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-BLOOM",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "BLOOM",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "Gladiator II",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "Gladiator.II.2024.DVDRip.XviD.AC3-Kitsune",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "Kitsune",
+      "kind": "movie",
+      "title": "Gladiator II",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "Gladiator.II.2024.FRENCH.1080p.WEB.H264-PECULATE",
+    "expect": {
+      "group": "PECULATE",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "Gladiator II",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 2024
+    }
+  },
+  {
+    "name": "Wonka.2023.480p.DVDRip.x264.AAC2.0-BLOOM",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "BLOOM",
+      "kind": "movie",
+      "title": "Wonka",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Wonka 2023 1080p WEB-DL H264 AAC-Kitsune",
+    "expect": {
+      "group": "Kitsune",
+      "kind": "movie",
+      "title": "Wonka",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Wonka.2023.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-PECULATE",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "PECULATE",
+      "kind": "movie",
+      "title": "Wonka",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Wonka.2023.HDTS.x264.AAC-SMURF",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "SMURF",
+      "kind": "movie",
+      "title": "Wonka",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Wonka.2023.3D.HSBS.1080p.BluRay.x264-HONE",
+    "expect": {
+      "group": "HONE",
+      "kind": "movie",
+      "threeD": true,
+      "title": "Wonka",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Wonka.2023.REPACK.2160p.WEB-DL.x265-WELP",
+    "expect": {
+      "group": "WELP",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "Wonka",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "John Wick Chapter 4 (2023) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "John Wick Chapter 4",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "John.Wick.Chapter.4.2023.Criterion.1080p.BluRay.FLAC.1.0.x264-HONE",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "HONE",
+      "kind": "movie",
+      "title": "John Wick Chapter 4",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "John.Wick.Chapter.4.2023.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-WELP",
+    "expect": {
+      "group": "WELP",
+      "kind": "movie",
+      "title": "John Wick Chapter 4",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "John.Wick.Chapter.4.2023.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-APEX",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "APEX",
+      "kind": "movie",
+      "title": "John Wick Chapter 4",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "John.Wick.Chapter.4.2023.CROATIAN.1080p.WEB-DL.x264-TOMMY",
+    "expect": {
+      "group": "TOMMY",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "John Wick Chapter 4",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "John.Wick.Chapter.4.2023.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-RAWR",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "RAWR",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "John Wick Chapter 4",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "Godzilla.Minus.One.2023.576p.PAL.BDRip.x264-APEX",
+    "expect": {
+      "group": "APEX",
+      "kind": "movie",
+      "title": "Godzilla Minus One",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Godzilla.Minus.One.2023.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-TOMMY",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "TOMMY",
+      "kind": "movie",
+      "title": "Godzilla Minus One",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Godzilla.Minus.One.2023.PAL.DVDR-RAWR",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "RAWR",
+      "kind": "movie",
+      "title": "Godzilla Minus One",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Godzilla.Minus.One.2023.iTALiAN.720p.BluRay.x264-BYNDR",
+    "expect": {
+      "group": "BYNDR",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "Godzilla Minus One",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "Godzilla.Minus.One.2023.480p.DVDRip.x264.AAC2.0-NAISU",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "NAISU",
+      "kind": "movie",
+      "title": "Godzilla Minus One",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Godzilla Minus One 2023 1080p WEB-DL H264 AAC-STRiFE",
+    "expect": {
+      "group": "STRiFE",
+      "kind": "movie",
+      "title": "Godzilla Minus One",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Poor.Things.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "BYNDR",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Poor Things",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Poor.Things.2023.DVDSCR.XviD-NAISU",
+    "expect": {
+      "group": "NAISU",
+      "kind": "movie",
+      "title": "Poor Things",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Poor.Things.2023.MULTi.1080p.BluRay.x264-STRiFE",
+    "expect": {
+      "group": "STRiFE",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "Poor Things",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "Poor.Things.2023.720p.HDTV.x264-SPARKS",
+    "expect": {
+      "group": "SPARKS",
+      "kind": "movie",
+      "title": "Poor Things",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Poor Things (2023) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "Poor Things",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Poor.Things.2023.Criterion.1080p.BluRay.FLAC.1.0.x264-NTb",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "NTb",
+      "kind": "movie",
+      "title": "Poor Things",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "Past.Lives.2023.HDCAM.x264-SPARKS",
+    "expect": {
+      "group": "SPARKS",
+      "kind": "movie",
+      "title": "Past Lives",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Past.Lives.2023.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-FLUX",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "FLUX",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "Past Lives",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Past.Lives.2023.PROPER.1080p.WEB.h264-NTb",
+    "expect": {
+      "group": "NTb",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "Past Lives",
+      "unparsed": [],
+      "year": 2023
+    }
+  },
+  {
+    "name": "past.lives.2023.1080p.bluray.x264-edith",
+    "expect": {
+      "group": "edith",
+      "kind": "movie",
+      "title": "past lives",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Past.Lives.2023.576p.PAL.BDRip.x264-CMRG",
+    "expect": {
+      "group": "CMRG",
+      "kind": "movie",
+      "title": "Past Lives",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Past.Lives.2023.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-KiNGS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "KiNGS",
+      "kind": "movie",
+      "title": "Past Lives",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2023
+    }
+  },
+  {
+    "name": "Sicario.2015.Directors.Cut.1080p.BluRay.x264-EDITH",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "EDITH",
+      "kind": "movie",
+      "title": "Sicario",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "Sicario.2015.German.DL.1080p.BluRay.x264-CMRG",
+    "expect": {
+      "dualAudio": true,
+      "group": "CMRG",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "Sicario",
+      "unparsed": [],
+      "year": 2015
+    }
+  },
+  {
+    "name": "Sicario.2015.Hybrid.1080p.BluRay.DD+5.1.x264-KiNGS",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "KiNGS",
+      "kind": "movie",
+      "title": "Sicario",
+      "unparsed": [],
+      "year": 2015
+    }
+  },
+  {
+    "name": "Sicario.2015.UNRATED.720p.BluRay.x264-playWEB",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "playWEB",
+      "kind": "movie",
+      "title": "Sicario",
+      "unparsed": [],
+      "year": 2015
+    }
+  },
+  {
+    "name": "Sicario.2015.1080p.AMZN.WEB-DL.DDP5.1.H.264-TEPES",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "TEPES",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Sicario",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "Sicario.2015.DVDSCR.XviD-SiGMA",
+    "expect": {
+      "group": "SiGMA",
+      "kind": "movie",
+      "title": "Sicario",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "The.Thing.1982.FRENCH.1080p.WEB.H264-playWEB",
+    "expect": {
+      "group": "playWEB",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "The Thing",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 1982
+    }
+  },
+  {
+    "name": "The.Thing.1982.1080p.WEBRip.x265-TEPES",
+    "expect": {
+      "group": "TEPES",
+      "kind": "movie",
+      "title": "The Thing",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1982
+    }
+  },
+  {
+    "name": "The Thing (1982) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "The Thing",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1982
+    }
+  },
+  {
+    "name": "The.Thing.1982.1080p.BluRay.x264-FGT",
+    "expect": {
+      "group": "FGT",
+      "kind": "movie",
+      "title": "The Thing",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 1982
+    }
+  },
+  {
+    "name": "The.Thing.1982.HDCAM.x264-GECKOS",
+    "expect": {
+      "group": "GECKOS",
+      "kind": "movie",
+      "title": "The Thing",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 1982
+    }
+  },
+  {
+    "name": "The.Thing.1982.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-AMIABLE",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "AMIABLE",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "The Thing",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 1982
+    }
+  },
+  {
+    "name": "WALL-E.2008.REPACK.2160p.WEB-DL.x265-FGT",
+    "expect": {
+      "group": "FGT",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "WALL-E",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "WALL-E (2008) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-GECKOS",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "GECKOS",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "WALL-E",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "WALL-E.2008.Open.Matte.1080p.WEB-DL.DD5.1.H.264-AMIABLE",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "AMIABLE",
+      "kind": "movie",
+      "title": "WALL-E",
+      "unparsed": [],
+      "year": 2008
+    }
+  },
+  {
+    "name": "WALL-E.2008.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-DRONES",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "DRONES",
+      "kind": "movie",
+      "title": "WALL-E",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "WALL-E.2008.Directors.Cut.1080p.BluRay.x264-KOGi",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "KOGi",
+      "kind": "movie",
+      "title": "WALL-E",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "WALL-E.2008.German.DL.1080p.BluRay.x264-BAE",
+    "expect": {
+      "dualAudio": true,
+      "group": "BAE",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "WALL-E",
+      "unparsed": [],
+      "year": 2008
+    }
+  },
+  {
+    "name": "X-Men.Days.of.Future.Past.2014.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-DRONES",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "DRONES",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "X-Men Days of Future Past",
+      "unparsed": [],
+      "year": 2014
+    }
+  },
+  {
+    "name": "X-Men.Days.of.Future.Past.2014.1080p.WEB-DL.HC.HEVC-KOGi",
+    "expect": {
+      "group": "KOGi",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "X-Men Days of Future Past",
+      "unparsed": [],
+      "year": 2014
+    }
+  },
+  {
+    "name": "X-Men.Days.of.Future.Past.2014.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-BAE",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "BAE",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "X-Men Days of Future Past",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "X-Men.Days.of.Future.Past.2014.DVDRip.XviD.AC3-MeGusta",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "MeGusta",
+      "kind": "movie",
+      "title": "X-Men Days of Future Past",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "X-Men.Days.of.Future.Past.2014.FRENCH.1080p.WEB.H264-SuccessfulCrab",
+    "expect": {
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "X-Men Days of Future Past",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "X-Men.Days.of.Future.Past.2014.1080p.WEBRip.x265-ROVERS",
+    "expect": {
+      "group": "ROVERS",
+      "kind": "movie",
+      "title": "X-Men Days of Future Past",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "2012 2009 1080p WEB-DL H264 AAC-MeGusta",
+    "expect": {
+      "group": "MeGusta",
+      "kind": "movie",
+      "title": "2012",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "2012.2009.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-SuccessfulCrab",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "title": "2012",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "2012.2009.HDTS.x264.AAC-ROVERS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "ROVERS",
+      "kind": "movie",
+      "title": "2012",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "2012.2009.3D.HSBS.1080p.BluRay.x264-CtrlHD",
+    "expect": {
+      "group": "CtrlHD",
+      "kind": "movie",
+      "threeD": true,
+      "title": "2012",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "2012.2009.REPACK.2160p.WEB-DL.x265-HiFi",
+    "expect": {
+      "group": "HiFi",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "2012",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "2012 (2009) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-DON",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "DON",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "2012",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "Apollo.13.1995.Criterion.1080p.BluRay.FLAC.1.0.x264-CtrlHD",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "CtrlHD",
+      "kind": "movie",
+      "title": "Apollo 13",
+      "unparsed": [],
+      "year": 1995
+    }
+  },
+  {
+    "name": "Apollo.13.1995.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-HiFi",
+    "expect": {
+      "group": "HiFi",
+      "kind": "movie",
+      "title": "Apollo 13",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Apollo.13.1995.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-DON",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "DON",
+      "kind": "movie",
+      "title": "Apollo 13",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 1995
+    }
+  },
+  {
+    "name": "Apollo.13.1995.CROATIAN.1080p.WEB-DL.x264-EbP",
+    "expect": {
+      "group": "EbP",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "Apollo 13",
+      "unparsed": [],
+      "year": 1995
+    }
+  },
+  {
+    "name": "Apollo.13.1995.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-LOL",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "LOL",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "Apollo 13",
+      "unparsed": [],
+      "year": 1995
+    }
+  },
+  {
+    "name": "Apollo.13.1995.1080p.WEB-DL.HC.HEVC-DIMENSION",
+    "expect": {
+      "group": "DIMENSION",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "Apollo 13",
+      "unparsed": [],
+      "year": 1995
+    }
+  },
+  {
+    "name": "21.Jump.Street.2012.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-EbP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "EbP",
+      "kind": "movie",
+      "title": "21 Jump Street",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2012
+    }
+  },
+  {
+    "name": "21.Jump.Street.2012.PAL.DVDR-LOL",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "LOL",
+      "kind": "movie",
+      "title": "21 Jump Street",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2012
+    }
+  },
+  {
+    "name": "21.Jump.Street.2012.iTALiAN.720p.BluRay.x264-DIMENSION",
+    "expect": {
+      "group": "DIMENSION",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "21 Jump Street",
+      "unparsed": [],
+      "year": 2012
+    }
+  },
+  {
+    "name": "21.Jump.Street.2012.480p.DVDRip.x264.AAC2.0-KILLERS",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "KILLERS",
+      "kind": "movie",
+      "title": "21 Jump Street",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2012
+    }
+  },
+  {
+    "name": "21 Jump Street 2012 1080p WEB-DL H264 AAC-AVS",
+    "expect": {
+      "group": "AVS",
+      "kind": "movie",
+      "title": "21 Jump Street",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2012
+    }
+  },
+  {
+    "name": "21.Jump.Street.2012.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-SVA",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "SVA",
+      "kind": "movie",
+      "title": "21 Jump Street",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2012
+    }
+  },
+  {
+    "name": "300.2006.DVDSCR.XviD-KILLERS",
+    "expect": {
+      "group": "KILLERS",
+      "kind": "movie",
+      "title": "300",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "300.2006.MULTi.1080p.BluRay.x264-AVS",
+    "expect": {
+      "group": "AVS",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "300",
+      "unparsed": [],
+      "year": 2006
+    }
+  },
+  {
+    "name": "300.2006.720p.HDTV.x264-SVA",
+    "expect": {
+      "group": "SVA",
+      "kind": "movie",
+      "title": "300",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "300 (2006) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "300",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "300.2006.Criterion.1080p.BluRay.FLAC.1.0.x264-MiNX",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "MiNX",
+      "kind": "movie",
+      "title": "300",
+      "unparsed": [],
+      "year": 2006
+    }
+  },
+  {
+    "name": "300.2006.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-BHDStudio",
+    "expect": {
+      "group": "BHDStudio",
+      "kind": "movie",
+      "title": "300",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2006
+    }
+  },
+  {
+    "name": "10.Cloverfield.Lane.2016.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-FLEET",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "FLEET",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "10 Cloverfield Lane",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2016
+    }
+  },
+  {
+    "name": "10.Cloverfield.Lane.2016.PROPER.1080p.WEB.h264-MiNX",
+    "expect": {
+      "group": "MiNX",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "10 Cloverfield Lane",
+      "unparsed": [],
+      "year": 2016
+    }
+  },
+  {
+    "name": "10.cloverfield.lane.2016.1080p.bluray.x264-bhdstudio",
+    "expect": {
+      "group": "bhdstudio",
+      "kind": "movie",
+      "title": "10 cloverfield lane",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2016
+    }
+  },
+  {
+    "name": "10.Cloverfield.Lane.2016.576p.PAL.BDRip.x264-NOGRP",
+    "expect": {
+      "group": "NOGRP",
+      "kind": "movie",
+      "title": "10 Cloverfield Lane",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2016
+    }
+  },
+  {
+    "name": "10.Cloverfield.Lane.2016.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-ETHEL",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "ETHEL",
+      "kind": "movie",
+      "title": "10 Cloverfield Lane",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2016
+    }
+  },
+  {
+    "name": "10.Cloverfield.Lane.2016.PAL.DVDR-GGEZ",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "GGEZ",
+      "kind": "movie",
+      "title": "10 Cloverfield Lane",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2016
+    }
+  },
+  {
+    "name": "The.40.Year.Old.Virgin.2005.German.DL.1080p.BluRay.x264-NOGRP",
+    "expect": {
+      "dualAudio": true,
+      "group": "NOGRP",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "The 40 Year Old Virgin",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "The.40.Year.Old.Virgin.2005.Hybrid.1080p.BluRay.DD+5.1.x264-ETHEL",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "ETHEL",
+      "kind": "movie",
+      "title": "The 40 Year Old Virgin",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "The.40.Year.Old.Virgin.2005.UNRATED.720p.BluRay.x264-GGEZ",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "GGEZ",
+      "kind": "movie",
+      "title": "The 40 Year Old Virgin",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "The.40.Year.Old.Virgin.2005.1080p.AMZN.WEB-DL.DDP5.1.H.264-SYNCOPY",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "SYNCOPY",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "The 40 Year Old Virgin",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2005
+    }
+  },
+  {
+    "name": "The.40.Year.Old.Virgin.2005.DVDSCR.XviD-W4NK3R",
+    "expect": {
+      "group": "W4NK3R",
+      "kind": "movie",
+      "title": "The 40 Year Old Virgin",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2005
+    }
+  },
+  {
+    "name": "The.40.Year.Old.Virgin.2005.MULTi.1080p.BluRay.x264-BLOOM",
+    "expect": {
+      "group": "BLOOM",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "The 40 Year Old Virgin",
+      "unparsed": [],
+      "year": 2005
+    }
+  },
+  {
+    "name": "Super.8.2011.1080p.WEBRip.x265-SYNCOPY",
+    "expect": {
+      "group": "SYNCOPY",
+      "kind": "movie",
+      "title": "Super 8",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2011
+    }
+  },
+  {
+    "name": "Super 8 (2011) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Super 8",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2011
+    }
+  },
+  {
+    "name": "Super.8.2011.1080p.BluRay.x264-BLOOM",
+    "expect": {
+      "group": "BLOOM",
+      "kind": "movie",
+      "title": "Super 8",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2011
+    }
+  },
+  {
+    "name": "Super.8.2011.HDCAM.x264-Kitsune",
+    "expect": {
+      "group": "Kitsune",
+      "kind": "movie",
+      "title": "Super 8",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2011
+    }
+  },
+  {
+    "name": "Super.8.2011.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-PECULATE",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "PECULATE",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "Super 8",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2011
+    }
+  },
+  {
+    "name": "Super.8.2011.PROPER.1080p.WEB.h264-SMURF",
+    "expect": {
+      "group": "SMURF",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "Super 8",
+      "unparsed": [],
+      "year": 2011
+    }
+  },
+  {
+    "name": "District 9 (2009) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-Kitsune",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "Kitsune",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "District 9",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "District.9.2009.Open.Matte.1080p.WEB-DL.DD5.1.H.264-PECULATE",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "PECULATE",
+      "kind": "movie",
+      "title": "District 9",
+      "unparsed": [],
+      "year": 2009
+    }
+  },
+  {
+    "name": "District.9.2009.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-SMURF",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "SMURF",
+      "kind": "movie",
+      "title": "District 9",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "District.9.2009.Directors.Cut.1080p.BluRay.x264-HONE",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "HONE",
+      "kind": "movie",
+      "title": "District 9",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2009
+    }
+  },
+  {
+    "name": "District.9.2009.German.DL.1080p.BluRay.x264-WELP",
+    "expect": {
+      "dualAudio": true,
+      "group": "WELP",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "District 9",
+      "unparsed": [],
+      "year": 2009
+    }
+  },
+  {
+    "name": "District.9.2009.Hybrid.1080p.BluRay.DD+5.1.x264-APEX",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "APEX",
+      "kind": "movie",
+      "title": "District 9",
+      "unparsed": [],
+      "year": 2009
+    }
+  },
+  {
+    "name": "Brazil.1985.1080p.WEB-DL.HC.HEVC-HONE",
+    "expect": {
+      "group": "HONE",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "Brazil",
+      "unparsed": [],
+      "year": 1985
+    }
+  },
+  {
+    "name": "Brazil.1985.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-WELP",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "WELP",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "Brazil",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Brazil.1985.DVDRip.XviD.AC3-APEX",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "APEX",
+      "kind": "movie",
+      "title": "Brazil",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Brazil.1985.FRENCH.1080p.WEB.H264-TOMMY",
+    "expect": {
+      "group": "TOMMY",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "Brazil",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Brazil.1985.1080p.WEBRip.x265-RAWR",
+    "expect": {
+      "group": "RAWR",
+      "kind": "movie",
+      "title": "Brazil",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Brazil (1985) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Brazil",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 1985
+    }
+  },
+  {
+    "name": "Australia.2008.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-TOMMY",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "TOMMY",
+      "kind": "movie",
+      "title": "Australia",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "Australia.2008.HDTS.x264.AAC-RAWR",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "RAWR",
+      "kind": "movie",
+      "title": "Australia",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "Australia.2008.3D.HSBS.1080p.BluRay.x264-BYNDR",
+    "expect": {
+      "group": "BYNDR",
+      "kind": "movie",
+      "threeD": true,
+      "title": "Australia",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "Australia.2008.REPACK.2160p.WEB-DL.x265-NAISU",
+    "expect": {
+      "group": "NAISU",
+      "kind": "movie",
+      "revision": {
+        "repack": true,
+        "version": 2
+      },
+      "title": "Australia",
+      "unparsed": [],
+      "video": {
+        "encoder": "x265"
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "Australia (2008) 2160p HMAX WEB-DL DV HDR10+ DDP 5.1 Atmos-STRiFE",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "STRiFE",
+      "kind": "movie",
+      "streamingService": "HBO Max",
+      "title": "Australia",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "DV",
+          "HDR10+"
+        ]
+      },
+      "year": 2008
+    }
+  },
+  {
+    "name": "Australia.2008.Open.Matte.1080p.WEB-DL.DD5.1.H.264-SPARKS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "SPARKS",
+      "kind": "movie",
+      "title": "Australia",
+      "unparsed": [],
+      "year": 2008
+    }
+  },
+  {
+    "name": "Amelie.2001.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-NAISU",
+    "expect": {
+      "group": "NAISU",
+      "kind": "movie",
+      "title": "Amelie",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "Amelie.2001.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-STRiFE",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "STRiFE",
+      "kind": "movie",
+      "title": "Amelie",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "Amelie.2001.CROATIAN.1080p.WEB-DL.x264-SPARKS",
+    "expect": {
+      "group": "SPARKS",
+      "kind": "movie",
+      "languages": [
+        "hr"
+      ],
+      "title": "Amelie",
+      "unparsed": [],
+      "year": 2001
+    }
+  },
+  {
+    "name": "Amelie.2001.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-FLUX",
+    "expect": {
+      "audio": {
+        "atmos": true
+      },
+      "group": "FLUX",
+      "kind": "movie",
+      "streamingService": "Apple TV+",
+      "title": "Amelie",
+      "unparsed": [],
+      "year": 2001
+    }
+  },
+  {
+    "name": "Amelie.2001.1080p.WEB-DL.HC.HEVC-NTb",
+    "expect": {
+      "group": "NTb",
+      "hardcodedSubs": true,
+      "kind": "movie",
+      "title": "Amelie",
+      "unparsed": [],
+      "year": 2001
+    }
+  },
+  {
+    "name": "Amelie.2001.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-EDITH",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "EDITH",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "Amelie",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "Oceans.Eleven.2001.PAL.DVDR-FLUX",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "FLUX",
+      "kind": "movie",
+      "title": "Oceans Eleven",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "Oceans.Eleven.2001.iTALiAN.720p.BluRay.x264-NTb",
+    "expect": {
+      "group": "NTb",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "Oceans Eleven",
+      "unparsed": [],
+      "year": 2001
+    }
+  },
+  {
+    "name": "Oceans.Eleven.2001.480p.DVDRip.x264.AAC2.0-EDITH",
+    "expect": {
+      "audio": {
+        "channels": "2.0"
+      },
+      "group": "EDITH",
+      "kind": "movie",
+      "title": "Oceans Eleven",
+      "unparsed": [],
+      "video": {
+        "resolution": 480,
+        "source": "dvd"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "Oceans Eleven 2001 1080p WEB-DL H264 AAC-CMRG",
+    "expect": {
+      "group": "CMRG",
+      "kind": "movie",
+      "title": "Oceans Eleven",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "webdl"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "Oceans.Eleven.2001.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-KiNGS",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "KiNGS",
+      "kind": "movie",
+      "title": "Oceans Eleven",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "bluray",
+        "uhd": true
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "Oceans.Eleven.2001.HDTS.x264.AAC-playWEB",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "aac"
+        ]
+      },
+      "group": "playWEB",
+      "kind": "movie",
+      "title": "Oceans Eleven",
+      "unparsed": [],
+      "video": {
+        "source": "telesync"
+      },
+      "year": 2001
+    }
+  },
+  {
+    "name": "The.Hateful.Eight.2015.MULTi.1080p.BluRay.x264-CMRG",
+    "expect": {
+      "group": "CMRG",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "The Hateful Eight",
+      "unparsed": [],
+      "year": 2015
+    }
+  },
+  {
+    "name": "The.Hateful.Eight.2015.720p.HDTV.x264-KiNGS",
+    "expect": {
+      "group": "KiNGS",
+      "kind": "movie",
+      "title": "The Hateful Eight",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "The Hateful Eight (2015) (1080p BluRay x265 10bit AAC 5.1 Tigole)",
+    "expect": {
+      "group": "Tigole",
+      "kind": "movie",
+      "title": "The Hateful Eight",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265",
+        "source": "bluray"
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "The.Hateful.Eight.2015.Criterion.1080p.BluRay.FLAC.1.0.x264-TEPES",
+    "expect": {
+      "audio": {
+        "channels": "1.0",
+        "codecs": [
+          "flac"
+        ]
+      },
+      "editions": [
+        "Criterion"
+      ],
+      "group": "TEPES",
+      "kind": "movie",
+      "title": "The Hateful Eight",
+      "unparsed": [],
+      "year": 2015
+    }
+  },
+  {
+    "name": "The.Hateful.Eight.2015.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-SiGMA",
+    "expect": {
+      "group": "SiGMA",
+      "kind": "movie",
+      "title": "The Hateful Eight",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "brdisk"
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "The.Hateful.Eight.2015.EXTENDED.REMASTERED.720p.BluRay.x264.DTS-FGT",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts"
+        ]
+      },
+      "editions": [
+        "Extended",
+        "Remastered"
+      ],
+      "group": "FGT",
+      "kind": "movie",
+      "title": "The Hateful Eight",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      },
+      "year": 2015
+    }
+  },
+  {
+    "name": "Kill.Bill.Vol.1.2003.PROPER.1080p.WEB.h264-TEPES",
+    "expect": {
+      "group": "TEPES",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "Kill Bill Vol 1",
+      "unparsed": [],
+      "year": 2003
+    }
+  },
+  {
+    "name": "kill.bill.vol.1.2003.1080p.bluray.x264-sigma",
+    "expect": {
+      "group": "sigma",
+      "kind": "movie",
+      "title": "kill bill vol 1",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2003
+    }
+  },
+  {
+    "name": "Kill.Bill.Vol.1.2003.576p.PAL.BDRip.x264-FGT",
+    "expect": {
+      "group": "FGT",
+      "kind": "movie",
+      "title": "Kill Bill Vol 1",
+      "unparsed": [],
+      "video": {
+        "resolution": 576,
+        "source": "bdrip"
+      },
+      "year": 2003
+    }
+  },
+  {
+    "name": "Kill.Bill.Vol.1.2003.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-GECKOS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "dts-hd ma"
+        ]
+      },
+      "group": "GECKOS",
+      "kind": "movie",
+      "title": "Kill Bill Vol 1",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "remux"
+      },
+      "year": 2003
+    }
+  },
+  {
+    "name": "Kill.Bill.Vol.1.2003.PAL.DVDR-AMIABLE",
+    "expect": {
+      "flags": [
+        "pal"
+      ],
+      "group": "AMIABLE",
+      "kind": "movie",
+      "title": "Kill Bill Vol 1",
+      "unparsed": [],
+      "video": {
+        "source": "dvdr"
+      },
+      "year": 2003
+    }
+  },
+  {
+    "name": "Kill.Bill.Vol.1.2003.iTALiAN.720p.BluRay.x264-DRONES",
+    "expect": {
+      "group": "DRONES",
+      "kind": "movie",
+      "languages": [
+        "it"
+      ],
+      "title": "Kill Bill Vol 1",
+      "unparsed": [],
+      "year": 2003
+    }
+  },
+  {
+    "name": "Three.Billboards.Outside.Ebbing.Missouri.2017.Hybrid.1080p.BluRay.DD+5.1.x264-GECKOS",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "GECKOS",
+      "kind": "movie",
+      "title": "Three Billboards Outside Ebbing Missouri",
+      "unparsed": [],
+      "year": 2017
+    }
+  },
+  {
+    "name": "Three.Billboards.Outside.Ebbing.Missouri.2017.UNRATED.720p.BluRay.x264-AMIABLE",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "AMIABLE",
+      "kind": "movie",
+      "title": "Three Billboards Outside Ebbing Missouri",
+      "unparsed": [],
+      "year": 2017
+    }
+  },
+  {
+    "name": "Three.Billboards.Outside.Ebbing.Missouri.2017.1080p.AMZN.WEB-DL.DDP5.1.H.264-DRONES",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "DRONES",
+      "kind": "movie",
+      "streamingService": "Amazon",
+      "title": "Three Billboards Outside Ebbing Missouri",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "resolution": 1080,
+        "source": "webdl"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "Three.Billboards.Outside.Ebbing.Missouri.2017.DVDSCR.XviD-KOGi",
+    "expect": {
+      "group": "KOGi",
+      "kind": "movie",
+      "title": "Three Billboards Outside Ebbing Missouri",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "screener"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "Three.Billboards.Outside.Ebbing.Missouri.2017.MULTi.1080p.BluRay.x264-BAE",
+    "expect": {
+      "group": "BAE",
+      "kind": "movie",
+      "multiAudio": true,
+      "title": "Three Billboards Outside Ebbing Missouri",
+      "unparsed": [],
+      "year": 2017
+    }
+  },
+  {
+    "name": "Three.Billboards.Outside.Ebbing.Missouri.2017.720p.HDTV.x264-MeGusta",
+    "expect": {
+      "group": "MeGusta",
+      "kind": "movie",
+      "title": "Three Billboards Outside Ebbing Missouri",
+      "unparsed": [],
+      "video": {
+        "resolution": 720,
+        "source": "hdtv"
+      },
+      "year": 2017
+    }
+  },
+  {
+    "name": "Once Upon a Time in Hollywood (2019) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Once Upon a Time in Hollywood",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Once.Upon.a.Time.in.Hollywood.2019.1080p.BluRay.x264-BAE",
+    "expect": {
+      "group": "BAE",
+      "kind": "movie",
+      "title": "Once Upon a Time in Hollywood",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Once.Upon.a.Time.in.Hollywood.2019.HDCAM.x264-MeGusta",
+    "expect": {
+      "group": "MeGusta",
+      "kind": "movie",
+      "title": "Once Upon a Time in Hollywood",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "cam"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Once.Upon.a.Time.in.Hollywood.2019.IMAX.2160p.DSNP.WEB-DL.DDP5.1.Atmos.HDR10.H.265-SuccessfulCrab",
+    "expect": {
+      "editions": [
+        "IMAX"
+      ],
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "streamingService": "Disney+",
+      "title": "Once Upon a Time in Hollywood",
+      "unparsed": [],
+      "video": {
+        "hdr": [
+          "HDR10"
+        ],
+        "resolution": 2160
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "Once.Upon.a.Time.in.Hollywood.2019.PROPER.1080p.WEB.h264-ROVERS",
+    "expect": {
+      "group": "ROVERS",
+      "kind": "movie",
+      "revision": {
+        "proper": true,
+        "version": 2
+      },
+      "title": "Once Upon a Time in Hollywood",
+      "unparsed": [],
+      "year": 2019
+    }
+  },
+  {
+    "name": "once.upon.a.time.in.hollywood.2019.1080p.bluray.x264-ctrlhd",
+    "expect": {
+      "group": "ctrlhd",
+      "kind": "movie",
+      "title": "once upon a time in hollywood",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2019
+    }
+  },
+  {
+    "name": "The.Grand.Budapest.Hotel.2014.Open.Matte.1080p.WEB-DL.DD5.1.H.264-SuccessfulCrab",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "editions": [
+        "Open Matte"
+      ],
+      "group": "SuccessfulCrab",
+      "kind": "movie",
+      "title": "The Grand Budapest Hotel",
+      "unparsed": [],
+      "year": 2014
+    }
+  },
+  {
+    "name": "The.Grand.Budapest.Hotel.2014.2160p.BluRay.REMUX.HEVC.DV.HDR10.TrueHD.7.1.Atmos-ROVERS",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "7.1",
+        "codecs": [
+          "truehd"
+        ]
+      },
+      "group": "ROVERS",
+      "kind": "movie",
+      "title": "The Grand Budapest Hotel",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "7",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "remux"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "The.Grand.Budapest.Hotel.2014.Directors.Cut.1080p.BluRay.x264-CtrlHD",
+    "expect": {
+      "editions": [
+        "Director's Cut"
+      ],
+      "group": "CtrlHD",
+      "kind": "movie",
+      "title": "The Grand Budapest Hotel",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2014
+    }
+  },
+  {
+    "name": "The.Grand.Budapest.Hotel.2014.German.DL.1080p.BluRay.x264-HiFi",
+    "expect": {
+      "dualAudio": true,
+      "group": "HiFi",
+      "kind": "movie",
+      "languages": [
+        "de"
+      ],
+      "title": "The Grand Budapest Hotel",
+      "unparsed": [],
+      "year": 2014
+    }
+  },
+  {
+    "name": "The.Grand.Budapest.Hotel.2014.Hybrid.1080p.BluRay.DD+5.1.x264-DON",
+    "expect": {
+      "audio": {
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "flags": [
+        "hybrid"
+      ],
+      "group": "DON",
+      "kind": "movie",
+      "title": "The Grand Budapest Hotel",
+      "unparsed": [],
+      "year": 2014
+    }
+  },
+  {
+    "name": "The.Grand.Budapest.Hotel.2014.UNRATED.720p.BluRay.x264-EbP",
+    "expect": {
+      "editions": [
+        "Unrated"
+      ],
+      "group": "EbP",
+      "kind": "movie",
+      "title": "The Grand Budapest Hotel",
+      "unparsed": [],
+      "year": 2014
+    }
+  },
+  {
+    "name": "Prisoners.2013.2160p.NF.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-HiFi",
+    "expect": {
+      "audio": {
+        "atmos": true,
+        "channels": "5.1",
+        "codecs": [
+          "eac3"
+        ]
+      },
+      "group": "HiFi",
+      "kind": "movie",
+      "streamingService": "Netflix",
+      "title": "Prisoners",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "dolbyVisionProfile": "8",
+        "hdr": [
+          "DV",
+          "HDR10"
+        ],
+        "resolution": 2160,
+        "source": "webdl"
+      },
+      "year": 2013
+    }
+  },
+  {
+    "name": "Prisoners.2013.DVDRip.XviD.AC3-DON",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "ac3"
+        ]
+      },
+      "group": "DON",
+      "kind": "movie",
+      "title": "Prisoners",
+      "unparsed": [],
+      "video": {
+        "codec": "xvid",
+        "source": "dvd"
+      },
+      "year": 2013
+    }
+  },
+  {
+    "name": "Prisoners.2013.FRENCH.1080p.WEB.H264-EbP",
+    "expect": {
+      "group": "EbP",
+      "kind": "movie",
+      "languages": [
+        "fr"
+      ],
+      "title": "Prisoners",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "source": "web"
+      },
+      "year": 2013
+    }
+  },
+  {
+    "name": "Prisoners.2013.1080p.WEBRip.x265-LOL",
+    "expect": {
+      "group": "LOL",
+      "kind": "movie",
+      "title": "Prisoners",
+      "unparsed": [],
+      "video": {
+        "codec": "h265",
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2013
+    }
+  },
+  {
+    "name": "Prisoners (2013) [1080p] [WEBRip] [5.1] [YTS.MX]",
+    "expect": {
+      "audio": {
+        "channels": "5.1"
+      },
+      "group": "YTS.MX",
+      "kind": "movie",
+      "title": "Prisoners",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080,
+        "source": "webrip"
+      },
+      "year": 2013
+    }
+  },
+  {
+    "name": "Prisoners.2013.1080p.BluRay.x264-KILLERS",
+    "expect": {
+      "group": "KILLERS",
+      "kind": "movie",
+      "title": "Prisoners",
+      "unparsed": [],
+      "video": {
+        "codec": "h264",
+        "encoder": "x264",
+        "resolution": 1080,
+        "source": "bluray"
+      },
+      "year": 2013
+    }
+  }
+]

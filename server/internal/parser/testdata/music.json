@@ -1,0 +1,3060 @@
+[
+  {
+    "name": "Pink Floyd - The Dark Side of the Moon (1973) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "The Dark Side of the Moon",
+        "artist": "Pink Floyd"
+      },
+      "title": "The Dark Side of the Moon",
+      "year": 1973
+    }
+  },
+  {
+    "name": "Pink Floyd - The Dark Side of the Moon (1973) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "The Dark Side of the Moon",
+        "artist": "Pink Floyd"
+      },
+      "title": "The Dark Side of the Moon",
+      "year": 1973
+    }
+  },
+  {
+    "name": "Pink Floyd - The Dark Side of the Moon (1973) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "The Dark Side of the Moon",
+        "artist": "Pink Floyd"
+      },
+      "title": "The Dark Side of the Moon",
+      "year": 1973
+    }
+  },
+  {
+    "name": "Pink Floyd - The Dark Side of the Moon [1973] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "The Dark Side of the Moon",
+        "artist": "Pink Floyd"
+      },
+      "title": "The Dark Side of the Moon",
+      "year": 1973
+    }
+  },
+  {
+    "name": "Pink_Floyd-The_Dark_Side_of_the_Moon-WEB-1973-SPARKS",
+    "expect": {
+      "group": "SPARKS",
+      "kind": "music",
+      "music": {
+        "album": "The Dark Side of the Moon",
+        "artist": "Pink Floyd",
+        "source": "web"
+      },
+      "title": "The Dark Side of the Moon",
+      "year": 1973
+    }
+  },
+  {
+    "name": "Pink_Floyd-The_Dark_Side_of_the_Moon-2CD-1973-SPARKS",
+    "expect": {
+      "group": "SPARKS",
+      "kind": "music",
+      "music": {
+        "album": "The Dark Side of the Moon",
+        "artist": "Pink Floyd",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "The Dark Side of the Moon",
+      "year": 1973
+    }
+  },
+  {
+    "name": "Pink_Floyd-The_Dark_Side_of_the_Moon-(CAT0100)-CD-FLAC-1973-SPARKS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "SPARKS",
+      "kind": "music",
+      "music": {
+        "album": "The Dark Side of the Moon",
+        "artist": "Pink Floyd",
+        "source": "cd"
+      },
+      "title": "The Dark Side of the Moon",
+      "year": 1973
+    }
+  },
+  {
+    "name": "Pink Floyd - The Dark Side of the Moon (1973) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "The Dark Side of the Moon",
+        "artist": "Pink Floyd"
+      },
+      "title": "The Dark Side of the Moon",
+      "year": 1973
+    }
+  },
+  {
+    "name": "Daft Punk - Random Access Memories (2013) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Random Access Memories",
+        "artist": "Daft Punk"
+      },
+      "title": "Random Access Memories",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Daft Punk - Random Access Memories (2013) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Random Access Memories",
+        "artist": "Daft Punk"
+      },
+      "title": "Random Access Memories",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Daft Punk - Random Access Memories (2013) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Random Access Memories",
+        "artist": "Daft Punk"
+      },
+      "title": "Random Access Memories",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Daft Punk - Random Access Memories [2013] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Random Access Memories",
+        "artist": "Daft Punk"
+      },
+      "title": "Random Access Memories",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Daft_Punk-Random_Access_Memories-WEB-2013-KiNGS",
+    "expect": {
+      "group": "KiNGS",
+      "kind": "music",
+      "music": {
+        "album": "Random Access Memories",
+        "artist": "Daft Punk",
+        "source": "web"
+      },
+      "title": "Random Access Memories",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Daft_Punk-Random_Access_Memories-2CD-2013-KiNGS",
+    "expect": {
+      "group": "KiNGS",
+      "kind": "music",
+      "music": {
+        "album": "Random Access Memories",
+        "artist": "Daft Punk",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Random Access Memories",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Daft_Punk-Random_Access_Memories-(CAT0101)-CD-FLAC-2013-KiNGS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "KiNGS",
+      "kind": "music",
+      "music": {
+        "album": "Random Access Memories",
+        "artist": "Daft Punk",
+        "source": "cd"
+      },
+      "title": "Random Access Memories",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Daft Punk - Random Access Memories (2013) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Random Access Memories",
+        "artist": "Daft Punk"
+      },
+      "title": "Random Access Memories",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Radiohead - OK Computer (1997) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "OK Computer",
+        "artist": "Radiohead"
+      },
+      "title": "OK Computer",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Radiohead - OK Computer (1997) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "OK Computer",
+        "artist": "Radiohead"
+      },
+      "title": "OK Computer",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Radiohead - OK Computer (1997) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "OK Computer",
+        "artist": "Radiohead"
+      },
+      "title": "OK Computer",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Radiohead - OK Computer [1997] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "OK Computer",
+        "artist": "Radiohead"
+      },
+      "title": "OK Computer",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Radiohead-OK_Computer-WEB-1997-GECKOS",
+    "expect": {
+      "group": "GECKOS",
+      "kind": "music",
+      "music": {
+        "album": "OK Computer",
+        "artist": "Radiohead",
+        "source": "web"
+      },
+      "title": "OK Computer",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Radiohead-OK_Computer-2CD-1997-GECKOS",
+    "expect": {
+      "group": "GECKOS",
+      "kind": "music",
+      "music": {
+        "album": "OK Computer",
+        "artist": "Radiohead",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "OK Computer",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Radiohead-OK_Computer-(CAT0102)-CD-FLAC-1997-GECKOS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "GECKOS",
+      "kind": "music",
+      "music": {
+        "album": "OK Computer",
+        "artist": "Radiohead",
+        "source": "cd"
+      },
+      "title": "OK Computer",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Radiohead - OK Computer (1997) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "OK Computer",
+        "artist": "Radiohead"
+      },
+      "title": "OK Computer",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Taylor Swift - 1989 (2014) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "1989",
+        "artist": "Taylor Swift"
+      },
+      "title": "1989",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Taylor Swift - 1989 (2014) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "1989",
+        "artist": "Taylor Swift"
+      },
+      "title": "1989",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Taylor Swift - 1989 (2014) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "1989",
+        "artist": "Taylor Swift"
+      },
+      "title": "1989",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Taylor Swift - 1989 [2014] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "1989",
+        "artist": "Taylor Swift"
+      },
+      "title": "1989",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Taylor_Swift-1989-WEB-2014-MeGusta",
+    "expect": {
+      "group": "MeGusta",
+      "kind": "music",
+      "music": {
+        "album": "1989",
+        "artist": "Taylor Swift",
+        "source": "web"
+      },
+      "title": "1989",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Taylor_Swift-1989-2CD-2014-MeGusta",
+    "expect": {
+      "group": "MeGusta",
+      "kind": "music",
+      "music": {
+        "album": "1989",
+        "artist": "Taylor Swift",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "1989",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Taylor_Swift-1989-(CAT0103)-CD-FLAC-2014-MeGusta",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "MeGusta",
+      "kind": "music",
+      "music": {
+        "album": "1989",
+        "artist": "Taylor Swift",
+        "source": "cd"
+      },
+      "title": "1989",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Taylor Swift - 1989 (2014) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "1989",
+        "artist": "Taylor Swift"
+      },
+      "title": "1989",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Kendrick Lamar - To Pimp a Butterfly (2015) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "To Pimp a Butterfly",
+        "artist": "Kendrick Lamar"
+      },
+      "title": "To Pimp a Butterfly",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Kendrick Lamar - To Pimp a Butterfly (2015) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "To Pimp a Butterfly",
+        "artist": "Kendrick Lamar"
+      },
+      "title": "To Pimp a Butterfly",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Kendrick Lamar - To Pimp a Butterfly (2015) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "To Pimp a Butterfly",
+        "artist": "Kendrick Lamar"
+      },
+      "title": "To Pimp a Butterfly",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Kendrick Lamar - To Pimp a Butterfly [2015] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "To Pimp a Butterfly",
+        "artist": "Kendrick Lamar"
+      },
+      "title": "To Pimp a Butterfly",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Kendrick_Lamar-To_Pimp_a_Butterfly-WEB-2015-DON",
+    "expect": {
+      "group": "DON",
+      "kind": "music",
+      "music": {
+        "album": "To Pimp a Butterfly",
+        "artist": "Kendrick Lamar",
+        "source": "web"
+      },
+      "title": "To Pimp a Butterfly",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Kendrick_Lamar-To_Pimp_a_Butterfly-2CD-2015-DON",
+    "expect": {
+      "group": "DON",
+      "kind": "music",
+      "music": {
+        "album": "To Pimp a Butterfly",
+        "artist": "Kendrick Lamar",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "To Pimp a Butterfly",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Kendrick_Lamar-To_Pimp_a_Butterfly-(CAT0104)-CD-FLAC-2015-DON",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "DON",
+      "kind": "music",
+      "music": {
+        "album": "To Pimp a Butterfly",
+        "artist": "Kendrick Lamar",
+        "source": "cd"
+      },
+      "title": "To Pimp a Butterfly",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Kendrick Lamar - To Pimp a Butterfly (2015) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "To Pimp a Butterfly",
+        "artist": "Kendrick Lamar"
+      },
+      "title": "To Pimp a Butterfly",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Miles Davis - Kind of Blue (1959) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Kind of Blue",
+        "artist": "Miles Davis"
+      },
+      "title": "Kind of Blue",
+      "year": 1959
+    }
+  },
+  {
+    "name": "Miles Davis - Kind of Blue (1959) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Kind of Blue",
+        "artist": "Miles Davis"
+      },
+      "title": "Kind of Blue",
+      "year": 1959
+    }
+  },
+  {
+    "name": "Miles Davis - Kind of Blue (1959) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Kind of Blue",
+        "artist": "Miles Davis"
+      },
+      "title": "Kind of Blue",
+      "year": 1959
+    }
+  },
+  {
+    "name": "Miles Davis - Kind of Blue [1959] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Kind of Blue",
+        "artist": "Miles Davis"
+      },
+      "title": "Kind of Blue",
+      "year": 1959
+    }
+  },
+  {
+    "name": "Miles_Davis-Kind_of_Blue-WEB-1959-AVS",
+    "expect": {
+      "group": "AVS",
+      "kind": "music",
+      "music": {
+        "album": "Kind of Blue",
+        "artist": "Miles Davis",
+        "source": "web"
+      },
+      "title": "Kind of Blue",
+      "year": 1959
+    }
+  },
+  {
+    "name": "Miles_Davis-Kind_of_Blue-2CD-1959-AVS",
+    "expect": {
+      "group": "AVS",
+      "kind": "music",
+      "music": {
+        "album": "Kind of Blue",
+        "artist": "Miles Davis",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Kind of Blue",
+      "year": 1959
+    }
+  },
+  {
+    "name": "Miles_Davis-Kind_of_Blue-(CAT0105)-CD-FLAC-1959-AVS",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "AVS",
+      "kind": "music",
+      "music": {
+        "album": "Kind of Blue",
+        "artist": "Miles Davis",
+        "source": "cd"
+      },
+      "title": "Kind of Blue",
+      "year": 1959
+    }
+  },
+  {
+    "name": "Miles Davis - Kind of Blue (1959) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Kind of Blue",
+        "artist": "Miles Davis"
+      },
+      "title": "Kind of Blue",
+      "year": 1959
+    }
+  },
+  {
+    "name": "Fleetwood Mac - Rumours (1977) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Rumours",
+        "artist": "Fleetwood Mac"
+      },
+      "title": "Rumours",
+      "year": 1977
+    }
+  },
+  {
+    "name": "Fleetwood Mac - Rumours (1977) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Rumours",
+        "artist": "Fleetwood Mac"
+      },
+      "title": "Rumours",
+      "year": 1977
+    }
+  },
+  {
+    "name": "Fleetwood Mac - Rumours (1977) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Rumours",
+        "artist": "Fleetwood Mac"
+      },
+      "title": "Rumours",
+      "year": 1977
+    }
+  },
+  {
+    "name": "Fleetwood Mac - Rumours [1977] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Rumours",
+        "artist": "Fleetwood Mac"
+      },
+      "title": "Rumours",
+      "year": 1977
+    }
+  },
+  {
+    "name": "Fleetwood_Mac-Rumours-WEB-1977-NOGRP",
+    "expect": {
+      "group": "NOGRP",
+      "kind": "music",
+      "music": {
+        "album": "Rumours",
+        "artist": "Fleetwood Mac",
+        "source": "web"
+      },
+      "title": "Rumours",
+      "year": 1977
+    }
+  },
+  {
+    "name": "Fleetwood_Mac-Rumours-2CD-1977-NOGRP",
+    "expect": {
+      "group": "NOGRP",
+      "kind": "music",
+      "music": {
+        "album": "Rumours",
+        "artist": "Fleetwood Mac",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Rumours",
+      "year": 1977
+    }
+  },
+  {
+    "name": "Fleetwood_Mac-Rumours-(CAT0106)-CD-FLAC-1977-NOGRP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "NOGRP",
+      "kind": "music",
+      "music": {
+        "album": "Rumours",
+        "artist": "Fleetwood Mac",
+        "source": "cd"
+      },
+      "title": "Rumours",
+      "year": 1977
+    }
+  },
+  {
+    "name": "Fleetwood Mac - Rumours (1977) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Rumours",
+        "artist": "Fleetwood Mac"
+      },
+      "title": "Rumours",
+      "year": 1977
+    }
+  },
+  {
+    "name": "Massive Attack - Mezzanine (1998) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mezzanine",
+        "artist": "Massive Attack"
+      },
+      "title": "Mezzanine",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Massive Attack - Mezzanine (1998) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mezzanine",
+        "artist": "Massive Attack"
+      },
+      "title": "Mezzanine",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Massive Attack - Mezzanine (1998) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mezzanine",
+        "artist": "Massive Attack"
+      },
+      "title": "Mezzanine",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Massive Attack - Mezzanine [1998] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mezzanine",
+        "artist": "Massive Attack"
+      },
+      "title": "Mezzanine",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Massive_Attack-Mezzanine-WEB-1998-BLOOM",
+    "expect": {
+      "group": "BLOOM",
+      "kind": "music",
+      "music": {
+        "album": "Mezzanine",
+        "artist": "Massive Attack",
+        "source": "web"
+      },
+      "title": "Mezzanine",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Massive_Attack-Mezzanine-2CD-1998-BLOOM",
+    "expect": {
+      "group": "BLOOM",
+      "kind": "music",
+      "music": {
+        "album": "Mezzanine",
+        "artist": "Massive Attack",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Mezzanine",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Massive_Attack-Mezzanine-(CAT0107)-CD-FLAC-1998-BLOOM",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "BLOOM",
+      "kind": "music",
+      "music": {
+        "album": "Mezzanine",
+        "artist": "Massive Attack",
+        "source": "cd"
+      },
+      "title": "Mezzanine",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Massive Attack - Mezzanine (1998) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mezzanine",
+        "artist": "Massive Attack"
+      },
+      "title": "Mezzanine",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Bjork - Homogenic (1997) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Homogenic",
+        "artist": "Bjork"
+      },
+      "title": "Homogenic",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Bjork - Homogenic (1997) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Homogenic",
+        "artist": "Bjork"
+      },
+      "title": "Homogenic",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Bjork - Homogenic (1997) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Homogenic",
+        "artist": "Bjork"
+      },
+      "title": "Homogenic",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Bjork - Homogenic [1997] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Homogenic",
+        "artist": "Bjork"
+      },
+      "title": "Homogenic",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Bjork-Homogenic-WEB-1997-WELP",
+    "expect": {
+      "group": "WELP",
+      "kind": "music",
+      "music": {
+        "album": "Homogenic",
+        "artist": "Bjork",
+        "source": "web"
+      },
+      "title": "Homogenic",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Bjork-Homogenic-2CD-1997-WELP",
+    "expect": {
+      "group": "WELP",
+      "kind": "music",
+      "music": {
+        "album": "Homogenic",
+        "artist": "Bjork",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Homogenic",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Bjork-Homogenic-(CAT0108)-CD-FLAC-1997-WELP",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "WELP",
+      "kind": "music",
+      "music": {
+        "album": "Homogenic",
+        "artist": "Bjork",
+        "source": "cd"
+      },
+      "title": "Homogenic",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Bjork - Homogenic (1997) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Homogenic",
+        "artist": "Bjork"
+      },
+      "title": "Homogenic",
+      "year": 1997
+    }
+  },
+  {
+    "name": "Dino Merlin - Hotel Nacional (2014) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hotel Nacional",
+        "artist": "Dino Merlin"
+      },
+      "title": "Hotel Nacional",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Dino Merlin - Hotel Nacional (2014) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hotel Nacional",
+        "artist": "Dino Merlin"
+      },
+      "title": "Hotel Nacional",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Dino Merlin - Hotel Nacional (2014) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hotel Nacional",
+        "artist": "Dino Merlin"
+      },
+      "title": "Hotel Nacional",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Dino Merlin - Hotel Nacional [2014] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hotel Nacional",
+        "artist": "Dino Merlin"
+      },
+      "title": "Hotel Nacional",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Dino_Merlin-Hotel_Nacional-WEB-2014-NAISU",
+    "expect": {
+      "group": "NAISU",
+      "kind": "music",
+      "music": {
+        "album": "Hotel Nacional",
+        "artist": "Dino Merlin",
+        "source": "web"
+      },
+      "title": "Hotel Nacional",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Dino_Merlin-Hotel_Nacional-2CD-2014-NAISU",
+    "expect": {
+      "group": "NAISU",
+      "kind": "music",
+      "music": {
+        "album": "Hotel Nacional",
+        "artist": "Dino Merlin",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Hotel Nacional",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Dino_Merlin-Hotel_Nacional-(CAT0109)-CD-FLAC-2014-NAISU",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "NAISU",
+      "kind": "music",
+      "music": {
+        "album": "Hotel Nacional",
+        "artist": "Dino Merlin",
+        "source": "cd"
+      },
+      "title": "Hotel Nacional",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Dino Merlin - Hotel Nacional (2014) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hotel Nacional",
+        "artist": "Dino Merlin"
+      },
+      "title": "Hotel Nacional",
+      "year": 2014
+    }
+  },
+  {
+    "name": "Gibonni - Mirakul (2001) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mirakul",
+        "artist": "Gibonni"
+      },
+      "title": "Mirakul",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Gibonni - Mirakul (2001) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mirakul",
+        "artist": "Gibonni"
+      },
+      "title": "Mirakul",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Gibonni - Mirakul (2001) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mirakul",
+        "artist": "Gibonni"
+      },
+      "title": "Mirakul",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Gibonni - Mirakul [2001] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mirakul",
+        "artist": "Gibonni"
+      },
+      "title": "Mirakul",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Gibonni-Mirakul-WEB-2001-EDITH",
+    "expect": {
+      "group": "EDITH",
+      "kind": "music",
+      "music": {
+        "album": "Mirakul",
+        "artist": "Gibonni",
+        "source": "web"
+      },
+      "title": "Mirakul",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Gibonni-Mirakul-2CD-2001-EDITH",
+    "expect": {
+      "group": "EDITH",
+      "kind": "music",
+      "music": {
+        "album": "Mirakul",
+        "artist": "Gibonni",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Mirakul",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Gibonni-Mirakul-(CAT0110)-CD-FLAC-2001-EDITH",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "EDITH",
+      "kind": "music",
+      "music": {
+        "album": "Mirakul",
+        "artist": "Gibonni",
+        "source": "cd"
+      },
+      "title": "Mirakul",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Gibonni - Mirakul (2001) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Mirakul",
+        "artist": "Gibonni"
+      },
+      "title": "Mirakul",
+      "year": 2001
+    }
+  },
+  {
+    "name": "Prljavo Kazaliste - Crno bijeli svijet (1980) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Crno bijeli svijet",
+        "artist": "Prljavo Kazaliste"
+      },
+      "title": "Crno bijeli svijet",
+      "year": 1980
+    }
+  },
+  {
+    "name": "Prljavo Kazaliste - Crno bijeli svijet (1980) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Crno bijeli svijet",
+        "artist": "Prljavo Kazaliste"
+      },
+      "title": "Crno bijeli svijet",
+      "year": 1980
+    }
+  },
+  {
+    "name": "Prljavo Kazaliste - Crno bijeli svijet (1980) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Crno bijeli svijet",
+        "artist": "Prljavo Kazaliste"
+      },
+      "title": "Crno bijeli svijet",
+      "year": 1980
+    }
+  },
+  {
+    "name": "Prljavo Kazaliste - Crno bijeli svijet [1980] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Crno bijeli svijet",
+        "artist": "Prljavo Kazaliste"
+      },
+      "title": "Crno bijeli svijet",
+      "year": 1980
+    }
+  },
+  {
+    "name": "Prljavo_Kazaliste-Crno_bijeli_svijet-WEB-1980-SiGMA",
+    "expect": {
+      "group": "SiGMA",
+      "kind": "music",
+      "music": {
+        "album": "Crno bijeli svijet",
+        "artist": "Prljavo Kazaliste",
+        "source": "web"
+      },
+      "title": "Crno bijeli svijet",
+      "year": 1980
+    }
+  },
+  {
+    "name": "Prljavo_Kazaliste-Crno_bijeli_svijet-2CD-1980-SiGMA",
+    "expect": {
+      "group": "SiGMA",
+      "kind": "music",
+      "music": {
+        "album": "Crno bijeli svijet",
+        "artist": "Prljavo Kazaliste",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Crno bijeli svijet",
+      "year": 1980
+    }
+  },
+  {
+    "name": "Prljavo_Kazaliste-Crno_bijeli_svijet-(CAT0111)-CD-FLAC-1980-SiGMA",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "SiGMA",
+      "kind": "music",
+      "music": {
+        "album": "Crno bijeli svijet",
+        "artist": "Prljavo Kazaliste",
+        "source": "cd"
+      },
+      "title": "Crno bijeli svijet",
+      "year": 1980
+    }
+  },
+  {
+    "name": "Prljavo Kazaliste - Crno bijeli svijet (1980) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Crno bijeli svijet",
+        "artist": "Prljavo Kazaliste"
+      },
+      "title": "Crno bijeli svijet",
+      "year": 1980
+    }
+  },
+  {
+    "name": "Beyonce - Lemonade (2016) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Lemonade",
+        "artist": "Beyonce"
+      },
+      "title": "Lemonade",
+      "year": 2016
+    }
+  },
+  {
+    "name": "Beyonce - Lemonade (2016) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Lemonade",
+        "artist": "Beyonce"
+      },
+      "title": "Lemonade",
+      "year": 2016
+    }
+  },
+  {
+    "name": "Beyonce - Lemonade (2016) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Lemonade",
+        "artist": "Beyonce"
+      },
+      "title": "Lemonade",
+      "year": 2016
+    }
+  },
+  {
+    "name": "Beyonce - Lemonade [2016] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Lemonade",
+        "artist": "Beyonce"
+      },
+      "title": "Lemonade",
+      "year": 2016
+    }
+  },
+  {
+    "name": "Beyonce-Lemonade-WEB-2016-KOGi",
+    "expect": {
+      "group": "KOGi",
+      "kind": "music",
+      "music": {
+        "album": "Lemonade",
+        "artist": "Beyonce",
+        "source": "web"
+      },
+      "title": "Lemonade",
+      "year": 2016
+    }
+  },
+  {
+    "name": "Beyonce-Lemonade-2CD-2016-KOGi",
+    "expect": {
+      "group": "KOGi",
+      "kind": "music",
+      "music": {
+        "album": "Lemonade",
+        "artist": "Beyonce",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Lemonade",
+      "year": 2016
+    }
+  },
+  {
+    "name": "Beyonce-Lemonade-(CAT0112)-CD-FLAC-2016-KOGi",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "KOGi",
+      "kind": "music",
+      "music": {
+        "album": "Lemonade",
+        "artist": "Beyonce",
+        "source": "cd"
+      },
+      "title": "Lemonade",
+      "year": 2016
+    }
+  },
+  {
+    "name": "Beyonce - Lemonade (2016) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Lemonade",
+        "artist": "Beyonce"
+      },
+      "title": "Lemonade",
+      "year": 2016
+    }
+  },
+  {
+    "name": "Adele - 25 (2015) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "25",
+        "artist": "Adele"
+      },
+      "title": "25",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Adele - 25 (2015) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "25",
+        "artist": "Adele"
+      },
+      "title": "25",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Adele - 25 (2015) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "25",
+        "artist": "Adele"
+      },
+      "title": "25",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Adele - 25 [2015] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "25",
+        "artist": "Adele"
+      },
+      "title": "25",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Adele-25-WEB-2015-CtrlHD",
+    "expect": {
+      "group": "CtrlHD",
+      "kind": "music",
+      "music": {
+        "album": "25",
+        "artist": "Adele",
+        "source": "web"
+      },
+      "title": "25",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Adele-25-2CD-2015-CtrlHD",
+    "expect": {
+      "group": "CtrlHD",
+      "kind": "music",
+      "music": {
+        "album": "25",
+        "artist": "Adele",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "25",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Adele-25-(CAT0113)-CD-FLAC-2015-CtrlHD",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "CtrlHD",
+      "kind": "music",
+      "music": {
+        "album": "25",
+        "artist": "Adele",
+        "source": "cd"
+      },
+      "title": "25",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Adele - 25 (2015) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "25",
+        "artist": "Adele"
+      },
+      "title": "25",
+      "year": 2015
+    }
+  },
+  {
+    "name": "Metallica - Master of Puppets (1986) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Master of Puppets",
+        "artist": "Metallica"
+      },
+      "title": "Master of Puppets",
+      "year": 1986
+    }
+  },
+  {
+    "name": "Metallica - Master of Puppets (1986) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Master of Puppets",
+        "artist": "Metallica"
+      },
+      "title": "Master of Puppets",
+      "year": 1986
+    }
+  },
+  {
+    "name": "Metallica - Master of Puppets (1986) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Master of Puppets",
+        "artist": "Metallica"
+      },
+      "title": "Master of Puppets",
+      "year": 1986
+    }
+  },
+  {
+    "name": "Metallica - Master of Puppets [1986] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Master of Puppets",
+        "artist": "Metallica"
+      },
+      "title": "Master of Puppets",
+      "year": 1986
+    }
+  },
+  {
+    "name": "Metallica-Master_of_Puppets-WEB-1986-DIMENSION",
+    "expect": {
+      "group": "DIMENSION",
+      "kind": "music",
+      "music": {
+        "album": "Master of Puppets",
+        "artist": "Metallica",
+        "source": "web"
+      },
+      "title": "Master of Puppets",
+      "year": 1986
+    }
+  },
+  {
+    "name": "Metallica-Master_of_Puppets-2CD-1986-DIMENSION",
+    "expect": {
+      "group": "DIMENSION",
+      "kind": "music",
+      "music": {
+        "album": "Master of Puppets",
+        "artist": "Metallica",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Master of Puppets",
+      "year": 1986
+    }
+  },
+  {
+    "name": "Metallica-Master_of_Puppets-(CAT0114)-CD-FLAC-1986-DIMENSION",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "DIMENSION",
+      "kind": "music",
+      "music": {
+        "album": "Master of Puppets",
+        "artist": "Metallica",
+        "source": "cd"
+      },
+      "title": "Master of Puppets",
+      "year": 1986
+    }
+  },
+  {
+    "name": "Metallica - Master of Puppets (1986) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Master of Puppets",
+        "artist": "Metallica"
+      },
+      "title": "Master of Puppets",
+      "year": 1986
+    }
+  },
+  {
+    "name": "Nirvana - Nevermind (1991) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Nevermind",
+        "artist": "Nirvana"
+      },
+      "title": "Nevermind",
+      "year": 1991
+    }
+  },
+  {
+    "name": "Nirvana - Nevermind (1991) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Nevermind",
+        "artist": "Nirvana"
+      },
+      "title": "Nevermind",
+      "year": 1991
+    }
+  },
+  {
+    "name": "Nirvana - Nevermind (1991) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Nevermind",
+        "artist": "Nirvana"
+      },
+      "title": "Nevermind",
+      "year": 1991
+    }
+  },
+  {
+    "name": "Nirvana - Nevermind [1991] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Nevermind",
+        "artist": "Nirvana"
+      },
+      "title": "Nevermind",
+      "year": 1991
+    }
+  },
+  {
+    "name": "Nirvana-Nevermind-WEB-1991-MiNX",
+    "expect": {
+      "group": "MiNX",
+      "kind": "music",
+      "music": {
+        "album": "Nevermind",
+        "artist": "Nirvana",
+        "source": "web"
+      },
+      "title": "Nevermind",
+      "year": 1991
+    }
+  },
+  {
+    "name": "Nirvana-Nevermind-2CD-1991-MiNX",
+    "expect": {
+      "group": "MiNX",
+      "kind": "music",
+      "music": {
+        "album": "Nevermind",
+        "artist": "Nirvana",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Nevermind",
+      "year": 1991
+    }
+  },
+  {
+    "name": "Nirvana-Nevermind-(CAT0115)-CD-FLAC-1991-MiNX",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "MiNX",
+      "kind": "music",
+      "music": {
+        "album": "Nevermind",
+        "artist": "Nirvana",
+        "source": "cd"
+      },
+      "title": "Nevermind",
+      "year": 1991
+    }
+  },
+  {
+    "name": "Nirvana - Nevermind (1991) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Nevermind",
+        "artist": "Nirvana"
+      },
+      "title": "Nevermind",
+      "year": 1991
+    }
+  },
+  {
+    "name": "The Beatles - Abbey Road (1969) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Abbey Road",
+        "artist": "The Beatles"
+      },
+      "title": "Abbey Road",
+      "year": 1969
+    }
+  },
+  {
+    "name": "The Beatles - Abbey Road (1969) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Abbey Road",
+        "artist": "The Beatles"
+      },
+      "title": "Abbey Road",
+      "year": 1969
+    }
+  },
+  {
+    "name": "The Beatles - Abbey Road (1969) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Abbey Road",
+        "artist": "The Beatles"
+      },
+      "title": "Abbey Road",
+      "year": 1969
+    }
+  },
+  {
+    "name": "The Beatles - Abbey Road [1969] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Abbey Road",
+        "artist": "The Beatles"
+      },
+      "title": "Abbey Road",
+      "year": 1969
+    }
+  },
+  {
+    "name": "The_Beatles-Abbey_Road-WEB-1969-SYNCOPY",
+    "expect": {
+      "group": "SYNCOPY",
+      "kind": "music",
+      "music": {
+        "album": "Abbey Road",
+        "artist": "The Beatles",
+        "source": "web"
+      },
+      "title": "Abbey Road",
+      "year": 1969
+    }
+  },
+  {
+    "name": "The_Beatles-Abbey_Road-2CD-1969-SYNCOPY",
+    "expect": {
+      "group": "SYNCOPY",
+      "kind": "music",
+      "music": {
+        "album": "Abbey Road",
+        "artist": "The Beatles",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Abbey Road",
+      "year": 1969
+    }
+  },
+  {
+    "name": "The_Beatles-Abbey_Road-(CAT0116)-CD-FLAC-1969-SYNCOPY",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "SYNCOPY",
+      "kind": "music",
+      "music": {
+        "album": "Abbey Road",
+        "artist": "The Beatles",
+        "source": "cd"
+      },
+      "title": "Abbey Road",
+      "year": 1969
+    }
+  },
+  {
+    "name": "The Beatles - Abbey Road (1969) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Abbey Road",
+        "artist": "The Beatles"
+      },
+      "title": "Abbey Road",
+      "year": 1969
+    }
+  },
+  {
+    "name": "Billie Eilish - Hit Me Hard and Soft (2024) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hit Me Hard and Soft",
+        "artist": "Billie Eilish"
+      },
+      "title": "Hit Me Hard and Soft",
+      "year": 2024
+    }
+  },
+  {
+    "name": "Billie Eilish - Hit Me Hard and Soft (2024) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hit Me Hard and Soft",
+        "artist": "Billie Eilish"
+      },
+      "title": "Hit Me Hard and Soft",
+      "year": 2024
+    }
+  },
+  {
+    "name": "Billie Eilish - Hit Me Hard and Soft (2024) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hit Me Hard and Soft",
+        "artist": "Billie Eilish"
+      },
+      "title": "Hit Me Hard and Soft",
+      "year": 2024
+    }
+  },
+  {
+    "name": "Billie Eilish - Hit Me Hard and Soft [2024] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hit Me Hard and Soft",
+        "artist": "Billie Eilish"
+      },
+      "title": "Hit Me Hard and Soft",
+      "year": 2024
+    }
+  },
+  {
+    "name": "Billie_Eilish-Hit_Me_Hard_and_Soft-WEB-2024-SMURF",
+    "expect": {
+      "group": "SMURF",
+      "kind": "music",
+      "music": {
+        "album": "Hit Me Hard and Soft",
+        "artist": "Billie Eilish",
+        "source": "web"
+      },
+      "title": "Hit Me Hard and Soft",
+      "year": 2024
+    }
+  },
+  {
+    "name": "Billie_Eilish-Hit_Me_Hard_and_Soft-2CD-2024-SMURF",
+    "expect": {
+      "group": "SMURF",
+      "kind": "music",
+      "music": {
+        "album": "Hit Me Hard and Soft",
+        "artist": "Billie Eilish",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Hit Me Hard and Soft",
+      "year": 2024
+    }
+  },
+  {
+    "name": "Billie_Eilish-Hit_Me_Hard_and_Soft-(CAT0117)-CD-FLAC-2024-SMURF",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "SMURF",
+      "kind": "music",
+      "music": {
+        "album": "Hit Me Hard and Soft",
+        "artist": "Billie Eilish",
+        "source": "cd"
+      },
+      "title": "Hit Me Hard and Soft",
+      "year": 2024
+    }
+  },
+  {
+    "name": "Billie Eilish - Hit Me Hard and Soft (2024) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Hit Me Hard and Soft",
+        "artist": "Billie Eilish"
+      },
+      "title": "Hit Me Hard and Soft",
+      "year": 2024
+    }
+  },
+  {
+    "name": "Arctic Monkeys - AM (2013) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "AM",
+        "artist": "Arctic Monkeys"
+      },
+      "title": "AM",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Arctic Monkeys - AM (2013) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "AM",
+        "artist": "Arctic Monkeys"
+      },
+      "title": "AM",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Arctic Monkeys - AM (2013) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "AM",
+        "artist": "Arctic Monkeys"
+      },
+      "title": "AM",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Arctic Monkeys - AM [2013] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "AM",
+        "artist": "Arctic Monkeys"
+      },
+      "title": "AM",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Arctic_Monkeys-AM-WEB-2013-RAWR",
+    "expect": {
+      "group": "RAWR",
+      "kind": "music",
+      "music": {
+        "album": "AM",
+        "artist": "Arctic Monkeys",
+        "source": "web"
+      },
+      "title": "AM",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Arctic_Monkeys-AM-2CD-2013-RAWR",
+    "expect": {
+      "group": "RAWR",
+      "kind": "music",
+      "music": {
+        "album": "AM",
+        "artist": "Arctic Monkeys",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "AM",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Arctic_Monkeys-AM-(CAT0118)-CD-FLAC-2013-RAWR",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "RAWR",
+      "kind": "music",
+      "music": {
+        "album": "AM",
+        "artist": "Arctic Monkeys",
+        "source": "cd"
+      },
+      "title": "AM",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Arctic Monkeys - AM (2013) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "AM",
+        "artist": "Arctic Monkeys"
+      },
+      "title": "AM",
+      "year": 2013
+    }
+  },
+  {
+    "name": "Boards of Canada - Music Has the Right to Children (1998) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Music Has the Right to Children",
+        "artist": "Boards of Canada"
+      },
+      "title": "Music Has the Right to Children",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Boards of Canada - Music Has the Right to Children (1998) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Music Has the Right to Children",
+        "artist": "Boards of Canada"
+      },
+      "title": "Music Has the Right to Children",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Boards of Canada - Music Has the Right to Children (1998) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Music Has the Right to Children",
+        "artist": "Boards of Canada"
+      },
+      "title": "Music Has the Right to Children",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Boards of Canada - Music Has the Right to Children [1998] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Music Has the Right to Children",
+        "artist": "Boards of Canada"
+      },
+      "title": "Music Has the Right to Children",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Boards_of_Canada-Music_Has_the_Right_to_Children-WEB-1998-FLUX",
+    "expect": {
+      "group": "FLUX",
+      "kind": "music",
+      "music": {
+        "album": "Music Has the Right to Children",
+        "artist": "Boards of Canada",
+        "source": "web"
+      },
+      "title": "Music Has the Right to Children",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Boards_of_Canada-Music_Has_the_Right_to_Children-2CD-1998-FLUX",
+    "expect": {
+      "group": "FLUX",
+      "kind": "music",
+      "music": {
+        "album": "Music Has the Right to Children",
+        "artist": "Boards of Canada",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Music Has the Right to Children",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Boards_of_Canada-Music_Has_the_Right_to_Children-(CAT0119)-CD-FLAC-1998-FLUX",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "FLUX",
+      "kind": "music",
+      "music": {
+        "album": "Music Has the Right to Children",
+        "artist": "Boards of Canada",
+        "source": "cd"
+      },
+      "title": "Music Has the Right to Children",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Boards of Canada - Music Has the Right to Children (1998) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Music Has the Right to Children",
+        "artist": "Boards of Canada"
+      },
+      "title": "Music Has the Right to Children",
+      "year": 1998
+    }
+  },
+  {
+    "name": "Queen - A Night at the Opera (1975) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "A Night at the Opera",
+        "artist": "Queen"
+      },
+      "title": "A Night at the Opera",
+      "year": 1975
+    }
+  },
+  {
+    "name": "Queen - A Night at the Opera (1975) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "A Night at the Opera",
+        "artist": "Queen"
+      },
+      "title": "A Night at the Opera",
+      "year": 1975
+    }
+  },
+  {
+    "name": "Queen - A Night at the Opera (1975) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "A Night at the Opera",
+        "artist": "Queen"
+      },
+      "title": "A Night at the Opera",
+      "year": 1975
+    }
+  },
+  {
+    "name": "Queen - A Night at the Opera [1975] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "A Night at the Opera",
+        "artist": "Queen"
+      },
+      "title": "A Night at the Opera",
+      "year": 1975
+    }
+  },
+  {
+    "name": "Queen-A_Night_at_the_Opera-WEB-1975-playWEB",
+    "expect": {
+      "group": "playWEB",
+      "kind": "music",
+      "music": {
+        "album": "A Night at the Opera",
+        "artist": "Queen",
+        "source": "web"
+      },
+      "title": "A Night at the Opera",
+      "year": 1975
+    }
+  },
+  {
+    "name": "Queen-A_Night_at_the_Opera-2CD-1975-playWEB",
+    "expect": {
+      "group": "playWEB",
+      "kind": "music",
+      "music": {
+        "album": "A Night at the Opera",
+        "artist": "Queen",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "A Night at the Opera",
+      "year": 1975
+    }
+  },
+  {
+    "name": "Queen-A_Night_at_the_Opera-(CAT0120)-CD-FLAC-1975-playWEB",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "playWEB",
+      "kind": "music",
+      "music": {
+        "album": "A Night at the Opera",
+        "artist": "Queen",
+        "source": "cd"
+      },
+      "title": "A Night at the Opera",
+      "year": 1975
+    }
+  },
+  {
+    "name": "Queen - A Night at the Opera (1975) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "A Night at the Opera",
+        "artist": "Queen"
+      },
+      "title": "A Night at the Opera",
+      "year": 1975
+    }
+  },
+  {
+    "name": "Parni Valjak - Sjaj u tami (1983) [FLAC]",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Sjaj u tami",
+        "artist": "Parni Valjak"
+      },
+      "title": "Sjaj u tami",
+      "year": 1983
+    }
+  },
+  {
+    "name": "Parni Valjak - Sjaj u tami (1983) [FLAC 24bit-96kHz]",
+    "expect": {
+      "audio": {
+        "bitDepth": 24,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 96
+      },
+      "kind": "music",
+      "music": {
+        "album": "Sjaj u tami",
+        "artist": "Parni Valjak"
+      },
+      "title": "Sjaj u tami",
+      "year": 1983
+    }
+  },
+  {
+    "name": "Parni Valjak - Sjaj u tami (1983) [MP3 320]",
+    "expect": {
+      "audio": {
+        "bitrate": "320",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Sjaj u tami",
+        "artist": "Parni Valjak"
+      },
+      "title": "Sjaj u tami",
+      "year": 1983
+    }
+  },
+  {
+    "name": "Parni Valjak - Sjaj u tami [1983] [MP3 V0]",
+    "expect": {
+      "audio": {
+        "bitrate": "V0",
+        "codecs": [
+          "mp3"
+        ]
+      },
+      "kind": "music",
+      "music": {
+        "album": "Sjaj u tami",
+        "artist": "Parni Valjak"
+      },
+      "title": "Sjaj u tami",
+      "year": 1983
+    }
+  },
+  {
+    "name": "Parni_Valjak-Sjaj_u_tami-WEB-1983-AMIABLE",
+    "expect": {
+      "group": "AMIABLE",
+      "kind": "music",
+      "music": {
+        "album": "Sjaj u tami",
+        "artist": "Parni Valjak",
+        "source": "web"
+      },
+      "title": "Sjaj u tami",
+      "year": 1983
+    }
+  },
+  {
+    "name": "Parni_Valjak-Sjaj_u_tami-2CD-1983-AMIABLE",
+    "expect": {
+      "group": "AMIABLE",
+      "kind": "music",
+      "music": {
+        "album": "Sjaj u tami",
+        "artist": "Parni Valjak",
+        "discs": 2,
+        "source": "cd"
+      },
+      "title": "Sjaj u tami",
+      "year": 1983
+    }
+  },
+  {
+    "name": "Parni_Valjak-Sjaj_u_tami-(CAT0121)-CD-FLAC-1983-AMIABLE",
+    "expect": {
+      "audio": {
+        "codecs": [
+          "flac"
+        ]
+      },
+      "group": "AMIABLE",
+      "kind": "music",
+      "music": {
+        "album": "Sjaj u tami",
+        "artist": "Parni Valjak",
+        "source": "cd"
+      },
+      "title": "Sjaj u tami",
+      "year": 1983
+    }
+  },
+  {
+    "name": "Parni Valjak - Sjaj u tami (1983) [WEB FLAC 16-44]",
+    "expect": {
+      "audio": {
+        "bitDepth": 16,
+        "codecs": [
+          "flac"
+        ],
+        "sampleRateKHz": 44.1
+      },
+      "kind": "music",
+      "music": {
+        "album": "Sjaj u tami",
+        "artist": "Parni Valjak"
+      },
+      "title": "Sjaj u tami",
+      "year": 1983
+    }
+  }
+]

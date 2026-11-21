@@ -1,0 +1,2246 @@
+[
+  {
+    "name": "[SubsPlease] Jujutsu Kaisen - 01 (1080p) [A1B2C3D4].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        1
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "SubsPlease",
+      "hash": "A1B2C3D4",
+      "kind": "series",
+      "title": "Jujutsu Kaisen",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Jujutsu Kaisen - 02v2 (720p) [A1B2C3D4].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        2
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Jujutsu Kaisen",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Jujutsu Kaisen - 101 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        101
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Jujutsu Kaisen",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Jujutsu Kaisen (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Jujutsu Kaisen",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Jujutsu Kaisen S2 - 01 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        1
+      ],
+      "group": "SubsPlease",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Jujutsu Kaisen",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Jujutsu Kaisen [03][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        3
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Jujutsu Kaisen",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Jujutsu.Kaisen.S01E01.1080p.CR.WEB-DL.AAC2.0.H.264-SPARKS",
+    "expect": {
+      "episodes": [
+        1
+      ],
+      "group": "SPARKS",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Jujutsu Kaisen",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Erai-raws] One Piece - 08 (1080p) [9F3E2C1B].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        8
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "Erai-raws",
+      "hash": "9F3E2C1B",
+      "kind": "series",
+      "title": "One Piece",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[Erai-raws] One Piece - 09v2 (720p) [9F3E2C1B].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        9
+      ],
+      "anime": true,
+      "group": "Erai-raws",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "One Piece",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[Erai-raws] One Piece - 108 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        108
+      ],
+      "anime": true,
+      "group": "Erai-raws",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "One Piece",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[Erai-raws] One Piece (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "Erai-raws",
+      "kind": "series",
+      "title": "One Piece",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Erai-raws] One Piece S2 - 08 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        8
+      ],
+      "group": "Erai-raws",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "One Piece",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Erai-raws] One Piece [10][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        10
+      ],
+      "anime": true,
+      "group": "Erai-raws",
+      "kind": "series",
+      "title": "One Piece",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "One.Piece.S01E08.1080p.CR.WEB-DL.AAC2.0.H.264-FLUX",
+    "expect": {
+      "episodes": [
+        8
+      ],
+      "group": "FLUX",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "One Piece",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Sousou no Frieren - 15 (1080p) [DEADBEEF].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        15
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "SubsPlease",
+      "hash": "DEADBEEF",
+      "kind": "series",
+      "title": "Sousou no Frieren",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Sousou no Frieren - 16v2 (720p) [DEADBEEF].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        16
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Sousou no Frieren",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Sousou no Frieren - 115 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        115
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Sousou no Frieren",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Sousou no Frieren (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Sousou no Frieren",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Sousou no Frieren S2 - 15 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        15
+      ],
+      "group": "SubsPlease",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Sousou no Frieren",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Sousou no Frieren [17][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        17
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Sousou no Frieren",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Sousou.no.Frieren.S01E15.1080p.CR.WEB-DL.AAC2.0.H.264-NTb",
+    "expect": {
+      "episodes": [
+        15
+      ],
+      "group": "NTb",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Sousou no Frieren",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[EMBER] Spy x Family - 22 (1080p) [0BADF00D].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        22
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "EMBER",
+      "hash": "0BADF00D",
+      "kind": "series",
+      "title": "Spy x Family",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[EMBER] Spy x Family - 23v2 (720p) [0BADF00D].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        23
+      ],
+      "anime": true,
+      "group": "EMBER",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Spy x Family",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[EMBER] Spy x Family - 122 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        122
+      ],
+      "anime": true,
+      "group": "EMBER",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Spy x Family",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[EMBER] Spy x Family (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "EMBER",
+      "kind": "series",
+      "title": "Spy x Family",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[EMBER] Spy x Family S2 - 22 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        22
+      ],
+      "group": "EMBER",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Spy x Family",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[EMBER] Spy x Family [24][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        24
+      ],
+      "anime": true,
+      "group": "EMBER",
+      "kind": "series",
+      "title": "Spy x Family",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Spy.x.Family.S01E22.1080p.CR.WEB-DL.AAC2.0.H.264-EDITH",
+    "expect": {
+      "episodes": [
+        22
+      ],
+      "group": "EDITH",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Spy x Family",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Judas] Chainsaw Man - 05 (1080p) [C0FFEE42].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        5
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "Judas",
+      "hash": "C0FFEE42",
+      "kind": "series",
+      "title": "Chainsaw Man",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[Judas] Chainsaw Man - 06v2 (720p) [C0FFEE42].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        6
+      ],
+      "anime": true,
+      "group": "Judas",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Chainsaw Man",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[Judas] Chainsaw Man - 105 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        105
+      ],
+      "anime": true,
+      "group": "Judas",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Chainsaw Man",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[Judas] Chainsaw Man (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "Judas",
+      "kind": "series",
+      "title": "Chainsaw Man",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Judas] Chainsaw Man S2 - 05 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        5
+      ],
+      "group": "Judas",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Chainsaw Man",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Judas] Chainsaw Man [07][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        7
+      ],
+      "anime": true,
+      "group": "Judas",
+      "kind": "series",
+      "title": "Chainsaw Man",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Chainsaw.Man.S01E05.1080p.CR.WEB-DL.AAC2.0.H.264-CMRG",
+    "expect": {
+      "episodes": [
+        5
+      ],
+      "group": "CMRG",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Chainsaw Man",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[HorribleSubs] Attack on Titan - 12 (1080p) [7E4A1D90].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        12
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "HorribleSubs",
+      "hash": "7E4A1D90",
+      "kind": "series",
+      "title": "Attack on Titan",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[HorribleSubs] Attack on Titan - 13v2 (720p) [7E4A1D90].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        13
+      ],
+      "anime": true,
+      "group": "HorribleSubs",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Attack on Titan",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[HorribleSubs] Attack on Titan - 112 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        112
+      ],
+      "anime": true,
+      "group": "HorribleSubs",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Attack on Titan",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[HorribleSubs] Attack on Titan (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "HorribleSubs",
+      "kind": "series",
+      "title": "Attack on Titan",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[HorribleSubs] Attack on Titan S2 - 12 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        12
+      ],
+      "group": "HorribleSubs",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Attack on Titan",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[HorribleSubs] Attack on Titan [14][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        14
+      ],
+      "anime": true,
+      "group": "HorribleSubs",
+      "kind": "series",
+      "title": "Attack on Titan",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Attack.on.Titan.S01E12.1080p.CR.WEB-DL.AAC2.0.H.264-KiNGS",
+    "expect": {
+      "episodes": [
+        12
+      ],
+      "group": "KiNGS",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Attack on Titan",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[ASW] Demon Slayer Kimetsu no Yaiba - 19 (1080p) [12AB34CD].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        19
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "ASW",
+      "hash": "12AB34CD",
+      "kind": "series",
+      "title": "Demon Slayer Kimetsu no Yaiba",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[ASW] Demon Slayer Kimetsu no Yaiba - 20v2 (720p) [12AB34CD].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        20
+      ],
+      "anime": true,
+      "group": "ASW",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Demon Slayer Kimetsu no Yaiba",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[ASW] Demon Slayer Kimetsu no Yaiba - 119 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        119
+      ],
+      "anime": true,
+      "group": "ASW",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Demon Slayer Kimetsu no Yaiba",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[ASW] Demon Slayer Kimetsu no Yaiba (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "ASW",
+      "kind": "series",
+      "title": "Demon Slayer Kimetsu no Yaiba",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[ASW] Demon Slayer Kimetsu no Yaiba S2 - 19 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        19
+      ],
+      "group": "ASW",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Demon Slayer Kimetsu no Yaiba",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[ASW] Demon Slayer Kimetsu no Yaiba [21][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        21
+      ],
+      "anime": true,
+      "group": "ASW",
+      "kind": "series",
+      "title": "Demon Slayer Kimetsu no Yaiba",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Demon.Slayer.Kimetsu.no.Yaiba.S01E19.1080p.CR.WEB-DL.AAC2.0.H.264-playWEB",
+    "expect": {
+      "episodes": [
+        19
+      ],
+      "group": "playWEB",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Demon Slayer Kimetsu no Yaiba",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Commie] Bocchi the Rock! - 02 (1080p) [FA5B7C3E].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        2
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "Commie",
+      "hash": "FA5B7C3E",
+      "kind": "series",
+      "title": "Bocchi the Rock!",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[Commie] Bocchi the Rock! - 03v2 (720p) [FA5B7C3E].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        3
+      ],
+      "anime": true,
+      "group": "Commie",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Bocchi the Rock!",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[Commie] Bocchi the Rock! - 102 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        102
+      ],
+      "anime": true,
+      "group": "Commie",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Bocchi the Rock!",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[Commie] Bocchi the Rock! (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "Commie",
+      "kind": "series",
+      "title": "Bocchi the Rock!",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Commie] Bocchi the Rock! S2 - 02 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        2
+      ],
+      "group": "Commie",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Bocchi the Rock!",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Commie] Bocchi the Rock! [04][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        4
+      ],
+      "anime": true,
+      "group": "Commie",
+      "kind": "series",
+      "title": "Bocchi the Rock!",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Bocchi.the.Rock!.S01E02.1080p.CR.WEB-DL.AAC2.0.H.264-TEPES",
+    "expect": {
+      "episodes": [
+        2
+      ],
+      "group": "TEPES",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Bocchi the Rock!",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[DKB] Mob Psycho 100 - 09 (1080p) [A1B2C3D4].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        9
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "DKB",
+      "hash": "A1B2C3D4",
+      "kind": "series",
+      "title": "Mob Psycho 100",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[DKB] Mob Psycho 100 - 10v2 (720p) [A1B2C3D4].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        10
+      ],
+      "anime": true,
+      "group": "DKB",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Mob Psycho 100",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[DKB] Mob Psycho 100 - 109 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        109
+      ],
+      "anime": true,
+      "group": "DKB",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Mob Psycho 100",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[DKB] Mob Psycho 100 (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "DKB",
+      "kind": "series",
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[DKB] Mob Psycho 100 S2 - 09 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        9
+      ],
+      "group": "DKB",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[DKB] Mob Psycho 100 [11][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        11
+      ],
+      "anime": true,
+      "group": "DKB",
+      "kind": "series",
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Mob.Psycho.100.S01E09.1080p.CR.WEB-DL.AAC2.0.H.264-SiGMA",
+    "expect": {
+      "episodes": [
+        9
+      ],
+      "group": "SiGMA",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Mob Psycho 100",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Dr Stone - 16 (1080p) [9F3E2C1B].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        16
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "SubsPlease",
+      "hash": "9F3E2C1B",
+      "kind": "series",
+      "title": "Dr Stone",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Dr Stone - 17v2 (720p) [9F3E2C1B].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        17
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Dr Stone",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Dr Stone - 116 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        116
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Dr Stone",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Dr Stone (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Dr Stone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Dr Stone S2 - 16 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        16
+      ],
+      "group": "SubsPlease",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Dr Stone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Dr Stone [18][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        18
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Dr Stone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dr.Stone.S01E16.1080p.CR.WEB-DL.AAC2.0.H.264-FGT",
+    "expect": {
+      "episodes": [
+        16
+      ],
+      "group": "FGT",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Dr Stone",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Yameii] Vinland Saga - 23 (1080p) [DEADBEEF].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        23
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "Yameii",
+      "hash": "DEADBEEF",
+      "kind": "series",
+      "title": "Vinland Saga",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[Yameii] Vinland Saga - 24v2 (720p) [DEADBEEF].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        24
+      ],
+      "anime": true,
+      "group": "Yameii",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Vinland Saga",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[Yameii] Vinland Saga - 123 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        123
+      ],
+      "anime": true,
+      "group": "Yameii",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Vinland Saga",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[Yameii] Vinland Saga (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "Yameii",
+      "kind": "series",
+      "title": "Vinland Saga",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Yameii] Vinland Saga S2 - 23 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        23
+      ],
+      "group": "Yameii",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Vinland Saga",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Yameii] Vinland Saga [25][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        25
+      ],
+      "anime": true,
+      "group": "Yameii",
+      "kind": "series",
+      "title": "Vinland Saga",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Vinland.Saga.S01E23.1080p.CR.WEB-DL.AAC2.0.H.264-GECKOS",
+    "expect": {
+      "episodes": [
+        23
+      ],
+      "group": "GECKOS",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Vinland Saga",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[EMBER] Blue Lock - 06 (1080p) [0BADF00D].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        6
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "EMBER",
+      "hash": "0BADF00D",
+      "kind": "series",
+      "title": "Blue Lock",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[EMBER] Blue Lock - 07v2 (720p) [0BADF00D].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        7
+      ],
+      "anime": true,
+      "group": "EMBER",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Blue Lock",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[EMBER] Blue Lock - 106 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        106
+      ],
+      "anime": true,
+      "group": "EMBER",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Blue Lock",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[EMBER] Blue Lock (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "EMBER",
+      "kind": "series",
+      "title": "Blue Lock",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[EMBER] Blue Lock S2 - 06 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        6
+      ],
+      "group": "EMBER",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Blue Lock",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[EMBER] Blue Lock [08][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        8
+      ],
+      "anime": true,
+      "group": "EMBER",
+      "kind": "series",
+      "title": "Blue Lock",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Blue.Lock.S01E06.1080p.CR.WEB-DL.AAC2.0.H.264-AMIABLE",
+    "expect": {
+      "episodes": [
+        6
+      ],
+      "group": "AMIABLE",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Blue Lock",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Dandadan - 13 (1080p) [C0FFEE42].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        13
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "SubsPlease",
+      "hash": "C0FFEE42",
+      "kind": "series",
+      "title": "Dandadan",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Dandadan - 14v2 (720p) [C0FFEE42].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        14
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Dandadan",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Dandadan - 113 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        113
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Dandadan",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Dandadan (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Dandadan",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Dandadan S2 - 13 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        13
+      ],
+      "group": "SubsPlease",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Dandadan",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Dandadan [15][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        15
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Dandadan",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Dandadan.S01E13.1080p.CR.WEB-DL.AAC2.0.H.264-DRONES",
+    "expect": {
+      "episodes": [
+        13
+      ],
+      "group": "DRONES",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Dandadan",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Erai-raws] Solo Leveling - 20 (1080p) [7E4A1D90].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        20
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "Erai-raws",
+      "hash": "7E4A1D90",
+      "kind": "series",
+      "title": "Solo Leveling",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[Erai-raws] Solo Leveling - 21v2 (720p) [7E4A1D90].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        21
+      ],
+      "anime": true,
+      "group": "Erai-raws",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Solo Leveling",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[Erai-raws] Solo Leveling - 120 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        120
+      ],
+      "anime": true,
+      "group": "Erai-raws",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Solo Leveling",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[Erai-raws] Solo Leveling (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "Erai-raws",
+      "kind": "series",
+      "title": "Solo Leveling",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Erai-raws] Solo Leveling S2 - 20 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        20
+      ],
+      "group": "Erai-raws",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Solo Leveling",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Erai-raws] Solo Leveling [22][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        22
+      ],
+      "anime": true,
+      "group": "Erai-raws",
+      "kind": "series",
+      "title": "Solo Leveling",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Solo.Leveling.S01E20.1080p.CR.WEB-DL.AAC2.0.H.264-KOGi",
+    "expect": {
+      "episodes": [
+        20
+      ],
+      "group": "KOGi",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Solo Leveling",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[ASW] Kaiju No 8 - 03 (1080p) [12AB34CD].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        3
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "ASW",
+      "hash": "12AB34CD",
+      "kind": "series",
+      "title": "Kaiju No 8",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[ASW] Kaiju No 8 - 04v2 (720p) [12AB34CD].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        4
+      ],
+      "anime": true,
+      "group": "ASW",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Kaiju No 8",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[ASW] Kaiju No 8 - 103 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        103
+      ],
+      "anime": true,
+      "group": "ASW",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Kaiju No 8",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[ASW] Kaiju No 8 (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "ASW",
+      "kind": "series",
+      "title": "Kaiju No 8",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[ASW] Kaiju No 8 S2 - 03 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        3
+      ],
+      "group": "ASW",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Kaiju No 8",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[ASW] Kaiju No 8 [05][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        5
+      ],
+      "anime": true,
+      "group": "ASW",
+      "kind": "series",
+      "title": "Kaiju No 8",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Kaiju.No.8.S01E03.1080p.CR.WEB-DL.AAC2.0.H.264-BAE",
+    "expect": {
+      "episodes": [
+        3
+      ],
+      "group": "BAE",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Kaiju No 8",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Kusuriya no Hitorigoto - 10 (1080p) [FA5B7C3E].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        10
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "SubsPlease",
+      "hash": "FA5B7C3E",
+      "kind": "series",
+      "title": "Kusuriya no Hitorigoto",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Kusuriya no Hitorigoto - 11v2 (720p) [FA5B7C3E].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        11
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Kusuriya no Hitorigoto",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Kusuriya no Hitorigoto - 110 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        110
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Kusuriya no Hitorigoto",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[SubsPlease] Kusuriya no Hitorigoto (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Kusuriya no Hitorigoto",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Kusuriya no Hitorigoto S2 - 10 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        10
+      ],
+      "group": "SubsPlease",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Kusuriya no Hitorigoto",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[SubsPlease] Kusuriya no Hitorigoto [12][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        12
+      ],
+      "anime": true,
+      "group": "SubsPlease",
+      "kind": "series",
+      "title": "Kusuriya no Hitorigoto",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Kusuriya.no.Hitorigoto.S01E10.1080p.CR.WEB-DL.AAC2.0.H.264-MeGusta",
+    "expect": {
+      "episodes": [
+        10
+      ],
+      "group": "MeGusta",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Kusuriya no Hitorigoto",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Judas] Oshi no Ko - 17 (1080p) [A1B2C3D4].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        17
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "Judas",
+      "hash": "A1B2C3D4",
+      "kind": "series",
+      "title": "Oshi no Ko",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[Judas] Oshi no Ko - 18v2 (720p) [A1B2C3D4].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        18
+      ],
+      "anime": true,
+      "group": "Judas",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Oshi no Ko",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[Judas] Oshi no Ko - 117 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        117
+      ],
+      "anime": true,
+      "group": "Judas",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Oshi no Ko",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[Judas] Oshi no Ko (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "Judas",
+      "kind": "series",
+      "title": "Oshi no Ko",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Judas] Oshi no Ko S2 - 17 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        17
+      ],
+      "group": "Judas",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Oshi no Ko",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Judas] Oshi no Ko [19][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        19
+      ],
+      "anime": true,
+      "group": "Judas",
+      "kind": "series",
+      "title": "Oshi no Ko",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Oshi.no.Ko.S01E17.1080p.CR.WEB-DL.AAC2.0.H.264-SuccessfulCrab",
+    "expect": {
+      "episodes": [
+        17
+      ],
+      "group": "SuccessfulCrab",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Oshi no Ko",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Anime Time] Made in Abyss - 24 (1080p) [9F3E2C1B].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        24
+      ],
+      "anime": true,
+      "extension": "mkv",
+      "group": "Anime Time",
+      "hash": "9F3E2C1B",
+      "kind": "series",
+      "title": "Made in Abyss",
+      "unparsed": [],
+      "video": {
+        "resolution": 1080
+      }
+    }
+  },
+  {
+    "name": "[Anime Time] Made in Abyss - 25v2 (720p) [9F3E2C1B].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        25
+      ],
+      "anime": true,
+      "group": "Anime Time",
+      "kind": "series",
+      "revision": {
+        "version": 2
+      },
+      "title": "Made in Abyss",
+      "unparsed": [],
+      "video": {
+        "resolution": 720
+      }
+    }
+  },
+  {
+    "name": "[Anime Time] Made in Abyss - 124 [1080p][HEVC x265 10bit][Multi-Subs]",
+    "expect": {
+      "absoluteEpisodes": [
+        124
+      ],
+      "anime": true,
+      "group": "Anime Time",
+      "kind": "series",
+      "multiSubs": true,
+      "title": "Made in Abyss",
+      "unparsed": [],
+      "video": {
+        "bitDepth": 10,
+        "codec": "h265"
+      }
+    }
+  },
+  {
+    "name": "[Anime Time] Made in Abyss (01-12) [1080p] [Batch]",
+    "expect": {
+      "absoluteEpisodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "anime": true,
+      "group": "Anime Time",
+      "kind": "series",
+      "title": "Made in Abyss",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Anime Time] Made in Abyss S2 - 24 [1080p]",
+    "expect": {
+      "anime": true,
+      "episodes": [
+        24
+      ],
+      "group": "Anime Time",
+      "kind": "series",
+      "seasons": [
+        2
+      ],
+      "title": "Made in Abyss",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "[Anime Time] Made in Abyss [26][1080p][x265].mkv",
+    "expect": {
+      "absoluteEpisodes": [
+        26
+      ],
+      "anime": true,
+      "group": "Anime Time",
+      "kind": "series",
+      "title": "Made in Abyss",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "Made.in.Abyss.S01E24.1080p.CR.WEB-DL.AAC2.0.H.264-ROVERS",
+    "expect": {
+      "episodes": [
+        24
+      ],
+      "group": "ROVERS",
+      "seasons": [
+        1
+      ],
+      "streamingService": "Crunchyroll",
+      "title": "Made in Abyss",
+      "unparsed": []
+    }
+  },
+  {
+    "name": "One.Piece.E1012.1080p.WEB.H264-SKYANiME",
+    "expect": {
+      "absoluteEpisodes": [
+        1012
+      ],
+      "group": "SKYANiME",
+      "title": "One Piece"
+    }
+  },
+  {
+    "name": "One.Piece.E1100.1080p.WEB.H264-SKYANiME",
+    "expect": {
+      "absoluteEpisodes": [
+        1100
+      ],
+      "group": "SKYANiME",
+      "title": "One Piece"
+    }
+  },
+  {
+    "name": "One.Piece.E1088.1080p.WEB.H264-SKYANiME",
+    "expect": {
+      "absoluteEpisodes": [
+        1088
+      ],
+      "group": "SKYANiME",
+      "title": "One Piece"
+    }
+  }
+]
