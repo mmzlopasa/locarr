@@ -15,6 +15,8 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	_ "github.com/mmzlopasa/locarr/server/internal/downloaders/all" // registers the download clients
+	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
@@ -40,6 +42,8 @@ type Deps struct {
 	Settings *settings.Store
 	Jobs     *jobs.Queue
 	Roots    *rootfolders.Service
+	// Downloads keeps download clients and tracks downloads.
+	Downloads *downloads.Service
 }
 
 // Close stops the jobs and closes the database.
@@ -83,6 +87,7 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 	}
 	deps := &Deps{DB: d, Box: box, Auth: auth.NewService(d, box, setupCode), Settings: settings.New(d, box),
 		Roots: &rootfolders.Service{DB: d, Roots: cfg.DataRoots}}
+	deps.Downloads = downloads.New(d, box, deps.Settings, cfg.DataRoots, log)
 	deps.Jobs = jobs.New(d, log, jobs.Options{Concurrency: map[string]int{jobs.DefaultQueue: 2}})
 	registerTasks(deps, log)
 	return deps, nil
@@ -171,6 +176,17 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 		shutdown()
 		return err
 	}
+	// Download tracking stops before the database closes (defers run last-in, first-out).
+	trackCtx, stopTracking := context.WithCancel(ctx)
+	tracking := make(chan struct{})
+	go func() {
+		defer close(tracking)
+		deps.Downloads.Run(trackCtx)
+	}()
+	defer func() {
+		stopTracking()
+		<-tracking
+	}()
 	proxies, err := netx.ParsePrefixes(cfg.TrustedProxies)
 	if err != nil {
 		shutdown()
@@ -185,7 +201,7 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 			log.Warn("client banned from sign-in after repeated failures", "ip", ip.String(), "until", until.UTC().Format(time.RFC3339))
 		}
 	}
-	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots,
+	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots, Downloads: deps.Downloads,
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
 	router, err := NewRouter(h, opts)
 	if err != nil {

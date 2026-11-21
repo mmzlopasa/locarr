@@ -15,6 +15,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
@@ -31,6 +32,7 @@ type Handler struct {
 	Settings    *settings.Store
 	Jobs        *jobs.Queue
 	RootFolders *rootfolders.Service
+	Downloads   *downloads.Service
 	ConfigDir   string
 	DataRoots   []string
 	StartedAt   time.Time
@@ -79,6 +81,9 @@ func mapError(err error) *StatusError {
 		return &StatusError{Status: http.StatusBadRequest, Code: "validation", Message: err.Error()}
 	case errors.As(err, &locked):
 		return &StatusError{Status: http.StatusLocked, Code: "account_locked", Message: err.Error()}
+	}
+	if se := mapDownloadsError(err); se != nil {
+		return se
 	}
 	table := []struct {
 		err    error
