@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   Radar,
+  Search,
   SearchX,
   Server,
   Settings,
@@ -38,7 +39,8 @@ const NAV: NavItem[][] = [
     { to: "/wanted", key: "wanted", icon: SearchX },
   ],
   [
-    { to: "/indexers", key: "indexers", icon: Radar },
+    { to: "/search", key: "search", icon: Search },
+    { to: "/indexers", key: "indexers", icon: Radar, admin: true },
     { to: "/downloaders", key: "downloaders", icon: Download, admin: true },
     { to: "/settings", key: "settings", icon: Settings, admin: true },
     { to: "/system", key: "system", icon: Server, admin: true },

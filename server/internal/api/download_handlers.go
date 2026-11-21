@@ -400,7 +400,7 @@ func (h *Handler) GrabRelease(ctx context.Context, req *gen.GrabRequest) (*gen.Q
 	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
-	g := downloads.GrabRequest{DownloadURL: req.DownloadUrl, Protocol: downloaders.Protocol(req.Protocol), Title: req.Title,
+	g := downloads.GrabRequest{DownloadURL: req.DownloadUrl.Or(""), DownloadToken: req.DownloadToken.Or(""), Protocol: downloaders.Protocol(req.Protocol), Title: req.Title,
 		Indexer: req.Indexer.Or(""), GUID: req.GUID.Or(""), Tags: req.Tags}
 	if len(req.ItemRef) > 0 {
 		g.ItemRef = json.RawMessage(req.ItemRef)

@@ -27,15 +27,36 @@ const (
 	recentAge = 14 * 24 * time.Hour
 )
 
+// IndexerInfo is what grabbing needs to know about the release's indexer.
+type IndexerInfo struct {
+	Name      string
+	Tags      []string
+	SeedRatio *float64
+	SeedTime  *time.Duration
+}
+
+// ReleaseSource fetches release files with the indexer's own credentials and
+// grab limits (the indexers package implements it).
+type ReleaseSource interface {
+	Indexer(ctx context.Context, indexerID int64) (IndexerInfo, error)
+	// Fetch downloads a release link from a search result (API key placeholder restored).
+	Fetch(ctx context.Context, indexerID int64, title, downloadURL string) ([]byte, error)
+	// FetchToken downloads the release a search result's download token points at.
+	FetchToken(ctx context.Context, indexerID int64, token string) ([]byte, error)
+}
+
 // GrabRequest sends one release to a download client.
 type GrabRequest struct {
 	// DownloadURL is an http(s) link to a .torrent or .nzb, or a magnet link.
+	// With IndexerID set, http(s) links are fetched through that indexer.
 	DownloadURL string
-	Protocol    downloaders.Protocol
-	Title       string
-	IndexerID   *int64
-	Indexer     string
-	GUID        string
+	// DownloadToken is a search result's download token (needs IndexerID).
+	DownloadToken string
+	Protocol      downloaders.Protocol
+	Title         string
+	IndexerID     *int64
+	Indexer       string
+	GUID          string
 	// ItemRef is opaque JSON for the importer (which movie, episodes, album).
 	ItemRef   json.RawMessage
 	MediaKind string
@@ -162,6 +183,14 @@ func (s *Service) fetchRelease(ctx context.Context, rawURL string, proto downloa
 	if err != nil {
 		return fetched{}, fmt.Errorf("%w: %s", ErrFetch, err.Error())
 	}
+	return s.parseRelease(ctx, body, proto)
+}
+
+// parseRelease checks a fetched file: an NZB, a .torrent, or a magnet link in plain text.
+func (s *Service) parseRelease(ctx context.Context, body []byte, proto downloaders.Protocol) (fetched, error) {
+	if proto == downloaders.Torrent && len(body) > MaxTorrentFile || len(body) > MaxNZBFile {
+		return fetched{}, fmt.Errorf("%w: %s", ErrFetch, downloaders.ErrResponseTooLarge.Error())
+	}
 	if proto == downloaders.Usenet {
 		head := body[:min(len(body), 4096)]
 		if !bytes.Contains(bytes.ToLower(head), []byte("<nzb")) {
@@ -225,11 +254,32 @@ func (s *Service) Grab(ctx context.Context, req GrabRequest) (Download, error) {
 	if req.SeedRatio != nil && *req.SeedRatio < 0 {
 		return Download{}, invalid("seed ratio cannot be negative")
 	}
+	if req.DownloadToken != "" && (req.IndexerID == nil || s.Releases == nil) {
+		return Download{}, invalid("a download token needs its indexer")
+	}
+	if req.IndexerID != nil && s.Releases != nil {
+		info, err := s.Releases.Indexer(ctx, *req.IndexerID)
+		if err != nil {
+			return Download{}, err
+		}
+		if req.Indexer == "" {
+			req.Indexer = info.Name
+		}
+		if len(req.Tags) == 0 {
+			req.Tags = info.Tags
+		}
+		if req.SeedRatio == nil {
+			req.SeedRatio = info.SeedRatio
+		}
+		if req.SeedTime == nil {
+			req.SeedTime = info.SeedTime
+		}
+	}
 	clients, err := s.pickClients(ctx, req)
 	if err != nil {
 		return Download{}, err
 	}
-	f, err := s.fetchRelease(ctx, req.DownloadURL, req.Protocol)
+	f, err := s.fetch(ctx, req)
 	if err != nil {
 		return Download{}, err
 	}
@@ -246,6 +296,33 @@ func (s *Service) Grab(ctx context.Context, req GrabRequest) (Download, error) {
 		lastErr = err
 	}
 	return Download{}, lastErr
+}
+
+// fetch gets the release: magnets as they are, indexer links through the
+// indexer (credentials, grab limit), other links through the guarded client.
+func (s *Service) fetch(ctx context.Context, req GrabRequest) (fetched, error) {
+	link := strings.TrimSpace(req.DownloadURL)
+	viaIndexer := req.IndexerID != nil && s.Releases != nil
+	switch {
+	case req.DownloadToken != "":
+		if !viaIndexer {
+			return fetched{}, invalid("a download token needs its indexer")
+		}
+		body, err := s.Releases.FetchToken(ctx, *req.IndexerID, req.DownloadToken)
+		if err != nil {
+			return fetched{}, err
+		}
+		return s.parseRelease(ctx, body, req.Protocol)
+	case link == "":
+		return fetched{}, invalid("a download link or token is required")
+	case viaIndexer && !strings.HasPrefix(strings.ToLower(link), "magnet:"):
+		body, err := s.Releases.Fetch(ctx, *req.IndexerID, req.Title, link)
+		if err != nil {
+			return fetched{}, err
+		}
+		return s.parseRelease(ctx, body, req.Protocol)
+	}
+	return s.fetchRelease(ctx, link, req.Protocol)
 }
 
 func (s *Service) grabWith(ctx context.Context, c Client, req GrabRequest, f fetched) (Download, error) {

@@ -36,6 +36,8 @@ type Service struct {
 	DataRoots []string
 	Log       *slog.Logger
 	Bus       *Bus
+	// Releases fetches release files through their indexer (nil = plain fetches only).
+	Releases ReleaseSource
 	// HTTP options for client connections and release fetches.
 	AllowLinkLocal bool
 	// NewClient builds a client; tests replace it with fakes.

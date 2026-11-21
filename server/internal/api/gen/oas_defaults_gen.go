@@ -33,3 +33,35 @@ func (s *DownloadClientInput) setDefaults() {
 		s.FirstLastPiece.SetTo(val)
 	}
 }
+
+// setDefaults set default value of fields.
+func (s *IndexerInput) setDefaults() {
+	{
+		val := bool(true)
+		s.Enabled.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.EnableRss.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.EnableAutomaticSearch.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.EnableInteractiveSearch.SetTo(val)
+	}
+	{
+		val := int(25)
+		s.Priority.SetTo(val)
+	}
+	{
+		val := int(1)
+		s.MinimumSeeders.SetTo(val)
+	}
+	{
+		val := int(30)
+		s.TimeoutSeconds.SetTo(val)
+	}
+}

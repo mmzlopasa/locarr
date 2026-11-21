@@ -78,7 +78,7 @@ func NewRouter(h *api.Handler, o RouterOptions) (http.Handler, error) {
 	r.Get("/healthz", health)
 	r.Get("/readyz", ready)
 	compress := compressor()
-	r.Mount("/api/v1", compress(limitBody(apiServer)))
+	r.Mount("/api/v1", compress(limitBody(flushStream(apiServer))))
 	r.Handle("/api/*", http.HandlerFunc(api.NotFound))
 	web := o.Web
 	if web == nil {

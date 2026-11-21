@@ -657,3 +657,59 @@ func TestTestReportsMissingCategories(t *testing.T) {
 		t.Fatalf("auth failure = %+v", res)
 	}
 }
+
+type fakeReleases struct {
+	file    []byte
+	fetched []string
+	err     error
+}
+
+func (f *fakeReleases) Indexer(context.Context, int64) (IndexerInfo, error) {
+	r, d := 1.5, 90*time.Minute
+	return IndexerInfo{Name: "Tracker", Tags: []string{"private"}, SeedRatio: &r, SeedTime: &d}, nil
+}
+func (f *fakeReleases) Fetch(_ context.Context, _ int64, _ string, link string) ([]byte, error) {
+	f.fetched = append(f.fetched, "link:"+link)
+	return f.file, f.err
+}
+func (f *fakeReleases) FetchToken(_ context.Context, _ int64, token string) ([]byte, error) {
+	f.fetched = append(f.fetched, "token:"+token)
+	return f.file, f.err
+}
+
+func TestGrabThroughTheIndexer(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.addClient(t, "Private", "faketorrent", "private", func(in *ClientInput) { in.Tags = []string{"private"} })
+	tor := testkit.RandomTorrent("ix", 500)
+	src := &fakeReleases{file: tor.File}
+	e.s.Releases = src
+	idx := int64(5)
+	d, err := e.s.Grab(ctx, GrabRequest{DownloadToken: "tok", IndexerID: &idx, Protocol: downloaders.Torrent, Title: "ix"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if d.Indexer != "Tracker" || d.SeedRatio == nil || *d.SeedRatio != 1.5 || d.SeedTime == nil || *d.SeedTime != 90*time.Minute {
+		t.Fatalf("indexer goals not applied: %+v", d)
+	}
+	add := e.fakes["private"].added[0]
+	if add.SeedRatio == nil || *add.SeedRatio != 1.5 {
+		t.Fatalf("seed ratio not sent to the client: %+v", add)
+	}
+	tor2 := testkit.RandomTorrent("ix2", 500)
+	src.file = tor2.File
+	if _, err := e.s.Grab(ctx, GrabRequest{DownloadURL: "https://tracker.example/dl?apikey={key}", IndexerID: &idx,
+		Protocol: downloaders.Torrent, Title: "ix2"}); err != nil {
+		t.Fatal(err)
+	}
+	if strings.Join(src.fetched, " ") != "token:tok link:https://tracker.example/dl?apikey={key}" {
+		t.Fatalf("fetched = %v", src.fetched)
+	}
+	src.err = errors.New("grab limit")
+	if _, err := e.s.Grab(ctx, GrabRequest{DownloadToken: "x", IndexerID: &idx, Protocol: downloaders.Torrent, Title: "x"}); err == nil {
+		t.Fatal("indexer error swallowed")
+	}
+	if _, err := e.s.Grab(ctx, GrabRequest{DownloadToken: "x", Protocol: downloaders.Torrent, Title: "x"}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("token without indexer: %v", err)
+	}
+}

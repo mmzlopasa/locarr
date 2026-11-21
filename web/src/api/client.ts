@@ -36,6 +36,20 @@ export type QueueItem = Schemas["QueueItem"];
 export type QueueClient = Schemas["QueueClient"];
 export type Queue = Schemas["Queue"];
 export type BlocklistEntry = Schemas["BlocklistEntry"];
+export type Indexer = Schemas["Indexer"];
+export type IndexerInput = Schemas["IndexerInput"];
+export type IndexerCaps = Schemas["IndexerCaps"];
+export type IndexerCategories = Schemas["IndexerCategories"];
+export type IndexerTestResult = Schemas["IndexerTestResult"];
+export type IndexerSettings = Schemas["IndexerSettings"];
+export type IndexerSource = Schemas["IndexerSource"];
+export type IndexerSourceKind = Schemas["IndexerSourceKind"];
+export type IndexerSourceItem = Schemas["IndexerSourceItem"];
+export type Release = Schemas["Release"];
+export type SearchType = Schemas["SearchType"];
+export type SearchIndexerResult = Schemas["SearchIndexerResult"];
+export type SearchStreamIndexerEvent = Schemas["SearchStreamIndexerEvent"];
+export type SearchStreamDone = Schemas["SearchStreamDone"];
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -119,4 +133,7 @@ export const queryKeys = {
   remotePathMappings: ["remotepathmappings"] as const,
   queue: ["queue"] as const,
   blocklist: ["queue", "blocklist"] as const,
+  indexers: ["indexers"] as const,
+  indexerSources: ["indexers", "sources"] as const,
+  indexerSettings: ["indexers", "settings"] as const,
 };

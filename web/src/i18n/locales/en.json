@@ -57,7 +57,20 @@
     "wrong_url": "Something answered, but not the client's API. Check the port and URL base.",
     "address_blocked": "That address is not allowed (link-local or cloud metadata).",
     "client_error": "The download client returned an error.",
-    "unsupported": "This download client cannot do that."
+    "unsupported": "This download client cannot do that.",
+    "source_error": "The source could not be read. Check its URL and API key.",
+    "grab_limit": "The indexer's daily grab limit is reached.",
+    "bad_token": "The download link is invalid or has expired. Search again.",
+    "no_download": "This release has no download link.",
+    "indexer_auth": "The indexer refused the API key.",
+    "indexer_rate_limit": "The indexer's request limit is reached.",
+    "indexer_unsupported": "The indexer does not support this.",
+    "indexer_disabled": "The indexer's API or account is disabled.",
+    "indexer_not_found": "The indexer no longer has this release.",
+    "indexer_bad_response": "The indexer sent an answer that cannot be read.",
+    "indexer_unreachable": "The indexer cannot be reached.",
+    "indexer_blocked": "This address is blocked for safety.",
+    "indexer_unknown": "The indexer reported an error."
   },
   "errorPage": {
     "title": "This page could not be shown",
@@ -81,8 +94,7 @@
       "music": "Follow artists and albums from MusicBrainz and import releases with their tags and covers.",
       "requests": "Users ask for movies, series and albums; administrators approve them or let them through automatically.",
       "calendar": "Upcoming episodes and releases, on the web and as an iCal feed.",
-      "wanted": "Missing titles and titles below their quality cutoff, with one-click searches.",
-      "indexers": "Torznab and Newznab indexers, or Prowlarr and Jackett as a source, with health and backoff."
+      "wanted": "Missing titles and titles below their quality cutoff, with one-click searches."
     }
   },
   "nav": {
@@ -100,7 +112,8 @@
     "indexers": "Indexers",
     "downloaders": "Downloaders",
     "settings": "Settings",
-    "system": "System"
+    "system": "System",
+    "search": "Search"
   },
   "roles": {
     "admin": "Administrator",
@@ -318,7 +331,9 @@
       "runtime": "Runtime",
       "configDir": "Config folder",
       "database": "Database size",
-      "dataRoots": "Data folders"
+      "dataRoots": "Data folders",
+      "indexers": "Indexer health",
+      "manageIndexers": "Manage indexers"
     }
   },
   "jobStates": {
@@ -528,6 +543,201 @@
       "download_failed": "Download failed",
       "stalled": "Stalled",
       "import_failed": "Import failed"
+    }
+  },
+  "search": {
+    "title": "Search",
+    "subtitle": "Ask every indexer at once. Results appear as each indexer answers.",
+    "query": "Search for",
+    "queryPlaceholder": "Title, release name or keywords",
+    "type": "Kind",
+    "types": {
+      "search": "Anything",
+      "movie": "Movie",
+      "tv": "TV",
+      "music": "Music",
+      "book": "Book"
+    },
+    "submit": "Search",
+    "categories": "Categories",
+    "cats": {
+      "movies": "Movies",
+      "tv": "TV",
+      "audio": "Audio",
+      "books": "Books",
+      "console": "Console",
+      "pc": "PC",
+      "other": "Other"
+    },
+    "status": {
+      "ok": "OK",
+      "error": "Error",
+      "skipped": "Skipped",
+      "rate_limited": "Limit reached",
+      "backoff": "Paused",
+      "unsupported": "Not supported"
+    },
+    "cached": "cached",
+    "searching": "Searching…",
+    "summary": "{{n}} results in {{ms}} ms",
+    "col": {
+      "title": "Release",
+      "indexer": "Indexer",
+      "size": "Size",
+      "peers": "Seeders / leechers",
+      "age": "Age",
+      "actions": "Actions"
+    },
+    "flags": {
+      "freeleech": "Freeleech",
+      "halfleech": "Half leech",
+      "partialfreeleech": "Discount",
+      "doubleupload": "Double upload",
+      "internal": "Internal",
+      "scene": "Scene"
+    },
+    "usenet": "usenet",
+    "torrent": "torrent",
+    "details": "Details page",
+    "magnet": "Magnet link",
+    "download": "Download file",
+    "grab": "Grab",
+    "noResults": "No results.",
+    "noIndexers": "No indexer is enabled for searching. Add one under Indexers.",
+    "grabbed": "Sent",
+    "grabRetry": "Retry grab"
+  },
+  "indexers": {
+    "title": "Indexers",
+    "subtitle": "Torznab and Newznab indexers, directly or through Prowlarr or Jackett.",
+    "add": "Add indexer",
+    "empty": "No indexers yet.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Delete {{name}}",
+    "resetHealth": "Clear failures",
+    "fromSource": "from {{name}}",
+    "priorityShort": "Priority {{n}}",
+    "uses": {
+      "rss": "RSS",
+      "automatic": "automatic search",
+      "interactive": "manual search",
+      "none": "not used"
+    },
+    "lastSuccess": "last answered {{when}}",
+    "retryAt": "next try {{when}} after {{failures}} failures",
+    "health": {
+      "healthy": "Healthy",
+      "failing": "Failing",
+      "disabled": "Disabled",
+      "unknown": "Not used yet"
+    },
+    "kinds": {
+      "torznab": "Torznab (torrent)",
+      "newznab": "Newznab (usenet)"
+    },
+    "media": {
+      "movies": "Movies",
+      "tv": "TV",
+      "music": "Music",
+      "books": "Books"
+    },
+    "errorKinds": {
+      "auth": "The indexer refused the API key.",
+      "rate_limit": "The indexer's request limit is reached.",
+      "unsupported": "The indexer does not support this search.",
+      "disabled": "The indexer's API or account is disabled.",
+      "not_found": "The indexer found no such item.",
+      "bad_response": "The answer is not a Torznab/Newznab feed. Check the URL and API path.",
+      "unreachable": "The indexer cannot be reached or timed out.",
+      "blocked": "This address is blocked for safety. Allow it in the indexer settings below if it is yours.",
+      "unknown": "The indexer reported an error.",
+      "removed": "The source no longer lists this indexer."
+    },
+    "test": {
+      "button": "Test",
+      "ok": "Works: {{n}} results in the probe search ({{ms}} ms)."
+    },
+    "form": {
+      "addTitle": "Add indexer",
+      "editTitle": "Edit {{name}}",
+      "name": "Name",
+      "kind": "Kind",
+      "baseUrl": "URL",
+      "baseUrlHint": "Address of the indexer without the API path.",
+      "apiPath": "API path",
+      "apiKey": "API key",
+      "apiKeyHint": "Stored encrypted; never shown again.",
+      "apiKeyKept": "A key is stored. Leave empty to keep it.",
+      "tags": "Tags",
+      "tagsHint": "Comma-separated.",
+      "priority": "Priority",
+      "priorityHint": "1 is the most preferred, 50 the least.",
+      "minimumSeeders": "Minimum seeders",
+      "enabled": "Enabled",
+      "enableRss": "Use for RSS sync",
+      "enableAutomatic": "Use for automatic search",
+      "enableInteractive": "Use for manual search",
+      "categories": "Categories per kind of media",
+      "category": "Category",
+      "categoriesNeedTest": "Run a test to load the indexer's categories.",
+      "showAdvanced": "Show advanced settings",
+      "hideAdvanced": "Hide advanced settings",
+      "seedRatio": "Seed ratio",
+      "seedHint": "Used by download clients; empty uses the client's default.",
+      "seedTime": "Seed time (minutes)",
+      "timeout": "Timeout (seconds)",
+      "requestLimit": "Request limit",
+      "requestLimitHint": "Requests allowed per period.",
+      "requestPeriod": "Period (seconds)",
+      "grabLimit": "Grabs per day",
+      "proxyUrl": "Proxy",
+      "proxyUsername": "Proxy user name",
+      "proxyPassword": "Proxy password",
+      "flaresolverr": "FlareSolverr URL",
+      "flaresolverrHint": "Only for indexers behind a Cloudflare challenge.",
+      "add": "Add"
+    },
+    "import": {
+      "button": "Import from Prowlarr or Jackett",
+      "title": "Import indexers",
+      "subtitle": "Lists the indexers configured there and adds each as a Torznab/Newznab indexer. Nothing changes on the source.",
+      "kind": "Application",
+      "url": "URL",
+      "apiKey": "API key",
+      "preview": "Show indexers",
+      "none": "The source has no indexers configured.",
+      "done": "Imported {{added}} indexers.",
+      "importN": "Import {{n}}",
+      "actions": {
+        "add": "new",
+        "update": "will be updated",
+        "unchanged": "already imported",
+        "disable": "will be disabled",
+        "excluded": "left out"
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "subtitle": "Sync adds new indexers and disables removed ones; nothing is deleted.",
+      "count": "Indexers: {{n}}",
+      "lastSync": "synced {{when}}",
+      "sync": "Sync",
+      "forget": "Forget",
+      "forgetConfirm": "Forget (indexers stay)",
+      "synced": "Added {{added}}, updated {{updated}}, disabled {{disabled}}."
+    },
+    "settings": {
+      "title": "Indexer settings",
+      "subtitle": "Apply to every indexer.",
+      "rss": "RSS sync every (minutes)",
+      "retention": "Keep seen releases (days)",
+      "timeout": "Search time limit (seconds)",
+      "cache": "Cache identical searches (seconds)",
+      "allowedHosts": "Allowed local addresses",
+      "allowedHostsHint": "Loopback and link-local addresses are blocked by default. List addresses, networks or host names to allow, e.g. 127.0.0.1.",
+      "blockPrivate": "Also block private networks",
+      "blockPrivateHint": "Off by default, because Prowlarr and Jackett usually run on the same Docker network."
     }
   }
 }

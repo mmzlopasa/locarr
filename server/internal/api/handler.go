@@ -17,6 +17,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
+	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
@@ -33,6 +34,7 @@ type Handler struct {
 	Jobs        *jobs.Queue
 	RootFolders *rootfolders.Service
 	Downloads   *downloads.Service
+	Indexers    *indexers.Service
 	ConfigDir   string
 	DataRoots   []string
 	StartedAt   time.Time
@@ -84,6 +86,9 @@ func mapError(err error) *StatusError {
 	}
 	if se := mapDownloadsError(err); se != nil {
 		return se
+	}
+	if ie := mapIndexerError(err); ie != nil {
+		return ie
 	}
 	table := []struct {
 		err    error

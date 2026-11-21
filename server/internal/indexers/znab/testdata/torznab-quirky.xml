@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:tz="http://torznab.com/schemas/2015/feed">
+<channel>
+<item>
+  <title><![CDATA[Movie &amp; Friends (2019) &ndash; 2160p]]></title>
+  <link>magnet:?xt=urn:btih:ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD&amp;dn=movie</link>
+  <pubDate>Tue, 3 Nov 2026 8:05:01 GMT</pubDate>
+  <tz:attr name="seeders" value="12"/>
+  <tz:attr name="peers" value="20"/>
+  <tz:attr name="category" value="2045"/>
+  <tz:attr name="downloadvolumefactor" value="0"/>
+  <tz:attr name="uploadvolumefactor" value="2"/>
+  <torznab:attr name="tag" value="Internal"/>
+</item>
+<item>
+  <title>Other &nbsp; Release</title>
+  <guid>other-1</guid>
+  <enclosure url="https://tr.example/dl/1.torrent?passkey=abc" type="application/x-bittorrent"/>
+  <size>1024</size>
+  <pubDate>2026-11-03 10:00:00</pubDate>
+  <torznab:attr name="infohash" value="0123456789abcdef0123456789abcdef01234567"/>
+  <torznab:attr name="seeders" value="x"/>
+  <torznab:attr name="minimumseedtime" value="3600"/>
+  <torznab:attr name="imdbid" value="tt12345"/>
+</item>
+</channel>
+</rss>
