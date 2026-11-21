@@ -551,7 +551,7 @@ func (h *Handler) ParseRelease(ctx context.Context, req *gen.ParseRequest) (*gen
 			return nil, err
 		}
 		protocol := string(req.Protocol.Or(gen.ProtocolTorrent))
-		d := decision.EvaluateOne(&dc, decision.Candidate{GUID: "parse", Title: req.Title, Size: req.Size.Or(0), Protocol: protocol,
+		d := decision.EvaluateOne(ctx, &dc, decision.Candidate{GUID: "parse", Title: req.Title, Size: req.Size.Or(0), Protocol: protocol,
 			IndexerFlags: req.IndexerFlags, PublishDate: dc.Now})
 		gd, err := convert[gen.Decision](d)
 		if err != nil {
@@ -594,6 +594,6 @@ func (h *Handler) EvaluateReleases(ctx context.Context, req *gen.EvaluateRequest
 			cands[i].GUID = fmt.Sprintf("candidate-%d", i+1)
 		}
 	}
-	rep := decision.Evaluate(dc, cands)
+	rep := decision.Evaluate(ctx, dc, cands)
 	return convert[*gen.DecisionReport](rep)
 }

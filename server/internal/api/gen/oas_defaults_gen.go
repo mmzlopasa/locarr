@@ -3,6 +3,38 @@
 package gen
 
 // setDefaults set default value of fields.
+func (s *DownloadClientInput) setDefaults() {
+	{
+		val := bool(true)
+		s.Enabled.SetTo(val)
+	}
+	{
+		val := int(1)
+		s.Priority.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.UseTls.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.AllowSelfSigned.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.RemoveCompleted.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.Sequential.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.FirstLastPiece.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *IndexerInput) setDefaults() {
 	{
 		val := bool(true)

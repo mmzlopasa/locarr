@@ -1,6 +1,7 @@
 package decision
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -63,7 +64,7 @@ func codes(d Decision) []string {
 
 type blocked map[string]string
 
-func (b blocked) Blocked(c *Candidate, _ *parser.Release) (string, bool) {
+func (b blocked) Blocked(_ context.Context, c *Candidate, _ *parser.Release) (string, bool) {
 	r, ok := b[c.Title]
 	return r, ok
 }
@@ -203,7 +204,7 @@ func TestSpecs(t *testing.T) {
 			if tc.mut != nil {
 				tc.mut(&ctx, &k)
 			}
-			d := EvaluateOne(&ctx, k)
+			d := EvaluateOne(context.Background(), &ctx, k)
 			if got := codes(d); !reflect.DeepEqual(got, tc.want) || d.Status != tc.status {
 				t.Fatalf("got %v %s, want %v %s\n%v", got, d.Status, tc.want, tc.status, d.Rejections)
 			}
@@ -220,12 +221,12 @@ func TestSizeMessage(t *testing.T) {
 	ctx := movieCtx()
 	ctx.Wanted.RuntimeMinutes = 110
 	ctx.Definitions = []quality.Definition{{Kind: quality.Movies, Quality: "bluray-1080p", Min: 1, Max: 12 * 1024 / 110.0}}
-	d := EvaluateOne(&ctx, cand(good, 18.4))
+	d := EvaluateOne(context.Background(), &ctx, cand(good, 18.4))
 	if len(d.Rejections) != 1 || d.Rejections[0].String() != "size_too_large: 18.4 GB > 12 GB max for Bluray-1080p (110 min)" {
 		t.Fatalf("%v", d.Rejections)
 	}
 	ctx.Wanted.RuntimeMinutes = 0
-	d = EvaluateOne(&ctx, cand(good, 18.4))
+	d = EvaluateOne(context.Background(), &ctx, cand(good, 18.4))
 	if !strings.Contains(d.Rejections[0].Message, "110 min, assumed") {
 		t.Fatalf("%v", d.Rejections)
 	}
@@ -267,7 +268,7 @@ func TestEpisodes(t *testing.T) {
 				tc.mut(&ctx)
 			}
 			k := cand(tc.title, 0)
-			d := EvaluateOne(&ctx, k)
+			d := EvaluateOne(context.Background(), &ctx, k)
 			if got := codes(d); !reflect.DeepEqual(got, tc.want) {
 				t.Fatalf("got %v want %v: %v", got, tc.want, d.Rejections)
 			}
@@ -276,11 +277,11 @@ func TestEpisodes(t *testing.T) {
 	// season pack size counts the wanted episodes of that season
 	ctx := seriesCtx()
 	ctx.Definitions = []quality.Definition{{Kind: quality.Series, Quality: "bluray-1080p", Max: 10}}
-	d := EvaluateOne(&ctx, cand("The.Expanse.S03.1080p.BluRay.x264-GRP", 0.8))
+	d := EvaluateOne(context.Background(), &ctx, cand("The.Expanse.S03.1080p.BluRay.x264-GRP", 0.8))
 	if len(d.Rejections) != 0 {
 		t.Fatalf("pack of 2×45 min at 0.8 GB: %v", d.Rejections)
 	}
-	d = EvaluateOne(&ctx, cand("The.Expanse.S03E05.1080p.BluRay.x264-GRP", 0.8))
+	d = EvaluateOne(context.Background(), &ctx, cand("The.Expanse.S03E05.1080p.BluRay.x264-GRP", 0.8))
 	if codes(d)[0] != CodeSizeTooLarge {
 		t.Fatalf("one episode at 0.8 GB: %v", d.Rejections)
 	}
@@ -300,7 +301,7 @@ func TestMusic(t *testing.T) {
 		"Various Artists - The Dark Side of the Moon (1973) [FLAC]": {},
 	}
 	for name, want := range cases {
-		d := EvaluateOne(&ctx, cand(name, 0))
+		d := EvaluateOne(context.Background(), &ctx, cand(name, 0))
 		if got := codes(d); !reflect.DeepEqual(got, want) {
 			t.Errorf("%s: got %v want %v: %v", name, got, want, d.Rejections)
 		}
@@ -335,7 +336,7 @@ func TestRanking(t *testing.T) {
 		mk("Blade.Runner.2049.2017.HDCAM.x264-I", 2, nil),                                                     // rejected
 		mk("Blade.Runner.2049.2017.1080p.BluRay.x264-J", 12, func(c *Candidate) { c.IndexerDisabled = true }), // rejected
 	}
-	rep := Evaluate(ctx, list)
+	rep := Evaluate(context.Background(), ctx, list)
 	var order []string
 	for _, d := range rep.Decisions {
 		order = append(order, d.Candidate.Title[strings.LastIndex(d.Candidate.Title, "-")+1:])
@@ -352,7 +353,7 @@ func TestRanking(t *testing.T) {
 	for i := range list {
 		rev[i] = list[len(list)-1-i]
 	}
-	rep2 := Evaluate(ctx, rev)
+	rep2 := Evaluate(context.Background(), ctx, rev)
 	for i := range rep.Decisions[:8] {
 		if rep.Decisions[i].Candidate.GUID != rep2.Decisions[i].Candidate.GUID {
 			t.Fatalf("not deterministic at %d", i)
@@ -382,7 +383,7 @@ func TestThousand(t *testing.T) {
 		list = append(list, cand(fmt.Sprintf("Blade.Runner.2049.2017.%s.BluRay.x264-G%d", []string{"720p", "1080p", "2160p"}[i%3], i), float64(i%40)))
 	}
 	start := time.Now()
-	rep := Evaluate(ctx, list)
+	rep := Evaluate(context.Background(), ctx, list)
 	if d := time.Since(start); d > time.Second {
 		t.Fatalf("1000 candidates took %v", d)
 	}

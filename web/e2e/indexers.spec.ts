@@ -41,7 +41,7 @@ test("add a fake indexer, test it and search with streamed results", async ({ pa
   const results = page.getByTestId("search-results");
   await expect(results.getByText("Big.Buck.Bunny.2008.1080p.BluRay.x264-LOCARR").first()).toBeVisible();
   await expect(page.getByTestId("search-summary")).toBeVisible();
-  await expect(results.getByRole("button", { name: "Grab" }).first()).toBeDisabled();
+  await expect(results.getByRole("button", { name: /^Grab: / }).first()).toBeEnabled();
   await expect(results.getByRole("link", { name: "Download file" }).first()).toBeVisible();
 
   // Clean up so the test can run again against the same stack.

@@ -20,6 +20,22 @@ export type RootFolder = Schemas["RootFolder"];
 export type MediaKind = Schemas["MediaKind"];
 export type FolderListing = Schemas["FolderListing"];
 export type TotpSetup = Schemas["TotpSetup"];
+export type DownloadProtocol = Schemas["DownloadProtocol"];
+export type DownloadState = Schemas["DownloadState"];
+export type DownloadStatus = Schemas["DownloadStatus"];
+export type QueuePriority = Schemas["QueuePriority"];
+export type DownloadClientField = Schemas["DownloadClientField"];
+export type DownloadClientImplementation = Schemas["DownloadClientImplementation"];
+export type DownloadClient = Schemas["DownloadClient"];
+export type DownloadClientInput = Schemas["DownloadClientInput"];
+export type DownloadClientStatus = Schemas["DownloadClientStatus"];
+export type DownloadClientTestResult = Schemas["DownloadClientTestResult"];
+export type DownloadSettings = Schemas["DownloadSettings"];
+export type RemotePathMapping = Schemas["RemotePathMapping"];
+export type QueueItem = Schemas["QueueItem"];
+export type QueueClient = Schemas["QueueClient"];
+export type Queue = Schemas["Queue"];
+export type BlocklistEntry = Schemas["BlocklistEntry"];
 export type Indexer = Schemas["Indexer"];
 export type IndexerInput = Schemas["IndexerInput"];
 export type IndexerCaps = Schemas["IndexerCaps"];
@@ -139,6 +155,12 @@ export const queryKeys = {
   releaseProfiles: ["releaseprofiles"] as const,
   delayProfiles: ["delayprofiles"] as const,
   languages: ["languages"] as const,
+  downloadClients: ["downloadclients"] as const,
+  downloadImplementations: ["downloadclients", "implementations"] as const,
+  downloadSettings: ["downloadclients", "settings"] as const,
+  remotePathMappings: ["remotepathmappings"] as const,
+  queue: ["queue"] as const,
+  blocklist: ["queue", "blocklist"] as const,
   indexers: ["indexers"] as const,
   indexerSources: ["indexers", "sources"] as const,
   indexerSettings: ["indexers", "settings"] as const,

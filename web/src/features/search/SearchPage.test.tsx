@@ -18,9 +18,14 @@ function mockStream(chunks: string[]) {
   let release: () => void = () => undefined;
   const second = new Promise<void>((r) => (release = r));
   const calls: string[] = [];
+  const grabs: unknown[] = [];
   vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(input instanceof Request ? input.url : String(input), "http://localhost");
     calls.push(url.pathname + url.search);
+    if (url.pathname === "/api/v1/queue/grab" && input instanceof Request) {
+      grabs.push(await input.json());
+      return new Response(JSON.stringify({ id: 1 }), { status: 201, headers: { "Content-Type": "application/json" } });
+    }
     const enc = new TextEncoder();
     const body = new ReadableStream<Uint8Array>({
       async start(c) {
@@ -32,11 +37,11 @@ function mockStream(chunks: string[]) {
     });
     return new Response(body, { status: 200, headers: { "Content-Type": "text/event-stream" } });
   }));
-  return { calls, release: () => release() };
+  return { calls, grabs, release: () => release() };
 }
 
 describe("search page", () => {
-  it("shows results as indexers answer, sorts them and keeps grab disabled", async () => {
+  it("shows results as indexers answer, sorts them and grabs a release", async () => {
     const first = sse([["indexer", { indexer: { indexerId: 1, indexerName: "Alpha", status: "ok", count: 2, cached: false, durationMs: 40 },
       releases: [rel({ guid: "a", title: "Small.Release", size: 1000, seeders: 5, downloadLink: "/api/v1/indexers/1/download?token=x",
         magnetUrl: "magnet:?xt=urn:btih:abc", flags: ["freeleech"] }),
@@ -66,8 +71,11 @@ describe("search page", () => {
     expect(rows[1]).toHaveTextContent("Small.Release");
     expect(within(table).getByText("Freeleech")).toBeInTheDocument();
     expect(within(table).getAllByRole("link", { name: "Download file" })).toHaveLength(1);
-    for (const b of within(table).getAllByRole("button", { name: "Grab" })) expect(b).toBeDisabled();
-    expect(within(table).getAllByTitle("Available after download clients (P3)")).toHaveLength(2);
+    // Only a release with a download link or magnet can be grabbed.
+    expect(within(table).queryByRole("button", { name: "Grab: Big.Release" })).not.toBeInTheDocument();
+    await userEvent.click(within(table).getByRole("button", { name: "Grab: Small.Release" }));
+    expect(await within(table).findByText("Sent")).toBeInTheDocument();
+    expect(s.grabs).toEqual([{ protocol: "torrent", title: "Small.Release", indexerId: 1, guid: "a", downloadToken: "x", mediaKind: "movies" }]);
 
     s.release();
     expect(await screen.findByTestId("search-summary")).toHaveTextContent("2 results in 950 ms");

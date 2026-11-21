@@ -6,6 +6,7 @@
 package decision
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -113,7 +114,7 @@ type Wanted struct {
 // Blocklist tells whether a release was blocked before (P4/P11 implement it).
 type Blocklist interface {
 	// Blocked returns a reason when the release must not be taken again.
-	Blocked(c *Candidate, r *parser.Release) (reason string, blocked bool)
+	Blocked(ctx context.Context, c *Candidate, r *parser.Release) (reason string, blocked bool)
 }
 
 // Context is everything the engine needs besides the candidates.

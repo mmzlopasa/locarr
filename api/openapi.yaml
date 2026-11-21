@@ -29,6 +29,9 @@ tags:
   - name: filesystem
   - name: indexers
   - name: search
+  - name: downloadclients
+  - name: remotepathmappings
+  - name: queue
   - name: quality
   - name: customformats
   - name: profiles
@@ -986,6 +989,461 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/SearchLogEntry"
+        default:
+          $ref: "#/components/responses/Error"
+  /downloadclients:
+    get:
+      operationId: listDownloadClients
+      summary: Download clients with their last status (administrators)
+      tags: [downloadclients]
+      responses:
+        "200":
+          description: Clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DownloadClient"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createDownloadClient
+      summary: Add a download client (administrators)
+      tags: [downloadclients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DownloadClientInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadClient"
+        default:
+          $ref: "#/components/responses/Error"
+  /downloadclients/implementations:
+    get:
+      operationId: listDownloadClientImplementations
+      summary: Supported clients, the fields each needs and what each can do (administrators)
+      tags: [downloadclients]
+      responses:
+        "200":
+          description: Implementations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DownloadClientImplementation"
+        default:
+          $ref: "#/components/responses/Error"
+  /downloadclients/test:
+    post:
+      operationId: testDownloadClient
+      summary: Test a client configuration (administrators)
+      description: |
+        Always answers 200 with the outcome. With `id`, password and API key left out
+        are taken from that stored client. `errorCode` is one of `auth_failed`,
+        `unreachable`, `tls_untrusted`, `wrong_url`, `address_blocked`, `client_error`,
+        `unsupported`, `invalid` or `category_missing` (then `ok` is true and
+        `missingCategories` lists them).
+      tags: [downloadclients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DownloadClientTestRequest"
+      responses:
+        "200":
+          description: Outcome
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadClientTestResult"
+        default:
+          $ref: "#/components/responses/Error"
+  /downloadclients/settings:
+    get:
+      operationId: getDownloadSettings
+      summary: Download tracking settings (administrators)
+      tags: [downloadclients]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadSettings"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateDownloadSettings
+      summary: Change download tracking settings (administrators)
+      tags: [downloadclients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDownloadSettings"
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadSettings"
+        default:
+          $ref: "#/components/responses/Error"
+  /downloadclients/{id}:
+    get:
+      operationId: getDownloadClient
+      summary: One download client (administrators)
+      tags: [downloadclients]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadClient"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateDownloadClient
+      summary: Replace a download client's settings (administrators)
+      description: Leave `password` / `apiKey` out to keep them; send "" to clear.
+      tags: [downloadclients]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DownloadClientInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadClient"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteDownloadClient
+      summary: Remove a download client (administrators)
+      description: Nothing in the client is touched; its downloads stay in the history.
+      tags: [downloadclients]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /downloadclients/{id}/categories:
+    post:
+      operationId: createDownloadClientCategories
+      summary: Create the client's missing categories (administrators)
+      tags: [downloadclients]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Categories that now exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedCategories"
+        default:
+          $ref: "#/components/responses/Error"
+  /remotepathmappings:
+    get:
+      operationId: listRemotePathMappings
+      summary: Remote path mappings (administrators)
+      tags: [remotepathmappings]
+      responses:
+        "200":
+          description: Mappings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RemotePathMapping"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createRemotePathMapping
+      summary: Add a remote path mapping (administrators)
+      description: The local path must lie inside the allowed data roots.
+      tags: [remotepathmappings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RemotePathMappingInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemotePathMapping"
+        default:
+          $ref: "#/components/responses/Error"
+  /remotepathmappings/{id}:
+    put:
+      operationId: updateRemotePathMapping
+      summary: Replace a remote path mapping (administrators)
+      tags: [remotepathmappings]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RemotePathMappingInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemotePathMapping"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteRemotePathMapping
+      summary: Remove a remote path mapping (administrators)
+      tags: [remotepathmappings]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /queue:
+    get:
+      operationId: getQueue
+      summary: The download queue with live progress (library managers)
+      description: |
+        Tracked downloads that are still in a client, plus items other programs put in
+        Locarr's categories (`unknown`: shown, never touched). Asking for the queue
+        makes the tracker poll every few seconds for a short while.
+      tags: [queue]
+      parameters:
+        - name: includeUnknown
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+      responses:
+        "200":
+          description: Queue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Queue"
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/refresh:
+    post:
+      operationId: refreshQueue
+      summary: Poll every client now (library managers)
+      tags: [queue]
+      responses:
+        "202":
+          description: Polling
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/grab:
+    post:
+      operationId: grabRelease
+      summary: Send a release to a download client (library managers)
+      description: |
+        The server fetches the .torrent / .nzb itself (size cap, timeout, no
+        redirects to another host, no link-local or metadata addresses); magnet
+        links go to the client directly. The client is chosen by protocol, tags
+        and priority unless `clientId` is given. Errors: `no_download_client`,
+        `already_queued`, `fetch_failed`, and the client errors of the test action.
+      tags: [queue]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GrabRequest"
+      responses:
+        "201":
+          description: Sent to the client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueueItem"
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/blocklist:
+    get:
+      operationId: listBlocklist
+      summary: Blocked releases (library managers)
+      tags: [queue]
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 500
+      responses:
+        "200":
+          description: Entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BlocklistEntry"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addBlocklistEntry
+      summary: Block a release (library managers)
+      tags: [queue]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BlocklistInput"
+      responses:
+        "201":
+          description: Blocked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlocklistEntry"
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/blocklist/{id}:
+    delete:
+      operationId: deleteBlocklistEntry
+      summary: Unblock a release (library managers)
+      tags: [queue]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/{id}:
+    delete:
+      operationId: removeQueueItem
+      summary: Remove a download from its client (library managers)
+      description: |
+        `deleteData` also deletes the downloaded files (by the client, or by Locarr
+        inside the data roots when the client cannot). `blocklist` blocks the release.
+      tags: [queue]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+        - name: deleteData
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: blocklist
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: reason
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 500
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/{id}/pause:
+    post:
+      operationId: pauseQueueItem
+      summary: Pause a download (library managers)
+      tags: [queue]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Paused
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/{id}/resume:
+    post:
+      operationId: resumeQueueItem
+      summary: Resume a download (library managers)
+      tags: [queue]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Resumed
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/{id}/priority:
+    post:
+      operationId: setQueueItemPriority
+      summary: Move a download in its client's queue (library managers)
+      tags: [queue]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PriorityRequest"
+      responses:
+        "204":
+          description: Moved
+        default:
+          $ref: "#/components/responses/Error"
+  /queue/{id}/events:
+    get:
+      operationId: listQueueItemEvents
+      summary: State history of one download (library managers)
+      tags: [queue]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Events, oldest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DownloadEvent"
         default:
           $ref: "#/components/responses/Error"
   /qualities:
@@ -2806,6 +3264,517 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SearchIndexerResult"
+    DownloadProtocol:
+      type: string
+      enum: [torrent, usenet]
+    DownloadState:
+      type: string
+      description: The client's state, normalised (the raw one is in `rawState`).
+      enum: [queued, downloading, paused, seeding, completed, failed, warning]
+    DownloadStatus:
+      type: string
+      description: |
+        Where the download is in Locarr: `active` (in the client), `completed`
+        (finished and visible locally: ready to import), `imported`, `failed`, `removed`.
+      enum: [active, completed, imported, failed, removed]
+    QueuePriority:
+      type: string
+      enum: [normal, top, last]
+    DownloadClientField:
+      type: string
+      enum: [host, port, useTls, urlBase, username, password, apiKey, directory, allowSelfSigned]
+    DownloadClientCapabilities:
+      type: object
+      required: [categories, createCategories, directoryCategories, tags, seedLimits, sequential, firstLastPiece, priority, savePath, freeSpace, deletesData]
+      properties:
+        categories: {type: boolean}
+        createCategories: {type: boolean}
+        directoryCategories:
+          type: boolean
+          description: No categories in the client; each category is a sub-folder of the download folder.
+        tags: {type: boolean}
+        seedLimits: {type: boolean}
+        sequential: {type: boolean}
+        firstLastPiece: {type: boolean}
+        priority: {type: boolean}
+        savePath: {type: boolean}
+        freeSpace: {type: boolean}
+        deletesData: {type: boolean}
+    DownloadClientImplementation:
+      type: object
+      required: [name, displayName, protocol, defaultPort, defaultUrlBase, defaultUsername, fields, required, capabilities]
+      properties:
+        name: {type: string}
+        displayName: {type: string}
+        protocol:
+          $ref: "#/components/schemas/DownloadProtocol"
+        defaultPort: {type: integer}
+        defaultUrlBase: {type: string}
+        defaultUsername: {type: string}
+        fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/DownloadClientField"
+        required:
+          type: array
+          items:
+            $ref: "#/components/schemas/DownloadClientField"
+        capabilities:
+          $ref: "#/components/schemas/DownloadClientCapabilities"
+    DownloadClientCategories:
+      type: object
+      required: [movies, series, music]
+      properties:
+        movies:
+          type: string
+          maxLength: 64
+        series:
+          type: string
+          maxLength: 64
+        music:
+          type: string
+          maxLength: 64
+    DownloadClientStatus:
+      type: object
+      required: [ok]
+      description: The last poll. Absent `checkedAt` = not polled yet (or disabled).
+      properties:
+        ok: {type: boolean}
+        checkedAt:
+          type: string
+          format: date-time
+        errorCode: {type: string}
+        error: {type: string}
+        version: {type: string}
+        freeSpaceBytes:
+          type: integer
+          format: int64
+    DownloadClient:
+      type: object
+      required: [id, name, implementation, protocol, enabled, priority, host, port, useTls, allowSelfSigned, urlBase, username,
+        password, apiKey, directory, categories, recentPriority, olderPriority, initialState, removeCompleted, sequential,
+        firstLastPiece, tags, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name: {type: string}
+        implementation: {type: string}
+        protocol:
+          $ref: "#/components/schemas/DownloadProtocol"
+        enabled: {type: boolean}
+        priority: {type: integer}
+        host: {type: string}
+        port: {type: integer}
+        useTls: {type: boolean}
+        allowSelfSigned: {type: boolean}
+        urlBase: {type: string}
+        username: {type: string}
+        password:
+          $ref: "#/components/schemas/SecretState"
+        apiKey:
+          $ref: "#/components/schemas/SecretState"
+        directory: {type: string}
+        categories:
+          $ref: "#/components/schemas/DownloadClientCategories"
+        recentPriority:
+          $ref: "#/components/schemas/QueuePriority"
+        olderPriority:
+          $ref: "#/components/schemas/QueuePriority"
+        initialState:
+          type: string
+          enum: [start, pause]
+        removeCompleted: {type: boolean}
+        sequential: {type: boolean}
+        firstLastPiece: {type: boolean}
+        tags:
+          type: array
+          items: {type: string}
+        status:
+          $ref: "#/components/schemas/DownloadClientStatus"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    DownloadClientInput:
+      type: object
+      required: [name, implementation, host]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        implementation:
+          type: string
+          maxLength: 32
+        enabled:
+          type: boolean
+          default: true
+        priority:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 1
+        host:
+          type: string
+          minLength: 1
+          maxLength: 253
+        port:
+          type: integer
+          minimum: 1
+          maximum: 65535
+        useTls:
+          type: boolean
+          default: false
+        allowSelfSigned:
+          type: boolean
+          default: false
+        urlBase:
+          type: string
+          maxLength: 200
+        username:
+          type: string
+          maxLength: 200
+        password:
+          type: string
+          maxLength: 500
+          description: Write-only. Omit to keep, "" to clear.
+        apiKey:
+          type: string
+          maxLength: 500
+          description: Write-only. Omit to keep, "" to clear.
+        directory:
+          type: string
+          maxLength: 4096
+        categories:
+          $ref: "#/components/schemas/DownloadClientCategories"
+        recentPriority:
+          $ref: "#/components/schemas/QueuePriority"
+        olderPriority:
+          $ref: "#/components/schemas/QueuePriority"
+        initialState:
+          type: string
+          enum: [start, pause]
+        removeCompleted:
+          type: boolean
+          default: false
+        sequential:
+          type: boolean
+          default: false
+        firstLastPiece:
+          type: boolean
+          default: false
+        tags:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            maxLength: 50
+    DownloadClientTestRequest:
+      type: object
+      required: [client]
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: A stored client whose password / API key are used when left out.
+        client:
+          $ref: "#/components/schemas/DownloadClientInput"
+    DownloadClientTestResult:
+      type: object
+      required: [ok, missingCategories, canCreateCategories]
+      properties:
+        ok: {type: boolean}
+        errorCode: {type: string}
+        message: {type: string}
+        version: {type: string}
+        freeSpaceBytes:
+          type: integer
+          format: int64
+        missingCategories:
+          type: array
+          items: {type: string}
+        canCreateCategories: {type: boolean}
+    CreatedCategories:
+      type: object
+      required: [categories]
+      properties:
+        categories:
+          type: array
+          items: {type: string}
+    DownloadSettings:
+      type: object
+      required: [pollSeconds, stalledHours]
+      properties:
+        pollSeconds:
+          type: integer
+          description: How often clients are polled (faster while the queue is open).
+        stalledHours:
+          type: integer
+          description: A torrent with no progress and no seeds for this long fails (0 = never).
+    UpdateDownloadSettings:
+      type: object
+      properties:
+        pollSeconds:
+          type: integer
+          minimum: 10
+          maximum: 3600
+        stalledHours:
+          type: integer
+          minimum: 0
+          maximum: 720
+    RemotePathMapping:
+      type: object
+      required: [id, host, remotePath, localPath]
+      properties:
+        id:
+          type: integer
+          format: int64
+        host: {type: string}
+        remotePath: {type: string}
+        localPath: {type: string}
+    RemotePathMappingInput:
+      type: object
+      required: [host, remotePath, localPath]
+      properties:
+        host:
+          type: string
+          minLength: 1
+          maxLength: 253
+        remotePath:
+          type: string
+          minLength: 1
+          maxLength: 4096
+        localPath:
+          type: string
+          minLength: 1
+          maxLength: 4096
+    QueueItem:
+      type: object
+      required: [id, unknown, clientName, clientItemId, protocol, title, status, state, rawState, progress, sizeBytes,
+        downloadedBytes, downloadSpeed, uploadSpeed, ratio, seedingSeconds, category, message, addedAt, updatedAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 0 for unknown items (added outside Locarr).
+        unknown: {type: boolean}
+        clientId:
+          type: integer
+          format: int64
+        clientName: {type: string}
+        clientItemId: {type: string}
+        protocol:
+          $ref: "#/components/schemas/DownloadProtocol"
+        title: {type: string}
+        indexer: {type: string}
+        mediaKind: {type: string}
+        category: {type: string}
+        status:
+          $ref: "#/components/schemas/DownloadStatus"
+        state:
+          $ref: "#/components/schemas/DownloadState"
+        rawState: {type: string}
+        progress:
+          type: number
+          format: double
+        sizeBytes:
+          type: integer
+          format: int64
+        downloadedBytes:
+          type: integer
+          format: int64
+        downloadSpeed:
+          type: integer
+          format: int64
+        uploadSpeed:
+          type: integer
+          format: int64
+        etaSeconds:
+          type: integer
+          format: int64
+        ratio:
+          type: number
+          format: double
+        seedingSeconds:
+          type: integer
+          format: int64
+        contentPath: {type: string}
+        localPath: {type: string}
+        message: {type: string}
+        itemRef:
+          description: Opaque JSON from whoever grabbed the release.
+        addedAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+    QueueClient:
+      type: object
+      required: [id, name, protocol, enabled, status]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name: {type: string}
+        protocol:
+          $ref: "#/components/schemas/DownloadProtocol"
+        enabled: {type: boolean}
+        canPrioritise: {type: boolean}
+        status:
+          $ref: "#/components/schemas/DownloadClientStatus"
+    Queue:
+      type: object
+      required: [items, clients]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/QueueItem"
+        clients:
+          type: array
+          items:
+            $ref: "#/components/schemas/QueueClient"
+    GrabRequest:
+      type: object
+      required: [protocol, title]
+      description: |
+        One of `downloadUrl` or `downloadToken`. With `indexerId`, http(s) links and
+        tokens are fetched through that indexer (its credentials, grab limit and
+        seeding goals apply).
+      properties:
+        downloadUrl:
+          type: string
+          maxLength: 8192
+          description: An http(s) link to a .torrent or .nzb, or a magnet link.
+        downloadToken:
+          type: string
+          maxLength: 8192
+          description: The `token` of a search result's `downloadLink` (needs `indexerId`).
+        protocol:
+          $ref: "#/components/schemas/DownloadProtocol"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+        indexerId:
+          type: integer
+          format: int64
+        indexer:
+          type: string
+          maxLength: 200
+        guid:
+          type: string
+          maxLength: 2000
+        mediaKind:
+          $ref: "#/components/schemas/MediaKind"
+        itemRef:
+          description: Opaque JSON for the importer (up to 16 KiB).
+        tags:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            maxLength: 50
+        clientId:
+          type: integer
+          format: int64
+        seedRatio:
+          type: number
+          format: double
+          minimum: 0
+          description: Seeding goal from the indexer settings (overrides the client's).
+        seedTimeMinutes:
+          type: integer
+          minimum: 0
+        publishedAt:
+          type: string
+          format: date-time
+    BlocklistEntry:
+      type: object
+      required: [id, title, protocol, indexer, infoHash, guid, reason, message, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        title: {type: string}
+        protocol: {type: string}
+        indexerId:
+          type: integer
+          format: int64
+        indexer: {type: string}
+        infoHash: {type: string}
+        guid: {type: string}
+        reason: {type: string}
+        message: {type: string}
+        itemRef: {}
+        downloadId:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+    BlocklistInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+        protocol:
+          $ref: "#/components/schemas/DownloadProtocol"
+        indexerId:
+          type: integer
+          format: int64
+        indexer:
+          type: string
+          maxLength: 200
+        infoHash:
+          type: string
+          maxLength: 64
+        guid:
+          type: string
+          maxLength: 2000
+        reason:
+          type: string
+          maxLength: 64
+        message:
+          type: string
+          maxLength: 500
+        itemRef: {}
+    PriorityRequest:
+      type: object
+      required: [priority]
+      properties:
+        priority:
+          $ref: "#/components/schemas/QueuePriority"
+    DownloadEvent:
+      type: object
+      required: [id, downloadId, at, type, fromState, toState, message]
+      properties:
+        id:
+          type: integer
+          format: int64
+        downloadId:
+          type: integer
+          format: int64
+        at:
+          type: string
+          format: date-time
+        type:
+          type: string
+          description: grabbed, state, completed, failed, removed, imported, import_failed or blocklisted.
+        fromState: {type: string}
+        toState: {type: string}
+        message: {type: string}
+        data: {}
     Quality:
       type: object
       required: [id, name, source, rank, music]

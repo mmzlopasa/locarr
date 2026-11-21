@@ -1,6 +1,7 @@
 package decision
 
 import (
+	"context"
 	"fmt"
 	"sort"
 	"strings"
@@ -57,6 +58,7 @@ var defaultRuntime = map[quality.Kind]int{quality.Movies: 110, quality.Series: 4
 
 // eval is the work on one candidate.
 type eval struct {
+	goctx   context.Context
 	ctx     *Context
 	c       *Candidate
 	r       parser.Release
@@ -85,7 +87,7 @@ var specs = []spec{specParse, specKind, specIdentity, specYear, specEpisodes, sp
 	specSize, specLanguage, specReleaseProfiles, specBlocklist, specSeeders, specAge, specContent, specIndexer, specDelay}
 
 // Evaluate decides on every candidate and ranks the accepted ones.
-func Evaluate(ctx Context, cands []Candidate) Report {
+func Evaluate(goctx context.Context, ctx Context, cands []Candidate) Report {
 	if ctx.Now.IsZero() {
 		ctx.Now = time.Now()
 	}
@@ -96,7 +98,7 @@ func Evaluate(ctx Context, cands []Candidate) Report {
 		EvaluatedAt: ctx.Now.UTC(), Decisions: make([]Decision, 0, len(cands))}
 	ctx.Profile.Normalize()
 	for i := range cands {
-		rep.Decisions = append(rep.Decisions, EvaluateOne(&ctx, cands[i]))
+		rep.Decisions = append(rep.Decisions, EvaluateOne(goctx, &ctx, cands[i]))
 	}
 	order := map[string]int{StatusAccepted: 0, StatusPending: 1, StatusRejected: 2}
 	sort.SliceStable(rep.Decisions, func(i, j int) bool {
@@ -128,11 +130,11 @@ func Evaluate(ctx Context, cands []Candidate) Report {
 }
 
 // EvaluateOne decides on one candidate (no rank).
-func EvaluateOne(ctx *Context, c Candidate) Decision {
+func EvaluateOne(goctx context.Context, ctx *Context, c Candidate) Decision {
 	if ctx.Now.IsZero() {
 		ctx.Now = time.Now()
 	}
-	e := &eval{ctx: ctx, c: &c, r: parser.Parse(c.Title)}
+	e := &eval{goctx: goctx, ctx: ctx, c: &c, r: parser.Parse(c.Title)}
 	e.q = quality.Identify(&e.r, ctx.Wanted.Kind)
 	e.pos, e.allowed = ctx.Profile.Position(e.q.ID)
 	in := customformats.Input{Title: c.Title, Release: &e.r, Quality: e.q, Size: c.Size, IndexerFlags: c.IndexerFlags,
@@ -561,7 +563,7 @@ func specBlocklist(e *eval) {
 	if e.ctx.Blocklist == nil {
 		return
 	}
-	if reason, ok := e.ctx.Blocklist.Blocked(e.c, &e.r); ok {
+	if reason, ok := e.ctx.Blocklist.Blocked(e.goctx, e.c, &e.r); ok {
 		e.reject(CodeBlocklisted, "the release is blocklisted: "+reason, map[string]any{"reason": reason})
 	}
 }

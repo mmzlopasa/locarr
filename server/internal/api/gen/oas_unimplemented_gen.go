@@ -13,6 +13,15 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AddBlocklistEntry implements addBlocklistEntry operation.
+//
+// Block a release (library managers).
+//
+// POST /queue/blocklist
+func (UnimplementedHandler) AddBlocklistEntry(ctx context.Context, req *BlocklistInput) (r *BlocklistEntry, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // BrowseFilesystem implements browseFilesystem operation.
 //
 // Without `path`, lists the data roots themselves.
@@ -67,6 +76,24 @@ func (UnimplementedHandler) CreateDelayProfile(ctx context.Context, req *DelayPr
 	return r, ht.ErrNotImplemented
 }
 
+// CreateDownloadClient implements createDownloadClient operation.
+//
+// Add a download client (administrators).
+//
+// POST /downloadclients
+func (UnimplementedHandler) CreateDownloadClient(ctx context.Context, req *DownloadClientInput) (r *DownloadClient, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateDownloadClientCategories implements createDownloadClientCategories operation.
+//
+// Create the client's missing categories (administrators).
+//
+// POST /downloadclients/{id}/categories
+func (UnimplementedHandler) CreateDownloadClientCategories(ctx context.Context, params CreateDownloadClientCategoriesParams) (r *CreatedCategories, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateIndexer implements createIndexer operation.
 //
 // Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
@@ -104,6 +131,15 @@ func (UnimplementedHandler) CreateReleaseProfile(ctx context.Context, req *Relea
 	return r, ht.ErrNotImplemented
 }
 
+// CreateRemotePathMapping implements createRemotePathMapping operation.
+//
+// The local path must lie inside the allowed data roots.
+//
+// POST /remotepathmappings
+func (UnimplementedHandler) CreateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput) (r *RemotePathMapping, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateRootFolder implements createRootFolder operation.
 //
 // The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
@@ -131,6 +167,15 @@ func (UnimplementedHandler) DeleteApiKey(ctx context.Context, params DeleteApiKe
 	return ht.ErrNotImplemented
 }
 
+// DeleteBlocklistEntry implements deleteBlocklistEntry operation.
+//
+// Unblock a release (library managers).
+//
+// DELETE /queue/blocklist/{id}
+func (UnimplementedHandler) DeleteBlocklistEntry(ctx context.Context, params DeleteBlocklistEntryParams) error {
+	return ht.ErrNotImplemented
+}
+
 // DeleteCustomFormat implements deleteCustomFormat operation.
 //
 // Profiles that scored it simply stop seeing it.
@@ -146,6 +191,15 @@ func (UnimplementedHandler) DeleteCustomFormat(ctx context.Context, params Delet
 //
 // DELETE /delayprofiles/{id}
 func (UnimplementedHandler) DeleteDelayProfile(ctx context.Context, params DeleteDelayProfileParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteDownloadClient implements deleteDownloadClient operation.
+//
+// Nothing in the client is touched; its downloads stay in the history.
+//
+// DELETE /downloadclients/{id}
+func (UnimplementedHandler) DeleteDownloadClient(ctx context.Context, params DeleteDownloadClientParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -182,6 +236,15 @@ func (UnimplementedHandler) DeleteQualityProfile(ctx context.Context, params Del
 //
 // DELETE /releaseprofiles/{id}
 func (UnimplementedHandler) DeleteReleaseProfile(ctx context.Context, params DeleteReleaseProfileParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteRemotePathMapping implements deleteRemotePathMapping operation.
+//
+// Remove a remote path mapping (administrators).
+//
+// DELETE /remotepathmappings/{id}
+func (UnimplementedHandler) DeleteRemotePathMapping(ctx context.Context, params DeleteRemotePathMappingParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -269,6 +332,24 @@ func (UnimplementedHandler) GetCustomFormatSchema(ctx context.Context) (r *Custo
 	return r, ht.ErrNotImplemented
 }
 
+// GetDownloadClient implements getDownloadClient operation.
+//
+// One download client (administrators).
+//
+// GET /downloadclients/{id}
+func (UnimplementedHandler) GetDownloadClient(ctx context.Context, params GetDownloadClientParams) (r *DownloadClient, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetDownloadSettings implements getDownloadSettings operation.
+//
+// Download tracking settings (administrators).
+//
+// GET /downloadclients/settings
+func (UnimplementedHandler) GetDownloadSettings(ctx context.Context) (r *DownloadSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetIndexer implements getIndexer operation.
 //
 // One indexer (administrators).
@@ -302,6 +383,17 @@ func (UnimplementedHandler) GetMe(ctx context.Context) (r *User, _ error) {
 //
 // GET /qualityprofiles/{id}
 func (UnimplementedHandler) GetQualityProfile(ctx context.Context, params GetQualityProfileParams) (r *QualityProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetQueue implements getQueue operation.
+//
+// Tracked downloads that are still in a client, plus items other programs put in Locarr's categories
+// (`unknown`: shown, never touched). Asking for the queue makes the tracker poll every few seconds for
+// a short while.
+//
+// GET /queue
+func (UnimplementedHandler) GetQueue(ctx context.Context, params GetQueueParams) (r *Queue, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -341,6 +433,18 @@ func (UnimplementedHandler) GetUser(ctx context.Context, params GetUserParams) (
 	return r, ht.ErrNotImplemented
 }
 
+// GrabRelease implements grabRelease operation.
+//
+// The server fetches the .torrent / .nzb itself (size cap, timeout, no redirects to another host, no
+// link-local or metadata addresses); magnet links go to the client directly. The client is chosen by
+// protocol, tags and priority unless `clientId` is given. Errors: `no_download_client`,
+// `already_queued`, `fetch_failed`, and the client errors of the test action.
+//
+// POST /queue/grab
+func (UnimplementedHandler) GrabRelease(ctx context.Context, req *GrabRequest) (r *QueueItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ImportCustomFormats implements importCustomFormats operation.
 //
 // Accepts one format object or an array in the commonly shared shape (`name`, `specifications[]` with
@@ -361,6 +465,15 @@ func (UnimplementedHandler) ListApiKeys(ctx context.Context) (r []ApiKey, _ erro
 	return r, ht.ErrNotImplemented
 }
 
+// ListBlocklist implements listBlocklist operation.
+//
+// Blocked releases (library managers).
+//
+// GET /queue/blocklist
+func (UnimplementedHandler) ListBlocklist(ctx context.Context, params ListBlocklistParams) (r []BlocklistEntry, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListCustomFormats implements listCustomFormats operation.
 //
 // Custom formats.
@@ -376,6 +489,24 @@ func (UnimplementedHandler) ListCustomFormats(ctx context.Context) (r []CustomFo
 //
 // GET /delayprofiles
 func (UnimplementedHandler) ListDelayProfiles(ctx context.Context) (r []DelayProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListDownloadClientImplementations implements listDownloadClientImplementations operation.
+//
+// Supported clients, the fields each needs and what each can do (administrators).
+//
+// GET /downloadclients/implementations
+func (UnimplementedHandler) ListDownloadClientImplementations(ctx context.Context) (r []DownloadClientImplementation, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListDownloadClients implements listDownloadClients operation.
+//
+// Download clients with their last status (administrators).
+//
+// GET /downloadclients
+func (UnimplementedHandler) ListDownloadClients(ctx context.Context) (r []DownloadClient, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -433,12 +564,30 @@ func (UnimplementedHandler) ListQualityProfiles(ctx context.Context) (r []Qualit
 	return r, ht.ErrNotImplemented
 }
 
+// ListQueueItemEvents implements listQueueItemEvents operation.
+//
+// State history of one download (library managers).
+//
+// GET /queue/{id}/events
+func (UnimplementedHandler) ListQueueItemEvents(ctx context.Context, params ListQueueItemEventsParams) (r []DownloadEvent, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListReleaseProfiles implements listReleaseProfiles operation.
 //
 // Release profiles (required and ignored terms).
 //
 // GET /releaseprofiles
 func (UnimplementedHandler) ListReleaseProfiles(ctx context.Context) (r []ReleaseProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListRemotePathMappings implements listRemotePathMappings operation.
+//
+// Remote path mappings (administrators).
+//
+// GET /remotepathmappings
+func (UnimplementedHandler) ListRemotePathMappings(ctx context.Context) (r []RemotePathMapping, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -517,6 +666,15 @@ func (UnimplementedHandler) ParseRelease(ctx context.Context, req *ParseRequest)
 	return r, ht.ErrNotImplemented
 }
 
+// PauseQueueItem implements pauseQueueItem operation.
+//
+// Pause a download (library managers).
+//
+// POST /queue/{id}/pause
+func (UnimplementedHandler) PauseQueueItem(ctx context.Context, params PauseQueueItemParams) error {
+	return ht.ErrNotImplemented
+}
+
 // PreviewIndexerSource implements previewIndexerSource operation.
 //
 // List what a Prowlarr or Jackett source would import (administrators).
@@ -526,6 +684,15 @@ func (UnimplementedHandler) PreviewIndexerSource(ctx context.Context, req *Index
 	return r, ht.ErrNotImplemented
 }
 
+// RefreshQueue implements refreshQueue operation.
+//
+// Poll every client now (library managers).
+//
+// POST /queue/refresh
+func (UnimplementedHandler) RefreshQueue(ctx context.Context) error {
+	return ht.ErrNotImplemented
+}
+
 // RegenerateRecoveryCodes implements regenerateRecoveryCodes operation.
 //
 // Replace the recovery codes.
@@ -533,6 +700,16 @@ func (UnimplementedHandler) PreviewIndexerSource(ctx context.Context, req *Index
 // POST /auth/totp/recovery-codes
 func (UnimplementedHandler) RegenerateRecoveryCodes(ctx context.Context, req *PasswordConfirm) (r *RecoveryCodes, _ error) {
 	return r, ht.ErrNotImplemented
+}
+
+// RemoveQueueItem implements removeQueueItem operation.
+//
+// `deleteData` also deletes the downloaded files (by the client, or by Locarr inside the data roots
+// when the client cannot). `blocklist` blocks the release.
+//
+// DELETE /queue/{id}
+func (UnimplementedHandler) RemoveQueueItem(ctx context.Context, params RemoveQueueItemParams) error {
+	return ht.ErrNotImplemented
 }
 
 // ReorderDelayProfiles implements reorderDelayProfiles operation.
@@ -568,6 +745,15 @@ func (UnimplementedHandler) ResetQualityDefinitions(ctx context.Context, req *Re
 //
 // POST /users/{id}/password
 func (UnimplementedHandler) ResetUserPassword(ctx context.Context, req *ResetPasswordRequest, params ResetUserPasswordParams) error {
+	return ht.ErrNotImplemented
+}
+
+// ResumeQueueItem implements resumeQueueItem operation.
+//
+// Resume a download (library managers).
+//
+// POST /queue/{id}/resume
+func (UnimplementedHandler) ResumeQueueItem(ctx context.Context, params ResumeQueueItemParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -616,6 +802,15 @@ func (UnimplementedHandler) SearchStream(ctx context.Context, params SearchStrea
 	return r, ht.ErrNotImplemented
 }
 
+// SetQueueItemPriority implements setQueueItemPriority operation.
+//
+// Move a download in its client's queue (library managers).
+//
+// POST /queue/{id}/priority
+func (UnimplementedHandler) SetQueueItemPriority(ctx context.Context, req *PriorityRequest, params SetQueueItemPriorityParams) error {
+	return ht.ErrNotImplemented
+}
+
 // Setup implements setup operation.
 //
 // Only works while no administrator exists. Needs the setup code the server prints to its log on
@@ -643,6 +838,18 @@ func (UnimplementedHandler) StartTotpSetup(ctx context.Context) (r *TotpSetup, _
 //
 // POST /indexers/sources/{id}/sync
 func (UnimplementedHandler) SyncIndexerSource(ctx context.Context, params SyncIndexerSourceParams) (r *IndexerSourceSyncResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TestDownloadClient implements testDownloadClient operation.
+//
+// Always answers 200 with the outcome. With `id`, password and API key left out are taken from that
+// stored client. `errorCode` is one of `auth_failed`, `unreachable`, `tls_untrusted`, `wrong_url`,
+// `address_blocked`, `client_error`, `unsupported`, `invalid` or `category_missing` (then `ok` is true
+// and `missingCategories` lists them).
+//
+// POST /downloadclients/test
+func (UnimplementedHandler) TestDownloadClient(ctx context.Context, req *DownloadClientTestRequest) (r *DownloadClientTestResult, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -680,6 +887,24 @@ func (UnimplementedHandler) UpdateCustomFormat(ctx context.Context, req *CustomF
 //
 // PUT /delayprofiles/{id}
 func (UnimplementedHandler) UpdateDelayProfile(ctx context.Context, req *DelayProfileInput, params UpdateDelayProfileParams) (r *DelayProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateDownloadClient implements updateDownloadClient operation.
+//
+// Leave `password` / `apiKey` out to keep them; send "" to clear.
+//
+// PUT /downloadclients/{id}
+func (UnimplementedHandler) UpdateDownloadClient(ctx context.Context, req *DownloadClientInput, params UpdateDownloadClientParams) (r *DownloadClient, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateDownloadSettings implements updateDownloadSettings operation.
+//
+// Change download tracking settings (administrators).
+//
+// PATCH /downloadclients/settings
+func (UnimplementedHandler) UpdateDownloadSettings(ctx context.Context, req *UpdateDownloadSettings) (r *DownloadSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -735,6 +960,15 @@ func (UnimplementedHandler) UpdateQualityProfile(ctx context.Context, req *Quali
 //
 // PUT /releaseprofiles/{id}
 func (UnimplementedHandler) UpdateReleaseProfile(ctx context.Context, req *ReleaseProfileInput, params UpdateReleaseProfileParams) (r *ReleaseProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateRemotePathMapping implements updateRemotePathMapping operation.
+//
+// Replace a remote path mapping (administrators).
+//
+// PUT /remotepathmappings/{id}
+func (UnimplementedHandler) UpdateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput, params UpdateRemotePathMappingParams) (r *RemotePathMapping, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

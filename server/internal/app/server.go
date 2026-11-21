@@ -16,6 +16,8 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	_ "github.com/mmzlopasa/locarr/server/internal/downloaders/all" // registers the download clients
+	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
@@ -45,7 +47,9 @@ type Deps struct {
 	Roots    *rootfolders.Service
 	Quality  *quality.Store
 	Formats  *customformats.Store
-	Indexers *indexers.Service
+	// Downloads keeps download clients and tracks downloads.
+	Downloads *downloads.Service
+	Indexers  *indexers.Service
 }
 
 // Close stops the jobs and closes the database.
@@ -93,8 +97,10 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 		_ = d.Close()
 		return nil, fmt.Errorf("seed quality profiles: %w", err)
 	}
+	deps.Downloads = downloads.New(d, box, deps.Settings, cfg.DataRoots, log)
 	deps.Jobs = jobs.New(d, log, jobs.Options{Concurrency: map[string]int{jobs.DefaultQueue: 2}})
 	deps.Indexers = indexers.New(d, box, deps.Settings, log)
+	deps.Downloads.Releases = releaseSource{ix: deps.Indexers}
 	registerTasks(deps, log)
 	if err := registerIndexerTasks(ctx, deps, log); err != nil {
 		_ = d.Close()
@@ -186,6 +192,17 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 		shutdown()
 		return err
 	}
+	// Download tracking stops before the database closes (defers run last-in, first-out).
+	trackCtx, stopTracking := context.WithCancel(ctx)
+	tracking := make(chan struct{})
+	go func() {
+		defer close(tracking)
+		deps.Downloads.Run(trackCtx)
+	}()
+	defer func() {
+		stopTracking()
+		<-tracking
+	}()
 	proxies, err := netx.ParsePrefixes(cfg.TrustedProxies)
 	if err != nil {
 		shutdown()
@@ -200,7 +217,7 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 			log.Warn("client banned from sign-in after repeated failures", "ip", ip.String(), "until", until.UTC().Format(time.RFC3339))
 		}
 	}
-	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots, Indexers: deps.Indexers,
+	h := &api.Handler{DB: deps.DB, Auth: deps.Auth, Settings: deps.Settings, Jobs: deps.Jobs, RootFolders: deps.Roots, Downloads: deps.Downloads, Indexers: deps.Indexers,
 		Quality: deps.Quality, Formats: deps.Formats,
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
 	router, err := NewRouter(h, opts)

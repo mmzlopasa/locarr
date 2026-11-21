@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ArrowDown, ArrowUp, Download, ExternalLink, Magnet } from "lucide-react";
-import type { Release, SearchIndexerResult, SearchType } from "@/api/client";
+import { ArrowDown, ArrowUp, Check, Download, ExternalLink, Magnet } from "lucide-react";
+import { api, unwrap, type MediaKind, type Release, type SearchIndexerResult, type SearchType } from "@/api/client";
+import { errorMessage } from "@/components/errors";
 import { formatBytes, formatRelative } from "@/components/format";
 import { Badge, Button, EmptyState, ErrorAlert, PageHeader, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 import { useCurrentUser } from "@/features/auth/hooks";
@@ -228,11 +230,7 @@ export function SearchPage() {
                           <Download className="size-3.5" />
                         </a>
                       ) : null}
-                      <span title={t("search.grabLater")}>
-                        <Button variant="ghost" disabled aria-label={t("search.grab")} className="h-6 px-2 text-[12px]">
-                          {t("search.grab")}
-                        </Button>
-                      </span>
+                      {canGrabLinks ? <GrabButton release={r} mediaKind={KIND_BY_TYPE[type]} /> : null}
                     </div>
                   </td>
                 </tr>
@@ -244,5 +242,52 @@ export function SearchPage() {
         <EmptyState>{indexers.length ? t("search.noResults") : t("search.noIndexers")}</EmptyState>
       ) : null}
     </div>
+  );
+}
+
+const KIND_BY_TYPE: Partial<Record<SearchType, MediaKind>> = { movie: "movies", tv: "series", music: "music" };
+
+/** The search result's download token, from its server download link. */
+function downloadToken(link: string | undefined): string | undefined {
+  if (!link) return undefined;
+  return new URL(link, "http://localhost").searchParams.get("token") ?? undefined;
+}
+
+/** Sends one release to a download client through the server. */
+function GrabButton({ release: r, mediaKind }: { release: Release; mediaKind?: MediaKind }) {
+  const { t } = useTranslation();
+  const token = downloadToken(r.downloadLink);
+  const grab = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await api.POST("/queue/grab", {
+          body: {
+            protocol: r.protocol,
+            title: r.title,
+            indexerId: r.indexerId,
+            guid: r.guid,
+            ...(token ? { downloadToken: token } : { downloadUrl: r.magnetUrl }),
+            ...(mediaKind ? { mediaKind } : {}),
+            ...(r.publishDate ? { publishedAt: r.publishDate } : {}),
+          },
+        }),
+      ),
+  });
+  if (!token && !r.magnetUrl) return null;
+  if (grab.isSuccess) {
+    return (
+      <span className="inline-flex h-6 items-center gap-1 px-2 text-[12px] text-success" role="status">
+        <Check className="size-3.5" />
+        {t("search.grabbed")}
+      </span>
+    );
+  }
+  return (
+    <span title={grab.error ? errorMessage(t, grab.error) : undefined} className="inline-flex items-center gap-1">
+      <Button variant="ghost" busy={grab.isPending} onClick={() => grab.mutate()} aria-label={`${t("search.grab")}: ${r.title}`}
+        className={`h-6 px-2 text-[12px] ${grab.isError ? "text-danger" : ""}`}>
+        {grab.isError ? t("search.grabRetry") : t("search.grab")}
+      </Button>
+    </span>
   );
 }
