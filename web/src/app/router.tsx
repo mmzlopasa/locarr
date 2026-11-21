@@ -22,6 +22,10 @@ import { RootFoldersPage } from "@/features/settings/RootFoldersPage";
 import { SystemLayout } from "@/features/system/SystemLayout";
 import { StatusPage } from "@/features/system/StatusPage";
 import { TasksPage } from "@/features/system/TasksPage";
+import { DownloadersPage } from "@/features/downloaders/DownloadersPage";
+import { ActivityLayout } from "@/features/activity/ActivityLayout";
+import { QueuePage } from "@/features/activity/QueuePage";
+import { BlocklistPage } from "@/features/activity/BlocklistPage";
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -78,11 +82,9 @@ export const UPCOMING = [
   { path: "/series", key: "series", phase: "P5" },
   { path: "/music", key: "music", phase: "P6" },
   { path: "/requests", key: "requests", phase: "P8" },
-  { path: "/activity", key: "activity", phase: "P11" },
   { path: "/calendar", key: "calendar", phase: "P5" },
   { path: "/wanted", key: "wanted", phase: "P4" },
   { path: "/indexers", key: "indexers", phase: "P1" },
-  { path: "/downloaders", key: "downloaders", phase: "P3" },
 ] as const;
 
 const upcomingRoutes = UPCOMING.map((s) =>
@@ -92,6 +94,17 @@ const upcomingRoutes = UPCOMING.map((s) =>
     component: () => <ComingSoonPage section={s.key} phase={s.phase} />,
   }),
 );
+
+const activityRoute = createRoute({ getParentRoute: () => appRoute, path: "/activity", component: ActivityLayout });
+const activityIndexRoute = createRoute({
+  getParentRoute: () => activityRoute,
+  path: "/",
+  beforeLoad: () => {
+    throw redirect({ to: "/activity/queue" });
+  },
+});
+const queueRoute = createRoute({ getParentRoute: () => activityRoute, path: "/queue", component: QueuePage });
+const blocklistRoute = createRoute({ getParentRoute: () => activityRoute, path: "/blocklist", component: BlocklistPage });
 
 const accountRoute = createRoute({ getParentRoute: () => appRoute, path: "/account", component: AccountPage });
 
@@ -104,6 +117,8 @@ const adminRoute = createRoute({
   },
   component: Outlet,
 });
+
+const downloadersRoute = createRoute({ getParentRoute: () => adminRoute, path: "/downloaders", component: DownloadersPage });
 
 const settingsRoute = createRoute({ getParentRoute: () => adminRoute, path: "/settings", component: SettingsLayout });
 const settingsIndexRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/", component: GeneralSettingsPage });
@@ -127,8 +142,10 @@ export const routeTree = rootRoute.addChildren([
   appRoute.addChildren([
     indexRoute,
     ...upcomingRoutes,
+    activityRoute.addChildren([activityIndexRoute, queueRoute, blocklistRoute]),
     accountRoute,
     adminRoute.addChildren([
+      downloadersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),

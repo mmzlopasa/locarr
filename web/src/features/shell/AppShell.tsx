@@ -39,7 +39,7 @@ const NAV: NavItem[][] = [
   ],
   [
     { to: "/indexers", key: "indexers", icon: Radar },
-    { to: "/downloaders", key: "downloaders", icon: Download },
+    { to: "/downloaders", key: "downloaders", icon: Download, admin: true },
     { to: "/settings", key: "settings", icon: Settings, admin: true },
     { to: "/system", key: "system", icon: Server, admin: true },
   ],

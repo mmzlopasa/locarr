@@ -38,7 +38,9 @@ describe("i18n", () => {
     const codes = ["invalid_credentials", "totp_required", "invalid_totp", "account_locked", "rate_limited", "setup_done",
       "bad_setup_code", "username_taken", "invalid_username", "weak_password", "last_admin", "self_action", "not_found",
       "forbidden", "unauthorized", "session_required", "validation", "starting", "request_too_large", "internal",
-      "totp_already_on", "totp_not_started", "path_not_allowed", "path_not_found", "already_exists", "unknown_task"];
+      "totp_already_on", "totp_not_started", "path_not_allowed", "path_not_found", "already_exists", "unknown_task",
+      "name_taken", "no_download_client", "already_queued", "fetch_failed", "auth_failed", "unreachable", "tls_untrusted",
+      "wrong_url", "address_blocked", "client_error", "unsupported"];
     for (const c of codes) expect(Object.keys(en.errors)).toContain(c);
   });
 });
