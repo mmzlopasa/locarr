@@ -1460,7 +1460,7 @@ func (s *IndexerSearchCap) SetParams(val []string) {
 
 // Ref: #/components/schemas/IndexerSettings
 type IndexerSettings struct {
-	// 0 turns RSS sync off.
+	// How often RSS feeds are fetched (RSS can be turned off per indexer).
 	RssSyncIntervalMinutes int `json:"rssSyncIntervalMinutes"`
 	ReleaseRetentionDays   int `json:"releaseRetentionDays"`
 	// Upper bound for a whole search; each indexer also has its own timeout.

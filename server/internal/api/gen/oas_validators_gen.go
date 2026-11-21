@@ -2670,7 +2670,7 @@ func (s *UpdateIndexerSettingsRequest) Validate() error {
 			if err := func() error {
 				if err := (validate.Int{
 					MinSet:        true,
-					Min:           0,
+					Min:           10,
 					MaxSet:        true,
 					Max:           1440,
 					MinExclusive:  false,
@@ -2728,7 +2728,7 @@ func (s *UpdateIndexerSettingsRequest) Validate() error {
 					MinSet:        true,
 					Min:           5,
 					MaxSet:        true,
-					Max:           110,
+					Max:           55,
 					MinExclusive:  false,
 					MaxExclusive:  false,
 					MultipleOfSet: false,
