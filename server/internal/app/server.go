@@ -21,7 +21,9 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
+	"github.com/mmzlopasa/locarr/server/internal/library/series"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
+	"github.com/mmzlopasa/locarr/server/internal/metadata/tvdb"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
@@ -56,6 +58,8 @@ type Deps struct {
 	Indexers  *indexers.Service
 	// The library (P4).
 	Movies    *movies.Service
+	Series    *series.Service
+	TVDB      *tvdb.Client
 	Wanted    *wanted.Service
 	Timeline  *timeline.Store
 	Recycle   *recycle.Bin
