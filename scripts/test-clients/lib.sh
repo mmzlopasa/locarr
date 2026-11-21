@@ -60,3 +60,19 @@ run_contract() {
         (cd "$ROOT/server" && go test -tags clients -count=1 -v -run 'TestContract' "$pkg")
     fi
 }
+
+# run_app_test NAME: runs one app-level test with the clients tag (the movie
+# flow against the real client). The caller exports LOCARR_TEST_* variables first.
+run_app_test() {
+    local name="$1"
+    if [ "${LOCARR_GO_DOCKER:-}" = "1" ]; then
+        local envs=()
+        while IFS='=' read -r k _; do envs+=(-e "$k"); done < <(env | grep '^LOCARR_TEST_')
+        docker run --rm -u "$PUID:$PGID" -e HOME=/tmp -e GOCACHE=/tmp/gocache -e GOFLAGS=-buildvcs=false \
+            -v "${LOCARR_GOMOD_VOLUME:-locarr-test-gomod}:/go/pkg/mod" -v "${LOCARR_GOCACHE_VOLUME:-locarr-test-gocache}:/tmp/gocache" \
+            -v "$ROOT:/src" -v "$SEED_DIR:$SEED_DIR" -w /src/server --network host "${envs[@]}" \
+            golang:1.26-trixie go test -tags clients -count=1 -v -run "$name" ./internal/app/
+    else
+        (cd "$ROOT/server" && go test -tags clients -count=1 -v -run "$name" ./internal/app/)
+    fi
+}

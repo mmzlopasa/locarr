@@ -32,7 +32,10 @@ type env struct {
 
 func quietLog() *slog.Logger { return slog.New(slog.NewTextHandler(io.Discard, nil)) }
 
-func newEnv(t *testing.T, mod func(*RouterOptions)) *env {
+func newEnv(t *testing.T, mod func(*RouterOptions)) *env { return newEnvWith(t, nil, mod) }
+
+// newEnvWith is newEnv with a configuration hook (extra data roots, …).
+func newEnvWith(t *testing.T, cfgMod func(*config.Config), mod func(*RouterOptions)) *env {
 	t.Helper()
 	base := t.TempDir()
 	data := filepath.Join(base, "data")
@@ -46,6 +49,9 @@ func newEnv(t *testing.T, mod func(*RouterOptions)) *env {
 	tmdbSrv := httptest.NewServer(tm)
 	t.Cleanup(tmdbSrv.Close)
 	cfg := config.Config{ConfigDir: filepath.Join(base, "config"), DataRoots: []string{data}, LogLevel: "info", TMDbURL: tmdbSrv.URL}
+	if cfgMod != nil {
+		cfgMod(&cfg)
+	}
 	ctx := context.Background()
 	deps, err := Bootstrap(ctx, cfg, quietLog(), testSetupCode)
 	if err != nil {

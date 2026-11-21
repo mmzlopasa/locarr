@@ -17,16 +17,21 @@ package fake
 import (
 	"bytes"
 	"compress/gzip"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"html"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/mmzlopasa/locarr/server/internal/downloaders/testkit"
 )
 
 // Release is one release in the fake catalog.
@@ -76,7 +81,11 @@ type Server struct {
 	APIKey    string        // key for the direct indexers
 	SourceKey string        // key for the Prowlarr/Jackett endpoints
 	SlowDelay time.Duration // delay of the "slow" indexer
-	Now       func() time.Time
+	// SeedDir, when set, makes every .torrent a real tiny torrent of a
+	// deterministic file "<title>.mkv" that the fake also writes into SeedDir,
+	// so a real client given that folder completes it without any network.
+	SeedDir string
+	Now     func() time.Time
 	// ProwlarrIDs and JackettIDs are what the source lists return (sync tests change them).
 	ProwlarrIDs []int
 	JackettIDs  []string
@@ -298,6 +307,15 @@ func (s *Server) download(w http.ResponseWriter, r *http.Request, name, key, n s
 	}
 	w.Header().Set("Content-Type", "application/x-bittorrent")
 	w.Header().Set("Content-Disposition", `attachment; filename="`+rel.Title+`.torrent"`)
+	if s.SeedDir != "" {
+		t, err := SeedTorrent(s.SeedDir, rel.Title)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		_, _ = w.Write(t)
+		return
+	}
 	info := fmt.Sprintf("d6:lengthi%de4:name%d:%s12:piece lengthi262144e6:pieces0:e", rel.Size, len(rel.Title), rel.Title)
 	_, _ = fmt.Fprintf(w, "d8:announce%d:%s4:info%se", len("http://tracker.invalid/announce"), "http://tracker.invalid/announce", info)
 }
@@ -490,4 +508,31 @@ func (s *Server) feed(name string, idx []int, key, base string, q url.Values) st
 		b.WriteString("</channel></rss>")
 	}
 	return b.String()
+}
+
+// SeedPayload is the deterministic content of a seeded release (1 MiB).
+func SeedPayload(title string) []byte {
+	out := make([]byte, 0, 1<<20)
+	block := sha256.Sum256([]byte(title))
+	for len(out) < 1<<20 {
+		out = append(out, block[:]...)
+		block = sha256.Sum256(block[:])
+	}
+	return out[:1<<20]
+}
+
+// SeedTorrent writes "<title>.mkv" into dir (unless it is there) and returns
+// a torrent for it.
+func SeedTorrent(dir, title string) ([]byte, error) {
+	name := title + ".mkv"
+	data := SeedPayload(title)
+	p := filepath.Join(dir, name)
+	if st, err := os.Stat(p); err != nil || st.Size() != int64(len(data)) {
+		if err := os.WriteFile(p, data, 0o666); err != nil {
+			return nil, err
+		}
+		// World-writable so the client and Locarr (other users) may hardlink it.
+		_ = os.Chmod(p, 0o666)
+	}
+	return testkit.MakeTorrent(name, data).File, nil
 }

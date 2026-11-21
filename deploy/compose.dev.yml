@@ -9,3 +9,6 @@ services:
       args:
         VERSION: ${LOCARR_BUILD_VERSION:-dev}
         COMMIT: ${LOCARR_BUILD_COMMIT:-unknown}
+    environment:
+      # Only for verification against the fake services (scripts/dev-fakes.sh).
+      LOCARR_TMDB_URL: ${LOCARR_TMDB_URL:-}
