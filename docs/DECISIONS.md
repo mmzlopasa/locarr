@@ -44,3 +44,8 @@
 **Kontekst:** mediji pripadaju korisniku na hostu, a slika mora raditi i na NAS-ovima gdje to nije uid 1000.
 **Odluka:** entrypoint (kao root) samo predaje `/config` korisniku `PUID:PGID` ako mu već ne pripada, zatim `setpriv` trajno spušta prava (bez dodatnih grupa, `no_new_privs`). `/data` se nikad ne dira. Compose: `cap_drop: ALL` uz samo CHOWN/SETUID/SETGID, `no-new-privileges`, read-only root filesystem, tmpfs `/tmp`. Pokretanje s `user:` u composeu radi izravno bez roota.
 **Posljedice:** ffmpeg i slično dodat će se u sliku tek kad zatreba (P7).
+
+## D-010 Locarr radi u kućnoj mreži (2026-11-21)
+**Kontekst:** vlasnik pokreće Locarr lokalno i otvara ga s uređaja u kućnoj mreži preko LAN adrese servera; javni demo nije potreban.
+**Odluka:** `docker-compose.yml` zadano objavljuje port 8484 na svim sučeljima (`HTTP_PORT=8484`); `.env` može suziti na LAN adresu ili na `127.0.0.1` uz reverse proxy. Dokumentacija kaže da se port ne otvara na routeru. Razvojna instanca na razvojnom hostu i dalje sluša samo na `127.0.0.1`.
+**Posljedice:** prijava, ograničenja i zabrana adresa vrijede i na LAN-u (privatne adrese se ne blokiraju, ali se računi zaključavaju nakon neuspjelih pokušaja); bez HTTPS-a u kućnoj mreži lozinke putuju nešifrirano unutar LAN-a, što je opisano u INSTALL.md.
