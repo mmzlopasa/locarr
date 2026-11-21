@@ -15,6 +15,166 @@ func (s *ErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// Ref: #/components/schemas/AddArtistRequest
+type AddArtistRequest struct {
+	Mbid              string  `json:"mbid"`
+	RootFolderId      int64   `json:"rootFolderId"`
+	QualityProfileId  int64   `json:"qualityProfileId"`
+	MetadataProfileId int64   `json:"metadataProfileId"`
+	Monitored         OptBool `json:"monitored"`
+	// Which existing albums are monitored now.
+	Monitor          OptAddArtistRequestMonitor `json:"monitor"`
+	MonitorNewAlbums OptMonitorNewAlbums        `json:"monitorNewAlbums"`
+	Tags             []string                   `json:"tags"`
+	SearchOnAdd      OptBool                    `json:"searchOnAdd"`
+}
+
+// GetMbid returns the value of Mbid.
+func (s *AddArtistRequest) GetMbid() string {
+	return s.Mbid
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *AddArtistRequest) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AddArtistRequest) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetMetadataProfileId returns the value of MetadataProfileId.
+func (s *AddArtistRequest) GetMetadataProfileId() int64 {
+	return s.MetadataProfileId
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AddArtistRequest) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetMonitor returns the value of Monitor.
+func (s *AddArtistRequest) GetMonitor() OptAddArtistRequestMonitor {
+	return s.Monitor
+}
+
+// GetMonitorNewAlbums returns the value of MonitorNewAlbums.
+func (s *AddArtistRequest) GetMonitorNewAlbums() OptMonitorNewAlbums {
+	return s.MonitorNewAlbums
+}
+
+// GetTags returns the value of Tags.
+func (s *AddArtistRequest) GetTags() []string {
+	return s.Tags
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *AddArtistRequest) GetSearchOnAdd() OptBool {
+	return s.SearchOnAdd
+}
+
+// SetMbid sets the value of Mbid.
+func (s *AddArtistRequest) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *AddArtistRequest) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AddArtistRequest) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetMetadataProfileId sets the value of MetadataProfileId.
+func (s *AddArtistRequest) SetMetadataProfileId(val int64) {
+	s.MetadataProfileId = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AddArtistRequest) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetMonitor sets the value of Monitor.
+func (s *AddArtistRequest) SetMonitor(val OptAddArtistRequestMonitor) {
+	s.Monitor = val
+}
+
+// SetMonitorNewAlbums sets the value of MonitorNewAlbums.
+func (s *AddArtistRequest) SetMonitorNewAlbums(val OptMonitorNewAlbums) {
+	s.MonitorNewAlbums = val
+}
+
+// SetTags sets the value of Tags.
+func (s *AddArtistRequest) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *AddArtistRequest) SetSearchOnAdd(val OptBool) {
+	s.SearchOnAdd = val
+}
+
+// Which existing albums are monitored now.
+type AddArtistRequestMonitor string
+
+const (
+	AddArtistRequestMonitorAll    AddArtistRequestMonitor = "all"
+	AddArtistRequestMonitorFuture AddArtistRequestMonitor = "future"
+	AddArtistRequestMonitorLatest AddArtistRequestMonitor = "latest"
+	AddArtistRequestMonitorNone   AddArtistRequestMonitor = "none"
+)
+
+// AllValues returns all AddArtistRequestMonitor values.
+func (AddArtistRequestMonitor) AllValues() []AddArtistRequestMonitor {
+	return []AddArtistRequestMonitor{
+		AddArtistRequestMonitorAll,
+		AddArtistRequestMonitorFuture,
+		AddArtistRequestMonitorLatest,
+		AddArtistRequestMonitorNone,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AddArtistRequestMonitor) MarshalText() ([]byte, error) {
+	switch s {
+	case AddArtistRequestMonitorAll:
+		return []byte(s), nil
+	case AddArtistRequestMonitorFuture:
+		return []byte(s), nil
+	case AddArtistRequestMonitorLatest:
+		return []byte(s), nil
+	case AddArtistRequestMonitorNone:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AddArtistRequestMonitor) UnmarshalText(data []byte) error {
+	switch AddArtistRequestMonitor(data) {
+	case AddArtistRequestMonitorAll:
+		*s = AddArtistRequestMonitorAll
+		return nil
+	case AddArtistRequestMonitorFuture:
+		*s = AddArtistRequestMonitorFuture
+		return nil
+	case AddArtistRequestMonitorLatest:
+		*s = AddArtistRequestMonitorLatest
+		return nil
+	case AddArtistRequestMonitorNone:
+		*s = AddArtistRequestMonitorNone
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Merged schema.
 // Ref: #/components/schemas/AddMovieRequest
 type AddMovieRequest struct {
@@ -179,6 +339,886 @@ func (s *AddOptions) SetSearchOnAdd(val OptBool) {
 	s.SearchOnAdd = val
 }
 
+// Ref: #/components/schemas/Album
+type Album struct {
+	ID              int64    `json:"id"`
+	ItemRef         string   `json:"itemRef"`
+	ArtistId        int64    `json:"artistId"`
+	ArtistName      string   `json:"artistName"`
+	Mbid            string   `json:"mbid"`
+	Title           string   `json:"title"`
+	Disambiguation  string   `json:"disambiguation"`
+	PrimaryType     string   `json:"primaryType"`
+	SecondaryTypes  []string `json:"secondaryTypes"`
+	ReleaseDate     string   `json:"releaseDate"`
+	Monitored       bool     `json:"monitored"`
+	ArtistMonitored bool     `json:"artistMonitored"`
+	ReleaseLocked   bool     `json:"releaseLocked"`
+	// Kept although the metadata profile no longer includes it (it has files).
+	Filtered      bool             `json:"filtered"`
+	Path          string           `json:"path"`
+	Release       OptAlbumRelease  `json:"release"`
+	TrackCount    int              `json:"trackCount"`
+	FileCount     int              `json:"fileCount"`
+	SizeBytes     int64            `json:"sizeBytes"`
+	Quality       OptQuality       `json:"quality"`
+	CutoffMet     bool             `json:"cutoffMet"`
+	Available     bool             `json:"available"`
+	LibraryStatus AlbumStatus      `json:"libraryStatus"`
+	Cover         string           `json:"cover"`
+	Download      OptMovieDownload `json:"download"`
+}
+
+// GetID returns the value of ID.
+func (s *Album) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *Album) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetArtistId returns the value of ArtistId.
+func (s *Album) GetArtistId() int64 {
+	return s.ArtistId
+}
+
+// GetArtistName returns the value of ArtistName.
+func (s *Album) GetArtistName() string {
+	return s.ArtistName
+}
+
+// GetMbid returns the value of Mbid.
+func (s *Album) GetMbid() string {
+	return s.Mbid
+}
+
+// GetTitle returns the value of Title.
+func (s *Album) GetTitle() string {
+	return s.Title
+}
+
+// GetDisambiguation returns the value of Disambiguation.
+func (s *Album) GetDisambiguation() string {
+	return s.Disambiguation
+}
+
+// GetPrimaryType returns the value of PrimaryType.
+func (s *Album) GetPrimaryType() string {
+	return s.PrimaryType
+}
+
+// GetSecondaryTypes returns the value of SecondaryTypes.
+func (s *Album) GetSecondaryTypes() []string {
+	return s.SecondaryTypes
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *Album) GetReleaseDate() string {
+	return s.ReleaseDate
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *Album) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetArtistMonitored returns the value of ArtistMonitored.
+func (s *Album) GetArtistMonitored() bool {
+	return s.ArtistMonitored
+}
+
+// GetReleaseLocked returns the value of ReleaseLocked.
+func (s *Album) GetReleaseLocked() bool {
+	return s.ReleaseLocked
+}
+
+// GetFiltered returns the value of Filtered.
+func (s *Album) GetFiltered() bool {
+	return s.Filtered
+}
+
+// GetPath returns the value of Path.
+func (s *Album) GetPath() string {
+	return s.Path
+}
+
+// GetRelease returns the value of Release.
+func (s *Album) GetRelease() OptAlbumRelease {
+	return s.Release
+}
+
+// GetTrackCount returns the value of TrackCount.
+func (s *Album) GetTrackCount() int {
+	return s.TrackCount
+}
+
+// GetFileCount returns the value of FileCount.
+func (s *Album) GetFileCount() int {
+	return s.FileCount
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *Album) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetQuality returns the value of Quality.
+func (s *Album) GetQuality() OptQuality {
+	return s.Quality
+}
+
+// GetCutoffMet returns the value of CutoffMet.
+func (s *Album) GetCutoffMet() bool {
+	return s.CutoffMet
+}
+
+// GetAvailable returns the value of Available.
+func (s *Album) GetAvailable() bool {
+	return s.Available
+}
+
+// GetLibraryStatus returns the value of LibraryStatus.
+func (s *Album) GetLibraryStatus() AlbumStatus {
+	return s.LibraryStatus
+}
+
+// GetCover returns the value of Cover.
+func (s *Album) GetCover() string {
+	return s.Cover
+}
+
+// GetDownload returns the value of Download.
+func (s *Album) GetDownload() OptMovieDownload {
+	return s.Download
+}
+
+// SetID sets the value of ID.
+func (s *Album) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *Album) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetArtistId sets the value of ArtistId.
+func (s *Album) SetArtistId(val int64) {
+	s.ArtistId = val
+}
+
+// SetArtistName sets the value of ArtistName.
+func (s *Album) SetArtistName(val string) {
+	s.ArtistName = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *Album) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Album) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetDisambiguation sets the value of Disambiguation.
+func (s *Album) SetDisambiguation(val string) {
+	s.Disambiguation = val
+}
+
+// SetPrimaryType sets the value of PrimaryType.
+func (s *Album) SetPrimaryType(val string) {
+	s.PrimaryType = val
+}
+
+// SetSecondaryTypes sets the value of SecondaryTypes.
+func (s *Album) SetSecondaryTypes(val []string) {
+	s.SecondaryTypes = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *Album) SetReleaseDate(val string) {
+	s.ReleaseDate = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *Album) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetArtistMonitored sets the value of ArtistMonitored.
+func (s *Album) SetArtistMonitored(val bool) {
+	s.ArtistMonitored = val
+}
+
+// SetReleaseLocked sets the value of ReleaseLocked.
+func (s *Album) SetReleaseLocked(val bool) {
+	s.ReleaseLocked = val
+}
+
+// SetFiltered sets the value of Filtered.
+func (s *Album) SetFiltered(val bool) {
+	s.Filtered = val
+}
+
+// SetPath sets the value of Path.
+func (s *Album) SetPath(val string) {
+	s.Path = val
+}
+
+// SetRelease sets the value of Release.
+func (s *Album) SetRelease(val OptAlbumRelease) {
+	s.Release = val
+}
+
+// SetTrackCount sets the value of TrackCount.
+func (s *Album) SetTrackCount(val int) {
+	s.TrackCount = val
+}
+
+// SetFileCount sets the value of FileCount.
+func (s *Album) SetFileCount(val int) {
+	s.FileCount = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *Album) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *Album) SetQuality(val OptQuality) {
+	s.Quality = val
+}
+
+// SetCutoffMet sets the value of CutoffMet.
+func (s *Album) SetCutoffMet(val bool) {
+	s.CutoffMet = val
+}
+
+// SetAvailable sets the value of Available.
+func (s *Album) SetAvailable(val bool) {
+	s.Available = val
+}
+
+// SetLibraryStatus sets the value of LibraryStatus.
+func (s *Album) SetLibraryStatus(val AlbumStatus) {
+	s.LibraryStatus = val
+}
+
+// SetCover sets the value of Cover.
+func (s *Album) SetCover(val string) {
+	s.Cover = val
+}
+
+// SetDownload sets the value of Download.
+func (s *Album) SetDownload(val OptMovieDownload) {
+	s.Download = val
+}
+
+// Ref: #/components/schemas/AlbumCalendarEntry
+type AlbumCalendarEntry struct {
+	Date       time.Time `json:"date"`
+	AlbumId    int64     `json:"albumId"`
+	ArtistId   int64     `json:"artistId"`
+	ArtistName string    `json:"artistName"`
+	Title      string    `json:"title"`
+	Type       string    `json:"type"`
+	Monitored  bool      `json:"monitored"`
+	HasFiles   bool      `json:"hasFiles"`
+	Cover      string    `json:"cover"`
+}
+
+// GetDate returns the value of Date.
+func (s *AlbumCalendarEntry) GetDate() time.Time {
+	return s.Date
+}
+
+// GetAlbumId returns the value of AlbumId.
+func (s *AlbumCalendarEntry) GetAlbumId() int64 {
+	return s.AlbumId
+}
+
+// GetArtistId returns the value of ArtistId.
+func (s *AlbumCalendarEntry) GetArtistId() int64 {
+	return s.ArtistId
+}
+
+// GetArtistName returns the value of ArtistName.
+func (s *AlbumCalendarEntry) GetArtistName() string {
+	return s.ArtistName
+}
+
+// GetTitle returns the value of Title.
+func (s *AlbumCalendarEntry) GetTitle() string {
+	return s.Title
+}
+
+// GetType returns the value of Type.
+func (s *AlbumCalendarEntry) GetType() string {
+	return s.Type
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AlbumCalendarEntry) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetHasFiles returns the value of HasFiles.
+func (s *AlbumCalendarEntry) GetHasFiles() bool {
+	return s.HasFiles
+}
+
+// GetCover returns the value of Cover.
+func (s *AlbumCalendarEntry) GetCover() string {
+	return s.Cover
+}
+
+// SetDate sets the value of Date.
+func (s *AlbumCalendarEntry) SetDate(val time.Time) {
+	s.Date = val
+}
+
+// SetAlbumId sets the value of AlbumId.
+func (s *AlbumCalendarEntry) SetAlbumId(val int64) {
+	s.AlbumId = val
+}
+
+// SetArtistId sets the value of ArtistId.
+func (s *AlbumCalendarEntry) SetArtistId(val int64) {
+	s.ArtistId = val
+}
+
+// SetArtistName sets the value of ArtistName.
+func (s *AlbumCalendarEntry) SetArtistName(val string) {
+	s.ArtistName = val
+}
+
+// SetTitle sets the value of Title.
+func (s *AlbumCalendarEntry) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetType sets the value of Type.
+func (s *AlbumCalendarEntry) SetType(val string) {
+	s.Type = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AlbumCalendarEntry) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetHasFiles sets the value of HasFiles.
+func (s *AlbumCalendarEntry) SetHasFiles(val bool) {
+	s.HasFiles = val
+}
+
+// SetCover sets the value of Cover.
+func (s *AlbumCalendarEntry) SetCover(val string) {
+	s.Cover = val
+}
+
+// Ref: #/components/schemas/AlbumDetail
+type AlbumDetail struct {
+	Album    Album          `json:"album"`
+	Releases []AlbumRelease `json:"releases"`
+	Tracks   []AlbumTrack   `json:"tracks"`
+	// Files of the album that are on no track of the chosen edition.
+	ExtraFiles []TrackFile `json:"extraFiles"`
+	// Why the track list could not be loaded (MusicBrainz unreachable).
+	TracksError OptString `json:"tracksError"`
+}
+
+// GetAlbum returns the value of Album.
+func (s *AlbumDetail) GetAlbum() Album {
+	return s.Album
+}
+
+// GetReleases returns the value of Releases.
+func (s *AlbumDetail) GetReleases() []AlbumRelease {
+	return s.Releases
+}
+
+// GetTracks returns the value of Tracks.
+func (s *AlbumDetail) GetTracks() []AlbumTrack {
+	return s.Tracks
+}
+
+// GetExtraFiles returns the value of ExtraFiles.
+func (s *AlbumDetail) GetExtraFiles() []TrackFile {
+	return s.ExtraFiles
+}
+
+// GetTracksError returns the value of TracksError.
+func (s *AlbumDetail) GetTracksError() OptString {
+	return s.TracksError
+}
+
+// SetAlbum sets the value of Album.
+func (s *AlbumDetail) SetAlbum(val Album) {
+	s.Album = val
+}
+
+// SetReleases sets the value of Releases.
+func (s *AlbumDetail) SetReleases(val []AlbumRelease) {
+	s.Releases = val
+}
+
+// SetTracks sets the value of Tracks.
+func (s *AlbumDetail) SetTracks(val []AlbumTrack) {
+	s.Tracks = val
+}
+
+// SetExtraFiles sets the value of ExtraFiles.
+func (s *AlbumDetail) SetExtraFiles(val []TrackFile) {
+	s.ExtraFiles = val
+}
+
+// SetTracksError sets the value of TracksError.
+func (s *AlbumDetail) SetTracksError(val OptString) {
+	s.TracksError = val
+}
+
+// Ref: #/components/schemas/AlbumIdsRequest
+type AlbumIdsRequest struct {
+	AlbumIds []int64 `json:"albumIds"`
+}
+
+// GetAlbumIds returns the value of AlbumIds.
+func (s *AlbumIdsRequest) GetAlbumIds() []int64 {
+	return s.AlbumIds
+}
+
+// SetAlbumIds sets the value of AlbumIds.
+func (s *AlbumIdsRequest) SetAlbumIds(val []int64) {
+	s.AlbumIds = val
+}
+
+// Ref: #/components/schemas/AlbumList
+type AlbumList struct {
+	Total int     `json:"total"`
+	Items []Album `json:"items"`
+}
+
+// GetTotal returns the value of Total.
+func (s *AlbumList) GetTotal() int {
+	return s.Total
+}
+
+// GetItems returns the value of Items.
+func (s *AlbumList) GetItems() []Album {
+	return s.Items
+}
+
+// SetTotal sets the value of Total.
+func (s *AlbumList) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetItems sets the value of Items.
+func (s *AlbumList) SetItems(val []Album) {
+	s.Items = val
+}
+
+// Ref: #/components/schemas/AlbumMonitorRequest
+type AlbumMonitorRequest struct {
+	AlbumIds  []int64 `json:"albumIds"`
+	Monitored bool    `json:"monitored"`
+}
+
+// GetAlbumIds returns the value of AlbumIds.
+func (s *AlbumMonitorRequest) GetAlbumIds() []int64 {
+	return s.AlbumIds
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AlbumMonitorRequest) GetMonitored() bool {
+	return s.Monitored
+}
+
+// SetAlbumIds sets the value of AlbumIds.
+func (s *AlbumMonitorRequest) SetAlbumIds(val []int64) {
+	s.AlbumIds = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AlbumMonitorRequest) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// Ref: #/components/schemas/AlbumRelease
+type AlbumRelease struct {
+	ID             int64    `json:"id"`
+	Mbid           string   `json:"mbid"`
+	Title          string   `json:"title"`
+	Status         string   `json:"status"`
+	Date           string   `json:"date"`
+	Country        string   `json:"country"`
+	Disambiguation string   `json:"disambiguation"`
+	Label          string   `json:"label"`
+	CatalogNumber  string   `json:"catalogNumber"`
+	Formats        []string `json:"formats"`
+	// Summary such as "2×CD".
+	Format       string `json:"format"`
+	TrackCount   int    `json:"trackCount"`
+	MediaCount   int    `json:"mediaCount"`
+	TracksLoaded bool   `json:"tracksLoaded"`
+}
+
+// GetID returns the value of ID.
+func (s *AlbumRelease) GetID() int64 {
+	return s.ID
+}
+
+// GetMbid returns the value of Mbid.
+func (s *AlbumRelease) GetMbid() string {
+	return s.Mbid
+}
+
+// GetTitle returns the value of Title.
+func (s *AlbumRelease) GetTitle() string {
+	return s.Title
+}
+
+// GetStatus returns the value of Status.
+func (s *AlbumRelease) GetStatus() string {
+	return s.Status
+}
+
+// GetDate returns the value of Date.
+func (s *AlbumRelease) GetDate() string {
+	return s.Date
+}
+
+// GetCountry returns the value of Country.
+func (s *AlbumRelease) GetCountry() string {
+	return s.Country
+}
+
+// GetDisambiguation returns the value of Disambiguation.
+func (s *AlbumRelease) GetDisambiguation() string {
+	return s.Disambiguation
+}
+
+// GetLabel returns the value of Label.
+func (s *AlbumRelease) GetLabel() string {
+	return s.Label
+}
+
+// GetCatalogNumber returns the value of CatalogNumber.
+func (s *AlbumRelease) GetCatalogNumber() string {
+	return s.CatalogNumber
+}
+
+// GetFormats returns the value of Formats.
+func (s *AlbumRelease) GetFormats() []string {
+	return s.Formats
+}
+
+// GetFormat returns the value of Format.
+func (s *AlbumRelease) GetFormat() string {
+	return s.Format
+}
+
+// GetTrackCount returns the value of TrackCount.
+func (s *AlbumRelease) GetTrackCount() int {
+	return s.TrackCount
+}
+
+// GetMediaCount returns the value of MediaCount.
+func (s *AlbumRelease) GetMediaCount() int {
+	return s.MediaCount
+}
+
+// GetTracksLoaded returns the value of TracksLoaded.
+func (s *AlbumRelease) GetTracksLoaded() bool {
+	return s.TracksLoaded
+}
+
+// SetID sets the value of ID.
+func (s *AlbumRelease) SetID(val int64) {
+	s.ID = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *AlbumRelease) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetTitle sets the value of Title.
+func (s *AlbumRelease) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetStatus sets the value of Status.
+func (s *AlbumRelease) SetStatus(val string) {
+	s.Status = val
+}
+
+// SetDate sets the value of Date.
+func (s *AlbumRelease) SetDate(val string) {
+	s.Date = val
+}
+
+// SetCountry sets the value of Country.
+func (s *AlbumRelease) SetCountry(val string) {
+	s.Country = val
+}
+
+// SetDisambiguation sets the value of Disambiguation.
+func (s *AlbumRelease) SetDisambiguation(val string) {
+	s.Disambiguation = val
+}
+
+// SetLabel sets the value of Label.
+func (s *AlbumRelease) SetLabel(val string) {
+	s.Label = val
+}
+
+// SetCatalogNumber sets the value of CatalogNumber.
+func (s *AlbumRelease) SetCatalogNumber(val string) {
+	s.CatalogNumber = val
+}
+
+// SetFormats sets the value of Formats.
+func (s *AlbumRelease) SetFormats(val []string) {
+	s.Formats = val
+}
+
+// SetFormat sets the value of Format.
+func (s *AlbumRelease) SetFormat(val string) {
+	s.Format = val
+}
+
+// SetTrackCount sets the value of TrackCount.
+func (s *AlbumRelease) SetTrackCount(val int) {
+	s.TrackCount = val
+}
+
+// SetMediaCount sets the value of MediaCount.
+func (s *AlbumRelease) SetMediaCount(val int) {
+	s.MediaCount = val
+}
+
+// SetTracksLoaded sets the value of TracksLoaded.
+func (s *AlbumRelease) SetTracksLoaded(val bool) {
+	s.TracksLoaded = val
+}
+
+// Ref: #/components/schemas/AlbumStatus
+type AlbumStatus string
+
+const (
+	AlbumStatusDownloaded  AlbumStatus = "downloaded"
+	AlbumStatusPartial     AlbumStatus = "partial"
+	AlbumStatusMissing     AlbumStatus = "missing"
+	AlbumStatusDownloading AlbumStatus = "downloading"
+	AlbumStatusUnreleased  AlbumStatus = "unreleased"
+	AlbumStatusUnmonitored AlbumStatus = "unmonitored"
+)
+
+// AllValues returns all AlbumStatus values.
+func (AlbumStatus) AllValues() []AlbumStatus {
+	return []AlbumStatus{
+		AlbumStatusDownloaded,
+		AlbumStatusPartial,
+		AlbumStatusMissing,
+		AlbumStatusDownloading,
+		AlbumStatusUnreleased,
+		AlbumStatusUnmonitored,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AlbumStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case AlbumStatusDownloaded:
+		return []byte(s), nil
+	case AlbumStatusPartial:
+		return []byte(s), nil
+	case AlbumStatusMissing:
+		return []byte(s), nil
+	case AlbumStatusDownloading:
+		return []byte(s), nil
+	case AlbumStatusUnreleased:
+		return []byte(s), nil
+	case AlbumStatusUnmonitored:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AlbumStatus) UnmarshalText(data []byte) error {
+	switch AlbumStatus(data) {
+	case AlbumStatusDownloaded:
+		*s = AlbumStatusDownloaded
+		return nil
+	case AlbumStatusPartial:
+		*s = AlbumStatusPartial
+		return nil
+	case AlbumStatusMissing:
+		*s = AlbumStatusMissing
+		return nil
+	case AlbumStatusDownloading:
+		*s = AlbumStatusDownloading
+		return nil
+	case AlbumStatusUnreleased:
+		*s = AlbumStatusUnreleased
+		return nil
+	case AlbumStatusUnmonitored:
+		*s = AlbumStatusUnmonitored
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AlbumTrack
+type AlbumTrack struct {
+	ID            int64        `json:"id"`
+	Mbid          string       `json:"mbid"`
+	RecordingMbid string       `json:"recordingMbid"`
+	Disc          int          `json:"disc"`
+	Position      int          `json:"position"`
+	Number        string       `json:"number"`
+	Title         string       `json:"title"`
+	LengthMs      int          `json:"lengthMs"`
+	Artist        string       `json:"artist"`
+	File          OptTrackFile `json:"file"`
+}
+
+// GetID returns the value of ID.
+func (s *AlbumTrack) GetID() int64 {
+	return s.ID
+}
+
+// GetMbid returns the value of Mbid.
+func (s *AlbumTrack) GetMbid() string {
+	return s.Mbid
+}
+
+// GetRecordingMbid returns the value of RecordingMbid.
+func (s *AlbumTrack) GetRecordingMbid() string {
+	return s.RecordingMbid
+}
+
+// GetDisc returns the value of Disc.
+func (s *AlbumTrack) GetDisc() int {
+	return s.Disc
+}
+
+// GetPosition returns the value of Position.
+func (s *AlbumTrack) GetPosition() int {
+	return s.Position
+}
+
+// GetNumber returns the value of Number.
+func (s *AlbumTrack) GetNumber() string {
+	return s.Number
+}
+
+// GetTitle returns the value of Title.
+func (s *AlbumTrack) GetTitle() string {
+	return s.Title
+}
+
+// GetLengthMs returns the value of LengthMs.
+func (s *AlbumTrack) GetLengthMs() int {
+	return s.LengthMs
+}
+
+// GetArtist returns the value of Artist.
+func (s *AlbumTrack) GetArtist() string {
+	return s.Artist
+}
+
+// GetFile returns the value of File.
+func (s *AlbumTrack) GetFile() OptTrackFile {
+	return s.File
+}
+
+// SetID sets the value of ID.
+func (s *AlbumTrack) SetID(val int64) {
+	s.ID = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *AlbumTrack) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetRecordingMbid sets the value of RecordingMbid.
+func (s *AlbumTrack) SetRecordingMbid(val string) {
+	s.RecordingMbid = val
+}
+
+// SetDisc sets the value of Disc.
+func (s *AlbumTrack) SetDisc(val int) {
+	s.Disc = val
+}
+
+// SetPosition sets the value of Position.
+func (s *AlbumTrack) SetPosition(val int) {
+	s.Position = val
+}
+
+// SetNumber sets the value of Number.
+func (s *AlbumTrack) SetNumber(val string) {
+	s.Number = val
+}
+
+// SetTitle sets the value of Title.
+func (s *AlbumTrack) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetLengthMs sets the value of LengthMs.
+func (s *AlbumTrack) SetLengthMs(val int) {
+	s.LengthMs = val
+}
+
+// SetArtist sets the value of Artist.
+func (s *AlbumTrack) SetArtist(val string) {
+	s.Artist = val
+}
+
+// SetFile sets the value of File.
+func (s *AlbumTrack) SetFile(val OptTrackFile) {
+	s.File = val
+}
+
+// Ref: #/components/schemas/AlbumUpdate
+type AlbumUpdate struct {
+	Monitored OptBool  `json:"monitored"`
+	ReleaseId OptInt64 `json:"releaseId"`
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AlbumUpdate) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetReleaseId returns the value of ReleaseId.
+func (s *AlbumUpdate) GetReleaseId() OptInt64 {
+	return s.ReleaseId
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AlbumUpdate) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetReleaseId sets the value of ReleaseId.
+func (s *AlbumUpdate) SetReleaseId(val OptInt64) {
+	s.ReleaseId = val
+}
+
 // Ref: #/components/schemas/ApiKey
 type ApiKey struct {
 	ID   int64  `json:"id"`
@@ -248,6 +1288,508 @@ func (s *ApiKey) SetCreatedAt(val time.Time) {
 // SetLastUsedAt sets the value of LastUsedAt.
 func (s *ApiKey) SetLastUsedAt(val OptDateTime) {
 	s.LastUsedAt = val
+}
+
+// Ref: #/components/schemas/Artist
+type Artist struct {
+	ID                int64            `json:"id"`
+	ItemRef           string           `json:"itemRef"`
+	Mbid              string           `json:"mbid"`
+	Name              string           `json:"name"`
+	SortName          string           `json:"sortName"`
+	Disambiguation    string           `json:"disambiguation"`
+	Type              string           `json:"type"`
+	Country           string           `json:"country"`
+	Aliases           []string         `json:"aliases"`
+	Genres            []string         `json:"genres"`
+	Monitored         bool             `json:"monitored"`
+	MonitorNewAlbums  MonitorNewAlbums `json:"monitorNewAlbums"`
+	QualityProfileId  int64            `json:"qualityProfileId"`
+	MetadataProfileId int64            `json:"metadataProfileId"`
+	RootFolderId      OptInt64         `json:"rootFolderId"`
+	Path              string           `json:"path"`
+	Tags              []string         `json:"tags"`
+	AddedAt           time.Time        `json:"addedAt"`
+	UpdatedAt         time.Time        `json:"updatedAt"`
+	RefreshedAt       OptDateTime      `json:"refreshedAt"`
+	Albums            int              `json:"albums"`
+	MonitoredAlbums   int              `json:"monitoredAlbums"`
+	AlbumsWithFiles   int              `json:"albumsWithFiles"`
+	Files             int              `json:"files"`
+	SizeBytes         int64            `json:"sizeBytes"`
+	// Cover image name for /images/coverart (newest album), empty when none.
+	Cover         string    `json:"cover"`
+	LatestRelease OptString `json:"latestRelease"`
+}
+
+// GetID returns the value of ID.
+func (s *Artist) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *Artist) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetMbid returns the value of Mbid.
+func (s *Artist) GetMbid() string {
+	return s.Mbid
+}
+
+// GetName returns the value of Name.
+func (s *Artist) GetName() string {
+	return s.Name
+}
+
+// GetSortName returns the value of SortName.
+func (s *Artist) GetSortName() string {
+	return s.SortName
+}
+
+// GetDisambiguation returns the value of Disambiguation.
+func (s *Artist) GetDisambiguation() string {
+	return s.Disambiguation
+}
+
+// GetType returns the value of Type.
+func (s *Artist) GetType() string {
+	return s.Type
+}
+
+// GetCountry returns the value of Country.
+func (s *Artist) GetCountry() string {
+	return s.Country
+}
+
+// GetAliases returns the value of Aliases.
+func (s *Artist) GetAliases() []string {
+	return s.Aliases
+}
+
+// GetGenres returns the value of Genres.
+func (s *Artist) GetGenres() []string {
+	return s.Genres
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *Artist) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetMonitorNewAlbums returns the value of MonitorNewAlbums.
+func (s *Artist) GetMonitorNewAlbums() MonitorNewAlbums {
+	return s.MonitorNewAlbums
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *Artist) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetMetadataProfileId returns the value of MetadataProfileId.
+func (s *Artist) GetMetadataProfileId() int64 {
+	return s.MetadataProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *Artist) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetPath returns the value of Path.
+func (s *Artist) GetPath() string {
+	return s.Path
+}
+
+// GetTags returns the value of Tags.
+func (s *Artist) GetTags() []string {
+	return s.Tags
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *Artist) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *Artist) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetRefreshedAt returns the value of RefreshedAt.
+func (s *Artist) GetRefreshedAt() OptDateTime {
+	return s.RefreshedAt
+}
+
+// GetAlbums returns the value of Albums.
+func (s *Artist) GetAlbums() int {
+	return s.Albums
+}
+
+// GetMonitoredAlbums returns the value of MonitoredAlbums.
+func (s *Artist) GetMonitoredAlbums() int {
+	return s.MonitoredAlbums
+}
+
+// GetAlbumsWithFiles returns the value of AlbumsWithFiles.
+func (s *Artist) GetAlbumsWithFiles() int {
+	return s.AlbumsWithFiles
+}
+
+// GetFiles returns the value of Files.
+func (s *Artist) GetFiles() int {
+	return s.Files
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *Artist) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetCover returns the value of Cover.
+func (s *Artist) GetCover() string {
+	return s.Cover
+}
+
+// GetLatestRelease returns the value of LatestRelease.
+func (s *Artist) GetLatestRelease() OptString {
+	return s.LatestRelease
+}
+
+// SetID sets the value of ID.
+func (s *Artist) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *Artist) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *Artist) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetName sets the value of Name.
+func (s *Artist) SetName(val string) {
+	s.Name = val
+}
+
+// SetSortName sets the value of SortName.
+func (s *Artist) SetSortName(val string) {
+	s.SortName = val
+}
+
+// SetDisambiguation sets the value of Disambiguation.
+func (s *Artist) SetDisambiguation(val string) {
+	s.Disambiguation = val
+}
+
+// SetType sets the value of Type.
+func (s *Artist) SetType(val string) {
+	s.Type = val
+}
+
+// SetCountry sets the value of Country.
+func (s *Artist) SetCountry(val string) {
+	s.Country = val
+}
+
+// SetAliases sets the value of Aliases.
+func (s *Artist) SetAliases(val []string) {
+	s.Aliases = val
+}
+
+// SetGenres sets the value of Genres.
+func (s *Artist) SetGenres(val []string) {
+	s.Genres = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *Artist) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetMonitorNewAlbums sets the value of MonitorNewAlbums.
+func (s *Artist) SetMonitorNewAlbums(val MonitorNewAlbums) {
+	s.MonitorNewAlbums = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *Artist) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetMetadataProfileId sets the value of MetadataProfileId.
+func (s *Artist) SetMetadataProfileId(val int64) {
+	s.MetadataProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *Artist) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetPath sets the value of Path.
+func (s *Artist) SetPath(val string) {
+	s.Path = val
+}
+
+// SetTags sets the value of Tags.
+func (s *Artist) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *Artist) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *Artist) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetRefreshedAt sets the value of RefreshedAt.
+func (s *Artist) SetRefreshedAt(val OptDateTime) {
+	s.RefreshedAt = val
+}
+
+// SetAlbums sets the value of Albums.
+func (s *Artist) SetAlbums(val int) {
+	s.Albums = val
+}
+
+// SetMonitoredAlbums sets the value of MonitoredAlbums.
+func (s *Artist) SetMonitoredAlbums(val int) {
+	s.MonitoredAlbums = val
+}
+
+// SetAlbumsWithFiles sets the value of AlbumsWithFiles.
+func (s *Artist) SetAlbumsWithFiles(val int) {
+	s.AlbumsWithFiles = val
+}
+
+// SetFiles sets the value of Files.
+func (s *Artist) SetFiles(val int) {
+	s.Files = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *Artist) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetCover sets the value of Cover.
+func (s *Artist) SetCover(val string) {
+	s.Cover = val
+}
+
+// SetLatestRelease sets the value of LatestRelease.
+func (s *Artist) SetLatestRelease(val OptString) {
+	s.LatestRelease = val
+}
+
+// Ref: #/components/schemas/ArtistList
+type ArtistList struct {
+	Total int      `json:"total"`
+	Items []Artist `json:"items"`
+}
+
+// GetTotal returns the value of Total.
+func (s *ArtistList) GetTotal() int {
+	return s.Total
+}
+
+// GetItems returns the value of Items.
+func (s *ArtistList) GetItems() []Artist {
+	return s.Items
+}
+
+// SetTotal sets the value of Total.
+func (s *ArtistList) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetItems sets the value of Items.
+func (s *ArtistList) SetItems(val []Artist) {
+	s.Items = val
+}
+
+// Ref: #/components/schemas/ArtistLookup
+type ArtistLookup struct {
+	Mbid           string    `json:"mbid"`
+	Name           string    `json:"name"`
+	SortName       string    `json:"sortName"`
+	Disambiguation string    `json:"disambiguation"`
+	Type           string    `json:"type"`
+	Country        string    `json:"country"`
+	Begin          OptString `json:"begin"`
+	End            OptString `json:"end"`
+	Score          int       `json:"score"`
+	// Set when the artist is in the library.
+	ArtistId OptInt64 `json:"artistId"`
+}
+
+// GetMbid returns the value of Mbid.
+func (s *ArtistLookup) GetMbid() string {
+	return s.Mbid
+}
+
+// GetName returns the value of Name.
+func (s *ArtistLookup) GetName() string {
+	return s.Name
+}
+
+// GetSortName returns the value of SortName.
+func (s *ArtistLookup) GetSortName() string {
+	return s.SortName
+}
+
+// GetDisambiguation returns the value of Disambiguation.
+func (s *ArtistLookup) GetDisambiguation() string {
+	return s.Disambiguation
+}
+
+// GetType returns the value of Type.
+func (s *ArtistLookup) GetType() string {
+	return s.Type
+}
+
+// GetCountry returns the value of Country.
+func (s *ArtistLookup) GetCountry() string {
+	return s.Country
+}
+
+// GetBegin returns the value of Begin.
+func (s *ArtistLookup) GetBegin() OptString {
+	return s.Begin
+}
+
+// GetEnd returns the value of End.
+func (s *ArtistLookup) GetEnd() OptString {
+	return s.End
+}
+
+// GetScore returns the value of Score.
+func (s *ArtistLookup) GetScore() int {
+	return s.Score
+}
+
+// GetArtistId returns the value of ArtistId.
+func (s *ArtistLookup) GetArtistId() OptInt64 {
+	return s.ArtistId
+}
+
+// SetMbid sets the value of Mbid.
+func (s *ArtistLookup) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetName sets the value of Name.
+func (s *ArtistLookup) SetName(val string) {
+	s.Name = val
+}
+
+// SetSortName sets the value of SortName.
+func (s *ArtistLookup) SetSortName(val string) {
+	s.SortName = val
+}
+
+// SetDisambiguation sets the value of Disambiguation.
+func (s *ArtistLookup) SetDisambiguation(val string) {
+	s.Disambiguation = val
+}
+
+// SetType sets the value of Type.
+func (s *ArtistLookup) SetType(val string) {
+	s.Type = val
+}
+
+// SetCountry sets the value of Country.
+func (s *ArtistLookup) SetCountry(val string) {
+	s.Country = val
+}
+
+// SetBegin sets the value of Begin.
+func (s *ArtistLookup) SetBegin(val OptString) {
+	s.Begin = val
+}
+
+// SetEnd sets the value of End.
+func (s *ArtistLookup) SetEnd(val OptString) {
+	s.End = val
+}
+
+// SetScore sets the value of Score.
+func (s *ArtistLookup) SetScore(val int) {
+	s.Score = val
+}
+
+// SetArtistId sets the value of ArtistId.
+func (s *ArtistLookup) SetArtistId(val OptInt64) {
+	s.ArtistId = val
+}
+
+// Ref: #/components/schemas/ArtistUpdate
+type ArtistUpdate struct {
+	Monitored         OptBool             `json:"monitored"`
+	MonitorNewAlbums  OptMonitorNewAlbums `json:"monitorNewAlbums"`
+	QualityProfileId  OptInt64            `json:"qualityProfileId"`
+	MetadataProfileId OptInt64            `json:"metadataProfileId"`
+	Tags              []string            `json:"tags"`
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *ArtistUpdate) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetMonitorNewAlbums returns the value of MonitorNewAlbums.
+func (s *ArtistUpdate) GetMonitorNewAlbums() OptMonitorNewAlbums {
+	return s.MonitorNewAlbums
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *ArtistUpdate) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetMetadataProfileId returns the value of MetadataProfileId.
+func (s *ArtistUpdate) GetMetadataProfileId() OptInt64 {
+	return s.MetadataProfileId
+}
+
+// GetTags returns the value of Tags.
+func (s *ArtistUpdate) GetTags() []string {
+	return s.Tags
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *ArtistUpdate) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetMonitorNewAlbums sets the value of MonitorNewAlbums.
+func (s *ArtistUpdate) SetMonitorNewAlbums(val OptMonitorNewAlbums) {
+	s.MonitorNewAlbums = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *ArtistUpdate) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetMetadataProfileId sets the value of MetadataProfileId.
+func (s *ArtistUpdate) SetMetadataProfileId(val OptInt64) {
+	s.MetadataProfileId = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ArtistUpdate) SetTags(val []string) {
+	s.Tags = val
 }
 
 // Ref: #/components/schemas/AuthResult
@@ -2239,6 +3781,9 @@ func (s *DelayProfileInput) SetTags(val []string) {
 // DeleteApiKeyNoContent is response for DeleteApiKey operation.
 type DeleteApiKeyNoContent struct{}
 
+// DeleteArtistNoContent is response for DeleteArtist operation.
+type DeleteArtistNoContent struct{}
+
 // DeleteBlocklistEntryNoContent is response for DeleteBlocklistEntry operation.
 type DeleteBlocklistEntryNoContent struct{}
 
@@ -2265,6 +3810,9 @@ type DeleteIndexerNoContent struct{}
 
 // DeleteIndexerSourceNoContent is response for DeleteIndexerSource operation.
 type DeleteIndexerSourceNoContent struct{}
+
+// DeleteMetadataProfileNoContent is response for DeleteMetadataProfile operation.
+type DeleteMetadataProfileNoContent struct{}
 
 // DeleteMovieNoContent is response for DeleteMovie operation.
 type DeleteMovieNoContent struct{}
@@ -4000,6 +5548,157 @@ func (s *EvaluateRequestMode) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/ExistingAlbumFolder
+type ExistingAlbumFolder struct {
+	Path  string `json:"path"`
+	Name  string `json:"name"`
+	Album string `json:"album"`
+	Year  int    `json:"year"`
+	Files int    `json:"files"`
+}
+
+// GetPath returns the value of Path.
+func (s *ExistingAlbumFolder) GetPath() string {
+	return s.Path
+}
+
+// GetName returns the value of Name.
+func (s *ExistingAlbumFolder) GetName() string {
+	return s.Name
+}
+
+// GetAlbum returns the value of Album.
+func (s *ExistingAlbumFolder) GetAlbum() string {
+	return s.Album
+}
+
+// GetYear returns the value of Year.
+func (s *ExistingAlbumFolder) GetYear() int {
+	return s.Year
+}
+
+// GetFiles returns the value of Files.
+func (s *ExistingAlbumFolder) GetFiles() int {
+	return s.Files
+}
+
+// SetPath sets the value of Path.
+func (s *ExistingAlbumFolder) SetPath(val string) {
+	s.Path = val
+}
+
+// SetName sets the value of Name.
+func (s *ExistingAlbumFolder) SetName(val string) {
+	s.Name = val
+}
+
+// SetAlbum sets the value of Album.
+func (s *ExistingAlbumFolder) SetAlbum(val string) {
+	s.Album = val
+}
+
+// SetYear sets the value of Year.
+func (s *ExistingAlbumFolder) SetYear(val int) {
+	s.Year = val
+}
+
+// SetFiles sets the value of Files.
+func (s *ExistingAlbumFolder) SetFiles(val int) {
+	s.Files = val
+}
+
+// Ref: #/components/schemas/ExistingArtistFolder
+type ExistingArtistFolder struct {
+	Path       string                `json:"path"`
+	Name       string                `json:"name"`
+	TagArtist  string                `json:"tagArtist"`
+	Albums     []ExistingAlbumFolder `json:"albums"`
+	Match      OptArtistLookup       `json:"match"`
+	Candidates []ArtistLookup        `json:"candidates"`
+	ArtistId   OptInt64              `json:"artistId"`
+	Error      OptString             `json:"error"`
+}
+
+// GetPath returns the value of Path.
+func (s *ExistingArtistFolder) GetPath() string {
+	return s.Path
+}
+
+// GetName returns the value of Name.
+func (s *ExistingArtistFolder) GetName() string {
+	return s.Name
+}
+
+// GetTagArtist returns the value of TagArtist.
+func (s *ExistingArtistFolder) GetTagArtist() string {
+	return s.TagArtist
+}
+
+// GetAlbums returns the value of Albums.
+func (s *ExistingArtistFolder) GetAlbums() []ExistingAlbumFolder {
+	return s.Albums
+}
+
+// GetMatch returns the value of Match.
+func (s *ExistingArtistFolder) GetMatch() OptArtistLookup {
+	return s.Match
+}
+
+// GetCandidates returns the value of Candidates.
+func (s *ExistingArtistFolder) GetCandidates() []ArtistLookup {
+	return s.Candidates
+}
+
+// GetArtistId returns the value of ArtistId.
+func (s *ExistingArtistFolder) GetArtistId() OptInt64 {
+	return s.ArtistId
+}
+
+// GetError returns the value of Error.
+func (s *ExistingArtistFolder) GetError() OptString {
+	return s.Error
+}
+
+// SetPath sets the value of Path.
+func (s *ExistingArtistFolder) SetPath(val string) {
+	s.Path = val
+}
+
+// SetName sets the value of Name.
+func (s *ExistingArtistFolder) SetName(val string) {
+	s.Name = val
+}
+
+// SetTagArtist sets the value of TagArtist.
+func (s *ExistingArtistFolder) SetTagArtist(val string) {
+	s.TagArtist = val
+}
+
+// SetAlbums sets the value of Albums.
+func (s *ExistingArtistFolder) SetAlbums(val []ExistingAlbumFolder) {
+	s.Albums = val
+}
+
+// SetMatch sets the value of Match.
+func (s *ExistingArtistFolder) SetMatch(val OptArtistLookup) {
+	s.Match = val
+}
+
+// SetCandidates sets the value of Candidates.
+func (s *ExistingArtistFolder) SetCandidates(val []ArtistLookup) {
+	s.Candidates = val
+}
+
+// SetArtistId sets the value of ArtistId.
+func (s *ExistingArtistFolder) SetArtistId(val OptInt64) {
+	s.ArtistId = val
+}
+
+// SetError sets the value of Error.
+func (s *ExistingArtistFolder) SetError(val OptString) {
+	s.Error = val
+}
+
 // Ref: #/components/schemas/ExistingFolder
 type ExistingFolder struct {
 	Path           string         `json:"path"`
@@ -4382,6 +6081,146 @@ func (s GetCalendarFeedOK) Read(p []byte) (n int, err error) {
 		return 0, io.EOF
 	}
 	return s.Data.Read(p)
+}
+
+// GetCoverArtNotModified is response for GetCoverArt operation.
+type GetCoverArtNotModified struct {
+	CacheControl OptString
+	ETag         OptString
+}
+
+// GetCacheControl returns the value of CacheControl.
+func (s *GetCoverArtNotModified) GetCacheControl() OptString {
+	return s.CacheControl
+}
+
+// GetETag returns the value of ETag.
+func (s *GetCoverArtNotModified) GetETag() OptString {
+	return s.ETag
+}
+
+// SetCacheControl sets the value of CacheControl.
+func (s *GetCoverArtNotModified) SetCacheControl(val OptString) {
+	s.CacheControl = val
+}
+
+// SetETag sets the value of ETag.
+func (s *GetCoverArtNotModified) SetETag(val OptString) {
+	s.ETag = val
+}
+
+func (*GetCoverArtNotModified) getCoverArtRes() {}
+
+type GetCoverArtOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s GetCoverArtOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+// GetCoverArtOKHeaders wraps GetCoverArtOK with response headers.
+type GetCoverArtOKHeaders struct {
+	CacheControl OptString
+	ContentType  string
+	ETag         OptString
+	Response     GetCoverArtOK
+}
+
+// GetCacheControl returns the value of CacheControl.
+func (s *GetCoverArtOKHeaders) GetCacheControl() OptString {
+	return s.CacheControl
+}
+
+// GetContentType returns the value of ContentType.
+func (s *GetCoverArtOKHeaders) GetContentType() string {
+	return s.ContentType
+}
+
+// GetETag returns the value of ETag.
+func (s *GetCoverArtOKHeaders) GetETag() OptString {
+	return s.ETag
+}
+
+// GetResponse returns the value of Response.
+func (s *GetCoverArtOKHeaders) GetResponse() GetCoverArtOK {
+	return s.Response
+}
+
+// SetCacheControl sets the value of CacheControl.
+func (s *GetCoverArtOKHeaders) SetCacheControl(val OptString) {
+	s.CacheControl = val
+}
+
+// SetContentType sets the value of ContentType.
+func (s *GetCoverArtOKHeaders) SetContentType(val string) {
+	s.ContentType = val
+}
+
+// SetETag sets the value of ETag.
+func (s *GetCoverArtOKHeaders) SetETag(val OptString) {
+	s.ETag = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetCoverArtOKHeaders) SetResponse(val GetCoverArtOK) {
+	s.Response = val
+}
+
+func (*GetCoverArtOKHeaders) getCoverArtRes() {}
+
+type GetCoverArtSize string
+
+const (
+	GetCoverArtSize250  GetCoverArtSize = "250"
+	GetCoverArtSize500  GetCoverArtSize = "500"
+	GetCoverArtSize1200 GetCoverArtSize = "1200"
+)
+
+// AllValues returns all GetCoverArtSize values.
+func (GetCoverArtSize) AllValues() []GetCoverArtSize {
+	return []GetCoverArtSize{
+		GetCoverArtSize250,
+		GetCoverArtSize500,
+		GetCoverArtSize1200,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GetCoverArtSize) MarshalText() ([]byte, error) {
+	switch s {
+	case GetCoverArtSize250:
+		return []byte(s), nil
+	case GetCoverArtSize500:
+		return []byte(s), nil
+	case GetCoverArtSize1200:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GetCoverArtSize) UnmarshalText(data []byte) error {
+	switch GetCoverArtSize(data) {
+	case GetCoverArtSize250:
+		*s = GetCoverArtSize250
+		return nil
+	case GetCoverArtSize500:
+		*s = GetCoverArtSize500
+		return nil
+	case GetCoverArtSize1200:
+		*s = GetCoverArtSize1200
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // GetTmdbImageNotModified is response for GetTmdbImage operation.
@@ -4862,6 +6701,215 @@ func (s *ImportExclusion) SetYear(val int) {
 // SetCreatedAt sets the value of CreatedAt.
 func (s *ImportExclusion) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
+}
+
+// Ref: #/components/schemas/ImportExistingArtistResult
+type ImportExistingArtistResult struct {
+	Path   string    `json:"path"`
+	Artist OptArtist `json:"artist"`
+	Error  OptError  `json:"error"`
+}
+
+// GetPath returns the value of Path.
+func (s *ImportExistingArtistResult) GetPath() string {
+	return s.Path
+}
+
+// GetArtist returns the value of Artist.
+func (s *ImportExistingArtistResult) GetArtist() OptArtist {
+	return s.Artist
+}
+
+// GetError returns the value of Error.
+func (s *ImportExistingArtistResult) GetError() OptError {
+	return s.Error
+}
+
+// SetPath sets the value of Path.
+func (s *ImportExistingArtistResult) SetPath(val string) {
+	s.Path = val
+}
+
+// SetArtist sets the value of Artist.
+func (s *ImportExistingArtistResult) SetArtist(val OptArtist) {
+	s.Artist = val
+}
+
+// SetError sets the value of Error.
+func (s *ImportExistingArtistResult) SetError(val OptError) {
+	s.Error = val
+}
+
+// Ref: #/components/schemas/ImportExistingArtistsRequest
+type ImportExistingArtistsRequest struct {
+	RootFolderId      int64                                   `json:"rootFolderId"`
+	QualityProfileId  int64                                   `json:"qualityProfileId"`
+	MetadataProfileId int64                                   `json:"metadataProfileId"`
+	Monitored         OptBool                                 `json:"monitored"`
+	Monitor           OptImportExistingArtistsRequestMonitor  `json:"monitor"`
+	MonitorNewAlbums  OptMonitorNewAlbums                     `json:"monitorNewAlbums"`
+	SearchOnAdd       OptBool                                 `json:"searchOnAdd"`
+	Items             []ImportExistingArtistsRequestItemsItem `json:"items"`
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *ImportExistingArtistsRequest) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *ImportExistingArtistsRequest) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetMetadataProfileId returns the value of MetadataProfileId.
+func (s *ImportExistingArtistsRequest) GetMetadataProfileId() int64 {
+	return s.MetadataProfileId
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *ImportExistingArtistsRequest) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetMonitor returns the value of Monitor.
+func (s *ImportExistingArtistsRequest) GetMonitor() OptImportExistingArtistsRequestMonitor {
+	return s.Monitor
+}
+
+// GetMonitorNewAlbums returns the value of MonitorNewAlbums.
+func (s *ImportExistingArtistsRequest) GetMonitorNewAlbums() OptMonitorNewAlbums {
+	return s.MonitorNewAlbums
+}
+
+// GetSearchOnAdd returns the value of SearchOnAdd.
+func (s *ImportExistingArtistsRequest) GetSearchOnAdd() OptBool {
+	return s.SearchOnAdd
+}
+
+// GetItems returns the value of Items.
+func (s *ImportExistingArtistsRequest) GetItems() []ImportExistingArtistsRequestItemsItem {
+	return s.Items
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *ImportExistingArtistsRequest) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *ImportExistingArtistsRequest) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetMetadataProfileId sets the value of MetadataProfileId.
+func (s *ImportExistingArtistsRequest) SetMetadataProfileId(val int64) {
+	s.MetadataProfileId = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *ImportExistingArtistsRequest) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetMonitor sets the value of Monitor.
+func (s *ImportExistingArtistsRequest) SetMonitor(val OptImportExistingArtistsRequestMonitor) {
+	s.Monitor = val
+}
+
+// SetMonitorNewAlbums sets the value of MonitorNewAlbums.
+func (s *ImportExistingArtistsRequest) SetMonitorNewAlbums(val OptMonitorNewAlbums) {
+	s.MonitorNewAlbums = val
+}
+
+// SetSearchOnAdd sets the value of SearchOnAdd.
+func (s *ImportExistingArtistsRequest) SetSearchOnAdd(val OptBool) {
+	s.SearchOnAdd = val
+}
+
+// SetItems sets the value of Items.
+func (s *ImportExistingArtistsRequest) SetItems(val []ImportExistingArtistsRequestItemsItem) {
+	s.Items = val
+}
+
+type ImportExistingArtistsRequestItemsItem struct {
+	Path string `json:"path"`
+	Mbid string `json:"mbid"`
+}
+
+// GetPath returns the value of Path.
+func (s *ImportExistingArtistsRequestItemsItem) GetPath() string {
+	return s.Path
+}
+
+// GetMbid returns the value of Mbid.
+func (s *ImportExistingArtistsRequestItemsItem) GetMbid() string {
+	return s.Mbid
+}
+
+// SetPath sets the value of Path.
+func (s *ImportExistingArtistsRequestItemsItem) SetPath(val string) {
+	s.Path = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *ImportExistingArtistsRequestItemsItem) SetMbid(val string) {
+	s.Mbid = val
+}
+
+type ImportExistingArtistsRequestMonitor string
+
+const (
+	ImportExistingArtistsRequestMonitorAll    ImportExistingArtistsRequestMonitor = "all"
+	ImportExistingArtistsRequestMonitorFuture ImportExistingArtistsRequestMonitor = "future"
+	ImportExistingArtistsRequestMonitorLatest ImportExistingArtistsRequestMonitor = "latest"
+	ImportExistingArtistsRequestMonitorNone   ImportExistingArtistsRequestMonitor = "none"
+)
+
+// AllValues returns all ImportExistingArtistsRequestMonitor values.
+func (ImportExistingArtistsRequestMonitor) AllValues() []ImportExistingArtistsRequestMonitor {
+	return []ImportExistingArtistsRequestMonitor{
+		ImportExistingArtistsRequestMonitorAll,
+		ImportExistingArtistsRequestMonitorFuture,
+		ImportExistingArtistsRequestMonitorLatest,
+		ImportExistingArtistsRequestMonitorNone,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ImportExistingArtistsRequestMonitor) MarshalText() ([]byte, error) {
+	switch s {
+	case ImportExistingArtistsRequestMonitorAll:
+		return []byte(s), nil
+	case ImportExistingArtistsRequestMonitorFuture:
+		return []byte(s), nil
+	case ImportExistingArtistsRequestMonitorLatest:
+		return []byte(s), nil
+	case ImportExistingArtistsRequestMonitorNone:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ImportExistingArtistsRequestMonitor) UnmarshalText(data []byte) error {
+	switch ImportExistingArtistsRequestMonitor(data) {
+	case ImportExistingArtistsRequestMonitorAll:
+		*s = ImportExistingArtistsRequestMonitorAll
+		return nil
+	case ImportExistingArtistsRequestMonitorFuture:
+		*s = ImportExistingArtistsRequestMonitorFuture
+		return nil
+	case ImportExistingArtistsRequestMonitorLatest:
+		*s = ImportExistingArtistsRequestMonitorLatest
+		return nil
+	case ImportExistingArtistsRequestMonitorNone:
+		*s = ImportExistingArtistsRequestMonitorNone
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/ImportExistingRequest
@@ -7493,6 +9541,61 @@ func (s *LanguageInfo) SetNative(val string) {
 	s.Native = val
 }
 
+type ListArtistsSort string
+
+const (
+	ListArtistsSortName   ListArtistsSort = "name"
+	ListArtistsSortAdded  ListArtistsSort = "added"
+	ListArtistsSortAlbums ListArtistsSort = "albums"
+	ListArtistsSortSize   ListArtistsSort = "size"
+)
+
+// AllValues returns all ListArtistsSort values.
+func (ListArtistsSort) AllValues() []ListArtistsSort {
+	return []ListArtistsSort{
+		ListArtistsSortName,
+		ListArtistsSortAdded,
+		ListArtistsSortAlbums,
+		ListArtistsSortSize,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListArtistsSort) MarshalText() ([]byte, error) {
+	switch s {
+	case ListArtistsSortName:
+		return []byte(s), nil
+	case ListArtistsSortAdded:
+		return []byte(s), nil
+	case ListArtistsSortAlbums:
+		return []byte(s), nil
+	case ListArtistsSortSize:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListArtistsSort) UnmarshalText(data []byte) error {
+	switch ListArtistsSort(data) {
+	case ListArtistsSortName:
+		*s = ListArtistsSortName
+		return nil
+	case ListArtistsSortAdded:
+		*s = ListArtistsSortAdded
+		return nil
+	case ListArtistsSortAlbums:
+		*s = ListArtistsSortAlbums
+		return nil
+	case ListArtistsSortSize:
+		*s = ListArtistsSortSize
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 type ListMoviesSort string
 
 const (
@@ -7577,6 +9680,47 @@ func (s *ListMoviesSort) UnmarshalText(data []byte) error {
 		return nil
 	case ListMoviesSortPhysical:
 		*s = ListMoviesSortPhysical
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type ListWantedAlbumsStatus string
+
+const (
+	ListWantedAlbumsStatusMissing     ListWantedAlbumsStatus = "missing"
+	ListWantedAlbumsStatusCutoffUnmet ListWantedAlbumsStatus = "cutoff_unmet"
+)
+
+// AllValues returns all ListWantedAlbumsStatus values.
+func (ListWantedAlbumsStatus) AllValues() []ListWantedAlbumsStatus {
+	return []ListWantedAlbumsStatus{
+		ListWantedAlbumsStatusMissing,
+		ListWantedAlbumsStatusCutoffUnmet,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListWantedAlbumsStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case ListWantedAlbumsStatusMissing:
+		return []byte(s), nil
+	case ListWantedAlbumsStatusCutoffUnmet:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListWantedAlbumsStatus) UnmarshalText(data []byte) error {
+	switch ListWantedAlbumsStatus(data) {
+	case ListWantedAlbumsStatusMissing:
+		*s = ListWantedAlbumsStatusMissing
+		return nil
+	case ListWantedAlbumsStatusCutoffUnmet:
+		*s = ListWantedAlbumsStatusCutoffUnmet
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -8368,6 +10512,374 @@ func (s *MediaManagementSettings) SetSearchOnAddDefault(val bool) {
 	s.SearchOnAddDefault = val
 }
 
+// Ref: #/components/schemas/MetadataProfile
+type MetadataProfile struct {
+	ID              int64    `json:"id"`
+	Name            string   `json:"name"`
+	PrimaryTypes    []string `json:"primaryTypes"`
+	SecondaryTypes  []string `json:"secondaryTypes"`
+	ReleaseStatuses []string `json:"releaseStatuses"`
+	// Artists using it.
+	Artists int `json:"artists"`
+}
+
+// GetID returns the value of ID.
+func (s *MetadataProfile) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *MetadataProfile) GetName() string {
+	return s.Name
+}
+
+// GetPrimaryTypes returns the value of PrimaryTypes.
+func (s *MetadataProfile) GetPrimaryTypes() []string {
+	return s.PrimaryTypes
+}
+
+// GetSecondaryTypes returns the value of SecondaryTypes.
+func (s *MetadataProfile) GetSecondaryTypes() []string {
+	return s.SecondaryTypes
+}
+
+// GetReleaseStatuses returns the value of ReleaseStatuses.
+func (s *MetadataProfile) GetReleaseStatuses() []string {
+	return s.ReleaseStatuses
+}
+
+// GetArtists returns the value of Artists.
+func (s *MetadataProfile) GetArtists() int {
+	return s.Artists
+}
+
+// SetID sets the value of ID.
+func (s *MetadataProfile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataProfile) SetName(val string) {
+	s.Name = val
+}
+
+// SetPrimaryTypes sets the value of PrimaryTypes.
+func (s *MetadataProfile) SetPrimaryTypes(val []string) {
+	s.PrimaryTypes = val
+}
+
+// SetSecondaryTypes sets the value of SecondaryTypes.
+func (s *MetadataProfile) SetSecondaryTypes(val []string) {
+	s.SecondaryTypes = val
+}
+
+// SetReleaseStatuses sets the value of ReleaseStatuses.
+func (s *MetadataProfile) SetReleaseStatuses(val []string) {
+	s.ReleaseStatuses = val
+}
+
+// SetArtists sets the value of Artists.
+func (s *MetadataProfile) SetArtists(val int) {
+	s.Artists = val
+}
+
+// Ref: #/components/schemas/MetadataProfileInput
+type MetadataProfileInput struct {
+	Name            string                                    `json:"name"`
+	PrimaryTypes    []MetadataProfileInputPrimaryTypesItem    `json:"primaryTypes"`
+	SecondaryTypes  []MetadataProfileInputSecondaryTypesItem  `json:"secondaryTypes"`
+	ReleaseStatuses []MetadataProfileInputReleaseStatusesItem `json:"releaseStatuses"`
+}
+
+// GetName returns the value of Name.
+func (s *MetadataProfileInput) GetName() string {
+	return s.Name
+}
+
+// GetPrimaryTypes returns the value of PrimaryTypes.
+func (s *MetadataProfileInput) GetPrimaryTypes() []MetadataProfileInputPrimaryTypesItem {
+	return s.PrimaryTypes
+}
+
+// GetSecondaryTypes returns the value of SecondaryTypes.
+func (s *MetadataProfileInput) GetSecondaryTypes() []MetadataProfileInputSecondaryTypesItem {
+	return s.SecondaryTypes
+}
+
+// GetReleaseStatuses returns the value of ReleaseStatuses.
+func (s *MetadataProfileInput) GetReleaseStatuses() []MetadataProfileInputReleaseStatusesItem {
+	return s.ReleaseStatuses
+}
+
+// SetName sets the value of Name.
+func (s *MetadataProfileInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetPrimaryTypes sets the value of PrimaryTypes.
+func (s *MetadataProfileInput) SetPrimaryTypes(val []MetadataProfileInputPrimaryTypesItem) {
+	s.PrimaryTypes = val
+}
+
+// SetSecondaryTypes sets the value of SecondaryTypes.
+func (s *MetadataProfileInput) SetSecondaryTypes(val []MetadataProfileInputSecondaryTypesItem) {
+	s.SecondaryTypes = val
+}
+
+// SetReleaseStatuses sets the value of ReleaseStatuses.
+func (s *MetadataProfileInput) SetReleaseStatuses(val []MetadataProfileInputReleaseStatusesItem) {
+	s.ReleaseStatuses = val
+}
+
+type MetadataProfileInputPrimaryTypesItem string
+
+const (
+	MetadataProfileInputPrimaryTypesItemAlbum     MetadataProfileInputPrimaryTypesItem = "album"
+	MetadataProfileInputPrimaryTypesItemEp        MetadataProfileInputPrimaryTypesItem = "ep"
+	MetadataProfileInputPrimaryTypesItemSingle    MetadataProfileInputPrimaryTypesItem = "single"
+	MetadataProfileInputPrimaryTypesItemBroadcast MetadataProfileInputPrimaryTypesItem = "broadcast"
+	MetadataProfileInputPrimaryTypesItemOther     MetadataProfileInputPrimaryTypesItem = "other"
+)
+
+// AllValues returns all MetadataProfileInputPrimaryTypesItem values.
+func (MetadataProfileInputPrimaryTypesItem) AllValues() []MetadataProfileInputPrimaryTypesItem {
+	return []MetadataProfileInputPrimaryTypesItem{
+		MetadataProfileInputPrimaryTypesItemAlbum,
+		MetadataProfileInputPrimaryTypesItemEp,
+		MetadataProfileInputPrimaryTypesItemSingle,
+		MetadataProfileInputPrimaryTypesItemBroadcast,
+		MetadataProfileInputPrimaryTypesItemOther,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MetadataProfileInputPrimaryTypesItem) MarshalText() ([]byte, error) {
+	switch s {
+	case MetadataProfileInputPrimaryTypesItemAlbum:
+		return []byte(s), nil
+	case MetadataProfileInputPrimaryTypesItemEp:
+		return []byte(s), nil
+	case MetadataProfileInputPrimaryTypesItemSingle:
+		return []byte(s), nil
+	case MetadataProfileInputPrimaryTypesItemBroadcast:
+		return []byte(s), nil
+	case MetadataProfileInputPrimaryTypesItemOther:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MetadataProfileInputPrimaryTypesItem) UnmarshalText(data []byte) error {
+	switch MetadataProfileInputPrimaryTypesItem(data) {
+	case MetadataProfileInputPrimaryTypesItemAlbum:
+		*s = MetadataProfileInputPrimaryTypesItemAlbum
+		return nil
+	case MetadataProfileInputPrimaryTypesItemEp:
+		*s = MetadataProfileInputPrimaryTypesItemEp
+		return nil
+	case MetadataProfileInputPrimaryTypesItemSingle:
+		*s = MetadataProfileInputPrimaryTypesItemSingle
+		return nil
+	case MetadataProfileInputPrimaryTypesItemBroadcast:
+		*s = MetadataProfileInputPrimaryTypesItemBroadcast
+		return nil
+	case MetadataProfileInputPrimaryTypesItemOther:
+		*s = MetadataProfileInputPrimaryTypesItemOther
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type MetadataProfileInputReleaseStatusesItem string
+
+const (
+	MetadataProfileInputReleaseStatusesItemOfficial      MetadataProfileInputReleaseStatusesItem = "official"
+	MetadataProfileInputReleaseStatusesItemPromotion     MetadataProfileInputReleaseStatusesItem = "promotion"
+	MetadataProfileInputReleaseStatusesItemBootleg       MetadataProfileInputReleaseStatusesItem = "bootleg"
+	MetadataProfileInputReleaseStatusesItemPseudoRelease MetadataProfileInputReleaseStatusesItem = "pseudo-release"
+	MetadataProfileInputReleaseStatusesItemWithdrawn     MetadataProfileInputReleaseStatusesItem = "withdrawn"
+	MetadataProfileInputReleaseStatusesItemCancelled     MetadataProfileInputReleaseStatusesItem = "cancelled"
+)
+
+// AllValues returns all MetadataProfileInputReleaseStatusesItem values.
+func (MetadataProfileInputReleaseStatusesItem) AllValues() []MetadataProfileInputReleaseStatusesItem {
+	return []MetadataProfileInputReleaseStatusesItem{
+		MetadataProfileInputReleaseStatusesItemOfficial,
+		MetadataProfileInputReleaseStatusesItemPromotion,
+		MetadataProfileInputReleaseStatusesItemBootleg,
+		MetadataProfileInputReleaseStatusesItemPseudoRelease,
+		MetadataProfileInputReleaseStatusesItemWithdrawn,
+		MetadataProfileInputReleaseStatusesItemCancelled,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MetadataProfileInputReleaseStatusesItem) MarshalText() ([]byte, error) {
+	switch s {
+	case MetadataProfileInputReleaseStatusesItemOfficial:
+		return []byte(s), nil
+	case MetadataProfileInputReleaseStatusesItemPromotion:
+		return []byte(s), nil
+	case MetadataProfileInputReleaseStatusesItemBootleg:
+		return []byte(s), nil
+	case MetadataProfileInputReleaseStatusesItemPseudoRelease:
+		return []byte(s), nil
+	case MetadataProfileInputReleaseStatusesItemWithdrawn:
+		return []byte(s), nil
+	case MetadataProfileInputReleaseStatusesItemCancelled:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MetadataProfileInputReleaseStatusesItem) UnmarshalText(data []byte) error {
+	switch MetadataProfileInputReleaseStatusesItem(data) {
+	case MetadataProfileInputReleaseStatusesItemOfficial:
+		*s = MetadataProfileInputReleaseStatusesItemOfficial
+		return nil
+	case MetadataProfileInputReleaseStatusesItemPromotion:
+		*s = MetadataProfileInputReleaseStatusesItemPromotion
+		return nil
+	case MetadataProfileInputReleaseStatusesItemBootleg:
+		*s = MetadataProfileInputReleaseStatusesItemBootleg
+		return nil
+	case MetadataProfileInputReleaseStatusesItemPseudoRelease:
+		*s = MetadataProfileInputReleaseStatusesItemPseudoRelease
+		return nil
+	case MetadataProfileInputReleaseStatusesItemWithdrawn:
+		*s = MetadataProfileInputReleaseStatusesItemWithdrawn
+		return nil
+	case MetadataProfileInputReleaseStatusesItemCancelled:
+		*s = MetadataProfileInputReleaseStatusesItemCancelled
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type MetadataProfileInputSecondaryTypesItem string
+
+const (
+	MetadataProfileInputSecondaryTypesItemStudio         MetadataProfileInputSecondaryTypesItem = "studio"
+	MetadataProfileInputSecondaryTypesItemCompilation    MetadataProfileInputSecondaryTypesItem = "compilation"
+	MetadataProfileInputSecondaryTypesItemSoundtrack     MetadataProfileInputSecondaryTypesItem = "soundtrack"
+	MetadataProfileInputSecondaryTypesItemSpokenword     MetadataProfileInputSecondaryTypesItem = "spokenword"
+	MetadataProfileInputSecondaryTypesItemInterview      MetadataProfileInputSecondaryTypesItem = "interview"
+	MetadataProfileInputSecondaryTypesItemAudiobook      MetadataProfileInputSecondaryTypesItem = "audiobook"
+	MetadataProfileInputSecondaryTypesItemAudioDrama     MetadataProfileInputSecondaryTypesItem = "audio drama"
+	MetadataProfileInputSecondaryTypesItemLive           MetadataProfileInputSecondaryTypesItem = "live"
+	MetadataProfileInputSecondaryTypesItemRemix          MetadataProfileInputSecondaryTypesItem = "remix"
+	MetadataProfileInputSecondaryTypesItemDjMix          MetadataProfileInputSecondaryTypesItem = "dj-mix"
+	MetadataProfileInputSecondaryTypesItemMixtapeStreet  MetadataProfileInputSecondaryTypesItem = "mixtape/street"
+	MetadataProfileInputSecondaryTypesItemDemo           MetadataProfileInputSecondaryTypesItem = "demo"
+	MetadataProfileInputSecondaryTypesItemFieldRecording MetadataProfileInputSecondaryTypesItem = "field recording"
+)
+
+// AllValues returns all MetadataProfileInputSecondaryTypesItem values.
+func (MetadataProfileInputSecondaryTypesItem) AllValues() []MetadataProfileInputSecondaryTypesItem {
+	return []MetadataProfileInputSecondaryTypesItem{
+		MetadataProfileInputSecondaryTypesItemStudio,
+		MetadataProfileInputSecondaryTypesItemCompilation,
+		MetadataProfileInputSecondaryTypesItemSoundtrack,
+		MetadataProfileInputSecondaryTypesItemSpokenword,
+		MetadataProfileInputSecondaryTypesItemInterview,
+		MetadataProfileInputSecondaryTypesItemAudiobook,
+		MetadataProfileInputSecondaryTypesItemAudioDrama,
+		MetadataProfileInputSecondaryTypesItemLive,
+		MetadataProfileInputSecondaryTypesItemRemix,
+		MetadataProfileInputSecondaryTypesItemDjMix,
+		MetadataProfileInputSecondaryTypesItemMixtapeStreet,
+		MetadataProfileInputSecondaryTypesItemDemo,
+		MetadataProfileInputSecondaryTypesItemFieldRecording,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MetadataProfileInputSecondaryTypesItem) MarshalText() ([]byte, error) {
+	switch s {
+	case MetadataProfileInputSecondaryTypesItemStudio:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemCompilation:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemSoundtrack:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemSpokenword:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemInterview:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemAudiobook:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemAudioDrama:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemLive:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemRemix:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemDjMix:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemMixtapeStreet:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemDemo:
+		return []byte(s), nil
+	case MetadataProfileInputSecondaryTypesItemFieldRecording:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MetadataProfileInputSecondaryTypesItem) UnmarshalText(data []byte) error {
+	switch MetadataProfileInputSecondaryTypesItem(data) {
+	case MetadataProfileInputSecondaryTypesItemStudio:
+		*s = MetadataProfileInputSecondaryTypesItemStudio
+		return nil
+	case MetadataProfileInputSecondaryTypesItemCompilation:
+		*s = MetadataProfileInputSecondaryTypesItemCompilation
+		return nil
+	case MetadataProfileInputSecondaryTypesItemSoundtrack:
+		*s = MetadataProfileInputSecondaryTypesItemSoundtrack
+		return nil
+	case MetadataProfileInputSecondaryTypesItemSpokenword:
+		*s = MetadataProfileInputSecondaryTypesItemSpokenword
+		return nil
+	case MetadataProfileInputSecondaryTypesItemInterview:
+		*s = MetadataProfileInputSecondaryTypesItemInterview
+		return nil
+	case MetadataProfileInputSecondaryTypesItemAudiobook:
+		*s = MetadataProfileInputSecondaryTypesItemAudiobook
+		return nil
+	case MetadataProfileInputSecondaryTypesItemAudioDrama:
+		*s = MetadataProfileInputSecondaryTypesItemAudioDrama
+		return nil
+	case MetadataProfileInputSecondaryTypesItemLive:
+		*s = MetadataProfileInputSecondaryTypesItemLive
+		return nil
+	case MetadataProfileInputSecondaryTypesItemRemix:
+		*s = MetadataProfileInputSecondaryTypesItemRemix
+		return nil
+	case MetadataProfileInputSecondaryTypesItemDjMix:
+		*s = MetadataProfileInputSecondaryTypesItemDjMix
+		return nil
+	case MetadataProfileInputSecondaryTypesItemMixtapeStreet:
+		*s = MetadataProfileInputSecondaryTypesItemMixtapeStreet
+		return nil
+	case MetadataProfileInputSecondaryTypesItemDemo:
+		*s = MetadataProfileInputSecondaryTypesItemDemo
+		return nil
+	case MetadataProfileInputSecondaryTypesItemFieldRecording:
+		*s = MetadataProfileInputSecondaryTypesItemFieldRecording
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/MetadataSettings
 type MetadataSettings struct {
 	TmdbApiKey SecretState `json:"tmdbApiKey"`
@@ -8486,6 +10998,55 @@ func (s *MinimumAvailability) UnmarshalText(data []byte) error {
 		return nil
 	case MinimumAvailabilityReleased:
 		*s = MinimumAvailabilityReleased
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MonitorNewAlbums
+type MonitorNewAlbums string
+
+const (
+	MonitorNewAlbumsAll    MonitorNewAlbums = "all"
+	MonitorNewAlbumsNone   MonitorNewAlbums = "none"
+	MonitorNewAlbumsFuture MonitorNewAlbums = "future"
+)
+
+// AllValues returns all MonitorNewAlbums values.
+func (MonitorNewAlbums) AllValues() []MonitorNewAlbums {
+	return []MonitorNewAlbums{
+		MonitorNewAlbumsAll,
+		MonitorNewAlbumsNone,
+		MonitorNewAlbumsFuture,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MonitorNewAlbums) MarshalText() ([]byte, error) {
+	switch s {
+	case MonitorNewAlbumsAll:
+		return []byte(s), nil
+	case MonitorNewAlbumsNone:
+		return []byte(s), nil
+	case MonitorNewAlbumsFuture:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MonitorNewAlbums) UnmarshalText(data []byte) error {
+	switch MonitorNewAlbums(data) {
+	case MonitorNewAlbumsAll:
+		*s = MonitorNewAlbumsAll
+		return nil
+	case MonitorNewAlbumsNone:
+		*s = MonitorNewAlbumsNone
+		return nil
+	case MonitorNewAlbumsFuture:
+		*s = MonitorNewAlbumsFuture
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -9536,6 +12097,794 @@ func (s *MovieUpdate) SetPath(val OptString) {
 	s.Path = val
 }
 
+// Ref: #/components/schemas/MusicImportPreview
+type MusicImportPreview struct {
+	AlbumId      int64               `json:"albumId"`
+	Path         string              `json:"path"`
+	Files        int                 `json:"files"`
+	Unreadable   []string            `json:"unreadable"`
+	Cue          bool                `json:"cue"`
+	Cover        OptString           `json:"cover"`
+	Matches      []MusicReleaseMatch `json:"matches"`
+	MinimumScore int                 `json:"minimumScore"`
+	Rejection    OptError            `json:"rejection"`
+}
+
+// GetAlbumId returns the value of AlbumId.
+func (s *MusicImportPreview) GetAlbumId() int64 {
+	return s.AlbumId
+}
+
+// GetPath returns the value of Path.
+func (s *MusicImportPreview) GetPath() string {
+	return s.Path
+}
+
+// GetFiles returns the value of Files.
+func (s *MusicImportPreview) GetFiles() int {
+	return s.Files
+}
+
+// GetUnreadable returns the value of Unreadable.
+func (s *MusicImportPreview) GetUnreadable() []string {
+	return s.Unreadable
+}
+
+// GetCue returns the value of Cue.
+func (s *MusicImportPreview) GetCue() bool {
+	return s.Cue
+}
+
+// GetCover returns the value of Cover.
+func (s *MusicImportPreview) GetCover() OptString {
+	return s.Cover
+}
+
+// GetMatches returns the value of Matches.
+func (s *MusicImportPreview) GetMatches() []MusicReleaseMatch {
+	return s.Matches
+}
+
+// GetMinimumScore returns the value of MinimumScore.
+func (s *MusicImportPreview) GetMinimumScore() int {
+	return s.MinimumScore
+}
+
+// GetRejection returns the value of Rejection.
+func (s *MusicImportPreview) GetRejection() OptError {
+	return s.Rejection
+}
+
+// SetAlbumId sets the value of AlbumId.
+func (s *MusicImportPreview) SetAlbumId(val int64) {
+	s.AlbumId = val
+}
+
+// SetPath sets the value of Path.
+func (s *MusicImportPreview) SetPath(val string) {
+	s.Path = val
+}
+
+// SetFiles sets the value of Files.
+func (s *MusicImportPreview) SetFiles(val int) {
+	s.Files = val
+}
+
+// SetUnreadable sets the value of Unreadable.
+func (s *MusicImportPreview) SetUnreadable(val []string) {
+	s.Unreadable = val
+}
+
+// SetCue sets the value of Cue.
+func (s *MusicImportPreview) SetCue(val bool) {
+	s.Cue = val
+}
+
+// SetCover sets the value of Cover.
+func (s *MusicImportPreview) SetCover(val OptString) {
+	s.Cover = val
+}
+
+// SetMatches sets the value of Matches.
+func (s *MusicImportPreview) SetMatches(val []MusicReleaseMatch) {
+	s.Matches = val
+}
+
+// SetMinimumScore sets the value of MinimumScore.
+func (s *MusicImportPreview) SetMinimumScore(val int) {
+	s.MinimumScore = val
+}
+
+// SetRejection sets the value of Rejection.
+func (s *MusicImportPreview) SetRejection(val OptError) {
+	s.Rejection = val
+}
+
+// Ref: #/components/schemas/MusicImportRequest
+type MusicImportRequest struct {
+	Path         string   `json:"path"`
+	AlbumId      int64    `json:"albumId"`
+	ReleaseId    OptInt64 `json:"releaseId"`
+	AllowPartial OptBool  `json:"allowPartial"`
+	// Import below the minimum match score (a person checked the match).
+	Force OptBool         `json:"force"`
+	Mode  OptTransferMode `json:"mode"`
+}
+
+// GetPath returns the value of Path.
+func (s *MusicImportRequest) GetPath() string {
+	return s.Path
+}
+
+// GetAlbumId returns the value of AlbumId.
+func (s *MusicImportRequest) GetAlbumId() int64 {
+	return s.AlbumId
+}
+
+// GetReleaseId returns the value of ReleaseId.
+func (s *MusicImportRequest) GetReleaseId() OptInt64 {
+	return s.ReleaseId
+}
+
+// GetAllowPartial returns the value of AllowPartial.
+func (s *MusicImportRequest) GetAllowPartial() OptBool {
+	return s.AllowPartial
+}
+
+// GetForce returns the value of Force.
+func (s *MusicImportRequest) GetForce() OptBool {
+	return s.Force
+}
+
+// GetMode returns the value of Mode.
+func (s *MusicImportRequest) GetMode() OptTransferMode {
+	return s.Mode
+}
+
+// SetPath sets the value of Path.
+func (s *MusicImportRequest) SetPath(val string) {
+	s.Path = val
+}
+
+// SetAlbumId sets the value of AlbumId.
+func (s *MusicImportRequest) SetAlbumId(val int64) {
+	s.AlbumId = val
+}
+
+// SetReleaseId sets the value of ReleaseId.
+func (s *MusicImportRequest) SetReleaseId(val OptInt64) {
+	s.ReleaseId = val
+}
+
+// SetAllowPartial sets the value of AllowPartial.
+func (s *MusicImportRequest) SetAllowPartial(val OptBool) {
+	s.AllowPartial = val
+}
+
+// SetForce sets the value of Force.
+func (s *MusicImportRequest) SetForce(val OptBool) {
+	s.Force = val
+}
+
+// SetMode sets the value of Mode.
+func (s *MusicImportRequest) SetMode(val OptTransferMode) {
+	s.Mode = val
+}
+
+// Ref: #/components/schemas/MusicImportResult
+type MusicImportResult struct {
+	AlbumId  int64                          `json:"albumId"`
+	Release  OptAlbumRelease                `json:"release"`
+	Score    int                            `json:"score"`
+	Imported []string                       `json:"imported"`
+	Skipped  []MusicImportResultSkippedItem `json:"skipped"`
+	Recycled []string                       `json:"recycled"`
+	Missing  int                            `json:"missing"`
+	Upgraded int                            `json:"upgraded"`
+	Cover    OptString                      `json:"cover"`
+}
+
+// GetAlbumId returns the value of AlbumId.
+func (s *MusicImportResult) GetAlbumId() int64 {
+	return s.AlbumId
+}
+
+// GetRelease returns the value of Release.
+func (s *MusicImportResult) GetRelease() OptAlbumRelease {
+	return s.Release
+}
+
+// GetScore returns the value of Score.
+func (s *MusicImportResult) GetScore() int {
+	return s.Score
+}
+
+// GetImported returns the value of Imported.
+func (s *MusicImportResult) GetImported() []string {
+	return s.Imported
+}
+
+// GetSkipped returns the value of Skipped.
+func (s *MusicImportResult) GetSkipped() []MusicImportResultSkippedItem {
+	return s.Skipped
+}
+
+// GetRecycled returns the value of Recycled.
+func (s *MusicImportResult) GetRecycled() []string {
+	return s.Recycled
+}
+
+// GetMissing returns the value of Missing.
+func (s *MusicImportResult) GetMissing() int {
+	return s.Missing
+}
+
+// GetUpgraded returns the value of Upgraded.
+func (s *MusicImportResult) GetUpgraded() int {
+	return s.Upgraded
+}
+
+// GetCover returns the value of Cover.
+func (s *MusicImportResult) GetCover() OptString {
+	return s.Cover
+}
+
+// SetAlbumId sets the value of AlbumId.
+func (s *MusicImportResult) SetAlbumId(val int64) {
+	s.AlbumId = val
+}
+
+// SetRelease sets the value of Release.
+func (s *MusicImportResult) SetRelease(val OptAlbumRelease) {
+	s.Release = val
+}
+
+// SetScore sets the value of Score.
+func (s *MusicImportResult) SetScore(val int) {
+	s.Score = val
+}
+
+// SetImported sets the value of Imported.
+func (s *MusicImportResult) SetImported(val []string) {
+	s.Imported = val
+}
+
+// SetSkipped sets the value of Skipped.
+func (s *MusicImportResult) SetSkipped(val []MusicImportResultSkippedItem) {
+	s.Skipped = val
+}
+
+// SetRecycled sets the value of Recycled.
+func (s *MusicImportResult) SetRecycled(val []string) {
+	s.Recycled = val
+}
+
+// SetMissing sets the value of Missing.
+func (s *MusicImportResult) SetMissing(val int) {
+	s.Missing = val
+}
+
+// SetUpgraded sets the value of Upgraded.
+func (s *MusicImportResult) SetUpgraded(val int) {
+	s.Upgraded = val
+}
+
+// SetCover sets the value of Cover.
+func (s *MusicImportResult) SetCover(val OptString) {
+	s.Cover = val
+}
+
+type MusicImportResultSkippedItem struct {
+	Path   string `json:"path"`
+	Reason string `json:"reason"`
+}
+
+// GetPath returns the value of Path.
+func (s *MusicImportResultSkippedItem) GetPath() string {
+	return s.Path
+}
+
+// GetReason returns the value of Reason.
+func (s *MusicImportResultSkippedItem) GetReason() string {
+	return s.Reason
+}
+
+// SetPath sets the value of Path.
+func (s *MusicImportResultSkippedItem) SetPath(val string) {
+	s.Path = val
+}
+
+// SetReason sets the value of Reason.
+func (s *MusicImportResultSkippedItem) SetReason(val string) {
+	s.Reason = val
+}
+
+// Ref: #/components/schemas/MusicMatchPair
+type MusicMatchPair struct {
+	Path           string     `json:"path"`
+	RelativePath   string     `json:"relativePath"`
+	Disc           int        `json:"disc"`
+	Position       int        `json:"position"`
+	TrackTitle     string     `json:"trackTitle"`
+	FileTitle      OptString  `json:"fileTitle"`
+	Score          float64    `json:"score"`
+	DurationDiffMs int        `json:"durationDiffMs"`
+	ById           bool       `json:"byId"`
+	Quality        OptQuality `json:"quality"`
+}
+
+// GetPath returns the value of Path.
+func (s *MusicMatchPair) GetPath() string {
+	return s.Path
+}
+
+// GetRelativePath returns the value of RelativePath.
+func (s *MusicMatchPair) GetRelativePath() string {
+	return s.RelativePath
+}
+
+// GetDisc returns the value of Disc.
+func (s *MusicMatchPair) GetDisc() int {
+	return s.Disc
+}
+
+// GetPosition returns the value of Position.
+func (s *MusicMatchPair) GetPosition() int {
+	return s.Position
+}
+
+// GetTrackTitle returns the value of TrackTitle.
+func (s *MusicMatchPair) GetTrackTitle() string {
+	return s.TrackTitle
+}
+
+// GetFileTitle returns the value of FileTitle.
+func (s *MusicMatchPair) GetFileTitle() OptString {
+	return s.FileTitle
+}
+
+// GetScore returns the value of Score.
+func (s *MusicMatchPair) GetScore() float64 {
+	return s.Score
+}
+
+// GetDurationDiffMs returns the value of DurationDiffMs.
+func (s *MusicMatchPair) GetDurationDiffMs() int {
+	return s.DurationDiffMs
+}
+
+// GetById returns the value of ById.
+func (s *MusicMatchPair) GetById() bool {
+	return s.ById
+}
+
+// GetQuality returns the value of Quality.
+func (s *MusicMatchPair) GetQuality() OptQuality {
+	return s.Quality
+}
+
+// SetPath sets the value of Path.
+func (s *MusicMatchPair) SetPath(val string) {
+	s.Path = val
+}
+
+// SetRelativePath sets the value of RelativePath.
+func (s *MusicMatchPair) SetRelativePath(val string) {
+	s.RelativePath = val
+}
+
+// SetDisc sets the value of Disc.
+func (s *MusicMatchPair) SetDisc(val int) {
+	s.Disc = val
+}
+
+// SetPosition sets the value of Position.
+func (s *MusicMatchPair) SetPosition(val int) {
+	s.Position = val
+}
+
+// SetTrackTitle sets the value of TrackTitle.
+func (s *MusicMatchPair) SetTrackTitle(val string) {
+	s.TrackTitle = val
+}
+
+// SetFileTitle sets the value of FileTitle.
+func (s *MusicMatchPair) SetFileTitle(val OptString) {
+	s.FileTitle = val
+}
+
+// SetScore sets the value of Score.
+func (s *MusicMatchPair) SetScore(val float64) {
+	s.Score = val
+}
+
+// SetDurationDiffMs sets the value of DurationDiffMs.
+func (s *MusicMatchPair) SetDurationDiffMs(val int) {
+	s.DurationDiffMs = val
+}
+
+// SetById sets the value of ById.
+func (s *MusicMatchPair) SetById(val bool) {
+	s.ById = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *MusicMatchPair) SetQuality(val OptQuality) {
+	s.Quality = val
+}
+
+// Ref: #/components/schemas/MusicNamingPreview
+type MusicNamingPreview struct {
+	ArtistFolder string `json:"artistFolder"`
+	AlbumFolder  string `json:"albumFolder"`
+	Track        string `json:"track"`
+	// Path of a track on disc 2 inside the album folder.
+	MultiDiscTrack string                      `json:"multiDiscTrack"`
+	Errors         OptMusicNamingPreviewErrors `json:"errors"`
+	Tokens         []NamingToken               `json:"tokens"`
+}
+
+// GetArtistFolder returns the value of ArtistFolder.
+func (s *MusicNamingPreview) GetArtistFolder() string {
+	return s.ArtistFolder
+}
+
+// GetAlbumFolder returns the value of AlbumFolder.
+func (s *MusicNamingPreview) GetAlbumFolder() string {
+	return s.AlbumFolder
+}
+
+// GetTrack returns the value of Track.
+func (s *MusicNamingPreview) GetTrack() string {
+	return s.Track
+}
+
+// GetMultiDiscTrack returns the value of MultiDiscTrack.
+func (s *MusicNamingPreview) GetMultiDiscTrack() string {
+	return s.MultiDiscTrack
+}
+
+// GetErrors returns the value of Errors.
+func (s *MusicNamingPreview) GetErrors() OptMusicNamingPreviewErrors {
+	return s.Errors
+}
+
+// GetTokens returns the value of Tokens.
+func (s *MusicNamingPreview) GetTokens() []NamingToken {
+	return s.Tokens
+}
+
+// SetArtistFolder sets the value of ArtistFolder.
+func (s *MusicNamingPreview) SetArtistFolder(val string) {
+	s.ArtistFolder = val
+}
+
+// SetAlbumFolder sets the value of AlbumFolder.
+func (s *MusicNamingPreview) SetAlbumFolder(val string) {
+	s.AlbumFolder = val
+}
+
+// SetTrack sets the value of Track.
+func (s *MusicNamingPreview) SetTrack(val string) {
+	s.Track = val
+}
+
+// SetMultiDiscTrack sets the value of MultiDiscTrack.
+func (s *MusicNamingPreview) SetMultiDiscTrack(val string) {
+	s.MultiDiscTrack = val
+}
+
+// SetErrors sets the value of Errors.
+func (s *MusicNamingPreview) SetErrors(val OptMusicNamingPreviewErrors) {
+	s.Errors = val
+}
+
+// SetTokens sets the value of Tokens.
+func (s *MusicNamingPreview) SetTokens(val []NamingToken) {
+	s.Tokens = val
+}
+
+type MusicNamingPreviewErrors map[string]string
+
+func (s *MusicNamingPreviewErrors) init() MusicNamingPreviewErrors {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/MusicReleaseMatch
+type MusicReleaseMatch struct {
+	Release AlbumRelease `json:"release"`
+	// 0-100; automatic imports need at least the minimum match score (default 70).
+	Score      int              `json:"score"`
+	Coverage   float64          `json:"coverage"`
+	TrackFit   float64          `json:"trackFit"`
+	AlbumFit   float64          `json:"albumFit"`
+	ArtistFit  float64          `json:"artistFit"`
+	DurationOk float64          `json:"durationOk"`
+	IdMatch    bool             `json:"idMatch"`
+	Pairs      []MusicMatchPair `json:"pairs"`
+	// Tracks without a file ("disc-position title").
+	Missing []string `json:"missing"`
+	// Files without a track (relative paths).
+	Extra []string `json:"extra"`
+	Notes []string `json:"notes"`
+}
+
+// GetRelease returns the value of Release.
+func (s *MusicReleaseMatch) GetRelease() AlbumRelease {
+	return s.Release
+}
+
+// GetScore returns the value of Score.
+func (s *MusicReleaseMatch) GetScore() int {
+	return s.Score
+}
+
+// GetCoverage returns the value of Coverage.
+func (s *MusicReleaseMatch) GetCoverage() float64 {
+	return s.Coverage
+}
+
+// GetTrackFit returns the value of TrackFit.
+func (s *MusicReleaseMatch) GetTrackFit() float64 {
+	return s.TrackFit
+}
+
+// GetAlbumFit returns the value of AlbumFit.
+func (s *MusicReleaseMatch) GetAlbumFit() float64 {
+	return s.AlbumFit
+}
+
+// GetArtistFit returns the value of ArtistFit.
+func (s *MusicReleaseMatch) GetArtistFit() float64 {
+	return s.ArtistFit
+}
+
+// GetDurationOk returns the value of DurationOk.
+func (s *MusicReleaseMatch) GetDurationOk() float64 {
+	return s.DurationOk
+}
+
+// GetIdMatch returns the value of IdMatch.
+func (s *MusicReleaseMatch) GetIdMatch() bool {
+	return s.IdMatch
+}
+
+// GetPairs returns the value of Pairs.
+func (s *MusicReleaseMatch) GetPairs() []MusicMatchPair {
+	return s.Pairs
+}
+
+// GetMissing returns the value of Missing.
+func (s *MusicReleaseMatch) GetMissing() []string {
+	return s.Missing
+}
+
+// GetExtra returns the value of Extra.
+func (s *MusicReleaseMatch) GetExtra() []string {
+	return s.Extra
+}
+
+// GetNotes returns the value of Notes.
+func (s *MusicReleaseMatch) GetNotes() []string {
+	return s.Notes
+}
+
+// SetRelease sets the value of Release.
+func (s *MusicReleaseMatch) SetRelease(val AlbumRelease) {
+	s.Release = val
+}
+
+// SetScore sets the value of Score.
+func (s *MusicReleaseMatch) SetScore(val int) {
+	s.Score = val
+}
+
+// SetCoverage sets the value of Coverage.
+func (s *MusicReleaseMatch) SetCoverage(val float64) {
+	s.Coverage = val
+}
+
+// SetTrackFit sets the value of TrackFit.
+func (s *MusicReleaseMatch) SetTrackFit(val float64) {
+	s.TrackFit = val
+}
+
+// SetAlbumFit sets the value of AlbumFit.
+func (s *MusicReleaseMatch) SetAlbumFit(val float64) {
+	s.AlbumFit = val
+}
+
+// SetArtistFit sets the value of ArtistFit.
+func (s *MusicReleaseMatch) SetArtistFit(val float64) {
+	s.ArtistFit = val
+}
+
+// SetDurationOk sets the value of DurationOk.
+func (s *MusicReleaseMatch) SetDurationOk(val float64) {
+	s.DurationOk = val
+}
+
+// SetIdMatch sets the value of IdMatch.
+func (s *MusicReleaseMatch) SetIdMatch(val bool) {
+	s.IdMatch = val
+}
+
+// SetPairs sets the value of Pairs.
+func (s *MusicReleaseMatch) SetPairs(val []MusicMatchPair) {
+	s.Pairs = val
+}
+
+// SetMissing sets the value of Missing.
+func (s *MusicReleaseMatch) SetMissing(val []string) {
+	s.Missing = val
+}
+
+// SetExtra sets the value of Extra.
+func (s *MusicReleaseMatch) SetExtra(val []string) {
+	s.Extra = val
+}
+
+// SetNotes sets the value of Notes.
+func (s *MusicReleaseMatch) SetNotes(val []string) {
+	s.Notes = val
+}
+
+// Ref: #/components/schemas/MusicSettings
+type MusicSettings struct {
+	ArtistFolderFormat   string `json:"artistFolderFormat"`
+	AlbumFolderFormat    string `json:"albumFolderFormat"`
+	TrackFormat          string `json:"trackFormat"`
+	MultiDiscTrackFormat string `json:"multiDiscTrackFormat"`
+	DiscFolders          bool   `json:"discFolders"`
+	DiscFolderFormat     string `json:"discFolderFormat"`
+	RenameTracks         bool   `json:"renameTracks"`
+	// Import an album with tracks missing (otherwise the import fails with a report).
+	ImportPartialAlbums bool `json:"importPartialAlbums"`
+	// Write corrected tags into imported FLAC files (such files are copied, never hardlinked).
+	WriteTags bool `json:"writeTags"`
+	// Save the Cover Art Archive front as cover.jpg when the download has no cover.
+	SaveCoverArt      bool `json:"saveCoverArt"`
+	MinimumMatchScore int  `json:"minimumMatchScore"`
+	// E-mail or URL sent in the User-Agent to MusicBrainz (empty = the project page).
+	MusicBrainzContact string              `json:"musicBrainzContact"`
+	ColonReplacement   OptColonReplacement `json:"colonReplacement"`
+}
+
+// GetArtistFolderFormat returns the value of ArtistFolderFormat.
+func (s *MusicSettings) GetArtistFolderFormat() string {
+	return s.ArtistFolderFormat
+}
+
+// GetAlbumFolderFormat returns the value of AlbumFolderFormat.
+func (s *MusicSettings) GetAlbumFolderFormat() string {
+	return s.AlbumFolderFormat
+}
+
+// GetTrackFormat returns the value of TrackFormat.
+func (s *MusicSettings) GetTrackFormat() string {
+	return s.TrackFormat
+}
+
+// GetMultiDiscTrackFormat returns the value of MultiDiscTrackFormat.
+func (s *MusicSettings) GetMultiDiscTrackFormat() string {
+	return s.MultiDiscTrackFormat
+}
+
+// GetDiscFolders returns the value of DiscFolders.
+func (s *MusicSettings) GetDiscFolders() bool {
+	return s.DiscFolders
+}
+
+// GetDiscFolderFormat returns the value of DiscFolderFormat.
+func (s *MusicSettings) GetDiscFolderFormat() string {
+	return s.DiscFolderFormat
+}
+
+// GetRenameTracks returns the value of RenameTracks.
+func (s *MusicSettings) GetRenameTracks() bool {
+	return s.RenameTracks
+}
+
+// GetImportPartialAlbums returns the value of ImportPartialAlbums.
+func (s *MusicSettings) GetImportPartialAlbums() bool {
+	return s.ImportPartialAlbums
+}
+
+// GetWriteTags returns the value of WriteTags.
+func (s *MusicSettings) GetWriteTags() bool {
+	return s.WriteTags
+}
+
+// GetSaveCoverArt returns the value of SaveCoverArt.
+func (s *MusicSettings) GetSaveCoverArt() bool {
+	return s.SaveCoverArt
+}
+
+// GetMinimumMatchScore returns the value of MinimumMatchScore.
+func (s *MusicSettings) GetMinimumMatchScore() int {
+	return s.MinimumMatchScore
+}
+
+// GetMusicBrainzContact returns the value of MusicBrainzContact.
+func (s *MusicSettings) GetMusicBrainzContact() string {
+	return s.MusicBrainzContact
+}
+
+// GetColonReplacement returns the value of ColonReplacement.
+func (s *MusicSettings) GetColonReplacement() OptColonReplacement {
+	return s.ColonReplacement
+}
+
+// SetArtistFolderFormat sets the value of ArtistFolderFormat.
+func (s *MusicSettings) SetArtistFolderFormat(val string) {
+	s.ArtistFolderFormat = val
+}
+
+// SetAlbumFolderFormat sets the value of AlbumFolderFormat.
+func (s *MusicSettings) SetAlbumFolderFormat(val string) {
+	s.AlbumFolderFormat = val
+}
+
+// SetTrackFormat sets the value of TrackFormat.
+func (s *MusicSettings) SetTrackFormat(val string) {
+	s.TrackFormat = val
+}
+
+// SetMultiDiscTrackFormat sets the value of MultiDiscTrackFormat.
+func (s *MusicSettings) SetMultiDiscTrackFormat(val string) {
+	s.MultiDiscTrackFormat = val
+}
+
+// SetDiscFolders sets the value of DiscFolders.
+func (s *MusicSettings) SetDiscFolders(val bool) {
+	s.DiscFolders = val
+}
+
+// SetDiscFolderFormat sets the value of DiscFolderFormat.
+func (s *MusicSettings) SetDiscFolderFormat(val string) {
+	s.DiscFolderFormat = val
+}
+
+// SetRenameTracks sets the value of RenameTracks.
+func (s *MusicSettings) SetRenameTracks(val bool) {
+	s.RenameTracks = val
+}
+
+// SetImportPartialAlbums sets the value of ImportPartialAlbums.
+func (s *MusicSettings) SetImportPartialAlbums(val bool) {
+	s.ImportPartialAlbums = val
+}
+
+// SetWriteTags sets the value of WriteTags.
+func (s *MusicSettings) SetWriteTags(val bool) {
+	s.WriteTags = val
+}
+
+// SetSaveCoverArt sets the value of SaveCoverArt.
+func (s *MusicSettings) SetSaveCoverArt(val bool) {
+	s.SaveCoverArt = val
+}
+
+// SetMinimumMatchScore sets the value of MinimumMatchScore.
+func (s *MusicSettings) SetMinimumMatchScore(val int) {
+	s.MinimumMatchScore = val
+}
+
+// SetMusicBrainzContact sets the value of MusicBrainzContact.
+func (s *MusicSettings) SetMusicBrainzContact(val string) {
+	s.MusicBrainzContact = val
+}
+
+// SetColonReplacement sets the value of ColonReplacement.
+func (s *MusicSettings) SetColonReplacement(val OptColonReplacement) {
+	s.ColonReplacement = val
+}
+
 // Ref: #/components/schemas/NamingPreview
 type NamingPreview struct {
 	Folder      string        `json:"folder"`
@@ -9656,6 +13005,190 @@ func (s *NamingToken) SetName(val string) {
 // SetExample sets the value of Example.
 func (s *NamingToken) SetExample(val string) {
 	s.Example = val
+}
+
+// NewOptAddArtistRequestMonitor returns new OptAddArtistRequestMonitor with value set to v.
+func NewOptAddArtistRequestMonitor(v AddArtistRequestMonitor) OptAddArtistRequestMonitor {
+	return OptAddArtistRequestMonitor{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAddArtistRequestMonitor is optional AddArtistRequestMonitor.
+type OptAddArtistRequestMonitor struct {
+	Value AddArtistRequestMonitor
+	Set   bool
+}
+
+// IsSet returns true if OptAddArtistRequestMonitor was set.
+func (o OptAddArtistRequestMonitor) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAddArtistRequestMonitor) Reset() {
+	var v AddArtistRequestMonitor
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAddArtistRequestMonitor) SetTo(v AddArtistRequestMonitor) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAddArtistRequestMonitor) Get() (v AddArtistRequestMonitor, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAddArtistRequestMonitor) Or(d AddArtistRequestMonitor) AddArtistRequestMonitor {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAlbumRelease returns new OptAlbumRelease with value set to v.
+func NewOptAlbumRelease(v AlbumRelease) OptAlbumRelease {
+	return OptAlbumRelease{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAlbumRelease is optional AlbumRelease.
+type OptAlbumRelease struct {
+	Value AlbumRelease
+	Set   bool
+}
+
+// IsSet returns true if OptAlbumRelease was set.
+func (o OptAlbumRelease) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAlbumRelease) Reset() {
+	var v AlbumRelease
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAlbumRelease) SetTo(v AlbumRelease) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAlbumRelease) Get() (v AlbumRelease, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAlbumRelease) Or(d AlbumRelease) AlbumRelease {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptArtist returns new OptArtist with value set to v.
+func NewOptArtist(v Artist) OptArtist {
+	return OptArtist{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptArtist is optional Artist.
+type OptArtist struct {
+	Value Artist
+	Set   bool
+}
+
+// IsSet returns true if OptArtist was set.
+func (o OptArtist) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptArtist) Reset() {
+	var v Artist
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptArtist) SetTo(v Artist) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptArtist) Get() (v Artist, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptArtist) Or(d Artist) Artist {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptArtistLookup returns new OptArtistLookup with value set to v.
+func NewOptArtistLookup(v ArtistLookup) OptArtistLookup {
+	return OptArtistLookup{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptArtistLookup is optional ArtistLookup.
+type OptArtistLookup struct {
+	Value ArtistLookup
+	Set   bool
+}
+
+// IsSet returns true if OptArtistLookup was set.
+func (o OptArtistLookup) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptArtistLookup) Reset() {
+	var v ArtistLookup
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptArtistLookup) SetTo(v ArtistLookup) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptArtistLookup) Get() (v ArtistLookup, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptArtistLookup) Or(d ArtistLookup) ArtistLookup {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptBool returns new OptBool with value set to v.
@@ -10302,6 +13835,52 @@ func (o OptFloat64) Or(d float64) float64 {
 	return d
 }
 
+// NewOptImportExistingArtistsRequestMonitor returns new OptImportExistingArtistsRequestMonitor with value set to v.
+func NewOptImportExistingArtistsRequestMonitor(v ImportExistingArtistsRequestMonitor) OptImportExistingArtistsRequestMonitor {
+	return OptImportExistingArtistsRequestMonitor{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptImportExistingArtistsRequestMonitor is optional ImportExistingArtistsRequestMonitor.
+type OptImportExistingArtistsRequestMonitor struct {
+	Value ImportExistingArtistsRequestMonitor
+	Set   bool
+}
+
+// IsSet returns true if OptImportExistingArtistsRequestMonitor was set.
+func (o OptImportExistingArtistsRequestMonitor) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptImportExistingArtistsRequestMonitor) Reset() {
+	var v ImportExistingArtistsRequestMonitor
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptImportExistingArtistsRequestMonitor) SetTo(v ImportExistingArtistsRequestMonitor) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptImportExistingArtistsRequestMonitor) Get() (v ImportExistingArtistsRequestMonitor, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptImportExistingArtistsRequestMonitor) Or(d ImportExistingArtistsRequestMonitor) ImportExistingArtistsRequestMonitor {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptIndexerCaps returns new OptIndexerCaps with value set to v.
 func NewOptIndexerCaps(v IndexerCaps) OptIndexerCaps {
 	return OptIndexerCaps{
@@ -10670,6 +14249,52 @@ func (o OptLanguage) Or(d Language) Language {
 	return d
 }
 
+// NewOptListArtistsSort returns new OptListArtistsSort with value set to v.
+func NewOptListArtistsSort(v ListArtistsSort) OptListArtistsSort {
+	return OptListArtistsSort{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListArtistsSort is optional ListArtistsSort.
+type OptListArtistsSort struct {
+	Value ListArtistsSort
+	Set   bool
+}
+
+// IsSet returns true if OptListArtistsSort was set.
+func (o OptListArtistsSort) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListArtistsSort) Reset() {
+	var v ListArtistsSort
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListArtistsSort) SetTo(v ListArtistsSort) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListArtistsSort) Get() (v ListArtistsSort, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListArtistsSort) Or(d ListArtistsSort) ListArtistsSort {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptListMoviesSort returns new OptListMoviesSort with value set to v.
 func NewOptListMoviesSort(v ListMoviesSort) OptListMoviesSort {
 	return OptListMoviesSort{
@@ -10710,6 +14335,52 @@ func (o OptListMoviesSort) Get() (v ListMoviesSort, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptListMoviesSort) Or(d ListMoviesSort) ListMoviesSort {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptListWantedAlbumsStatus returns new OptListWantedAlbumsStatus with value set to v.
+func NewOptListWantedAlbumsStatus(v ListWantedAlbumsStatus) OptListWantedAlbumsStatus {
+	return OptListWantedAlbumsStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListWantedAlbumsStatus is optional ListWantedAlbumsStatus.
+type OptListWantedAlbumsStatus struct {
+	Value ListWantedAlbumsStatus
+	Set   bool
+}
+
+// IsSet returns true if OptListWantedAlbumsStatus was set.
+func (o OptListWantedAlbumsStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListWantedAlbumsStatus) Reset() {
+	var v ListWantedAlbumsStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListWantedAlbumsStatus) SetTo(v ListWantedAlbumsStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListWantedAlbumsStatus) Get() (v ListWantedAlbumsStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListWantedAlbumsStatus) Or(d ListWantedAlbumsStatus) ListWantedAlbumsStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -10802,6 +14473,52 @@ func (o OptMinimumAvailability) Get() (v MinimumAvailability, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptMinimumAvailability) Or(d MinimumAvailability) MinimumAvailability {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMonitorNewAlbums returns new OptMonitorNewAlbums with value set to v.
+func NewOptMonitorNewAlbums(v MonitorNewAlbums) OptMonitorNewAlbums {
+	return OptMonitorNewAlbums{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMonitorNewAlbums is optional MonitorNewAlbums.
+type OptMonitorNewAlbums struct {
+	Value MonitorNewAlbums
+	Set   bool
+}
+
+// IsSet returns true if OptMonitorNewAlbums was set.
+func (o OptMonitorNewAlbums) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMonitorNewAlbums) Reset() {
+	var v MonitorNewAlbums
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMonitorNewAlbums) SetTo(v MonitorNewAlbums) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMonitorNewAlbums) Get() (v MonitorNewAlbums, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMonitorNewAlbums) Or(d MonitorNewAlbums) MonitorNewAlbums {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -11032,6 +14749,52 @@ func (o OptMovieStatus) Get() (v MovieStatus, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptMovieStatus) Or(d MovieStatus) MovieStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMusicNamingPreviewErrors returns new OptMusicNamingPreviewErrors with value set to v.
+func NewOptMusicNamingPreviewErrors(v MusicNamingPreviewErrors) OptMusicNamingPreviewErrors {
+	return OptMusicNamingPreviewErrors{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMusicNamingPreviewErrors is optional MusicNamingPreviewErrors.
+type OptMusicNamingPreviewErrors struct {
+	Value MusicNamingPreviewErrors
+	Set   bool
+}
+
+// IsSet returns true if OptMusicNamingPreviewErrors was set.
+func (o OptMusicNamingPreviewErrors) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMusicNamingPreviewErrors) Reset() {
+	var v MusicNamingPreviewErrors
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMusicNamingPreviewErrors) SetTo(v MusicNamingPreviewErrors) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMusicNamingPreviewErrors) Get() (v MusicNamingPreviewErrors, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMusicNamingPreviewErrors) Or(d MusicNamingPreviewErrors) MusicNamingPreviewErrors {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -11538,6 +15301,52 @@ func (o OptString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTrackFile returns new OptTrackFile with value set to v.
+func NewOptTrackFile(v TrackFile) OptTrackFile {
+	return OptTrackFile{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTrackFile is optional TrackFile.
+type OptTrackFile struct {
+	Value TrackFile
+	Set   bool
+}
+
+// IsSet returns true if OptTrackFile was set.
+func (o OptTrackFile) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTrackFile) Reset() {
+	var v TrackFile
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTrackFile) SetTo(v TrackFile) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTrackFile) Get() (v TrackFile, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTrackFile) Or(d TrackFile) TrackFile {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -16072,6 +19881,186 @@ func (s *TotpSetup) SetSecret(val string) {
 // SetURI sets the value of URI.
 func (s *TotpSetup) SetURI(val string) {
 	s.URI = val
+}
+
+// Ref: #/components/schemas/TrackFile
+type TrackFile struct {
+	ID           int64     `json:"id"`
+	Path         string    `json:"path"`
+	SizeBytes    int64     `json:"sizeBytes"`
+	Quality      Quality   `json:"quality"`
+	Format       string    `json:"format"`
+	BitDepth     int       `json:"bitDepth"`
+	SampleRate   int       `json:"sampleRate"`
+	Bitrate      int       `json:"bitrate"`
+	DurationMs   int       `json:"durationMs"`
+	ReleaseGroup OptString `json:"releaseGroup"`
+	SceneName    OptString `json:"sceneName"`
+	DownloadId   OptInt64  `json:"downloadId"`
+	AddedAt      time.Time `json:"addedAt"`
+	Disc         OptInt    `json:"disc"`
+	Position     OptInt    `json:"position"`
+	Title        OptString `json:"title"`
+}
+
+// GetID returns the value of ID.
+func (s *TrackFile) GetID() int64 {
+	return s.ID
+}
+
+// GetPath returns the value of Path.
+func (s *TrackFile) GetPath() string {
+	return s.Path
+}
+
+// GetSizeBytes returns the value of SizeBytes.
+func (s *TrackFile) GetSizeBytes() int64 {
+	return s.SizeBytes
+}
+
+// GetQuality returns the value of Quality.
+func (s *TrackFile) GetQuality() Quality {
+	return s.Quality
+}
+
+// GetFormat returns the value of Format.
+func (s *TrackFile) GetFormat() string {
+	return s.Format
+}
+
+// GetBitDepth returns the value of BitDepth.
+func (s *TrackFile) GetBitDepth() int {
+	return s.BitDepth
+}
+
+// GetSampleRate returns the value of SampleRate.
+func (s *TrackFile) GetSampleRate() int {
+	return s.SampleRate
+}
+
+// GetBitrate returns the value of Bitrate.
+func (s *TrackFile) GetBitrate() int {
+	return s.Bitrate
+}
+
+// GetDurationMs returns the value of DurationMs.
+func (s *TrackFile) GetDurationMs() int {
+	return s.DurationMs
+}
+
+// GetReleaseGroup returns the value of ReleaseGroup.
+func (s *TrackFile) GetReleaseGroup() OptString {
+	return s.ReleaseGroup
+}
+
+// GetSceneName returns the value of SceneName.
+func (s *TrackFile) GetSceneName() OptString {
+	return s.SceneName
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *TrackFile) GetDownloadId() OptInt64 {
+	return s.DownloadId
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *TrackFile) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetDisc returns the value of Disc.
+func (s *TrackFile) GetDisc() OptInt {
+	return s.Disc
+}
+
+// GetPosition returns the value of Position.
+func (s *TrackFile) GetPosition() OptInt {
+	return s.Position
+}
+
+// GetTitle returns the value of Title.
+func (s *TrackFile) GetTitle() OptString {
+	return s.Title
+}
+
+// SetID sets the value of ID.
+func (s *TrackFile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetPath sets the value of Path.
+func (s *TrackFile) SetPath(val string) {
+	s.Path = val
+}
+
+// SetSizeBytes sets the value of SizeBytes.
+func (s *TrackFile) SetSizeBytes(val int64) {
+	s.SizeBytes = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *TrackFile) SetQuality(val Quality) {
+	s.Quality = val
+}
+
+// SetFormat sets the value of Format.
+func (s *TrackFile) SetFormat(val string) {
+	s.Format = val
+}
+
+// SetBitDepth sets the value of BitDepth.
+func (s *TrackFile) SetBitDepth(val int) {
+	s.BitDepth = val
+}
+
+// SetSampleRate sets the value of SampleRate.
+func (s *TrackFile) SetSampleRate(val int) {
+	s.SampleRate = val
+}
+
+// SetBitrate sets the value of Bitrate.
+func (s *TrackFile) SetBitrate(val int) {
+	s.Bitrate = val
+}
+
+// SetDurationMs sets the value of DurationMs.
+func (s *TrackFile) SetDurationMs(val int) {
+	s.DurationMs = val
+}
+
+// SetReleaseGroup sets the value of ReleaseGroup.
+func (s *TrackFile) SetReleaseGroup(val OptString) {
+	s.ReleaseGroup = val
+}
+
+// SetSceneName sets the value of SceneName.
+func (s *TrackFile) SetSceneName(val OptString) {
+	s.SceneName = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *TrackFile) SetDownloadId(val OptInt64) {
+	s.DownloadId = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *TrackFile) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetDisc sets the value of Disc.
+func (s *TrackFile) SetDisc(val OptInt) {
+	s.Disc = val
+}
+
+// SetPosition sets the value of Position.
+func (s *TrackFile) SetPosition(val OptInt) {
+	s.Position = val
+}
+
+// SetTitle sets the value of Title.
+func (s *TrackFile) SetTitle(val OptString) {
+	s.Title = val
 }
 
 // Ref: #/components/schemas/TransferMode
