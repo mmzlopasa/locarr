@@ -1,7 +1,21 @@
 # Napredak
 
 ## Trenutna faza
-P1 — indexeri: gotovo (branch `phase/P1-indexers`). P0 gotov; P2 i P3 rade se usporedno.
+P3 — download klijenti: gotovo (branch `phase/P3-downloaders`). P0 i P1 gotovi; P2 se radi usporedno.
+
+## Gotovo u P3
+- `internal/downloaders`: zajedničko sučelje, normalizirana stanja i mogućnosti (D-017), klijent za odlazne veze s politikom adresa, timeoutima, ograničenjem odgovora i bez preusmjerenja na drugi host (D-020), parser .torrent/magnet, `testkit` (mali torrenti i NZB-ovi), `contracttest`.
+- Klijenti, svaki iz javne dokumentacije: qBittorrent (v4 i v5 API, sesija, kategorije sa save pathom, oznake, ciljevi seedanja), Transmission (session-id, oznake kao kategorije), Deluge (Web JSON-RPC, spajanje na daemon, Label plugin), rTorrent (XML-RPC, `d.custom1`, multicall), aria2 (JSON-RPC s tajnom, kategorije kao podmape), SABnzbd (red + povijest, kategorije, prioriteti, poruke o neuspjehu), NZBGet (append, listgroups, history, par/unpack stanje).
+- Ugovorni testovi protiv stvarnih klijenata u Dockeru (`scripts/test-clients.sh`, oznaka `clients`): prošli su qBittorrent 5.3, Transmission 4.1, Deluge 2.2, rTorrent 0.16 (`crazymax/rtorrent-rutorrent`), aria2 (alpine), SABnzbd 5.1, NZBGet 26.3. CI posao `clients` pokreće qBittorrent, Transmission i SABnzbd.
+- `internal/downloads` (migracija `00003_downloads.sql`): klijenti sa šifriranom lozinkom/API ključem koji se samo pišu, Test s prevedenim greškama i nedostajućim kategorijama, stvaranje kategorija, mapiranje udaljenih putanja, praćenje (D-018, D-019) s događajima u `download_events` i sabirnicom za uvoz, nepoznate stavke prikazane ali netaknute, blokirana izdanja s provjerom za P2 (D-021), grab kroz poslužitelj i kroz indexer (D-020).
+- API: `/downloadclients*`, `/remotepathmappings*`, `/queue*` (red, osvježavanje, grab, pauza/nastavak/prioritet/uklanjanje, povijest stavke, blokirana izdanja).
+- Web: stranica Download klijenti (popis sa stanjem, verzijom i slobodnim prostorom, obrazac s poljima samo za odabrani klijent, Test, stvaranje kategorija, mapiranja putanja, postavke praćenja), Aktivnost → Red preuzimanja (uživo, filtri, akcije) i Blokirana izdanja, gumb „Preuzmi" u Pretrazi šalje izdanje klijentu. e2e test `web/e2e/downloads.spec.ts` sa stvarnim Transmissionom.
+- Korisnička dokumentacija: `docs/user/download-clients.md`.
+
+## Za P4–P6 (uvoz)
+- Pretplata: `deps.Downloads.Bus.Subscribe(func(ctx, ev downloads.Event))`; `EventCompleted` nosi `Download.LocalPath` (provjerena lokalna putanja) i `ItemRef`.
+- Nakon uvoza: `Downloads.MarkImported(ctx, id, poruka)` ili `MarkImportFailed(ctx, id, poruka)`.
+- Grab iz koda: `Downloads.Grab(ctx, downloads.GrabRequest{...})` (s `IndexerID` i `DownloadURL` iz `indexers.Release`); blokiranje: `Downloads.AddBlock`, provjera: `Downloads.IsBlocklisted`.
 
 ## Gotovo u P1
 - `internal/indexers/znab`: Torznab/Newznab klijent (caps sa supportedParams, kategorijama i limitima; search, tvsearch, movie, music, book; ID parametri; offset/limit), tolerantan parser feedova (imenski prostori atributa, CDATA, HTML entiteti, enclosure ili link, samo magnet, nedostaje veličina, razni formati datuma, gzip bez zaglavlja, 8-bitni charseti) i tipizirane `<error code>` greške.
@@ -29,9 +43,10 @@ P1 — indexeri: gotovo (branch `phase/P1-indexers`). P0 gotov; P2 i P3 rade se 
 1. P0 ostatak:
    - Prvo pokretanje: korak za odabir mape za medije u čarobnjaku (danas se root mape dodaju u Postavke → Mape za medije odmah nakon postavljanja).
    - Backup i vraćanje (automatski i ručno); migracije pri pokretanju već rade.
-2. P2 parser i odluke, P3 download klijenti (P3 koristi `indexers.Service.Fetch` i postavke seedanja po indexeru).
+2. P2 parser i odluke (provjera blokiranih: `downloads.BlocklistChecker`); zatim P4 filmovi (uvoz se pretplaćuje na `downloads.Bus`).
 3. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- Download klijenti: uklanjanje nakon uvoza i ciljevi seedanja provjereni su samo s lažnim klijentom dok ne stigne uvoz (P4). Usenet klijenti su testirani bez news servera, pa su završena i neuspjela preuzimanja pokrivena samo testovima s fixturama. NZBGet kategorije se ne mogu stvoriti kroz API.
 - Ograničenje zahtjeva po indexeru vodi se u memoriji i počinje od nule nakon restarta (D-014).
 - Playwright u lokalnom razvoju: lockfile koristi 1.65; slika `mcr.microsoft.com/playwright:v1.64.1` radi uz `PW_CHROMIUM_PATH`.

@@ -175,7 +175,7 @@ func (s *Service) interval(ctx context.Context) time.Duration {
 }
 
 // Run polls the clients until ctx ends. It is a plain loop rather than a
-// queued job so a fast poll does not fill the task history (D-012).
+// queued job so a fast poll does not fill the task history (D-018).
 func (s *Service) Run(ctx context.Context) {
 	s.mu.Lock()
 	s.init()

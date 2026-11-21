@@ -26,11 +26,14 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Blokirana izdanja, ponovni pokušaj s idućim najboljim izdanjem
 
 ## Download klijenti (P3)
-- [ ] qBittorrent, Transmission, Deluge, rTorrent, aria2 (torrent)
-- [ ] SABnzbd, NZBGet (usenet)
-- [ ] Kategorije/oznake po vrsti sadržaja, prioriteti, praćenje napretka i brzine
-- [ ] Ciljevi seedanja (omjer, vrijeme) i uklanjanje nakon uvoza po izboru
-- [ ] Mapiranje udaljenih putanja (klijent na drugom stroju/kontejneru)
+- [x] qBittorrent, Transmission, Deluge, rTorrent, aria2 (torrent)
+- [x] SABnzbd, NZBGet (usenet)
+- [x] Kategorije/oznake po vrsti sadržaja, prioriteti, praćenje napretka i brzine
+- [ ] Ciljevi seedanja (omjer, vrijeme) i uklanjanje nakon uvoza po izboru — ciljevi se šalju klijentu i prate; uklanjanje nakon uvoza čeka uvoz (P4)
+- [x] Mapiranje udaljenih putanja (klijent na drugom stroju/kontejneru)
+- [x] Red preuzimanja uživo (pauza, nastavak, prioritet, uklanjanje s podacima, uklanjanje i blokiranje), nepoznate stavke se ne diraju
+- [x] Grab iz pretrage kroz poslužitelj (ključ indexera ostaje na poslužitelju), izbor klijenta po protokolu, oznakama i prioritetu
+- [x] Blokirana izdanja: popis, ručno dodavanje i brisanje, provjera za odluke (P2)
 
 ## Filmovi (P4)
 - [ ] TMDb pretraga i dodavanje, kolekcije, popisi (TMDb, Trakt, IMDb liste) za automatsko dodavanje
