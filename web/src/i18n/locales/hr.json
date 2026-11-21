@@ -1523,6 +1523,14 @@
       "smaller_than_main": "Manje od glavne datoteke",
       "disc_structure": "Struktura diska",
       "not_media": "Nije video"
+    },
+    "rename": {
+      "title": "Preimenovanje datoteka",
+      "description": "Primijeni predložak imena na datoteke filmova koje su već u biblioteci (u istoj mapi; titlovi idu s njima).",
+      "preview": "Pokaži što bi se promijenilo",
+      "none": "Sve datoteke već imaju svoje ime.",
+      "apply": "Preimenuj datoteka: {{count}}",
+      "done": "Preimenovano: {{count}}."
     }
   },
   "media": {

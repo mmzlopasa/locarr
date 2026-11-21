@@ -16,6 +16,7 @@ export function ImportPage() {
       <div className="space-y-4">
         <ExistingLibrary />
         <ManualImport />
+        <RenameFiles />
       </div>
     </div>
   );
@@ -192,6 +193,42 @@ function ManualImport() {
           </>
         )
       ) : null}
+    </Panel>
+  );
+}
+
+function RenameFiles() {
+  const { t } = useTranslation();
+  const qc = useQueryClient();
+  const preview = useMutation({ mutationFn: async () => unwrap(await api.POST("/movies/rename/preview", { body: { movieIds: [] } })) });
+  const apply = useMutation({
+    mutationFn: async () => unwrap(await api.POST("/movies/rename", { body: { movieIds: (preview.data ?? []).map((r) => r.movieId) } })),
+    onSuccess: () => {
+      preview.reset();
+      void qc.invalidateQueries({ queryKey: queryKeys.movies });
+    },
+  });
+  return (
+    <Panel title={t("import.rename.title")} description={t("import.rename.description")}>
+      <Button onClick={() => preview.mutate()} busy={preview.isPending} data-testid="rename-preview">{t("import.rename.preview")}</Button>
+      <ErrorAlert error={preview.error ?? apply.error} />
+      {preview.data && preview.data.length === 0 ? <p className="mt-2 text-[13px] text-muted">{t("import.rename.none")}</p> : null}
+      {preview.data && preview.data.length > 0 ? (
+        <>
+          <ul className="mt-3 divide-y divide-line rounded-ui border border-line">
+            {preview.data.map((r) => (
+              <li key={r.movieId} className="px-3 py-2 font-mono text-[12px]">
+                <div className="text-muted line-through decoration-faint">{r.from.split("/").pop()}</div>
+                <div className="text-fg">{r.to.split("/").pop()}</div>
+              </li>
+            ))}
+          </ul>
+          <Button className="mt-3" variant="primary" onClick={() => apply.mutate()} busy={apply.isPending}>
+            {t("import.rename.apply", { count: preview.data.length })}
+          </Button>
+        </>
+      ) : null}
+      {apply.data ? <p role="status" className="mt-2 text-[13px] text-success">{t("import.rename.done", { count: apply.data.length })}</p> : null}
     </Panel>
   );
 }

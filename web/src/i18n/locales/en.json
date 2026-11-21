@@ -1523,6 +1523,14 @@
       "smaller_than_main": "Smaller than the main file",
       "disc_structure": "Disc structure",
       "not_media": "Not a video"
+    },
+    "rename": {
+      "title": "Rename files",
+      "description": "Apply the naming template to movie files already in the library (in the same folder; subtitles follow).",
+      "preview": "Show what would change",
+      "none": "Every file already has its name.",
+      "apply": "Rename {{count}} files",
+      "done": "Renamed: {{count}}."
     }
   },
   "media": {

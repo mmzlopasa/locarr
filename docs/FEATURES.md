@@ -23,26 +23,30 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Profili kvalitete (redoslijed, granica nadogradnje), definicije veličina
 - [x] Custom formati s bodovima (uvoz/izvoz dijeljenog JSON-a), jezici u profilima, obavezni/zabranjeni izrazi, profili kašnjenja
 - [x] Provjera izdanja: sva pročitana polja, custom formati i odluka s razlozima za odabrani profil
-- [ ] Odluka sa zapisanim razlogom za svako odbijeno izdanje (motor i razlozi gotovi u P2; zapis u vremensku crtu dolazi s P4/P11)
-- [ ] Blokirana izdanja, ponovni pokušaj s idućim najboljim izdanjem
+- [x] Odluka sa zapisanim razlogom za svako odbijeno izdanje (zapis u vremensku crtu filma od P4)
+- [x] Blokirana izdanja, ponovni pokušaj s idućim najboljim izdanjem
 
 ## Download klijenti (P3)
 - [x] qBittorrent, Transmission, Deluge, rTorrent, aria2 (torrent)
 - [x] SABnzbd, NZBGet (usenet)
 - [x] Kategorije/oznake po vrsti sadržaja, prioriteti, praćenje napretka i brzine
-- [ ] Ciljevi seedanja (omjer, vrijeme) i uklanjanje nakon uvoza po izboru — ciljevi se šalju klijentu i prate; uklanjanje nakon uvoza čeka uvoz (P4)
+- [ ] Ciljevi seedanja (omjer, vrijeme) i uklanjanje nakon uvoza po izboru — ciljevi se šalju klijentu i prate; uvoz (P4) javlja „uvezeno", a uklanjanje nakon ispunjenih ciljeva provjereno je samo lažnim klijentom
 - [x] Mapiranje udaljenih putanja (klijent na drugom stroju/kontejneru)
 - [x] Red preuzimanja uživo (pauza, nastavak, prioritet, uklanjanje s podacima, uklanjanje i blokiranje), nepoznate stavke se ne diraju
 - [x] Grab iz pretrage kroz poslužitelj (ključ indexera ostaje na poslužitelju), izbor klijenta po protokolu, oznakama i prioritetu
 - [x] Blokirana izdanja: popis, ručno dodavanje i brisanje, provjera za odluke (P2)
 
 ## Filmovi (P4)
-- [ ] TMDb pretraga i dodavanje, kolekcije, popisi (TMDb, Trakt, IMDb liste) za automatsko dodavanje
-- [ ] Praćenje, minimalna dostupnost (najavljeno, u kinu, izdano)
-- [ ] RSS sync, automatska i ručna pretraga, nadogradnje do granice profila
-- [ ] Uvoz: hardlink (zadano kad je moguće), kopija, premještanje; provjera prije brisanja izvora
-- [ ] Preimenovanje datoteka i mapa po predlošku, NFO i slike po izboru
-- [ ] Koš za smeće (Recycle bin) s rokom, nikad tiho brisanje
+- [x] TMDb pretraga (naslov, TMDb ID, IMDb ID) i dodavanje, kolekcije (dodaj filmove koji nedostaju), TMDb popisi i kolekcije za automatsko dodavanje, isključenja
+- [ ] Trakt i IMDb popisi za automatsko dodavanje
+- [x] Praćenje, minimalna dostupnost (najavljeno, u kinima, izdano) s odgodom
+- [x] RSS sync, automatska (nakon dodavanja i po rasporedu s odmakom) i ručna pretraga s razlozima, profili kašnjenja, ponovni pokušaj nakon neuspjeha, nadogradnje do granice profila
+- [x] Uvoz: hardlink (zadano kad je moguće), kopija, premještanje; provjera prije brisanja izvora; titlovi uz video; ručni uvoz s pregledom
+- [x] Preimenovanje datoteka i mapa po predlošku (pregled uživo), preimenovanje postojeće biblioteke, uvoz postojeće biblioteke
+- [ ] NFO i slike uz film po izboru
+- [x] Koš za smeće (Recycle bin) s rokom, vraćanje, nikad tiho brisanje
+- [x] Kalendar filmova (mjesec, tjedan, popis) i iCal feed s osobnom poveznicom
+- [ ] Podaci o zapisima iz same datoteke (ffprobe); danas iz imena (D-033)
 
 ## Serije (P5)
 - [ ] TMDb (i TVDB po izboru): serije, sezone, epizode, specijali
@@ -78,8 +82,8 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Pregled prije uvoza, izvori se nikad ne mijenjaju
 
 ## Vremenska crta i nadzor (P11)
-- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti
-- [ ] „Zašto nije stiglo": jedan ekran koji objašnjava trenutno stanje svakog nedostajućeg naslova
+- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove radi od P4; serije i glazba s P5/P6)
+- [ ] „Zašto nije stiglo": jedan ekran koji objašnjava trenutno stanje svakog nedostajućeg naslova (za filmove na stranici filma od P4)
 - [ ] Aktivnost (red preuzimanja), povijest, blokirana izdanja, nedostajuće/ispod granice
 - [ ] Zdravlje sustava (indexeri, klijenti, disk, putanje, prava), logovi, zadaci
 - [ ] `/api/stats` za nadzorne ploče, Prometheus metrike

@@ -76,3 +76,13 @@ docker compose pull && docker compose up -d
 
 Migracije baze rade se same pri pokretanju. Za backup kopirajte cijelu `CONFIG_DIR` mapu (uključujući
 `secret.key`; bez njega spremljene lozinke vanjskih servisa ne mogu se dešifrirati).
+
+## 7. Filmovi: TMDb ključ, hardlinkovi i koš
+
+- Za filmove treba vlastiti TMDb API ključ: **Postavke → Metapodaci** (vidi `docs/user/movies.md`).
+  Locarr se spaja na `api.themoviedb.org` i `image.tmdb.org`; plakati se čuvaju u `CONFIG_DIR/cache/images`.
+- Uvoz radi hardlink kad su preuzimanja i biblioteka na istom datotečnom sustavu i u istoj montaži
+  (`/data/downloads` i `/data/media` pod jednim `DATA_DIR`). Download klijent mora vidjeti datoteke pod
+  istom putanjom `/data/...` ili treba dodati mapiranje udaljene putanje.
+- Koš za smeće je zadano `/data/recycle-bin` (Postavke → Upravljanje medijima); tamo idu zamijenjene i
+  obrisane datoteke i brišu se tek nakon roka (zadano 7 dana).

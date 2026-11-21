@@ -24,8 +24,10 @@ export function AddOptionsForm({ value, onChange }: { value: AddDefaults; onChan
   const movieRoots = (roots.data ?? []).filter((r) => r.kind === "movies");
   const movieProfiles = (profiles.data ?? []).filter((p) => p.kind === "movies");
   useEffect(() => {
-    if (!value.rootFolderId && movieRoots[0]) onChange({ ...value, rootFolderId: movieRoots[0].id });
-    if (!value.qualityProfileId && movieProfiles[0]) onChange({ ...value, qualityProfileId: movieProfiles[0].id });
+    const next = { ...value };
+    if (!next.rootFolderId && movieRoots[0]) next.rootFolderId = movieRoots[0].id;
+    if (!next.qualityProfileId && movieProfiles[0]) next.qualityProfileId = movieProfiles[0].id;
+    if (next.rootFolderId !== value.rootFolderId || next.qualityProfileId !== value.qualityProfileId) onChange(next);
   }, [movieRoots, movieProfiles, value, onChange]);
   if (roots.data && movieRoots.length === 0) {
     return (

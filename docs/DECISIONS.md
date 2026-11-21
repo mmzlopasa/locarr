@@ -134,3 +134,53 @@
 **Kontekst:** profili izdanja i kašnjenja vežu se uz oznake naslova, a naslovi stižu u P4/P5.
 **Odluka:** oznake su mala slova, bez razmaka na rubovima; profil kašnjenja bez oznaka postoji samo jedan (zadani, uvijek zadnji, ne briše se), ostali se provjeravaju redom i prvi koji odgovara vrijedi.
 **Posljedice:** kad uvedemo tablicu oznaka, migracija preslikava tekst u ID-jeve.
+
+## D-028 Zajednička jezgra biblioteke i oznaka stavke (2026-11-21)
+**Kontekst:** filmovi (P4), serije (P5) i glazba (P6) dijele praćenje, profile, mape, uvoz, vremensku crtu i pretrage; preuzimanje (P3) nosi neprozirni `item_ref`.
+**Odluka:** `media_items` drži ono što imaju sve vrste (naslov, godina, praćenje, profil kvalitete, root mapa i putanja, oznake kao tekst po D-027), a svaka vrsta ima svoju tablicu uz isti ID (`movies`; P5 `series`/`episodes`, P6 `artists`/`albums`). Datoteke su u `media_files` (film ima najviše jednu; epizode i pjesme vežu datoteke svojim tablicama). Oznaka stavke je tekst `vrsta:id` (`movie:42`; rezervirano `series`, `episode`, `artist`, `album`) i ista je u `search_log.item_ref`, `timeline_events.item_ref`, `search_state` i `pending_releases`; preuzimanje je nosi kao JSON `{"ref":"movie:42"}` uz indeks na `json_extract(item_ref, '$.ref')` (`library.Ref`, `ParseRef`, `JSON`, `RefFromJSON`).
+**Posljedice:** P5/P6 dodaju samo svoje tablice i izvor za pretrage; vremenska crta, objašnjenje, koš i uvoznik rade bez promjena.
+
+## D-029 Metapodaci: TMDb iza sučelja, predmemorija i ograničenje (2026-11-21)
+**Kontekst:** filmovi trebaju naslove, datume i plakate; TMDb traži vlastiti ključ i ograničava broj zahtjeva; CSP dopušta slike samo s vlastitog poslužitelja.
+**Odluka:** `internal/metadata` definira `MovieProvider` (pretraga, film, IMDb → TMDb, kolekcija, javni popis, provjera ključa) i `ImageSource`; `metadata/tmdb` ga ostvaruje iz javne dokumentacije v3 API-ja (v3 ključ kao `api_key`, v4 token kao bearer), s timeoutom 15 s, odgovorom najviše 4 MiB, preusmjerenjima samo na isti host i ključem uklonjenim iz grešaka. Odgovori se spremaju u `metadata_cache` (pretraga 1 h, film 12 h, kolekcija 24 h); osvježavanje ih zaobilazi. Ograničenje je 20 zahtjeva u sekundi uz poštivanje `Retry-After` kod 429. Jezik i regija su postavke (regija bira datume izdanja i dobnu oznaku). Ključ se prije spremanja provjerava kod TMDb-a (`metadata_key_invalid`) i sprema šifriran (D-006). Slike se preuzimaju jednom u `/config/cache/images` i poslužuju kroz `GET /api/v1/images/tmdb/{size}/{file}` s ETagom i 304. Adresa TMDb-a mijenja se samo varijablom `LOCARR_TMDB_URL` (testovi i lažni servisi), nikad kroz API.
+**Posljedice:** bez ključa dodavanje filmova javlja `metadata_key_missing`; P5 dodaje `SeriesProvider`, P6 MusicBrainz istim obrascem.
+
+## D-030 Vremenska crta i „zašto nije stiglo" (2026-11-21)
+**Kontekst:** PLAN §2: jedan odgovor na jednom ekranu.
+**Odluka:** `timeline_events` drži vlastite događaje (dodano, promijenjeno, osvježeno, odluka sa sažetkom i 10 najboljih odbijenih izdanja s razlozima, zadržano, neuspio grab, ponovni pokušaj, uvezeno, pronađeno, preimenovano, nadograđeno, u košu, obrisano, obavijest), a pretrage (s brojem rezultata po indexeru) i koraci preuzimanja (`download_*`, uključujući 25/50/75 %) čitaju se iz `search_log` i `download_events`, pa se ništa ne piše dvaput. `timeline.Explain` je čista funkcija nad stanjem stavke i činjenicama iz baze, s pravilima ovim redom: u biblioteci i granica dosegnuta → preuzima se → uvoz nije uspio → čeka uvoz → ne prati se → nije dostupno → nema indexera → nema klijenta → zadržano profilom kašnjenja → zadnje preuzimanje nije uspjelo → nije traženo → sve odbijeno (najčešći razlozi) → želi se nadogradnja → ništa nađeno. Web prevodi kod, poruka na engleskom je rezerva.
+**Posljedice:** RSS odluke bez prihvaćenih ili zadržanih izdanja ne pišu se na vremensku crtu (inače bi ih bilo tisuće).
+
+## D-031 Dostupnost filma (2026-11-21)
+**Kontekst:** „najavljeno / u kinima / izdano" treba datume, a TMDb ih nema uvijek.
+**Odluka:** najavljeno je dostupno odmah; u kinima od prvog kino datuma (ili ranijeg digitalnog/fizičkog); izdano od prvog digitalnog ili fizičkog datuma, a bez njih 90 dana nakon kina. Film bez ikakvog datuma kojeg TMDb vodi kao „Released" je dostupan. Postavka „odgoda dostupnosti" (dani, može biti negativna) pomiče sve datume. Datumi su iz regije iz postavki, inače najraniji bilo gdje.
+**Posljedice:** 90 dana je procjena; objašnjenje pokazuje datum od kojeg se traži.
+
+## D-032 Orkestracija pretraga (2026-11-21)
+**Kontekst:** automatsko traženje mora biti uporno, ali ne smije zatrpati indexere.
+**Odluka:** `internal/wanted` radi s „izvorima" po vrsti (`Source`: stavka, popis željenih, uparivač za RSS). Pretraga nakon dodavanja ide kroz red poslova; raspored (zadano svakih 15 min) pretražuje najviše 10 stavki čija je sljedeća pretraga došla, najprije nikad tražene. Nakon pretrage bez grabanja čeka se 30 min, pa 1 h, 2 h… najviše 24 h; nakon grabanja 24 h (nadogradnje). RSS izdanja uparuju se s praćenim filmovima po TMDb/IMDb ID-u, inače po naslovu (i alternativnim naslovima) i godini ±1. Odluka ide kroz `decision.Evaluate`; grab najboljeg prihvaćenog, a ako klijent ili indexer odbije, sljedećeg. Privremeno odbijena izdanja (kašnjenje) spremaju se u `pending_releases` i ponovno procjenjuju svakih 5 min (do 7 dana). Neuspjelo preuzimanje se blokira s razlogom i stavka se odmah ponovno traži (postavka). Stavka s aktivnim preuzimanjem se ne traži.
+**Posljedice:** ručna „Traži odmah" radi i za nepraćene i nedostupne filmove; ručni grab iz interaktivne pretrage može uzeti i odbijeno izdanje.
+
+## D-033 Podaci o zapisima iz imena, bez ffprobea (2026-11-21)
+**Kontekst:** ffprobe u Debian slici dodaje ~100 MB (FFmpeg biblioteke), a slika je danas ~40 MB.
+**Odluka:** rezolucija, kodek, HDR, zvuk i jezici datoteke čitaju se iz imena izdanja i datoteke (parser, D-022); `media_info.source = "name"`, a web to kaže.
+**Posljedice:** zamaskirana imena nemaju podatke o zapisima; ffprobe se može dodati uz titlove (P7) ako tada zatreba FFmpeg.
+
+## D-034 Uvoz (2026-11-21)
+**Kontekst:** uvoz ne smije izgubiti ni jednu datoteku, a seedanje mora nastaviti.
+**Odluka:** zajednički `internal/library/importer` nalazi video datoteke (najveća je glavna; uzorci po imenu ili mapi Sample, dodaci u mapama Featurettes/Extras/…, i datoteke manje od 30 % glavne se preskaču; strukture diska i slike se ne uvoze automatski), uz video nosi titlove po popisu ekstenzija (zadržava jezične oznake, npr. `.hr.srt`). Prijenos (`library/fsops`): hardlink zadano, kopija kad hardlink nije moguć (drugi datotečni sustav), premještanje samo ako je korisnik to odabrao; kopija ide u privremenu datoteku i preimenuje se tek nakon provjere veličine; izvor se nikad ne briše prije provjere. Nova datoteka stiže pokraj stare (`.locarr-new`), stara ide u koš, nova dobiva konačno ime. Nadogradnja mora biti bolja po položaju u profilu, reviziji ili bodovima. Sve putanje prolaze `fs.SafePath`. Na kraju `MarkImported` ili `MarkImportFailed` s razlogom. `mediaserver.Notifier` (zadano bez učinka) zove se nakon uvoza, nadogradnje i preimenovanja.
+**Posljedice:** višedijelni filmovi (CD1/CD2) prepoznaju se, ali se uvozi samo glavni dio; P5/P6 koriste isti `Discover`/`Place` s vlastitim uparivanjem.
+
+## D-035 Predlošci imena (2026-11-21)
+**Kontekst:** korisnici žele imena po vlastitom ukusu; datoteke se često čitaju s Windowsa preko dijeljenja.
+**Odluka:** vlastita sintaksa `{Oznaka}`, a znakovi oko imena unutar zagrada (`{[Edition]}`, `{-ReleaseGroup}`) pišu se samo kad oznaka ima vrijednost; prazne zagrade i dvostruki razmaci se uklanjaju. Imena se uvijek čiste za Windows: bez `/ \ : * ? " < > |` i kontrolnih znakova (dvotočka po postavci), bez točke ili razmaka na kraju, bez rezerviranih imena (CON, NUL…), najviše 255 bajtova uz očuvanu ekstenziju. Predložak se provjerava pri spremanju; pregled uživo koristi primjer filma.
+**Posljedice:** preimenovanje postojeće biblioteke je pregled pa primjena, unutar iste mape, nikad preko postojeće datoteke.
+
+## D-036 Koš za smeće (2026-11-21)
+**Kontekst:** pravilo „nikad ne briši korisnikove datoteke" (CONTRIBUTING).
+**Odluka:** zamijenjene datoteke i mape obrisanih filmova idu u koš (zadano `recycle-bin` u prvoj mapi s podacima, mijenja se samo unutar `LOCARR_DATA_ROOTS`), svaka u vlastitu podmapu s vremenom; zapis u `recycle_bin` omogućuje vraćanje na izvorno mjesto (ako je slobodno). Brisanje pojedinačno i pražnjenje su radnje administratora; dnevni posao briše stavke starije od roka (zadano 7 dana, 0 = nikad). Brisanje se izvodi samo nad putanjama unutar mape koša.
+**Posljedice:** koš na drugom datotečnom sustavu znači kopiju pri premještanju; zato je zadano unutar /data.
+
+## D-037 Kalendar, popisi i isključenja (2026-11-21)
+**Kontekst:** kalendar se čita iz aplikacija koje ne znaju za prijavu; popisi dodaju filmove sami.
+**Odluka:** iCal feed (`/calendar/feed.ics?token=…`) koristi osobni token po korisniku spremljen kao SHA-256 (prikazan jednom, nova poveznica gasi staru, isključeni korisnik gubi feed). Popisi za uvoz su za sada TMDb javni popisi i kolekcije (sync svakih 6 h); film obrisan uz „ne dodaj ponovno" ide u `import_exclusions`. Mapa filma može se promijeniti samo dok film nema datoteku.
+**Posljedice:** Trakt i IMDb popisi dolaze kasnije, istim sučeljem.
