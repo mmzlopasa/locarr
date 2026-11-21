@@ -33,6 +33,15 @@ import { QueuePage } from "@/features/activity/QueuePage";
 import { BlocklistPage } from "@/features/activity/BlocklistPage";
 import { IndexersPage } from "@/features/indexers/IndexersPage";
 import { SearchPage } from "@/features/search/SearchPage";
+import { MoviesPage } from "@/features/movies/MoviesPage";
+import { AddMoviePage } from "@/features/movies/AddMoviePage";
+import { MovieDetailPage } from "@/features/movies/MovieDetailPage";
+import { CollectionPage } from "@/features/movies/CollectionPage";
+import { ImportPage } from "@/features/movies/ImportPage";
+import { WantedPage } from "@/features/wanted/WantedPage";
+import { CalendarPage } from "@/features/calendar/CalendarPage";
+import { MediaManagementPage } from "@/features/settings/MediaManagementPage";
+import { ImportListsPage, MetadataPage } from "@/features/settings/MetadataPage";
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -85,12 +94,9 @@ const indexRoute = createRoute({
 
 /** Sections that later phases fill in; each says honestly when it arrives. */
 export const UPCOMING = [
-  { path: "/movies", key: "movies", phase: "P4" },
   { path: "/series", key: "series", phase: "P5" },
   { path: "/music", key: "music", phase: "P6" },
   { path: "/requests", key: "requests", phase: "P8" },
-  { path: "/calendar", key: "calendar", phase: "P5" },
-  { path: "/wanted", key: "wanted", phase: "P4" },
 ] as const;
 
 const upcomingRoutes = UPCOMING.map((s) =>
@@ -100,6 +106,14 @@ const upcomingRoutes = UPCOMING.map((s) =>
     component: () => <ComingSoonPage section={s.key} phase={s.phase} />,
   }),
 );
+
+const moviesRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies", component: MoviesPage });
+const addMovieRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/add", component: AddMoviePage });
+const importMoviesRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/import", component: ImportPage });
+const movieRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/$id", component: MovieDetailPage });
+const collectionRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/collections/$id", component: CollectionPage });
+const wantedRoute = createRoute({ getParentRoute: () => appRoute, path: "/wanted", component: WantedPage });
+const calendarRoute = createRoute({ getParentRoute: () => appRoute, path: "/calendar", component: CalendarPage });
 
 const activityRoute = createRoute({ getParentRoute: () => appRoute, path: "/activity", component: ActivityLayout });
 const activityIndexRoute = createRoute({
@@ -137,6 +151,9 @@ const qualityRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/
 const customFormatsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/customformats", component: CustomFormatsPage });
 const rulesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/rules", component: ReleaseRulesPage });
 const testerRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/tester", component: ReleaseTesterPage });
+const mediaManagementRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/mediamanagement", component: MediaManagementPage });
+const metadataRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadata", component: MetadataPage });
+const importListsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/importlists", component: ImportListsPage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
 const systemIndexRoute = createRoute({
@@ -155,6 +172,13 @@ export const routeTree = rootRoute.addChildren([
   appRoute.addChildren([
     indexRoute,
     ...upcomingRoutes,
+    moviesRoute,
+    addMovieRoute,
+    importMoviesRoute,
+    movieRoute,
+    collectionRoute,
+    wantedRoute,
+    calendarRoute,
     activityRoute.addChildren([activityIndexRoute, queueRoute, blocklistRoute]),
     searchRoute,
     accountRoute,
@@ -162,7 +186,7 @@ export const routeTree = rootRoute.addChildren([
       downloadersRoute,
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
-        rulesRoute, testerRoute]),
+        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
   ]),

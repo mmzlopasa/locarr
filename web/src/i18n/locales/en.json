@@ -74,7 +74,21 @@
     "indexer_unreachable": "The indexer cannot be reached.",
     "indexer_blocked": "This address is blocked for safety.",
     "indexer_unknown": "The indexer reported an error.",
-    "default_profile": "The default delay profile cannot be removed."
+    "default_profile": "The default delay profile cannot be removed.",
+    "path_taken": "Another library item already uses that folder.",
+    "has_file": "The movie has a file; its folder cannot change. Move or delete the file first.",
+    "metadata_key_missing": "No TMDb API key is set. Add one under Settings → Metadata.",
+    "metadata_key_invalid": "TMDb refused the API key. Check it and try again.",
+    "metadata_unavailable": "TMDb cannot be reached right now. Try again later.",
+    "restore_conflict": "Something else is at the original place; move it away first.",
+    "invalid_template": "The naming template is not valid.",
+    "destination_exists": "A file with that name is already in the library.",
+    "transfer_verify_failed": "The copied file does not match the source; nothing was removed.",
+    "not_an_upgrade": "Not imported: it is not better than the file in the library.",
+    "no_video_file": "No video file was found.",
+    "disc_structure": "Disc structures (BDMV, VIDEO_TS, images) are not imported automatically.",
+    "no_matching_movie": "No movie in the library matches this file; choose one.",
+    "already_imported": "This is already the movie's file."
   },
   "errorPage": {
     "title": "This page could not be shown",
@@ -277,7 +291,10 @@
       "quality": "Sizes",
       "customFormats": "Custom formats",
       "rules": "Release rules",
-      "tester": "Release tester"
+      "tester": "Release tester",
+      "mediaManagement": "Media management",
+      "metadata": "Metadata",
+      "importLists": "Import lists"
     },
     "general": {
       "title": "General",
@@ -1152,5 +1169,462 @@
     "mr": "Marathi",
     "tl": "Tagalog",
     "ur": "Urdu"
+  },
+  "availability": {
+    "announced": "Announced",
+    "in_cinemas": "In cinemas",
+    "released": "Released"
+  },
+  "transfer": {
+    "hardlink": "Hardlink (copy when not possible)",
+    "copy": "Copy",
+    "move": "Move",
+    "existing": "already in place"
+  },
+  "movies": {
+    "add": "Add movie",
+    "importExisting": "Import existing",
+    "empty": "No movies match. Add one with “Add movie”.",
+    "monitored": "Monitored",
+    "unmonitored": "Not monitored",
+    "runtime": "{{minutes}} min",
+    "status": {
+      "missing": "Missing",
+      "downloaded": "Downloaded",
+      "downloading": "Downloading",
+      "cutoff_unmet": "Cutoff unmet",
+      "unavailable": "Not available",
+      "unmonitored": "Not monitored"
+    },
+    "filter": {
+      "search": "Search",
+      "searchHint": "Title, IMDb or TMDb id",
+      "status": "Status",
+      "monitored": "Monitoring",
+      "profile": "Quality profile",
+      "tag": "Tag",
+      "sort": "Sort by",
+      "direction": "Change sort direction",
+      "all": "All"
+    },
+    "sort": {
+      "title": "Title",
+      "year": "Year",
+      "added": "Added",
+      "rating": "Rating",
+      "popularity": "Popularity",
+      "size": "Size",
+      "inCinemas": "In cinemas",
+      "digital": "Digital release",
+      "physical": "Physical release"
+    },
+    "view": {
+      "label": "View",
+      "grid": "Posters",
+      "table": "Table"
+    },
+    "columns": {
+      "title": "Title",
+      "year": "Year",
+      "status": "Status",
+      "quality": "Quality",
+      "size": "Size",
+      "digital": "Release"
+    }
+  },
+  "addMovie": {
+    "title": "Add movie",
+    "description": "Search TMDb by title, by TMDb id (tmdb:603) or by IMDb id (tt0133093).",
+    "search": "Movie",
+    "searchHint": "e.g. Big Buck Bunny 2008",
+    "searchButton": "Search",
+    "noResults": "TMDb found nothing for this.",
+    "choose": "Choose",
+    "inLibrary": "In the library →",
+    "optionsDescription": "Where it goes and how Locarr looks for it.",
+    "rootFolder": "Root folder",
+    "profile": "Quality profile",
+    "availability": "Minimum availability",
+    "tags": "Tags",
+    "tagsHint": "Comma-separated; they select release profiles, delay profiles and download clients.",
+    "monitored": "Monitored",
+    "monitoredHint": "Locarr searches for it and upgrades it automatically.",
+    "searchOnAdd": "Search now",
+    "searchOnAddHint": "Start an automatic search right after adding.",
+    "add": "Add movie",
+    "noRoot": "Add a root folder for movies first:"
+  },
+  "movie": {
+    "tabs": {
+      "label": "Movie sections",
+      "overview": "Overview",
+      "search": "Releases",
+      "history": "History"
+    },
+    "actions": {
+      "search": "Search now",
+      "monitor": "Monitor",
+      "unmonitor": "Stop monitoring",
+      "refresh": "Refresh metadata",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "searchQueued": "Search started; the result appears in History.",
+    "noOverview": "No overview.",
+    "details": "Details",
+    "inCinemas": "In cinemas",
+    "digital": "Digital release",
+    "physical": "Physical release",
+    "availableFrom": "searching from {{date}}",
+    "ids": "Ids",
+    "path": "Folder",
+    "pathLocked": "The folder can change only while there is no file.",
+    "collection": "Collection",
+    "file": "File",
+    "noFile": "No file yet.",
+    "fileName": "File name",
+    "formats": "Custom formats",
+    "group": "Release group",
+    "video": "Video",
+    "audio": "Audio",
+    "languages": "Languages",
+    "added": "Imported",
+    "mediaInfoSource": "Stream details come from the release and file name.",
+    "delete": {
+      "question": "Remove “{{title}}” from the library?",
+      "files": "Move the folder to the recycle bin",
+      "filesHint": "Files are kept in the recycle bin for the retention period and can be restored.",
+      "exclude": "Don't add again from import lists",
+      "excludeHint": "Lists skip this movie until you allow it again.",
+      "confirm": "Remove"
+    }
+  },
+  "collection": {
+    "inLibrary": "in the library",
+    "missing": "missing",
+    "addMissing": "Add the missing movies ({{count}})",
+    "addButton": "Add {{count}} movies"
+  },
+  "explain": {
+    "title": "Why isn't it here?",
+    "unknownTime": "an unknown time",
+    "codes": {
+      "available": "It's in the library and meets the quality profile's cutoff.",
+      "downloading": "Downloading {{title}}: {{progress}}% ({{state}}).",
+      "importing": "{{title}} finished downloading and is waiting to be imported.",
+      "import_failed": "{{title}} finished downloading, but the import failed: {{detail}}",
+      "not_monitored": "Not monitored, so Locarr does not search for it. Monitor it to start.",
+      "not_available_yet": "Not available yet (minimum availability). Searching starts {{from}}.",
+      "no_indexers": "No enabled indexer is used for automatic movie searches. Check Indexers.",
+      "no_download_client": "No download client is enabled. Add one under Downloaders.",
+      "waiting_delay": "Found {{title}}, held back by a delay profile until {{retry}}.",
+      "download_failed": "The last download failed: {{detail}}",
+      "not_searched_yet": "Not searched yet. The next automatic search is at {{next}}.",
+      "all_rejected": "Searched {{searches}} times; the last search found {{candidates}} releases and rejected all of them. Most common reason: {{reason}}",
+      "nothing_found": "Searched {{searches}} times and no indexer had a release. Next search: {{next}}.",
+      "upgrade_wanted": "In the library, below the quality profile's cutoff; Locarr keeps looking for an upgrade."
+    }
+  },
+  "rejectionCodes": {
+    "parse_failed": "name not readable",
+    "wrong_kind": "wrong kind",
+    "wrong_ids": "other title's ids",
+    "wrong_title": "other title",
+    "wrong_year": "other year",
+    "wrong_season": "wrong season",
+    "wrong_episode": "wrong episode",
+    "quality_not_allowed": "quality not allowed",
+    "upgrades_disabled": "upgrades off",
+    "cutoff_met": "cutoff already met",
+    "not_an_upgrade": "not an upgrade",
+    "custom_format_score_too_low": "score too low",
+    "size_too_small": "too small",
+    "size_too_large": "too large",
+    "language_not_wanted": "language not wanted",
+    "must_contain_missing": "required term missing",
+    "must_not_contain_found": "forbidden term",
+    "blocklisted": "blocklisted",
+    "not_enough_seeders": "not enough seeders",
+    "too_old": "too old",
+    "too_new": "too new",
+    "sample": "sample",
+    "hardcoded_subs": "burned-in subtitles",
+    "three_d": "3D",
+    "indexer_disabled": "indexer off",
+    "indexer_limited": "indexer at its limit",
+    "protocol_disabled": "protocol off",
+    "delayed": "delayed"
+  },
+  "timeline": {
+    "title": "Timeline",
+    "empty": "Nothing has happened yet.",
+    "details": "Show the rejected releases",
+    "sources": {
+      "automatic": "Automatic",
+      "interactive": "Interactive",
+      "rss": "RSS",
+      "test": "Test"
+    },
+    "reasons": {
+      "added": "after adding",
+      "scheduled": "scheduled",
+      "manual": "manual",
+      "retry": "retry",
+      "rss": "RSS",
+      "pending": "held-back",
+      "interactive": "interactive"
+    },
+    "indexerStatus": {
+      "ok": "ok",
+      "error": "error",
+      "skipped": "skipped",
+      "rate_limited": "rate limited",
+      "backoff": "waiting after errors",
+      "unsupported": "cannot search this"
+    },
+    "events": {
+      "added": "Added to {{path}}.",
+      "edited": "Settings changed.",
+      "refreshed": "Metadata changed.",
+      "search": "{{source}} search: {{count}} releases ({{indexers}}).",
+      "decision": "Decision ({{reason}}): {{candidates}} releases, {{accepted}} accepted, {{pending}} held back, {{rejected}} rejected.",
+      "best": "Best: {{title}}.",
+      "pending": "Holding {{title}} (delay or another temporary reason).",
+      "grabFailed": "Could not grab {{title}}: {{error}}",
+      "retry": "{{title}} failed ({{message}}) and was blocklisted; looking for the next best release.",
+      "imported": "Imported as {{quality}} ({{mode}}): {{path}}",
+      "found": "Found the existing file ({{quality}}): {{path}}",
+      "importFailed": "Import failed: {{message}}",
+      "renamed": "Renamed {{from}} → {{to}}",
+      "upgraded": "Upgraded from {{from}} to {{to}}.",
+      "recycled": "Moved to the recycle bin: {{path}}",
+      "restored": "Restored from the recycle bin: {{path}}",
+      "deleted": "{{message}}",
+      "notified": "Told {{server}} about it.",
+      "notifyFailed": "Could not tell {{server}}.",
+      "grabbed": "Sent {{title}} from {{indexer}} to {{client}}.",
+      "progress": "Download: {{message}}",
+      "state": "Download {{from}} → {{to}}.",
+      "completed": "{{title}} finished downloading.",
+      "failed": "Download {{title}} failed: {{message}}",
+      "removed": "Download removed: {{message}}",
+      "downloadImported": "Download marked imported: {{message}}",
+      "blocklisted": "{{title}} was blocklisted."
+    }
+  },
+  "interactive": {
+    "start": "Search indexers",
+    "again": "Search again",
+    "hint": "Asks every indexer and shows the decision on each release; nothing is grabbed until you choose.",
+    "searching": "Asking the indexers…",
+    "summary": "{{accepted}} accepted, {{pending}} held back, {{rejected}} rejected (profile {{profile}}).",
+    "filter": "Show",
+    "show": {
+      "all": "All",
+      "accepted": "Acceptable",
+      "rejected": "Rejected"
+    },
+    "none": "No releases.",
+    "status": {
+      "accepted": "Accepted",
+      "pending": "Held back",
+      "rejected": "Rejected"
+    },
+    "columns": {
+      "decision": "Decision",
+      "release": "Release and reasons",
+      "quality": "Quality",
+      "size": "Size",
+      "peers": "Seeders",
+      "age": "Age",
+      "score": "Score"
+    },
+    "grab": "Grab",
+    "grabAnyway": "Grab anyway",
+    "sent": "Sent"
+  },
+  "wanted": {
+    "description": "Monitored movies that are missing or below their profile's cutoff.",
+    "tabs": {
+      "missing": "Missing",
+      "cutoff_unmet": "Cutoff unmet"
+    },
+    "empty": "Nothing is wanted here.",
+    "searchSelected": "Search selected ({{count}})",
+    "searchPage": "Search all on this page",
+    "queued": "{{count}} searches started.",
+    "selectAll": "Select all",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}} of {{pages}}"
+  },
+  "calendar": {
+    "description": "Cinema, digital and physical release dates of the movies in the library.",
+    "previous": "Previous",
+    "next": "Next",
+    "today": "Today",
+    "view": "View",
+    "views": {
+      "month": "Month",
+      "week": "Week",
+      "agenda": "Agenda"
+    },
+    "kinds": {
+      "in_cinemas": "In cinemas",
+      "digital": "Digital",
+      "physical": "Physical"
+    },
+    "empty": "No dates in this period.",
+    "feed": {
+      "title": "Calendar feed (iCal)",
+      "description": "Subscribe in your calendar app. The link is personal; anyone with it sees the dates.",
+      "once": "Copy the link now; it is shown only once.",
+      "url": "Feed link",
+      "active": "Your feed link is active.",
+      "none": "You have no feed link yet.",
+      "create": "Create link",
+      "replace": "Create a new link (the old one stops)",
+      "stop": "Stop the link",
+      "stopConfirm": "Stop it"
+    }
+  },
+  "import": {
+    "title": "Import existing movies",
+    "description": "Bring movies that are already on disk into the library, or import files from any folder.",
+    "existing": {
+      "title": "Existing library",
+      "description": "Folders in a root folder that are not in the library yet, matched with TMDb. Files stay where they are.",
+      "scan": "Scan",
+      "scanning": "Scanning and matching…",
+      "none": "Every folder is already in the library.",
+      "folder": "Folder",
+      "file": "Video",
+      "match": "Movie",
+      "noVideo": "no video file",
+      "skip": "Skip",
+      "add": "Add {{count}} movies",
+      "result": "{{ok}} added, {{failed}} failed."
+    },
+    "manual": {
+      "title": "Manual import",
+      "description": "Preview the video files of a folder and import them into movies (samples and extras are left out).",
+      "path": "Folder or file",
+      "preview": "Preview",
+      "none": "No video files there.",
+      "movie": "Movie",
+      "import": "Import",
+      "sidecars": "{{count}} subtitles",
+      "done": "imported to {{path}} ({{mode}})"
+    },
+    "skip": {
+      "sample": "Sample",
+      "extra": "Extra",
+      "smaller_than_main": "Smaller than the main file",
+      "disc_structure": "Disc structure",
+      "not_media": "Not a video"
+    }
+  },
+  "media": {
+    "transferMode": "Transfer mode",
+    "transferHints": {
+      "hardlink": "A hardlink takes no extra space and keeps seeding working; across filesystems Locarr copies instead.",
+      "copy": "Always copies; the download stays for seeding.",
+      "move": "Moves the file out of the download folder (after the copy is verified)."
+    },
+    "moveWarning": "Moving takes files away from the download client, so torrents stop seeding.",
+    "naming": {
+      "title": "Naming",
+      "description": "How movie folders and files are named on import and rename.",
+      "rename": "Rename movie files",
+      "renameHint": "Off: imported files keep their release names.",
+      "folder": "Folder format",
+      "file": "File format",
+      "colon": "Colons",
+      "colons": {
+        "dash": "“Title: Sub” → “Title - Sub”",
+        "space_dash": "Always “ - ”",
+        "delete": "Remove them"
+      },
+      "preview": "Example",
+      "tokens": "Tokens",
+      "tokensHint": "Write {Token}. Characters inside the braces around the name, like {[Edition]} or {-ReleaseGroup}, appear only when the token has a value."
+    },
+    "importing": {
+      "title": "Importing",
+      "description": "How finished downloads become library files.",
+      "extensions": "Extra files to carry along",
+      "extensionsHint": "Extensions of subtitles and other files that travel with the video.",
+      "delay": "Availability delay (days)",
+      "delayHint": "Searching starts this many days after the minimum availability (negative = earlier).",
+      "searchOnAdd": "“Search now” is ticked when adding a movie"
+    },
+    "permissions": {
+      "set": "Set permissions",
+      "hint": "chmod imported files and folders (Linux).",
+      "file": "File mode",
+      "folder": "Folder mode"
+    }
+  },
+  "recycle": {
+    "title": "Recycle bin",
+    "description": "Replaced and deleted files go here instead of being deleted.",
+    "folder": "Folder",
+    "folderHint": "Inside the data folders; empty = recycle-bin in the first data folder.",
+    "retention": "Keep for (days)",
+    "retentionHint": "Older entries are deleted by the daily cleanup; 0 = keep until emptied by hand.",
+    "contents": "In the recycle bin",
+    "where": "Folder: {{folder}}",
+    "nothing": "The recycle bin is empty.",
+    "restore": "Restore",
+    "deleteNow": "Delete now",
+    "deleteConfirm": "Delete permanently",
+    "empty": "Empty",
+    "emptyConfirm": "Delete {{count}} permanently"
+  },
+  "metadata": {
+    "title": "Metadata (TMDb)",
+    "description": "Titles, dates and posters come from TMDb. Locarr needs your own TMDb API key.",
+    "key": "TMDb API key or read access token",
+    "keyHint": "Checked with TMDb before it is saved; it is stored encrypted and never shown again.",
+    "keySet": "A key is set (type to replace it)",
+    "keyMissing": "Paste your key",
+    "configured": "Key set",
+    "notConfigured": "No key",
+    "language": "Language",
+    "region": "Region",
+    "regionHint": "Two letters (US, HR, DE…): release dates and age ratings of that country.",
+    "save": "Save",
+    "removeKey": "Remove the key",
+    "removeKeyConfirm": "Remove",
+    "attribution": "This product uses the TMDb API but is not endorsed or certified by TMDb."
+  },
+  "lists": {
+    "title": "Import lists",
+    "description": "Lists whose movies are added automatically (every 6 hours, or now with Sync).",
+    "add": "Add list",
+    "none": "No import lists.",
+    "disabled": "Off",
+    "lastSync": "last sync {{when}}, {{count}} added",
+    "neverSynced": "never synced",
+    "sync": "Sync",
+    "edit": "Edit",
+    "deleteConfirm": "Delete the list",
+    "synced": "{{found}} on the list, {{added}} added, {{excluded}} excluded.",
+    "name": "Name",
+    "kind": "Source",
+    "kinds": {
+      "tmdb_list": "TMDb list",
+      "tmdb_collection": "TMDb collection"
+    },
+    "listId": "Id",
+    "idHints": {
+      "tmdb_list": "The number in themoviedb.org/list/<id>.",
+      "tmdb_collection": "The number in themoviedb.org/collection/<id>."
+    },
+    "enabled": "Enabled",
+    "exclusions": "Excluded movies",
+    "exclusionsHint": "Movies deleted with “don't add again”; lists skip them.",
+    "noExclusions": "None.",
+    "allowAgain": "Allow again"
   }
 }

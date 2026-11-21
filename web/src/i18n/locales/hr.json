@@ -74,7 +74,21 @@
     "indexer_unreachable": "Indexer nije dostupan.",
     "indexer_blocked": "Ova adresa je blokirana iz sigurnosnih razloga.",
     "indexer_unknown": "Indexer je prijavio grešku.",
-    "default_profile": "Zadani profil kašnjenja ne može se ukloniti."
+    "default_profile": "Zadani profil kašnjenja ne može se ukloniti.",
+    "path_taken": "Tu mapu već koristi druga stavka u biblioteci.",
+    "has_file": "Film ima datoteku pa mu se mapa ne može promijeniti. Najprije premjesti ili obriši datoteku.",
+    "metadata_key_missing": "TMDb API ključ nije postavljen. Dodaj ga u Postavke → Metapodaci.",
+    "metadata_key_invalid": "TMDb je odbio API ključ. Provjeri ga i pokušaj ponovno.",
+    "metadata_unavailable": "TMDb trenutno nije dostupan. Pokušaj kasnije.",
+    "restore_conflict": "Na izvornom mjestu sada je nešto drugo; najprije to premjesti.",
+    "invalid_template": "Predložak imena nije ispravan.",
+    "destination_exists": "Datoteka s tim imenom već je u biblioteci.",
+    "transfer_verify_failed": "Kopirana datoteka ne odgovara izvoru; ništa nije uklonjeno.",
+    "not_an_upgrade": "Nije uvezeno: nije bolje od datoteke u biblioteci.",
+    "no_video_file": "Nije pronađena nijedna video datoteka.",
+    "disc_structure": "Strukture diska (BDMV, VIDEO_TS, slike diska) ne uvoze se automatski.",
+    "no_matching_movie": "Nijedan film u biblioteci ne odgovara ovoj datoteci; odaberi ga.",
+    "already_imported": "Ovo je već datoteka tog filma."
   },
   "errorPage": {
     "title": "Ova stranica se ne može prikazati",
@@ -277,7 +291,10 @@
       "quality": "Veličine",
       "customFormats": "Custom formati",
       "rules": "Pravila izdanja",
-      "tester": "Provjera izdanja"
+      "tester": "Provjera izdanja",
+      "mediaManagement": "Upravljanje medijima",
+      "metadata": "Metapodaci",
+      "importLists": "Popisi za uvoz"
     },
     "general": {
       "title": "Općenito",
@@ -1152,5 +1169,462 @@
     "mr": "marathi",
     "tl": "tagalog",
     "ur": "urdski"
+  },
+  "availability": {
+    "announced": "Najavljeno",
+    "in_cinemas": "U kinima",
+    "released": "Izdano"
+  },
+  "transfer": {
+    "hardlink": "Hardlink (kopija kad nije moguće)",
+    "copy": "Kopija",
+    "move": "Premještanje",
+    "existing": "već na mjestu"
+  },
+  "movies": {
+    "add": "Dodaj film",
+    "importExisting": "Uvezi postojeće",
+    "empty": "Nijedan film ne odgovara. Dodaj ga gumbom „Dodaj film”.",
+    "monitored": "Prati se",
+    "unmonitored": "Ne prati se",
+    "runtime": "{{minutes}} min",
+    "status": {
+      "missing": "Nedostaje",
+      "downloaded": "Preuzeto",
+      "downloading": "Preuzima se",
+      "cutoff_unmet": "Ispod granice",
+      "unavailable": "Nije dostupno",
+      "unmonitored": "Ne prati se"
+    },
+    "filter": {
+      "search": "Pretraga",
+      "searchHint": "Naslov, IMDb ili TMDb ID",
+      "status": "Stanje",
+      "monitored": "Praćenje",
+      "profile": "Profil kvalitete",
+      "tag": "Oznaka",
+      "sort": "Poredaj po",
+      "direction": "Promijeni smjer poretka",
+      "all": "Sve"
+    },
+    "sort": {
+      "title": "Naslov",
+      "year": "Godina",
+      "added": "Dodano",
+      "rating": "Ocjena",
+      "popularity": "Popularnost",
+      "size": "Veličina",
+      "inCinemas": "U kinima",
+      "digital": "Digitalno izdanje",
+      "physical": "Fizičko izdanje"
+    },
+    "view": {
+      "label": "Prikaz",
+      "grid": "Plakati",
+      "table": "Tablica"
+    },
+    "columns": {
+      "title": "Naslov",
+      "year": "Godina",
+      "status": "Stanje",
+      "quality": "Kvaliteta",
+      "size": "Veličina",
+      "digital": "Izdanje"
+    }
+  },
+  "addMovie": {
+    "title": "Dodaj film",
+    "description": "Traži na TMDb-u po naslovu, TMDb ID-u (tmdb:603) ili IMDb ID-u (tt0133093).",
+    "search": "Film",
+    "searchHint": "npr. Big Buck Bunny 2008",
+    "searchButton": "Traži",
+    "noResults": "TMDb nije ništa pronašao.",
+    "choose": "Odaberi",
+    "inLibrary": "U biblioteci →",
+    "optionsDescription": "Kamo ide i kako ga Locarr traži.",
+    "rootFolder": "Root mapa",
+    "profile": "Profil kvalitete",
+    "availability": "Minimalna dostupnost",
+    "tags": "Oznake",
+    "tagsHint": "Odvojene zarezom; biraju profile izdanja, profile kašnjenja i download klijente.",
+    "monitored": "Prati",
+    "monitoredHint": "Locarr ga sam traži i nadograđuje.",
+    "searchOnAdd": "Traži odmah",
+    "searchOnAddHint": "Pokreni automatsku pretragu odmah nakon dodavanja.",
+    "add": "Dodaj film",
+    "noRoot": "Najprije dodaj root mapu za filmove:"
+  },
+  "movie": {
+    "tabs": {
+      "label": "Dijelovi filma",
+      "overview": "Pregled",
+      "search": "Izdanja",
+      "history": "Povijest"
+    },
+    "actions": {
+      "search": "Traži odmah",
+      "monitor": "Prati",
+      "unmonitor": "Prestani pratiti",
+      "refresh": "Osvježi metapodatke",
+      "edit": "Uredi",
+      "delete": "Obriši"
+    },
+    "searchQueued": "Pretraga je pokrenuta; rezultat se pojavljuje u Povijesti.",
+    "noOverview": "Nema opisa.",
+    "details": "Detalji",
+    "inCinemas": "U kinima",
+    "digital": "Digitalno izdanje",
+    "physical": "Fizičko izdanje",
+    "availableFrom": "traži se od {{date}}",
+    "ids": "ID-jevi",
+    "path": "Mapa",
+    "pathLocked": "Mapa se može promijeniti samo dok nema datoteke.",
+    "collection": "Kolekcija",
+    "file": "Datoteka",
+    "noFile": "Još nema datoteke.",
+    "fileName": "Ime datoteke",
+    "formats": "Custom formati",
+    "group": "Grupa izdanja",
+    "video": "Slika",
+    "audio": "Zvuk",
+    "languages": "Jezici",
+    "added": "Uvezeno",
+    "mediaInfoSource": "Podaci o zapisima čitaju se iz imena izdanja i datoteke.",
+    "delete": {
+      "question": "Ukloniti „{{title}}” iz biblioteke?",
+      "files": "Premjesti mapu u koš",
+      "filesHint": "Datoteke ostaju u košu do isteka roka i mogu se vratiti.",
+      "exclude": "Ne dodaj ponovno s popisa za uvoz",
+      "excludeHint": "Popisi preskaču ovaj film dok ga ponovno ne dopustiš.",
+      "confirm": "Ukloni"
+    }
+  },
+  "collection": {
+    "inLibrary": "u biblioteci",
+    "missing": "nedostaje",
+    "addMissing": "Dodaj filmove koji nedostaju ({{count}})",
+    "addButton": "Dodaj filmova: {{count}}"
+  },
+  "explain": {
+    "title": "Zašto nije stiglo?",
+    "unknownTime": "nepoznato vrijeme",
+    "codes": {
+      "available": "U biblioteci je i doseže granicu profila kvalitete.",
+      "downloading": "Preuzima se {{title}}: {{progress}} % ({{state}}).",
+      "importing": "{{title}} je preuzet i čeka uvoz.",
+      "import_failed": "{{title}} je preuzet, ali uvoz nije uspio: {{detail}}",
+      "not_monitored": "Ne prati se, pa ga Locarr ne traži. Uključi praćenje da počne.",
+      "not_available_yet": "Još nije dostupan (minimalna dostupnost). Traženje počinje {{from}}.",
+      "no_indexers": "Nijedan uključen indexer ne koristi se za automatsku pretragu filmova. Provjeri Indexere.",
+      "no_download_client": "Nijedan download klijent nije uključen. Dodaj ga u Download klijentima.",
+      "waiting_delay": "Pronađeno {{title}}, profil kašnjenja ga zadržava do {{retry}}.",
+      "download_failed": "Zadnje preuzimanje nije uspjelo: {{detail}}",
+      "not_searched_yet": "Još nije traženo. Sljedeća automatska pretraga je {{next}}.",
+      "all_rejected": "Traženo {{searches}} puta; zadnja pretraga našla je izdanja: {{candidates}} i sva su odbijena. Najčešći razlog: {{reason}}",
+      "nothing_found": "Traženo {{searches}} puta i nijedan indexer nije imao izdanje. Sljedeća pretraga: {{next}}.",
+      "upgrade_wanted": "U biblioteci je, ali ispod granice profila kvalitete; Locarr i dalje traži bolje izdanje."
+    }
+  },
+  "rejectionCodes": {
+    "parse_failed": "ime nečitljivo",
+    "wrong_kind": "pogrešna vrsta",
+    "wrong_ids": "ID-jevi drugog naslova",
+    "wrong_title": "drugi naslov",
+    "wrong_year": "druga godina",
+    "wrong_season": "pogrešna sezona",
+    "wrong_episode": "pogrešna epizoda",
+    "quality_not_allowed": "kvaliteta nije dopuštena",
+    "upgrades_disabled": "nadogradnje isključene",
+    "cutoff_met": "granica već dosegnuta",
+    "not_an_upgrade": "nije nadogradnja",
+    "custom_format_score_too_low": "premalo bodova",
+    "size_too_small": "premalo",
+    "size_too_large": "preveliko",
+    "language_not_wanted": "neželjen jezik",
+    "must_contain_missing": "nema obaveznog izraza",
+    "must_not_contain_found": "zabranjen izraz",
+    "blocklisted": "blokirano",
+    "not_enough_seeders": "premalo seedera",
+    "too_old": "prestaro",
+    "too_new": "prenovo",
+    "sample": "uzorak",
+    "hardcoded_subs": "utisnuti titlovi",
+    "three_d": "3D",
+    "indexer_disabled": "indexer isključen",
+    "indexer_limited": "indexer na limitu",
+    "protocol_disabled": "protokol isključen",
+    "delayed": "odgođeno"
+  },
+  "timeline": {
+    "title": "Vremenska crta",
+    "empty": "Još se ništa nije dogodilo.",
+    "details": "Prikaži odbijena izdanja",
+    "sources": {
+      "automatic": "Automatska",
+      "interactive": "Ručna",
+      "rss": "RSS",
+      "test": "Probna"
+    },
+    "reasons": {
+      "added": "nakon dodavanja",
+      "scheduled": "po rasporedu",
+      "manual": "ručno",
+      "retry": "ponovni pokušaj",
+      "rss": "RSS",
+      "pending": "zadržano",
+      "interactive": "ručna"
+    },
+    "indexerStatus": {
+      "ok": "u redu",
+      "error": "greška",
+      "skipped": "preskočen",
+      "rate_limited": "ograničen",
+      "backoff": "čeka nakon grešaka",
+      "unsupported": "ne može tražiti ovo"
+    },
+    "events": {
+      "added": "Dodano u {{path}}.",
+      "edited": "Postavke su promijenjene.",
+      "refreshed": "Metapodaci su promijenjeni.",
+      "search": "{{source}} pretraga: izdanja {{count}} ({{indexers}}).",
+      "decision": "Odluka ({{reason}}): izdanja {{candidates}}, prihvaćeno {{accepted}}, zadržano {{pending}}, odbijeno {{rejected}}.",
+      "best": "Najbolje: {{title}}.",
+      "pending": "Zadržavam {{title}} (kašnjenje ili drugi privremeni razlog).",
+      "grabFailed": "Nije moguće preuzeti {{title}}: {{error}}",
+      "retry": "{{title}} nije uspjelo ({{message}}) i blokirano je; tražim sljedeće najbolje izdanje.",
+      "imported": "Uvezeno kao {{quality}} ({{mode}}): {{path}}",
+      "found": "Pronađena postojeća datoteka ({{quality}}): {{path}}",
+      "importFailed": "Uvoz nije uspio: {{message}}",
+      "renamed": "Preimenovano {{from}} → {{to}}",
+      "upgraded": "Nadograđeno s {{from}} na {{to}}.",
+      "recycled": "Premješteno u koš: {{path}}",
+      "restored": "Vraćeno iz koša: {{path}}",
+      "deleted": "{{message}}",
+      "notified": "Obaviješten je {{server}}.",
+      "notifyFailed": "Nije moguće obavijestiti {{server}}.",
+      "grabbed": "{{title}} s {{indexer}} poslano klijentu {{client}}.",
+      "progress": "Preuzimanje: {{message}}",
+      "state": "Preuzimanje {{from}} → {{to}}.",
+      "completed": "{{title}} je preuzet.",
+      "failed": "Preuzimanje {{title}} nije uspjelo: {{message}}",
+      "removed": "Preuzimanje uklonjeno: {{message}}",
+      "downloadImported": "Preuzimanje označeno kao uvezeno: {{message}}",
+      "blocklisted": "{{title}} je blokirano."
+    }
+  },
+  "interactive": {
+    "start": "Pretraži indexere",
+    "again": "Traži ponovno",
+    "hint": "Pita sve indexere i prikazuje odluku za svako izdanje; ništa se ne preuzima dok ne odabereš.",
+    "searching": "Pitam indexere…",
+    "summary": "Prihvaćeno {{accepted}}, zadržano {{pending}}, odbijeno {{rejected}} (profil {{profile}}).",
+    "filter": "Prikaži",
+    "show": {
+      "all": "Sve",
+      "accepted": "Prihvatljiva",
+      "rejected": "Odbijena"
+    },
+    "none": "Nema izdanja.",
+    "status": {
+      "accepted": "Prihvaćeno",
+      "pending": "Zadržano",
+      "rejected": "Odbijeno"
+    },
+    "columns": {
+      "decision": "Odluka",
+      "release": "Izdanje i razlozi",
+      "quality": "Kvaliteta",
+      "size": "Veličina",
+      "peers": "Seederi",
+      "age": "Starost",
+      "score": "Bodovi"
+    },
+    "grab": "Preuzmi",
+    "grabAnyway": "Ipak preuzmi",
+    "sent": "Poslano"
+  },
+  "wanted": {
+    "description": "Praćeni filmovi koji nedostaju ili su ispod granice svog profila.",
+    "tabs": {
+      "missing": "Nedostaje",
+      "cutoff_unmet": "Ispod granice"
+    },
+    "empty": "Ovdje ništa ne nedostaje.",
+    "searchSelected": "Traži odabrane ({{count}})",
+    "searchPage": "Traži sve na stranici",
+    "queued": "Pokrenuto pretraga: {{count}}.",
+    "selectAll": "Odaberi sve",
+    "previous": "Prethodna",
+    "next": "Sljedeća",
+    "page": "Stranica {{page}} od {{pages}}"
+  },
+  "calendar": {
+    "description": "Datumi kino, digitalnih i fizičkih izdanja filmova iz biblioteke.",
+    "previous": "Prethodno",
+    "next": "Sljedeće",
+    "today": "Danas",
+    "view": "Prikaz",
+    "views": {
+      "month": "Mjesec",
+      "week": "Tjedan",
+      "agenda": "Popis"
+    },
+    "kinds": {
+      "in_cinemas": "U kinima",
+      "digital": "Digitalno",
+      "physical": "Fizičko"
+    },
+    "empty": "Nema datuma u ovom razdoblju.",
+    "feed": {
+      "title": "Kalendar za pretplatu (iCal)",
+      "description": "Pretplati se u aplikaciji za kalendar. Poveznica je osobna; tko je ima, vidi datume.",
+      "once": "Kopiraj poveznicu sada; prikazuje se samo jednom.",
+      "url": "Poveznica",
+      "active": "Tvoja poveznica je aktivna.",
+      "none": "Još nemaš poveznicu.",
+      "create": "Napravi poveznicu",
+      "replace": "Napravi novu poveznicu (stara prestaje raditi)",
+      "stop": "Ugasi poveznicu",
+      "stopConfirm": "Ugasi"
+    }
+  },
+  "import": {
+    "title": "Uvoz postojećih filmova",
+    "description": "Dodaj u biblioteku filmove koji su već na disku ili uvezi datoteke iz bilo koje mape.",
+    "existing": {
+      "title": "Postojeća biblioteka",
+      "description": "Mape u root mapi koje još nisu u biblioteci, uparene s TMDb-om. Datoteke ostaju gdje jesu.",
+      "scan": "Pregledaj",
+      "scanning": "Pregledavam i uparujem…",
+      "none": "Sve mape su već u biblioteci.",
+      "folder": "Mapa",
+      "file": "Video",
+      "match": "Film",
+      "noVideo": "nema video datoteke",
+      "skip": "Preskoči",
+      "add": "Dodaj filmova: {{count}}",
+      "result": "Dodano {{ok}}, neuspješno {{failed}}."
+    },
+    "manual": {
+      "title": "Ručni uvoz",
+      "description": "Pregledaj video datoteke u mapi i uvezi ih u filmove (uzorci i dodaci se preskaču).",
+      "path": "Mapa ili datoteka",
+      "preview": "Pregled",
+      "none": "Tamo nema video datoteka.",
+      "movie": "Film",
+      "import": "Uvezi",
+      "sidecars": "titlova: {{count}}",
+      "done": "uvezeno u {{path}} ({{mode}})"
+    },
+    "skip": {
+      "sample": "Uzorak",
+      "extra": "Dodatak",
+      "smaller_than_main": "Manje od glavne datoteke",
+      "disc_structure": "Struktura diska",
+      "not_media": "Nije video"
+    }
+  },
+  "media": {
+    "transferMode": "Način prijenosa",
+    "transferHints": {
+      "hardlink": "Hardlink ne zauzima dodatni prostor i seedanje nastavlja raditi; između različitih datotečnih sustava Locarr kopira.",
+      "copy": "Uvijek kopira; preuzimanje ostaje za seedanje.",
+      "move": "Premješta datoteku iz mape preuzimanja (nakon provjerene kopije)."
+    },
+    "moveWarning": "Premještanje uzima datoteke download klijentu, pa torrenti prestaju seedati.",
+    "naming": {
+      "title": "Imenovanje",
+      "description": "Kako se imenuju mape i datoteke filmova pri uvozu i preimenovanju.",
+      "rename": "Preimenuj datoteke filmova",
+      "renameHint": "Isključeno: uvezene datoteke zadržavaju imena izdanja.",
+      "folder": "Oblik imena mape",
+      "file": "Oblik imena datoteke",
+      "colon": "Dvotočke",
+      "colons": {
+        "dash": "„Naslov: Pod” → „Naslov - Pod”",
+        "space_dash": "Uvijek „ - ”",
+        "delete": "Ukloni ih"
+      },
+      "preview": "Primjer",
+      "tokens": "Oznake",
+      "tokensHint": "Piši {Oznaka}. Znakovi unutar vitičastih zagrada oko imena, kao {[Edition]} ili {-ReleaseGroup}, pojavljuju se samo kad oznaka ima vrijednost."
+    },
+    "importing": {
+      "title": "Uvoz",
+      "description": "Kako završena preuzimanja postaju datoteke u biblioteci.",
+      "extensions": "Dodatne datoteke koje idu uz video",
+      "extensionsHint": "Ekstenzije titlova i drugih datoteka koje putuju s videom.",
+      "delay": "Odgoda dostupnosti (dani)",
+      "delayHint": "Traženje počinje toliko dana nakon minimalne dostupnosti (negativno = ranije).",
+      "searchOnAdd": "„Traži odmah” je uključeno pri dodavanju filma"
+    },
+    "permissions": {
+      "set": "Postavi prava",
+      "hint": "chmod za uvezene datoteke i mape (Linux).",
+      "file": "Prava datoteka",
+      "folder": "Prava mapa"
+    }
+  },
+  "recycle": {
+    "title": "Koš za smeće",
+    "description": "Zamijenjene i obrisane datoteke idu ovamo umjesto da se obrišu.",
+    "folder": "Mapa",
+    "folderHint": "Unutar mapa s podacima; prazno = recycle-bin u prvoj mapi s podacima.",
+    "retention": "Čuvaj (dana)",
+    "retentionHint": "Starije stavke briše dnevno čišćenje; 0 = čuvaj dok se koš ne isprazni ručno.",
+    "contents": "U košu",
+    "where": "Mapa: {{folder}}",
+    "nothing": "Koš je prazan.",
+    "restore": "Vrati",
+    "deleteNow": "Obriši sada",
+    "deleteConfirm": "Obriši trajno",
+    "empty": "Isprazni",
+    "emptyConfirm": "Trajno obriši stavki: {{count}}"
+  },
+  "metadata": {
+    "title": "Metapodaci (TMDb)",
+    "description": "Naslovi, datumi i plakati dolaze s TMDb-a. Locarr treba tvoj vlastiti TMDb API ključ.",
+    "key": "TMDb API ključ ili read access token",
+    "keyHint": "Provjerava se kod TMDb-a prije spremanja; sprema se šifrirano i više se ne prikazuje.",
+    "keySet": "Ključ je postavljen (upiši novi za zamjenu)",
+    "keyMissing": "Zalijepi svoj ključ",
+    "configured": "Ključ postavljen",
+    "notConfigured": "Nema ključa",
+    "language": "Jezik",
+    "region": "Regija",
+    "regionHint": "Dva slova (US, HR, DE…): datumi izdanja i dobne oznake te zemlje.",
+    "save": "Spremi",
+    "removeKey": "Ukloni ključ",
+    "removeKeyConfirm": "Ukloni",
+    "attribution": "Ovaj proizvod koristi TMDb API, ali ga TMDb ne podržava niti certificira."
+  },
+  "lists": {
+    "title": "Popisi za uvoz",
+    "description": "Popisi čiji se filmovi dodaju automatski (svakih 6 sati ili odmah gumbom Sinkroniziraj).",
+    "add": "Dodaj popis",
+    "none": "Nema popisa za uvoz.",
+    "disabled": "Isključen",
+    "lastSync": "zadnja sinkronizacija {{when}}, dodano {{count}}",
+    "neverSynced": "nikad sinkroniziran",
+    "sync": "Sinkroniziraj",
+    "edit": "Uredi",
+    "deleteConfirm": "Obriši popis",
+    "synced": "Na popisu {{found}}, dodano {{added}}, isključeno {{excluded}}.",
+    "name": "Ime",
+    "kind": "Izvor",
+    "kinds": {
+      "tmdb_list": "TMDb popis",
+      "tmdb_collection": "TMDb kolekcija"
+    },
+    "listId": "ID",
+    "idHints": {
+      "tmdb_list": "Broj u themoviedb.org/list/<id>.",
+      "tmdb_collection": "Broj u themoviedb.org/collection/<id>."
+    },
+    "enabled": "Uključen",
+    "exclusions": "Isključeni filmovi",
+    "exclusionsHint": "Filmovi obrisani uz „ne dodaj ponovno”; popisi ih preskaču.",
+    "noExclusions": "Nema.",
+    "allowAgain": "Ponovno dopusti"
   }
 }

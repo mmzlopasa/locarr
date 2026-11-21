@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { Link } from "@tanstack/react-router";
 import { ArrowDownToLine, ArrowUpToLine, Pause, Play, RefreshCw } from "lucide-react";
 import { api, queryKeys, unwrap, type DownloadState, type QueueClient, type QueueItem } from "@/api/client";
 import { formatBytes, formatDuration } from "@/components/format";
@@ -199,6 +200,12 @@ export function QueuePage() {
                   <tr key={it.unknown ? `u-${it.clientId}-${it.clientItemId}` : it.id} className="align-top"
                     data-testid={it.unknown ? "queue-unknown" : `queue-row-${it.id}`}>
                     <td className="max-w-80 py-2 pr-3">
+                      {it.item?.kind === "movie" ? (
+                        <Link to="/movies/$id" params={{ id: String(it.item.id) }} className="text-[13px] font-medium text-accent hover:underline"
+                          data-testid="queue-item-link">
+                          {it.item.title}{it.item.year ? ` (${it.item.year})` : ""}
+                        </Link>
+                      ) : null}
                       <p className="break-all text-fg">{it.title}</p>
                       <p className="text-[11px] text-faint">
                         {[it.indexer, it.category].filter(Boolean).join(" · ")}

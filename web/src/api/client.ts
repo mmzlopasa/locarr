@@ -70,6 +70,32 @@ export type ParseResult = Schemas["ParseResult"];
 export type ParsedRelease = Schemas["ParsedRelease"];
 export type Decision = Schemas["Decision"];
 export type Rejection = Schemas["Rejection"];
+export type Movie = Schemas["Movie"];
+export type MovieStatus = Schemas["MovieStatus"];
+export type MovieList = Schemas["MovieList"];
+export type MovieLookup = Schemas["MovieLookup"];
+export type MovieFile = Schemas["MovieFile"];
+export type MinimumAvailability = Schemas["MinimumAvailability"];
+export type AddOptions = Schemas["AddOptions"];
+export type InteractiveSearch = Schemas["InteractiveSearch"];
+export type InteractiveDecision = Schemas["InteractiveDecision"];
+export type MovieCollection = Schemas["MovieCollection"];
+export type ExistingFolder = Schemas["ExistingFolder"];
+export type ManualImportCandidate = Schemas["ManualImportCandidate"];
+export type ImportList = Schemas["ImportList"];
+export type ImportListInput = Schemas["ImportListInput"];
+export type Timeline = Schemas["Timeline"];
+export type TimelineEvent = Schemas["TimelineEvent"];
+export type Explanation = Schemas["Explanation"];
+export type ReasonCount = Schemas["ReasonCount"];
+export type CalendarEntry = Schemas["CalendarEntry"];
+export type RecycleBin = Schemas["RecycleBin"];
+export type RecycleEntry = Schemas["RecycleEntry"];
+export type MediaManagementSettings = Schemas["MediaManagementSettings"];
+export type NamingPreview = Schemas["NamingPreview"];
+export type MetadataSettings = Schemas["MetadataSettings"];
+export type TransferMode = Schemas["TransferMode"];
+export type RenameItem = Schemas["RenameItem"];
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -164,4 +190,19 @@ export const queryKeys = {
   indexers: ["indexers"] as const,
   indexerSources: ["indexers", "sources"] as const,
   indexerSettings: ["indexers", "settings"] as const,
+  movies: ["movies"] as const,
+  movie: (id: number) => ["movies", id] as const,
+  timeline: (ref: string) => ["timeline", ref] as const,
+  calendar: (start: string, end: string) => ["calendar", start, end] as const,
+  calendarToken: ["calendar", "token"] as const,
+  recycleBin: ["recyclebin"] as const,
+  mediaManagement: ["settings", "mediamanagement"] as const,
+  metadataSettings: ["settings", "metadata"] as const,
+  importLists: ["importlists"] as const,
+  exclusions: ["exclusions"] as const,
 };
+
+/** URL of a cached TMDb image ("" when there is none). */
+export function imageUrl(file: string | undefined, size: "w185" | "w342" | "w500" | "w780" | "w1280" = "w342"): string {
+  return file ? `/api/v1/images/tmdb/${size}/${encodeURIComponent(file)}` : "";
+}

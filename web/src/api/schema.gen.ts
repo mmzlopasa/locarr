@@ -1455,6 +1455,579 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/movies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The movie library, one page at a time
+         * @description Filters combine. `status`: missing (monitored, available, no file), downloaded,
+         *     downloading, cutoff_unmet, unavailable (not yet at minimum availability), unmonitored.
+         */
+        get: operations["listMovies"];
+        put?: never;
+        /** Add a movie from TMDb (library managers) */
+        post: operations["addMovie"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search TMDb by title ("Title 2008"), TMDb id ("tmdb:10378") or IMDb id ("tt1254207") */
+        get: operations["lookupMovies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue automatic searches for several movies (library managers) */
+        post: operations["searchMovies"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/rename": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rename movie files by the naming template (library managers)
+         * @description An empty list renames every movie. Files are renamed in place; nothing is deleted.
+         */
+        post: operations["renameMovies"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/rename/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Show which movie files a rename would change */
+        post: operations["previewRenameMovies"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** One movie */
+        get: operations["getMovie"];
+        put?: never;
+        post?: never;
+        /**
+         * Remove a movie (library managers)
+         * @description With `deleteFiles` the movie folder goes to the recycle bin; files are never deleted outright.
+         */
+        delete: operations["deleteMovie"];
+        options?: never;
+        head?: never;
+        /**
+         * Change how a movie is managed (library managers)
+         * @description The folder can change only while the movie has no file (`has_file`).
+         */
+        patch: operations["updateMovie"];
+        trace?: never;
+    };
+    "/movies/{id}/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reload a movie's metadata and check its file (library managers) */
+        post: operations["refreshMovie"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/{id}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Queue an automatic search for a movie now (library managers)
+         * @description The search, the decision and any grab appear on the movie's timeline.
+         */
+        post: operations["searchMovie"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/{id}/releases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** Interactive search - every release and the decision on it (library managers) */
+        get: operations["interactiveSearchMovie"];
+        put?: never;
+        /** Grab a release chosen in an interactive search (library managers) */
+        post: operations["grabMovieRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/collections/{tmdbId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tmdbId: number;
+            };
+            cookie?: never;
+        };
+        /** A TMDb collection and which of its movies are in the library */
+        get: operations["getMovieCollection"];
+        put?: never;
+        /** Add the collection's missing movies (library managers) */
+        post: operations["addMovieCollection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/import/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Folders in a root folder that are not in the library, with TMDb matches (library managers) */
+        get: operations["scanExistingMovies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/import/existing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add movies for existing folders; their files stay where they are (library managers) */
+        post: operations["importExistingMovies"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/import/manual": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Preview importing the video files of a folder (library managers) */
+        get: operations["previewManualImport"];
+        put?: never;
+        /** Import chosen files into movies (library managers) */
+        post: operations["manualImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/importlists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists that add movies automatically (administrators) */
+        get: operations["listImportLists"];
+        put?: never;
+        /** Add an import list (administrators) */
+        post: operations["createImportList"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/importlists/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Change an import list (administrators) */
+        put: operations["updateImportList"];
+        post?: never;
+        /** Remove an import list; its movies stay (administrators) */
+        delete: operations["deleteImportList"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/importlists/{id}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add the list's missing movies now (administrators) */
+        post: operations["syncImportList"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/exclusions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Movies import lists never add again */
+        get: operations["listImportExclusions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/movies/exclusions/{tmdbId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tmdbId: number;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Let import lists add a movie again (administrators) */
+        delete: operations["deleteImportExclusion"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * An item's timeline and the answer to "why isn't it here?"
+         * @description `item` is an item reference such as `movie:42`. Events are newest first: searches with
+         *     per-indexer counts, decisions with the most common rejection reasons, grabs, download
+         *     milestones, imports, renames, upgrades, recycled files and media server notifications.
+         */
+        get: operations["getTimeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/timeline/explain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Why an item is not in the library (yet) */
+        get: operations["explainItem"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Movie dates (in cinemas, digital, physical) between two days */
+        get: operations["getCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/calendar/token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Whether the signed-in user has a calendar feed link */
+        get: operations["getCalendarToken"];
+        put?: never;
+        /**
+         * Create (or replace) the signed-in user's calendar feed link
+         * @description The link is shown once; creating a new one stops the old one.
+         */
+        post: operations["createCalendarToken"];
+        /** Stop the signed-in user's calendar feed link */
+        delete: operations["deleteCalendarToken"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/calendar/feed.ics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** iCalendar feed (authenticated by the per-user token in the link) */
+        get: operations["getCalendarFeed"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/images/tmdb/{size}/{file}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A TMDb poster or backdrop, cached on the server */
+        get: operations["getTmdbImage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/recyclebin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Files in the recycle bin (library managers) */
+        get: operations["getRecycleBin"];
+        put?: never;
+        post?: never;
+        /** Delete everything in the recycle bin permanently (administrators) */
+        delete: operations["emptyRecycleBin"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/recyclebin/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete one recycle bin entry permanently (administrators) */
+        delete: operations["deleteRecycleEntry"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/recyclebin/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Put a recycled file back where it was (library managers)
+         * @description Fails with `restore_conflict` when something else is at the original place.
+         */
+        post: operations["restoreRecycleEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/mediamanagement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Naming, transfer mode, recycle bin and permissions (administrators) */
+        get: operations["getMediaManagement"];
+        /** Change naming, transfer mode, recycle bin and permissions (administrators) */
+        put: operations["updateMediaManagement"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/mediamanagement/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Render naming templates for an example movie */
+        post: operations["previewNaming"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/metadata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** TMDb key state, language and region (administrators) */
+        get: operations["getMetadataSettings"];
+        /**
+         * Change the TMDb key (validated with TMDb first), language and region (administrators)
+         * @description A key TMDb refuses is not stored (`metadata_key_invalid`).
+         */
+        put: operations["updateMetadataSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2241,6 +2814,7 @@ export interface components {
             message: string;
             /** @description Opaque JSON from whoever grabbed the release. */
             itemRef?: unknown;
+            item?: components["schemas"]["QueueItemLink"];
             /** Format: date-time */
             addedAt: string;
             /** Format: date-time */
@@ -2771,6 +3345,479 @@ export interface components {
             retentionDays?: number;
             minimumAgeMinutes?: number;
             candidates: components["schemas"]["Candidate"][];
+        };
+        /** @enum {string} */
+        MovieStatus: "missing" | "downloaded" | "downloading" | "cutoff_unmet" | "unavailable" | "unmonitored";
+        /** @enum {string} */
+        MinimumAvailability: "announced" | "in_cinemas" | "released";
+        MovieFile: {
+            /** Format: int64 */
+            id: number;
+            path: string;
+            /** Format: int64 */
+            sizeBytes: number;
+            quality: components["schemas"]["Quality"];
+            revision: number;
+            customFormats: string[];
+            score: number;
+            releaseGroup: string;
+            edition: string;
+            languages: string[];
+            mediaInfo: components["schemas"]["MediaInfo"];
+            sceneName: string;
+            /** Format: int64 */
+            downloadId?: number;
+            /** Format: date-time */
+            addedAt: string;
+        };
+        /** @description Read from the file or release name (`source` = name); see D-033. */
+        MediaInfo: {
+            source: string;
+            resolution?: number;
+            videoCodec?: string;
+            bitDepth?: number;
+            hdr?: string[];
+            audioCodec?: string;
+            audioChannels?: string;
+            atmos?: boolean;
+            languages?: string[];
+            subtitles?: string[];
+        };
+        MovieDownload: {
+            /** Format: int64 */
+            id: number;
+            title: string;
+            /** Format: double */
+            progress: number;
+            state: string;
+            status: string;
+        };
+        Movie: {
+            /** Format: int64 */
+            id: number;
+            /** @description Timeline reference, e.g. "movie:42". */
+            itemRef?: string;
+            /** Format: int64 */
+            tmdbId: number;
+            imdbId: string;
+            title: string;
+            originalTitle: string;
+            originalLanguage: string;
+            alternateTitles: string[];
+            year: number;
+            overview: string;
+            /** @description Minutes. */
+            runtime: number;
+            /** @description TMDb status: Rumored, Planned, In Production, Post Production, Released, Canceled. */
+            status: string;
+            studio: string;
+            genres: string[];
+            certification: string;
+            /** Format: double */
+            rating: number;
+            votes: number;
+            /** @description YYYY-MM-DD or empty. */
+            inCinemas: string;
+            digitalRelease: string;
+            physicalRelease: string;
+            /** Format: int64 */
+            collectionId: number;
+            collectionName: string;
+            /** @description Image file name for /images/tmdb/{size}/{file}. */
+            poster: string;
+            backdrop: string;
+            monitored: boolean;
+            /** Format: int64 */
+            qualityProfileId: number;
+            /** Format: int64 */
+            rootFolderId?: number;
+            path: string;
+            minimumAvailability: components["schemas"]["MinimumAvailability"];
+            tags: string[];
+            /** Format: int64 */
+            addedByListId?: number;
+            /** Format: date-time */
+            addedAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            refreshedAt?: string;
+            /** @description The movie reached its minimum availability. */
+            available: boolean;
+            /** Format: date-time */
+            availableFrom?: string;
+            cutoffMet: boolean;
+            libraryStatus: components["schemas"]["MovieStatus"];
+            file?: components["schemas"]["MovieFile"];
+            download?: components["schemas"]["MovieDownload"];
+        };
+        MovieList: {
+            total: number;
+            items: components["schemas"]["Movie"][];
+        };
+        MovieLookup: {
+            /** Format: int64 */
+            tmdbId: number;
+            title: string;
+            originalTitle: string;
+            year: number;
+            releaseDate: string;
+            overview: string;
+            poster: string;
+            backdrop: string;
+            /** Format: double */
+            popularity: number;
+            /** Format: double */
+            rating: number;
+            /**
+             * Format: int64
+             * @description Set when the movie is in the library.
+             */
+            movieId?: number;
+        };
+        AddOptions: {
+            /** Format: int64 */
+            rootFolderId: number;
+            /** Format: int64 */
+            qualityProfileId: number;
+            minimumAvailability?: components["schemas"]["MinimumAvailability"];
+            /** @default true */
+            monitored: boolean;
+            tags?: string[];
+            /** @default false */
+            searchOnAdd: boolean;
+        };
+        AddMovieRequest: components["schemas"]["AddOptions"] & {
+            /** Format: int64 */
+            tmdbId: number;
+            /** @description Folder inside the root folder; empty = from the naming template. */
+            path?: string;
+        };
+        MovieUpdate: {
+            monitored?: boolean;
+            /** Format: int64 */
+            qualityProfileId?: number;
+            minimumAvailability?: components["schemas"]["MinimumAvailability"];
+            tags?: string[];
+            /** Format: int64 */
+            rootFolderId?: number;
+            path?: string;
+        };
+        MovieIdsRequest: {
+            movieIds: number[];
+        };
+        QueuedCount: {
+            count: number;
+        };
+        RenameItem: {
+            /** Format: int64 */
+            movieId: number;
+            title: string;
+            from: string;
+            to: string;
+        };
+        InteractiveDecision: {
+            decision: components["schemas"]["Decision"];
+            /** @description Pass to grabMovieRelease (the link stays on the server). */
+            downloadToken?: string;
+            magnetUrl?: string;
+        };
+        InteractiveSearch: {
+            kind: components["schemas"]["MediaKind"];
+            profileName: string;
+            accepted: number;
+            pending: number;
+            rejected: number;
+            decisions: components["schemas"]["InteractiveDecision"][];
+            indexers: components["schemas"]["SearchIndexerResult"][];
+            /** Format: int64 */
+            durationMs: number;
+        };
+        ManualGrabRequest: {
+            /** Format: int64 */
+            indexerId: number;
+            downloadToken?: string;
+            magnetUrl?: string;
+            title: string;
+            protocol: components["schemas"]["DownloadProtocol"];
+            guid?: string;
+            /** Format: date-time */
+            publishDate?: string;
+        };
+        MovieCollection: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            overview: string;
+            poster: string;
+            backdrop: string;
+            members: components["schemas"]["MovieLookup"][];
+        };
+        ExistingFolder: {
+            path: string;
+            name: string;
+            title: string;
+            year: number;
+            video?: string;
+            /** Format: int64 */
+            videoSizeBytes?: number;
+            match?: components["schemas"]["MovieLookup"];
+            candidates: components["schemas"]["MovieLookup"][];
+            error?: string;
+        };
+        ImportExistingRequest: {
+            /** Format: int64 */
+            rootFolderId: number;
+            /** Format: int64 */
+            qualityProfileId: number;
+            minimumAvailability?: components["schemas"]["MinimumAvailability"];
+            /** @default true */
+            monitored: boolean;
+            /** @default false */
+            searchOnAdd: boolean;
+            tags?: string[];
+            items: {
+                path: string;
+                /** Format: int64 */
+                tmdbId: number;
+            }[];
+        };
+        ImportExistingResult: {
+            path: string;
+            movie?: components["schemas"]["Movie"];
+            error?: components["schemas"]["Error"];
+        };
+        ManualImportCandidate: {
+            path: string;
+            relativePath: string;
+            /** Format: int64 */
+            sizeBytes: number;
+            /** @description Why the file is left out: sample, extra, smaller_than_main, disc_structure, not_media. */
+            skipped?: string;
+            /** Format: int64 */
+            movieId?: number;
+            movieTitle?: string;
+            movieYear?: number;
+            quality?: components["schemas"]["Quality"];
+            releaseGroup?: string;
+            rejection?: components["schemas"]["Error"];
+            sidecars: string[];
+        };
+        ManualImportRequest: {
+            items: {
+                path: string;
+                /** Format: int64 */
+                movieId: number;
+                mode?: components["schemas"]["TransferMode"];
+                sidecars?: string[];
+            }[];
+        };
+        ManualImportResult: {
+            path: string;
+            /** Format: int64 */
+            movieId: number;
+            importedPath?: string;
+            mode?: string;
+            upgraded?: boolean;
+            recycled?: string[];
+            error?: components["schemas"]["Error"];
+        };
+        /** @enum {string} */
+        TransferMode: "hardlink" | "copy" | "move";
+        /** @enum {string} */
+        ImportListKind: "tmdb_list" | "tmdb_collection";
+        ImportListInput: {
+            name: string;
+            kind: components["schemas"]["ImportListKind"];
+            /** @description TMDb list id or collection id. */
+            listId: string;
+            /** @default true */
+            enabled: boolean;
+            /** Format: int64 */
+            rootFolderId: number;
+            /** Format: int64 */
+            qualityProfileId: number;
+            minimumAvailability?: components["schemas"]["MinimumAvailability"];
+            /** @default true */
+            monitored: boolean;
+            /** @default false */
+            searchOnAdd: boolean;
+            tags?: string[];
+        };
+        ImportList: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            kind: components["schemas"]["ImportListKind"];
+            listId: string;
+            enabled: boolean;
+            /** Format: int64 */
+            rootFolderId: number;
+            /** Format: int64 */
+            qualityProfileId: number;
+            minimumAvailability: components["schemas"]["MinimumAvailability"];
+            monitored: boolean;
+            searchOnAdd: boolean;
+            tags: string[];
+            /** Format: date-time */
+            lastSyncAt?: string;
+            lastAdded: number;
+            lastError: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ImportListSyncResult: {
+            /** Format: int64 */
+            listId: number;
+            found: number;
+            added: string[];
+            excluded: number;
+            error?: string;
+        };
+        ImportExclusion: {
+            /** Format: int64 */
+            tmdbId: number;
+            title: string;
+            year: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        TimelineEvent: {
+            /** Format: int64 */
+            id: number;
+            /** Format: date-time */
+            at: string;
+            /**
+             * @description added, edited, refreshed, search, decision, pending, grab_failed, retry,
+             *     download_grabbed, download_state, download_progress, download_completed, download_failed,
+             *     download_removed, download_imported, download_import_failed, download_blocklisted,
+             *     file_imported, file_found, import_failed, renamed, upgraded, recycled, deleted, notified.
+             */
+            type: string;
+            /** @enum {string} */
+            source: "timeline" | "search" | "download";
+            /** @description English summary; clients render `type` and `data` themselves. */
+            message: string;
+            /** @description Event details (shape depends on the type). */
+            data: unknown;
+            /** Format: int64 */
+            downloadId?: number;
+        };
+        ReasonCount: {
+            code: string;
+            count: number;
+            example: string;
+        };
+        Explanation: {
+            /**
+             * @description available, downloading, importing, import_failed, not_monitored, not_available_yet,
+             *     no_indexers, no_download_client, waiting_delay, download_failed, not_searched_yet,
+             *     all_rejected, nothing_found, upgrade_wanted.
+             */
+            code: string;
+            /** @enum {string} */
+            tone: "success" | "info" | "warning" | "danger";
+            message: string;
+            params: {
+                [key: string]: unknown;
+            };
+            reasons: components["schemas"]["ReasonCount"][];
+        };
+        Timeline: {
+            item: string;
+            title?: string;
+            explanation: components["schemas"]["Explanation"];
+            events: components["schemas"]["TimelineEvent"][];
+        };
+        CalendarEntry: {
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            kind: "in_cinemas" | "digital" | "physical";
+            /** Format: int64 */
+            movieId: number;
+            title: string;
+            year: number;
+            hasFile: boolean;
+            monitored: boolean;
+            poster: string;
+        };
+        CalendarFeed: {
+            token: string;
+            /** @description Path of the feed on this server, e.g. /api/v1/calendar/feed.ics?token=… */
+            path: string;
+        };
+        RecycleEntry: {
+            /** Format: int64 */
+            id: number;
+            originalPath: string;
+            recycledPath: string;
+            /** Format: int64 */
+            sizeBytes: number;
+            isDir: boolean;
+            itemRef: string;
+            reason: string;
+            /** Format: date-time */
+            recycledAt: string;
+        };
+        RecycleBin: {
+            folder: string;
+            retentionDays: number;
+            entries: components["schemas"]["RecycleEntry"][];
+        };
+        /** @enum {string} */
+        ColonReplacement: "delete" | "dash" | "space_dash";
+        MediaManagementSettings: {
+            renameMovies: boolean;
+            movieFolderFormat: string;
+            movieFileFormat: string;
+            colonReplacement: components["schemas"]["ColonReplacement"];
+            transferMode: components["schemas"]["TransferMode"];
+            /** @description Empty = recycle-bin under the first data root. */
+            recycleBinPath: string;
+            /** @description 0 = keep until emptied by hand. */
+            recycleBinRetentionDays: number;
+            setPermissions: boolean;
+            fileMode: string;
+            folderMode: string;
+            extraExtensions: string[];
+            availabilityDelayDays: number;
+            searchOnAddDefault: boolean;
+        };
+        NamingToken: {
+            name: string;
+            example: string;
+        };
+        NamingPreviewRequest: {
+            movieFolderFormat: string;
+            movieFileFormat: string;
+            colonReplacement?: components["schemas"]["ColonReplacement"];
+        };
+        NamingPreview: {
+            folder: string;
+            file: string;
+            folderError?: string;
+            fileError?: string;
+            tokens: components["schemas"]["NamingToken"][];
+        };
+        MetadataSettings: {
+            tmdbApiKey: components["schemas"]["SecretState"];
+            language: string;
+            region: string;
+        };
+        MetadataSettingsInput: {
+            /** @description Write-only. v3 API key or v4 read access token; empty removes it. */
+            tmdbApiKey?: string;
+            language?: string;
+            region?: string;
+        };
+        QueueItemLink: {
+            ref: string;
+            kind: string;
+            /** Format: int64 */
+            id: number;
+            title: string;
+            year?: number;
         };
     };
     responses: {
@@ -5275,6 +6322,1033 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DecisionReport"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listMovies: {
+        parameters: {
+            query?: {
+                monitored?: boolean;
+                status?: components["schemas"]["MovieStatus"];
+                profileId?: number;
+                tag?: string;
+                q?: string;
+                sort?: "title" | "year" | "added" | "rating" | "popularity" | "size" | "inCinemas" | "digital" | "physical";
+                desc?: boolean;
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of movies */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MovieList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addMovie: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddMovieRequest"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Movie"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    lookupMovies: {
+        parameters: {
+            query: {
+                term: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Results, marked when already in the library */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MovieLookup"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchMovies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MovieIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    renameMovies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MovieIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Renamed files */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RenameItem"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewRenameMovies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MovieIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Planned renames */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RenameItem"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMovie: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The movie */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Movie"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteMovie: {
+        parameters: {
+            query?: {
+                deleteFiles?: boolean;
+                exclude?: boolean;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateMovie: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MovieUpdate"];
+            };
+        };
+        responses: {
+            /** @description The movie */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Movie"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    refreshMovie: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The movie */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Movie"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchMovie: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    interactiveSearchMovie: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The decision report (accepted ranked, then pending, then rejected with reasons) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InteractiveSearch"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    grabMovieRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualGrabRequest"];
+            };
+        };
+        responses: {
+            /** @description Sent to a download client */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueueItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMovieCollection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tmdbId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MovieCollection"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addMovieCollection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tmdbId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddOptions"];
+            };
+        };
+        responses: {
+            /** @description The movies added */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Movie"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    scanExistingMovies: {
+        parameters: {
+            query: {
+                rootFolderId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unmapped folders */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExistingFolder"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    importExistingMovies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportExistingRequest"];
+            };
+        };
+        responses: {
+            /** @description One result per folder */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportExistingResult"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewManualImport: {
+        parameters: {
+            query: {
+                path: string;
+                movieId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Files with their match and verdict */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManualImportCandidate"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    manualImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualImportRequest"];
+            };
+        };
+        responses: {
+            /** @description One result per file */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManualImportResult"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listImportLists: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Import lists */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportList"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createImportList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportListInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateImportList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportListInput"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteImportList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    syncImportList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description What the sync did */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportListSyncResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listImportExclusions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exclusions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportExclusion"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteImportExclusion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tmdbId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getTimeline: {
+        parameters: {
+            query: {
+                item: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The timeline */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Timeline"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    explainItem: {
+        parameters: {
+            query: {
+                item: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The current blocking reason */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Explanation"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getCalendar: {
+        parameters: {
+            query: {
+                start: string;
+                end: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Entries by date */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CalendarEntry"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getCalendarToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description State */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SecretState"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createCalendarToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The feed link */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CalendarFeed"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteCalendarToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Stopped */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getCalendarFeed: {
+        parameters: {
+            query: {
+                token: string;
+                pastDays?: number;
+                futureDays?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The feed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/calendar": string;
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getTmdbImage: {
+        parameters: {
+            query?: never;
+            header?: {
+                "If-None-Match"?: string;
+            };
+            path: {
+                size: "w92" | "w154" | "w185" | "w300" | "w342" | "w500" | "w780" | "w1280" | "original";
+                file: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The image */
+            200: {
+                headers: {
+                    ETag?: string;
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/*": string;
+                };
+            };
+            /** @description Not modified */
+            304: {
+                headers: {
+                    ETag?: string;
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getRecycleBin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bin */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecycleBin"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    emptyRecycleBin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description How many entries were deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteRecycleEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    restoreRecycleEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Restored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecycleEntry"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMediaManagement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaManagementSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateMediaManagement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MediaManagementSettings"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaManagementSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewNaming: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NamingPreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Rendered names (or the template error) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NamingPreview"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMetadataSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetadataSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateMetadataSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MetadataSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetadataSettings"];
                 };
             };
             default: components["responses"]["Error"];
