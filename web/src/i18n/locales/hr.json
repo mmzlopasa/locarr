@@ -1320,10 +1320,11 @@
       "waiting_delay": "Pronađeno {{title}}, profil kašnjenja ga zadržava do {{retry}}.",
       "download_failed": "Zadnje preuzimanje nije uspjelo: {{detail}}",
       "not_searched_yet": "Još nije traženo. Sljedeća automatska pretraga je {{next}}.",
-      "all_rejected": "Traženo {{searches}} puta; zadnja pretraga našla je izdanja: {{candidates}} i sva su odbijena. Najčešći razlog: {{reason}}",
-      "nothing_found": "Traženo {{searches}} puta i nijedan indexer nije imao izdanje. Sljedeća pretraga: {{next}}.",
+      "all_rejected": "Dosadašnjih pretraga: {{searches}}. Zadnja je našla izdanja: {{candidates}} i sva su odbijena. Najčešći razlog: {{reason}}.",
+      "nothing_found": "Dosadašnjih pretraga: {{searches}}, a nijedan indexer nije imao izdanje. Sljedeća pretraga: {{next}}.",
       "upgrade_wanted": "U biblioteci je, ali ispod granice profila kvalitete; Locarr i dalje traži bolje izdanje."
-    }
+    },
+    "titleOk": "U biblioteci"
   },
   "rejectionCodes": {
     "parse_failed": "ime nečitljivo",
@@ -1386,8 +1387,8 @@
       "added": "Dodano u {{path}}.",
       "edited": "Postavke su promijenjene.",
       "refreshed": "Metapodaci su promijenjeni.",
-      "search": "{{source}} pretraga: izdanja {{count}} ({{indexers}}).",
-      "decision": "Odluka ({{reason}}): izdanja {{candidates}}, prihvaćeno {{accepted}}, zadržano {{pending}}, odbijeno {{rejected}}.",
+      "search": "{{source}} pretraga — rezultata: {{count}} ({{indexers}}).",
+      "decision": "Odluka ({{reason}}): izdanja {{candidates}} · prihvaćeno {{accepted}} · zadržano {{pending}} · odbijeno {{rejected}}.",
       "best": "Najbolje: {{title}}.",
       "pending": "Zadržavam {{title}} (kašnjenje ili drugi privremeni razlog).",
       "grabFailed": "Nije moguće preuzeti {{title}}: {{error}}",

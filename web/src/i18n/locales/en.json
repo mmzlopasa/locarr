@@ -1320,10 +1320,11 @@
       "waiting_delay": "Found {{title}}, held back by a delay profile until {{retry}}.",
       "download_failed": "The last download failed: {{detail}}",
       "not_searched_yet": "Not searched yet. The next automatic search is at {{next}}.",
-      "all_rejected": "Searched {{searches}} times; the last search found {{candidates}} releases and rejected all of them. Most common reason: {{reason}}",
-      "nothing_found": "Searched {{searches}} times and no indexer had a release. Next search: {{next}}.",
+      "all_rejected": "Searches so far: {{searches}}. The last one found {{candidates}} and every release was rejected. Most common reason: {{reason}}.",
+      "nothing_found": "Searches so far: {{searches}}, and no indexer had a release. Next search: {{next}}.",
       "upgrade_wanted": "In the library, below the quality profile's cutoff; Locarr keeps looking for an upgrade."
-    }
+    },
+    "titleOk": "In the library"
   },
   "rejectionCodes": {
     "parse_failed": "name not readable",
@@ -1386,8 +1387,8 @@
       "added": "Added to {{path}}.",
       "edited": "Settings changed.",
       "refreshed": "Metadata changed.",
-      "search": "{{source}} search: {{count}} releases ({{indexers}}).",
-      "decision": "Decision ({{reason}}): {{candidates}} releases, {{accepted}} accepted, {{pending}} held back, {{rejected}} rejected.",
+      "search": "{{source}} search — results: {{count}} ({{indexers}}).",
+      "decision": "Decision ({{reason}}): releases {{candidates}} · accepted {{accepted}} · held back {{pending}} · rejected {{rejected}}.",
       "best": "Best: {{title}}.",
       "pending": "Holding {{title}} (delay or another temporary reason).",
       "grabFailed": "Could not grab {{title}}: {{error}}",

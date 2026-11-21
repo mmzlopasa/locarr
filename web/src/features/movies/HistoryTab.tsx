@@ -26,7 +26,7 @@ export function WhyBox({ ex }: { ex: Explanation }) {
       <div className="flex items-start gap-2.5">
         <Icon className="mt-0.5 size-4 shrink-0" aria-hidden />
         <div className="min-w-0">
-          <h2 className="text-[12px] font-semibold uppercase tracking-wide opacity-80">{t("explain.title")}</h2>
+          <h2 className="text-[12px] font-semibold uppercase tracking-wide opacity-80">{ex.code === "available" ? t("explain.titleOk") : t("explain.title")}</h2>
           <p className="mt-0.5 text-[14px] text-fg">{describeExplanation(t, ex, i18n.language)}</p>
           {ex.reasons.length > 0 && ex.code !== "available" ? (
             <ul className="mt-2 flex flex-wrap gap-1.5">
@@ -72,7 +72,7 @@ function Event({ e }: { e: TimelineEvent }) {
   const expandable = e.type === "decision" && ((e.data as { summary?: { topRejected?: unknown[] } })?.summary?.topRejected?.length ?? 0) > 0;
   return (
     <li className="relative pl-6" data-testid="timeline-event" data-type={e.type}>
-      <span className={`absolute left-0 top-1.5 size-2.5 rounded-full border ${toneClass[tone]}`} aria-hidden />
+      <span className={`absolute -left-[5px] top-1.5 size-2.5 rounded-full border ${toneClass[tone]}`} aria-hidden />
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <p className="text-[13px] text-fg">
           {expandable ? (

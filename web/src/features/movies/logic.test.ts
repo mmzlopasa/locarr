@@ -40,7 +40,7 @@ describe("timeline texts", () => {
     await i18n.changeLanguage("en");
     const t = i18n.t.bind(i18n);
     expect(describeEvent(t, ev("search", { source: "automatic", resultCount: 3, indexers: [{ name: "A", count: 3, status: "ok" }, { name: "B", count: 0, status: "error" }] })))
-      .toBe("Automatic search: 3 releases (A: 3, B: error).");
+      .toBe("Automatic search — results: 3 (A: 3, B: error).");
     expect(describeEvent(t, ev("file_imported", { quality: "Bluray-1080p", mode: "hardlink", path: "/m/x.mkv" })))
       .toBe("Imported as Bluray-1080p (Hardlink (copy when not possible)): /m/x.mkv");
     expect(describeEvent(t, ev("decision", { reason: "added", summary: { candidates: 4, accepted: 1, pending: 0, rejected: 3, best: "X" } })))
@@ -57,7 +57,7 @@ describe("timeline texts", () => {
     const ex: Explanation = { code: "all_rejected", tone: "warning", message: "x", params: { searches: 3, candidates: 5 },
       reasons: [{ code: "size_too_large", count: 4, example: "big" }] };
     expect(describeExplanation(t, ex, "en")).toBe(
-      "Searched 3 times; the last search found 5 releases and rejected all of them. Most common reason: too large");
+      "Searches so far: 3. The last one found 5 and every release was rejected. Most common reason: too large.");
     expect(describeExplanation(t, { ...ex, code: "downloading", params: { progress: 0.42, title: "Film", state: "downloading" }, reasons: [] }, "en"))
       .toBe("Downloading Film: 42% (Downloading).");
     expect(describeExplanation(t, { ...ex, code: "brand_new_code" }, "en")).toBe("x");
