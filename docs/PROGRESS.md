@@ -1,7 +1,18 @@
 # Napredak
 
 ## Trenutna faza
-P0–P4 gotovi. Sljedeće: P5 serije (na zajedničkoj jezgri iz P4).
+P0–P4 i P6 gotovi (P5 serije u izradi paralelno).
+
+## Gotovo u P6 (branch `phase/P6-music`)
+- Migracija `00006_music.sql` (D-041): `metadata_profiles` (Standard, Samo albumi, Sve), `artists`, `albums` (grupe izdanja), `album_releases`, `tracks`, `album_files`.
+- `internal/library/tags` (D-038): vlastiti čitač tagova i podataka o zapisu za FLAC, MP3 (ID3v2.2/2.3/2.4, Xing/Info), M4A (AAC/ALAC) i Ogg (Vorbis/Opus), pisanje Vorbis komentara u FLAC; `tags/tagtest` piše testne datoteke svih formata; fuzz test.
+- `internal/metadata/musicbrainz` (D-039, D-040): pretraga i dohvat izvođača, grupe izdanja, izdanja (browse po izvođaču ili grupi) i izdanje s pjesmama; 1 zahtjev/s, User-Agent s kontaktom iz postavke, predmemorija, 503/Retry-After; Cover Art Archive s preusmjerenjem na archive.org i predmemorijom omota. Lažni MusicBrainz + CAA: `metadata/musicbrainz/fake` (u `locarr-fakes` pod `/musicbrainz`, odbija više od 1 zahtjeva/s).
+- `internal/library/music`: dodavanje izvođača (praćenje svih/budućih/najnovijeg/ničega, novi albumi svi/budući/ništa), osvježavanje (posao dnevno i po izvođaču u pozadini) koje nikad ne briše albume s datotekama, izbor izdanja (D-042), stanje albuma (najlošija kvaliteta, granica), izvor za pretrage `album:<id>` s RSS uparivanjem po izvođaču/drugom imenu i albumu, uvoz preuzimanja i ručni uvoz s bodovima (D-043), više diskova, djelomični albumi po izboru, cue slike odbijene (D-044), omot, zamjena u koš, pisanje tagova po izboru, uvoz postojeće biblioteke na mjestu, kalendar.
+- `naming`: glazbene oznake (izvođač, album, vrsta, godina, izdanje, disk, pjesma, format, dubina bita, frekvencija, bitrate, grupa izdanja…).
+- API: `/music/artists*`, `/music/albums*` (nedostaje, praćenje, pretraga, ručna pretraga i grab), `/music/import/*`, `/music/metadataprofiles*`, `/music/calendar`, `/settings/music*`, `/images/coverart/*`; vremenska crta i objašnjenje za `album:` i `artist:`; red preuzimanja povezuje album; iCal feed sadrži albume.
+- Web (EN + HR): Glazba (omoti i tablica, virtualizirano), Dodaj izvođača (pojašnjenja), stranica izvođača (albumi po vrsti s praćenjem i pretragom, uređivanje, uklanjanje), stranica albuma (izdanje, pjesme s datotekama, ručna pretraga, uvoz mape s bodovima, ladica s poviješću i „Zašto nije stiglo?"), Uvoz postojeće glazbe, Nedostaje → Albumi, Kalendar s albumima, Postavke → Profili metapodataka, Upravljanje medijima → Imena i uvoz glazbe s pregledom uživo.
+- Testovi: tagovi (svi formati, oštećene datoteke, pisanje FLAC-a, fuzz), MusicBrainz (parsiranje, predmemorija, User-Agent, ≤ 1 zahtjev/s, 503), uparivanje (točno, bez tagova, više diskova, nedostaje/višak, trajanja, ID-jevi, krivi album), profili metapodataka, izbor izdanja, imena; integracijski (`TestMusicFlow`, `TestMusicImportMatching`, `TestMusicExistingLibrary`, `TestMusicRSS`) s lažnim MusicBrainzom, indexerom i klijentom; stvarni Transmission (`TestMusicFlowTransmission`, oznaka `clients`); Vitest; Playwright `e2e/music.spec.ts` (dodaj izvođača → grab → Transmission → uvoz → vremenska crta).
+- Korisnička dokumentacija: `docs/user/music.md`.
 
 ## Gotovo u P4 (branch `phase/P4-movies`)
 - Zajednička jezgra (migracija `00005_library.sql`, D-028): `media_items` + `movies` + `media_files`, oznaka stavke `vrsta:id` (`library.Ref`), dostupnost (D-031), postavke upravljanja medijima.
@@ -75,6 +86,7 @@ P0–P4 gotovi. Sljedeće: P5 serije (na zajedničkoj jezgri iz P4).
 4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- Glazba: cue slike (jedan FLAC po albumu) se ne uvoze, tagovi se pišu samo u FLAC (D-044); WAV/APE/DSD se ne čitaju. Uvoz postojeće biblioteke i osvježavanje velikih diskografija su spori zbog 1 zahtjeva/s prema MusicBrainzu. Izvođači nemaju vlastitu sliku (prikazuje se omot najnovijeg albuma).
 - Filmovi: podaci o zapisima iz imena (D-033); NFO i slike uz film, Trakt/IMDb popisi još nisu napravljeni. Film obrisan i ponovno dodan dok mu staro izdanje još seeda u klijentu ne grabi isto izdanje ponovno („already queued" na vremenskoj crti).
 - Red preuzimanja ne prikazuje uvezena preuzimanja koja još seedaju (ponašanje iz P3).
 - Download klijenti: uklanjanje nakon uvoza i ciljevi seedanja provjereni su samo s lažnim klijentom dok ne stigne uvoz (P4). Usenet klijenti su testirani bez news servera, pa su završena i neuspjela preuzimanja pokrivena samo testovima s fixturama. NZBGet kategorije se ne mogu stvoriti kroz API.
