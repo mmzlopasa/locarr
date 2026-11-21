@@ -19,6 +19,11 @@ import { UsersPage } from "@/features/users/UsersPage";
 import { SettingsLayout } from "@/features/settings/SettingsLayout";
 import { GeneralSettingsPage } from "@/features/settings/GeneralSettingsPage";
 import { RootFoldersPage } from "@/features/settings/RootFoldersPage";
+import { QualityProfilesPage } from "@/features/profiles/QualityProfilesPage";
+import { QualityDefinitionsPage } from "@/features/profiles/QualityDefinitionsPage";
+import { CustomFormatsPage } from "@/features/profiles/CustomFormatsPage";
+import { ReleaseRulesPage } from "@/features/profiles/ReleaseRulesPage";
+import { ReleaseTesterPage } from "@/features/profiles/ReleaseTesterPage";
 import { SystemLayout } from "@/features/system/SystemLayout";
 import { StatusPage } from "@/features/system/StatusPage";
 import { TasksPage } from "@/features/system/TasksPage";
@@ -113,6 +118,11 @@ const settingsRoute = createRoute({ getParentRoute: () => adminRoute, path: "/se
 const settingsIndexRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/", component: GeneralSettingsPage });
 const rootFoldersRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/media", component: RootFoldersPage });
 const usersRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/users", component: UsersPage });
+const profilesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/profiles", component: QualityProfilesPage });
+const qualityRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/quality", component: QualityDefinitionsPage });
+const customFormatsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/customformats", component: CustomFormatsPage });
+const rulesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/rules", component: ReleaseRulesPage });
+const testerRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/tester", component: ReleaseTesterPage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
 const systemIndexRoute = createRoute({
@@ -135,7 +145,8 @@ export const routeTree = rootRoute.addChildren([
     accountRoute,
     adminRoute.addChildren([
       indexersRoute,
-      settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute]),
+      settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
+        rulesRoute, testerRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
   ]),
