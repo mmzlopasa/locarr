@@ -7,7 +7,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 )
 
-// MusicBrainz settings: the contact sent in the User-Agent (MusicBrainz asks
+// MusicBrainzContact is the contact sent in the User-Agent (MusicBrainz asks
 // every client to identify itself with a way to reach its operator).
 var MusicBrainzContact = settings.Key[string]{Name: "metadata.musicbrainzContact", Default: ""}
 

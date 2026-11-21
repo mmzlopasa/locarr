@@ -421,9 +421,9 @@ func (s *Server) release(w http.ResponseWriter, id string) {
 // Cover returns the fake cover JPEG for an id (a small coloured square).
 func Cover(id string) []byte {
 	img := image.NewRGBA(image.Rect(0, 0, 16, 16))
-	h := byte(len(id))
+	h := byte(len(id)) // #nosec G115 -- a hash seed
 	for _, c := range id {
-		h = h*31 + byte(c)
+		h = h*31 + byte(c&0xFF) // #nosec G115 -- masked
 	}
 	for x := 0; x < 16; x++ {
 		for y := 0; y < 16; y++ {
@@ -457,7 +457,7 @@ func (s *Server) cover(w http.ResponseWriter, r *http.Request, rest string) {
 		}
 		// The real archive redirects to its file storage.
 		prefix := r.URL.Path[:strings.Index(r.URL.Path, "/coverart/")]
-		http.Redirect(w, r, prefix+"/coverart/files/"+id+".jpg", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, prefix+"/coverart/files/"+id+".jpg", http.StatusTemporaryRedirect) // #nosec G710 -- same host, id checked against the catalog
 	default:
 		http.NotFound(w, r)
 	}
@@ -487,33 +487,60 @@ func FindRelease(id string) (Release, Group, Artist, bool) {
 	return Release{}, Group{}, Artist{}, false
 }
 
-// ReleaseFiles builds a download of a release: tagged FLAC files (24-bit
-// when hiRes), "Disc N" folders for several media, and a cover. withIDs adds
-// the MusicBrainz ids to the tags.
-func ReleaseFiles(releaseID string, withIDs, hiRes bool) []File {
+// FileOptions shape a fake download.
+type FileOptions struct {
+	// IDs adds the MusicBrainz ids to the tags.
+	IDs bool
+	// Format is "flac" (default), "flac24" or "mp3" (320 kbit/s).
+	Format string
+	// Skip leaves out this many tracks from the end (an incomplete download).
+	Skip int
+}
+
+// ReleaseFiles builds a download of a release: tagged audio files, "Disc N"
+// folders for several media, and a cover.
+func ReleaseFiles(releaseID string, o FileOptions) []File {
 	rel, g, a, ok := FindRelease(releaseID)
 	if !ok {
 		return nil
 	}
-	depth := 16
-	if hiRes {
-		depth = 24
-	}
 	var out []File
+	total := 0
+	for _, m := range rel.Media {
+		total += len(m.Tracks)
+	}
+	n := 0
 	for d, m := range rel.Media {
-		for n, t := range m.Tracks {
+		for i, t := range m.Tracks {
+			n++
+			if n > total-o.Skip {
+				break
+			}
 			f := tagtest.Fields{"TITLE": t.Title, "ARTIST": a.Name, "ALBUMARTIST": a.Name, "ALBUM": rel.Title, "DATE": rel.Date,
-				"TRACKNUMBER": fmt.Sprintf("%d/%d", n+1, len(m.Tracks)), "DISCNUMBER": fmt.Sprintf("%d/%d", d+1, len(rel.Media))}
-			if withIDs {
+				"TRACKNUMBER": fmt.Sprintf("%d/%d", i+1, len(m.Tracks)), "DISCNUMBER": fmt.Sprintf("%d/%d", d+1, len(rel.Media))}
+			if o.IDs {
 				f["MUSICBRAINZ_TRACKID"], f["MUSICBRAINZ_RELEASETRACKID"] = t.Recording, t.ID
 				f["MUSICBRAINZ_ALBUMID"], f["MUSICBRAINZ_RELEASEGROUPID"], f["MUSICBRAINZ_ARTISTID"] = rel.ID, g.ID, a.ID
 			}
-			name := fmt.Sprintf("%02d. %s - %s.flac", n+1, a.Name, t.Title)
+			st := tagtest.Stream{Duration: time.Duration(t.LengthMs) * time.Millisecond, Filler: 8192}
+			ext := "flac"
+			var data []byte
+			switch o.Format {
+			case "mp3":
+				ext = "mp3"
+				st.Bitrate = 320
+				data = tagtest.MP3(4, f, st)
+			case "flac24":
+				st.BitDepth = 24
+				data = tagtest.FLAC(f, st)
+			default:
+				data = tagtest.FLAC(f, st)
+			}
+			name := fmt.Sprintf("%02d. %s - %s.%s", i+1, a.Name, t.Title, ext)
 			if len(rel.Media) > 1 {
 				name = fmt.Sprintf("Disc %d/%s", d+1, name)
 			}
-			out = append(out, File{Path: name, Data: tagtest.FLAC(f, tagtest.Stream{Duration: time.Duration(t.LengthMs) * time.Millisecond,
-				BitDepth: depth, Filler: 8192})})
+			out = append(out, File{Path: name, Data: data})
 		}
 	}
 	out = append(out, File{Path: "cover.jpg", Data: Cover(rel.ID)})

@@ -144,12 +144,12 @@ func (c *Client) fetch(ctx context.Context, u, accept string, limit int64) ([]by
 		req.Header.Set("User-Agent", c.UserAgent(ctx))
 		res, err := c.HTTP.Do(req)
 		if err != nil {
-			return nil, fmt.Errorf("%w: %v", metadata.ErrUnavailable, err)
+			return nil, fmt.Errorf("%w: %w", metadata.ErrUnavailable, err)
 		}
 		body, err := io.ReadAll(io.LimitReader(res.Body, limit+1))
 		_ = res.Body.Close()
 		if err != nil {
-			return nil, fmt.Errorf("%w: %v", metadata.ErrUnavailable, err)
+			return nil, fmt.Errorf("%w: %w", metadata.ErrUnavailable, err)
 		}
 		if int64(len(body)) > limit {
 			return nil, fmt.Errorf("%w: answer too large", metadata.ErrUnavailable)

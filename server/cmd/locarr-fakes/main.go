@@ -6,7 +6,9 @@
 //	LOCARR_FAKES_SOURCE_KEY  key of the Prowlarr/Jackett endpoints (default sourcekey)
 //	LOCARR_FAKES_SEED_DIR    serve real tiny torrents whose data is written here
 //
-// It also serves a fake TMDb under /tmdb (API key in internal/metadata/tmdb/fake).
+// It also serves a fake TMDb under /tmdb (API key in internal/metadata/tmdb/fake)
+// and a fake MusicBrainz and Cover Art Archive under /musicbrainz (ws/2 at
+// /musicbrainz/ws/2, covers at /musicbrainz/coverart).
 package main
 
 import (
@@ -16,6 +18,7 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/indexers/fake"
+	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
 	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 )
 
@@ -32,6 +35,10 @@ func main() {
 	ix.SeedDir = os.Getenv("LOCARR_FAKES_SEED_DIR")
 	mux := http.NewServeMux()
 	mux.Handle("/tmdb/", tmdbfake.New())
+	mb := mbfake.New()
+	// Like MusicBrainz, refuse clients that send more than one request per second.
+	mb.MinInterval = 950 * time.Millisecond
+	mux.Handle("/musicbrainz/", mb)
 	mux.Handle("/", ix)
 	srv := &http.Server{Addr: addr, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
 	log.Printf("fake indexers listening on %s", addr)
