@@ -5,6 +5,9 @@ P0–P10 gotovi.
 
 
 
+## Popravak: grab kroz Prowlarr (branch `fix/grab-redirects`)
+- Dohvat datoteke izdanja prati preusmjerenja na drugi host i na magnet bez ključa indexera (D-079); grab u pretrazi: najviše 3 neuspjela pokušaja po ciklusu, indexer s ograničenjem/„disabled till" preskočen i u backoffu, 2 s između grabova s istog indexera, blokada samo za loše datoteke; greške bez upita u URL-u i ljudskim tekstom (EN + HR); „Zašto nije stiglo?" kaže „prihvaćeno N, ali grab nije uspio: …"; „Pokušaj odmah" (`POST /timeline/retry`).
+
 ## Gotovo u P10 (branch `phase/P10-import`)
 - Migracija `00011_migrate.sql`: `migrate_sources` (šifrirani ključ), `migrate_runs`, `migrate_items`, `migrate_links`.
 - `internal/migrate` (D-072 – D-078): adapteri za Sonarr (v3, v4), Radarr, Lidarr, Prowlarr, Bazarr, Overseerr/Seerr, qBittorrent (prijava v4 i v5) i SABnzbd iz njihove javne API dokumentacije, samo GET (uz prijavu qBittorrenta); prepoznavanje aplikacije i verzije; strujano čitanje velikih lista; pravila mapiranja (kvalitete, profili, jezici, oznake, imena, dozvole → uloge, stanja zahtjeva); mapiranja putanja s prijedlozima i provjerom uživo (`fs.PathCache`); plan s radnjama, razlozima, sukobima i oznakama pažnje; primjena kroz servise; oznake uvoza za idempotentnost; izvještaj; popis za prelazak; kraj uvoza (`migrate.finished` / `migrate.failed`) na zajedničkim kanalima obavijesti.
