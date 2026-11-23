@@ -122,6 +122,7 @@ test("why didn't it land: a finished download Locarr cannot see, fixed by the pa
       return Boolean(m.file);
     }, { timeout: 120_000, intervals: [2_000] }).toBe(true);
     await page.goto(`/movies/${movie.id}`);
+    await page.getByTestId("tab-overview").click();
     await expect(page.getByTestId("movie-file")).toContainText("Sintel");
 
     // The import shows up in the history.

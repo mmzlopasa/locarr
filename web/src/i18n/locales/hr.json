@@ -43,7 +43,7 @@
     "internal": "Na serveru je nešto pošlo po zlu. Detalji su u logu servera.",
     "totp_already_on": "Dvofaktorska autentifikacija je već uključena.",
     "totp_not_started": "Prvo pokreni postavljanje dvofaktorske autentifikacije.",
-    "path_not_allowed": "Ta mapa je izvan dopuštenih podatkovnih mapa.",
+    "path_not_allowed": "Ta mapa je izvan dopuštenih podatkovnih mapa. Locarr u svom kontejneru vidi mape hosta pod /data (npr. host /mnt/media/movies → /data/movies, kako je montirano u docker-compose.yml): upiši tu putanju, ne putanju na hostu.",
     "path_not_found": "Ta mapa ne postoji.",
     "already_exists": "To je već dodano.",
     "unknown_task": "Ne postoji zadatak s tim imenom.",
@@ -406,7 +406,7 @@
   "rootFolders": {
     "title": "Mape za medije",
     "subtitle": "Gdje se nalaze tvoji filmovi, serije i glazba.",
-    "layoutHint": "Drži medije i preuzimanja na istom mountu (npr. /data/media/movies i /data/downloads) kako bi uvoz mogao koristiti hardlinkove umjesto kopiranja.",
+    "layoutHint": "Locarr vidi mape onako kako su montirane u njegov kontejner, pod /data: uz \"/mnt/media:/data\" u docker-compose.yml mapa hosta /mnt/media/movies ovdje je /data/movies. Drži medije i preuzimanja na istom mountu (npr. /data/movies i /data/downloads) kako bi uvoz mogao koristiti hardlinkove umjesto kopiranja.",
     "add": "Dodaj mapu",
     "path": "Mapa",
     "kind": "Sadrži",
@@ -422,7 +422,15 @@
     "removeHint": "Uklanjanje mape samo je zaboravlja; ništa na disku se ne dira.",
     "dataRoots": "Podatkovne mape",
     "up": "Gore",
-    "noSubfolders": "Ovdje nema mapa."
+    "noSubfolders": "Ovdje nema mapa.",
+    "notAccessible": "Mapa ne postoji ili se ne može čitati (je li disk montiran?).",
+    "notWritable": {
+      "permission_denied": "Locarr ovdje ne smije pisati: mapa pripada drugom korisniku (provjeri PUID/PGID i vlasnika mape).",
+      "read_only_filesystem": "Disk je montiran samo za čitanje (npr. NFS dijeljenje montirano s ro ili :ro u docker-compose.yml).",
+      "not_found": "Mapa je nestala tijekom provjere.",
+      "other": "Locarr ovdje ne može stvarati datoteke."
+    },
+    "howToFix": "Kako popraviti"
   },
   "mediaKinds": {
     "movies": "Filmovi",

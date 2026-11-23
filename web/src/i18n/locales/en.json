@@ -43,7 +43,7 @@
     "internal": "Something went wrong on the server. Details are in the server log.",
     "totp_already_on": "Two-factor authentication is already on.",
     "totp_not_started": "Start the two-factor setup first.",
-    "path_not_allowed": "That folder is outside the allowed data folders.",
+    "path_not_allowed": "That folder is outside the allowed data folders. Locarr sees your host folders under /data inside its container (for example host /mnt/media/movies → /data/movies, as mounted in docker-compose.yml): enter that path, not the host path.",
     "path_not_found": "That folder does not exist.",
     "already_exists": "It has already been added.",
     "unknown_task": "There is no task with that name.",
@@ -406,7 +406,7 @@
   "rootFolders": {
     "title": "Media folders",
     "subtitle": "Where your movies, series and music live.",
-    "layoutHint": "Keep media and downloads on the same mount (for example /data/media/movies and /data/downloads) so imports can use hardlinks instead of copying.",
+    "layoutHint": "Locarr sees folders as they are mounted into its container, under /data: with \"/mnt/media:/data\" in docker-compose.yml the host folder /mnt/media/movies is /data/movies here. Keep media and downloads on the same mount (for example /data/movies and /data/downloads) so imports can use hardlinks instead of copying.",
     "add": "Add a folder",
     "path": "Folder",
     "kind": "Contains",
@@ -422,7 +422,15 @@
     "removeHint": "Removing a folder only forgets it; nothing on disk is touched.",
     "dataRoots": "Data folders",
     "up": "Up",
-    "noSubfolders": "No folders here."
+    "noSubfolders": "No folders here.",
+    "notAccessible": "The folder is missing or cannot be read (is the disk mounted?).",
+    "notWritable": {
+      "permission_denied": "Locarr may not write here: the folder belongs to another user (check PUID/PGID and the folder's owner).",
+      "read_only_filesystem": "The disk is mounted read-only (for example an NFS share mounted with ro, or :ro in docker-compose.yml).",
+      "not_found": "The folder disappeared while it was checked.",
+      "other": "Locarr cannot create files here."
+    },
+    "howToFix": "How to fix"
   },
   "mediaKinds": {
     "movies": "Movies",
