@@ -69,6 +69,15 @@ type Handler interface {
 	//
 	// POST /subtitles/profiles/assign
 	AssignSubtitleProfile(ctx context.Context, req *SubtitleProfileAssign) (*SubtitleCount, error)
+	// BoardAction implements boardAction operation.
+	//
+	// `search` searches now; `unmonitor` stops monitoring; `change_profile` sets `qualityProfileId` (on
+	// the movie, the episode's series or the album's artist); `blocklist_retry` removes the item's last
+	// download from its client, blocks the release and searches again; `retry_import` imports a finished
+	// download again (or polls the clients when the files were not visible yet).
+	//
+	// POST /board/actions
+	BoardAction(ctx context.Context, req *BoardActionRequest) (*BoardActionResult, error)
 	// BrowseFilesystem implements browseFilesystem operation.
 	//
 	// Without `path`, lists the data roots themselves.
@@ -99,6 +108,12 @@ type Handler interface {
 	//
 	// POST /auth/invite
 	CheckInvite(ctx context.Context, req *InviteCodeRequest) (*InviteCheck, error)
+	// ClearBlocklist implements clearBlocklist operation.
+	//
+	// Unblock every release (library managers).
+	//
+	// DELETE /queue/blocklist
+	ClearBlocklist(ctx context.Context) (*BlocklistCleared, error)
 	// ConvertSubtitleFps implements convertSubtitleFps operation.
 	//
 	// Convert a subtitle made for one frame rate to another (managers).
@@ -111,6 +126,12 @@ type Handler interface {
 	//
 	// POST /auth/apikeys
 	CreateApiKey(ctx context.Context, req *CreateApiKeyRequest) (*CreatedApiKey, error)
+	// CreateBackup implements createBackup operation.
+	//
+	// The zip holds the database, the secret key and the settings; keep it private.
+	//
+	// POST /system/backups
+	CreateBackup(ctx context.Context) (*Backup, error)
 	// CreateCalendarToken implements createCalendarToken operation.
 	//
 	// The link is shown once; creating a new one stops the old one.
@@ -213,7 +234,8 @@ type Handler interface {
 	CreateRequest(ctx context.Context, req *CreateRequest) (*MediaRequest, error)
 	// CreateRootFolder implements createRootFolder operation.
 	//
-	// The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
+	// The folder must be inside one of the allowed data roots (`LOCARR_DATA_ROOTS`); it must exist unless
+	// `create` is set.
 	//
 	// POST /rootfolders
 	CreateRootFolder(ctx context.Context, req *CreateRootFolderRequest) (*RootFolder, error)
@@ -247,6 +269,12 @@ type Handler interface {
 	//
 	// DELETE /music/artists/{id}
 	DeleteArtist(ctx context.Context, params DeleteArtistParams) error
+	// DeleteBackup implements deleteBackup operation.
+	//
+	// Delete a backup (administrators).
+	//
+	// DELETE /system/backups/{name}
+	DeleteBackup(ctx context.Context, params DeleteBackupParams) error
 	// DeleteBlocklistEntry implements deleteBlocklistEntry operation.
 	//
 	// Unblock a release (library managers).
@@ -392,6 +420,12 @@ type Handler interface {
 	//
 	// GET /discover/search
 	DiscoverSearch(ctx context.Context, params DiscoverSearchParams) (*DiscoverPage, error)
+	// DownloadBackup implements downloadBackup operation.
+	//
+	// Download a backup (administrators).
+	//
+	// GET /system/backups/{name}
+	DownloadBackup(ctx context.Context, params DownloadBackupParams) (*DownloadBackupOKHeaders, error)
 	// DownloadItemSubtitle implements downloadItemSubtitle operation.
 	//
 	// Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
@@ -399,6 +433,12 @@ type Handler interface {
 	//
 	// POST /subtitles/items/{ref}/download
 	DownloadItemSubtitle(ctx context.Context, req *DownloadItemSubtitleReq, params DownloadItemSubtitleParams) (*Subtitle, error)
+	// DownloadLogFile implements downloadLogFile operation.
+	//
+	// Download one log file (administrators).
+	//
+	// GET /system/logs/files/{name}
+	DownloadLogFile(ctx context.Context, params DownloadLogFileParams) (*DownloadLogFileOKHeaders, error)
 	// DownloadRelease implements downloadRelease operation.
 	//
 	// `token` comes from a search result's `downloadLink`. The server fetches the .torrent or .nzb with
@@ -438,6 +478,12 @@ type Handler interface {
 	//
 	// GET /customformats/{id}/export
 	ExportCustomFormat(ctx context.Context, params ExportCustomFormatParams) (SharedCustomFormat, error)
+	// GetActivityStats implements getActivityStats operation.
+	//
+	// Grabs, success rate and time to import per indexer and download client (library managers).
+	//
+	// GET /activity/stats
+	GetActivityStats(ctx context.Context, params GetActivityStatsParams) (*ActivityStats, error)
 	// GetAlbum implements getAlbum operation.
 	//
 	// The track list loads from MusicBrainz on first view when the background refresh has not got to it
@@ -451,6 +497,15 @@ type Handler interface {
 	//
 	// GET /music/artists/{id}
 	GetArtist(ctx context.Context, params GetArtistParams) (*Artist, error)
+	// GetBoard implements getBoard operation.
+	//
+	// Groups every monitored item that is missing (movies, episodes, albums) or misses subtitles by the
+	// explainer's current answer. The answers are precomputed and kept up to date on events, so this is
+	// cheap even with tens of thousands of items. For groups of searched items, `reasons` adds up the top
+	// rejection reasons.
+	//
+	// GET /board
+	GetBoard(ctx context.Context, params GetBoardParams) (*BoardSummary, error)
 	// GetCalendar implements getCalendar operation.
 	//
 	// Movie dates (in cinemas, digital, physical) and episode air dates between two days.
@@ -548,6 +603,12 @@ type Handler interface {
 	//
 	// GET /episodes/{id}
 	GetEpisode(ctx context.Context, params GetEpisodeParams) (*Episode, error)
+	// GetHealth implements getHealth operation.
+	//
+	// Current health issues with how to fix them (administrators).
+	//
+	// GET /system/health
+	GetHealth(ctx context.Context) (*HealthReport, error)
 	// GetIndexer implements getIndexer operation.
 	//
 	// One indexer (administrators).
@@ -683,6 +744,13 @@ type Handler interface {
 	//
 	// GET /settings
 	GetSettings(ctx context.Context) (*Settings, error)
+	// GetStats implements getStats operation.
+	//
+	// Also served at `/api/stats` (send `X-Api-Key`). At most 15 seconds old. Fields are documented in
+	// docs/user/troubleshooting.md.
+	//
+	// GET /system/stats
+	GetStats(ctx context.Context) (*Stats, error)
 	// GetStreameroSettings implements getStreameroSettings operation.
 	//
 	// The Streamero connection (administrators).
@@ -701,6 +769,12 @@ type Handler interface {
 	//
 	// GET /system/info
 	GetSystemInfo(ctx context.Context) (*SystemInfo, error)
+	// GetSystemSettings implements getSystemSettings operation.
+	//
+	// Health thresholds, backups, retention, version check and metrics (administrators).
+	//
+	// GET /settings/system
+	GetSystemSettings(ctx context.Context) (*SystemSettings, error)
 	// GetSystemStatus implements getSystemStatus operation.
 	//
 	// Runtime status (administrators).
@@ -857,12 +931,24 @@ type Handler interface {
 	//
 	// GET /auth/providers
 	ListAuthProviders(ctx context.Context) ([]AuthProvider, error)
+	// ListBackups implements listBackups operation.
+	//
+	// Backups in the config folder (administrators).
+	//
+	// GET /system/backups
+	ListBackups(ctx context.Context) ([]Backup, error)
 	// ListBlocklist implements listBlocklist operation.
 	//
 	// Blocked releases (library managers).
 	//
 	// GET /queue/blocklist
 	ListBlocklist(ctx context.Context, params ListBlocklistParams) ([]BlocklistEntry, error)
+	// ListBoardItems implements listBoardItems operation.
+	//
+	// One page of board items (library managers).
+	//
+	// GET /board/items
+	ListBoardItems(ctx context.Context, params ListBoardItemsParams) (*BoardItemPage, error)
 	// ListCustomFormats implements listCustomFormats operation.
 	//
 	// Custom formats.
@@ -887,6 +973,12 @@ type Handler interface {
 	//
 	// GET /downloadclients
 	ListDownloadClients(ctx context.Context) ([]DownloadClient, error)
+	// ListHistory implements listHistory operation.
+	//
+	// What happened across the whole library, newest first (library managers).
+	//
+	// GET /history
+	ListHistory(ctx context.Context, params ListHistoryParams) (*HistoryPage, error)
 	// ListImportExclusions implements listImportExclusions operation.
 	//
 	// Movies import lists never add again.
@@ -935,6 +1027,18 @@ type Handler interface {
 	//
 	// GET /languages
 	ListLanguages(ctx context.Context) ([]LanguageInfo, error)
+	// ListLogFiles implements listLogFiles operation.
+	//
+	// Log files in the config folder (administrators).
+	//
+	// GET /system/logs/files
+	ListLogFiles(ctx context.Context) ([]LogFile, error)
+	// ListLogs implements listLogs operation.
+	//
+	// Recent log entries, newest last (administrators).
+	//
+	// GET /system/logs
+	ListLogs(ctx context.Context, params ListLogsParams) ([]LogEntry, error)
 	// ListMetadataProfiles implements listMetadataProfiles operation.
 	//
 	// Metadata profiles (which album types and release statuses an artist's library holds).
@@ -1278,6 +1382,12 @@ type Handler interface {
 	//
 	// POST /music/artists/{id}/refresh
 	RefreshArtist(ctx context.Context, params RefreshArtistParams) (*Artist, error)
+	// RefreshBoard implements refreshBoard operation.
+	//
+	// Recompute every board item now (library managers).
+	//
+	// POST /board/refresh
+	RefreshBoard(ctx context.Context) error
 	// RefreshMovie implements refreshMovie operation.
 	//
 	// Reload a movie's metadata and check its file (library managers).
@@ -1365,12 +1475,27 @@ type Handler interface {
 	//
 	// POST /issues/{id}/resolve
 	ResolveIssue(ctx context.Context, req *ResolveIssueRequest, params ResolveIssueParams) (*Issue, error)
+	// RestoreBackup implements restoreBackup operation.
+	//
+	// See `POST /system/backups/restore`.
+	//
+	// POST /system/backups/{name}/restore
+	RestoreBackup(ctx context.Context, params RestoreBackupParams) (*RestoreStarted, error)
 	// RestoreRecycleEntry implements restoreRecycleEntry operation.
 	//
 	// Fails with `restore_conflict` when something else is at the original place.
 	//
 	// POST /recyclebin/{id}/restore
 	RestoreRecycleEntry(ctx context.Context, params RestoreRecycleEntryParams) (*RecycleEntry, error)
+	// RestoreUploadedBackup implements restoreUploadedBackup operation.
+	//
+	// The body is a backup zip made by Locarr (at most 2 GiB). `confirm` must be `RESTORE`. Locarr first
+	// backs up the current state, stops its background work, replaces the database and the secret key,
+	// starts again in the same process and signs out every session except the caller's. Media files are
+	// never touched.
+	//
+	// POST /system/backups/restore
+	RestoreUploadedBackup(ctx context.Context, req RestoreUploadedBackupReq, params RestoreUploadedBackupParams) (*RestoreStarted, error)
 	// ResumeQueueItem implements resumeQueueItem operation.
 	//
 	// Resume a download (library managers).
@@ -1395,6 +1520,12 @@ type Handler interface {
 	//
 	// DELETE /auth/sessions/{id}
 	RevokeSession(ctx context.Context, params RevokeSessionParams) error
+	// RunHealthChecks implements runHealthChecks operation.
+	//
+	// Run every health check now (administrators).
+	//
+	// POST /system/health/run
+	RunHealthChecks(ctx context.Context) (*HealthReport, error)
 	// RunTask implements runTask operation.
 	//
 	// Queues the task unless a run of it is already queued or running; then that run is returned.
@@ -1552,6 +1683,12 @@ type Handler interface {
 	//
 	// POST /auth/totp/setup
 	StartTotpSetup(ctx context.Context) (*TotpSetup, error)
+	// StreamLogs implements streamLogs operation.
+	//
+	// Server-sent events; each `entry` event's `data` is one LogEntry as JSON.
+	//
+	// GET /system/logs/stream
+	StreamLogs(ctx context.Context, params StreamLogsParams) (StreamLogsOK, error)
 	// SyncImportList implements syncImportList operation.
 	//
 	// Add the list's missing movies now (administrators).
@@ -1822,6 +1959,12 @@ type Handler interface {
 	//
 	// PUT /subtitles/settings
 	UpdateSubtitleSettings(ctx context.Context, req *SubtitleSettingsInput) (*SubtitleSettings, error)
+	// UpdateSystemSettings implements updateSystemSettings operation.
+	//
+	// Leave `metricsToken` out to keep it, "" to turn `/metrics` off.
+	//
+	// PUT /settings/system
+	UpdateSystemSettings(ctx context.Context, req *SystemSettingsInput) (*SystemSettings, error)
 	// UpdateUser implements updateUser operation.
 	//
 	// The last enabled administrator cannot be demoted or disabled.

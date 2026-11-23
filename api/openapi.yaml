@@ -50,6 +50,8 @@ tags:
   - name: notifications
   - name: invites
   - name: mediaserver
+  - name: board
+  - name: history
 security:
   - sessionToken: []
 paths:
@@ -555,7 +557,7 @@ paths:
     post:
       operationId: createRootFolder
       summary: Add a root folder (administrators)
-      description: The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
+      description: The folder must be inside one of the allowed data roots (`LOCARR_DATA_ROOTS`); it must exist unless `create` is set.
       tags: [rootfolders]
       requestBody:
         required: true
@@ -1353,6 +1355,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BlocklistEntry"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: clearBlocklist
+      summary: Unblock every release (library managers)
+      tags: [queue]
+      responses:
+        "200":
+          description: Removed
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/BlocklistCleared"}
         default:
           $ref: "#/components/responses/Error"
   /queue/blocklist/{id}:
@@ -5356,6 +5370,368 @@ paths:
               schema: {$ref: "#/components/schemas/NotificationSettings"}
         default:
           $ref: "#/components/responses/Error"
+  /board:
+    get:
+      operationId: getBoard
+      summary: "\"Why didn't it land?\": monitored missing items grouped by their current reason and fix (library managers)"
+      description: |
+        Groups every monitored item that is missing (movies, episodes, albums) or misses
+        subtitles by the explainer's current answer. The answers are precomputed and kept
+        up to date on events, so this is cheap even with tens of thousands of items.
+        For groups of searched items, `reasons` adds up the top rejection reasons.
+      tags: [board]
+      parameters:
+        - name: kind
+          in: query
+          required: false
+          schema: {$ref: "#/components/schemas/BoardKind"}
+      responses:
+        "200":
+          description: Groups
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/BoardSummary"}
+        default:
+          $ref: "#/components/responses/Error"
+  /board/items:
+    get:
+      operationId: listBoardItems
+      summary: One page of board items (library managers)
+      tags: [board]
+      parameters:
+        - {name: code, in: query, required: false, schema: {type: string, maxLength: 64}}
+        - {name: fix, in: query, required: false, schema: {type: string, maxLength: 64}}
+        - {name: kind, in: query, required: false, schema: {$ref: "#/components/schemas/BoardKind"}}
+        - {name: q, in: query, required: false, schema: {type: string, maxLength: 200}}
+        - {name: offset, in: query, required: false, schema: {type: integer, minimum: 0, default: 0}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 500, default: 100}}
+      responses:
+        "200":
+          description: Items, by title
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/BoardItemPage"}
+        default:
+          $ref: "#/components/responses/Error"
+  /board/actions:
+    post:
+      operationId: boardAction
+      summary: Act on several board items at once (library managers)
+      description: |
+        `search` searches now; `unmonitor` stops monitoring; `change_profile` sets
+        `qualityProfileId` (on the movie, the episode's series or the album's artist);
+        `blocklist_retry` removes the item's last download from its client, blocks the
+        release and searches again; `retry_import` imports a finished download again
+        (or polls the clients when the files were not visible yet).
+      tags: [board]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/BoardActionRequest"}
+      responses:
+        "200":
+          description: What was done
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/BoardActionResult"}
+        default:
+          $ref: "#/components/responses/Error"
+  /board/refresh:
+    post:
+      operationId: refreshBoard
+      summary: Recompute every board item now (library managers)
+      tags: [board]
+      responses:
+        "202":
+          description: Queued
+        default:
+          $ref: "#/components/responses/Error"
+  /history:
+    get:
+      operationId: listHistory
+      summary: What happened across the whole library, newest first (library managers)
+      tags: [history]
+      parameters:
+        - {name: category, in: query, required: false, schema: {$ref: "#/components/schemas/HistoryCategory"}}
+        - {name: kind, in: query, required: false, schema: {$ref: "#/components/schemas/MediaKind"}}
+        - {name: q, in: query, required: false, schema: {type: string, maxLength: 200}}
+        - {name: offset, in: query, required: false, schema: {type: integer, minimum: 0, maximum: 100000, default: 0}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 500, default: 50}}
+      responses:
+        "200":
+          description: Entries
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/HistoryPage"}
+        default:
+          $ref: "#/components/responses/Error"
+  /activity/stats:
+    get:
+      operationId: getActivityStats
+      summary: Grabs, success rate and time to import per indexer and download client (library managers)
+      tags: [history]
+      parameters:
+        - {name: days, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 3650, default: 30}}
+      responses:
+        "200":
+          description: Statistics
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ActivityStats"}
+        default:
+          $ref: "#/components/responses/Error"
+  /system/health:
+    get:
+      operationId: getHealth
+      summary: Current health issues with how to fix them (administrators)
+      tags: [system]
+      responses:
+        "200":
+          description: Issues (empty when all is well)
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/HealthReport"}
+        default:
+          $ref: "#/components/responses/Error"
+  /system/health/run:
+    post:
+      operationId: runHealthChecks
+      summary: Run every health check now (administrators)
+      tags: [system]
+      responses:
+        "200":
+          description: Issues
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/HealthReport"}
+        default:
+          $ref: "#/components/responses/Error"
+  /system/stats:
+    get:
+      operationId: getStats
+      summary: Numbers for monitoring dashboards (administrators and their read-only keys)
+      description: |
+        Also served at `/api/stats` (send `X-Api-Key`). At most 15 seconds old.
+        Fields are documented in docs/user/troubleshooting.md.
+      tags: [system]
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Stats"}
+        default:
+          $ref: "#/components/responses/Error"
+  /system/logs:
+    get:
+      operationId: listLogs
+      summary: Recent log entries, newest last (administrators)
+      tags: [system]
+      parameters:
+        - {name: level, in: query, required: false, schema: {$ref: "#/components/schemas/LogLevel"}}
+        - {name: q, in: query, required: false, schema: {type: string, maxLength: 200}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 5000, default: 500}}
+      responses:
+        "200":
+          description: Entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/LogEntry"}
+        default:
+          $ref: "#/components/responses/Error"
+  /system/logs/stream:
+    get:
+      operationId: streamLogs
+      summary: New log entries as they happen (administrators)
+      description: Server-sent events; each `entry` event's `data` is one LogEntry as JSON.
+      tags: [system]
+      parameters:
+        - {name: level, in: query, required: false, schema: {$ref: "#/components/schemas/LogLevel"}}
+      responses:
+        "200":
+          description: Event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: "#/components/responses/Error"
+  /system/logs/files:
+    get:
+      operationId: listLogFiles
+      summary: Log files in the config folder (administrators)
+      tags: [system]
+      responses:
+        "200":
+          description: Files, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/LogFile"}
+        default:
+          $ref: "#/components/responses/Error"
+  /system/logs/files/{name}:
+    get:
+      operationId: downloadLogFile
+      summary: Download one log file (administrators)
+      tags: [system]
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema: {type: string, pattern: "^locarr(\\.[0-9]{1,3})?\\.log$"}
+      responses:
+        "200":
+          description: The file (JSON lines)
+          headers:
+            Content-Disposition:
+              schema: {type: string}
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: "#/components/responses/Error"
+  /system/backups:
+    get:
+      operationId: listBackups
+      summary: Backups in the config folder (administrators)
+      tags: [system]
+      responses:
+        "200":
+          description: Backups, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/Backup"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createBackup
+      summary: Make a backup now (administrators)
+      description: The zip holds the database, the secret key and the settings; keep it private.
+      tags: [system]
+      responses:
+        "201":
+          description: Made
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Backup"}
+        default:
+          $ref: "#/components/responses/Error"
+  /system/backups/restore:
+    post:
+      operationId: restoreUploadedBackup
+      summary: Restore an uploaded backup (administrators)
+      description: |
+        The body is a backup zip made by Locarr (at most 2 GiB). `confirm` must be
+        `RESTORE`. Locarr first backs up the current state, stops its background work,
+        replaces the database and the secret key, starts again in the same process and
+        signs out every session except the caller's. Media files are never touched.
+      tags: [system]
+      parameters:
+        - {name: confirm, in: query, required: true, schema: {type: string, maxLength: 16}}
+      requestBody:
+        required: true
+        content:
+          application/zip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "202":
+          description: Restarting with the restored data
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/RestoreStarted"}
+        default:
+          $ref: "#/components/responses/Error"
+  /system/backups/{name}:
+    get:
+      operationId: downloadBackup
+      summary: Download a backup (administrators)
+      tags: [system]
+      parameters:
+        - $ref: "#/components/parameters/BackupName"
+      responses:
+        "200":
+          description: The zip
+          headers:
+            Content-Disposition:
+              schema: {type: string}
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteBackup
+      summary: Delete a backup (administrators)
+      tags: [system]
+      parameters:
+        - $ref: "#/components/parameters/BackupName"
+      responses:
+        "204":
+          description: Deleted
+        default:
+          $ref: "#/components/responses/Error"
+  /system/backups/{name}/restore:
+    post:
+      operationId: restoreBackup
+      summary: Restore a backup from the config folder (administrators)
+      description: See `POST /system/backups/restore`.
+      tags: [system]
+      parameters:
+        - $ref: "#/components/parameters/BackupName"
+        - {name: confirm, in: query, required: true, schema: {type: string, maxLength: 16}}
+      responses:
+        "202":
+          description: Restarting with the restored data
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/RestoreStarted"}
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/system:
+    get:
+      operationId: getSystemSettings
+      summary: Health thresholds, backups, retention, version check and metrics (administrators)
+      tags: [settings]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SystemSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateSystemSettings
+      summary: Change system settings (administrators)
+      description: Leave `metricsToken` out to keep it, "" to turn `/metrics` off.
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SystemSettingsInput"}
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SystemSettings"}
+        default:
+          $ref: "#/components/responses/Error"
 components:
   securitySchemes:
     sessionToken:
@@ -5385,6 +5761,11 @@ components:
       schema:
         type: string
         pattern: "^(movie|episode):[0-9]+$"
+    BackupName:
+      name: name
+      in: path
+      required: true
+      schema: {type: string, pattern: "^locarr_backup_[0-9a-z_-]{1,80}\\.zip$"}
     ID:
       name: id
       in: path
@@ -6021,6 +6402,9 @@ components:
           maxLength: 4096
         kind:
           $ref: "#/components/schemas/MediaKind"
+        create:
+          type: boolean
+          description: Create the folder (inside the data roots) when it does not exist yet.
     FolderEntry:
       type: object
       required: [name, path]
@@ -10466,7 +10850,7 @@ components:
       properties:
         id: {type: string}
         username: {type: string}
-        isAdmin: {type: boolean, description: Administrator in Streamero (never makes anyone an administrator here).}
+        isAdmin: {type: boolean, description: "Administrator in Streamero (never makes anyone an administrator here)."}
         disabled: {type: boolean}
         linkedUserId: {type: integer, format: int64}
         linkedUsername: {type: string}
@@ -10483,34 +10867,34 @@ components:
       description: Plain settings; each kind uses only its own fields.
       properties:
         url: {type: string, maxLength: 2000, description: "webhook: target URL; ntfy and gotify: server; apprise: notify endpoint (e.g. http://apprise:8000/notify/apprise)."}
-        method: {type: string, enum: [POST, PUT], description: webhook}
-        topic: {type: string, maxLength: 200, description: ntfy}
+        method: {type: string, enum: [POST, PUT], description: "webhook"}
+        topic: {type: string, maxLength: 200, description: "ntfy"}
         priority: {type: integer, minimum: -2, maximum: 10, description: "ntfy 1–5, gotify 0–10, pushover -2–2"}
         tags:
           type: array
           maxItems: 20
           items: {type: string, maxLength: 50}
           description: ntfy tags (emoji short codes or words)
-        tag: {type: string, maxLength: 200, description: apprise tag}
-        chatId: {type: string, maxLength: 100, description: telegram}
-        sound: {type: string, maxLength: 50, description: pushover}
-        device: {type: string, maxLength: 100, description: pushover}
+        tag: {type: string, maxLength: 200, description: "apprise tag"}
+        chatId: {type: string, maxLength: 100, description: "telegram"}
+        sound: {type: string, maxLength: 50, description: "pushover"}
+        device: {type: string, maxLength: 100, description: "pushover"}
         to:
           type: array
           maxItems: 20
           items: {type: string, maxLength: 254}
           description: e-mail recipients
-        username: {type: string, maxLength: 80, description: discord sender name}
-        language: {type: string, enum: [en, hr], description: Language of the messages.}
+        username: {type: string, maxLength: 80, description: "discord sender name"}
+        language: {type: string, enum: [en, hr], description: "Language of the messages."}
     NotificationChannelSecrets:
       type: object
       description: Write-only. Omit a field to keep it, "" to remove it.
       properties:
         token: {type: string, maxLength: 500, description: "ntfy access token, gotify application token, pushover application token"}
-        secret: {type: string, maxLength: 500, description: webhook HMAC secret}
-        botToken: {type: string, maxLength: 500, description: telegram}
-        webhookUrl: {type: string, maxLength: 2000, description: discord webhook URL}
-        userKey: {type: string, maxLength: 500, description: pushover user or group key}
+        secret: {type: string, maxLength: 500, description: "webhook HMAC secret"}
+        botToken: {type: string, maxLength: 500, description: "telegram"}
+        webhookUrl: {type: string, maxLength: 2000, description: "discord webhook URL"}
+        userKey: {type: string, maxLength: 500, description: "pushover user or group key"}
         password: {type: string, maxLength: 500, description: "ntfy password (with username in settings)"}
     NotificationChannelInput:
       type: object
@@ -10535,14 +10919,14 @@ components:
         kind: {$ref: "#/components/schemas/NotificationChannelKind"}
         enabled: {type: boolean}
         personal: {type: boolean}
-        ownerId: {type: integer, format: int64, description: The owner of a personal channel.}
+        ownerId: {type: integer, format: int64, description: "The owner of a personal channel."}
         events: {type: array, items: {$ref: "#/components/schemas/NotificationEventType"}}
         settings: {$ref: "#/components/schemas/NotificationChannelSettings"}
         secretsSet:
           type: array
           description: Names of the secrets that are set.
           items: {type: string}
-        failures: {type: integer, description: Deliveries that failed in a row (0 = fine).}
+        failures: {type: integer, description: "Deliveries that failed in a row (0 = fine)."}
         lastError: {type: string}
         lastErrorAt: {type: string, format: date-time}
         lastSentAt: {type: string, format: date-time}
@@ -10552,7 +10936,7 @@ components:
       type: object
       required: [channel]
       properties:
-        id: {type: integer, format: int64, description: Take secrets left out from this channel.}
+        id: {type: integer, format: int64, description: "Take secrets left out from this channel."}
         channel: {$ref: "#/components/schemas/NotificationChannelInput"}
     NotificationTestResult:
       type: object
@@ -10595,3 +10979,297 @@ components:
         subtitleMissingDays: {type: integer, minimum: 1, maximum: 90}
         baseUrl: {type: string, maxLength: 500}
         smtp: {$ref: "#/components/schemas/SmtpSettingsInput"}
+    BoardKind:
+      type: string
+      enum: [movie, episode, album, subtitle]
+    BoardKindCounts:
+      type: object
+      required: [movie, episode, album, subtitle]
+      properties:
+        movie: {type: integer}
+        episode: {type: integer}
+        album: {type: integer}
+        subtitle: {type: integer}
+    BoardGroup:
+      type: object
+      required: [code, tone, fix, count, kinds, reasons, searches]
+      properties:
+        code:
+          type: string
+          description: |
+            The explanation code (see `Explanation`) plus `stalled`, `path_not_visible`,
+            `subtitle_not_searched`, `subtitle_not_found`, `subtitle_no_providers`, `subtitle_quota`.
+        tone: {type: string, enum: [success, info, warning, danger]}
+        fix:
+          type: string
+          description: |
+            What usually fixes the group: path_mapping, permissions, client_category, disk_space,
+            indexers, download_clients, subtitle_providers, manual_import, profile, or "".
+        count: {type: integer}
+        kinds: {$ref: "#/components/schemas/BoardKindCounts"}
+        searches: {type: integer, description: "Searches made for the items of the group, added up."}
+        reasons:
+          type: array
+          description: Rejection reasons of the items' last searches, added up (most common first, at most 8).
+          items: {$ref: "#/components/schemas/ReasonCount"}
+    BoardSummary:
+      type: object
+      required: [total, groups]
+      properties:
+        total: {type: integer}
+        updatedAt: {type: string, format: date-time, description: "When the board was last rebuilt in full."}
+        groups:
+          type: array
+          items: {$ref: "#/components/schemas/BoardGroup"}
+    BoardItem:
+      type: object
+      required: [key, kind, itemRef, parentRef, title, code, tone, fix, message, params, reasons, searches, updatedAt]
+      properties:
+        key: {type: string}
+        kind: {$ref: "#/components/schemas/BoardKind"}
+        itemRef: {type: string}
+        parentRef: {type: string, description: "The series or artist (\"\" for movies)."}
+        title: {type: string}
+        code: {type: string}
+        tone: {type: string, enum: [success, info, warning, danger]}
+        fix: {type: string}
+        message: {type: string, description: "English text; clients render `code` and `params`."}
+        params: {type: object, additionalProperties: true}
+        reasons:
+          type: array
+          items: {$ref: "#/components/schemas/ReasonCount"}
+        searches: {type: integer}
+        downloadId: {type: integer, format: int64}
+        qualityProfileId: {type: integer, format: int64}
+        updatedAt: {type: string, format: date-time}
+    BoardItemPage:
+      type: object
+      required: [total, items]
+      properties:
+        total: {type: integer}
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/BoardItem"}
+    BoardActionRequest:
+      type: object
+      required: [action, keys]
+      properties:
+        action: {type: string, enum: [search, unmonitor, change_profile, blocklist_retry, retry_import]}
+        keys:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          items: {type: string, maxLength: 80}
+        qualityProfileId: {type: integer, format: int64, minimum: 1}
+    BoardActionFailure:
+      type: object
+      required: [key, code, message]
+      properties:
+        key: {type: string}
+        code: {type: string}
+        message: {type: string}
+    BoardActionResult:
+      type: object
+      required: [done, failed]
+      properties:
+        done: {type: integer}
+        failed:
+          type: array
+          items: {$ref: "#/components/schemas/BoardActionFailure"}
+    HistoryCategory:
+      type: string
+      enum: [grabbed, imported, upgraded, failed, deleted, renamed, subtitles, notifications]
+    HistoryEntry:
+      type: object
+      required: [id, at, category, type, itemRef, title, message]
+      properties:
+        id: {type: string, description: "Stable within its source (\"t:12\", \"d:7\", \"s:3\")."}
+        at: {type: string, format: date-time}
+        category: {$ref: "#/components/schemas/HistoryCategory"}
+        type: {type: string}
+        kind: {type: string, enum: [movie, series, music]}
+        itemRef: {type: string}
+        title: {type: string}
+        release: {type: string}
+        indexer: {type: string}
+        client: {type: string}
+        message: {type: string}
+        downloadId: {type: integer, format: int64}
+    HistoryPage:
+      type: object
+      required: [items, hasMore]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/HistoryEntry"}
+        hasMore: {type: boolean}
+    SourceStats:
+      type: object
+      required: [name, grabs, imported, failed, inProgress]
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+        grabs: {type: integer}
+        imported: {type: integer}
+        failed: {type: integer, description: "Downloads that failed in the client or were given up as stalled."}
+        inProgress: {type: integer}
+        successRate: {type: number, description: "imported / (imported + failed); absent when nothing finished."}
+        avgImportSeconds: {type: integer, format: int64, description: "Average time from grab to import."}
+    ActivityStats:
+      type: object
+      required: [days, indexers, clients]
+      properties:
+        days: {type: integer}
+        indexers:
+          type: array
+          items: {$ref: "#/components/schemas/SourceStats"}
+        clients:
+          type: array
+          items: {$ref: "#/components/schemas/SourceStats"}
+    BlocklistCleared:
+      type: object
+      required: [count]
+      properties:
+        count: {type: integer}
+    HealthSeverity:
+      type: string
+      enum: [error, warning, info]
+    HealthIssue:
+      type: object
+      required: [key, check, severity, code, message, params, docs, since]
+      properties:
+        key: {type: string, description: "Unique per problem (\"indexer:3\", \"rootfolder:2:space\")."}
+        check: {type: string}
+        severity: {$ref: "#/components/schemas/HealthSeverity"}
+        code: {type: string, description: "Stable code the clients translate."}
+        message: {type: string, description: "English text."}
+        params: {type: object, additionalProperties: true}
+        docs: {type: string, description: "Anchor in docs/user/troubleshooting.md."}
+        fixRoute: {type: string, description: "The web client page where it is fixed."}
+        since: {type: string, format: date-time}
+    HealthReport:
+      type: object
+      required: [issues]
+      properties:
+        checkedAt: {type: string, format: date-time}
+        issues:
+          type: array
+          items: {$ref: "#/components/schemas/HealthIssue"}
+    StatsRootFolder:
+      type: object
+      required: [path, kind, accessible]
+      properties:
+        path: {type: string}
+        kind: {$ref: "#/components/schemas/MediaKind"}
+        accessible: {type: boolean}
+        freeBytes: {type: integer, format: int64}
+        totalBytes: {type: integer, format: int64}
+    Stats:
+      type: object
+      required: [version, commit, generatedAt, movies, moviesHave, moviesMissing, series, episodes, episodesHave, episodesMissing,
+        artists, albums, albumsHave, albumsMissing, queueSize, activeDownloads, downloadSpeedBytes, wantedMovies, wantedEpisodes,
+        wantedAlbums, failedImports, healthErrors, healthWarnings, healthInfo, indexers, indexersHealthy, indexersFailing,
+        indexersDisabled, requestsPending, subtitlesMissing, rootFolders]
+      properties:
+        version: {type: string}
+        commit: {type: string}
+        generatedAt: {type: string, format: date-time}
+        movies: {type: integer}
+        moviesHave: {type: integer}
+        moviesMissing: {type: integer, description: "Monitored movies without a file."}
+        series: {type: integer}
+        episodes: {type: integer}
+        episodesHave: {type: integer}
+        episodesMissing: {type: integer, description: "Monitored episodes that aired and have no file."}
+        artists: {type: integer}
+        albums: {type: integer}
+        albumsHave: {type: integer, description: "Albums with at least one track file."}
+        albumsMissing: {type: integer, description: "Monitored released albums without any track file."}
+        queueSize: {type: integer, description: "Downloads still in a client (active or waiting for import)."}
+        activeDownloads: {type: integer}
+        downloadSpeedBytes: {type: integer, format: int64, description: "Total download speed in bytes per second."}
+        wantedMovies: {type: integer, description: "Monitored, available movies without a file."}
+        wantedEpisodes: {type: integer}
+        wantedAlbums: {type: integer}
+        failedImports: {type: integer, description: "Finished downloads whose import failed."}
+        healthErrors: {type: integer}
+        healthWarnings: {type: integer}
+        healthInfo: {type: integer}
+        indexers: {type: integer}
+        indexersHealthy: {type: integer}
+        indexersFailing: {type: integer}
+        indexersDisabled: {type: integer}
+        requestsPending: {type: integer}
+        subtitlesMissing: {type: integer, description: "Files missing at least one wanted subtitle language."}
+        lastRssSyncAt: {type: string, format: date-time}
+        rootFolders:
+          type: array
+          items: {$ref: "#/components/schemas/StatsRootFolder"}
+    LogLevel:
+      type: string
+      enum: [debug, info, warn, error]
+    LogEntry:
+      type: object
+      required: [seq, time, level, message, fields]
+      properties:
+        seq: {type: integer, format: int64}
+        time: {type: string, format: date-time}
+        level: {$ref: "#/components/schemas/LogLevel"}
+        message: {type: string}
+        fields: {type: object, additionalProperties: true}
+    LogFile:
+      type: object
+      required: [name, size, modifiedAt]
+      properties:
+        name: {type: string}
+        size: {type: integer, format: int64}
+        modifiedAt: {type: string, format: date-time}
+    Backup:
+      type: object
+      required: [name, kind, size, createdAt]
+      properties:
+        name: {type: string}
+        kind: {type: string, enum: [scheduled, manual, pre_restore, uploaded]}
+        size: {type: integer, format: int64}
+        createdAt: {type: string, format: date-time}
+        version: {type: string, description: "Locarr version that made it."}
+    RestoreStarted:
+      type: object
+      required: [restarting]
+      properties:
+        restarting: {type: boolean}
+        preRestoreBackup: {type: string, description: "The backup of the state before the restore."}
+    SystemSettings:
+      type: object
+      required: [updateCheck, minFreeSpaceGb, recycleBinWarnGb, stuckImportMinutes, backupIntervalHours, backupKeep, timelineDays,
+        searchLogDays, downloadEventsDays, releasesSeenDays, vacuumIntervalDays, imageCacheMaxMb, metricsTokenSet]
+      properties:
+        updateCheck: {type: boolean, description: "Ask GitHub once a day whether a newer Locarr exists."}
+        minFreeSpaceGb: {type: integer}
+        recycleBinWarnGb: {type: integer}
+        stuckImportMinutes: {type: integer}
+        backupIntervalHours: {type: integer, description: "0 turns scheduled backups off."}
+        backupKeep: {type: integer}
+        timelineDays: {type: integer}
+        searchLogDays: {type: integer}
+        downloadEventsDays: {type: integer}
+        releasesSeenDays: {type: integer}
+        vacuumIntervalDays: {type: integer, description: "0 turns the database compaction off."}
+        imageCacheMaxMb: {type: integer}
+        metricsTokenSet: {type: boolean}
+    SystemSettingsInput:
+      type: object
+      properties:
+        updateCheck: {type: boolean}
+        minFreeSpaceGb: {type: integer, minimum: 0, maximum: 100000}
+        recycleBinWarnGb: {type: integer, minimum: 0, maximum: 1000000}
+        stuckImportMinutes: {type: integer, minimum: 5, maximum: 100000}
+        backupIntervalHours: {type: integer, minimum: 0, maximum: 8760}
+        backupKeep: {type: integer, minimum: 1, maximum: 365}
+        timelineDays: {type: integer, minimum: 7, maximum: 36500}
+        searchLogDays: {type: integer, minimum: 1, maximum: 36500}
+        downloadEventsDays: {type: integer, minimum: 7, maximum: 36500}
+        releasesSeenDays: {type: integer, minimum: 1, maximum: 365}
+        vacuumIntervalDays: {type: integer, minimum: 0, maximum: 365}
+        imageCacheMaxMb: {type: integer, minimum: 50, maximum: 1000000}
+        metricsToken: {type: string, maxLength: 200}

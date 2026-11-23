@@ -15,6 +15,43 @@ func (s *ErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// Ref: #/components/schemas/ActivityStats
+type ActivityStats struct {
+	Days     int           `json:"days"`
+	Indexers []SourceStats `json:"indexers"`
+	Clients  []SourceStats `json:"clients"`
+}
+
+// GetDays returns the value of Days.
+func (s *ActivityStats) GetDays() int {
+	return s.Days
+}
+
+// GetIndexers returns the value of Indexers.
+func (s *ActivityStats) GetIndexers() []SourceStats {
+	return s.Indexers
+}
+
+// GetClients returns the value of Clients.
+func (s *ActivityStats) GetClients() []SourceStats {
+	return s.Clients
+}
+
+// SetDays sets the value of Days.
+func (s *ActivityStats) SetDays(val int) {
+	s.Days = val
+}
+
+// SetIndexers sets the value of Indexers.
+func (s *ActivityStats) SetIndexers(val []SourceStats) {
+	s.Indexers = val
+}
+
+// SetClients sets the value of Clients.
+func (s *ActivityStats) SetClients(val []SourceStats) {
+	s.Clients = val
+}
+
 // Ref: #/components/schemas/AddArtistRequest
 type AddArtistRequest struct {
 	Mbid              string  `json:"mbid"`
@@ -2038,6 +2075,136 @@ func (s *AuthResult) SetToken(val OptString) {
 	s.Token = val
 }
 
+// Ref: #/components/schemas/Backup
+type Backup struct {
+	Name      string     `json:"name"`
+	Kind      BackupKind `json:"kind"`
+	Size      int64      `json:"size"`
+	CreatedAt time.Time  `json:"createdAt"`
+	// Locarr version that made it.
+	Version OptString `json:"version"`
+}
+
+// GetName returns the value of Name.
+func (s *Backup) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *Backup) GetKind() BackupKind {
+	return s.Kind
+}
+
+// GetSize returns the value of Size.
+func (s *Backup) GetSize() int64 {
+	return s.Size
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Backup) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetVersion returns the value of Version.
+func (s *Backup) GetVersion() OptString {
+	return s.Version
+}
+
+// SetName sets the value of Name.
+func (s *Backup) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *Backup) SetKind(val BackupKind) {
+	s.Kind = val
+}
+
+// SetSize sets the value of Size.
+func (s *Backup) SetSize(val int64) {
+	s.Size = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Backup) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetVersion sets the value of Version.
+func (s *Backup) SetVersion(val OptString) {
+	s.Version = val
+}
+
+type BackupKind string
+
+const (
+	BackupKindScheduled  BackupKind = "scheduled"
+	BackupKindManual     BackupKind = "manual"
+	BackupKindPreRestore BackupKind = "pre_restore"
+	BackupKindUploaded   BackupKind = "uploaded"
+)
+
+// AllValues returns all BackupKind values.
+func (BackupKind) AllValues() []BackupKind {
+	return []BackupKind{
+		BackupKindScheduled,
+		BackupKindManual,
+		BackupKindPreRestore,
+		BackupKindUploaded,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BackupKind) MarshalText() ([]byte, error) {
+	switch s {
+	case BackupKindScheduled:
+		return []byte(s), nil
+	case BackupKindManual:
+		return []byte(s), nil
+	case BackupKindPreRestore:
+		return []byte(s), nil
+	case BackupKindUploaded:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BackupKind) UnmarshalText(data []byte) error {
+	switch BackupKind(data) {
+	case BackupKindScheduled:
+		*s = BackupKindScheduled
+		return nil
+	case BackupKindManual:
+		*s = BackupKindManual
+		return nil
+	case BackupKindPreRestore:
+		*s = BackupKindPreRestore
+		return nil
+	case BackupKindUploaded:
+		*s = BackupKindUploaded
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/BlocklistCleared
+type BlocklistCleared struct {
+	Count int `json:"count"`
+}
+
+// GetCount returns the value of Count.
+func (s *BlocklistCleared) GetCount() int {
+	return s.Count
+}
+
+// SetCount sets the value of Count.
+func (s *BlocklistCleared) SetCount(val int) {
+	s.Count = val
+}
+
 // Ref: #/components/schemas/BlocklistEntry
 type BlocklistEntry struct {
 	ID         int64     `json:"id"`
@@ -2275,6 +2442,715 @@ func (s *BlocklistInput) SetMessage(val OptString) {
 // SetItemRef sets the value of ItemRef.
 func (s *BlocklistInput) SetItemRef(val jx.Raw) {
 	s.ItemRef = val
+}
+
+// Ref: #/components/schemas/BoardActionFailure
+type BoardActionFailure struct {
+	Key     string `json:"key"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+// GetKey returns the value of Key.
+func (s *BoardActionFailure) GetKey() string {
+	return s.Key
+}
+
+// GetCode returns the value of Code.
+func (s *BoardActionFailure) GetCode() string {
+	return s.Code
+}
+
+// GetMessage returns the value of Message.
+func (s *BoardActionFailure) GetMessage() string {
+	return s.Message
+}
+
+// SetKey sets the value of Key.
+func (s *BoardActionFailure) SetKey(val string) {
+	s.Key = val
+}
+
+// SetCode sets the value of Code.
+func (s *BoardActionFailure) SetCode(val string) {
+	s.Code = val
+}
+
+// SetMessage sets the value of Message.
+func (s *BoardActionFailure) SetMessage(val string) {
+	s.Message = val
+}
+
+// Ref: #/components/schemas/BoardActionRequest
+type BoardActionRequest struct {
+	Action           BoardActionRequestAction `json:"action"`
+	Keys             []string                 `json:"keys"`
+	QualityProfileId OptInt64                 `json:"qualityProfileId"`
+}
+
+// GetAction returns the value of Action.
+func (s *BoardActionRequest) GetAction() BoardActionRequestAction {
+	return s.Action
+}
+
+// GetKeys returns the value of Keys.
+func (s *BoardActionRequest) GetKeys() []string {
+	return s.Keys
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *BoardActionRequest) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// SetAction sets the value of Action.
+func (s *BoardActionRequest) SetAction(val BoardActionRequestAction) {
+	s.Action = val
+}
+
+// SetKeys sets the value of Keys.
+func (s *BoardActionRequest) SetKeys(val []string) {
+	s.Keys = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *BoardActionRequest) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+type BoardActionRequestAction string
+
+const (
+	BoardActionRequestActionSearch         BoardActionRequestAction = "search"
+	BoardActionRequestActionUnmonitor      BoardActionRequestAction = "unmonitor"
+	BoardActionRequestActionChangeProfile  BoardActionRequestAction = "change_profile"
+	BoardActionRequestActionBlocklistRetry BoardActionRequestAction = "blocklist_retry"
+	BoardActionRequestActionRetryImport    BoardActionRequestAction = "retry_import"
+)
+
+// AllValues returns all BoardActionRequestAction values.
+func (BoardActionRequestAction) AllValues() []BoardActionRequestAction {
+	return []BoardActionRequestAction{
+		BoardActionRequestActionSearch,
+		BoardActionRequestActionUnmonitor,
+		BoardActionRequestActionChangeProfile,
+		BoardActionRequestActionBlocklistRetry,
+		BoardActionRequestActionRetryImport,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BoardActionRequestAction) MarshalText() ([]byte, error) {
+	switch s {
+	case BoardActionRequestActionSearch:
+		return []byte(s), nil
+	case BoardActionRequestActionUnmonitor:
+		return []byte(s), nil
+	case BoardActionRequestActionChangeProfile:
+		return []byte(s), nil
+	case BoardActionRequestActionBlocklistRetry:
+		return []byte(s), nil
+	case BoardActionRequestActionRetryImport:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BoardActionRequestAction) UnmarshalText(data []byte) error {
+	switch BoardActionRequestAction(data) {
+	case BoardActionRequestActionSearch:
+		*s = BoardActionRequestActionSearch
+		return nil
+	case BoardActionRequestActionUnmonitor:
+		*s = BoardActionRequestActionUnmonitor
+		return nil
+	case BoardActionRequestActionChangeProfile:
+		*s = BoardActionRequestActionChangeProfile
+		return nil
+	case BoardActionRequestActionBlocklistRetry:
+		*s = BoardActionRequestActionBlocklistRetry
+		return nil
+	case BoardActionRequestActionRetryImport:
+		*s = BoardActionRequestActionRetryImport
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/BoardActionResult
+type BoardActionResult struct {
+	Done   int                  `json:"done"`
+	Failed []BoardActionFailure `json:"failed"`
+}
+
+// GetDone returns the value of Done.
+func (s *BoardActionResult) GetDone() int {
+	return s.Done
+}
+
+// GetFailed returns the value of Failed.
+func (s *BoardActionResult) GetFailed() []BoardActionFailure {
+	return s.Failed
+}
+
+// SetDone sets the value of Done.
+func (s *BoardActionResult) SetDone(val int) {
+	s.Done = val
+}
+
+// SetFailed sets the value of Failed.
+func (s *BoardActionResult) SetFailed(val []BoardActionFailure) {
+	s.Failed = val
+}
+
+// Ref: #/components/schemas/BoardGroup
+type BoardGroup struct {
+	// The explanation code (see `Explanation`) plus `stalled`, `path_not_visible`,
+	// `subtitle_not_searched`, `subtitle_not_found`, `subtitle_no_providers`, `subtitle_quota`.
+	Code string         `json:"code"`
+	Tone BoardGroupTone `json:"tone"`
+	// What usually fixes the group: path_mapping, permissions, client_category, disk_space, indexers,
+	// download_clients, subtitle_providers, manual_import, profile, or "".
+	Fix   string          `json:"fix"`
+	Count int             `json:"count"`
+	Kinds BoardKindCounts `json:"kinds"`
+	// Searches made for the items of the group, added up.
+	Searches int `json:"searches"`
+	// Rejection reasons of the items' last searches, added up (most common first, at most 8).
+	Reasons []ReasonCount `json:"reasons"`
+}
+
+// GetCode returns the value of Code.
+func (s *BoardGroup) GetCode() string {
+	return s.Code
+}
+
+// GetTone returns the value of Tone.
+func (s *BoardGroup) GetTone() BoardGroupTone {
+	return s.Tone
+}
+
+// GetFix returns the value of Fix.
+func (s *BoardGroup) GetFix() string {
+	return s.Fix
+}
+
+// GetCount returns the value of Count.
+func (s *BoardGroup) GetCount() int {
+	return s.Count
+}
+
+// GetKinds returns the value of Kinds.
+func (s *BoardGroup) GetKinds() BoardKindCounts {
+	return s.Kinds
+}
+
+// GetSearches returns the value of Searches.
+func (s *BoardGroup) GetSearches() int {
+	return s.Searches
+}
+
+// GetReasons returns the value of Reasons.
+func (s *BoardGroup) GetReasons() []ReasonCount {
+	return s.Reasons
+}
+
+// SetCode sets the value of Code.
+func (s *BoardGroup) SetCode(val string) {
+	s.Code = val
+}
+
+// SetTone sets the value of Tone.
+func (s *BoardGroup) SetTone(val BoardGroupTone) {
+	s.Tone = val
+}
+
+// SetFix sets the value of Fix.
+func (s *BoardGroup) SetFix(val string) {
+	s.Fix = val
+}
+
+// SetCount sets the value of Count.
+func (s *BoardGroup) SetCount(val int) {
+	s.Count = val
+}
+
+// SetKinds sets the value of Kinds.
+func (s *BoardGroup) SetKinds(val BoardKindCounts) {
+	s.Kinds = val
+}
+
+// SetSearches sets the value of Searches.
+func (s *BoardGroup) SetSearches(val int) {
+	s.Searches = val
+}
+
+// SetReasons sets the value of Reasons.
+func (s *BoardGroup) SetReasons(val []ReasonCount) {
+	s.Reasons = val
+}
+
+type BoardGroupTone string
+
+const (
+	BoardGroupToneSuccess BoardGroupTone = "success"
+	BoardGroupToneInfo    BoardGroupTone = "info"
+	BoardGroupToneWarning BoardGroupTone = "warning"
+	BoardGroupToneDanger  BoardGroupTone = "danger"
+)
+
+// AllValues returns all BoardGroupTone values.
+func (BoardGroupTone) AllValues() []BoardGroupTone {
+	return []BoardGroupTone{
+		BoardGroupToneSuccess,
+		BoardGroupToneInfo,
+		BoardGroupToneWarning,
+		BoardGroupToneDanger,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BoardGroupTone) MarshalText() ([]byte, error) {
+	switch s {
+	case BoardGroupToneSuccess:
+		return []byte(s), nil
+	case BoardGroupToneInfo:
+		return []byte(s), nil
+	case BoardGroupToneWarning:
+		return []byte(s), nil
+	case BoardGroupToneDanger:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BoardGroupTone) UnmarshalText(data []byte) error {
+	switch BoardGroupTone(data) {
+	case BoardGroupToneSuccess:
+		*s = BoardGroupToneSuccess
+		return nil
+	case BoardGroupToneInfo:
+		*s = BoardGroupToneInfo
+		return nil
+	case BoardGroupToneWarning:
+		*s = BoardGroupToneWarning
+		return nil
+	case BoardGroupToneDanger:
+		*s = BoardGroupToneDanger
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/BoardItem
+type BoardItem struct {
+	Key     string    `json:"key"`
+	Kind    BoardKind `json:"kind"`
+	ItemRef string    `json:"itemRef"`
+	// The series or artist ("" for movies).
+	ParentRef string        `json:"parentRef"`
+	Title     string        `json:"title"`
+	Code      string        `json:"code"`
+	Tone      BoardItemTone `json:"tone"`
+	Fix       string        `json:"fix"`
+	// English text; clients render `code` and `params`.
+	Message          string          `json:"message"`
+	Params           BoardItemParams `json:"params"`
+	Reasons          []ReasonCount   `json:"reasons"`
+	Searches         int             `json:"searches"`
+	DownloadId       OptInt64        `json:"downloadId"`
+	QualityProfileId OptInt64        `json:"qualityProfileId"`
+	UpdatedAt        time.Time       `json:"updatedAt"`
+}
+
+// GetKey returns the value of Key.
+func (s *BoardItem) GetKey() string {
+	return s.Key
+}
+
+// GetKind returns the value of Kind.
+func (s *BoardItem) GetKind() BoardKind {
+	return s.Kind
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *BoardItem) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetParentRef returns the value of ParentRef.
+func (s *BoardItem) GetParentRef() string {
+	return s.ParentRef
+}
+
+// GetTitle returns the value of Title.
+func (s *BoardItem) GetTitle() string {
+	return s.Title
+}
+
+// GetCode returns the value of Code.
+func (s *BoardItem) GetCode() string {
+	return s.Code
+}
+
+// GetTone returns the value of Tone.
+func (s *BoardItem) GetTone() BoardItemTone {
+	return s.Tone
+}
+
+// GetFix returns the value of Fix.
+func (s *BoardItem) GetFix() string {
+	return s.Fix
+}
+
+// GetMessage returns the value of Message.
+func (s *BoardItem) GetMessage() string {
+	return s.Message
+}
+
+// GetParams returns the value of Params.
+func (s *BoardItem) GetParams() BoardItemParams {
+	return s.Params
+}
+
+// GetReasons returns the value of Reasons.
+func (s *BoardItem) GetReasons() []ReasonCount {
+	return s.Reasons
+}
+
+// GetSearches returns the value of Searches.
+func (s *BoardItem) GetSearches() int {
+	return s.Searches
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *BoardItem) GetDownloadId() OptInt64 {
+	return s.DownloadId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *BoardItem) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *BoardItem) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// SetKey sets the value of Key.
+func (s *BoardItem) SetKey(val string) {
+	s.Key = val
+}
+
+// SetKind sets the value of Kind.
+func (s *BoardItem) SetKind(val BoardKind) {
+	s.Kind = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *BoardItem) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetParentRef sets the value of ParentRef.
+func (s *BoardItem) SetParentRef(val string) {
+	s.ParentRef = val
+}
+
+// SetTitle sets the value of Title.
+func (s *BoardItem) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetCode sets the value of Code.
+func (s *BoardItem) SetCode(val string) {
+	s.Code = val
+}
+
+// SetTone sets the value of Tone.
+func (s *BoardItem) SetTone(val BoardItemTone) {
+	s.Tone = val
+}
+
+// SetFix sets the value of Fix.
+func (s *BoardItem) SetFix(val string) {
+	s.Fix = val
+}
+
+// SetMessage sets the value of Message.
+func (s *BoardItem) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetParams sets the value of Params.
+func (s *BoardItem) SetParams(val BoardItemParams) {
+	s.Params = val
+}
+
+// SetReasons sets the value of Reasons.
+func (s *BoardItem) SetReasons(val []ReasonCount) {
+	s.Reasons = val
+}
+
+// SetSearches sets the value of Searches.
+func (s *BoardItem) SetSearches(val int) {
+	s.Searches = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *BoardItem) SetDownloadId(val OptInt64) {
+	s.DownloadId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *BoardItem) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *BoardItem) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// Ref: #/components/schemas/BoardItemPage
+type BoardItemPage struct {
+	Total int         `json:"total"`
+	Items []BoardItem `json:"items"`
+}
+
+// GetTotal returns the value of Total.
+func (s *BoardItemPage) GetTotal() int {
+	return s.Total
+}
+
+// GetItems returns the value of Items.
+func (s *BoardItemPage) GetItems() []BoardItem {
+	return s.Items
+}
+
+// SetTotal sets the value of Total.
+func (s *BoardItemPage) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetItems sets the value of Items.
+func (s *BoardItemPage) SetItems(val []BoardItem) {
+	s.Items = val
+}
+
+type BoardItemParams map[string]jx.Raw
+
+func (s *BoardItemParams) init() BoardItemParams {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+type BoardItemTone string
+
+const (
+	BoardItemToneSuccess BoardItemTone = "success"
+	BoardItemToneInfo    BoardItemTone = "info"
+	BoardItemToneWarning BoardItemTone = "warning"
+	BoardItemToneDanger  BoardItemTone = "danger"
+)
+
+// AllValues returns all BoardItemTone values.
+func (BoardItemTone) AllValues() []BoardItemTone {
+	return []BoardItemTone{
+		BoardItemToneSuccess,
+		BoardItemToneInfo,
+		BoardItemToneWarning,
+		BoardItemToneDanger,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BoardItemTone) MarshalText() ([]byte, error) {
+	switch s {
+	case BoardItemToneSuccess:
+		return []byte(s), nil
+	case BoardItemToneInfo:
+		return []byte(s), nil
+	case BoardItemToneWarning:
+		return []byte(s), nil
+	case BoardItemToneDanger:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BoardItemTone) UnmarshalText(data []byte) error {
+	switch BoardItemTone(data) {
+	case BoardItemToneSuccess:
+		*s = BoardItemToneSuccess
+		return nil
+	case BoardItemToneInfo:
+		*s = BoardItemToneInfo
+		return nil
+	case BoardItemToneWarning:
+		*s = BoardItemToneWarning
+		return nil
+	case BoardItemToneDanger:
+		*s = BoardItemToneDanger
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/BoardKind
+type BoardKind string
+
+const (
+	BoardKindMovie    BoardKind = "movie"
+	BoardKindEpisode  BoardKind = "episode"
+	BoardKindAlbum    BoardKind = "album"
+	BoardKindSubtitle BoardKind = "subtitle"
+)
+
+// AllValues returns all BoardKind values.
+func (BoardKind) AllValues() []BoardKind {
+	return []BoardKind{
+		BoardKindMovie,
+		BoardKindEpisode,
+		BoardKindAlbum,
+		BoardKindSubtitle,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BoardKind) MarshalText() ([]byte, error) {
+	switch s {
+	case BoardKindMovie:
+		return []byte(s), nil
+	case BoardKindEpisode:
+		return []byte(s), nil
+	case BoardKindAlbum:
+		return []byte(s), nil
+	case BoardKindSubtitle:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BoardKind) UnmarshalText(data []byte) error {
+	switch BoardKind(data) {
+	case BoardKindMovie:
+		*s = BoardKindMovie
+		return nil
+	case BoardKindEpisode:
+		*s = BoardKindEpisode
+		return nil
+	case BoardKindAlbum:
+		*s = BoardKindAlbum
+		return nil
+	case BoardKindSubtitle:
+		*s = BoardKindSubtitle
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/BoardKindCounts
+type BoardKindCounts struct {
+	Movie    int `json:"movie"`
+	Episode  int `json:"episode"`
+	Album    int `json:"album"`
+	Subtitle int `json:"subtitle"`
+}
+
+// GetMovie returns the value of Movie.
+func (s *BoardKindCounts) GetMovie() int {
+	return s.Movie
+}
+
+// GetEpisode returns the value of Episode.
+func (s *BoardKindCounts) GetEpisode() int {
+	return s.Episode
+}
+
+// GetAlbum returns the value of Album.
+func (s *BoardKindCounts) GetAlbum() int {
+	return s.Album
+}
+
+// GetSubtitle returns the value of Subtitle.
+func (s *BoardKindCounts) GetSubtitle() int {
+	return s.Subtitle
+}
+
+// SetMovie sets the value of Movie.
+func (s *BoardKindCounts) SetMovie(val int) {
+	s.Movie = val
+}
+
+// SetEpisode sets the value of Episode.
+func (s *BoardKindCounts) SetEpisode(val int) {
+	s.Episode = val
+}
+
+// SetAlbum sets the value of Album.
+func (s *BoardKindCounts) SetAlbum(val int) {
+	s.Album = val
+}
+
+// SetSubtitle sets the value of Subtitle.
+func (s *BoardKindCounts) SetSubtitle(val int) {
+	s.Subtitle = val
+}
+
+// Ref: #/components/schemas/BoardSummary
+type BoardSummary struct {
+	Total int `json:"total"`
+	// When the board was last rebuilt in full.
+	UpdatedAt OptDateTime  `json:"updatedAt"`
+	Groups    []BoardGroup `json:"groups"`
+}
+
+// GetTotal returns the value of Total.
+func (s *BoardSummary) GetTotal() int {
+	return s.Total
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *BoardSummary) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// GetGroups returns the value of Groups.
+func (s *BoardSummary) GetGroups() []BoardGroup {
+	return s.Groups
+}
+
+// SetTotal sets the value of Total.
+func (s *BoardSummary) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *BoardSummary) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+// SetGroups sets the value of Groups.
+func (s *BoardSummary) SetGroups(val []BoardGroup) {
+	s.Groups = val
 }
 
 // Ref: #/components/schemas/BulkError
@@ -3243,6 +4119,8 @@ func (s *CreateRequest) SetOptions(val OptRequestOptions) {
 type CreateRootFolderRequest struct {
 	Path string    `json:"path"`
 	Kind MediaKind `json:"kind"`
+	// Create the folder (inside the data roots) when it does not exist yet.
+	Create OptBool `json:"create"`
 }
 
 // GetPath returns the value of Path.
@@ -3255,6 +4133,11 @@ func (s *CreateRootFolderRequest) GetKind() MediaKind {
 	return s.Kind
 }
 
+// GetCreate returns the value of Create.
+func (s *CreateRootFolderRequest) GetCreate() OptBool {
+	return s.Create
+}
+
 // SetPath sets the value of Path.
 func (s *CreateRootFolderRequest) SetPath(val string) {
 	s.Path = val
@@ -3263,6 +4146,11 @@ func (s *CreateRootFolderRequest) SetPath(val string) {
 // SetKind sets the value of Kind.
 func (s *CreateRootFolderRequest) SetKind(val MediaKind) {
 	s.Kind = val
+}
+
+// SetCreate sets the value of Create.
+func (s *CreateRootFolderRequest) SetCreate(val OptBool) {
+	s.Create = val
 }
 
 // Ref: #/components/schemas/CreateUserRequest
@@ -4439,6 +5327,9 @@ type DeleteApiKeyNoContent struct{}
 // DeleteArtistNoContent is response for DeleteArtist operation.
 type DeleteArtistNoContent struct{}
 
+// DeleteBackupNoContent is response for DeleteBackup operation.
+type DeleteBackupNoContent struct{}
+
 // DeleteBlocklistEntryNoContent is response for DeleteBlocklistEntry operation.
 type DeleteBlocklistEntryNoContent struct{}
 
@@ -5209,6 +6100,46 @@ func (s *DiscoverStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+type DownloadBackupOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s DownloadBackupOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+// DownloadBackupOKHeaders wraps DownloadBackupOK with response headers.
+type DownloadBackupOKHeaders struct {
+	ContentDisposition OptString
+	Response           DownloadBackupOK
+}
+
+// GetContentDisposition returns the value of ContentDisposition.
+func (s *DownloadBackupOKHeaders) GetContentDisposition() OptString {
+	return s.ContentDisposition
+}
+
+// GetResponse returns the value of Response.
+func (s *DownloadBackupOKHeaders) GetResponse() DownloadBackupOK {
+	return s.Response
+}
+
+// SetContentDisposition sets the value of ContentDisposition.
+func (s *DownloadBackupOKHeaders) SetContentDisposition(val OptString) {
+	s.ContentDisposition = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DownloadBackupOKHeaders) SetResponse(val DownloadBackupOK) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/DownloadClient
@@ -6461,6 +7392,46 @@ func (s *DownloadItemSubtitleReq) GetKey() string {
 // SetKey sets the value of Key.
 func (s *DownloadItemSubtitleReq) SetKey(val string) {
 	s.Key = val
+}
+
+type DownloadLogFileOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s DownloadLogFileOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+// DownloadLogFileOKHeaders wraps DownloadLogFileOK with response headers.
+type DownloadLogFileOKHeaders struct {
+	ContentDisposition OptString
+	Response           DownloadLogFileOK
+}
+
+// GetContentDisposition returns the value of ContentDisposition.
+func (s *DownloadLogFileOKHeaders) GetContentDisposition() OptString {
+	return s.ContentDisposition
+}
+
+// GetResponse returns the value of Response.
+func (s *DownloadLogFileOKHeaders) GetResponse() DownloadLogFileOK {
+	return s.Response
+}
+
+// SetContentDisposition sets the value of ContentDisposition.
+func (s *DownloadLogFileOKHeaders) SetContentDisposition(val OptString) {
+	s.ContentDisposition = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DownloadLogFileOKHeaders) SetResponse(val DownloadLogFileOK) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/DownloadProtocol
@@ -8613,6 +9584,495 @@ func (s *GrabRequest) SetSeedTimeMinutes(val OptInt) {
 // SetPublishedAt sets the value of PublishedAt.
 func (s *GrabRequest) SetPublishedAt(val OptDateTime) {
 	s.PublishedAt = val
+}
+
+// Ref: #/components/schemas/HealthIssue
+type HealthIssue struct {
+	// Unique per problem ("indexer:3", "rootfolder:2:space").
+	Key      string         `json:"key"`
+	Check    string         `json:"check"`
+	Severity HealthSeverity `json:"severity"`
+	// Stable code the clients translate.
+	Code string `json:"code"`
+	// English text.
+	Message string            `json:"message"`
+	Params  HealthIssueParams `json:"params"`
+	// Anchor in docs/user/troubleshooting.md.
+	Docs string `json:"docs"`
+	// The web client page where it is fixed.
+	FixRoute OptString `json:"fixRoute"`
+	Since    time.Time `json:"since"`
+}
+
+// GetKey returns the value of Key.
+func (s *HealthIssue) GetKey() string {
+	return s.Key
+}
+
+// GetCheck returns the value of Check.
+func (s *HealthIssue) GetCheck() string {
+	return s.Check
+}
+
+// GetSeverity returns the value of Severity.
+func (s *HealthIssue) GetSeverity() HealthSeverity {
+	return s.Severity
+}
+
+// GetCode returns the value of Code.
+func (s *HealthIssue) GetCode() string {
+	return s.Code
+}
+
+// GetMessage returns the value of Message.
+func (s *HealthIssue) GetMessage() string {
+	return s.Message
+}
+
+// GetParams returns the value of Params.
+func (s *HealthIssue) GetParams() HealthIssueParams {
+	return s.Params
+}
+
+// GetDocs returns the value of Docs.
+func (s *HealthIssue) GetDocs() string {
+	return s.Docs
+}
+
+// GetFixRoute returns the value of FixRoute.
+func (s *HealthIssue) GetFixRoute() OptString {
+	return s.FixRoute
+}
+
+// GetSince returns the value of Since.
+func (s *HealthIssue) GetSince() time.Time {
+	return s.Since
+}
+
+// SetKey sets the value of Key.
+func (s *HealthIssue) SetKey(val string) {
+	s.Key = val
+}
+
+// SetCheck sets the value of Check.
+func (s *HealthIssue) SetCheck(val string) {
+	s.Check = val
+}
+
+// SetSeverity sets the value of Severity.
+func (s *HealthIssue) SetSeverity(val HealthSeverity) {
+	s.Severity = val
+}
+
+// SetCode sets the value of Code.
+func (s *HealthIssue) SetCode(val string) {
+	s.Code = val
+}
+
+// SetMessage sets the value of Message.
+func (s *HealthIssue) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetParams sets the value of Params.
+func (s *HealthIssue) SetParams(val HealthIssueParams) {
+	s.Params = val
+}
+
+// SetDocs sets the value of Docs.
+func (s *HealthIssue) SetDocs(val string) {
+	s.Docs = val
+}
+
+// SetFixRoute sets the value of FixRoute.
+func (s *HealthIssue) SetFixRoute(val OptString) {
+	s.FixRoute = val
+}
+
+// SetSince sets the value of Since.
+func (s *HealthIssue) SetSince(val time.Time) {
+	s.Since = val
+}
+
+type HealthIssueParams map[string]jx.Raw
+
+func (s *HealthIssueParams) init() HealthIssueParams {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/HealthReport
+type HealthReport struct {
+	CheckedAt OptDateTime   `json:"checkedAt"`
+	Issues    []HealthIssue `json:"issues"`
+}
+
+// GetCheckedAt returns the value of CheckedAt.
+func (s *HealthReport) GetCheckedAt() OptDateTime {
+	return s.CheckedAt
+}
+
+// GetIssues returns the value of Issues.
+func (s *HealthReport) GetIssues() []HealthIssue {
+	return s.Issues
+}
+
+// SetCheckedAt sets the value of CheckedAt.
+func (s *HealthReport) SetCheckedAt(val OptDateTime) {
+	s.CheckedAt = val
+}
+
+// SetIssues sets the value of Issues.
+func (s *HealthReport) SetIssues(val []HealthIssue) {
+	s.Issues = val
+}
+
+// Ref: #/components/schemas/HealthSeverity
+type HealthSeverity string
+
+const (
+	HealthSeverityError   HealthSeverity = "error"
+	HealthSeverityWarning HealthSeverity = "warning"
+	HealthSeverityInfo    HealthSeverity = "info"
+)
+
+// AllValues returns all HealthSeverity values.
+func (HealthSeverity) AllValues() []HealthSeverity {
+	return []HealthSeverity{
+		HealthSeverityError,
+		HealthSeverityWarning,
+		HealthSeverityInfo,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s HealthSeverity) MarshalText() ([]byte, error) {
+	switch s {
+	case HealthSeverityError:
+		return []byte(s), nil
+	case HealthSeverityWarning:
+		return []byte(s), nil
+	case HealthSeverityInfo:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *HealthSeverity) UnmarshalText(data []byte) error {
+	switch HealthSeverity(data) {
+	case HealthSeverityError:
+		*s = HealthSeverityError
+		return nil
+	case HealthSeverityWarning:
+		*s = HealthSeverityWarning
+		return nil
+	case HealthSeverityInfo:
+		*s = HealthSeverityInfo
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/HistoryCategory
+type HistoryCategory string
+
+const (
+	HistoryCategoryGrabbed       HistoryCategory = "grabbed"
+	HistoryCategoryImported      HistoryCategory = "imported"
+	HistoryCategoryUpgraded      HistoryCategory = "upgraded"
+	HistoryCategoryFailed        HistoryCategory = "failed"
+	HistoryCategoryDeleted       HistoryCategory = "deleted"
+	HistoryCategoryRenamed       HistoryCategory = "renamed"
+	HistoryCategorySubtitles     HistoryCategory = "subtitles"
+	HistoryCategoryNotifications HistoryCategory = "notifications"
+)
+
+// AllValues returns all HistoryCategory values.
+func (HistoryCategory) AllValues() []HistoryCategory {
+	return []HistoryCategory{
+		HistoryCategoryGrabbed,
+		HistoryCategoryImported,
+		HistoryCategoryUpgraded,
+		HistoryCategoryFailed,
+		HistoryCategoryDeleted,
+		HistoryCategoryRenamed,
+		HistoryCategorySubtitles,
+		HistoryCategoryNotifications,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s HistoryCategory) MarshalText() ([]byte, error) {
+	switch s {
+	case HistoryCategoryGrabbed:
+		return []byte(s), nil
+	case HistoryCategoryImported:
+		return []byte(s), nil
+	case HistoryCategoryUpgraded:
+		return []byte(s), nil
+	case HistoryCategoryFailed:
+		return []byte(s), nil
+	case HistoryCategoryDeleted:
+		return []byte(s), nil
+	case HistoryCategoryRenamed:
+		return []byte(s), nil
+	case HistoryCategorySubtitles:
+		return []byte(s), nil
+	case HistoryCategoryNotifications:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *HistoryCategory) UnmarshalText(data []byte) error {
+	switch HistoryCategory(data) {
+	case HistoryCategoryGrabbed:
+		*s = HistoryCategoryGrabbed
+		return nil
+	case HistoryCategoryImported:
+		*s = HistoryCategoryImported
+		return nil
+	case HistoryCategoryUpgraded:
+		*s = HistoryCategoryUpgraded
+		return nil
+	case HistoryCategoryFailed:
+		*s = HistoryCategoryFailed
+		return nil
+	case HistoryCategoryDeleted:
+		*s = HistoryCategoryDeleted
+		return nil
+	case HistoryCategoryRenamed:
+		*s = HistoryCategoryRenamed
+		return nil
+	case HistoryCategorySubtitles:
+		*s = HistoryCategorySubtitles
+		return nil
+	case HistoryCategoryNotifications:
+		*s = HistoryCategoryNotifications
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/HistoryEntry
+type HistoryEntry struct {
+	// Stable within its source ("t:12", "d:7", "s:3").
+	ID         string              `json:"id"`
+	At         time.Time           `json:"at"`
+	Category   HistoryCategory     `json:"category"`
+	Type       string              `json:"type"`
+	Kind       OptHistoryEntryKind `json:"kind"`
+	ItemRef    string              `json:"itemRef"`
+	Title      string              `json:"title"`
+	Release    OptString           `json:"release"`
+	Indexer    OptString           `json:"indexer"`
+	Client     OptString           `json:"client"`
+	Message    string              `json:"message"`
+	DownloadId OptInt64            `json:"downloadId"`
+}
+
+// GetID returns the value of ID.
+func (s *HistoryEntry) GetID() string {
+	return s.ID
+}
+
+// GetAt returns the value of At.
+func (s *HistoryEntry) GetAt() time.Time {
+	return s.At
+}
+
+// GetCategory returns the value of Category.
+func (s *HistoryEntry) GetCategory() HistoryCategory {
+	return s.Category
+}
+
+// GetType returns the value of Type.
+func (s *HistoryEntry) GetType() string {
+	return s.Type
+}
+
+// GetKind returns the value of Kind.
+func (s *HistoryEntry) GetKind() OptHistoryEntryKind {
+	return s.Kind
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *HistoryEntry) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetTitle returns the value of Title.
+func (s *HistoryEntry) GetTitle() string {
+	return s.Title
+}
+
+// GetRelease returns the value of Release.
+func (s *HistoryEntry) GetRelease() OptString {
+	return s.Release
+}
+
+// GetIndexer returns the value of Indexer.
+func (s *HistoryEntry) GetIndexer() OptString {
+	return s.Indexer
+}
+
+// GetClient returns the value of Client.
+func (s *HistoryEntry) GetClient() OptString {
+	return s.Client
+}
+
+// GetMessage returns the value of Message.
+func (s *HistoryEntry) GetMessage() string {
+	return s.Message
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *HistoryEntry) GetDownloadId() OptInt64 {
+	return s.DownloadId
+}
+
+// SetID sets the value of ID.
+func (s *HistoryEntry) SetID(val string) {
+	s.ID = val
+}
+
+// SetAt sets the value of At.
+func (s *HistoryEntry) SetAt(val time.Time) {
+	s.At = val
+}
+
+// SetCategory sets the value of Category.
+func (s *HistoryEntry) SetCategory(val HistoryCategory) {
+	s.Category = val
+}
+
+// SetType sets the value of Type.
+func (s *HistoryEntry) SetType(val string) {
+	s.Type = val
+}
+
+// SetKind sets the value of Kind.
+func (s *HistoryEntry) SetKind(val OptHistoryEntryKind) {
+	s.Kind = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *HistoryEntry) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetTitle sets the value of Title.
+func (s *HistoryEntry) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetRelease sets the value of Release.
+func (s *HistoryEntry) SetRelease(val OptString) {
+	s.Release = val
+}
+
+// SetIndexer sets the value of Indexer.
+func (s *HistoryEntry) SetIndexer(val OptString) {
+	s.Indexer = val
+}
+
+// SetClient sets the value of Client.
+func (s *HistoryEntry) SetClient(val OptString) {
+	s.Client = val
+}
+
+// SetMessage sets the value of Message.
+func (s *HistoryEntry) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *HistoryEntry) SetDownloadId(val OptInt64) {
+	s.DownloadId = val
+}
+
+type HistoryEntryKind string
+
+const (
+	HistoryEntryKindMovie  HistoryEntryKind = "movie"
+	HistoryEntryKindSeries HistoryEntryKind = "series"
+	HistoryEntryKindMusic  HistoryEntryKind = "music"
+)
+
+// AllValues returns all HistoryEntryKind values.
+func (HistoryEntryKind) AllValues() []HistoryEntryKind {
+	return []HistoryEntryKind{
+		HistoryEntryKindMovie,
+		HistoryEntryKindSeries,
+		HistoryEntryKindMusic,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s HistoryEntryKind) MarshalText() ([]byte, error) {
+	switch s {
+	case HistoryEntryKindMovie:
+		return []byte(s), nil
+	case HistoryEntryKindSeries:
+		return []byte(s), nil
+	case HistoryEntryKindMusic:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *HistoryEntryKind) UnmarshalText(data []byte) error {
+	switch HistoryEntryKind(data) {
+	case HistoryEntryKindMovie:
+		*s = HistoryEntryKindMovie
+		return nil
+	case HistoryEntryKindSeries:
+		*s = HistoryEntryKindSeries
+		return nil
+	case HistoryEntryKindMusic:
+		*s = HistoryEntryKindMusic
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/HistoryPage
+type HistoryPage struct {
+	Items   []HistoryEntry `json:"items"`
+	HasMore bool           `json:"hasMore"`
+}
+
+// GetItems returns the value of Items.
+func (s *HistoryPage) GetItems() []HistoryEntry {
+	return s.Items
+}
+
+// GetHasMore returns the value of HasMore.
+func (s *HistoryPage) GetHasMore() bool {
+	return s.HasMore
+}
+
+// SetItems sets the value of Items.
+func (s *HistoryPage) SetItems(val []HistoryEntry) {
+	s.Items = val
+}
+
+// SetHasMore sets the value of HasMore.
+func (s *HistoryPage) SetHasMore(val bool) {
+	s.HasMore = val
 }
 
 // Ref: #/components/schemas/ImportCustomFormatsRequest
@@ -13148,6 +14608,169 @@ func (s *ListWantedSubtitlesKind) UnmarshalText(data []byte) error {
 		return nil
 	case ListWantedSubtitlesKindEpisode:
 		*s = ListWantedSubtitlesKindEpisode
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/LogEntry
+type LogEntry struct {
+	Seq     int64          `json:"seq"`
+	Time    time.Time      `json:"time"`
+	Level   LogLevel       `json:"level"`
+	Message string         `json:"message"`
+	Fields  LogEntryFields `json:"fields"`
+}
+
+// GetSeq returns the value of Seq.
+func (s *LogEntry) GetSeq() int64 {
+	return s.Seq
+}
+
+// GetTime returns the value of Time.
+func (s *LogEntry) GetTime() time.Time {
+	return s.Time
+}
+
+// GetLevel returns the value of Level.
+func (s *LogEntry) GetLevel() LogLevel {
+	return s.Level
+}
+
+// GetMessage returns the value of Message.
+func (s *LogEntry) GetMessage() string {
+	return s.Message
+}
+
+// GetFields returns the value of Fields.
+func (s *LogEntry) GetFields() LogEntryFields {
+	return s.Fields
+}
+
+// SetSeq sets the value of Seq.
+func (s *LogEntry) SetSeq(val int64) {
+	s.Seq = val
+}
+
+// SetTime sets the value of Time.
+func (s *LogEntry) SetTime(val time.Time) {
+	s.Time = val
+}
+
+// SetLevel sets the value of Level.
+func (s *LogEntry) SetLevel(val LogLevel) {
+	s.Level = val
+}
+
+// SetMessage sets the value of Message.
+func (s *LogEntry) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetFields sets the value of Fields.
+func (s *LogEntry) SetFields(val LogEntryFields) {
+	s.Fields = val
+}
+
+type LogEntryFields map[string]jx.Raw
+
+func (s *LogEntryFields) init() LogEntryFields {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/LogFile
+type LogFile struct {
+	Name       string    `json:"name"`
+	Size       int64     `json:"size"`
+	ModifiedAt time.Time `json:"modifiedAt"`
+}
+
+// GetName returns the value of Name.
+func (s *LogFile) GetName() string {
+	return s.Name
+}
+
+// GetSize returns the value of Size.
+func (s *LogFile) GetSize() int64 {
+	return s.Size
+}
+
+// GetModifiedAt returns the value of ModifiedAt.
+func (s *LogFile) GetModifiedAt() time.Time {
+	return s.ModifiedAt
+}
+
+// SetName sets the value of Name.
+func (s *LogFile) SetName(val string) {
+	s.Name = val
+}
+
+// SetSize sets the value of Size.
+func (s *LogFile) SetSize(val int64) {
+	s.Size = val
+}
+
+// SetModifiedAt sets the value of ModifiedAt.
+func (s *LogFile) SetModifiedAt(val time.Time) {
+	s.ModifiedAt = val
+}
+
+// Ref: #/components/schemas/LogLevel
+type LogLevel string
+
+const (
+	LogLevelDebug LogLevel = "debug"
+	LogLevelInfo  LogLevel = "info"
+	LogLevelWarn  LogLevel = "warn"
+	LogLevelError LogLevel = "error"
+)
+
+// AllValues returns all LogLevel values.
+func (LogLevel) AllValues() []LogLevel {
+	return []LogLevel{
+		LogLevelDebug,
+		LogLevelInfo,
+		LogLevelWarn,
+		LogLevelError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LogLevel) MarshalText() ([]byte, error) {
+	switch s {
+	case LogLevelDebug:
+		return []byte(s), nil
+	case LogLevelInfo:
+		return []byte(s), nil
+	case LogLevelWarn:
+		return []byte(s), nil
+	case LogLevelError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LogLevel) UnmarshalText(data []byte) error {
+	switch LogLevel(data) {
+	case LogLevelDebug:
+		*s = LogLevelDebug
+		return nil
+	case LogLevelInfo:
+		*s = LogLevelInfo
+		return nil
+	case LogLevelWarn:
+		*s = LogLevelWarn
+		return nil
+	case LogLevelError:
+		*s = LogLevelError
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -18760,6 +20383,52 @@ func (o OptArtistLookup) Or(d ArtistLookup) ArtistLookup {
 	return d
 }
 
+// NewOptBoardKind returns new OptBoardKind with value set to v.
+func NewOptBoardKind(v BoardKind) OptBoardKind {
+	return OptBoardKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptBoardKind is optional BoardKind.
+type OptBoardKind struct {
+	Value BoardKind
+	Set   bool
+}
+
+// IsSet returns true if OptBoardKind was set.
+func (o OptBoardKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptBoardKind) Reset() {
+	var v BoardKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptBoardKind) SetTo(v BoardKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptBoardKind) Get() (v BoardKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptBoardKind) Or(d BoardKind) BoardKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptBool returns new OptBool with value set to v.
 func NewOptBool(v bool) OptBool {
 	return OptBool{
@@ -19496,6 +21165,98 @@ func (o OptFloat64) Or(d float64) float64 {
 	return d
 }
 
+// NewOptHistoryCategory returns new OptHistoryCategory with value set to v.
+func NewOptHistoryCategory(v HistoryCategory) OptHistoryCategory {
+	return OptHistoryCategory{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptHistoryCategory is optional HistoryCategory.
+type OptHistoryCategory struct {
+	Value HistoryCategory
+	Set   bool
+}
+
+// IsSet returns true if OptHistoryCategory was set.
+func (o OptHistoryCategory) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptHistoryCategory) Reset() {
+	var v HistoryCategory
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptHistoryCategory) SetTo(v HistoryCategory) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptHistoryCategory) Get() (v HistoryCategory, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptHistoryCategory) Or(d HistoryCategory) HistoryCategory {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptHistoryEntryKind returns new OptHistoryEntryKind with value set to v.
+func NewOptHistoryEntryKind(v HistoryEntryKind) OptHistoryEntryKind {
+	return OptHistoryEntryKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptHistoryEntryKind is optional HistoryEntryKind.
+type OptHistoryEntryKind struct {
+	Value HistoryEntryKind
+	Set   bool
+}
+
+// IsSet returns true if OptHistoryEntryKind was set.
+func (o OptHistoryEntryKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptHistoryEntryKind) Reset() {
+	var v HistoryEntryKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptHistoryEntryKind) SetTo(v HistoryEntryKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptHistoryEntryKind) Get() (v HistoryEntryKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptHistoryEntryKind) Or(d HistoryEntryKind) HistoryEntryKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptImportExistingArtistsRequestMonitor returns new OptImportExistingArtistsRequestMonitor with value set to v.
 func NewOptImportExistingArtistsRequestMonitor(v ImportExistingArtistsRequestMonitor) OptImportExistingArtistsRequestMonitor {
 	return OptImportExistingArtistsRequestMonitor{
@@ -20226,6 +21987,52 @@ func (o OptListWantedSubtitlesKind) Get() (v ListWantedSubtitlesKind, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptListWantedSubtitlesKind) Or(d ListWantedSubtitlesKind) ListWantedSubtitlesKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptLogLevel returns new OptLogLevel with value set to v.
+func NewOptLogLevel(v LogLevel) OptLogLevel {
+	return OptLogLevel{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptLogLevel is optional LogLevel.
+type OptLogLevel struct {
+	Value LogLevel
+	Set   bool
+}
+
+// IsSet returns true if OptLogLevel was set.
+func (o OptLogLevel) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptLogLevel) Reset() {
+	var v LogLevel
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptLogLevel) SetTo(v LogLevel) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptLogLevel) Get() (v LogLevel, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptLogLevel) Or(d LogLevel) LogLevel {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -25333,6 +27140,9 @@ func (s *RecycleEntry) SetRecycledAt(val time.Time) {
 	s.RecycledAt = val
 }
 
+// RefreshBoardAccepted is response for RefreshBoard operation.
+type RefreshBoardAccepted struct{}
+
 // RefreshQueueAccepted is response for RefreshQueue operation.
 type RefreshQueueAccepted struct{}
 
@@ -26826,6 +28636,47 @@ func (s *ResolveIssueRequest) SetSearchReplacement(val OptBool) {
 // SetComment sets the value of Comment.
 func (s *ResolveIssueRequest) SetComment(val OptString) {
 	s.Comment = val
+}
+
+// Ref: #/components/schemas/RestoreStarted
+type RestoreStarted struct {
+	Restarting bool `json:"restarting"`
+	// The backup of the state before the restore.
+	PreRestoreBackup OptString `json:"preRestoreBackup"`
+}
+
+// GetRestarting returns the value of Restarting.
+func (s *RestoreStarted) GetRestarting() bool {
+	return s.Restarting
+}
+
+// GetPreRestoreBackup returns the value of PreRestoreBackup.
+func (s *RestoreStarted) GetPreRestoreBackup() OptString {
+	return s.PreRestoreBackup
+}
+
+// SetRestarting sets the value of Restarting.
+func (s *RestoreStarted) SetRestarting(val bool) {
+	s.Restarting = val
+}
+
+// SetPreRestoreBackup sets the value of PreRestoreBackup.
+func (s *RestoreStarted) SetPreRestoreBackup(val OptString) {
+	s.PreRestoreBackup = val
+}
+
+type RestoreUploadedBackupReq struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s RestoreUploadedBackupReq) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
 }
 
 // ResumeQueueItemNoContent is response for ResumeQueueItem operation.
@@ -30429,6 +32280,539 @@ func (s *SmtpSettingsInput) SetFrom(val OptString) {
 	s.From = val
 }
 
+// Ref: #/components/schemas/SourceStats
+type SourceStats struct {
+	ID       OptInt64 `json:"id"`
+	Name     string   `json:"name"`
+	Grabs    int      `json:"grabs"`
+	Imported int      `json:"imported"`
+	// Downloads that failed in the client or were given up as stalled.
+	Failed     int `json:"failed"`
+	InProgress int `json:"inProgress"`
+	// Imported / (imported + failed); absent when nothing finished.
+	SuccessRate OptFloat64 `json:"successRate"`
+	// Average time from grab to import.
+	AvgImportSeconds OptInt64 `json:"avgImportSeconds"`
+}
+
+// GetID returns the value of ID.
+func (s *SourceStats) GetID() OptInt64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *SourceStats) GetName() string {
+	return s.Name
+}
+
+// GetGrabs returns the value of Grabs.
+func (s *SourceStats) GetGrabs() int {
+	return s.Grabs
+}
+
+// GetImported returns the value of Imported.
+func (s *SourceStats) GetImported() int {
+	return s.Imported
+}
+
+// GetFailed returns the value of Failed.
+func (s *SourceStats) GetFailed() int {
+	return s.Failed
+}
+
+// GetInProgress returns the value of InProgress.
+func (s *SourceStats) GetInProgress() int {
+	return s.InProgress
+}
+
+// GetSuccessRate returns the value of SuccessRate.
+func (s *SourceStats) GetSuccessRate() OptFloat64 {
+	return s.SuccessRate
+}
+
+// GetAvgImportSeconds returns the value of AvgImportSeconds.
+func (s *SourceStats) GetAvgImportSeconds() OptInt64 {
+	return s.AvgImportSeconds
+}
+
+// SetID sets the value of ID.
+func (s *SourceStats) SetID(val OptInt64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *SourceStats) SetName(val string) {
+	s.Name = val
+}
+
+// SetGrabs sets the value of Grabs.
+func (s *SourceStats) SetGrabs(val int) {
+	s.Grabs = val
+}
+
+// SetImported sets the value of Imported.
+func (s *SourceStats) SetImported(val int) {
+	s.Imported = val
+}
+
+// SetFailed sets the value of Failed.
+func (s *SourceStats) SetFailed(val int) {
+	s.Failed = val
+}
+
+// SetInProgress sets the value of InProgress.
+func (s *SourceStats) SetInProgress(val int) {
+	s.InProgress = val
+}
+
+// SetSuccessRate sets the value of SuccessRate.
+func (s *SourceStats) SetSuccessRate(val OptFloat64) {
+	s.SuccessRate = val
+}
+
+// SetAvgImportSeconds sets the value of AvgImportSeconds.
+func (s *SourceStats) SetAvgImportSeconds(val OptInt64) {
+	s.AvgImportSeconds = val
+}
+
+// Ref: #/components/schemas/Stats
+type Stats struct {
+	Version     string    `json:"version"`
+	Commit      string    `json:"commit"`
+	GeneratedAt time.Time `json:"generatedAt"`
+	Movies      int       `json:"movies"`
+	MoviesHave  int       `json:"moviesHave"`
+	// Monitored movies without a file.
+	MoviesMissing int `json:"moviesMissing"`
+	Series        int `json:"series"`
+	Episodes      int `json:"episodes"`
+	EpisodesHave  int `json:"episodesHave"`
+	// Monitored episodes that aired and have no file.
+	EpisodesMissing int `json:"episodesMissing"`
+	Artists         int `json:"artists"`
+	Albums          int `json:"albums"`
+	// Albums with at least one track file.
+	AlbumsHave int `json:"albumsHave"`
+	// Monitored released albums without any track file.
+	AlbumsMissing int `json:"albumsMissing"`
+	// Downloads still in a client (active or waiting for import).
+	QueueSize       int `json:"queueSize"`
+	ActiveDownloads int `json:"activeDownloads"`
+	// Total download speed in bytes per second.
+	DownloadSpeedBytes int64 `json:"downloadSpeedBytes"`
+	// Monitored, available movies without a file.
+	WantedMovies   int `json:"wantedMovies"`
+	WantedEpisodes int `json:"wantedEpisodes"`
+	WantedAlbums   int `json:"wantedAlbums"`
+	// Finished downloads whose import failed.
+	FailedImports    int `json:"failedImports"`
+	HealthErrors     int `json:"healthErrors"`
+	HealthWarnings   int `json:"healthWarnings"`
+	HealthInfo       int `json:"healthInfo"`
+	Indexers         int `json:"indexers"`
+	IndexersHealthy  int `json:"indexersHealthy"`
+	IndexersFailing  int `json:"indexersFailing"`
+	IndexersDisabled int `json:"indexersDisabled"`
+	RequestsPending  int `json:"requestsPending"`
+	// Files missing at least one wanted subtitle language.
+	SubtitlesMissing int               `json:"subtitlesMissing"`
+	LastRssSyncAt    OptDateTime       `json:"lastRssSyncAt"`
+	RootFolders      []StatsRootFolder `json:"rootFolders"`
+}
+
+// GetVersion returns the value of Version.
+func (s *Stats) GetVersion() string {
+	return s.Version
+}
+
+// GetCommit returns the value of Commit.
+func (s *Stats) GetCommit() string {
+	return s.Commit
+}
+
+// GetGeneratedAt returns the value of GeneratedAt.
+func (s *Stats) GetGeneratedAt() time.Time {
+	return s.GeneratedAt
+}
+
+// GetMovies returns the value of Movies.
+func (s *Stats) GetMovies() int {
+	return s.Movies
+}
+
+// GetMoviesHave returns the value of MoviesHave.
+func (s *Stats) GetMoviesHave() int {
+	return s.MoviesHave
+}
+
+// GetMoviesMissing returns the value of MoviesMissing.
+func (s *Stats) GetMoviesMissing() int {
+	return s.MoviesMissing
+}
+
+// GetSeries returns the value of Series.
+func (s *Stats) GetSeries() int {
+	return s.Series
+}
+
+// GetEpisodes returns the value of Episodes.
+func (s *Stats) GetEpisodes() int {
+	return s.Episodes
+}
+
+// GetEpisodesHave returns the value of EpisodesHave.
+func (s *Stats) GetEpisodesHave() int {
+	return s.EpisodesHave
+}
+
+// GetEpisodesMissing returns the value of EpisodesMissing.
+func (s *Stats) GetEpisodesMissing() int {
+	return s.EpisodesMissing
+}
+
+// GetArtists returns the value of Artists.
+func (s *Stats) GetArtists() int {
+	return s.Artists
+}
+
+// GetAlbums returns the value of Albums.
+func (s *Stats) GetAlbums() int {
+	return s.Albums
+}
+
+// GetAlbumsHave returns the value of AlbumsHave.
+func (s *Stats) GetAlbumsHave() int {
+	return s.AlbumsHave
+}
+
+// GetAlbumsMissing returns the value of AlbumsMissing.
+func (s *Stats) GetAlbumsMissing() int {
+	return s.AlbumsMissing
+}
+
+// GetQueueSize returns the value of QueueSize.
+func (s *Stats) GetQueueSize() int {
+	return s.QueueSize
+}
+
+// GetActiveDownloads returns the value of ActiveDownloads.
+func (s *Stats) GetActiveDownloads() int {
+	return s.ActiveDownloads
+}
+
+// GetDownloadSpeedBytes returns the value of DownloadSpeedBytes.
+func (s *Stats) GetDownloadSpeedBytes() int64 {
+	return s.DownloadSpeedBytes
+}
+
+// GetWantedMovies returns the value of WantedMovies.
+func (s *Stats) GetWantedMovies() int {
+	return s.WantedMovies
+}
+
+// GetWantedEpisodes returns the value of WantedEpisodes.
+func (s *Stats) GetWantedEpisodes() int {
+	return s.WantedEpisodes
+}
+
+// GetWantedAlbums returns the value of WantedAlbums.
+func (s *Stats) GetWantedAlbums() int {
+	return s.WantedAlbums
+}
+
+// GetFailedImports returns the value of FailedImports.
+func (s *Stats) GetFailedImports() int {
+	return s.FailedImports
+}
+
+// GetHealthErrors returns the value of HealthErrors.
+func (s *Stats) GetHealthErrors() int {
+	return s.HealthErrors
+}
+
+// GetHealthWarnings returns the value of HealthWarnings.
+func (s *Stats) GetHealthWarnings() int {
+	return s.HealthWarnings
+}
+
+// GetHealthInfo returns the value of HealthInfo.
+func (s *Stats) GetHealthInfo() int {
+	return s.HealthInfo
+}
+
+// GetIndexers returns the value of Indexers.
+func (s *Stats) GetIndexers() int {
+	return s.Indexers
+}
+
+// GetIndexersHealthy returns the value of IndexersHealthy.
+func (s *Stats) GetIndexersHealthy() int {
+	return s.IndexersHealthy
+}
+
+// GetIndexersFailing returns the value of IndexersFailing.
+func (s *Stats) GetIndexersFailing() int {
+	return s.IndexersFailing
+}
+
+// GetIndexersDisabled returns the value of IndexersDisabled.
+func (s *Stats) GetIndexersDisabled() int {
+	return s.IndexersDisabled
+}
+
+// GetRequestsPending returns the value of RequestsPending.
+func (s *Stats) GetRequestsPending() int {
+	return s.RequestsPending
+}
+
+// GetSubtitlesMissing returns the value of SubtitlesMissing.
+func (s *Stats) GetSubtitlesMissing() int {
+	return s.SubtitlesMissing
+}
+
+// GetLastRssSyncAt returns the value of LastRssSyncAt.
+func (s *Stats) GetLastRssSyncAt() OptDateTime {
+	return s.LastRssSyncAt
+}
+
+// GetRootFolders returns the value of RootFolders.
+func (s *Stats) GetRootFolders() []StatsRootFolder {
+	return s.RootFolders
+}
+
+// SetVersion sets the value of Version.
+func (s *Stats) SetVersion(val string) {
+	s.Version = val
+}
+
+// SetCommit sets the value of Commit.
+func (s *Stats) SetCommit(val string) {
+	s.Commit = val
+}
+
+// SetGeneratedAt sets the value of GeneratedAt.
+func (s *Stats) SetGeneratedAt(val time.Time) {
+	s.GeneratedAt = val
+}
+
+// SetMovies sets the value of Movies.
+func (s *Stats) SetMovies(val int) {
+	s.Movies = val
+}
+
+// SetMoviesHave sets the value of MoviesHave.
+func (s *Stats) SetMoviesHave(val int) {
+	s.MoviesHave = val
+}
+
+// SetMoviesMissing sets the value of MoviesMissing.
+func (s *Stats) SetMoviesMissing(val int) {
+	s.MoviesMissing = val
+}
+
+// SetSeries sets the value of Series.
+func (s *Stats) SetSeries(val int) {
+	s.Series = val
+}
+
+// SetEpisodes sets the value of Episodes.
+func (s *Stats) SetEpisodes(val int) {
+	s.Episodes = val
+}
+
+// SetEpisodesHave sets the value of EpisodesHave.
+func (s *Stats) SetEpisodesHave(val int) {
+	s.EpisodesHave = val
+}
+
+// SetEpisodesMissing sets the value of EpisodesMissing.
+func (s *Stats) SetEpisodesMissing(val int) {
+	s.EpisodesMissing = val
+}
+
+// SetArtists sets the value of Artists.
+func (s *Stats) SetArtists(val int) {
+	s.Artists = val
+}
+
+// SetAlbums sets the value of Albums.
+func (s *Stats) SetAlbums(val int) {
+	s.Albums = val
+}
+
+// SetAlbumsHave sets the value of AlbumsHave.
+func (s *Stats) SetAlbumsHave(val int) {
+	s.AlbumsHave = val
+}
+
+// SetAlbumsMissing sets the value of AlbumsMissing.
+func (s *Stats) SetAlbumsMissing(val int) {
+	s.AlbumsMissing = val
+}
+
+// SetQueueSize sets the value of QueueSize.
+func (s *Stats) SetQueueSize(val int) {
+	s.QueueSize = val
+}
+
+// SetActiveDownloads sets the value of ActiveDownloads.
+func (s *Stats) SetActiveDownloads(val int) {
+	s.ActiveDownloads = val
+}
+
+// SetDownloadSpeedBytes sets the value of DownloadSpeedBytes.
+func (s *Stats) SetDownloadSpeedBytes(val int64) {
+	s.DownloadSpeedBytes = val
+}
+
+// SetWantedMovies sets the value of WantedMovies.
+func (s *Stats) SetWantedMovies(val int) {
+	s.WantedMovies = val
+}
+
+// SetWantedEpisodes sets the value of WantedEpisodes.
+func (s *Stats) SetWantedEpisodes(val int) {
+	s.WantedEpisodes = val
+}
+
+// SetWantedAlbums sets the value of WantedAlbums.
+func (s *Stats) SetWantedAlbums(val int) {
+	s.WantedAlbums = val
+}
+
+// SetFailedImports sets the value of FailedImports.
+func (s *Stats) SetFailedImports(val int) {
+	s.FailedImports = val
+}
+
+// SetHealthErrors sets the value of HealthErrors.
+func (s *Stats) SetHealthErrors(val int) {
+	s.HealthErrors = val
+}
+
+// SetHealthWarnings sets the value of HealthWarnings.
+func (s *Stats) SetHealthWarnings(val int) {
+	s.HealthWarnings = val
+}
+
+// SetHealthInfo sets the value of HealthInfo.
+func (s *Stats) SetHealthInfo(val int) {
+	s.HealthInfo = val
+}
+
+// SetIndexers sets the value of Indexers.
+func (s *Stats) SetIndexers(val int) {
+	s.Indexers = val
+}
+
+// SetIndexersHealthy sets the value of IndexersHealthy.
+func (s *Stats) SetIndexersHealthy(val int) {
+	s.IndexersHealthy = val
+}
+
+// SetIndexersFailing sets the value of IndexersFailing.
+func (s *Stats) SetIndexersFailing(val int) {
+	s.IndexersFailing = val
+}
+
+// SetIndexersDisabled sets the value of IndexersDisabled.
+func (s *Stats) SetIndexersDisabled(val int) {
+	s.IndexersDisabled = val
+}
+
+// SetRequestsPending sets the value of RequestsPending.
+func (s *Stats) SetRequestsPending(val int) {
+	s.RequestsPending = val
+}
+
+// SetSubtitlesMissing sets the value of SubtitlesMissing.
+func (s *Stats) SetSubtitlesMissing(val int) {
+	s.SubtitlesMissing = val
+}
+
+// SetLastRssSyncAt sets the value of LastRssSyncAt.
+func (s *Stats) SetLastRssSyncAt(val OptDateTime) {
+	s.LastRssSyncAt = val
+}
+
+// SetRootFolders sets the value of RootFolders.
+func (s *Stats) SetRootFolders(val []StatsRootFolder) {
+	s.RootFolders = val
+}
+
+// Ref: #/components/schemas/StatsRootFolder
+type StatsRootFolder struct {
+	Path       string    `json:"path"`
+	Kind       MediaKind `json:"kind"`
+	Accessible bool      `json:"accessible"`
+	FreeBytes  OptInt64  `json:"freeBytes"`
+	TotalBytes OptInt64  `json:"totalBytes"`
+}
+
+// GetPath returns the value of Path.
+func (s *StatsRootFolder) GetPath() string {
+	return s.Path
+}
+
+// GetKind returns the value of Kind.
+func (s *StatsRootFolder) GetKind() MediaKind {
+	return s.Kind
+}
+
+// GetAccessible returns the value of Accessible.
+func (s *StatsRootFolder) GetAccessible() bool {
+	return s.Accessible
+}
+
+// GetFreeBytes returns the value of FreeBytes.
+func (s *StatsRootFolder) GetFreeBytes() OptInt64 {
+	return s.FreeBytes
+}
+
+// GetTotalBytes returns the value of TotalBytes.
+func (s *StatsRootFolder) GetTotalBytes() OptInt64 {
+	return s.TotalBytes
+}
+
+// SetPath sets the value of Path.
+func (s *StatsRootFolder) SetPath(val string) {
+	s.Path = val
+}
+
+// SetKind sets the value of Kind.
+func (s *StatsRootFolder) SetKind(val MediaKind) {
+	s.Kind = val
+}
+
+// SetAccessible sets the value of Accessible.
+func (s *StatsRootFolder) SetAccessible(val bool) {
+	s.Accessible = val
+}
+
+// SetFreeBytes sets the value of FreeBytes.
+func (s *StatsRootFolder) SetFreeBytes(val OptInt64) {
+	s.FreeBytes = val
+}
+
+// SetTotalBytes sets the value of TotalBytes.
+func (s *StatsRootFolder) SetTotalBytes(val OptInt64) {
+	s.TotalBytes = val
+}
+
+type StreamLogsOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s StreamLogsOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
 // Ref: #/components/schemas/StreameroLibrary
 type StreameroLibrary struct {
 	ID   string `json:"id"`
@@ -33383,6 +35767,303 @@ func (s *SystemInfo) SetStartedAt(val time.Time) {
 // SetSetupRequired sets the value of SetupRequired.
 func (s *SystemInfo) SetSetupRequired(val bool) {
 	s.SetupRequired = val
+}
+
+// Ref: #/components/schemas/SystemSettings
+type SystemSettings struct {
+	// Ask GitHub once a day whether a newer Locarr exists.
+	UpdateCheck        bool `json:"updateCheck"`
+	MinFreeSpaceGb     int  `json:"minFreeSpaceGb"`
+	RecycleBinWarnGb   int  `json:"recycleBinWarnGb"`
+	StuckImportMinutes int  `json:"stuckImportMinutes"`
+	// 0 turns scheduled backups off.
+	BackupIntervalHours int `json:"backupIntervalHours"`
+	BackupKeep          int `json:"backupKeep"`
+	TimelineDays        int `json:"timelineDays"`
+	SearchLogDays       int `json:"searchLogDays"`
+	DownloadEventsDays  int `json:"downloadEventsDays"`
+	ReleasesSeenDays    int `json:"releasesSeenDays"`
+	// 0 turns the database compaction off.
+	VacuumIntervalDays int  `json:"vacuumIntervalDays"`
+	ImageCacheMaxMb    int  `json:"imageCacheMaxMb"`
+	MetricsTokenSet    bool `json:"metricsTokenSet"`
+}
+
+// GetUpdateCheck returns the value of UpdateCheck.
+func (s *SystemSettings) GetUpdateCheck() bool {
+	return s.UpdateCheck
+}
+
+// GetMinFreeSpaceGb returns the value of MinFreeSpaceGb.
+func (s *SystemSettings) GetMinFreeSpaceGb() int {
+	return s.MinFreeSpaceGb
+}
+
+// GetRecycleBinWarnGb returns the value of RecycleBinWarnGb.
+func (s *SystemSettings) GetRecycleBinWarnGb() int {
+	return s.RecycleBinWarnGb
+}
+
+// GetStuckImportMinutes returns the value of StuckImportMinutes.
+func (s *SystemSettings) GetStuckImportMinutes() int {
+	return s.StuckImportMinutes
+}
+
+// GetBackupIntervalHours returns the value of BackupIntervalHours.
+func (s *SystemSettings) GetBackupIntervalHours() int {
+	return s.BackupIntervalHours
+}
+
+// GetBackupKeep returns the value of BackupKeep.
+func (s *SystemSettings) GetBackupKeep() int {
+	return s.BackupKeep
+}
+
+// GetTimelineDays returns the value of TimelineDays.
+func (s *SystemSettings) GetTimelineDays() int {
+	return s.TimelineDays
+}
+
+// GetSearchLogDays returns the value of SearchLogDays.
+func (s *SystemSettings) GetSearchLogDays() int {
+	return s.SearchLogDays
+}
+
+// GetDownloadEventsDays returns the value of DownloadEventsDays.
+func (s *SystemSettings) GetDownloadEventsDays() int {
+	return s.DownloadEventsDays
+}
+
+// GetReleasesSeenDays returns the value of ReleasesSeenDays.
+func (s *SystemSettings) GetReleasesSeenDays() int {
+	return s.ReleasesSeenDays
+}
+
+// GetVacuumIntervalDays returns the value of VacuumIntervalDays.
+func (s *SystemSettings) GetVacuumIntervalDays() int {
+	return s.VacuumIntervalDays
+}
+
+// GetImageCacheMaxMb returns the value of ImageCacheMaxMb.
+func (s *SystemSettings) GetImageCacheMaxMb() int {
+	return s.ImageCacheMaxMb
+}
+
+// GetMetricsTokenSet returns the value of MetricsTokenSet.
+func (s *SystemSettings) GetMetricsTokenSet() bool {
+	return s.MetricsTokenSet
+}
+
+// SetUpdateCheck sets the value of UpdateCheck.
+func (s *SystemSettings) SetUpdateCheck(val bool) {
+	s.UpdateCheck = val
+}
+
+// SetMinFreeSpaceGb sets the value of MinFreeSpaceGb.
+func (s *SystemSettings) SetMinFreeSpaceGb(val int) {
+	s.MinFreeSpaceGb = val
+}
+
+// SetRecycleBinWarnGb sets the value of RecycleBinWarnGb.
+func (s *SystemSettings) SetRecycleBinWarnGb(val int) {
+	s.RecycleBinWarnGb = val
+}
+
+// SetStuckImportMinutes sets the value of StuckImportMinutes.
+func (s *SystemSettings) SetStuckImportMinutes(val int) {
+	s.StuckImportMinutes = val
+}
+
+// SetBackupIntervalHours sets the value of BackupIntervalHours.
+func (s *SystemSettings) SetBackupIntervalHours(val int) {
+	s.BackupIntervalHours = val
+}
+
+// SetBackupKeep sets the value of BackupKeep.
+func (s *SystemSettings) SetBackupKeep(val int) {
+	s.BackupKeep = val
+}
+
+// SetTimelineDays sets the value of TimelineDays.
+func (s *SystemSettings) SetTimelineDays(val int) {
+	s.TimelineDays = val
+}
+
+// SetSearchLogDays sets the value of SearchLogDays.
+func (s *SystemSettings) SetSearchLogDays(val int) {
+	s.SearchLogDays = val
+}
+
+// SetDownloadEventsDays sets the value of DownloadEventsDays.
+func (s *SystemSettings) SetDownloadEventsDays(val int) {
+	s.DownloadEventsDays = val
+}
+
+// SetReleasesSeenDays sets the value of ReleasesSeenDays.
+func (s *SystemSettings) SetReleasesSeenDays(val int) {
+	s.ReleasesSeenDays = val
+}
+
+// SetVacuumIntervalDays sets the value of VacuumIntervalDays.
+func (s *SystemSettings) SetVacuumIntervalDays(val int) {
+	s.VacuumIntervalDays = val
+}
+
+// SetImageCacheMaxMb sets the value of ImageCacheMaxMb.
+func (s *SystemSettings) SetImageCacheMaxMb(val int) {
+	s.ImageCacheMaxMb = val
+}
+
+// SetMetricsTokenSet sets the value of MetricsTokenSet.
+func (s *SystemSettings) SetMetricsTokenSet(val bool) {
+	s.MetricsTokenSet = val
+}
+
+// Ref: #/components/schemas/SystemSettingsInput
+type SystemSettingsInput struct {
+	UpdateCheck         OptBool   `json:"updateCheck"`
+	MinFreeSpaceGb      OptInt    `json:"minFreeSpaceGb"`
+	RecycleBinWarnGb    OptInt    `json:"recycleBinWarnGb"`
+	StuckImportMinutes  OptInt    `json:"stuckImportMinutes"`
+	BackupIntervalHours OptInt    `json:"backupIntervalHours"`
+	BackupKeep          OptInt    `json:"backupKeep"`
+	TimelineDays        OptInt    `json:"timelineDays"`
+	SearchLogDays       OptInt    `json:"searchLogDays"`
+	DownloadEventsDays  OptInt    `json:"downloadEventsDays"`
+	ReleasesSeenDays    OptInt    `json:"releasesSeenDays"`
+	VacuumIntervalDays  OptInt    `json:"vacuumIntervalDays"`
+	ImageCacheMaxMb     OptInt    `json:"imageCacheMaxMb"`
+	MetricsToken        OptString `json:"metricsToken"`
+}
+
+// GetUpdateCheck returns the value of UpdateCheck.
+func (s *SystemSettingsInput) GetUpdateCheck() OptBool {
+	return s.UpdateCheck
+}
+
+// GetMinFreeSpaceGb returns the value of MinFreeSpaceGb.
+func (s *SystemSettingsInput) GetMinFreeSpaceGb() OptInt {
+	return s.MinFreeSpaceGb
+}
+
+// GetRecycleBinWarnGb returns the value of RecycleBinWarnGb.
+func (s *SystemSettingsInput) GetRecycleBinWarnGb() OptInt {
+	return s.RecycleBinWarnGb
+}
+
+// GetStuckImportMinutes returns the value of StuckImportMinutes.
+func (s *SystemSettingsInput) GetStuckImportMinutes() OptInt {
+	return s.StuckImportMinutes
+}
+
+// GetBackupIntervalHours returns the value of BackupIntervalHours.
+func (s *SystemSettingsInput) GetBackupIntervalHours() OptInt {
+	return s.BackupIntervalHours
+}
+
+// GetBackupKeep returns the value of BackupKeep.
+func (s *SystemSettingsInput) GetBackupKeep() OptInt {
+	return s.BackupKeep
+}
+
+// GetTimelineDays returns the value of TimelineDays.
+func (s *SystemSettingsInput) GetTimelineDays() OptInt {
+	return s.TimelineDays
+}
+
+// GetSearchLogDays returns the value of SearchLogDays.
+func (s *SystemSettingsInput) GetSearchLogDays() OptInt {
+	return s.SearchLogDays
+}
+
+// GetDownloadEventsDays returns the value of DownloadEventsDays.
+func (s *SystemSettingsInput) GetDownloadEventsDays() OptInt {
+	return s.DownloadEventsDays
+}
+
+// GetReleasesSeenDays returns the value of ReleasesSeenDays.
+func (s *SystemSettingsInput) GetReleasesSeenDays() OptInt {
+	return s.ReleasesSeenDays
+}
+
+// GetVacuumIntervalDays returns the value of VacuumIntervalDays.
+func (s *SystemSettingsInput) GetVacuumIntervalDays() OptInt {
+	return s.VacuumIntervalDays
+}
+
+// GetImageCacheMaxMb returns the value of ImageCacheMaxMb.
+func (s *SystemSettingsInput) GetImageCacheMaxMb() OptInt {
+	return s.ImageCacheMaxMb
+}
+
+// GetMetricsToken returns the value of MetricsToken.
+func (s *SystemSettingsInput) GetMetricsToken() OptString {
+	return s.MetricsToken
+}
+
+// SetUpdateCheck sets the value of UpdateCheck.
+func (s *SystemSettingsInput) SetUpdateCheck(val OptBool) {
+	s.UpdateCheck = val
+}
+
+// SetMinFreeSpaceGb sets the value of MinFreeSpaceGb.
+func (s *SystemSettingsInput) SetMinFreeSpaceGb(val OptInt) {
+	s.MinFreeSpaceGb = val
+}
+
+// SetRecycleBinWarnGb sets the value of RecycleBinWarnGb.
+func (s *SystemSettingsInput) SetRecycleBinWarnGb(val OptInt) {
+	s.RecycleBinWarnGb = val
+}
+
+// SetStuckImportMinutes sets the value of StuckImportMinutes.
+func (s *SystemSettingsInput) SetStuckImportMinutes(val OptInt) {
+	s.StuckImportMinutes = val
+}
+
+// SetBackupIntervalHours sets the value of BackupIntervalHours.
+func (s *SystemSettingsInput) SetBackupIntervalHours(val OptInt) {
+	s.BackupIntervalHours = val
+}
+
+// SetBackupKeep sets the value of BackupKeep.
+func (s *SystemSettingsInput) SetBackupKeep(val OptInt) {
+	s.BackupKeep = val
+}
+
+// SetTimelineDays sets the value of TimelineDays.
+func (s *SystemSettingsInput) SetTimelineDays(val OptInt) {
+	s.TimelineDays = val
+}
+
+// SetSearchLogDays sets the value of SearchLogDays.
+func (s *SystemSettingsInput) SetSearchLogDays(val OptInt) {
+	s.SearchLogDays = val
+}
+
+// SetDownloadEventsDays sets the value of DownloadEventsDays.
+func (s *SystemSettingsInput) SetDownloadEventsDays(val OptInt) {
+	s.DownloadEventsDays = val
+}
+
+// SetReleasesSeenDays sets the value of ReleasesSeenDays.
+func (s *SystemSettingsInput) SetReleasesSeenDays(val OptInt) {
+	s.ReleasesSeenDays = val
+}
+
+// SetVacuumIntervalDays sets the value of VacuumIntervalDays.
+func (s *SystemSettingsInput) SetVacuumIntervalDays(val OptInt) {
+	s.VacuumIntervalDays = val
+}
+
+// SetImageCacheMaxMb sets the value of ImageCacheMaxMb.
+func (s *SystemSettingsInput) SetImageCacheMaxMb(val OptInt) {
+	s.ImageCacheMaxMb = val
+}
+
+// SetMetricsToken sets the value of MetricsToken.
+func (s *SystemSettingsInput) SetMetricsToken(val OptString) {
+	s.MetricsToken = val
 }
 
 // Ref: #/components/schemas/SystemStatus

@@ -156,6 +156,20 @@ func encodeAssignSubtitleProfileRequest(
 	return nil
 }
 
+func encodeBoardActionRequest(
+	req *BoardActionRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeChangePasswordRequest(
 	req *ChangePasswordRequest,
 	r *http.Request,
@@ -996,6 +1010,16 @@ func encodeResolveIssueRequest(
 	return nil
 }
 
+func encodeRestoreUploadedBackupRequest(
+	req RestoreUploadedBackupReq,
+	r *http.Request,
+) error {
+	const contentType = "application/zip"
+	body := req
+	ht.SetBody(r, body, contentType)
+	return nil
+}
+
 func encodeSearchAlbumsRequest(
 	req *AlbumIdsRequest,
 	r *http.Request,
@@ -1628,6 +1652,20 @@ func encodeUpdateSubtitleProviderRequest(
 
 func encodeUpdateSubtitleSettingsRequest(
 	req *SubtitleSettingsInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSystemSettingsRequest(
+	req *SystemSettingsInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

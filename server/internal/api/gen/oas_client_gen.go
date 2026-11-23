@@ -90,6 +90,15 @@ type Invoker interface {
 	//
 	// POST /subtitles/profiles/assign
 	AssignSubtitleProfile(ctx context.Context, request *SubtitleProfileAssign) (*SubtitleCount, error)
+	// BoardAction invokes boardAction operation.
+	//
+	// `search` searches now; `unmonitor` stops monitoring; `change_profile` sets `qualityProfileId` (on
+	// the movie, the episode's series or the album's artist); `blocklist_retry` removes the item's last
+	// download from its client, blocks the release and searches again; `retry_import` imports a finished
+	// download again (or polls the clients when the files were not visible yet).
+	//
+	// POST /board/actions
+	BoardAction(ctx context.Context, request *BoardActionRequest) (*BoardActionResult, error)
 	// BrowseFilesystem invokes browseFilesystem operation.
 	//
 	// Without `path`, lists the data roots themselves.
@@ -120,6 +129,12 @@ type Invoker interface {
 	//
 	// POST /auth/invite
 	CheckInvite(ctx context.Context, request *InviteCodeRequest) (*InviteCheck, error)
+	// ClearBlocklist invokes clearBlocklist operation.
+	//
+	// Unblock every release (library managers).
+	//
+	// DELETE /queue/blocklist
+	ClearBlocklist(ctx context.Context) (*BlocklistCleared, error)
 	// ConvertSubtitleFps invokes convertSubtitleFps operation.
 	//
 	// Convert a subtitle made for one frame rate to another (managers).
@@ -132,6 +147,12 @@ type Invoker interface {
 	//
 	// POST /auth/apikeys
 	CreateApiKey(ctx context.Context, request *CreateApiKeyRequest) (*CreatedApiKey, error)
+	// CreateBackup invokes createBackup operation.
+	//
+	// The zip holds the database, the secret key and the settings; keep it private.
+	//
+	// POST /system/backups
+	CreateBackup(ctx context.Context) (*Backup, error)
 	// CreateCalendarToken invokes createCalendarToken operation.
 	//
 	// The link is shown once; creating a new one stops the old one.
@@ -234,7 +255,8 @@ type Invoker interface {
 	CreateRequest(ctx context.Context, request *CreateRequest) (*MediaRequest, error)
 	// CreateRootFolder invokes createRootFolder operation.
 	//
-	// The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
+	// The folder must be inside one of the allowed data roots (`LOCARR_DATA_ROOTS`); it must exist unless
+	// `create` is set.
 	//
 	// POST /rootfolders
 	CreateRootFolder(ctx context.Context, request *CreateRootFolderRequest) (*RootFolder, error)
@@ -268,6 +290,12 @@ type Invoker interface {
 	//
 	// DELETE /music/artists/{id}
 	DeleteArtist(ctx context.Context, params DeleteArtistParams) error
+	// DeleteBackup invokes deleteBackup operation.
+	//
+	// Delete a backup (administrators).
+	//
+	// DELETE /system/backups/{name}
+	DeleteBackup(ctx context.Context, params DeleteBackupParams) error
 	// DeleteBlocklistEntry invokes deleteBlocklistEntry operation.
 	//
 	// Unblock a release (library managers).
@@ -413,6 +441,12 @@ type Invoker interface {
 	//
 	// GET /discover/search
 	DiscoverSearch(ctx context.Context, params DiscoverSearchParams) (*DiscoverPage, error)
+	// DownloadBackup invokes downloadBackup operation.
+	//
+	// Download a backup (administrators).
+	//
+	// GET /system/backups/{name}
+	DownloadBackup(ctx context.Context, params DownloadBackupParams) (*DownloadBackupOKHeaders, error)
 	// DownloadItemSubtitle invokes downloadItemSubtitle operation.
 	//
 	// Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
@@ -420,6 +454,12 @@ type Invoker interface {
 	//
 	// POST /subtitles/items/{ref}/download
 	DownloadItemSubtitle(ctx context.Context, request *DownloadItemSubtitleReq, params DownloadItemSubtitleParams) (*Subtitle, error)
+	// DownloadLogFile invokes downloadLogFile operation.
+	//
+	// Download one log file (administrators).
+	//
+	// GET /system/logs/files/{name}
+	DownloadLogFile(ctx context.Context, params DownloadLogFileParams) (*DownloadLogFileOKHeaders, error)
 	// DownloadRelease invokes downloadRelease operation.
 	//
 	// `token` comes from a search result's `downloadLink`. The server fetches the .torrent or .nzb with
@@ -459,6 +499,12 @@ type Invoker interface {
 	//
 	// GET /customformats/{id}/export
 	ExportCustomFormat(ctx context.Context, params ExportCustomFormatParams) (SharedCustomFormat, error)
+	// GetActivityStats invokes getActivityStats operation.
+	//
+	// Grabs, success rate and time to import per indexer and download client (library managers).
+	//
+	// GET /activity/stats
+	GetActivityStats(ctx context.Context, params GetActivityStatsParams) (*ActivityStats, error)
 	// GetAlbum invokes getAlbum operation.
 	//
 	// The track list loads from MusicBrainz on first view when the background refresh has not got to it
@@ -472,6 +518,15 @@ type Invoker interface {
 	//
 	// GET /music/artists/{id}
 	GetArtist(ctx context.Context, params GetArtistParams) (*Artist, error)
+	// GetBoard invokes getBoard operation.
+	//
+	// Groups every monitored item that is missing (movies, episodes, albums) or misses subtitles by the
+	// explainer's current answer. The answers are precomputed and kept up to date on events, so this is
+	// cheap even with tens of thousands of items. For groups of searched items, `reasons` adds up the top
+	// rejection reasons.
+	//
+	// GET /board
+	GetBoard(ctx context.Context, params GetBoardParams) (*BoardSummary, error)
 	// GetCalendar invokes getCalendar operation.
 	//
 	// Movie dates (in cinemas, digital, physical) and episode air dates between two days.
@@ -569,6 +624,12 @@ type Invoker interface {
 	//
 	// GET /episodes/{id}
 	GetEpisode(ctx context.Context, params GetEpisodeParams) (*Episode, error)
+	// GetHealth invokes getHealth operation.
+	//
+	// Current health issues with how to fix them (administrators).
+	//
+	// GET /system/health
+	GetHealth(ctx context.Context) (*HealthReport, error)
 	// GetIndexer invokes getIndexer operation.
 	//
 	// One indexer (administrators).
@@ -704,6 +765,13 @@ type Invoker interface {
 	//
 	// GET /settings
 	GetSettings(ctx context.Context) (*Settings, error)
+	// GetStats invokes getStats operation.
+	//
+	// Also served at `/api/stats` (send `X-Api-Key`). At most 15 seconds old. Fields are documented in
+	// docs/user/troubleshooting.md.
+	//
+	// GET /system/stats
+	GetStats(ctx context.Context) (*Stats, error)
 	// GetStreameroSettings invokes getStreameroSettings operation.
 	//
 	// The Streamero connection (administrators).
@@ -722,6 +790,12 @@ type Invoker interface {
 	//
 	// GET /system/info
 	GetSystemInfo(ctx context.Context) (*SystemInfo, error)
+	// GetSystemSettings invokes getSystemSettings operation.
+	//
+	// Health thresholds, backups, retention, version check and metrics (administrators).
+	//
+	// GET /settings/system
+	GetSystemSettings(ctx context.Context) (*SystemSettings, error)
 	// GetSystemStatus invokes getSystemStatus operation.
 	//
 	// Runtime status (administrators).
@@ -878,12 +952,24 @@ type Invoker interface {
 	//
 	// GET /auth/providers
 	ListAuthProviders(ctx context.Context) ([]AuthProvider, error)
+	// ListBackups invokes listBackups operation.
+	//
+	// Backups in the config folder (administrators).
+	//
+	// GET /system/backups
+	ListBackups(ctx context.Context) ([]Backup, error)
 	// ListBlocklist invokes listBlocklist operation.
 	//
 	// Blocked releases (library managers).
 	//
 	// GET /queue/blocklist
 	ListBlocklist(ctx context.Context, params ListBlocklistParams) ([]BlocklistEntry, error)
+	// ListBoardItems invokes listBoardItems operation.
+	//
+	// One page of board items (library managers).
+	//
+	// GET /board/items
+	ListBoardItems(ctx context.Context, params ListBoardItemsParams) (*BoardItemPage, error)
 	// ListCustomFormats invokes listCustomFormats operation.
 	//
 	// Custom formats.
@@ -908,6 +994,12 @@ type Invoker interface {
 	//
 	// GET /downloadclients
 	ListDownloadClients(ctx context.Context) ([]DownloadClient, error)
+	// ListHistory invokes listHistory operation.
+	//
+	// What happened across the whole library, newest first (library managers).
+	//
+	// GET /history
+	ListHistory(ctx context.Context, params ListHistoryParams) (*HistoryPage, error)
 	// ListImportExclusions invokes listImportExclusions operation.
 	//
 	// Movies import lists never add again.
@@ -956,6 +1048,18 @@ type Invoker interface {
 	//
 	// GET /languages
 	ListLanguages(ctx context.Context) ([]LanguageInfo, error)
+	// ListLogFiles invokes listLogFiles operation.
+	//
+	// Log files in the config folder (administrators).
+	//
+	// GET /system/logs/files
+	ListLogFiles(ctx context.Context) ([]LogFile, error)
+	// ListLogs invokes listLogs operation.
+	//
+	// Recent log entries, newest last (administrators).
+	//
+	// GET /system/logs
+	ListLogs(ctx context.Context, params ListLogsParams) ([]LogEntry, error)
 	// ListMetadataProfiles invokes listMetadataProfiles operation.
 	//
 	// Metadata profiles (which album types and release statuses an artist's library holds).
@@ -1299,6 +1403,12 @@ type Invoker interface {
 	//
 	// POST /music/artists/{id}/refresh
 	RefreshArtist(ctx context.Context, params RefreshArtistParams) (*Artist, error)
+	// RefreshBoard invokes refreshBoard operation.
+	//
+	// Recompute every board item now (library managers).
+	//
+	// POST /board/refresh
+	RefreshBoard(ctx context.Context) error
 	// RefreshMovie invokes refreshMovie operation.
 	//
 	// Reload a movie's metadata and check its file (library managers).
@@ -1386,12 +1496,27 @@ type Invoker interface {
 	//
 	// POST /issues/{id}/resolve
 	ResolveIssue(ctx context.Context, request *ResolveIssueRequest, params ResolveIssueParams) (*Issue, error)
+	// RestoreBackup invokes restoreBackup operation.
+	//
+	// See `POST /system/backups/restore`.
+	//
+	// POST /system/backups/{name}/restore
+	RestoreBackup(ctx context.Context, params RestoreBackupParams) (*RestoreStarted, error)
 	// RestoreRecycleEntry invokes restoreRecycleEntry operation.
 	//
 	// Fails with `restore_conflict` when something else is at the original place.
 	//
 	// POST /recyclebin/{id}/restore
 	RestoreRecycleEntry(ctx context.Context, params RestoreRecycleEntryParams) (*RecycleEntry, error)
+	// RestoreUploadedBackup invokes restoreUploadedBackup operation.
+	//
+	// The body is a backup zip made by Locarr (at most 2 GiB). `confirm` must be `RESTORE`. Locarr first
+	// backs up the current state, stops its background work, replaces the database and the secret key,
+	// starts again in the same process and signs out every session except the caller's. Media files are
+	// never touched.
+	//
+	// POST /system/backups/restore
+	RestoreUploadedBackup(ctx context.Context, request RestoreUploadedBackupReq, params RestoreUploadedBackupParams) (*RestoreStarted, error)
 	// ResumeQueueItem invokes resumeQueueItem operation.
 	//
 	// Resume a download (library managers).
@@ -1416,6 +1541,12 @@ type Invoker interface {
 	//
 	// DELETE /auth/sessions/{id}
 	RevokeSession(ctx context.Context, params RevokeSessionParams) error
+	// RunHealthChecks invokes runHealthChecks operation.
+	//
+	// Run every health check now (administrators).
+	//
+	// POST /system/health/run
+	RunHealthChecks(ctx context.Context) (*HealthReport, error)
 	// RunTask invokes runTask operation.
 	//
 	// Queues the task unless a run of it is already queued or running; then that run is returned.
@@ -1573,6 +1704,12 @@ type Invoker interface {
 	//
 	// POST /auth/totp/setup
 	StartTotpSetup(ctx context.Context) (*TotpSetup, error)
+	// StreamLogs invokes streamLogs operation.
+	//
+	// Server-sent events; each `entry` event's `data` is one LogEntry as JSON.
+	//
+	// GET /system/logs/stream
+	StreamLogs(ctx context.Context, params StreamLogsParams) (StreamLogsOK, error)
 	// SyncImportList invokes syncImportList operation.
 	//
 	// Add the list's missing movies now (administrators).
@@ -1843,6 +1980,12 @@ type Invoker interface {
 	//
 	// PUT /subtitles/settings
 	UpdateSubtitleSettings(ctx context.Context, request *SubtitleSettingsInput) (*SubtitleSettings, error)
+	// UpdateSystemSettings invokes updateSystemSettings operation.
+	//
+	// Leave `metricsToken` out to keep it, "" to turn `/metrics` off.
+	//
+	// PUT /settings/system
+	UpdateSystemSettings(ctx context.Context, request *SystemSettingsInput) (*SystemSettings, error)
 	// UpdateUser invokes updateUser operation.
 	//
 	// The last enabled administrator cannot be demoted or disabled.
@@ -3128,6 +3271,125 @@ func (c *Client) sendAssignSubtitleProfile(ctx context.Context, request *Subtitl
 	return result, nil
 }
 
+// BoardAction invokes boardAction operation.
+//
+// `search` searches now; `unmonitor` stops monitoring; `change_profile` sets `qualityProfileId` (on
+// the movie, the episode's series or the album's artist); `blocklist_retry` removes the item's last
+// download from its client, blocks the release and searches again; `retry_import` imports a finished
+// download again (or polls the clients when the files were not visible yet).
+//
+// POST /board/actions
+func (c *Client) BoardAction(ctx context.Context, request *BoardActionRequest) (*BoardActionResult, error) {
+	res, err := c.sendBoardAction(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendBoardAction(ctx context.Context, request *BoardActionRequest) (res *BoardActionResult, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("boardAction"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/board/actions"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, BoardActionOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/board/actions"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeBoardActionRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, BoardActionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeBoardActionResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // BrowseFilesystem invokes browseFilesystem operation.
 //
 // Without `path`, lists the data roots themselves.
@@ -3725,6 +3987,119 @@ func (c *Client) sendCheckInvite(ctx context.Context, request *InviteCodeRequest
 	return result, nil
 }
 
+// ClearBlocklist invokes clearBlocklist operation.
+//
+// Unblock every release (library managers).
+//
+// DELETE /queue/blocklist
+func (c *Client) ClearBlocklist(ctx context.Context) (*BlocklistCleared, error) {
+	res, err := c.sendClearBlocklist(ctx)
+	return res, err
+}
+
+func (c *Client) sendClearBlocklist(ctx context.Context) (res *BlocklistCleared, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("clearBlocklist"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/queue/blocklist"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ClearBlocklistOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/queue/blocklist"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ClearBlocklistOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeClearBlocklistResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ConvertSubtitleFps invokes convertSubtitleFps operation.
 //
 // Convert a subtitle made for one frame rate to another (managers).
@@ -3969,6 +4344,119 @@ func (c *Client) sendCreateApiKey(ctx context.Context, request *CreateApiKeyRequ
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateApiKeyResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateBackup invokes createBackup operation.
+//
+// The zip holds the database, the secret key and the settings; keep it private.
+//
+// POST /system/backups
+func (c *Client) CreateBackup(ctx context.Context) (*Backup, error) {
+	res, err := c.sendCreateBackup(ctx)
+	return res, err
+}
+
+func (c *Client) sendCreateBackup(ctx context.Context) (res *Backup, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("createBackup"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/system/backups"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, CreateBackupOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/backups"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, CreateBackupOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeCreateBackupResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -5851,7 +6339,8 @@ func (c *Client) sendCreateRequest(ctx context.Context, request *CreateRequest) 
 
 // CreateRootFolder invokes createRootFolder operation.
 //
-// The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
+// The folder must be inside one of the allowed data roots (`LOCARR_DATA_ROOTS`); it must exist unless
+// `create` is set.
 //
 // POST /rootfolders
 func (c *Client) CreateRootFolder(ctx context.Context, request *CreateRootFolderRequest) (*RootFolder, error) {
@@ -6608,6 +7097,137 @@ func (c *Client) sendDeleteArtist(ctx context.Context, params DeleteArtistParams
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteArtistResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteBackup invokes deleteBackup operation.
+//
+// Delete a backup (administrators).
+//
+// DELETE /system/backups/{name}
+func (c *Client) DeleteBackup(ctx context.Context, params DeleteBackupParams) error {
+	_, err := c.sendDeleteBackup(ctx, params)
+	return err
+}
+
+func (c *Client) sendDeleteBackup(ctx context.Context, params DeleteBackupParams) (res *DeleteBackupNoContent, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteBackup"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/system/backups/{name}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteBackupOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/backups/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Name))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DeleteBackupOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteBackupResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -9824,6 +10444,137 @@ func (c *Client) sendDiscoverSearch(ctx context.Context, params DiscoverSearchPa
 	return result, nil
 }
 
+// DownloadBackup invokes downloadBackup operation.
+//
+// Download a backup (administrators).
+//
+// GET /system/backups/{name}
+func (c *Client) DownloadBackup(ctx context.Context, params DownloadBackupParams) (*DownloadBackupOKHeaders, error) {
+	res, err := c.sendDownloadBackup(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDownloadBackup(ctx context.Context, params DownloadBackupParams) (res *DownloadBackupOKHeaders, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("downloadBackup"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/system/backups/{name}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DownloadBackupOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/backups/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Name))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DownloadBackupOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDownloadBackupResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DownloadItemSubtitle invokes downloadItemSubtitle operation.
 //
 // Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
@@ -9953,6 +10704,137 @@ func (c *Client) sendDownloadItemSubtitle(ctx context.Context, request *Download
 
 	stage = "DecodeResponse"
 	result, err := decodeDownloadItemSubtitleResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DownloadLogFile invokes downloadLogFile operation.
+//
+// Download one log file (administrators).
+//
+// GET /system/logs/files/{name}
+func (c *Client) DownloadLogFile(ctx context.Context, params DownloadLogFileParams) (*DownloadLogFileOKHeaders, error) {
+	res, err := c.sendDownloadLogFile(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDownloadLogFile(ctx context.Context, params DownloadLogFileParams) (res *DownloadLogFileOKHeaders, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("downloadLogFile"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/system/logs/files/{name}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DownloadLogFileOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/logs/files/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Name))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DownloadLogFileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDownloadLogFileResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -10742,6 +11624,140 @@ func (c *Client) sendExportCustomFormat(ctx context.Context, params ExportCustom
 	return result, nil
 }
 
+// GetActivityStats invokes getActivityStats operation.
+//
+// Grabs, success rate and time to import per indexer and download client (library managers).
+//
+// GET /activity/stats
+func (c *Client) GetActivityStats(ctx context.Context, params GetActivityStatsParams) (*ActivityStats, error) {
+	res, err := c.sendGetActivityStats(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetActivityStats(ctx context.Context, params GetActivityStatsParams) (res *ActivityStats, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getActivityStats"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/activity/stats"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetActivityStatsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/activity/stats"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "days" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "days",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Days.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetActivityStatsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetActivityStatsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetAlbum invokes getAlbum operation.
 //
 // The track list loads from MusicBrainz on first view when the background refresh has not got to it
@@ -10998,6 +12014,143 @@ func (c *Client) sendGetArtist(ctx context.Context, params GetArtistParams) (res
 
 	stage = "DecodeResponse"
 	result, err := decodeGetArtistResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetBoard invokes getBoard operation.
+//
+// Groups every monitored item that is missing (movies, episodes, albums) or misses subtitles by the
+// explainer's current answer. The answers are precomputed and kept up to date on events, so this is
+// cheap even with tens of thousands of items. For groups of searched items, `reasons` adds up the top
+// rejection reasons.
+//
+// GET /board
+func (c *Client) GetBoard(ctx context.Context, params GetBoardParams) (*BoardSummary, error) {
+	res, err := c.sendGetBoard(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetBoard(ctx context.Context, params GetBoardParams) (res *BoardSummary, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getBoard"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/board"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetBoardOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/board"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "kind" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "kind",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Kind.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetBoardOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetBoardResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -13094,6 +14247,119 @@ func (c *Client) sendGetEpisode(ctx context.Context, params GetEpisodeParams) (r
 
 	stage = "DecodeResponse"
 	result, err := decodeGetEpisodeResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetHealth invokes getHealth operation.
+//
+// Current health issues with how to fix them (administrators).
+//
+// GET /system/health
+func (c *Client) GetHealth(ctx context.Context) (*HealthReport, error) {
+	res, err := c.sendGetHealth(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetHealth(ctx context.Context) (res *HealthReport, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getHealth"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/system/health"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetHealthOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/health"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetHealthOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetHealthResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -15805,6 +17071,120 @@ func (c *Client) sendGetSettings(ctx context.Context) (res *Settings, err error)
 	return result, nil
 }
 
+// GetStats invokes getStats operation.
+//
+// Also served at `/api/stats` (send `X-Api-Key`). At most 15 seconds old. Fields are documented in
+// docs/user/troubleshooting.md.
+//
+// GET /system/stats
+func (c *Client) GetStats(ctx context.Context) (*Stats, error) {
+	res, err := c.sendGetStats(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetStats(ctx context.Context) (res *Stats, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getStats"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/system/stats"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetStatsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/stats"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetStatsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetStatsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetStreameroSettings invokes getStreameroSettings operation.
 //
 // The Streamero connection (administrators).
@@ -16104,6 +17484,119 @@ func (c *Client) sendGetSystemInfo(ctx context.Context) (res *SystemInfo, err er
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSystemInfoResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetSystemSettings invokes getSystemSettings operation.
+//
+// Health thresholds, backups, retention, version check and metrics (administrators).
+//
+// GET /settings/system
+func (c *Client) GetSystemSettings(ctx context.Context) (*SystemSettings, error) {
+	res, err := c.sendGetSystemSettings(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetSystemSettings(ctx context.Context) (res *SystemSettings, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getSystemSettings"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/settings/system"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSystemSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/settings/system"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetSystemSettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetSystemSettingsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -19348,6 +20841,119 @@ func (c *Client) sendListAuthProviders(ctx context.Context) (res []AuthProvider,
 	return result, nil
 }
 
+// ListBackups invokes listBackups operation.
+//
+// Backups in the config folder (administrators).
+//
+// GET /system/backups
+func (c *Client) ListBackups(ctx context.Context) ([]Backup, error) {
+	res, err := c.sendListBackups(ctx)
+	return res, err
+}
+
+func (c *Client) sendListBackups(ctx context.Context) (res []Backup, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listBackups"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/system/backups"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListBackupsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/backups"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListBackupsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListBackupsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ListBlocklist invokes listBlocklist operation.
 //
 // Blocked releases (library managers).
@@ -19475,6 +21081,225 @@ func (c *Client) sendListBlocklist(ctx context.Context, params ListBlocklistPara
 
 	stage = "DecodeResponse"
 	result, err := decodeListBlocklistResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListBoardItems invokes listBoardItems operation.
+//
+// One page of board items (library managers).
+//
+// GET /board/items
+func (c *Client) ListBoardItems(ctx context.Context, params ListBoardItemsParams) (*BoardItemPage, error) {
+	res, err := c.sendListBoardItems(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListBoardItems(ctx context.Context, params ListBoardItemsParams) (res *BoardItemPage, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listBoardItems"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/board/items"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListBoardItemsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/board/items"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "code" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "code",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Code.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "fix" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "fix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Fix.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "kind" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "kind",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Kind.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "q" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Q.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "offset" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Offset.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListBoardItemsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListBoardItemsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -19927,6 +21752,208 @@ func (c *Client) sendListDownloadClients(ctx context.Context) (res []DownloadCli
 
 	stage = "DecodeResponse"
 	result, err := decodeListDownloadClientsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListHistory invokes listHistory operation.
+//
+// What happened across the whole library, newest first (library managers).
+//
+// GET /history
+func (c *Client) ListHistory(ctx context.Context, params ListHistoryParams) (*HistoryPage, error) {
+	res, err := c.sendListHistory(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListHistory(ctx context.Context, params ListHistoryParams) (res *HistoryPage, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listHistory"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/history"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListHistoryOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/history"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "category" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "category",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Category.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "kind" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "kind",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Kind.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "q" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Q.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "offset" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Offset.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListHistoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListHistoryResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -20905,6 +22932,287 @@ func (c *Client) sendListLanguages(ctx context.Context) (res []LanguageInfo, err
 
 	stage = "DecodeResponse"
 	result, err := decodeListLanguagesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListLogFiles invokes listLogFiles operation.
+//
+// Log files in the config folder (administrators).
+//
+// GET /system/logs/files
+func (c *Client) ListLogFiles(ctx context.Context) ([]LogFile, error) {
+	res, err := c.sendListLogFiles(ctx)
+	return res, err
+}
+
+func (c *Client) sendListLogFiles(ctx context.Context) (res []LogFile, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listLogFiles"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/system/logs/files"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListLogFilesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/logs/files"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListLogFilesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListLogFilesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListLogs invokes listLogs operation.
+//
+// Recent log entries, newest last (administrators).
+//
+// GET /system/logs
+func (c *Client) ListLogs(ctx context.Context, params ListLogsParams) ([]LogEntry, error) {
+	res, err := c.sendListLogs(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListLogs(ctx context.Context, params ListLogsParams) (res []LogEntry, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listLogs"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/system/logs"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListLogsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/logs"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "level" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "level",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Level.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "q" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Q.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListLogsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListLogsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -28262,6 +30570,119 @@ func (c *Client) sendRefreshArtist(ctx context.Context, params RefreshArtistPara
 	return result, nil
 }
 
+// RefreshBoard invokes refreshBoard operation.
+//
+// Recompute every board item now (library managers).
+//
+// POST /board/refresh
+func (c *Client) RefreshBoard(ctx context.Context) error {
+	_, err := c.sendRefreshBoard(ctx)
+	return err
+}
+
+func (c *Client) sendRefreshBoard(ctx context.Context) (res *RefreshBoardAccepted, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("refreshBoard"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/board/refresh"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RefreshBoardOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/board/refresh"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, RefreshBoardOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeRefreshBoardResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // RefreshMovie invokes refreshMovie operation.
 //
 // Reload a movie's metadata and check its file (library managers).
@@ -30074,6 +32495,156 @@ func (c *Client) sendResolveIssue(ctx context.Context, request *ResolveIssueRequ
 	return result, nil
 }
 
+// RestoreBackup invokes restoreBackup operation.
+//
+// See `POST /system/backups/restore`.
+//
+// POST /system/backups/{name}/restore
+func (c *Client) RestoreBackup(ctx context.Context, params RestoreBackupParams) (*RestoreStarted, error) {
+	res, err := c.sendRestoreBackup(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendRestoreBackup(ctx context.Context, params RestoreBackupParams) (res *RestoreStarted, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("restoreBackup"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/system/backups/{name}/restore"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RestoreBackupOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/system/backups/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Name))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/restore"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "confirm" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "confirm",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Confirm))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, RestoreBackupOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeRestoreBackupResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // RestoreRecycleEntry invokes restoreRecycleEntry operation.
 //
 // Fails with `restore_conflict` when something else is at the original place.
@@ -30199,6 +32770,143 @@ func (c *Client) sendRestoreRecycleEntry(ctx context.Context, params RestoreRecy
 
 	stage = "DecodeResponse"
 	result, err := decodeRestoreRecycleEntryResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RestoreUploadedBackup invokes restoreUploadedBackup operation.
+//
+// The body is a backup zip made by Locarr (at most 2 GiB). `confirm` must be `RESTORE`. Locarr first
+// backs up the current state, stops its background work, replaces the database and the secret key,
+// starts again in the same process and signs out every session except the caller's. Media files are
+// never touched.
+//
+// POST /system/backups/restore
+func (c *Client) RestoreUploadedBackup(ctx context.Context, request RestoreUploadedBackupReq, params RestoreUploadedBackupParams) (*RestoreStarted, error) {
+	res, err := c.sendRestoreUploadedBackup(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendRestoreUploadedBackup(ctx context.Context, request RestoreUploadedBackupReq, params RestoreUploadedBackupParams) (res *RestoreStarted, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("restoreUploadedBackup"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/system/backups/restore"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RestoreUploadedBackupOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/backups/restore"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "confirm" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "confirm",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Confirm))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRestoreUploadedBackupRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, RestoreUploadedBackupOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeRestoreUploadedBackupResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -30725,6 +33433,119 @@ func (c *Client) sendRevokeSession(ctx context.Context, params RevokeSessionPara
 
 	stage = "DecodeResponse"
 	result, err := decodeRevokeSessionResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RunHealthChecks invokes runHealthChecks operation.
+//
+// Run every health check now (administrators).
+//
+// POST /system/health/run
+func (c *Client) RunHealthChecks(ctx context.Context) (*HealthReport, error) {
+	res, err := c.sendRunHealthChecks(ctx)
+	return res, err
+}
+
+func (c *Client) sendRunHealthChecks(ctx context.Context) (res *HealthReport, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("runHealthChecks"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/system/health/run"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RunHealthChecksOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/health/run"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, RunHealthChecksOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeRunHealthChecksResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -34265,6 +37086,140 @@ func (c *Client) sendStartTotpSetup(ctx context.Context) (res *TotpSetup, err er
 
 	stage = "DecodeResponse"
 	result, err := decodeStartTotpSetupResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// StreamLogs invokes streamLogs operation.
+//
+// Server-sent events; each `entry` event's `data` is one LogEntry as JSON.
+//
+// GET /system/logs/stream
+func (c *Client) StreamLogs(ctx context.Context, params StreamLogsParams) (StreamLogsOK, error) {
+	res, err := c.sendStreamLogs(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendStreamLogs(ctx context.Context, params StreamLogsParams) (res StreamLogsOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("streamLogs"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/system/logs/stream"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, StreamLogsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/logs/stream"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "level" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "level",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Level.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, StreamLogsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeStreamLogsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -39755,6 +42710,122 @@ func (c *Client) sendUpdateSubtitleSettings(ctx context.Context, request *Subtit
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateSubtitleSettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateSystemSettings invokes updateSystemSettings operation.
+//
+// Leave `metricsToken` out to keep it, "" to turn `/metrics` off.
+//
+// PUT /settings/system
+func (c *Client) UpdateSystemSettings(ctx context.Context, request *SystemSettingsInput) (*SystemSettings, error) {
+	res, err := c.sendUpdateSystemSettings(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendUpdateSystemSettings(ctx context.Context, request *SystemSettingsInput) (res *SystemSettings, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateSystemSettings"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.URLTemplateKey.String("/settings/system"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateSystemSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/settings/system"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateSystemSettingsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, UpdateSystemSettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateSystemSettingsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
