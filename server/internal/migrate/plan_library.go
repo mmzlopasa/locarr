@@ -293,7 +293,7 @@ func (p *planner) planSeries() {
 			switch {
 			case found:
 				it.LocalRef = library.SeriesRef(ex.id).String()
-				if len(files) > 0 {
+				if p.unlinkedEpisodes(ex.id, v, files) > 0 {
 					it.Action, it.Reason = ActionUpdate, "link_files"
 				} else {
 					it.Action, it.Reason = ActionSkip, "already_in_library"
@@ -409,6 +409,9 @@ func (p *planner) planArtists() {
 			if ex, found := ix.artists[strings.ToLower(a.MBID)]; found {
 				it.LocalRef = fmt.Sprintf("artist:%d", ex.id)
 				it.Action, it.Reason = ActionUpdate, "merge_albums"
+				if !p.artistHasNews(ex.id, in) {
+					it.Action, it.Reason = ActionSkip, "already_in_library"
+				}
 			} else {
 				switch {
 				case !ok:
@@ -1117,4 +1120,58 @@ func (p *planner) episodeRef(ctx context.Context, s *Snapshot, seriesRef string,
 func needsKey(name string) bool {
 	info, ok := subtitles.ImplementationOf(name)
 	return ok && info.NeedsKey
+}
+
+// unlinkedEpisodes counts the source's episode files (found here) whose
+// episode in the library has no file yet.
+func (p *planner) unlinkedEpisodes(seriesID int64, v Series, files []series.ImportedFile) int {
+	onDisk := map[string]bool{}
+	for _, f := range files {
+		onDisk[f.Key] = true
+	}
+	rows, err := p.l.DB.R.QueryContext(p.ctx, `SELECT season_number, episode_number, file_id IS NOT NULL FROM episodes WHERE series_id = ?`, seriesID)
+	if err != nil {
+		return len(files)
+	}
+	defer rows.Close()
+	has := map[[2]int]bool{}
+	for rows.Next() {
+		var sn, ep int
+		var f bool
+		if rows.Scan(&sn, &ep, &f) == nil {
+			has[[2]int{sn, ep}] = f
+		}
+	}
+	n := 0
+	for _, e := range v.Episodes {
+		if e.FileID > 0 && onDisk[strconv.FormatInt(e.FileID, 10)] && !has[[2]int{e.Season, e.Number}] {
+			n++
+		}
+	}
+	return n
+}
+
+// artistHasNews reports whether importing adds albums or files to an artist in the library.
+func (p *planner) artistHasNews(artistID int64, in music.ImportedArtist) bool {
+	rows, err := p.l.DB.R.QueryContext(p.ctx, `SELECT a.mbid, (SELECT count(*) FROM album_files f WHERE f.album_id = a.id) FROM albums a
+		WHERE a.artist_id = ?`, artistID)
+	if err != nil {
+		return true
+	}
+	defer rows.Close()
+	files := map[string]int{}
+	for rows.Next() {
+		var mbid string
+		var n int
+		if rows.Scan(&mbid, &n) == nil {
+			files[strings.ToLower(mbid)] = n
+		}
+	}
+	for _, al := range in.Albums {
+		n, ok := files[strings.ToLower(al.MBID)]
+		if !ok || (n == 0 && len(al.Files) > 0) {
+			return true
+		}
+	}
+	return false
 }

@@ -339,10 +339,13 @@ func (p *planner) decideNamed(it *Item, s *Snapshot, entity, ext, name, hash str
 	byName func(string) (int64, bool)) decision {
 	it.link = &linkInfo{sourceKey: s.Key, entity: entity, external: ext, hash: hash}
 	if l, ok := p.linkOf(s, entity, ext); ok {
-		if id := refID(l.localRef); id > 0 && exists(id) {
+		if id := refID(l.localRef); (id > 0 && exists(id)) || (id == 0 && exists(0)) {
 			if l.hash == hash {
 				it.Action, it.Reason = ActionSkip, "unchanged"
 				it.LocalRef = l.localRef
+				if _, taken := p.plannedNames[entity+"|"+strings.ToLower(name)]; !taken {
+					p.plannedNames[entity+"|"+strings.ToLower(name)] = plannedName{hash: hash, key: it.Key, source: s.Name}
+				}
 				return decision{action: ActionSkip, targetID: id, name: name}
 			}
 			it.Action, it.Reason = ActionUpdate, "imported_before"
@@ -369,6 +372,18 @@ func (p *planner) decideNamed(it *Item, s *Snapshot, entity, ext, name, hash str
 	p.plannedNames[pk] = plannedName{hash: hash, key: it.Key, source: s.Name}
 	it.Action = ActionCreate
 	return decision{action: ActionCreate, name: name}
+}
+
+// mergedUnchanged handles an item merged into one from another application:
+// it is skipped when it was merged before with the same content.
+func (p *planner) mergedUnchanged(it *Item, s *Snapshot, entity, ext, hash string) bool {
+	it.link = &linkInfo{sourceKey: s.Key, entity: entity, external: ext, hash: hash}
+	if l, ok := p.linkOf(s, entity, ext); ok && l.hash == hash {
+		it.Action, it.Reason, it.LocalRef = ActionSkip, "unchanged", l.localRef
+		it.run = nil
+		return true
+	}
+	return false
 }
 
 func (p *planner) conflict(it *Item, s *Snapshot, name, existing string, id int64, def string) decision {
@@ -692,7 +707,14 @@ func (p *planner) planCustomFormats(s *Snapshot, so SourceOptions) {
 		case d.action == ActionSkip && it.Reason == "duplicate":
 			if prev, ok := p.plannedNames["customformat|"+strings.ToLower(f.Name)]; ok {
 				prevKey := prev.key
-				it.run = func(context.Context) (string, error) { p.setID(key, p.id(prevKey)); return "", nil }
+				it.run = func(context.Context) (string, error) {
+					id := p.id(prevKey)
+					p.setID(key, id)
+					if id == 0 {
+						return "", nil
+					}
+					return fmt.Sprintf("customformat:%d", id), nil
+				}
 			}
 		}
 		if d.action != ActionSkip {

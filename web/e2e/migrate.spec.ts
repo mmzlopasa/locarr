@@ -61,7 +61,8 @@ test("import a setup from fake applications: preview, folders, import, report, c
   await expect(page.getByRole("heading", { name: "Folders" })).toBeVisible({ timeout: 60_000 });
   const rows = page.getByTestId("migrate-mapping");
   while (await rows.count()) await rows.first().getByRole("button", { name: "Remove" }).click();
-  for (const [from, to] of [["/movies", `${seed}/movies`], ["/tv", `${seed}/tv`]]) {
+  const mappings: [string, string][] = [["/movies", `${seed}/movies`], ["/tv", `${seed}/tv`]];
+  for (const [from, to] of mappings) {
     await page.getByRole("button", { name: "Add a mapping" }).click();
     const row = rows.last();
     await row.getByLabel("Application's folder").fill(from);
@@ -89,6 +90,7 @@ test("import a setup from fake applications: preview, folders, import, report, c
 
   // The movies are in the library with their files in place.
   await page.getByRole("link", { name: "Movies" }).click();
+  await page.getByRole("button", { name: "Table" }).click();
   await expect(page.getByText("Sintel").first()).toBeVisible();
 
   await page.goto("/migrate/checklist");

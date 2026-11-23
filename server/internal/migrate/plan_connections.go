@@ -231,12 +231,8 @@ func (p *planner) planProwlarr(s *Snapshot, so SourceOptions) {
 			}
 		}
 		if found > 0 {
-			it.Action, it.Reason = ActionUpdate, "exists"
-			it.note("already a source; it is synced again")
-			it.run = func(ctx context.Context) (string, error) {
-				_, err := p.l.Indexers.SyncSource(ctx, found)
-				return fmt.Sprintf("indexersource:%d", found), err
-			}
+			it.Action, it.Reason, it.LocalRef = ActionSkip, "exists", fmt.Sprintf("indexersource:%d", found)
+			it.note("already a source; it keeps its indexers in sync by itself")
 		} else {
 			it.Action = ActionCreate
 			u := s.URL
@@ -475,6 +471,7 @@ func (p *planner) planIndexers(s *Snapshot, so SourceOptions) {
 				p.setID(key, id)
 				return fmt.Sprintf("indexer:%d", id), nil
 			}
+			p.mergedUnchanged(it, s, "indexer", strconv.FormatInt(ix.ID, 10), hashOf(add))
 			p.add(it)
 			continue
 		}
@@ -490,7 +487,7 @@ type feed struct {
 
 func (p *planner) sameFeed(base, apiPath string) *Item {
 	for _, f := range p.feeds {
-		if strings.EqualFold(f.base, base) && f.apiPath == apiPath && f.item.Action != ActionSkip {
+		if strings.EqualFold(f.base, base) && f.apiPath == apiPath && (f.item.Action != ActionSkip || f.item.Reason == "unchanged") {
 			return f.item
 		}
 	}
@@ -584,15 +581,38 @@ func (p *planner) planDownloadClients(s *Snapshot, so SourceOptions) {
 		f := dc.Fields
 		host, port := str(f, "host"), int(num(f, "port"))
 		cat := firstNonEmpty(str(f, "movieCategory"), str(f, "tvCategory"), str(f, "musicCategory"), str(f, "category"))
+		if prev := p.findPlannedClient(impl, host, port); prev != nil && prev.item.Action == ActionSkip && prev.item.Reason != "unchanged" &&
+			p.id(prev.item.Key) == 0 {
+			it.Action, it.Reason = ActionSkip, prev.item.Reason
+			it.note("the same client as %s, which is not added", prev.item.Name)
+			it.attn(prev.item.Attention...)
+			p.add(it)
+			continue
+		}
 		if prev := p.findPlannedClient(impl, host, port); prev != nil {
-			// One client, one category per application.
-			setCategory(prev.input, kindOf(s.Kind), cat)
+			// One client, one category per application (set on the client the
+			// earlier application created).
 			it.Action, it.Reason = ActionUpdate, "merged"
 			it.note("the same client as %s: its %s category is %q", prev.item.Name, kindOf(s.Kind), cat)
-			prevKey := prev.item.Key
-			it.run = func(context.Context) (string, error) {
-				return fmt.Sprintf("downloadclient:%d", p.id(prevKey)), nil
+			prevKey, kind := prev.item.Key, kindOf(s.Kind)
+			it.run = func(ctx context.Context) (string, error) {
+				id := p.id(prevKey)
+				if id == 0 {
+					return "", fmt.Errorf("the client it merges into was not added")
+				}
+				cur, err := p.l.Downloads.GetClient(ctx, id)
+				if err != nil {
+					return "", err
+				}
+				upd := clientInputOf(cur)
+				setCategory(&upd, kind, cat)
+				if _, err := p.l.Downloads.UpdateClient(ctx, id, upd); err != nil {
+					return "", err
+				}
+				p.setID(key, id)
+				return fmt.Sprintf("downloadclient:%d", id), nil
 			}
+			p.mergedUnchanged(it, s, "downloadclient", strconv.FormatInt(dc.ID, 10), hashOf([]any{kind, cat}))
 			p.add(it)
 			continue
 		}
@@ -645,14 +665,10 @@ func (p *planner) finishClient(s *Snapshot, it *Item, pc *plannedClient, ext str
 		}
 		return false
 	}
+	// The same client is the same address, whatever it is called.
 	byName := func(string) (int64, bool) {
 		for _, x := range p.clientList {
 			if x.Implementation == in.Implementation && sameEndpoint(x.Host, x.Port, in.Host, in.Port) {
-				return x.ID, true
-			}
-		}
-		for _, x := range p.clientList {
-			if strings.EqualFold(x.Name, in.Name) {
 				return x.ID, true
 			}
 		}
@@ -679,6 +695,11 @@ func (p *planner) finishClient(s *Snapshot, it *Item, pc *plannedClient, ext str
 		return
 	}
 	in.Name = d.name
+	if d.action == ActionCreate && p.clientNameTaken(in.Name, it) {
+		in.Name = fmt.Sprintf("%s (%s)", in.Name, s.Name)
+		it.Name = in.Name
+		it.note("another client already has its name")
+	}
 	target := d.targetID
 	it.run = func(ctx context.Context) (string, error) {
 		// A credential from a client read as a source fills hidden ones.
@@ -948,4 +969,27 @@ func (p *planner) planExclusions(s *Snapshot, so SourceOptions) {
 		}
 	}
 	p.add(it)
+}
+
+// clientInputOf turns a stored client back into an update (secrets unchanged).
+func clientInputOf(c downloads.Client) downloads.ClientInput {
+	return downloads.ClientInput{Name: c.Name, Implementation: c.Implementation, Enabled: c.Enabled, Priority: c.Priority, Host: c.Host,
+		Port: c.Port, UseTLS: c.UseTLS, AllowSelfSigned: c.AllowSelfSigned, URLBase: c.URLBase, Username: c.Username, Directory: c.Directory,
+		CategoryMovies: c.CategoryMovies, CategorySeries: c.CategorySeries, CategoryMusic: c.CategoryMusic, RecentPriority: c.RecentPriority,
+		OlderPriority: c.OlderPriority, InitialState: c.InitialState, RemoveCompleted: c.RemoveCompleted, Sequential: c.Sequential,
+		FirstLastPiece: c.FirstLastPiece, Tags: c.Tags}
+}
+
+func (p *planner) clientNameTaken(name string, self *Item) bool {
+	for _, x := range p.clientList {
+		if strings.EqualFold(x.Name, name) {
+			return true
+		}
+	}
+	for _, c := range p.clients {
+		if c.item != self && c.item.Action == ActionCreate && strings.EqualFold(c.input.Name, name) {
+			return true
+		}
+	}
+	return false
 }

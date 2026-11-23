@@ -453,8 +453,10 @@ func TestMigrateFullSetup(t *testing.T) {
 		count(`SELECT count(*) FROM custom_formats`), count(`SELECT count(*) FROM download_clients`), count(`SELECT count(*) FROM blocklist`),
 		count(`SELECT count(*) FROM timeline_events WHERE type = 'history'`), count(`SELECT count(*) FROM issues`)}
 	r2 := me.analyse()
-	for _, it := range me.items(r2.ID, "&action=create") {
-		t.Errorf("second run would create %s %s (%s)", it.Category, it.Name, it.Reason)
+	for _, it := range me.items(r2.ID, "") {
+		if it.Action != "skip" {
+			t.Errorf("second run would %s %s %s (%s)", it.Action, it.Category, it.Name, it.Reason)
+		}
 	}
 	me.importRun(r2.ID)
 	after := []int{count(`SELECT count(*) FROM media_items`), count(`SELECT count(*) FROM media_files`), count(`SELECT count(*) FROM users`),

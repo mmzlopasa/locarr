@@ -53,7 +53,12 @@ func (p *planner) Apply(ctx context.Context, runID int64, progress Progress) err
 		if it.Action == ActionSkip {
 			p.finishSkip(it)
 			if it.run != nil {
-				_, _ = it.run(ctx)
+				// A duplicate of another application's item: linked to it so
+				// the next run knows it.
+				if ref, err := it.run(ctx); err == nil && ref != "" {
+					it.LocalRef = ref
+					p.writeLink(ctx, it, runID)
+				}
 			}
 		} else if it.run != nil {
 			ref, err := it.run(ctx)
@@ -85,7 +90,7 @@ func (p *planner) finishSkip(it *Item) {
 }
 
 func (p *planner) writeLink(ctx context.Context, it *Item, runID int64) {
-	if it.link == nil || it.Status != "done" || it.LocalRef == "" {
+	if it.link == nil || (it.Status != "done" && it.Status != "skipped") || it.LocalRef == "" {
 		return
 	}
 	l := it.link
