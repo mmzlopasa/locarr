@@ -15,6 +15,9 @@ import (
 // ErrChallenge is returned when a Cloudflare challenge could not be solved.
 var ErrChallenge = errors.New("blocked by a Cloudflare challenge")
 
+// IsChallenge reports whether r is a Cloudflare browser challenge page.
+func IsChallenge(r *Response) bool { return isChallenge(r) }
+
 // isChallenge recognises a Cloudflare browser challenge page.
 func isChallenge(r *Response) bool {
 	if r.Status != http.StatusForbidden && r.Status != http.StatusServiceUnavailable {

@@ -15,7 +15,7 @@ const indexer = (over: Partial<Indexer>): Indexer => ({
   proxyPassword: { configured: false }, health: { status: "healthy", failures: 0 }, createdAt: now, updatedAt: now, ...over,
 });
 const settings: IndexerSettings = { rssSyncIntervalMinutes: 15, releaseRetentionDays: 14, searchTimeoutSeconds: 45, searchCacheSeconds: 120,
-  allowedHosts: [], blockPrivateNetworks: false };
+  allowedHosts: [], blockPrivateNetworks: false, publicTrackers: ["udp://tracker.example:1337/announce"], userAgent: "" };
 
 describe("indexers page", () => {
   it("lists indexers with health and adds one after a test that loads the categories", async () => {
@@ -43,6 +43,7 @@ describe("indexers page", () => {
     expect(within(screen.getByTestId("indexer-Alpha")).getByText("Healthy")).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Add indexer" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Torznab / Newznab" }));
     const form = screen.getByTestId("indexer-form");
     await userEvent.type(within(form).getByLabelText("Name"), "Gamma");
     await userEvent.type(within(form).getByLabelText("URL"), "http://gamma:9117");
@@ -78,6 +79,8 @@ describe("indexers page", () => {
       }
     });
     renderApp("/indexers", { me: testUser() });
+    expect(screen.queryByRole("button", { name: "Import from Prowlarr or Jackett" })).not.toBeInTheDocument();
+    await userEvent.click(await screen.findByRole("button", { name: "Show Prowlarr and Jackett import" }));
     await userEvent.click(await screen.findByRole("button", { name: "Import from Prowlarr or Jackett" }));
     const wiz = screen.getByTestId("import-wizard");
     await userEvent.type(within(wiz).getByLabelText("URL"), "http://p");

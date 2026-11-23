@@ -160,7 +160,15 @@ type SourceOptions struct {
 	// ProwlarrMode: "source" keeps Prowlarr as an indexer source (synced),
 	// "direct" adds each of its indexers on its own.
 	ProwlarrMode string `json:"prowlarrMode,omitempty"`
+	// BuiltinReplace (default on) adds Locarr's built-in version of every
+	// Prowlarr indexer it knows, and usenet indexers as direct Newznab
+	// indexers, so Prowlarr is not needed afterwards.
+	BuiltinReplace *bool `json:"builtinReplace,omitempty"`
 }
+
+// replaceBuiltins reports whether Prowlarr's indexers are replaced by
+// Locarr's own where possible.
+func (so SourceOptions) replaceBuiltins() bool { return so.BuiltinReplace == nil || *so.BuiltinReplace }
 
 // Options are the choices of a run.
 type Options struct {

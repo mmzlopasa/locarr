@@ -1,0 +1,49 @@
+id: 1337x
+name: 1337x
+description: A general torrent index, read from its search pages; the magnet comes from the details page at grab time.
+version: 1
+language: en
+links:
+  - https://1337x.to
+  - https://1337x.st
+  - https://x1337x.cc
+verified: >-
+  Written by observing the search (/search/, /category-search/) and details pages on 2026-11-23,
+  through FlareSolverr: the site shows a Cloudflare challenge to plain requests.
+flaresolverr: always
+rateLimit: {requests: 10, periodSeconds: 60}
+delayMillis: 2000
+timeoutSeconds: 60
+aliases: [1337x, "1337x.to", "1337x.st", x1337x]
+modes:
+  search: [q]
+  tv: [q, season, ep]
+  movie: [q]
+  music: [q]
+categories:
+  - {id: Movies, cat: 2000, desc: Movies}
+  - {id: TV, cat: 5000, desc: TV}
+  - {id: Anime, cat: 5070, desc: Anime}
+  - {id: Music, cat: 3000, desc: Music}
+search:
+  requests:
+    - if: [keywords, categories]
+      path: '/category-search/{{ .Keywords | pathescape }}/{{ first .Categories "Movies" }}/1/'
+    - if: [keywords]
+      path: '/search/{{ .Keywords | pathescape }}/1/'
+  response: html
+  rows: 'table.table-list tbody tr'
+  empty: 'p:contains("No results were returned")'
+  fields:
+    title: {select: 'td.coll-1 a:nth-of-type(2)'}
+    details: {select: 'td.coll-1 a:nth-of-type(2)', attr: href}
+    seeders: {select: td.coll-2}
+    leechers: {select: td.coll-3}
+    date: {select: td.coll-date}
+    size: {select: td.coll-4, regex: '^([\d.,]+\s*[KMGT]?i?B)'}
+    uploader: {select: td.coll-5}
+download:
+  select: 'a[href^="magnet:"]'
+  attr: href
+test:
+  query: ubuntu

@@ -70,6 +70,19 @@ Indexer je vratio grešku i Locarr ga privremeno preskače (s rastućim čekanje
 ključ, istekao račun, indexer ne radi, Cloudflare. **Indexeri** → otvori indexer → **Test**;
 nakon popravka **Poništi zdravlje**.
 
+<a id="indexer-builtin"></a>
+### Ugrađeni indexer ne radi (`indexer_challenge`, `indexer_layout`, `indexer_selftest_failed`)
+- **Cloudflare provjera** (`indexer_challenge`): stranica traži preglednik. Pokreni FlareSolverr i upiši
+  njegovu adresu u indexer (vidi [Indexeri](indexers.md#flaresolverr)).
+- **Promijenjen izgled** (`indexer_layout`): stranica je promijenila stranice pa ih definicija više ne
+  zna pročitati. Pričekaj novu verziju Locarra ili stavi ispravljenu vlastitu definiciju u
+  `/config/definitions` (vidi [Indexeri](indexers.md#vlastite-definicije)).
+- **Tjedna provjera nije prošla** (`indexer_selftest_failed`): poznati upit nije vratio rezultate. Otvori
+  indexer → **Test** za razlog; ako stranica ne radi, Locarr je sam pokušava kasnije.
+
+Kad u „Zašto nije stiglo?" piše da nijedan indexer nije imao izdanje, popisani su i indexeri koji u zadnjoj
+pretrazi nisu radili, s razlogom.
+
 <a id="no-indexers"></a>
 ### Nema indexera (`indexers_none`, `indexer_no_kind`)
 Nijedan indexer nije uključen, ili nijedan nije za automatsku pretragu vrste za koju imaš root mapu

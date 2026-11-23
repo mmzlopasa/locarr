@@ -236,6 +236,10 @@ type Indexer struct {
 	Fields            map[string]any `json:"fields"`
 	// Categories are Prowlarr's capabilities (Newznab category ids).
 	Categories []int `json:"categories,omitempty"`
+	// DefinitionName and IndexerURLs (Prowlarr) identify the site, so that a
+	// built-in Locarr definition can replace it.
+	DefinitionName string   `json:"definitionName,omitempty"`
+	IndexerURLs    []string `json:"indexerUrls,omitempty"`
 }
 
 // DownloadClient is a source download client.

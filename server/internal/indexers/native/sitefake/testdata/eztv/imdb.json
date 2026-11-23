@@ -1,0 +1,36 @@
+{
+ "imdb_id": "0944947",
+ "torrents_count": 146,
+ "limit": 2,
+ "page": 1,
+ "torrents": [
+  {
+   "id": 1469305,
+   "hash": "a017ac9bf02de9e36f1f9177bdb60612186b0b0d",
+   "filename": "Game.of.Thrones.S01E10.2160p.UHD.BluRay.x265-SCOTLUHD[eztv.io].mkv",
+   "magnet_url": "magnet:?xt=urn:btih:a017ac9bf02de9e36f1f9177bdb60612186b0b0d&dn=Game.of.Thrones.S01E10.2160p.UHD.BluRay.x265-SCOTLUHD%5Beztvx.to%5D&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.torrent.eu.org:451/announce&tr=udp://tracker.dler.org:6969/announce&tr=https://tracker.moeblog.cn:443/announce&tr=https://tracker.zhuqiy.com:443/announce&tr=udp://open.dstud.io:6969/announce",
+   "title": "Game of Thrones S01E10 2160p UHD BluRay x265-SCOTLUHD EZTV",
+   "imdb_id": "0944947",
+   "season": "1",
+   "episode": "10",
+   "seeds": 14,
+   "peers": 4,
+   "date_released_unix": 1594711151,
+   "size_bytes": "10387327388"
+  },
+  {
+   "id": 1469303,
+   "hash": "994ff5674bda5582d4e802dbd320aebf2c2d0642",
+   "filename": "Game.of.Thrones.S01E09.2160p.UHD.BluRay.x265-SCOTLUHD[eztv.io].mkv",
+   "magnet_url": "magnet:?xt=urn:btih:994ff5674bda5582d4e802dbd320aebf2c2d0642&dn=Game.of.Thrones.S01E09.2160p.UHD.BluRay.x265-SCOTLUHD%5Beztvx.to%5D&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.torrent.eu.org:451/announce&tr=udp://tracker.dler.org:6969/announce&tr=https://tracker.moeblog.cn:443/announce&tr=https://tracker.zhuqiy.com:443/announce&tr=udp://open.dstud.io:6969/announce",
+   "title": "Game of Thrones S01E09 2160p UHD BluRay x265-SCOTLUHD EZTV",
+   "imdb_id": "0944947",
+   "season": "1",
+   "episode": "9",
+   "seeds": 10,
+   "peers": 0,
+   "date_released_unix": 1594708960,
+   "size_bytes": "11257223877"
+  }
+ ]
+}

@@ -221,12 +221,15 @@ func (s *Service) searchOne(ctx context.Context, ind Indexer, q Query) (IndexerR
 		}
 		return done(StatusError, err)
 	}
+	if page.Dropped > 0 {
+		s.recordParseFailures(context.WithoutCancel(ctx), ind, page.Dropped)
+	}
 	if ind.Health.Failures > 0 || ind.Health.LastSuccessAt == nil || now.Sub(*ind.Health.LastSuccessAt) > time.Minute {
 		s.recordSuccess(context.WithoutCancel(ctx), ind.ID)
 	}
 	releases := make([]Release, 0, len(page.Items))
 	for _, it := range page.Items {
-		releases = append(releases, toRelease(ind, it, c.APIKey))
+		releases = append(releases, toRelease(ind, it, c.secret()))
 	}
 	if q.Source != SourceRSS {
 		s.cache.put(key, releases, time.Duration(ttl)*time.Second, now)
@@ -278,10 +281,27 @@ func buildRequest(ind Indexer, caps *znab.Caps, q Query) (znab.Request, bool) {
 		{"author", func() { r.Author = q.Author }, q.Author != ""},
 		{"title", func() { r.Title = q.Title }, q.Title != ""},
 	}
+	// TV searches carry every id the series has; indexers combine ids with
+	// "and" and few know them all, so only the strongest supported one goes.
+	onlyID := ""
+	if q.Type == SearchTV {
+		for _, c := range []struct {
+			name string
+			has  bool
+		}{{"tvdbid", q.TVDBID > 0}, {"tvmazeid", q.TVMazeID > 0}, {"imdbid", q.IMDBID != ""}, {"tmdbid", q.TMDBID > 0}} {
+			if c.has && sc.Supports(c.name) {
+				onlyID = c.name
+				break
+			}
+		}
+	}
 	ids := false
 	var leftover []string // structured terms the indexer cannot take as parameters
 	for _, p := range params {
 		if !p.has {
+			continue
+		}
+		if onlyID != "" && strings.HasSuffix(p.name, "id") && p.name != onlyID {
 			continue
 		}
 		if sc.Supports(p.name) {

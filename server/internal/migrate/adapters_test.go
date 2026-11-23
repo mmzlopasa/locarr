@@ -87,7 +87,8 @@ func TestReadEverySource(t *testing.T) {
 					t.Fatalf("metadata profiles %+v", s.MetadataProfiles)
 				}
 			case Prowlarr:
-				if len(s.Indexers) != 2 || len(s.Indexers[0].Categories) != 3 || len(s.Apps) != 1 {
+				if len(s.Indexers) != 4 || len(s.Indexers[0].Categories) != 3 || len(s.Apps) != 1 ||
+					s.Indexers[2].DefinitionName != "nyaasi" || len(s.Indexers[2].IndexerURLs) != 1 {
 					t.Fatalf("prowlarr %+v %+v", s.Indexers, s.Apps)
 				}
 			case Bazarr:

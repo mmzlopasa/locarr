@@ -16,7 +16,8 @@
 // /streamero/_fake/state, reset with POST /streamero/_fake/reset).
 // The applications an existing setup is imported from are faked under
 // /arr/<kind> (API key migratekey; qBittorrent admin / migratepass); with a
-// seed folder their files go to <seed>/migrate.
+// seed folder their files go to <seed>/migrate. The built-in public sites'
+// recorded answers are served under /sites/<definition id>.
 package main
 
 import (
@@ -27,6 +28,7 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/indexers/fake"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/native/sitefake"
 	stfake "github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero/fake"
 	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
 	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
@@ -74,6 +76,9 @@ func main() {
 		}
 		mux.Handle(f.Prefix+"/", f)
 	}
+	// Recorded answers of the built-in public sites, one per /sites/<id>
+	// (point a built-in indexer's address at http://fake-indexer:9117/sites/<id>).
+	mux.Handle("/sites/", http.StripPrefix("/sites", sitefake.New()))
 	mux.Handle("/", ix)
 	srv := &http.Server{Addr: addr, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
 	log.Printf("fake indexers listening on %s", addr)

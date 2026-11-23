@@ -99,7 +99,7 @@ func (s *Service) Fetch(ctx context.Context, r Release) (File, error) {
 	if err := s.ReserveGrab(ctx, ind); err != nil {
 		return File{}, err
 	}
-	full := strings.ReplaceAll(r.DownloadURL, keyPlaceholder, c.APIKey)
+	full := strings.ReplaceAll(r.DownloadURL, keyPlaceholder, c.secret())
 	res, err := c.Fetch(ctx, full)
 	if err != nil {
 		// A bad file says something about the release, not the indexer's health.

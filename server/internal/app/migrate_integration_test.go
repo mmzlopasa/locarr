@@ -403,6 +403,21 @@ func TestMigrateFullSetup(t *testing.T) {
 	if n := count(`SELECT count(*) FROM indexer_sources WHERE kind = 'prowlarr'`); n != 1 {
 		t.Fatal("Prowlarr should be an indexer source")
 	}
+	// Prowlarr's public sites become Locarr's built-in ones and its usenet
+	// indexer a direct one waiting for its key; the source leaves them out.
+	if n := count(`SELECT count(*) FROM indexers WHERE definition = 'nyaa' AND name = 'Nyaa.si' AND enabled = 1 AND source_id IS NULL`); n != 1 {
+		t.Fatal("Nyaa should be Locarr's built-in indexer")
+	}
+	if n := count(`SELECT count(*) FROM indexers WHERE definition = 'thepiratebay' AND enabled = 0 AND priority = 40`); n != 1 {
+		t.Fatal("The Pirate Bay should be built in and keep its state and priority")
+	}
+	if n := count(`SELECT count(*) FROM indexers WHERE kind = 'newznab' AND base_url = 'https://nzb.example' AND source_id IS NULL
+		AND api_key IS NULL AND enabled = 0`); n != 1 {
+		t.Fatal("the usenet indexer should be direct, disabled until its key is entered")
+	}
+	if n := count(`SELECT count(*) FROM indexer_sources WHERE kind = 'prowlarr' AND exclude LIKE '%"6"%' AND exclude LIKE '%"7"%'`); n != 1 {
+		t.Fatal("the Prowlarr source should leave the replaced indexers out")
+	}
 	if n := count(`SELECT count(*) FROM users`); n != 3 {
 		t.Fatalf("%d users (the source admin merges into the Locarr admin)", n)
 	}

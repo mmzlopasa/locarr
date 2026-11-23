@@ -1,0 +1,22 @@
+id: eztv
+name: EZTV
+description: TV episodes from the site's public JSON API, searched by IMDb id; its latest releases for RSS.
+version: 1
+language: en
+links:
+  - https://eztvx.to
+  - https://eztv.wf
+verified: Written from the public API page (eztvx.to/api) and checked with get-torrents on 2026-11-23.
+flaresolverr: never
+rateLimit: {requests: 20, periodSeconds: 60}
+delayMillis: 1000
+aliases: [eztv, "eztv.re", "eztvx.to"]
+impl: eztv
+modes:
+  search: [imdbid]
+  tv: [imdbid, season, ep]
+categories:
+  - {id: tv, cat: 5000, desc: TV}
+test:
+  mode: tv
+  imdbid: tt0944947

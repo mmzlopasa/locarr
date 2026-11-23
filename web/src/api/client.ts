@@ -55,6 +55,9 @@ export type IndexerSettings = Schemas["IndexerSettings"];
 export type IndexerSource = Schemas["IndexerSource"];
 export type IndexerSourceKind = Schemas["IndexerSourceKind"];
 export type IndexerSourceItem = Schemas["IndexerSourceItem"];
+export type IndexerCatalog = Schemas["IndexerCatalog"];
+export type IndexerDefinition = Schemas["IndexerDefinition"];
+export type UsenetPreset = Schemas["UsenetPreset"];
 export type Release = Schemas["Release"];
 export type SearchType = Schemas["SearchType"];
 export type SearchIndexerResult = Schemas["SearchIndexerResult"];
@@ -316,6 +319,7 @@ export const queryKeys = {
   indexers: ["indexers"] as const,
   indexerSources: ["indexers", "sources"] as const,
   indexerSettings: ["indexers", "settings"] as const,
+  indexerDefinitions: ["indexers", "definitions"] as const,
   movies: ["movies"] as const,
   movie: (id: number) => ["movies", id] as const,
   seriesList: ["series"] as const,

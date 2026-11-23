@@ -175,6 +175,9 @@ func toMigrateRun(r migrate.Run) gen.MigrateRun {
 	for _, s := range r.Options.Sources {
 		so := gen.MigrateSourceOptions{ID: s.ID, Settings: gen.NewOptBool(s.Settings), Library: gen.NewOptBool(s.Library),
 			Users: gen.NewOptBool(s.Users), History: gen.NewOptBool(s.History)}
+		if s.BuiltinReplace != nil {
+			so.BuiltinReplace = gen.NewOptBool(*s.BuiltinReplace)
+		}
 		if s.ProwlarrMode != "" {
 			so.ProwlarrMode = gen.NewOptMigrateSourceOptionsProwlarrMode(gen.MigrateSourceOptionsProwlarrMode(s.ProwlarrMode))
 		}
@@ -260,6 +263,9 @@ func (h *Handler) StartMigrateRun(ctx context.Context, req *gen.MigrateOptions) 
 	for _, s := range req.Sources {
 		so := migrate.SourceOptions{ID: s.ID, Settings: s.Settings.Or(false), Library: s.Library.Or(false), Users: s.Users.Or(false),
 			History: s.History.Or(false)}
+		if v, ok := s.BuiltinReplace.Get(); ok {
+			so.BuiltinReplace = &v
+		}
 		if m, ok := s.ProwlarrMode.Get(); ok {
 			so.ProwlarrMode = string(m)
 		}

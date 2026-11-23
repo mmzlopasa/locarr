@@ -5,6 +5,7 @@ go 1.26.4
 tool github.com/ogen-go/ogen/cmd/ogen
 
 require (
+	github.com/andybalholm/cascadia v1.3.5
 	github.com/dlclark/regexp2 v1.12.0
 	github.com/go-chi/chi/v5 v5.5.0
 	github.com/go-faster/errors v0.8.0
@@ -18,6 +19,7 @@ require (
 	golang.org/x/net v0.61.0
 	golang.org/x/sys v0.50.0
 	golang.org/x/text v0.43.0
+	gopkg.in/yaml.v3 v3.0.1
 	modernc.org/sqlite v1.62.0
 )
 

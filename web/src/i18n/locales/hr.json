@@ -749,7 +749,7 @@
   },
   "indexers": {
     "title": "Indexeri",
-    "subtitle": "Torznab i Newznab indexeri, izravno ili preko Prowlarra ili Jacketta.",
+    "subtitle": "Javne stranice koje Locarr pretražuje sam, tvoji usenet indexeri i bilo koji Torznab ili Newznab feed.",
     "add": "Dodaj indexer",
     "empty": "Još nema indexera.",
     "edit": "Uredi",
@@ -774,7 +774,8 @@
     },
     "kinds": {
       "torznab": "Torznab (torrent)",
-      "newznab": "Newznab (usenet)"
+      "newznab": "Newznab (usenet)",
+      "native": "Ugrađena stranica"
     },
     "media": {
       "movies": "Filmovi",
@@ -792,7 +793,9 @@
       "unreachable": "Indexer nije dostupan ili nije odgovorio na vrijeme.",
       "blocked": "Ova adresa je blokirana iz sigurnosnih razloga. Dopusti je u postavkama indexera ispod ako je tvoja.",
       "unknown": "Indexer je prijavio grešku.",
-      "removed": "Izvor više ne navodi ovaj indexer."
+      "removed": "Izvor više ne navodi ovaj indexer.",
+      "challenge": "Stranica traži Cloudflare provjeru. Upiši FlareSolverr URL za ovaj indexer pod Uredi.",
+      "layout": "Stranice ove stranice su se promijenile pa se rezultati više ne mogu pročitati. Ažuriraj Locarr ili dodaj ispravljenu vlastitu definiciju."
     },
     "test": {
       "button": "Testiraj",
@@ -877,7 +880,87 @@
       "allowedHosts": "Dopuštene lokalne adrese",
       "allowedHostsHint": "Loopback i link-local adrese su zadano blokirane. Navedi adrese, mreže ili imena hostova koje dopuštaš, npr. 127.0.0.1.",
       "blockPrivate": "Blokiraj i privatne mreže",
-      "blockPrivateHint": "Zadano isključeno jer Prowlarr i Jackett obično rade na istoj Docker mreži."
+      "blockPrivateHint": "Zadano isključeno jer FlareSolverr i tvoji servisi obično rade na istoj Docker mreži.",
+      "publicTrackers": "Trackeri za složene magnete",
+      "publicTrackersHint": "Jedan po retku. Dodaju se magnet poveznicama koje Locarr složi iz info hasha sa stranice.",
+      "userAgent": "User agent",
+      "userAgentHint": "Šalje se svakom indexeru i stranici. Ostavi prazno za „Locarr”."
+    },
+    "chooser": {
+      "title": "Dodaj indexer",
+      "tabs": {
+        "builtin": "Ugrađene stranice",
+        "usenet": "Usenet",
+        "generic": "Torznab / Newznab"
+      },
+      "builtinIntro": "Javne stranice koje Locarr pretražuje sam, bez Prowlarra ili Jacketta. Uključi stranicu i dodat će se s razumnim zadanim postavkama; kasnije je prilagodi pod Uredi.",
+      "usenetIntro": "Odaberi svoj usenet indexer i zalijepi API ključ iz svog profila na njemu.",
+      "genericIntro": "Bilo koji Torznab ili Newznab feed: Torznab adresa privatnog trackera ili indexer kojeg nema pod Usenet."
+    },
+    "builtin": {
+      "use": "Koristi {{name}}",
+      "none": "Nema dostupnih definicija stranica.",
+      "modes": {
+        "search": "Pretraga",
+        "tv": "Serije",
+        "movie": "Filmovi",
+        "music": "Glazba",
+        "book": "Knjige"
+      },
+      "rss": "RSS",
+      "noRss": "Bez RSS-a",
+      "version": "v{{n}}",
+      "verified": "Kako je provjereno",
+      "flaresolverr": {
+        "sometimes": "Možda treba FlareSolverr",
+        "always": "Treba FlareSolverr"
+      },
+      "custom": "Vlastita",
+      "overrides": "Zamjenjuje ugrađenu",
+      "missing": "Definicija nedostaje",
+      "parseFailures": "Nečitljivih rezultata: {{n}}",
+      "selfTestOk": "Tjedna samoprovjera prošla {{when}}",
+      "selfTestFailed": "Tjedna samoprovjera nije prošla {{when}}",
+      "site": "Stranica",
+      "address": "Adresa",
+      "addressHint": "Glavna adresa stranice ili neki od njezinih mirrora.",
+      "otherAddress": "Druga adresa…",
+      "customAddress": "Vlastita adresa",
+      "options": "Postavke stranice",
+      "flaresolverrHint": "Treba samo kad stranica traži Cloudflare provjeru.",
+      "rateLimit": "Zahtjevi",
+      "rateLimitHint": "Najviše toliko zahtjeva po razdoblju, da se stranica ne zatrpa."
+    },
+    "usenet": {
+      "preset": "Indexer",
+      "whereKey": "API ključ je na stranici tvog profila na {{site}}.",
+      "add": "Dodaj"
+    },
+    "advanced": {
+      "show": "Prikaži uvoz iz Prowlarra i Jacketta",
+      "hide": "Sakrij uvoz iz Prowlarra i Jacketta",
+      "text": "Više nije potrebno: Locarr sam pretražuje javne stranice i izravno razgovara s usenet indexerima. Uvezi iz Prowlarra ili Jacketta samo ako ih želiš i dalje koristiti."
+    },
+    "definitions": {
+      "title": "Vlastite definicije stranica",
+      "subtitle": "YAML datoteke u {{dir}}. Datoteka s id-jem ugrađene stranice je zamjenjuje.",
+      "reload": "Ponovno učitaj",
+      "none": "Još nema vlastitih definicija.",
+      "errors": "Nije učitano",
+      "reloaded": "Definicije su ponovno učitane."
+    },
+    "errorShort": {
+      "challenge": "Cloudflare provjera",
+      "layout": "promijenjen izgled",
+      "unreachable": "stranica ne radi",
+      "rate_limit": "ograničenje zahtjeva",
+      "rate_limited": "ograničenje zahtjeva",
+      "backoff": "pauza nakon grešaka",
+      "auth": "odbijen pristup",
+      "blocked": "adresa blokirana",
+      "bad_response": "neočekivan odgovor",
+      "unknown": "greška",
+      "error": "greška"
     }
   },
   "profiles": {
@@ -1447,7 +1530,8 @@
     "retryNow": "Pokušaj odmah",
     "retrying": "Traženje…",
     "retryQueued": "Ponovno se traži. Ograničenja indexera i dalje vrijede.",
-    "retryHint": "Poništava čekanje između automatskih pretraga i odmah traži."
+    "retryHint": "Poništava čekanje između automatskih pretraga i odmah traži.",
+    "indexerErrors": "U zadnjoj pretrazi nisu radili: {{list}}."
   },
   "rejectionCodes": {
     "parse_failed": "ime nečitljivo",
@@ -3235,7 +3319,10 @@
       "database_large": "Baza zauzima {{sizeBytes}}.",
       "update_available": "Dostupan je Locarr {{latest}} (ovo je {{current}}).",
       "backup_failed": "Zadnja zakazana sigurnosna kopija nije uspjela: {{error}}",
-      "check_failed": "Provjera {{check}} nije se mogla izvršiti: {{error}}"
+      "check_failed": "Provjera {{check}} nije se mogla izvršiti: {{error}}",
+      "indexer_challenge": "Indexer {{name}} odgovara Cloudflare provjerom. Postavi mu FlareSolverr URL.",
+      "indexer_layout": "Stranice indexera {{name}} više ne odgovaraju njegovoj definiciji (stranica se promijenila). Pričekaj novu verziju definicije ili dodaj vlastitu.",
+      "indexer_selftest_failed": "Tjedna provjera ugrađenog indexera {{name}} nije prošla."
     }
   },
   "logs": {
@@ -3488,7 +3575,9 @@
       "source": "Zadrži Prowlarr kao izvor indexera",
       "sourceHint": "Locarr sinkronizira indexere iz Prowlarra: novi se pojave sami.",
       "direct": "Dodaj svaki indexer zasebno",
-      "directHint": "Svaki indexer postaje Locarrov indexer (i dalje se pretražuje kroz Prowlarr, osim ako je običan Torznab/Newznab)."
+      "directHint": "Svaki indexer postaje Locarrov indexer (i dalje se pretražuje kroz Prowlarr, osim ako je običan Torznab/Newznab).",
+      "builtin": "Gdje može, koristi Locarrove indexere",
+      "builtinHint": "Javne stranice koje Locarr ima ugrađene (Nyaa, The Pirate Bay, YTS, 1337x …) dodaju se kao ugrađeni indexeri, a usenet indexeri izravno, pa Prowlarr više ne treba. Ostali ostaju na Prowlarru."
     },
     "phase": {
       "reading": "Čitanje",
@@ -3612,7 +3701,8 @@
       "link_files": "U biblioteci je: povezuju se datoteke epizoda koje nedostaju",
       "merge_albums": "U biblioteci je: dodaju se novi albumi i datoteke",
       "subtitles_unavailable": "Titlovi nisu dostupni",
-      "unsupported_provider": "Locarr nema takav provider"
+      "unsupported_provider": "Locarr nema takav provider",
+      "all_replaced": "Sve indexere zamjenjuju Locarrovi"
     },
     "attention": {
       "needs_secret": "Treba unijeti ključ ili lozinku: {{count}}",
@@ -3688,6 +3778,10 @@
         "prowlarr_apps": {
           "title": "Ukloni stare aplikacije iz: {{names}}",
           "body": "U Prowlarru pod Settings → Apps ukloni Sonarr, Radarr i Lidarr kad ih zaustaviš, da im Prowlarr prestane slati indexere."
+        },
+        "prowlarr_not_needed": {
+          "title": "Prestani koristiti {{names}}",
+          "body": "Nijedan indexer više ne pretražuje kroz Prowlarr (dok ovo nije označeno, još ih je {{indexers}}). Kad upišeš API ključeve usenet indexera, Prowlarr možeš ugasiti i obrisati."
         },
         "stop_requests": {
           "title": "Uputi ljude na Locarr umjesto: {{names}}",

@@ -271,8 +271,10 @@ func (UnimplementedHandler) CreateImportList(ctx context.Context, req *ImportLis
 
 // CreateIndexer implements createIndexer operation.
 //
-// Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
-// key is write-only.
+// Categories left empty are filled from the indexer's capabilities when they can be fetched (for a
+// built-in site, from its definition). The API key is write-only. For a built-in site (`kind: native`,
+// `definition`), unset fields take the site's defaults: its address, request limit, timeout and RSS
+// (off when the site has no list of latest releases).
 //
 // POST /indexers
 func (UnimplementedHandler) CreateIndexer(ctx context.Context, req *IndexerInput) (r *Indexer, _ error) {
@@ -1543,6 +1545,15 @@ func (UnimplementedHandler) ListImportLists(ctx context.Context) (r []ImportList
 	return r, ht.ErrNotImplemented
 }
 
+// ListIndexerDefinitions implements listIndexerDefinitions operation.
+//
+// Built-in and custom site definitions, usenet presets and definition load errors (administrators).
+//
+// GET /indexers/definitions
+func (UnimplementedHandler) ListIndexerDefinitions(ctx context.Context) (r *IndexerCatalog, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListIndexerSources implements listIndexerSources operation.
 //
 // Prowlarr and Jackett instances indexers are imported from (administrators).
@@ -2201,6 +2212,15 @@ func (UnimplementedHandler) RefreshSeries(ctx context.Context, params RefreshSer
 //
 // POST /auth/totp/recovery-codes
 func (UnimplementedHandler) RegenerateRecoveryCodes(ctx context.Context, req *PasswordConfirm) (r *RecoveryCodes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ReloadIndexerDefinitions implements reloadIndexerDefinitions operation.
+//
+// Invalid files are skipped and listed in `errors`; indexers pick up changed definitions immediately.
+//
+// POST /indexers/definitions/reload
+func (UnimplementedHandler) ReloadIndexerDefinitions(ctx context.Context) (r *IndexerCatalog, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

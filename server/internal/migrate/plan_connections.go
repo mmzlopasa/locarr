@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/native"
 	"github.com/mmzlopasa/locarr/server/internal/library"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
 	"github.com/mmzlopasa/locarr/server/internal/library/music"
@@ -219,6 +221,24 @@ func (p *planner) planProwlarr(s *Snapshot, so SourceOptions) {
 		mode = "source"
 	}
 	apiKey, _ := p.prowlarrConn(s)
+	// Indexers Locarr can reach without Prowlarr: built-in sites and direct
+	// usenet (Newznab) indexers.
+	var own []Indexer
+	var rest []Indexer
+	for _, ix := range s.Indexers {
+		if so.replaceBuiltins() && p.ownIndexer(ix) {
+			own = append(own, ix)
+		} else {
+			rest = append(rest, ix)
+		}
+	}
+	for _, ix := range own {
+		if def, ok := p.builtinFor(ix); ok {
+			p.planBuiltin(s, ix, def)
+		} else {
+			p.planOneIndexer(s, ix, apiKey)
+		}
+	}
 	if mode == "source" {
 		it := &Item{Key: idKey(s.SourceID, "indexersource", "prowlarr"), SourceID: s.SourceID, Category: "indexersource",
 			Name: fmt.Sprintf("%s as indexer source (%d indexers)", s.Name, len(s.Indexers))}
@@ -235,8 +255,22 @@ func (p *planner) planProwlarr(s *Snapshot, so SourceOptions) {
 		} else {
 			it.Action = ActionCreate
 			u := s.URL
+			exclude := make([]string, 0, len(own))
+			for _, ix := range own {
+				exclude = append(exclude, strconv.FormatInt(ix.ID, 10))
+			}
+			if len(own) > 0 {
+				it.note("%d indexers are added as Locarr's own instead (built-in sites or direct usenet)", len(own))
+			}
+			if len(rest) == 0 && len(own) > 0 {
+				it.Action, it.Reason = ActionSkip, "all_replaced"
+				it.note("every indexer is replaced: Prowlarr is not needed")
+				p.add(it)
+				return
+			}
 			it.run = func(ctx context.Context) (string, error) {
-				res, err := p.l.Indexers.CreateSource(ctx, indexers.SourceInput{Kind: indexers.Prowlarr, Name: s.Name, URL: u, APIKey: apiKey})
+				res, err := p.l.Indexers.CreateSource(ctx, indexers.SourceInput{Kind: indexers.Prowlarr, Name: s.Name, URL: u, APIKey: apiKey,
+					Exclude: exclude})
 				if err != nil {
 					return "", err
 				}
@@ -246,9 +280,53 @@ func (p *planner) planProwlarr(s *Snapshot, so SourceOptions) {
 		p.add(it)
 		return
 	}
-	for _, ix := range s.Indexers {
+	for _, ix := range rest {
 		p.planOneIndexer(s, ix, apiKey)
 	}
+}
+
+// builtinFor finds Locarr's built-in (or custom) definition of a Prowlarr
+// torrent indexer, by its definition name, name or site address.
+func (p *planner) builtinFor(ix Indexer) (*native.Definition, bool) {
+	if p.l.Indexers.Natives == nil || strings.EqualFold(ix.Protocol, "usenet") {
+		return nil, false
+	}
+	urls := slices.Clone(ix.IndexerURLs)
+	if b := str(ix.Fields, "baseUrl"); b != "" {
+		urls = append(urls, b)
+	}
+	return p.l.Indexers.Natives.Match([]string{ix.DefinitionName, ix.Name}, urls)
+}
+
+// ownIndexer reports whether Locarr can search the indexer without Prowlarr.
+func (p *planner) ownIndexer(ix Indexer) bool {
+	if _, ok := p.builtinFor(ix); ok {
+		return true
+	}
+	generic := strings.EqualFold(ix.Implementation, "Newznab")
+	return generic && strings.EqualFold(ix.Protocol, "usenet") && str(ix.Fields, "baseUrl") != ""
+}
+
+// planBuiltin adds Locarr's built-in version of a Prowlarr indexer.
+func (p *planner) planBuiltin(s *Snapshot, ix Indexer, def *native.Definition) {
+	key := idKey(s.SourceID, "indexer", ix.ID)
+	it := &Item{Key: key, SourceID: s.SourceID, Category: "indexer", Name: ix.Name}
+	for _, x := range p.indexerList {
+		if x.Kind == indexers.Native && x.Definition == def.ID {
+			it.Action, it.Reason, it.LocalRef = ActionSkip, "exists", fmt.Sprintf("indexer:%d", x.ID)
+			it.note("Locarr's built-in %s is already added", def.Name)
+			p.setID(key, x.ID)
+			p.add(it)
+			return
+		}
+	}
+	in := p.l.Indexers.NativeInput(def)
+	in.Name, in.Enabled, in.Priority, in.Tags = ix.Name, ix.Enable, clamp(ix.Priority, 1, 50, 25), p.tagNames(s, ix.Tags)
+	it.note("uses Locarr's built-in %s (definition v%d) instead of Prowlarr", def.Name, def.Version)
+	if def.FlareSolverr == "always" {
+		it.note("the site needs FlareSolverr: set its address on the indexer")
+	}
+	p.finishIndexer(s, it, in, strconv.FormatInt(ix.ID, 10))
 }
 
 // ---- indexers ----

@@ -101,22 +101,13 @@ func (s *Service) wantedFor(v *Series, p *quality.Profile, eps []*Episode) decis
 	return w
 }
 
-// baseQuery searches by the strongest id the series has (indexers combine
-// several ids with "and", and few know them all) plus the title as a text
-// fallback for indexers without id search.
+// baseQuery carries every id the series has (the indexer service sends only
+// the strongest one each indexer supports: indexers combine several ids with
+// "and", and few know them all) plus the title as a text fallback for
+// indexers without id search.
 func baseQuery(v *Series) indexers.Query {
-	q := indexers.Query{Type: indexers.SearchTV, Term: naming.CleanTitle(v.Title)}
-	switch {
-	case v.TVDbID > 0:
-		q.TVDBID = v.TVDbID
-	case v.TVMazeID > 0:
-		q.TVMazeID = v.TVMazeID
-	case v.IMDbID != "":
-		q.IMDBID = v.IMDbID
-	default:
-		q.TMDBID = v.TMDbID
-	}
-	return q
+	return indexers.Query{Type: indexers.SearchTV, Term: naming.CleanTitle(v.Title), TVDBID: v.TVDbID, TVMazeID: v.TVMazeID,
+		IMDBID: v.IMDbID, TMDBID: v.TMDbID}
 }
 
 func (s *Service) episodeItem(v *Series, sn *Season, e *Episode, p *quality.Profile, busy bool, now time.Time) wanted.Item {

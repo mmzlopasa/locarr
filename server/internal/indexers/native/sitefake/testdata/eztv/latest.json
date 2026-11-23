@@ -1,0 +1,49 @@
+{
+ "torrents_count": 1105786,
+ "limit": 3,
+ "page": 1,
+ "torrents": [
+  {
+   "id": 3192830,
+   "hash": "b24c22848d5697b78dea8ae19f2bd15ff9fb2e3c",
+   "filename": "MasterChef The Professionals S19E11 720p WEB H264-JFF[EZTVx.to].mkv",
+   "magnet_url": "magnet:?xt=urn:btih:b24c22848d5697b78dea8ae19f2bd15ff9fb2e3c&dn=MasterChef+The+Professionals+S19E11+720p+WEB+H264-JFF%5Beztvx.to%5D&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.torrent.eu.org:451/announce&tr=udp://tracker.dler.org:6969/announce&tr=https://tracker.moeblog.cn:443/announce&tr=https://tracker.zhuqiy.com:443/announce&tr=udp://open.dstud.io:6969/announce",
+   "title": "MasterChef The Professionals S19E11 720p WEB H264-JFF EZTV",
+   "imdb_id": "1281256",
+   "season": "19",
+   "episode": "11",
+   "seeds": 4,
+   "peers": 11,
+   "date_released_unix": 1795435936,
+   "size_bytes": "1425198334"
+  },
+  {
+   "id": 3192829,
+   "hash": "dbe5f5ef4d4165ad9e95895f6fbbbf712a0fd660",
+   "filename": "Big Brother Au S17E25 720p WEB H264-JFF[EZTVx.to].mkv",
+   "magnet_url": "magnet:?xt=urn:btih:dbe5f5ef4d4165ad9e95895f6fbbbf712a0fd660&dn=Big+Brother+Au+S17E25+720p+WEB+H264-JFF%5Beztvx.to%5D&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.torrent.eu.org:451/announce&tr=udp://tracker.dler.org:6969/announce&tr=https://tracker.moeblog.cn:443/announce&tr=https://tracker.zhuqiy.com:443/announce&tr=udp://open.dstud.io:6969/announce",
+   "title": "Big Brother Au S17E25 720p WEB H264-JFF EZTV",
+   "imdb_id": "0287196",
+   "season": "17",
+   "episode": "25",
+   "seeds": 9,
+   "peers": 14,
+   "date_released_unix": 1795435934,
+   "size_bytes": "1066932823"
+  },
+  {
+   "id": 3192828,
+   "hash": "1bed136add913569f552ce7f502f5cbf4464a761",
+   "filename": "dig.2026.s01e01.1080p.web.h264-cakes[EZTVx.to].mkv",
+   "magnet_url": "magnet:?xt=urn:btih:1bed136add913569f552ce7f502f5cbf4464a761&dn=dig.2026.s01e01.1080p.web.h264-cakes%5Beztvx.to%5D&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.torrent.eu.org:451/announce&tr=udp://tracker.dler.org:6969/announce&tr=https://tracker.moeblog.cn:443/announce&tr=https://tracker.zhuqiy.com:443/announce&tr=udp://open.dstud.io:6969/announce",
+   "title": "DIG 2026 S01E01 1080p WEB H264-CAKES EZTV",
+   "imdb_id": "36843594",
+   "season": "1",
+   "episode": "1",
+   "seeds": 60,
+   "peers": 103,
+   "date_released_unix": 1795435460,
+   "size_bytes": "1693693290"
+  }
+ ]
+}
