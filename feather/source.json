@@ -1,0 +1,22 @@
+{
+  "name": "Locarr",
+  "identifier": "net.scyde.locarr.source",
+  "subtitle": "Locarr by SCYDE",
+  "website": "https://github.com/mmzlopasa/locarr",
+  "iconURL": "https://raw.githubusercontent.com/mmzlopasa/locarr/main/ios/Locarr/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+  "tintColor": "#4FD1A5",
+  "apps": [
+    {
+      "name": "Locarr",
+      "bundleIdentifier": "net.scyde.locarr",
+      "developerName": "SCYDE",
+      "subtitle": "Movies, series, music and requests in one place.",
+      "localizedDescription": "Client for the Locarr server: discover and request titles, follow your requests, and for administrators the library, queue, interactive search, calendar, health and \"why didn't it land?\".",
+      "iconURL": "https://raw.githubusercontent.com/mmzlopasa/locarr/main/ios/Locarr/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+      "tintColor": "#4FD1A5",
+      "category": "utilities",
+      "versions": []
+    }
+  ],
+  "news": []
+}
