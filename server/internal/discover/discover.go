@@ -199,7 +199,10 @@ func (s *Service) Facets(ctx context.Context) (Facets, error) {
 	return Facets{MovieGenres: mg, SeriesGenres: sg, Studios: Studios, Networks: Networks}, nil
 }
 
-// Search searches; kind is all, movie, series, person or music.
+// SearchTMDb searches movies, series and people without music.
+const SearchTMDb = "tmdb"
+
+// Search searches; kind is all, movie, series, person, music or SearchTMDb.
 func (s *Service) Search(ctx context.Context, p auth.Principal, q, kind string) (Page, error) {
 	var items []Item
 	switch kind {
