@@ -1930,6 +1930,87 @@ func (s *ArtistUpdate) SetTags(val []string) {
 	s.Tags = val
 }
 
+// Ref: #/components/schemas/AuthProvider
+type AuthProvider struct {
+	// Local, or a provider id such as streamero.
+	ID string `json:"id"`
+	// Password = username and password form; redirect = sign in at the provider (reserved, D-058).
+	Kind AuthProviderKind `json:"kind"`
+	Name string           `json:"name"`
+}
+
+// GetID returns the value of ID.
+func (s *AuthProvider) GetID() string {
+	return s.ID
+}
+
+// GetKind returns the value of Kind.
+func (s *AuthProvider) GetKind() AuthProviderKind {
+	return s.Kind
+}
+
+// GetName returns the value of Name.
+func (s *AuthProvider) GetName() string {
+	return s.Name
+}
+
+// SetID sets the value of ID.
+func (s *AuthProvider) SetID(val string) {
+	s.ID = val
+}
+
+// SetKind sets the value of Kind.
+func (s *AuthProvider) SetKind(val AuthProviderKind) {
+	s.Kind = val
+}
+
+// SetName sets the value of Name.
+func (s *AuthProvider) SetName(val string) {
+	s.Name = val
+}
+
+// Password = username and password form; redirect = sign in at the provider (reserved, D-058).
+type AuthProviderKind string
+
+const (
+	AuthProviderKindPassword AuthProviderKind = "password"
+	AuthProviderKindRedirect AuthProviderKind = "redirect"
+)
+
+// AllValues returns all AuthProviderKind values.
+func (AuthProviderKind) AllValues() []AuthProviderKind {
+	return []AuthProviderKind{
+		AuthProviderKindPassword,
+		AuthProviderKindRedirect,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AuthProviderKind) MarshalText() ([]byte, error) {
+	switch s {
+	case AuthProviderKindPassword:
+		return []byte(s), nil
+	case AuthProviderKindRedirect:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AuthProviderKind) UnmarshalText(data []byte) error {
+	switch AuthProviderKind(data) {
+	case AuthProviderKindPassword:
+		*s = AuthProviderKindPassword
+		return nil
+	case AuthProviderKindRedirect:
+		*s = AuthProviderKindRedirect
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/AuthResult
 type AuthResult struct {
 	User User `json:"user"`
@@ -2194,6 +2275,69 @@ func (s *BlocklistInput) SetMessage(val OptString) {
 // SetItemRef sets the value of ItemRef.
 func (s *BlocklistInput) SetItemRef(val jx.Raw) {
 	s.ItemRef = val
+}
+
+// Ref: #/components/schemas/BulkError
+type BulkError struct {
+	ID      int64  `json:"id"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+// GetID returns the value of ID.
+func (s *BulkError) GetID() int64 {
+	return s.ID
+}
+
+// GetCode returns the value of Code.
+func (s *BulkError) GetCode() string {
+	return s.Code
+}
+
+// GetMessage returns the value of Message.
+func (s *BulkError) GetMessage() string {
+	return s.Message
+}
+
+// SetID sets the value of ID.
+func (s *BulkError) SetID(val int64) {
+	s.ID = val
+}
+
+// SetCode sets the value of Code.
+func (s *BulkError) SetCode(val string) {
+	s.Code = val
+}
+
+// SetMessage sets the value of Message.
+func (s *BulkError) SetMessage(val string) {
+	s.Message = val
+}
+
+// Ref: #/components/schemas/BulkResult
+type BulkResult struct {
+	Done   int         `json:"done"`
+	Errors []BulkError `json:"errors"`
+}
+
+// GetDone returns the value of Done.
+func (s *BulkResult) GetDone() int {
+	return s.Done
+}
+
+// GetErrors returns the value of Errors.
+func (s *BulkResult) GetErrors() []BulkError {
+	return s.Errors
+}
+
+// SetDone sets the value of Done.
+func (s *BulkResult) SetDone(val int) {
+	s.Done = val
+}
+
+// SetErrors sets the value of Errors.
+func (s *BulkResult) SetErrors(val []BulkError) {
+	s.Errors = val
 }
 
 // A movie date (movieId set) or an episode airing (kind episode; seriesId and episodeId set).
@@ -2676,6 +2820,54 @@ func (s *Candidate) SetInfoUrl(val OptString) {
 	s.InfoUrl = val
 }
 
+// Ref: #/components/schemas/CastMember
+type CastMember struct {
+	PersonId  OptInt64  `json:"personId"`
+	Name      string    `json:"name"`
+	Character OptString `json:"character"`
+	Profile   OptString `json:"profile"`
+}
+
+// GetPersonId returns the value of PersonId.
+func (s *CastMember) GetPersonId() OptInt64 {
+	return s.PersonId
+}
+
+// GetName returns the value of Name.
+func (s *CastMember) GetName() string {
+	return s.Name
+}
+
+// GetCharacter returns the value of Character.
+func (s *CastMember) GetCharacter() OptString {
+	return s.Character
+}
+
+// GetProfile returns the value of Profile.
+func (s *CastMember) GetProfile() OptString {
+	return s.Profile
+}
+
+// SetPersonId sets the value of PersonId.
+func (s *CastMember) SetPersonId(val OptInt64) {
+	s.PersonId = val
+}
+
+// SetName sets the value of Name.
+func (s *CastMember) SetName(val string) {
+	s.Name = val
+}
+
+// SetCharacter sets the value of Character.
+func (s *CastMember) SetCharacter(val OptString) {
+	s.Character = val
+}
+
+// SetProfile sets the value of Profile.
+func (s *CastMember) SetProfile(val OptString) {
+	s.Profile = val
+}
+
 // ChangePasswordNoContent is response for ChangePassword operation.
 type ChangePasswordNoContent struct{}
 
@@ -2752,6 +2944,69 @@ func (s *ColonReplacement) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/Comment
+type Comment struct {
+	ID        int64     `json:"id"`
+	User      UserRef   `json:"user"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *Comment) GetID() int64 {
+	return s.ID
+}
+
+// GetUser returns the value of User.
+func (s *Comment) GetUser() UserRef {
+	return s.User
+}
+
+// GetBody returns the value of Body.
+func (s *Comment) GetBody() string {
+	return s.Body
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Comment) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Comment) SetID(val int64) {
+	s.ID = val
+}
+
+// SetUser sets the value of User.
+func (s *Comment) SetUser(val UserRef) {
+	s.User = val
+}
+
+// SetBody sets the value of Body.
+func (s *Comment) SetBody(val string) {
+	s.Body = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Comment) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// Ref: #/components/schemas/CommentInput
+type CommentInput struct {
+	Body string `json:"body"`
+}
+
+// GetBody returns the value of Body.
+func (s *CommentInput) GetBody() string {
+	return s.Body
+}
+
+// SetBody sets the value of Body.
+func (s *CommentInput) SetBody(val string) {
+	s.Body = val
 }
 
 // Ref: #/components/schemas/ConditionResult
@@ -2848,6 +3103,113 @@ func (s *CreateApiKeyRequest) SetName(val string) {
 // SetReadOnly sets the value of ReadOnly.
 func (s *CreateApiKeyRequest) SetReadOnly(val OptBool) {
 	s.ReadOnly = val
+}
+
+// Ref: #/components/schemas/CreateRequest
+type CreateRequest struct {
+	Kind RequestKind `json:"kind"`
+	// Movies and series.
+	TmdbId OptInt64 `json:"tmdbId"`
+	// Album (release group) or artist.
+	Mbid    OptString `json:"mbid"`
+	Is4k    OptBool   `json:"is4k"`
+	Seasons []int     `json:"seasons"`
+	// Every season there is now.
+	AllSeasons OptBool `json:"allSeasons"`
+	// Also seasons that appear later.
+	FutureSeasons OptBool           `json:"futureSeasons"`
+	Comment       OptString         `json:"comment"`
+	Options       OptRequestOptions `json:"options"`
+}
+
+// GetKind returns the value of Kind.
+func (s *CreateRequest) GetKind() RequestKind {
+	return s.Kind
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *CreateRequest) GetTmdbId() OptInt64 {
+	return s.TmdbId
+}
+
+// GetMbid returns the value of Mbid.
+func (s *CreateRequest) GetMbid() OptString {
+	return s.Mbid
+}
+
+// GetIs4k returns the value of Is4k.
+func (s *CreateRequest) GetIs4k() OptBool {
+	return s.Is4k
+}
+
+// GetSeasons returns the value of Seasons.
+func (s *CreateRequest) GetSeasons() []int {
+	return s.Seasons
+}
+
+// GetAllSeasons returns the value of AllSeasons.
+func (s *CreateRequest) GetAllSeasons() OptBool {
+	return s.AllSeasons
+}
+
+// GetFutureSeasons returns the value of FutureSeasons.
+func (s *CreateRequest) GetFutureSeasons() OptBool {
+	return s.FutureSeasons
+}
+
+// GetComment returns the value of Comment.
+func (s *CreateRequest) GetComment() OptString {
+	return s.Comment
+}
+
+// GetOptions returns the value of Options.
+func (s *CreateRequest) GetOptions() OptRequestOptions {
+	return s.Options
+}
+
+// SetKind sets the value of Kind.
+func (s *CreateRequest) SetKind(val RequestKind) {
+	s.Kind = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *CreateRequest) SetTmdbId(val OptInt64) {
+	s.TmdbId = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *CreateRequest) SetMbid(val OptString) {
+	s.Mbid = val
+}
+
+// SetIs4k sets the value of Is4k.
+func (s *CreateRequest) SetIs4k(val OptBool) {
+	s.Is4k = val
+}
+
+// SetSeasons sets the value of Seasons.
+func (s *CreateRequest) SetSeasons(val []int) {
+	s.Seasons = val
+}
+
+// SetAllSeasons sets the value of AllSeasons.
+func (s *CreateRequest) SetAllSeasons(val OptBool) {
+	s.AllSeasons = val
+}
+
+// SetFutureSeasons sets the value of FutureSeasons.
+func (s *CreateRequest) SetFutureSeasons(val OptBool) {
+	s.FutureSeasons = val
+}
+
+// SetComment sets the value of Comment.
+func (s *CreateRequest) SetComment(val OptString) {
+	s.Comment = val
+}
+
+// SetOptions sets the value of Options.
+func (s *CreateRequest) SetOptions(val OptRequestOptions) {
+	s.Options = val
 }
 
 // Ref: #/components/schemas/CreateRootFolderRequest
@@ -2975,6 +3337,33 @@ func (s *CreatedCategories) GetCategories() []string {
 // SetCategories sets the value of Categories.
 func (s *CreatedCategories) SetCategories(val []string) {
 	s.Categories = val
+}
+
+// Ref: #/components/schemas/CreatedInvite
+type CreatedInvite struct {
+	Invite Invite `json:"invite"`
+	// Only shown now; the link is /join#.
+	Code string `json:"code"`
+}
+
+// GetInvite returns the value of Invite.
+func (s *CreatedInvite) GetInvite() Invite {
+	return s.Invite
+}
+
+// GetCode returns the value of Code.
+func (s *CreatedInvite) GetCode() string {
+	return s.Code
+}
+
+// SetInvite sets the value of Invite.
+func (s *CreatedInvite) SetInvite(val Invite) {
+	s.Invite = val
+}
+
+// SetCode sets the value of Code.
+func (s *CreatedInvite) SetCode(val string) {
+	s.Code = val
 }
 
 // Ref: #/components/schemas/CurrentFile
@@ -3717,6 +4106,21 @@ func (s *DecisionStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/DeclineRequest
+type DeclineRequest struct {
+	Reason OptString `json:"reason"`
+}
+
+// GetReason returns the value of Reason.
+func (s *DeclineRequest) GetReason() OptString {
+	return s.Reason
+}
+
+// SetReason sets the value of Reason.
+func (s *DeclineRequest) SetReason(val OptString) {
+	s.Reason = val
+}
+
 // Ref: #/components/schemas/DelayProfile
 type DelayProfile struct {
 	ID                     int64    `json:"id"`
@@ -4090,6 +4494,671 @@ func (s *DeviceInfo) SetClient(val OptString) {
 
 // DisableTotpNoContent is response for DisableTotp operation.
 type DisableTotpNoContent struct{}
+
+// Ref: #/components/schemas/DiscoverFacets
+type DiscoverFacets struct {
+	MovieGenres  []Facet `json:"movieGenres"`
+	SeriesGenres []Facet `json:"seriesGenres"`
+	Studios      []Facet `json:"studios"`
+	Networks     []Facet `json:"networks"`
+}
+
+// GetMovieGenres returns the value of MovieGenres.
+func (s *DiscoverFacets) GetMovieGenres() []Facet {
+	return s.MovieGenres
+}
+
+// GetSeriesGenres returns the value of SeriesGenres.
+func (s *DiscoverFacets) GetSeriesGenres() []Facet {
+	return s.SeriesGenres
+}
+
+// GetStudios returns the value of Studios.
+func (s *DiscoverFacets) GetStudios() []Facet {
+	return s.Studios
+}
+
+// GetNetworks returns the value of Networks.
+func (s *DiscoverFacets) GetNetworks() []Facet {
+	return s.Networks
+}
+
+// SetMovieGenres sets the value of MovieGenres.
+func (s *DiscoverFacets) SetMovieGenres(val []Facet) {
+	s.MovieGenres = val
+}
+
+// SetSeriesGenres sets the value of SeriesGenres.
+func (s *DiscoverFacets) SetSeriesGenres(val []Facet) {
+	s.SeriesGenres = val
+}
+
+// SetStudios sets the value of Studios.
+func (s *DiscoverFacets) SetStudios(val []Facet) {
+	s.Studios = val
+}
+
+// SetNetworks sets the value of Networks.
+func (s *DiscoverFacets) SetNetworks(val []Facet) {
+	s.Networks = val
+}
+
+// Ref: #/components/schemas/DiscoverHome
+type DiscoverHome struct {
+	Rows []DiscoverRow `json:"rows"`
+	// The caller's latest requests.
+	Requests []MediaRequest `json:"requests"`
+	// A TMDb key is set.
+	MetadataReady bool `json:"metadataReady"`
+	MusicReady    bool `json:"musicReady"`
+}
+
+// GetRows returns the value of Rows.
+func (s *DiscoverHome) GetRows() []DiscoverRow {
+	return s.Rows
+}
+
+// GetRequests returns the value of Requests.
+func (s *DiscoverHome) GetRequests() []MediaRequest {
+	return s.Requests
+}
+
+// GetMetadataReady returns the value of MetadataReady.
+func (s *DiscoverHome) GetMetadataReady() bool {
+	return s.MetadataReady
+}
+
+// GetMusicReady returns the value of MusicReady.
+func (s *DiscoverHome) GetMusicReady() bool {
+	return s.MusicReady
+}
+
+// SetRows sets the value of Rows.
+func (s *DiscoverHome) SetRows(val []DiscoverRow) {
+	s.Rows = val
+}
+
+// SetRequests sets the value of Requests.
+func (s *DiscoverHome) SetRequests(val []MediaRequest) {
+	s.Requests = val
+}
+
+// SetMetadataReady sets the value of MetadataReady.
+func (s *DiscoverHome) SetMetadataReady(val bool) {
+	s.MetadataReady = val
+}
+
+// SetMusicReady sets the value of MusicReady.
+func (s *DiscoverHome) SetMusicReady(val bool) {
+	s.MusicReady = val
+}
+
+// Ref: #/components/schemas/DiscoverItem
+type DiscoverItem struct {
+	MediaType DiscoverMediaType `json:"mediaType"`
+	TmdbId    OptInt64          `json:"tmdbId"`
+	Mbid      OptString         `json:"mbid"`
+	// An album's artist.
+	ArtistMbid OptString `json:"artistMbid"`
+	Title      string    `json:"title"`
+	// Album artist, a person's department, an artist's disambiguation.
+	Subtitle OptString `json:"subtitle"`
+	Year     int       `json:"year"`
+	Date     OptString `json:"date"`
+	Overview OptString `json:"overview"`
+	// TMDb image file (movies, series, people) or Cover Art file name (albums).
+	Poster   OptString      `json:"poster"`
+	Backdrop OptString      `json:"backdrop"`
+	Rating   OptFloat64     `json:"rating"`
+	Status   DiscoverStatus `json:"status"`
+	Status4k DiscoverStatus `json:"status4k"`
+	// The caller's open request for it.
+	RequestId OptInt64 `json:"requestId"`
+}
+
+// GetMediaType returns the value of MediaType.
+func (s *DiscoverItem) GetMediaType() DiscoverMediaType {
+	return s.MediaType
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *DiscoverItem) GetTmdbId() OptInt64 {
+	return s.TmdbId
+}
+
+// GetMbid returns the value of Mbid.
+func (s *DiscoverItem) GetMbid() OptString {
+	return s.Mbid
+}
+
+// GetArtistMbid returns the value of ArtistMbid.
+func (s *DiscoverItem) GetArtistMbid() OptString {
+	return s.ArtistMbid
+}
+
+// GetTitle returns the value of Title.
+func (s *DiscoverItem) GetTitle() string {
+	return s.Title
+}
+
+// GetSubtitle returns the value of Subtitle.
+func (s *DiscoverItem) GetSubtitle() OptString {
+	return s.Subtitle
+}
+
+// GetYear returns the value of Year.
+func (s *DiscoverItem) GetYear() int {
+	return s.Year
+}
+
+// GetDate returns the value of Date.
+func (s *DiscoverItem) GetDate() OptString {
+	return s.Date
+}
+
+// GetOverview returns the value of Overview.
+func (s *DiscoverItem) GetOverview() OptString {
+	return s.Overview
+}
+
+// GetPoster returns the value of Poster.
+func (s *DiscoverItem) GetPoster() OptString {
+	return s.Poster
+}
+
+// GetBackdrop returns the value of Backdrop.
+func (s *DiscoverItem) GetBackdrop() OptString {
+	return s.Backdrop
+}
+
+// GetRating returns the value of Rating.
+func (s *DiscoverItem) GetRating() OptFloat64 {
+	return s.Rating
+}
+
+// GetStatus returns the value of Status.
+func (s *DiscoverItem) GetStatus() DiscoverStatus {
+	return s.Status
+}
+
+// GetStatus4k returns the value of Status4k.
+func (s *DiscoverItem) GetStatus4k() DiscoverStatus {
+	return s.Status4k
+}
+
+// GetRequestId returns the value of RequestId.
+func (s *DiscoverItem) GetRequestId() OptInt64 {
+	return s.RequestId
+}
+
+// SetMediaType sets the value of MediaType.
+func (s *DiscoverItem) SetMediaType(val DiscoverMediaType) {
+	s.MediaType = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *DiscoverItem) SetTmdbId(val OptInt64) {
+	s.TmdbId = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *DiscoverItem) SetMbid(val OptString) {
+	s.Mbid = val
+}
+
+// SetArtistMbid sets the value of ArtistMbid.
+func (s *DiscoverItem) SetArtistMbid(val OptString) {
+	s.ArtistMbid = val
+}
+
+// SetTitle sets the value of Title.
+func (s *DiscoverItem) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetSubtitle sets the value of Subtitle.
+func (s *DiscoverItem) SetSubtitle(val OptString) {
+	s.Subtitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *DiscoverItem) SetYear(val int) {
+	s.Year = val
+}
+
+// SetDate sets the value of Date.
+func (s *DiscoverItem) SetDate(val OptString) {
+	s.Date = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *DiscoverItem) SetOverview(val OptString) {
+	s.Overview = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *DiscoverItem) SetPoster(val OptString) {
+	s.Poster = val
+}
+
+// SetBackdrop sets the value of Backdrop.
+func (s *DiscoverItem) SetBackdrop(val OptString) {
+	s.Backdrop = val
+}
+
+// SetRating sets the value of Rating.
+func (s *DiscoverItem) SetRating(val OptFloat64) {
+	s.Rating = val
+}
+
+// SetStatus sets the value of Status.
+func (s *DiscoverItem) SetStatus(val DiscoverStatus) {
+	s.Status = val
+}
+
+// SetStatus4k sets the value of Status4k.
+func (s *DiscoverItem) SetStatus4k(val DiscoverStatus) {
+	s.Status4k = val
+}
+
+// SetRequestId sets the value of RequestId.
+func (s *DiscoverItem) SetRequestId(val OptInt64) {
+	s.RequestId = val
+}
+
+// Ref: #/components/schemas/DiscoverListKey
+type DiscoverListKey string
+
+const (
+	DiscoverListKeyTrending       DiscoverListKey = "trending"
+	DiscoverListKeyTrendingMovies DiscoverListKey = "trending_movies"
+	DiscoverListKeyTrendingSeries DiscoverListKey = "trending_series"
+	DiscoverListKeyPopularMovies  DiscoverListKey = "popular_movies"
+	DiscoverListKeyPopularSeries  DiscoverListKey = "popular_series"
+	DiscoverListKeyUpcomingMovies DiscoverListKey = "upcoming_movies"
+	DiscoverListKeyNowPlaying     DiscoverListKey = "now_playing"
+	DiscoverListKeyTopRatedMovies DiscoverListKey = "top_rated_movies"
+	DiscoverListKeyTopRatedSeries DiscoverListKey = "top_rated_series"
+	DiscoverListKeyAiringSeries   DiscoverListKey = "airing_series"
+	DiscoverListKeyGenreMovies    DiscoverListKey = "genre_movies"
+	DiscoverListKeyGenreSeries    DiscoverListKey = "genre_series"
+	DiscoverListKeyStudio         DiscoverListKey = "studio"
+	DiscoverListKeyNetwork        DiscoverListKey = "network"
+	DiscoverListKeyRecentlyAdded  DiscoverListKey = "recently_added"
+)
+
+// AllValues returns all DiscoverListKey values.
+func (DiscoverListKey) AllValues() []DiscoverListKey {
+	return []DiscoverListKey{
+		DiscoverListKeyTrending,
+		DiscoverListKeyTrendingMovies,
+		DiscoverListKeyTrendingSeries,
+		DiscoverListKeyPopularMovies,
+		DiscoverListKeyPopularSeries,
+		DiscoverListKeyUpcomingMovies,
+		DiscoverListKeyNowPlaying,
+		DiscoverListKeyTopRatedMovies,
+		DiscoverListKeyTopRatedSeries,
+		DiscoverListKeyAiringSeries,
+		DiscoverListKeyGenreMovies,
+		DiscoverListKeyGenreSeries,
+		DiscoverListKeyStudio,
+		DiscoverListKeyNetwork,
+		DiscoverListKeyRecentlyAdded,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DiscoverListKey) MarshalText() ([]byte, error) {
+	switch s {
+	case DiscoverListKeyTrending:
+		return []byte(s), nil
+	case DiscoverListKeyTrendingMovies:
+		return []byte(s), nil
+	case DiscoverListKeyTrendingSeries:
+		return []byte(s), nil
+	case DiscoverListKeyPopularMovies:
+		return []byte(s), nil
+	case DiscoverListKeyPopularSeries:
+		return []byte(s), nil
+	case DiscoverListKeyUpcomingMovies:
+		return []byte(s), nil
+	case DiscoverListKeyNowPlaying:
+		return []byte(s), nil
+	case DiscoverListKeyTopRatedMovies:
+		return []byte(s), nil
+	case DiscoverListKeyTopRatedSeries:
+		return []byte(s), nil
+	case DiscoverListKeyAiringSeries:
+		return []byte(s), nil
+	case DiscoverListKeyGenreMovies:
+		return []byte(s), nil
+	case DiscoverListKeyGenreSeries:
+		return []byte(s), nil
+	case DiscoverListKeyStudio:
+		return []byte(s), nil
+	case DiscoverListKeyNetwork:
+		return []byte(s), nil
+	case DiscoverListKeyRecentlyAdded:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DiscoverListKey) UnmarshalText(data []byte) error {
+	switch DiscoverListKey(data) {
+	case DiscoverListKeyTrending:
+		*s = DiscoverListKeyTrending
+		return nil
+	case DiscoverListKeyTrendingMovies:
+		*s = DiscoverListKeyTrendingMovies
+		return nil
+	case DiscoverListKeyTrendingSeries:
+		*s = DiscoverListKeyTrendingSeries
+		return nil
+	case DiscoverListKeyPopularMovies:
+		*s = DiscoverListKeyPopularMovies
+		return nil
+	case DiscoverListKeyPopularSeries:
+		*s = DiscoverListKeyPopularSeries
+		return nil
+	case DiscoverListKeyUpcomingMovies:
+		*s = DiscoverListKeyUpcomingMovies
+		return nil
+	case DiscoverListKeyNowPlaying:
+		*s = DiscoverListKeyNowPlaying
+		return nil
+	case DiscoverListKeyTopRatedMovies:
+		*s = DiscoverListKeyTopRatedMovies
+		return nil
+	case DiscoverListKeyTopRatedSeries:
+		*s = DiscoverListKeyTopRatedSeries
+		return nil
+	case DiscoverListKeyAiringSeries:
+		*s = DiscoverListKeyAiringSeries
+		return nil
+	case DiscoverListKeyGenreMovies:
+		*s = DiscoverListKeyGenreMovies
+		return nil
+	case DiscoverListKeyGenreSeries:
+		*s = DiscoverListKeyGenreSeries
+		return nil
+	case DiscoverListKeyStudio:
+		*s = DiscoverListKeyStudio
+		return nil
+	case DiscoverListKeyNetwork:
+		*s = DiscoverListKeyNetwork
+		return nil
+	case DiscoverListKeyRecentlyAdded:
+		*s = DiscoverListKeyRecentlyAdded
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/DiscoverMediaType
+type DiscoverMediaType string
+
+const (
+	DiscoverMediaTypeMovie  DiscoverMediaType = "movie"
+	DiscoverMediaTypeSeries DiscoverMediaType = "series"
+	DiscoverMediaTypePerson DiscoverMediaType = "person"
+	DiscoverMediaTypeArtist DiscoverMediaType = "artist"
+	DiscoverMediaTypeAlbum  DiscoverMediaType = "album"
+)
+
+// AllValues returns all DiscoverMediaType values.
+func (DiscoverMediaType) AllValues() []DiscoverMediaType {
+	return []DiscoverMediaType{
+		DiscoverMediaTypeMovie,
+		DiscoverMediaTypeSeries,
+		DiscoverMediaTypePerson,
+		DiscoverMediaTypeArtist,
+		DiscoverMediaTypeAlbum,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DiscoverMediaType) MarshalText() ([]byte, error) {
+	switch s {
+	case DiscoverMediaTypeMovie:
+		return []byte(s), nil
+	case DiscoverMediaTypeSeries:
+		return []byte(s), nil
+	case DiscoverMediaTypePerson:
+		return []byte(s), nil
+	case DiscoverMediaTypeArtist:
+		return []byte(s), nil
+	case DiscoverMediaTypeAlbum:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DiscoverMediaType) UnmarshalText(data []byte) error {
+	switch DiscoverMediaType(data) {
+	case DiscoverMediaTypeMovie:
+		*s = DiscoverMediaTypeMovie
+		return nil
+	case DiscoverMediaTypeSeries:
+		*s = DiscoverMediaTypeSeries
+		return nil
+	case DiscoverMediaTypePerson:
+		*s = DiscoverMediaTypePerson
+		return nil
+	case DiscoverMediaTypeArtist:
+		*s = DiscoverMediaTypeArtist
+		return nil
+	case DiscoverMediaTypeAlbum:
+		*s = DiscoverMediaTypeAlbum
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/DiscoverPage
+type DiscoverPage struct {
+	Items      []DiscoverItem `json:"items"`
+	Page       int            `json:"page"`
+	TotalPages int            `json:"totalPages"`
+}
+
+// GetItems returns the value of Items.
+func (s *DiscoverPage) GetItems() []DiscoverItem {
+	return s.Items
+}
+
+// GetPage returns the value of Page.
+func (s *DiscoverPage) GetPage() int {
+	return s.Page
+}
+
+// GetTotalPages returns the value of TotalPages.
+func (s *DiscoverPage) GetTotalPages() int {
+	return s.TotalPages
+}
+
+// SetItems sets the value of Items.
+func (s *DiscoverPage) SetItems(val []DiscoverItem) {
+	s.Items = val
+}
+
+// SetPage sets the value of Page.
+func (s *DiscoverPage) SetPage(val int) {
+	s.Page = val
+}
+
+// SetTotalPages sets the value of TotalPages.
+func (s *DiscoverPage) SetTotalPages(val int) {
+	s.TotalPages = val
+}
+
+// Ref: #/components/schemas/DiscoverRow
+type DiscoverRow struct {
+	Key   DiscoverListKey `json:"key"`
+	Items []DiscoverItem  `json:"items"`
+}
+
+// GetKey returns the value of Key.
+func (s *DiscoverRow) GetKey() DiscoverListKey {
+	return s.Key
+}
+
+// GetItems returns the value of Items.
+func (s *DiscoverRow) GetItems() []DiscoverItem {
+	return s.Items
+}
+
+// SetKey sets the value of Key.
+func (s *DiscoverRow) SetKey(val DiscoverListKey) {
+	s.Key = val
+}
+
+// SetItems sets the value of Items.
+func (s *DiscoverRow) SetItems(val []DiscoverItem) {
+	s.Items = val
+}
+
+type DiscoverSearchType string
+
+const (
+	DiscoverSearchTypeAll    DiscoverSearchType = "all"
+	DiscoverSearchTypeMovie  DiscoverSearchType = "movie"
+	DiscoverSearchTypeSeries DiscoverSearchType = "series"
+	DiscoverSearchTypePerson DiscoverSearchType = "person"
+	DiscoverSearchTypeMusic  DiscoverSearchType = "music"
+)
+
+// AllValues returns all DiscoverSearchType values.
+func (DiscoverSearchType) AllValues() []DiscoverSearchType {
+	return []DiscoverSearchType{
+		DiscoverSearchTypeAll,
+		DiscoverSearchTypeMovie,
+		DiscoverSearchTypeSeries,
+		DiscoverSearchTypePerson,
+		DiscoverSearchTypeMusic,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DiscoverSearchType) MarshalText() ([]byte, error) {
+	switch s {
+	case DiscoverSearchTypeAll:
+		return []byte(s), nil
+	case DiscoverSearchTypeMovie:
+		return []byte(s), nil
+	case DiscoverSearchTypeSeries:
+		return []byte(s), nil
+	case DiscoverSearchTypePerson:
+		return []byte(s), nil
+	case DiscoverSearchTypeMusic:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DiscoverSearchType) UnmarshalText(data []byte) error {
+	switch DiscoverSearchType(data) {
+	case DiscoverSearchTypeAll:
+		*s = DiscoverSearchTypeAll
+		return nil
+	case DiscoverSearchTypeMovie:
+		*s = DiscoverSearchTypeMovie
+		return nil
+	case DiscoverSearchTypeSeries:
+		*s = DiscoverSearchTypeSeries
+		return nil
+	case DiscoverSearchTypePerson:
+		*s = DiscoverSearchTypePerson
+		return nil
+	case DiscoverSearchTypeMusic:
+		*s = DiscoverSearchTypeMusic
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// None; pending (requested, waiting for approval); processing (approved, on its way); partial (some
+// seasons or tracks are here); available; in_library (added but not downloaded, nobody asked);
+// declined is never shown here.
+// Ref: #/components/schemas/DiscoverStatus
+type DiscoverStatus string
+
+const (
+	DiscoverStatusNone       DiscoverStatus = "none"
+	DiscoverStatusPending    DiscoverStatus = "pending"
+	DiscoverStatusProcessing DiscoverStatus = "processing"
+	DiscoverStatusPartial    DiscoverStatus = "partial"
+	DiscoverStatusAvailable  DiscoverStatus = "available"
+	DiscoverStatusInLibrary  DiscoverStatus = "in_library"
+)
+
+// AllValues returns all DiscoverStatus values.
+func (DiscoverStatus) AllValues() []DiscoverStatus {
+	return []DiscoverStatus{
+		DiscoverStatusNone,
+		DiscoverStatusPending,
+		DiscoverStatusProcessing,
+		DiscoverStatusPartial,
+		DiscoverStatusAvailable,
+		DiscoverStatusInLibrary,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s DiscoverStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case DiscoverStatusNone:
+		return []byte(s), nil
+	case DiscoverStatusPending:
+		return []byte(s), nil
+	case DiscoverStatusProcessing:
+		return []byte(s), nil
+	case DiscoverStatusPartial:
+		return []byte(s), nil
+	case DiscoverStatusAvailable:
+		return []byte(s), nil
+	case DiscoverStatusInLibrary:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *DiscoverStatus) UnmarshalText(data []byte) error {
+	switch DiscoverStatus(data) {
+	case DiscoverStatusNone:
+		*s = DiscoverStatusNone
+		return nil
+	case DiscoverStatusPending:
+		*s = DiscoverStatusPending
+		return nil
+	case DiscoverStatusProcessing:
+		*s = DiscoverStatusProcessing
+		return nil
+	case DiscoverStatusPartial:
+		*s = DiscoverStatusPartial
+		return nil
+	case DiscoverStatusAvailable:
+		*s = DiscoverStatusAvailable
+		return nil
+	case DiscoverStatusInLibrary:
+		*s = DiscoverStatusInLibrary
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
 
 // Ref: #/components/schemas/DownloadClient
 type DownloadClient struct {
@@ -6862,6 +7931,32 @@ func (s *ExternalIds) SetImdb(val OptString) {
 // SetMusicBrainz sets the value of MusicBrainz.
 func (s *ExternalIds) SetMusicBrainz(val OptString) {
 	s.MusicBrainz = val
+}
+
+// Ref: #/components/schemas/Facet
+type Facet struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
+// GetID returns the value of ID.
+func (s *Facet) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *Facet) GetName() string {
+	return s.Name
+}
+
+// SetID sets the value of ID.
+func (s *Facet) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *Facet) SetName(val string) {
+	s.Name = val
 }
 
 // Ref: #/components/schemas/FolderEntry
@@ -10346,6 +11441,834 @@ func (s *InteractiveSearch) SetDurationMs(val int64) {
 	s.DurationMs = val
 }
 
+// Ref: #/components/schemas/Invite
+type Invite struct {
+	ID          int64             `json:"id"`
+	Label       string            `json:"label"`
+	Role        Role              `json:"role"`
+	Permissions Permissions       `json:"permissions"`
+	Quotas      OptQuotaOverrides `json:"quotas"`
+	// 0 = unlimited.
+	MaxUses   int         `json:"maxUses"`
+	Uses      int         `json:"uses"`
+	ExpiresAt OptDateTime `json:"expiresAt"`
+	CreatedAt time.Time   `json:"createdAt"`
+	CreatedBy OptString   `json:"createdBy"`
+	Revoked   bool        `json:"revoked"`
+	// Expired or used up.
+	Expired bool `json:"expired"`
+}
+
+// GetID returns the value of ID.
+func (s *Invite) GetID() int64 {
+	return s.ID
+}
+
+// GetLabel returns the value of Label.
+func (s *Invite) GetLabel() string {
+	return s.Label
+}
+
+// GetRole returns the value of Role.
+func (s *Invite) GetRole() Role {
+	return s.Role
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *Invite) GetPermissions() Permissions {
+	return s.Permissions
+}
+
+// GetQuotas returns the value of Quotas.
+func (s *Invite) GetQuotas() OptQuotaOverrides {
+	return s.Quotas
+}
+
+// GetMaxUses returns the value of MaxUses.
+func (s *Invite) GetMaxUses() int {
+	return s.MaxUses
+}
+
+// GetUses returns the value of Uses.
+func (s *Invite) GetUses() int {
+	return s.Uses
+}
+
+// GetExpiresAt returns the value of ExpiresAt.
+func (s *Invite) GetExpiresAt() OptDateTime {
+	return s.ExpiresAt
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Invite) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetCreatedBy returns the value of CreatedBy.
+func (s *Invite) GetCreatedBy() OptString {
+	return s.CreatedBy
+}
+
+// GetRevoked returns the value of Revoked.
+func (s *Invite) GetRevoked() bool {
+	return s.Revoked
+}
+
+// GetExpired returns the value of Expired.
+func (s *Invite) GetExpired() bool {
+	return s.Expired
+}
+
+// SetID sets the value of ID.
+func (s *Invite) SetID(val int64) {
+	s.ID = val
+}
+
+// SetLabel sets the value of Label.
+func (s *Invite) SetLabel(val string) {
+	s.Label = val
+}
+
+// SetRole sets the value of Role.
+func (s *Invite) SetRole(val Role) {
+	s.Role = val
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *Invite) SetPermissions(val Permissions) {
+	s.Permissions = val
+}
+
+// SetQuotas sets the value of Quotas.
+func (s *Invite) SetQuotas(val OptQuotaOverrides) {
+	s.Quotas = val
+}
+
+// SetMaxUses sets the value of MaxUses.
+func (s *Invite) SetMaxUses(val int) {
+	s.MaxUses = val
+}
+
+// SetUses sets the value of Uses.
+func (s *Invite) SetUses(val int) {
+	s.Uses = val
+}
+
+// SetExpiresAt sets the value of ExpiresAt.
+func (s *Invite) SetExpiresAt(val OptDateTime) {
+	s.ExpiresAt = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Invite) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetCreatedBy sets the value of CreatedBy.
+func (s *Invite) SetCreatedBy(val OptString) {
+	s.CreatedBy = val
+}
+
+// SetRevoked sets the value of Revoked.
+func (s *Invite) SetRevoked(val bool) {
+	s.Revoked = val
+}
+
+// SetExpired sets the value of Expired.
+func (s *Invite) SetExpired(val bool) {
+	s.Expired = val
+}
+
+// Ref: #/components/schemas/InviteCheck
+type InviteCheck struct {
+	Role         Role        `json:"role"`
+	Label        OptString   `json:"label"`
+	ExpiresAt    OptDateTime `json:"expiresAt"`
+	InstanceName string      `json:"instanceName"`
+}
+
+// GetRole returns the value of Role.
+func (s *InviteCheck) GetRole() Role {
+	return s.Role
+}
+
+// GetLabel returns the value of Label.
+func (s *InviteCheck) GetLabel() OptString {
+	return s.Label
+}
+
+// GetExpiresAt returns the value of ExpiresAt.
+func (s *InviteCheck) GetExpiresAt() OptDateTime {
+	return s.ExpiresAt
+}
+
+// GetInstanceName returns the value of InstanceName.
+func (s *InviteCheck) GetInstanceName() string {
+	return s.InstanceName
+}
+
+// SetRole sets the value of Role.
+func (s *InviteCheck) SetRole(val Role) {
+	s.Role = val
+}
+
+// SetLabel sets the value of Label.
+func (s *InviteCheck) SetLabel(val OptString) {
+	s.Label = val
+}
+
+// SetExpiresAt sets the value of ExpiresAt.
+func (s *InviteCheck) SetExpiresAt(val OptDateTime) {
+	s.ExpiresAt = val
+}
+
+// SetInstanceName sets the value of InstanceName.
+func (s *InviteCheck) SetInstanceName(val string) {
+	s.InstanceName = val
+}
+
+// Ref: #/components/schemas/InviteCodeRequest
+type InviteCodeRequest struct {
+	Code string `json:"code"`
+}
+
+// GetCode returns the value of Code.
+func (s *InviteCodeRequest) GetCode() string {
+	return s.Code
+}
+
+// SetCode sets the value of Code.
+func (s *InviteCodeRequest) SetCode(val string) {
+	s.Code = val
+}
+
+// Ref: #/components/schemas/InviteInput
+type InviteInput struct {
+	Label       OptString         `json:"label"`
+	Role        InviteInputRole   `json:"role"`
+	Permissions OptPermissions    `json:"permissions"`
+	Quotas      OptQuotaOverrides `json:"quotas"`
+	MaxUses     OptInt            `json:"maxUses"`
+	// Default 7.
+	ExpiresInDays OptInt `json:"expiresInDays"`
+}
+
+// GetLabel returns the value of Label.
+func (s *InviteInput) GetLabel() OptString {
+	return s.Label
+}
+
+// GetRole returns the value of Role.
+func (s *InviteInput) GetRole() InviteInputRole {
+	return s.Role
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *InviteInput) GetPermissions() OptPermissions {
+	return s.Permissions
+}
+
+// GetQuotas returns the value of Quotas.
+func (s *InviteInput) GetQuotas() OptQuotaOverrides {
+	return s.Quotas
+}
+
+// GetMaxUses returns the value of MaxUses.
+func (s *InviteInput) GetMaxUses() OptInt {
+	return s.MaxUses
+}
+
+// GetExpiresInDays returns the value of ExpiresInDays.
+func (s *InviteInput) GetExpiresInDays() OptInt {
+	return s.ExpiresInDays
+}
+
+// SetLabel sets the value of Label.
+func (s *InviteInput) SetLabel(val OptString) {
+	s.Label = val
+}
+
+// SetRole sets the value of Role.
+func (s *InviteInput) SetRole(val InviteInputRole) {
+	s.Role = val
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *InviteInput) SetPermissions(val OptPermissions) {
+	s.Permissions = val
+}
+
+// SetQuotas sets the value of Quotas.
+func (s *InviteInput) SetQuotas(val OptQuotaOverrides) {
+	s.Quotas = val
+}
+
+// SetMaxUses sets the value of MaxUses.
+func (s *InviteInput) SetMaxUses(val OptInt) {
+	s.MaxUses = val
+}
+
+// SetExpiresInDays sets the value of ExpiresInDays.
+func (s *InviteInput) SetExpiresInDays(val OptInt) {
+	s.ExpiresInDays = val
+}
+
+type InviteInputRole string
+
+const (
+	InviteInputRoleManager   InviteInputRole = "manager"
+	InviteInputRoleRequester InviteInputRole = "requester"
+)
+
+// AllValues returns all InviteInputRole values.
+func (InviteInputRole) AllValues() []InviteInputRole {
+	return []InviteInputRole{
+		InviteInputRoleManager,
+		InviteInputRoleRequester,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s InviteInputRole) MarshalText() ([]byte, error) {
+	switch s {
+	case InviteInputRoleManager:
+		return []byte(s), nil
+	case InviteInputRoleRequester:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *InviteInputRole) UnmarshalText(data []byte) error {
+	switch InviteInputRole(data) {
+	case InviteInputRoleManager:
+		*s = InviteInputRoleManager
+		return nil
+	case InviteInputRoleRequester:
+		*s = InviteInputRoleRequester
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/Issue
+type Issue struct {
+	ID                  int64       `json:"id"`
+	Kind                IssueKind   `json:"kind"`
+	Type                IssueType   `json:"type"`
+	Status              IssueStatus `json:"status"`
+	Title               string      `json:"title"`
+	TmdbId              OptInt64    `json:"tmdbId"`
+	Mbid                OptString   `json:"mbid"`
+	Poster              OptString   `json:"poster"`
+	SeasonNumber        OptInt      `json:"seasonNumber"`
+	EpisodeNumber       OptInt      `json:"episodeNumber"`
+	Message             string      `json:"message"`
+	ReportedBy          UserRef     `json:"reportedBy"`
+	ResolvedBy          OptUserRef  `json:"resolvedBy"`
+	ResolvedAt          OptDateTime `json:"resolvedAt"`
+	ReplacementSearched OptBool     `json:"replacementSearched"`
+	CreatedAt           time.Time   `json:"createdAt"`
+	UpdatedAt           time.Time   `json:"updatedAt"`
+	// Only for users who manage the library.
+	LibraryRef   OptString `json:"libraryRef"`
+	CommentCount int       `json:"commentCount"`
+}
+
+// GetID returns the value of ID.
+func (s *Issue) GetID() int64 {
+	return s.ID
+}
+
+// GetKind returns the value of Kind.
+func (s *Issue) GetKind() IssueKind {
+	return s.Kind
+}
+
+// GetType returns the value of Type.
+func (s *Issue) GetType() IssueType {
+	return s.Type
+}
+
+// GetStatus returns the value of Status.
+func (s *Issue) GetStatus() IssueStatus {
+	return s.Status
+}
+
+// GetTitle returns the value of Title.
+func (s *Issue) GetTitle() string {
+	return s.Title
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *Issue) GetTmdbId() OptInt64 {
+	return s.TmdbId
+}
+
+// GetMbid returns the value of Mbid.
+func (s *Issue) GetMbid() OptString {
+	return s.Mbid
+}
+
+// GetPoster returns the value of Poster.
+func (s *Issue) GetPoster() OptString {
+	return s.Poster
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *Issue) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *Issue) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetMessage returns the value of Message.
+func (s *Issue) GetMessage() string {
+	return s.Message
+}
+
+// GetReportedBy returns the value of ReportedBy.
+func (s *Issue) GetReportedBy() UserRef {
+	return s.ReportedBy
+}
+
+// GetResolvedBy returns the value of ResolvedBy.
+func (s *Issue) GetResolvedBy() OptUserRef {
+	return s.ResolvedBy
+}
+
+// GetResolvedAt returns the value of ResolvedAt.
+func (s *Issue) GetResolvedAt() OptDateTime {
+	return s.ResolvedAt
+}
+
+// GetReplacementSearched returns the value of ReplacementSearched.
+func (s *Issue) GetReplacementSearched() OptBool {
+	return s.ReplacementSearched
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Issue) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *Issue) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetLibraryRef returns the value of LibraryRef.
+func (s *Issue) GetLibraryRef() OptString {
+	return s.LibraryRef
+}
+
+// GetCommentCount returns the value of CommentCount.
+func (s *Issue) GetCommentCount() int {
+	return s.CommentCount
+}
+
+// SetID sets the value of ID.
+func (s *Issue) SetID(val int64) {
+	s.ID = val
+}
+
+// SetKind sets the value of Kind.
+func (s *Issue) SetKind(val IssueKind) {
+	s.Kind = val
+}
+
+// SetType sets the value of Type.
+func (s *Issue) SetType(val IssueType) {
+	s.Type = val
+}
+
+// SetStatus sets the value of Status.
+func (s *Issue) SetStatus(val IssueStatus) {
+	s.Status = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Issue) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *Issue) SetTmdbId(val OptInt64) {
+	s.TmdbId = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *Issue) SetMbid(val OptString) {
+	s.Mbid = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *Issue) SetPoster(val OptString) {
+	s.Poster = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *Issue) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *Issue) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetMessage sets the value of Message.
+func (s *Issue) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetReportedBy sets the value of ReportedBy.
+func (s *Issue) SetReportedBy(val UserRef) {
+	s.ReportedBy = val
+}
+
+// SetResolvedBy sets the value of ResolvedBy.
+func (s *Issue) SetResolvedBy(val OptUserRef) {
+	s.ResolvedBy = val
+}
+
+// SetResolvedAt sets the value of ResolvedAt.
+func (s *Issue) SetResolvedAt(val OptDateTime) {
+	s.ResolvedAt = val
+}
+
+// SetReplacementSearched sets the value of ReplacementSearched.
+func (s *Issue) SetReplacementSearched(val OptBool) {
+	s.ReplacementSearched = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Issue) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *Issue) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetLibraryRef sets the value of LibraryRef.
+func (s *Issue) SetLibraryRef(val OptString) {
+	s.LibraryRef = val
+}
+
+// SetCommentCount sets the value of CommentCount.
+func (s *Issue) SetCommentCount(val int) {
+	s.CommentCount = val
+}
+
+// Ref: #/components/schemas/IssueInput
+type IssueInput struct {
+	Kind          IssueInputKind `json:"kind"`
+	TmdbId        OptInt64       `json:"tmdbId"`
+	Mbid          OptString      `json:"mbid"`
+	Type          IssueType      `json:"type"`
+	SeasonNumber  OptInt         `json:"seasonNumber"`
+	EpisodeNumber OptInt         `json:"episodeNumber"`
+	Message       string         `json:"message"`
+}
+
+// GetKind returns the value of Kind.
+func (s *IssueInput) GetKind() IssueInputKind {
+	return s.Kind
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *IssueInput) GetTmdbId() OptInt64 {
+	return s.TmdbId
+}
+
+// GetMbid returns the value of Mbid.
+func (s *IssueInput) GetMbid() OptString {
+	return s.Mbid
+}
+
+// GetType returns the value of Type.
+func (s *IssueInput) GetType() IssueType {
+	return s.Type
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *IssueInput) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *IssueInput) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetMessage returns the value of Message.
+func (s *IssueInput) GetMessage() string {
+	return s.Message
+}
+
+// SetKind sets the value of Kind.
+func (s *IssueInput) SetKind(val IssueInputKind) {
+	s.Kind = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *IssueInput) SetTmdbId(val OptInt64) {
+	s.TmdbId = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *IssueInput) SetMbid(val OptString) {
+	s.Mbid = val
+}
+
+// SetType sets the value of Type.
+func (s *IssueInput) SetType(val IssueType) {
+	s.Type = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *IssueInput) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *IssueInput) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetMessage sets the value of Message.
+func (s *IssueInput) SetMessage(val string) {
+	s.Message = val
+}
+
+type IssueInputKind string
+
+const (
+	IssueInputKindMovie  IssueInputKind = "movie"
+	IssueInputKindSeries IssueInputKind = "series"
+	IssueInputKindAlbum  IssueInputKind = "album"
+)
+
+// AllValues returns all IssueInputKind values.
+func (IssueInputKind) AllValues() []IssueInputKind {
+	return []IssueInputKind{
+		IssueInputKindMovie,
+		IssueInputKindSeries,
+		IssueInputKindAlbum,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IssueInputKind) MarshalText() ([]byte, error) {
+	switch s {
+	case IssueInputKindMovie:
+		return []byte(s), nil
+	case IssueInputKindSeries:
+		return []byte(s), nil
+	case IssueInputKindAlbum:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IssueInputKind) UnmarshalText(data []byte) error {
+	switch IssueInputKind(data) {
+	case IssueInputKindMovie:
+		*s = IssueInputKindMovie
+		return nil
+	case IssueInputKindSeries:
+		*s = IssueInputKindSeries
+		return nil
+	case IssueInputKindAlbum:
+		*s = IssueInputKindAlbum
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type IssueKind string
+
+const (
+	IssueKindMovie  IssueKind = "movie"
+	IssueKindSeries IssueKind = "series"
+	IssueKindAlbum  IssueKind = "album"
+)
+
+// AllValues returns all IssueKind values.
+func (IssueKind) AllValues() []IssueKind {
+	return []IssueKind{
+		IssueKindMovie,
+		IssueKindSeries,
+		IssueKindAlbum,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IssueKind) MarshalText() ([]byte, error) {
+	switch s {
+	case IssueKindMovie:
+		return []byte(s), nil
+	case IssueKindSeries:
+		return []byte(s), nil
+	case IssueKindAlbum:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IssueKind) UnmarshalText(data []byte) error {
+	switch IssueKind(data) {
+	case IssueKindMovie:
+		*s = IssueKindMovie
+		return nil
+	case IssueKindSeries:
+		*s = IssueKindSeries
+		return nil
+	case IssueKindAlbum:
+		*s = IssueKindAlbum
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/IssueList
+type IssueList struct {
+	Items []Issue `json:"items"`
+	Total int     `json:"total"`
+}
+
+// GetItems returns the value of Items.
+func (s *IssueList) GetItems() []Issue {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *IssueList) GetTotal() int {
+	return s.Total
+}
+
+// SetItems sets the value of Items.
+func (s *IssueList) SetItems(val []Issue) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *IssueList) SetTotal(val int) {
+	s.Total = val
+}
+
+// Ref: #/components/schemas/IssueStatus
+type IssueStatus string
+
+const (
+	IssueStatusOpen     IssueStatus = "open"
+	IssueStatusResolved IssueStatus = "resolved"
+)
+
+// AllValues returns all IssueStatus values.
+func (IssueStatus) AllValues() []IssueStatus {
+	return []IssueStatus{
+		IssueStatusOpen,
+		IssueStatusResolved,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IssueStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case IssueStatusOpen:
+		return []byte(s), nil
+	case IssueStatusResolved:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IssueStatus) UnmarshalText(data []byte) error {
+	switch IssueStatus(data) {
+	case IssueStatusOpen:
+		*s = IssueStatusOpen
+		return nil
+	case IssueStatusResolved:
+		*s = IssueStatusResolved
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/IssueType
+type IssueType string
+
+const (
+	IssueTypeVideo     IssueType = "video"
+	IssueTypeAudio     IssueType = "audio"
+	IssueTypeSubtitles IssueType = "subtitles"
+	IssueTypeOther     IssueType = "other"
+)
+
+// AllValues returns all IssueType values.
+func (IssueType) AllValues() []IssueType {
+	return []IssueType{
+		IssueTypeVideo,
+		IssueTypeAudio,
+		IssueTypeSubtitles,
+		IssueTypeOther,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IssueType) MarshalText() ([]byte, error) {
+	switch s {
+	case IssueTypeVideo:
+		return []byte(s), nil
+	case IssueTypeAudio:
+		return []byte(s), nil
+	case IssueTypeSubtitles:
+		return []byte(s), nil
+	case IssueTypeOther:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IssueType) UnmarshalText(data []byte) error {
+	switch IssueType(data) {
+	case IssueTypeVideo:
+		*s = IssueTypeVideo
+		return nil
+	case IssueTypeAudio:
+		*s = IssueTypeAudio
+		return nil
+	case IssueTypeSubtitles:
+		*s = IssueTypeSubtitles
+		return nil
+	case IssueTypeOther:
+		*s = IssueTypeOther
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/Job
 type Job struct {
 	ID          int64    `json:"id"`
@@ -10545,6 +12468,90 @@ func (s *JobState) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Where approved requests of one kind go. 0 = not chosen yet.
+// Ref: #/components/schemas/KindDefaults
+type KindDefaults struct {
+	QualityProfileId int64 `json:"qualityProfileId"`
+	RootFolderId     int64 `json:"rootFolderId"`
+	// 4K track (movies and series).
+	QualityProfile4kId int64 `json:"qualityProfile4kId"`
+	RootFolder4kId     int64 `json:"rootFolder4kId"`
+	// Music only.
+	MetadataProfileId   OptInt64               `json:"metadataProfileId"`
+	MinimumAvailability OptMinimumAvailability `json:"minimumAvailability"`
+	Tags                []string               `json:"tags"`
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *KindDefaults) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *KindDefaults) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetQualityProfile4kId returns the value of QualityProfile4kId.
+func (s *KindDefaults) GetQualityProfile4kId() int64 {
+	return s.QualityProfile4kId
+}
+
+// GetRootFolder4kId returns the value of RootFolder4kId.
+func (s *KindDefaults) GetRootFolder4kId() int64 {
+	return s.RootFolder4kId
+}
+
+// GetMetadataProfileId returns the value of MetadataProfileId.
+func (s *KindDefaults) GetMetadataProfileId() OptInt64 {
+	return s.MetadataProfileId
+}
+
+// GetMinimumAvailability returns the value of MinimumAvailability.
+func (s *KindDefaults) GetMinimumAvailability() OptMinimumAvailability {
+	return s.MinimumAvailability
+}
+
+// GetTags returns the value of Tags.
+func (s *KindDefaults) GetTags() []string {
+	return s.Tags
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *KindDefaults) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *KindDefaults) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetQualityProfile4kId sets the value of QualityProfile4kId.
+func (s *KindDefaults) SetQualityProfile4kId(val int64) {
+	s.QualityProfile4kId = val
+}
+
+// SetRootFolder4kId sets the value of RootFolder4kId.
+func (s *KindDefaults) SetRootFolder4kId(val int64) {
+	s.RootFolder4kId = val
+}
+
+// SetMetadataProfileId sets the value of MetadataProfileId.
+func (s *KindDefaults) SetMetadataProfileId(val OptInt64) {
+	s.MetadataProfileId = val
+}
+
+// SetMinimumAvailability sets the value of MinimumAvailability.
+func (s *KindDefaults) SetMinimumAvailability(val OptMinimumAvailability) {
+	s.MinimumAvailability = val
+}
+
+// SetTags sets the value of Tags.
+func (s *KindDefaults) SetTags(val []string) {
+	s.Tags = val
 }
 
 // Ref: #/components/schemas/Language
@@ -11378,6 +13385,32 @@ func (s *ManualImportResult) SetError(val OptError) {
 	s.Error = val
 }
 
+// Ref: #/components/schemas/MarkReadRequest
+type MarkReadRequest struct {
+	Ids []int64 `json:"ids"`
+	All OptBool `json:"all"`
+}
+
+// GetIds returns the value of Ids.
+func (s *MarkReadRequest) GetIds() []int64 {
+	return s.Ids
+}
+
+// GetAll returns the value of All.
+func (s *MarkReadRequest) GetAll() OptBool {
+	return s.All
+}
+
+// SetIds sets the value of Ids.
+func (s *MarkReadRequest) SetIds(val []int64) {
+	s.Ids = val
+}
+
+// SetAll sets the value of All.
+func (s *MarkReadRequest) SetAll(val OptBool) {
+	s.All = val
+}
+
 // Ref: #/components/schemas/MatchedFormat
 type MatchedFormat struct {
 	ID    int64  `json:"id"`
@@ -11726,6 +13759,343 @@ func (s *MediaManagementSettings) SetAvailabilityDelayDays(val int) {
 // SetSearchOnAddDefault sets the value of SearchOnAddDefault.
 func (s *MediaManagementSettings) SetSearchOnAddDefault(val bool) {
 	s.SearchOnAddDefault = val
+}
+
+// Ref: #/components/schemas/MediaRequest
+type MediaRequest struct {
+	ID            int64                 `json:"id"`
+	Kind          RequestKind           `json:"kind"`
+	Is4k          bool                  `json:"is4k"`
+	Status        RequestStatus         `json:"status"`
+	TmdbId        OptInt64              `json:"tmdbId"`
+	Mbid          OptString             `json:"mbid"`
+	ArtistMbid    OptString             `json:"artistMbid"`
+	Title         string                `json:"title"`
+	Subtitle      OptString             `json:"subtitle"`
+	Year          int                   `json:"year"`
+	Poster        OptString             `json:"poster"`
+	Seasons       []RequestSeason       `json:"seasons"`
+	AllSeasons    bool                  `json:"allSeasons"`
+	FutureSeasons bool                  `json:"futureSeasons"`
+	RequestedBy   UserRef               `json:"requestedBy"`
+	DecidedBy     OptUserRef            `json:"decidedBy"`
+	AutoApproved  bool                  `json:"autoApproved"`
+	DecidedAt     OptDateTime           `json:"decidedAt"`
+	DeclineReason OptString             `json:"declineReason"`
+	CreatedAt     time.Time             `json:"createdAt"`
+	UpdatedAt     time.Time             `json:"updatedAt"`
+	AvailableAt   OptDateTime           `json:"availableAt"`
+	Explanation   OptRequestExplanation `json:"explanation"`
+	Progress      OptRequestProgress    `json:"progress"`
+	// Only for users who manage requests.
+	QualityProfileId OptInt64 `json:"qualityProfileId"`
+	// Only for users who manage requests.
+	RootFolderId OptInt64 `json:"rootFolderId"`
+	Tags         []string `json:"tags"`
+	// Only for users who manage the library.
+	LibraryRef   OptString `json:"libraryRef"`
+	CommentCount int       `json:"commentCount"`
+	CanCancel    bool      `json:"canCancel"`
+}
+
+// GetID returns the value of ID.
+func (s *MediaRequest) GetID() int64 {
+	return s.ID
+}
+
+// GetKind returns the value of Kind.
+func (s *MediaRequest) GetKind() RequestKind {
+	return s.Kind
+}
+
+// GetIs4k returns the value of Is4k.
+func (s *MediaRequest) GetIs4k() bool {
+	return s.Is4k
+}
+
+// GetStatus returns the value of Status.
+func (s *MediaRequest) GetStatus() RequestStatus {
+	return s.Status
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *MediaRequest) GetTmdbId() OptInt64 {
+	return s.TmdbId
+}
+
+// GetMbid returns the value of Mbid.
+func (s *MediaRequest) GetMbid() OptString {
+	return s.Mbid
+}
+
+// GetArtistMbid returns the value of ArtistMbid.
+func (s *MediaRequest) GetArtistMbid() OptString {
+	return s.ArtistMbid
+}
+
+// GetTitle returns the value of Title.
+func (s *MediaRequest) GetTitle() string {
+	return s.Title
+}
+
+// GetSubtitle returns the value of Subtitle.
+func (s *MediaRequest) GetSubtitle() OptString {
+	return s.Subtitle
+}
+
+// GetYear returns the value of Year.
+func (s *MediaRequest) GetYear() int {
+	return s.Year
+}
+
+// GetPoster returns the value of Poster.
+func (s *MediaRequest) GetPoster() OptString {
+	return s.Poster
+}
+
+// GetSeasons returns the value of Seasons.
+func (s *MediaRequest) GetSeasons() []RequestSeason {
+	return s.Seasons
+}
+
+// GetAllSeasons returns the value of AllSeasons.
+func (s *MediaRequest) GetAllSeasons() bool {
+	return s.AllSeasons
+}
+
+// GetFutureSeasons returns the value of FutureSeasons.
+func (s *MediaRequest) GetFutureSeasons() bool {
+	return s.FutureSeasons
+}
+
+// GetRequestedBy returns the value of RequestedBy.
+func (s *MediaRequest) GetRequestedBy() UserRef {
+	return s.RequestedBy
+}
+
+// GetDecidedBy returns the value of DecidedBy.
+func (s *MediaRequest) GetDecidedBy() OptUserRef {
+	return s.DecidedBy
+}
+
+// GetAutoApproved returns the value of AutoApproved.
+func (s *MediaRequest) GetAutoApproved() bool {
+	return s.AutoApproved
+}
+
+// GetDecidedAt returns the value of DecidedAt.
+func (s *MediaRequest) GetDecidedAt() OptDateTime {
+	return s.DecidedAt
+}
+
+// GetDeclineReason returns the value of DeclineReason.
+func (s *MediaRequest) GetDeclineReason() OptString {
+	return s.DeclineReason
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MediaRequest) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *MediaRequest) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetAvailableAt returns the value of AvailableAt.
+func (s *MediaRequest) GetAvailableAt() OptDateTime {
+	return s.AvailableAt
+}
+
+// GetExplanation returns the value of Explanation.
+func (s *MediaRequest) GetExplanation() OptRequestExplanation {
+	return s.Explanation
+}
+
+// GetProgress returns the value of Progress.
+func (s *MediaRequest) GetProgress() OptRequestProgress {
+	return s.Progress
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *MediaRequest) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *MediaRequest) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetTags returns the value of Tags.
+func (s *MediaRequest) GetTags() []string {
+	return s.Tags
+}
+
+// GetLibraryRef returns the value of LibraryRef.
+func (s *MediaRequest) GetLibraryRef() OptString {
+	return s.LibraryRef
+}
+
+// GetCommentCount returns the value of CommentCount.
+func (s *MediaRequest) GetCommentCount() int {
+	return s.CommentCount
+}
+
+// GetCanCancel returns the value of CanCancel.
+func (s *MediaRequest) GetCanCancel() bool {
+	return s.CanCancel
+}
+
+// SetID sets the value of ID.
+func (s *MediaRequest) SetID(val int64) {
+	s.ID = val
+}
+
+// SetKind sets the value of Kind.
+func (s *MediaRequest) SetKind(val RequestKind) {
+	s.Kind = val
+}
+
+// SetIs4k sets the value of Is4k.
+func (s *MediaRequest) SetIs4k(val bool) {
+	s.Is4k = val
+}
+
+// SetStatus sets the value of Status.
+func (s *MediaRequest) SetStatus(val RequestStatus) {
+	s.Status = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *MediaRequest) SetTmdbId(val OptInt64) {
+	s.TmdbId = val
+}
+
+// SetMbid sets the value of Mbid.
+func (s *MediaRequest) SetMbid(val OptString) {
+	s.Mbid = val
+}
+
+// SetArtistMbid sets the value of ArtistMbid.
+func (s *MediaRequest) SetArtistMbid(val OptString) {
+	s.ArtistMbid = val
+}
+
+// SetTitle sets the value of Title.
+func (s *MediaRequest) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetSubtitle sets the value of Subtitle.
+func (s *MediaRequest) SetSubtitle(val OptString) {
+	s.Subtitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *MediaRequest) SetYear(val int) {
+	s.Year = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *MediaRequest) SetPoster(val OptString) {
+	s.Poster = val
+}
+
+// SetSeasons sets the value of Seasons.
+func (s *MediaRequest) SetSeasons(val []RequestSeason) {
+	s.Seasons = val
+}
+
+// SetAllSeasons sets the value of AllSeasons.
+func (s *MediaRequest) SetAllSeasons(val bool) {
+	s.AllSeasons = val
+}
+
+// SetFutureSeasons sets the value of FutureSeasons.
+func (s *MediaRequest) SetFutureSeasons(val bool) {
+	s.FutureSeasons = val
+}
+
+// SetRequestedBy sets the value of RequestedBy.
+func (s *MediaRequest) SetRequestedBy(val UserRef) {
+	s.RequestedBy = val
+}
+
+// SetDecidedBy sets the value of DecidedBy.
+func (s *MediaRequest) SetDecidedBy(val OptUserRef) {
+	s.DecidedBy = val
+}
+
+// SetAutoApproved sets the value of AutoApproved.
+func (s *MediaRequest) SetAutoApproved(val bool) {
+	s.AutoApproved = val
+}
+
+// SetDecidedAt sets the value of DecidedAt.
+func (s *MediaRequest) SetDecidedAt(val OptDateTime) {
+	s.DecidedAt = val
+}
+
+// SetDeclineReason sets the value of DeclineReason.
+func (s *MediaRequest) SetDeclineReason(val OptString) {
+	s.DeclineReason = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MediaRequest) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *MediaRequest) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetAvailableAt sets the value of AvailableAt.
+func (s *MediaRequest) SetAvailableAt(val OptDateTime) {
+	s.AvailableAt = val
+}
+
+// SetExplanation sets the value of Explanation.
+func (s *MediaRequest) SetExplanation(val OptRequestExplanation) {
+	s.Explanation = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *MediaRequest) SetProgress(val OptRequestProgress) {
+	s.Progress = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *MediaRequest) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *MediaRequest) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetTags sets the value of Tags.
+func (s *MediaRequest) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetLibraryRef sets the value of LibraryRef.
+func (s *MediaRequest) SetLibraryRef(val OptString) {
+	s.LibraryRef = val
+}
+
+// SetCommentCount sets the value of CommentCount.
+func (s *MediaRequest) SetCommentCount(val int) {
+	s.CommentCount = val
+}
+
+// SetCanCancel sets the value of CanCancel.
+func (s *MediaRequest) SetCanCancel(val bool) {
+	s.CanCancel = val
 }
 
 // Ref: #/components/schemas/MetadataProfile
@@ -14600,6 +16970,299 @@ func (s *NamingToken) SetExample(val string) {
 	s.Example = val
 }
 
+// Ref: #/components/schemas/Notification
+type Notification struct {
+	ID   int64            `json:"id"`
+	Type NotificationType `json:"type"`
+	// The title the event is about.
+	Title string `json:"title"`
+	// Decline reason, comment text, failure reason.
+	Message   OptString             `json:"message"`
+	Poster    OptString             `json:"poster"`
+	MediaKind OptString             `json:"mediaKind"`
+	Actor     OptUserRef            `json:"actor"`
+	RequestId OptInt64              `json:"requestId"`
+	IssueId   OptInt64              `json:"issueId"`
+	Params    OptNotificationParams `json:"params"`
+	CreatedAt time.Time             `json:"createdAt"`
+	Read      bool                  `json:"read"`
+}
+
+// GetID returns the value of ID.
+func (s *Notification) GetID() int64 {
+	return s.ID
+}
+
+// GetType returns the value of Type.
+func (s *Notification) GetType() NotificationType {
+	return s.Type
+}
+
+// GetTitle returns the value of Title.
+func (s *Notification) GetTitle() string {
+	return s.Title
+}
+
+// GetMessage returns the value of Message.
+func (s *Notification) GetMessage() OptString {
+	return s.Message
+}
+
+// GetPoster returns the value of Poster.
+func (s *Notification) GetPoster() OptString {
+	return s.Poster
+}
+
+// GetMediaKind returns the value of MediaKind.
+func (s *Notification) GetMediaKind() OptString {
+	return s.MediaKind
+}
+
+// GetActor returns the value of Actor.
+func (s *Notification) GetActor() OptUserRef {
+	return s.Actor
+}
+
+// GetRequestId returns the value of RequestId.
+func (s *Notification) GetRequestId() OptInt64 {
+	return s.RequestId
+}
+
+// GetIssueId returns the value of IssueId.
+func (s *Notification) GetIssueId() OptInt64 {
+	return s.IssueId
+}
+
+// GetParams returns the value of Params.
+func (s *Notification) GetParams() OptNotificationParams {
+	return s.Params
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Notification) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetRead returns the value of Read.
+func (s *Notification) GetRead() bool {
+	return s.Read
+}
+
+// SetID sets the value of ID.
+func (s *Notification) SetID(val int64) {
+	s.ID = val
+}
+
+// SetType sets the value of Type.
+func (s *Notification) SetType(val NotificationType) {
+	s.Type = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Notification) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetMessage sets the value of Message.
+func (s *Notification) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *Notification) SetPoster(val OptString) {
+	s.Poster = val
+}
+
+// SetMediaKind sets the value of MediaKind.
+func (s *Notification) SetMediaKind(val OptString) {
+	s.MediaKind = val
+}
+
+// SetActor sets the value of Actor.
+func (s *Notification) SetActor(val OptUserRef) {
+	s.Actor = val
+}
+
+// SetRequestId sets the value of RequestId.
+func (s *Notification) SetRequestId(val OptInt64) {
+	s.RequestId = val
+}
+
+// SetIssueId sets the value of IssueId.
+func (s *Notification) SetIssueId(val OptInt64) {
+	s.IssueId = val
+}
+
+// SetParams sets the value of Params.
+func (s *Notification) SetParams(val OptNotificationParams) {
+	s.Params = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Notification) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetRead sets the value of Read.
+func (s *Notification) SetRead(val bool) {
+	s.Read = val
+}
+
+// Ref: #/components/schemas/NotificationList
+type NotificationList struct {
+	Items  []Notification `json:"items"`
+	Unread int            `json:"unread"`
+	// Pass as since next time.
+	LatestId int64 `json:"latestId"`
+}
+
+// GetItems returns the value of Items.
+func (s *NotificationList) GetItems() []Notification {
+	return s.Items
+}
+
+// GetUnread returns the value of Unread.
+func (s *NotificationList) GetUnread() int {
+	return s.Unread
+}
+
+// GetLatestId returns the value of LatestId.
+func (s *NotificationList) GetLatestId() int64 {
+	return s.LatestId
+}
+
+// SetItems sets the value of Items.
+func (s *NotificationList) SetItems(val []Notification) {
+	s.Items = val
+}
+
+// SetUnread sets the value of Unread.
+func (s *NotificationList) SetUnread(val int) {
+	s.Unread = val
+}
+
+// SetLatestId sets the value of LatestId.
+func (s *NotificationList) SetLatestId(val int64) {
+	s.LatestId = val
+}
+
+type NotificationParams map[string]jx.Raw
+
+func (s *NotificationParams) init() NotificationParams {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Event types (D-057); P9 sends the same events to outward channels.
+// Ref: #/components/schemas/NotificationType
+type NotificationType string
+
+const (
+	NotificationTypeRequestCreated   NotificationType = "request.created"
+	NotificationTypeRequestApproved  NotificationType = "request.approved"
+	NotificationTypeRequestDeclined  NotificationType = "request.declined"
+	NotificationTypeRequestAvailable NotificationType = "request.available"
+	NotificationTypeRequestPartial   NotificationType = "request.partial"
+	NotificationTypeRequestFailed    NotificationType = "request.failed"
+	NotificationTypeRequestComment   NotificationType = "request.comment"
+	NotificationTypeIssueCreated     NotificationType = "issue.created"
+	NotificationTypeIssueComment     NotificationType = "issue.comment"
+	NotificationTypeIssueResolved    NotificationType = "issue.resolved"
+	NotificationTypeIssueReopened    NotificationType = "issue.reopened"
+)
+
+// AllValues returns all NotificationType values.
+func (NotificationType) AllValues() []NotificationType {
+	return []NotificationType{
+		NotificationTypeRequestCreated,
+		NotificationTypeRequestApproved,
+		NotificationTypeRequestDeclined,
+		NotificationTypeRequestAvailable,
+		NotificationTypeRequestPartial,
+		NotificationTypeRequestFailed,
+		NotificationTypeRequestComment,
+		NotificationTypeIssueCreated,
+		NotificationTypeIssueComment,
+		NotificationTypeIssueResolved,
+		NotificationTypeIssueReopened,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s NotificationType) MarshalText() ([]byte, error) {
+	switch s {
+	case NotificationTypeRequestCreated:
+		return []byte(s), nil
+	case NotificationTypeRequestApproved:
+		return []byte(s), nil
+	case NotificationTypeRequestDeclined:
+		return []byte(s), nil
+	case NotificationTypeRequestAvailable:
+		return []byte(s), nil
+	case NotificationTypeRequestPartial:
+		return []byte(s), nil
+	case NotificationTypeRequestFailed:
+		return []byte(s), nil
+	case NotificationTypeRequestComment:
+		return []byte(s), nil
+	case NotificationTypeIssueCreated:
+		return []byte(s), nil
+	case NotificationTypeIssueComment:
+		return []byte(s), nil
+	case NotificationTypeIssueResolved:
+		return []byte(s), nil
+	case NotificationTypeIssueReopened:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *NotificationType) UnmarshalText(data []byte) error {
+	switch NotificationType(data) {
+	case NotificationTypeRequestCreated:
+		*s = NotificationTypeRequestCreated
+		return nil
+	case NotificationTypeRequestApproved:
+		*s = NotificationTypeRequestApproved
+		return nil
+	case NotificationTypeRequestDeclined:
+		*s = NotificationTypeRequestDeclined
+		return nil
+	case NotificationTypeRequestAvailable:
+		*s = NotificationTypeRequestAvailable
+		return nil
+	case NotificationTypeRequestPartial:
+		*s = NotificationTypeRequestPartial
+		return nil
+	case NotificationTypeRequestFailed:
+		*s = NotificationTypeRequestFailed
+		return nil
+	case NotificationTypeRequestComment:
+		*s = NotificationTypeRequestComment
+		return nil
+	case NotificationTypeIssueCreated:
+		*s = NotificationTypeIssueCreated
+		return nil
+	case NotificationTypeIssueComment:
+		*s = NotificationTypeIssueComment
+		return nil
+	case NotificationTypeIssueResolved:
+		*s = NotificationTypeIssueResolved
+		return nil
+	case NotificationTypeIssueReopened:
+		*s = NotificationTypeIssueReopened
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // NewOptAddArtistRequestMonitor returns new OptAddArtistRequestMonitor with value set to v.
 func NewOptAddArtistRequestMonitor(v AddArtistRequestMonitor) OptAddArtistRequestMonitor {
 	return OptAddArtistRequestMonitor{
@@ -15100,6 +17763,52 @@ func (o OptDeviceInfo) Get() (v DeviceInfo, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDeviceInfo) Or(d DeviceInfo) DeviceInfo {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDiscoverSearchType returns new OptDiscoverSearchType with value set to v.
+func NewOptDiscoverSearchType(v DiscoverSearchType) OptDiscoverSearchType {
+	return OptDiscoverSearchType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDiscoverSearchType is optional DiscoverSearchType.
+type OptDiscoverSearchType struct {
+	Value DiscoverSearchType
+	Set   bool
+}
+
+// IsSet returns true if OptDiscoverSearchType was set.
+func (o OptDiscoverSearchType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDiscoverSearchType) Reset() {
+	var v DiscoverSearchType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDiscoverSearchType) SetTo(v DiscoverSearchType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDiscoverSearchType) Get() (v DiscoverSearchType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDiscoverSearchType) Or(d DiscoverSearchType) DiscoverSearchType {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -15790,6 +18499,52 @@ func (o OptInt64) Get() (v int64, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptInt64) Or(d int64) int64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptIssueStatus returns new OptIssueStatus with value set to v.
+func NewOptIssueStatus(v IssueStatus) OptIssueStatus {
+	return OptIssueStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptIssueStatus is optional IssueStatus.
+type OptIssueStatus struct {
+	Value IssueStatus
+	Set   bool
+}
+
+// IsSet returns true if OptIssueStatus was set.
+func (o OptIssueStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptIssueStatus) Reset() {
+	var v IssueStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptIssueStatus) SetTo(v IssueStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptIssueStatus) Get() (v IssueStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptIssueStatus) Or(d IssueStatus) IssueStatus {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -16670,6 +19425,52 @@ func (o OptMusicNamingPreviewErrors) Or(d MusicNamingPreviewErrors) MusicNamingP
 	return d
 }
 
+// NewOptNotificationParams returns new OptNotificationParams with value set to v.
+func NewOptNotificationParams(v NotificationParams) OptNotificationParams {
+	return OptNotificationParams{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNotificationParams is optional NotificationParams.
+type OptNotificationParams struct {
+	Value NotificationParams
+	Set   bool
+}
+
+// IsSet returns true if OptNotificationParams was set.
+func (o OptNotificationParams) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNotificationParams) Reset() {
+	var v NotificationParams
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptNotificationParams) SetTo(v NotificationParams) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNotificationParams) Get() (v NotificationParams, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNotificationParams) Or(d NotificationParams) NotificationParams {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptParsedMusic returns new OptParsedMusic with value set to v.
 func NewOptParsedMusic(v ParsedMusic) OptParsedMusic {
 	return OptParsedMusic{
@@ -16992,6 +19793,98 @@ func (o OptQueuePriority) Or(d QueuePriority) QueuePriority {
 	return d
 }
 
+// NewOptQuotaOverrides returns new OptQuotaOverrides with value set to v.
+func NewOptQuotaOverrides(v QuotaOverrides) OptQuotaOverrides {
+	return OptQuotaOverrides{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptQuotaOverrides is optional QuotaOverrides.
+type OptQuotaOverrides struct {
+	Value QuotaOverrides
+	Set   bool
+}
+
+// IsSet returns true if OptQuotaOverrides was set.
+func (o OptQuotaOverrides) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptQuotaOverrides) Reset() {
+	var v QuotaOverrides
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptQuotaOverrides) SetTo(v QuotaOverrides) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptQuotaOverrides) Get() (v QuotaOverrides, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptQuotaOverrides) Or(d QuotaOverrides) QuotaOverrides {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptQuotaRule returns new OptQuotaRule with value set to v.
+func NewOptQuotaRule(v QuotaRule) OptQuotaRule {
+	return OptQuotaRule{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptQuotaRule is optional QuotaRule.
+type OptQuotaRule struct {
+	Value QuotaRule
+	Set   bool
+}
+
+// IsSet returns true if OptQuotaRule was set.
+func (o OptQuotaRule) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptQuotaRule) Reset() {
+	var v QuotaRule
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptQuotaRule) SetTo(v QuotaRule) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptQuotaRule) Get() (v QuotaRule, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptQuotaRule) Or(d QuotaRule) QuotaRule {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptRejectionParams returns new OptRejectionParams with value set to v.
 func NewOptRejectionParams(v RejectionParams) OptRejectionParams {
 	return OptRejectionParams{
@@ -17032,6 +19925,282 @@ func (o OptRejectionParams) Get() (v RejectionParams, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptRejectionParams) Or(d RejectionParams) RejectionParams {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRequestExplanation returns new OptRequestExplanation with value set to v.
+func NewOptRequestExplanation(v RequestExplanation) OptRequestExplanation {
+	return OptRequestExplanation{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRequestExplanation is optional RequestExplanation.
+type OptRequestExplanation struct {
+	Value RequestExplanation
+	Set   bool
+}
+
+// IsSet returns true if OptRequestExplanation was set.
+func (o OptRequestExplanation) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRequestExplanation) Reset() {
+	var v RequestExplanation
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRequestExplanation) SetTo(v RequestExplanation) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRequestExplanation) Get() (v RequestExplanation, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRequestExplanation) Or(d RequestExplanation) RequestExplanation {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRequestExplanationParams returns new OptRequestExplanationParams with value set to v.
+func NewOptRequestExplanationParams(v RequestExplanationParams) OptRequestExplanationParams {
+	return OptRequestExplanationParams{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRequestExplanationParams is optional RequestExplanationParams.
+type OptRequestExplanationParams struct {
+	Value RequestExplanationParams
+	Set   bool
+}
+
+// IsSet returns true if OptRequestExplanationParams was set.
+func (o OptRequestExplanationParams) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRequestExplanationParams) Reset() {
+	var v RequestExplanationParams
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRequestExplanationParams) SetTo(v RequestExplanationParams) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRequestExplanationParams) Get() (v RequestExplanationParams, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRequestExplanationParams) Or(d RequestExplanationParams) RequestExplanationParams {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRequestFilter returns new OptRequestFilter with value set to v.
+func NewOptRequestFilter(v RequestFilter) OptRequestFilter {
+	return OptRequestFilter{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRequestFilter is optional RequestFilter.
+type OptRequestFilter struct {
+	Value RequestFilter
+	Set   bool
+}
+
+// IsSet returns true if OptRequestFilter was set.
+func (o OptRequestFilter) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRequestFilter) Reset() {
+	var v RequestFilter
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRequestFilter) SetTo(v RequestFilter) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRequestFilter) Get() (v RequestFilter, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRequestFilter) Or(d RequestFilter) RequestFilter {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRequestKind returns new OptRequestKind with value set to v.
+func NewOptRequestKind(v RequestKind) OptRequestKind {
+	return OptRequestKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRequestKind is optional RequestKind.
+type OptRequestKind struct {
+	Value RequestKind
+	Set   bool
+}
+
+// IsSet returns true if OptRequestKind was set.
+func (o OptRequestKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRequestKind) Reset() {
+	var v RequestKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRequestKind) SetTo(v RequestKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRequestKind) Get() (v RequestKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRequestKind) Or(d RequestKind) RequestKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRequestOptions returns new OptRequestOptions with value set to v.
+func NewOptRequestOptions(v RequestOptions) OptRequestOptions {
+	return OptRequestOptions{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRequestOptions is optional RequestOptions.
+type OptRequestOptions struct {
+	Value RequestOptions
+	Set   bool
+}
+
+// IsSet returns true if OptRequestOptions was set.
+func (o OptRequestOptions) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRequestOptions) Reset() {
+	var v RequestOptions
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRequestOptions) SetTo(v RequestOptions) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRequestOptions) Get() (v RequestOptions, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRequestOptions) Or(d RequestOptions) RequestOptions {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRequestProgress returns new OptRequestProgress with value set to v.
+func NewOptRequestProgress(v RequestProgress) OptRequestProgress {
+	return OptRequestProgress{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRequestProgress is optional RequestProgress.
+type OptRequestProgress struct {
+	Value RequestProgress
+	Set   bool
+}
+
+// IsSet returns true if OptRequestProgress was set.
+func (o OptRequestProgress) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRequestProgress) Reset() {
+	var v RequestProgress
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRequestProgress) SetTo(v RequestProgress) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRequestProgress) Get() (v RequestProgress, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRequestProgress) Or(d RequestProgress) RequestProgress {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -17446,6 +20615,52 @@ func (o OptTransferMode) Get() (v TransferMode, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptTransferMode) Or(d TransferMode) TransferMode {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserRef returns new OptUserRef with value set to v.
+func NewOptUserRef(v UserRef) OptUserRef {
+	return OptUserRef{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserRef is optional UserRef.
+type OptUserRef struct {
+	Value UserRef
+	Set   bool
+}
+
+// IsSet returns true if OptUserRef was set.
+func (o OptUserRef) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserRef) Reset() {
+	var v UserRef
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserRef) SetTo(v UserRef) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserRef) Get() (v UserRef, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserRef) Or(d UserRef) UserRef {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -18456,6 +21671,12 @@ type Permissions struct {
 	ManageLibrary bool `json:"manageLibrary"`
 	// Approve and decline other users' requests.
 	ManageRequests bool `json:"manageRequests"`
+	// Movie requests are approved at once (autoApprove covers every kind).
+	AutoApproveMovies bool `json:"autoApproveMovies"`
+	AutoApproveSeries bool `json:"autoApproveSeries"`
+	AutoApproveMusic  bool `json:"autoApproveMusic"`
+	// 4K requests are approved at once.
+	AutoApprove4k bool `json:"autoApprove4k"`
 }
 
 // GetRequestMovies returns the value of RequestMovies.
@@ -18493,6 +21714,26 @@ func (s *Permissions) GetManageRequests() bool {
 	return s.ManageRequests
 }
 
+// GetAutoApproveMovies returns the value of AutoApproveMovies.
+func (s *Permissions) GetAutoApproveMovies() bool {
+	return s.AutoApproveMovies
+}
+
+// GetAutoApproveSeries returns the value of AutoApproveSeries.
+func (s *Permissions) GetAutoApproveSeries() bool {
+	return s.AutoApproveSeries
+}
+
+// GetAutoApproveMusic returns the value of AutoApproveMusic.
+func (s *Permissions) GetAutoApproveMusic() bool {
+	return s.AutoApproveMusic
+}
+
+// GetAutoApprove4k returns the value of AutoApprove4k.
+func (s *Permissions) GetAutoApprove4k() bool {
+	return s.AutoApprove4k
+}
+
 // SetRequestMovies sets the value of RequestMovies.
 func (s *Permissions) SetRequestMovies(val bool) {
 	s.RequestMovies = val
@@ -18526,6 +21767,107 @@ func (s *Permissions) SetManageLibrary(val bool) {
 // SetManageRequests sets the value of ManageRequests.
 func (s *Permissions) SetManageRequests(val bool) {
 	s.ManageRequests = val
+}
+
+// SetAutoApproveMovies sets the value of AutoApproveMovies.
+func (s *Permissions) SetAutoApproveMovies(val bool) {
+	s.AutoApproveMovies = val
+}
+
+// SetAutoApproveSeries sets the value of AutoApproveSeries.
+func (s *Permissions) SetAutoApproveSeries(val bool) {
+	s.AutoApproveSeries = val
+}
+
+// SetAutoApproveMusic sets the value of AutoApproveMusic.
+func (s *Permissions) SetAutoApproveMusic(val bool) {
+	s.AutoApproveMusic = val
+}
+
+// SetAutoApprove4k sets the value of AutoApprove4k.
+func (s *Permissions) SetAutoApprove4k(val bool) {
+	s.AutoApprove4k = val
+}
+
+// Ref: #/components/schemas/PersonDetail
+type PersonDetail struct {
+	TmdbId     int64          `json:"tmdbId"`
+	Name       string         `json:"name"`
+	Biography  OptString      `json:"biography"`
+	Profile    OptString      `json:"profile"`
+	Birthday   OptString      `json:"birthday"`
+	Department OptString      `json:"department"`
+	KnownFor   []DiscoverItem `json:"knownFor"`
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *PersonDetail) GetTmdbId() int64 {
+	return s.TmdbId
+}
+
+// GetName returns the value of Name.
+func (s *PersonDetail) GetName() string {
+	return s.Name
+}
+
+// GetBiography returns the value of Biography.
+func (s *PersonDetail) GetBiography() OptString {
+	return s.Biography
+}
+
+// GetProfile returns the value of Profile.
+func (s *PersonDetail) GetProfile() OptString {
+	return s.Profile
+}
+
+// GetBirthday returns the value of Birthday.
+func (s *PersonDetail) GetBirthday() OptString {
+	return s.Birthday
+}
+
+// GetDepartment returns the value of Department.
+func (s *PersonDetail) GetDepartment() OptString {
+	return s.Department
+}
+
+// GetKnownFor returns the value of KnownFor.
+func (s *PersonDetail) GetKnownFor() []DiscoverItem {
+	return s.KnownFor
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *PersonDetail) SetTmdbId(val int64) {
+	s.TmdbId = val
+}
+
+// SetName sets the value of Name.
+func (s *PersonDetail) SetName(val string) {
+	s.Name = val
+}
+
+// SetBiography sets the value of Biography.
+func (s *PersonDetail) SetBiography(val OptString) {
+	s.Biography = val
+}
+
+// SetProfile sets the value of Profile.
+func (s *PersonDetail) SetProfile(val OptString) {
+	s.Profile = val
+}
+
+// SetBirthday sets the value of Birthday.
+func (s *PersonDetail) SetBirthday(val OptString) {
+	s.Birthday = val
+}
+
+// SetDepartment sets the value of Department.
+func (s *PersonDetail) SetDepartment(val OptString) {
+	s.Department = val
+}
+
+// SetKnownFor sets the value of KnownFor.
+func (s *PersonDetail) SetKnownFor(val []DiscoverItem) {
+	s.KnownFor = val
 }
 
 // Ref: #/components/schemas/PriorityRequest
@@ -19542,6 +22884,192 @@ func (s *QueuedCount) SetCount(val int) {
 	s.Count = val
 }
 
+// A user's own rules; a missing kind uses the default.
+// Ref: #/components/schemas/QuotaOverrides
+type QuotaOverrides struct {
+	Movie  OptQuotaRule `json:"movie"`
+	Series OptQuotaRule `json:"series"`
+	Music  OptQuotaRule `json:"music"`
+}
+
+// GetMovie returns the value of Movie.
+func (s *QuotaOverrides) GetMovie() OptQuotaRule {
+	return s.Movie
+}
+
+// GetSeries returns the value of Series.
+func (s *QuotaOverrides) GetSeries() OptQuotaRule {
+	return s.Series
+}
+
+// GetMusic returns the value of Music.
+func (s *QuotaOverrides) GetMusic() OptQuotaRule {
+	return s.Music
+}
+
+// SetMovie sets the value of Movie.
+func (s *QuotaOverrides) SetMovie(val OptQuotaRule) {
+	s.Movie = val
+}
+
+// SetSeries sets the value of Series.
+func (s *QuotaOverrides) SetSeries(val OptQuotaRule) {
+	s.Series = val
+}
+
+// SetMusic sets the value of Music.
+func (s *QuotaOverrides) SetMusic(val OptQuotaRule) {
+	s.Music = val
+}
+
+// At most `limit` requests in `days` days; limit 0 = unlimited.
+// Ref: #/components/schemas/QuotaRule
+type QuotaRule struct {
+	Limit int `json:"limit"`
+	Days  int `json:"days"`
+}
+
+// GetLimit returns the value of Limit.
+func (s *QuotaRule) GetLimit() int {
+	return s.Limit
+}
+
+// GetDays returns the value of Days.
+func (s *QuotaRule) GetDays() int {
+	return s.Days
+}
+
+// SetLimit sets the value of Limit.
+func (s *QuotaRule) SetLimit(val int) {
+	s.Limit = val
+}
+
+// SetDays sets the value of Days.
+func (s *QuotaRule) SetDays(val int) {
+	s.Days = val
+}
+
+// Ref: #/components/schemas/QuotaRules
+type QuotaRules struct {
+	Movie  QuotaRule `json:"movie"`
+	Series QuotaRule `json:"series"`
+	Music  QuotaRule `json:"music"`
+}
+
+// GetMovie returns the value of Movie.
+func (s *QuotaRules) GetMovie() QuotaRule {
+	return s.Movie
+}
+
+// GetSeries returns the value of Series.
+func (s *QuotaRules) GetSeries() QuotaRule {
+	return s.Series
+}
+
+// GetMusic returns the value of Music.
+func (s *QuotaRules) GetMusic() QuotaRule {
+	return s.Music
+}
+
+// SetMovie sets the value of Movie.
+func (s *QuotaRules) SetMovie(val QuotaRule) {
+	s.Movie = val
+}
+
+// SetSeries sets the value of Series.
+func (s *QuotaRules) SetSeries(val QuotaRule) {
+	s.Series = val
+}
+
+// SetMusic sets the value of Music.
+func (s *QuotaRules) SetMusic(val QuotaRule) {
+	s.Music = val
+}
+
+// Ref: #/components/schemas/QuotaStatus
+type QuotaStatus struct {
+	Limit int `json:"limit"`
+	Days  int `json:"days"`
+	Used  int `json:"used"`
+	// Absent when unlimited.
+	Remaining OptInt `json:"remaining"`
+	Unlimited bool   `json:"unlimited"`
+	// The user has an own rule (not the default).
+	Custom bool `json:"custom"`
+	// When the oldest counted request stops counting (only when none remain).
+	NextSlotAt OptDateTime `json:"nextSlotAt"`
+}
+
+// GetLimit returns the value of Limit.
+func (s *QuotaStatus) GetLimit() int {
+	return s.Limit
+}
+
+// GetDays returns the value of Days.
+func (s *QuotaStatus) GetDays() int {
+	return s.Days
+}
+
+// GetUsed returns the value of Used.
+func (s *QuotaStatus) GetUsed() int {
+	return s.Used
+}
+
+// GetRemaining returns the value of Remaining.
+func (s *QuotaStatus) GetRemaining() OptInt {
+	return s.Remaining
+}
+
+// GetUnlimited returns the value of Unlimited.
+func (s *QuotaStatus) GetUnlimited() bool {
+	return s.Unlimited
+}
+
+// GetCustom returns the value of Custom.
+func (s *QuotaStatus) GetCustom() bool {
+	return s.Custom
+}
+
+// GetNextSlotAt returns the value of NextSlotAt.
+func (s *QuotaStatus) GetNextSlotAt() OptDateTime {
+	return s.NextSlotAt
+}
+
+// SetLimit sets the value of Limit.
+func (s *QuotaStatus) SetLimit(val int) {
+	s.Limit = val
+}
+
+// SetDays sets the value of Days.
+func (s *QuotaStatus) SetDays(val int) {
+	s.Days = val
+}
+
+// SetUsed sets the value of Used.
+func (s *QuotaStatus) SetUsed(val int) {
+	s.Used = val
+}
+
+// SetRemaining sets the value of Remaining.
+func (s *QuotaStatus) SetRemaining(val OptInt) {
+	s.Remaining = val
+}
+
+// SetUnlimited sets the value of Unlimited.
+func (s *QuotaStatus) SetUnlimited(val bool) {
+	s.Unlimited = val
+}
+
+// SetCustom sets the value of Custom.
+func (s *QuotaStatus) SetCustom(val bool) {
+	s.Custom = val
+}
+
+// SetNextSlotAt sets the value of NextSlotAt.
+func (s *QuotaStatus) SetNextSlotAt(val OptDateTime) {
+	s.NextSlotAt = val
+}
+
 // Ref: #/components/schemas/RankKey
 type RankKey struct {
 	QualityPosition   int   `json:"qualityPosition"`
@@ -20515,6 +24043,742 @@ func (s *ReorderRequest) SetIds(val []int64) {
 	s.Ids = val
 }
 
+// Ref: #/components/schemas/RequestAbility
+type RequestAbility struct {
+	CanRequest    bool `json:"canRequest"`
+	CanRequest4k  bool `json:"canRequest4k"`
+	AutoApprove   bool `json:"autoApprove"`
+	AutoApprove4k bool `json:"autoApprove4k"`
+	// May pick profile.
+	CanSetOptions OptBool `json:"canSetOptions"`
+	// Available now (issues can be reported).
+	CanReportIssue OptBool `json:"canReportIssue"`
+}
+
+// GetCanRequest returns the value of CanRequest.
+func (s *RequestAbility) GetCanRequest() bool {
+	return s.CanRequest
+}
+
+// GetCanRequest4k returns the value of CanRequest4k.
+func (s *RequestAbility) GetCanRequest4k() bool {
+	return s.CanRequest4k
+}
+
+// GetAutoApprove returns the value of AutoApprove.
+func (s *RequestAbility) GetAutoApprove() bool {
+	return s.AutoApprove
+}
+
+// GetAutoApprove4k returns the value of AutoApprove4k.
+func (s *RequestAbility) GetAutoApprove4k() bool {
+	return s.AutoApprove4k
+}
+
+// GetCanSetOptions returns the value of CanSetOptions.
+func (s *RequestAbility) GetCanSetOptions() OptBool {
+	return s.CanSetOptions
+}
+
+// GetCanReportIssue returns the value of CanReportIssue.
+func (s *RequestAbility) GetCanReportIssue() OptBool {
+	return s.CanReportIssue
+}
+
+// SetCanRequest sets the value of CanRequest.
+func (s *RequestAbility) SetCanRequest(val bool) {
+	s.CanRequest = val
+}
+
+// SetCanRequest4k sets the value of CanRequest4k.
+func (s *RequestAbility) SetCanRequest4k(val bool) {
+	s.CanRequest4k = val
+}
+
+// SetAutoApprove sets the value of AutoApprove.
+func (s *RequestAbility) SetAutoApprove(val bool) {
+	s.AutoApprove = val
+}
+
+// SetAutoApprove4k sets the value of AutoApprove4k.
+func (s *RequestAbility) SetAutoApprove4k(val bool) {
+	s.AutoApprove4k = val
+}
+
+// SetCanSetOptions sets the value of CanSetOptions.
+func (s *RequestAbility) SetCanSetOptions(val OptBool) {
+	s.CanSetOptions = val
+}
+
+// SetCanReportIssue sets the value of CanReportIssue.
+func (s *RequestAbility) SetCanReportIssue(val OptBool) {
+	s.CanReportIssue = val
+}
+
+// The library's answer to "why isn't it here yet" (codes as in Explanation).
+// Ref: #/components/schemas/RequestExplanation
+type RequestExplanation struct {
+	Code    string                      `json:"code"`
+	Tone    RequestExplanationTone      `json:"tone"`
+	Message string                      `json:"message"`
+	Params  OptRequestExplanationParams `json:"params"`
+}
+
+// GetCode returns the value of Code.
+func (s *RequestExplanation) GetCode() string {
+	return s.Code
+}
+
+// GetTone returns the value of Tone.
+func (s *RequestExplanation) GetTone() RequestExplanationTone {
+	return s.Tone
+}
+
+// GetMessage returns the value of Message.
+func (s *RequestExplanation) GetMessage() string {
+	return s.Message
+}
+
+// GetParams returns the value of Params.
+func (s *RequestExplanation) GetParams() OptRequestExplanationParams {
+	return s.Params
+}
+
+// SetCode sets the value of Code.
+func (s *RequestExplanation) SetCode(val string) {
+	s.Code = val
+}
+
+// SetTone sets the value of Tone.
+func (s *RequestExplanation) SetTone(val RequestExplanationTone) {
+	s.Tone = val
+}
+
+// SetMessage sets the value of Message.
+func (s *RequestExplanation) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetParams sets the value of Params.
+func (s *RequestExplanation) SetParams(val OptRequestExplanationParams) {
+	s.Params = val
+}
+
+type RequestExplanationParams map[string]jx.Raw
+
+func (s *RequestExplanationParams) init() RequestExplanationParams {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+type RequestExplanationTone string
+
+const (
+	RequestExplanationToneSuccess RequestExplanationTone = "success"
+	RequestExplanationToneInfo    RequestExplanationTone = "info"
+	RequestExplanationToneWarning RequestExplanationTone = "warning"
+	RequestExplanationToneDanger  RequestExplanationTone = "danger"
+)
+
+// AllValues returns all RequestExplanationTone values.
+func (RequestExplanationTone) AllValues() []RequestExplanationTone {
+	return []RequestExplanationTone{
+		RequestExplanationToneSuccess,
+		RequestExplanationToneInfo,
+		RequestExplanationToneWarning,
+		RequestExplanationToneDanger,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s RequestExplanationTone) MarshalText() ([]byte, error) {
+	switch s {
+	case RequestExplanationToneSuccess:
+		return []byte(s), nil
+	case RequestExplanationToneInfo:
+		return []byte(s), nil
+	case RequestExplanationToneWarning:
+		return []byte(s), nil
+	case RequestExplanationToneDanger:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *RequestExplanationTone) UnmarshalText(data []byte) error {
+	switch RequestExplanationTone(data) {
+	case RequestExplanationToneSuccess:
+		*s = RequestExplanationToneSuccess
+		return nil
+	case RequestExplanationToneInfo:
+		*s = RequestExplanationToneInfo
+		return nil
+	case RequestExplanationToneWarning:
+		*s = RequestExplanationToneWarning
+		return nil
+	case RequestExplanationToneDanger:
+		*s = RequestExplanationToneDanger
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/RequestFilter
+type RequestFilter string
+
+const (
+	RequestFilterAll        RequestFilter = "all"
+	RequestFilterPending    RequestFilter = "pending"
+	RequestFilterApproved   RequestFilter = "approved"
+	RequestFilterDeclined   RequestFilter = "declined"
+	RequestFilterCancelled  RequestFilter = "cancelled"
+	RequestFilterProcessing RequestFilter = "processing"
+	RequestFilterPartial    RequestFilter = "partial"
+	RequestFilterAvailable  RequestFilter = "available"
+	RequestFilterFailed     RequestFilter = "failed"
+	RequestFilterActive     RequestFilter = "active"
+)
+
+// AllValues returns all RequestFilter values.
+func (RequestFilter) AllValues() []RequestFilter {
+	return []RequestFilter{
+		RequestFilterAll,
+		RequestFilterPending,
+		RequestFilterApproved,
+		RequestFilterDeclined,
+		RequestFilterCancelled,
+		RequestFilterProcessing,
+		RequestFilterPartial,
+		RequestFilterAvailable,
+		RequestFilterFailed,
+		RequestFilterActive,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s RequestFilter) MarshalText() ([]byte, error) {
+	switch s {
+	case RequestFilterAll:
+		return []byte(s), nil
+	case RequestFilterPending:
+		return []byte(s), nil
+	case RequestFilterApproved:
+		return []byte(s), nil
+	case RequestFilterDeclined:
+		return []byte(s), nil
+	case RequestFilterCancelled:
+		return []byte(s), nil
+	case RequestFilterProcessing:
+		return []byte(s), nil
+	case RequestFilterPartial:
+		return []byte(s), nil
+	case RequestFilterAvailable:
+		return []byte(s), nil
+	case RequestFilterFailed:
+		return []byte(s), nil
+	case RequestFilterActive:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *RequestFilter) UnmarshalText(data []byte) error {
+	switch RequestFilter(data) {
+	case RequestFilterAll:
+		*s = RequestFilterAll
+		return nil
+	case RequestFilterPending:
+		*s = RequestFilterPending
+		return nil
+	case RequestFilterApproved:
+		*s = RequestFilterApproved
+		return nil
+	case RequestFilterDeclined:
+		*s = RequestFilterDeclined
+		return nil
+	case RequestFilterCancelled:
+		*s = RequestFilterCancelled
+		return nil
+	case RequestFilterProcessing:
+		*s = RequestFilterProcessing
+		return nil
+	case RequestFilterPartial:
+		*s = RequestFilterPartial
+		return nil
+	case RequestFilterAvailable:
+		*s = RequestFilterAvailable
+		return nil
+	case RequestFilterFailed:
+		*s = RequestFilterFailed
+		return nil
+	case RequestFilterActive:
+		*s = RequestFilterActive
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/RequestIds
+type RequestIds struct {
+	Ids []int64 `json:"ids"`
+}
+
+// GetIds returns the value of Ids.
+func (s *RequestIds) GetIds() []int64 {
+	return s.Ids
+}
+
+// SetIds sets the value of Ids.
+func (s *RequestIds) SetIds(val []int64) {
+	s.Ids = val
+}
+
+// Ref: #/components/schemas/RequestKind
+type RequestKind string
+
+const (
+	RequestKindMovie  RequestKind = "movie"
+	RequestKindSeries RequestKind = "series"
+	RequestKindAlbum  RequestKind = "album"
+	RequestKindArtist RequestKind = "artist"
+)
+
+// AllValues returns all RequestKind values.
+func (RequestKind) AllValues() []RequestKind {
+	return []RequestKind{
+		RequestKindMovie,
+		RequestKindSeries,
+		RequestKindAlbum,
+		RequestKindArtist,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s RequestKind) MarshalText() ([]byte, error) {
+	switch s {
+	case RequestKindMovie:
+		return []byte(s), nil
+	case RequestKindSeries:
+		return []byte(s), nil
+	case RequestKindAlbum:
+		return []byte(s), nil
+	case RequestKindArtist:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *RequestKind) UnmarshalText(data []byte) error {
+	switch RequestKind(data) {
+	case RequestKindMovie:
+		*s = RequestKindMovie
+		return nil
+	case RequestKindSeries:
+		*s = RequestKindSeries
+		return nil
+	case RequestKindAlbum:
+		*s = RequestKindAlbum
+		return nil
+	case RequestKindArtist:
+		*s = RequestKindArtist
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/RequestList
+type RequestList struct {
+	Items []MediaRequest `json:"items"`
+	Total int            `json:"total"`
+}
+
+// GetItems returns the value of Items.
+func (s *RequestList) GetItems() []MediaRequest {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *RequestList) GetTotal() int {
+	return s.Total
+}
+
+// SetItems sets the value of Items.
+func (s *RequestList) SetItems(val []MediaRequest) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *RequestList) SetTotal(val int) {
+	s.Total = val
+}
+
+// Library options (managers only; others get the defaults).
+// Ref: #/components/schemas/RequestOptions
+type RequestOptions struct {
+	QualityProfileId OptInt64 `json:"qualityProfileId"`
+	RootFolderId     OptInt64 `json:"rootFolderId"`
+	Tags             []string `json:"tags"`
+	Seasons          []int    `json:"seasons"`
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *RequestOptions) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *RequestOptions) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetTags returns the value of Tags.
+func (s *RequestOptions) GetTags() []string {
+	return s.Tags
+}
+
+// GetSeasons returns the value of Seasons.
+func (s *RequestOptions) GetSeasons() []int {
+	return s.Seasons
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *RequestOptions) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *RequestOptions) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetTags sets the value of Tags.
+func (s *RequestOptions) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetSeasons sets the value of Seasons.
+func (s *RequestOptions) SetSeasons(val []int) {
+	s.Seasons = val
+}
+
+// Ref: #/components/schemas/RequestProgress
+type RequestProgress struct {
+	// 0..1 over the active downloads.
+	Percent    float64   `json:"percent"`
+	Downloads  int       `json:"downloads"`
+	State      OptString `json:"state"`
+	EtaSeconds OptInt    `json:"etaSeconds"`
+}
+
+// GetPercent returns the value of Percent.
+func (s *RequestProgress) GetPercent() float64 {
+	return s.Percent
+}
+
+// GetDownloads returns the value of Downloads.
+func (s *RequestProgress) GetDownloads() int {
+	return s.Downloads
+}
+
+// GetState returns the value of State.
+func (s *RequestProgress) GetState() OptString {
+	return s.State
+}
+
+// GetEtaSeconds returns the value of EtaSeconds.
+func (s *RequestProgress) GetEtaSeconds() OptInt {
+	return s.EtaSeconds
+}
+
+// SetPercent sets the value of Percent.
+func (s *RequestProgress) SetPercent(val float64) {
+	s.Percent = val
+}
+
+// SetDownloads sets the value of Downloads.
+func (s *RequestProgress) SetDownloads(val int) {
+	s.Downloads = val
+}
+
+// SetState sets the value of State.
+func (s *RequestProgress) SetState(val OptString) {
+	s.State = val
+}
+
+// SetEtaSeconds sets the value of EtaSeconds.
+func (s *RequestProgress) SetEtaSeconds(val OptInt) {
+	s.EtaSeconds = val
+}
+
+// Ref: #/components/schemas/RequestSeason
+type RequestSeason struct {
+	Number int           `json:"number"`
+	Status RequestStatus `json:"status"`
+}
+
+// GetNumber returns the value of Number.
+func (s *RequestSeason) GetNumber() int {
+	return s.Number
+}
+
+// GetStatus returns the value of Status.
+func (s *RequestSeason) GetStatus() RequestStatus {
+	return s.Status
+}
+
+// SetNumber sets the value of Number.
+func (s *RequestSeason) SetNumber(val int) {
+	s.Number = val
+}
+
+// SetStatus sets the value of Status.
+func (s *RequestSeason) SetStatus(val RequestStatus) {
+	s.Status = val
+}
+
+// Ref: #/components/schemas/RequestSettings
+type RequestSettings struct {
+	Movie  KindDefaults `json:"movie"`
+	Series KindDefaults `json:"series"`
+	Music  KindDefaults `json:"music"`
+	Quotas QuotaRules   `json:"quotas"`
+}
+
+// GetMovie returns the value of Movie.
+func (s *RequestSettings) GetMovie() KindDefaults {
+	return s.Movie
+}
+
+// GetSeries returns the value of Series.
+func (s *RequestSettings) GetSeries() KindDefaults {
+	return s.Series
+}
+
+// GetMusic returns the value of Music.
+func (s *RequestSettings) GetMusic() KindDefaults {
+	return s.Music
+}
+
+// GetQuotas returns the value of Quotas.
+func (s *RequestSettings) GetQuotas() QuotaRules {
+	return s.Quotas
+}
+
+// SetMovie sets the value of Movie.
+func (s *RequestSettings) SetMovie(val KindDefaults) {
+	s.Movie = val
+}
+
+// SetSeries sets the value of Series.
+func (s *RequestSettings) SetSeries(val KindDefaults) {
+	s.Series = val
+}
+
+// SetMusic sets the value of Music.
+func (s *RequestSettings) SetMusic(val KindDefaults) {
+	s.Music = val
+}
+
+// SetQuotas sets the value of Quotas.
+func (s *RequestSettings) SetQuotas(val QuotaRules) {
+	s.Quotas = val
+}
+
+// Pending → approved → processing → partial / available; or declined, cancelled (by the
+// requester while pending) or failed (with the explainer's reason; it can still arrive).
+// Ref: #/components/schemas/RequestStatus
+type RequestStatus string
+
+const (
+	RequestStatusPending    RequestStatus = "pending"
+	RequestStatusApproved   RequestStatus = "approved"
+	RequestStatusDeclined   RequestStatus = "declined"
+	RequestStatusCancelled  RequestStatus = "cancelled"
+	RequestStatusProcessing RequestStatus = "processing"
+	RequestStatusPartial    RequestStatus = "partial"
+	RequestStatusAvailable  RequestStatus = "available"
+	RequestStatusFailed     RequestStatus = "failed"
+)
+
+// AllValues returns all RequestStatus values.
+func (RequestStatus) AllValues() []RequestStatus {
+	return []RequestStatus{
+		RequestStatusPending,
+		RequestStatusApproved,
+		RequestStatusDeclined,
+		RequestStatusCancelled,
+		RequestStatusProcessing,
+		RequestStatusPartial,
+		RequestStatusAvailable,
+		RequestStatusFailed,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s RequestStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case RequestStatusPending:
+		return []byte(s), nil
+	case RequestStatusApproved:
+		return []byte(s), nil
+	case RequestStatusDeclined:
+		return []byte(s), nil
+	case RequestStatusCancelled:
+		return []byte(s), nil
+	case RequestStatusProcessing:
+		return []byte(s), nil
+	case RequestStatusPartial:
+		return []byte(s), nil
+	case RequestStatusAvailable:
+		return []byte(s), nil
+	case RequestStatusFailed:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *RequestStatus) UnmarshalText(data []byte) error {
+	switch RequestStatus(data) {
+	case RequestStatusPending:
+		*s = RequestStatusPending
+		return nil
+	case RequestStatusApproved:
+		*s = RequestStatusApproved
+		return nil
+	case RequestStatusDeclined:
+		*s = RequestStatusDeclined
+		return nil
+	case RequestStatusCancelled:
+		*s = RequestStatusCancelled
+		return nil
+	case RequestStatusProcessing:
+		*s = RequestStatusProcessing
+		return nil
+	case RequestStatusPartial:
+		*s = RequestStatusPartial
+		return nil
+	case RequestStatusAvailable:
+		*s = RequestStatusAvailable
+		return nil
+	case RequestStatusFailed:
+		*s = RequestStatusFailed
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/RequestSummary
+type RequestSummary struct {
+	// Waiting for approval (everyone's for managers.
+	Pending    int                  `json:"pending"`
+	Processing int                  `json:"processing"`
+	Failed     int                  `json:"failed"`
+	OpenIssues int                  `json:"openIssues"`
+	Quotas     RequestSummaryQuotas `json:"quotas"`
+}
+
+// GetPending returns the value of Pending.
+func (s *RequestSummary) GetPending() int {
+	return s.Pending
+}
+
+// GetProcessing returns the value of Processing.
+func (s *RequestSummary) GetProcessing() int {
+	return s.Processing
+}
+
+// GetFailed returns the value of Failed.
+func (s *RequestSummary) GetFailed() int {
+	return s.Failed
+}
+
+// GetOpenIssues returns the value of OpenIssues.
+func (s *RequestSummary) GetOpenIssues() int {
+	return s.OpenIssues
+}
+
+// GetQuotas returns the value of Quotas.
+func (s *RequestSummary) GetQuotas() RequestSummaryQuotas {
+	return s.Quotas
+}
+
+// SetPending sets the value of Pending.
+func (s *RequestSummary) SetPending(val int) {
+	s.Pending = val
+}
+
+// SetProcessing sets the value of Processing.
+func (s *RequestSummary) SetProcessing(val int) {
+	s.Processing = val
+}
+
+// SetFailed sets the value of Failed.
+func (s *RequestSummary) SetFailed(val int) {
+	s.Failed = val
+}
+
+// SetOpenIssues sets the value of OpenIssues.
+func (s *RequestSummary) SetOpenIssues(val int) {
+	s.OpenIssues = val
+}
+
+// SetQuotas sets the value of Quotas.
+func (s *RequestSummary) SetQuotas(val RequestSummaryQuotas) {
+	s.Quotas = val
+}
+
+type RequestSummaryQuotas struct {
+	Movie  QuotaStatus `json:"movie"`
+	Series QuotaStatus `json:"series"`
+	Music  QuotaStatus `json:"music"`
+}
+
+// GetMovie returns the value of Movie.
+func (s *RequestSummaryQuotas) GetMovie() QuotaStatus {
+	return s.Movie
+}
+
+// GetSeries returns the value of Series.
+func (s *RequestSummaryQuotas) GetSeries() QuotaStatus {
+	return s.Series
+}
+
+// GetMusic returns the value of Music.
+func (s *RequestSummaryQuotas) GetMusic() QuotaStatus {
+	return s.Music
+}
+
+// SetMovie sets the value of Movie.
+func (s *RequestSummaryQuotas) SetMovie(val QuotaStatus) {
+	s.Movie = val
+}
+
+// SetSeries sets the value of Series.
+func (s *RequestSummaryQuotas) SetSeries(val QuotaStatus) {
+	s.Series = val
+}
+
+// SetMusic sets the value of Music.
+func (s *RequestSummaryQuotas) SetMusic(val QuotaStatus) {
+	s.Music = val
+}
+
 // Ref: #/components/schemas/ResetPasswordRequest
 type ResetPasswordRequest struct {
 	Password Password `json:"password"`
@@ -20548,8 +24812,37 @@ func (s *ResetQualityDefinitionsRequest) SetKind(val OptMediaKind) {
 // ResetUserPasswordNoContent is response for ResetUserPassword operation.
 type ResetUserPasswordNoContent struct{}
 
+// Ref: #/components/schemas/ResolveIssueRequest
+type ResolveIssueRequest struct {
+	SearchReplacement OptBool   `json:"searchReplacement"`
+	Comment           OptString `json:"comment"`
+}
+
+// GetSearchReplacement returns the value of SearchReplacement.
+func (s *ResolveIssueRequest) GetSearchReplacement() OptBool {
+	return s.SearchReplacement
+}
+
+// GetComment returns the value of Comment.
+func (s *ResolveIssueRequest) GetComment() OptString {
+	return s.Comment
+}
+
+// SetSearchReplacement sets the value of SearchReplacement.
+func (s *ResolveIssueRequest) SetSearchReplacement(val OptBool) {
+	s.SearchReplacement = val
+}
+
+// SetComment sets the value of Comment.
+func (s *ResolveIssueRequest) SetComment(val OptString) {
+	s.Comment = val
+}
+
 // ResumeQueueItemNoContent is response for ResumeQueueItem operation.
 type ResumeQueueItemNoContent struct{}
+
+// RevokeInviteNoContent is response for RevokeInvite operation.
+type RevokeInviteNoContent struct{}
 
 // RevokeSessionNoContent is response for RevokeSession operation.
 type RevokeSessionNoContent struct{}
@@ -21224,6 +25517,98 @@ func (s *SearchType) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/SeasonAvailability
+type SeasonAvailability struct {
+	Number            int            `json:"number"`
+	Title             string         `json:"title"`
+	EpisodeCount      int            `json:"episodeCount"`
+	AirDate           OptString      `json:"airDate"`
+	Poster            OptString      `json:"poster"`
+	Status            DiscoverStatus `json:"status"`
+	Status4k          DiscoverStatus `json:"status4k"`
+	EpisodesAvailable OptInt         `json:"episodesAvailable"`
+}
+
+// GetNumber returns the value of Number.
+func (s *SeasonAvailability) GetNumber() int {
+	return s.Number
+}
+
+// GetTitle returns the value of Title.
+func (s *SeasonAvailability) GetTitle() string {
+	return s.Title
+}
+
+// GetEpisodeCount returns the value of EpisodeCount.
+func (s *SeasonAvailability) GetEpisodeCount() int {
+	return s.EpisodeCount
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *SeasonAvailability) GetAirDate() OptString {
+	return s.AirDate
+}
+
+// GetPoster returns the value of Poster.
+func (s *SeasonAvailability) GetPoster() OptString {
+	return s.Poster
+}
+
+// GetStatus returns the value of Status.
+func (s *SeasonAvailability) GetStatus() DiscoverStatus {
+	return s.Status
+}
+
+// GetStatus4k returns the value of Status4k.
+func (s *SeasonAvailability) GetStatus4k() DiscoverStatus {
+	return s.Status4k
+}
+
+// GetEpisodesAvailable returns the value of EpisodesAvailable.
+func (s *SeasonAvailability) GetEpisodesAvailable() OptInt {
+	return s.EpisodesAvailable
+}
+
+// SetNumber sets the value of Number.
+func (s *SeasonAvailability) SetNumber(val int) {
+	s.Number = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SeasonAvailability) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetEpisodeCount sets the value of EpisodeCount.
+func (s *SeasonAvailability) SetEpisodeCount(val int) {
+	s.EpisodeCount = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *SeasonAvailability) SetAirDate(val OptString) {
+	s.AirDate = val
+}
+
+// SetPoster sets the value of Poster.
+func (s *SeasonAvailability) SetPoster(val OptString) {
+	s.Poster = val
+}
+
+// SetStatus sets the value of Status.
+func (s *SeasonAvailability) SetStatus(val DiscoverStatus) {
+	s.Status = val
+}
+
+// SetStatus4k sets the value of Status4k.
+func (s *SeasonAvailability) SetStatus4k(val DiscoverStatus) {
+	s.Status4k = val
+}
+
+// SetEpisodesAvailable sets the value of EpisodesAvailable.
+func (s *SeasonAvailability) SetEpisodesAvailable(val OptInt) {
+	s.EpisodesAvailable = val
 }
 
 // Ref: #/components/schemas/SeasonInfo
@@ -23665,6 +28050,76 @@ func (s *SharedCustomFormat) init() SharedCustomFormat {
 	return m
 }
 
+// Ref: #/components/schemas/SignUpRequest
+type SignUpRequest struct {
+	Code      string        `json:"code"`
+	Username  Username      `json:"username"`
+	Password  Password      `json:"password"`
+	Language  OptLanguage   `json:"language"`
+	Device    OptDeviceInfo `json:"device"`
+	UseCookie OptBool       `json:"useCookie"`
+}
+
+// GetCode returns the value of Code.
+func (s *SignUpRequest) GetCode() string {
+	return s.Code
+}
+
+// GetUsername returns the value of Username.
+func (s *SignUpRequest) GetUsername() Username {
+	return s.Username
+}
+
+// GetPassword returns the value of Password.
+func (s *SignUpRequest) GetPassword() Password {
+	return s.Password
+}
+
+// GetLanguage returns the value of Language.
+func (s *SignUpRequest) GetLanguage() OptLanguage {
+	return s.Language
+}
+
+// GetDevice returns the value of Device.
+func (s *SignUpRequest) GetDevice() OptDeviceInfo {
+	return s.Device
+}
+
+// GetUseCookie returns the value of UseCookie.
+func (s *SignUpRequest) GetUseCookie() OptBool {
+	return s.UseCookie
+}
+
+// SetCode sets the value of Code.
+func (s *SignUpRequest) SetCode(val string) {
+	s.Code = val
+}
+
+// SetUsername sets the value of Username.
+func (s *SignUpRequest) SetUsername(val Username) {
+	s.Username = val
+}
+
+// SetPassword sets the value of Password.
+func (s *SignUpRequest) SetPassword(val Password) {
+	s.Password = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *SignUpRequest) SetLanguage(val OptLanguage) {
+	s.Language = val
+}
+
+// SetDevice sets the value of Device.
+func (s *SignUpRequest) SetDevice(val OptDeviceInfo) {
+	s.Device = val
+}
+
+// SetUseCookie sets the value of UseCookie.
+func (s *SignUpRequest) SetUseCookie(val OptBool) {
+	s.UseCookie = val
+}
+
 // SignedInHeaders wraps AuthResult with response headers.
 type SignedInHeaders struct {
 	SetCookie OptString
@@ -24087,6 +28542,201 @@ func (s *TimelineEventSource) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/TitleDetail
+type TitleDetail struct {
+	Item          DiscoverItem `json:"item"`
+	OriginalTitle OptString    `json:"originalTitle"`
+	Tagline       OptString    `json:"tagline"`
+	Runtime       OptInt       `json:"runtime"`
+	Genres        []string     `json:"genres"`
+	Certification OptString    `json:"certification"`
+	ReleaseDate   OptString    `json:"releaseDate"`
+	Studio        OptString    `json:"studio"`
+	Network       OptString    `json:"network"`
+	SeriesStatus  OptString    `json:"seriesStatus"`
+	// Https://www.youtube.com/watch?v=… when TMDb lists a trailer.
+	TrailerUrl OptString            `json:"trailerUrl"`
+	Cast       []CastMember         `json:"cast"`
+	Seasons    []SeasonAvailability `json:"seasons"`
+	// An artist's albums with their state.
+	Albums []DiscoverItem `json:"albums"`
+	// Open requests for this title (own ones for requesters).
+	Requests []MediaRequest `json:"requests"`
+	Ability  RequestAbility `json:"ability"`
+	// The library item (only for users who manage the library).
+	LibraryRef OptString `json:"libraryRef"`
+}
+
+// GetItem returns the value of Item.
+func (s *TitleDetail) GetItem() DiscoverItem {
+	return s.Item
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *TitleDetail) GetOriginalTitle() OptString {
+	return s.OriginalTitle
+}
+
+// GetTagline returns the value of Tagline.
+func (s *TitleDetail) GetTagline() OptString {
+	return s.Tagline
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *TitleDetail) GetRuntime() OptInt {
+	return s.Runtime
+}
+
+// GetGenres returns the value of Genres.
+func (s *TitleDetail) GetGenres() []string {
+	return s.Genres
+}
+
+// GetCertification returns the value of Certification.
+func (s *TitleDetail) GetCertification() OptString {
+	return s.Certification
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *TitleDetail) GetReleaseDate() OptString {
+	return s.ReleaseDate
+}
+
+// GetStudio returns the value of Studio.
+func (s *TitleDetail) GetStudio() OptString {
+	return s.Studio
+}
+
+// GetNetwork returns the value of Network.
+func (s *TitleDetail) GetNetwork() OptString {
+	return s.Network
+}
+
+// GetSeriesStatus returns the value of SeriesStatus.
+func (s *TitleDetail) GetSeriesStatus() OptString {
+	return s.SeriesStatus
+}
+
+// GetTrailerUrl returns the value of TrailerUrl.
+func (s *TitleDetail) GetTrailerUrl() OptString {
+	return s.TrailerUrl
+}
+
+// GetCast returns the value of Cast.
+func (s *TitleDetail) GetCast() []CastMember {
+	return s.Cast
+}
+
+// GetSeasons returns the value of Seasons.
+func (s *TitleDetail) GetSeasons() []SeasonAvailability {
+	return s.Seasons
+}
+
+// GetAlbums returns the value of Albums.
+func (s *TitleDetail) GetAlbums() []DiscoverItem {
+	return s.Albums
+}
+
+// GetRequests returns the value of Requests.
+func (s *TitleDetail) GetRequests() []MediaRequest {
+	return s.Requests
+}
+
+// GetAbility returns the value of Ability.
+func (s *TitleDetail) GetAbility() RequestAbility {
+	return s.Ability
+}
+
+// GetLibraryRef returns the value of LibraryRef.
+func (s *TitleDetail) GetLibraryRef() OptString {
+	return s.LibraryRef
+}
+
+// SetItem sets the value of Item.
+func (s *TitleDetail) SetItem(val DiscoverItem) {
+	s.Item = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *TitleDetail) SetOriginalTitle(val OptString) {
+	s.OriginalTitle = val
+}
+
+// SetTagline sets the value of Tagline.
+func (s *TitleDetail) SetTagline(val OptString) {
+	s.Tagline = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *TitleDetail) SetRuntime(val OptInt) {
+	s.Runtime = val
+}
+
+// SetGenres sets the value of Genres.
+func (s *TitleDetail) SetGenres(val []string) {
+	s.Genres = val
+}
+
+// SetCertification sets the value of Certification.
+func (s *TitleDetail) SetCertification(val OptString) {
+	s.Certification = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *TitleDetail) SetReleaseDate(val OptString) {
+	s.ReleaseDate = val
+}
+
+// SetStudio sets the value of Studio.
+func (s *TitleDetail) SetStudio(val OptString) {
+	s.Studio = val
+}
+
+// SetNetwork sets the value of Network.
+func (s *TitleDetail) SetNetwork(val OptString) {
+	s.Network = val
+}
+
+// SetSeriesStatus sets the value of SeriesStatus.
+func (s *TitleDetail) SetSeriesStatus(val OptString) {
+	s.SeriesStatus = val
+}
+
+// SetTrailerUrl sets the value of TrailerUrl.
+func (s *TitleDetail) SetTrailerUrl(val OptString) {
+	s.TrailerUrl = val
+}
+
+// SetCast sets the value of Cast.
+func (s *TitleDetail) SetCast(val []CastMember) {
+	s.Cast = val
+}
+
+// SetSeasons sets the value of Seasons.
+func (s *TitleDetail) SetSeasons(val []SeasonAvailability) {
+	s.Seasons = val
+}
+
+// SetAlbums sets the value of Albums.
+func (s *TitleDetail) SetAlbums(val []DiscoverItem) {
+	s.Albums = val
+}
+
+// SetRequests sets the value of Requests.
+func (s *TitleDetail) SetRequests(val []MediaRequest) {
+	s.Requests = val
+}
+
+// SetAbility sets the value of Ability.
+func (s *TitleDetail) SetAbility(val RequestAbility) {
+	s.Ability = val
+}
+
+// SetLibraryRef sets the value of LibraryRef.
+func (s *TitleDetail) SetLibraryRef(val OptString) {
+	s.LibraryRef = val
+}
+
 // Ref: #/components/schemas/TotpCodeRequest
 type TotpCodeRequest struct {
 	Code string `json:"code"`
@@ -24357,6 +29007,21 @@ func (s *TransferMode) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/UnreadCount
+type UnreadCount struct {
+	Unread int `json:"unread"`
+}
+
+// GetUnread returns the value of Unread.
+func (s *UnreadCount) GetUnread() int {
+	return s.Unread
+}
+
+// SetUnread sets the value of Unread.
+func (s *UnreadCount) SetUnread(val int) {
+	s.Unread = val
 }
 
 // Ref: #/components/schemas/UpdateDownloadSettings
@@ -24662,6 +29327,80 @@ func (s *User) SetCreatedAt(val time.Time) {
 // SetLastLoginAt sets the value of LastLoginAt.
 func (s *User) SetLastLoginAt(val OptDateTime) {
 	s.LastLoginAt = val
+}
+
+// Ref: #/components/schemas/UserQuotas
+type UserQuotas struct {
+	Overrides QuotaOverrides `json:"overrides"`
+	Movie     QuotaStatus    `json:"movie"`
+	Series    QuotaStatus    `json:"series"`
+	Music     QuotaStatus    `json:"music"`
+}
+
+// GetOverrides returns the value of Overrides.
+func (s *UserQuotas) GetOverrides() QuotaOverrides {
+	return s.Overrides
+}
+
+// GetMovie returns the value of Movie.
+func (s *UserQuotas) GetMovie() QuotaStatus {
+	return s.Movie
+}
+
+// GetSeries returns the value of Series.
+func (s *UserQuotas) GetSeries() QuotaStatus {
+	return s.Series
+}
+
+// GetMusic returns the value of Music.
+func (s *UserQuotas) GetMusic() QuotaStatus {
+	return s.Music
+}
+
+// SetOverrides sets the value of Overrides.
+func (s *UserQuotas) SetOverrides(val QuotaOverrides) {
+	s.Overrides = val
+}
+
+// SetMovie sets the value of Movie.
+func (s *UserQuotas) SetMovie(val QuotaStatus) {
+	s.Movie = val
+}
+
+// SetSeries sets the value of Series.
+func (s *UserQuotas) SetSeries(val QuotaStatus) {
+	s.Series = val
+}
+
+// SetMusic sets the value of Music.
+func (s *UserQuotas) SetMusic(val QuotaStatus) {
+	s.Music = val
+}
+
+// Ref: #/components/schemas/UserRef
+type UserRef struct {
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+}
+
+// GetID returns the value of ID.
+func (s *UserRef) GetID() int64 {
+	return s.ID
+}
+
+// GetUsername returns the value of Username.
+func (s *UserRef) GetUsername() string {
+	return s.Username
+}
+
+// SetID sets the value of ID.
+func (s *UserRef) SetID(val int64) {
+	s.ID = val
+}
+
+// SetUsername sets the value of Username.
+func (s *UserRef) SetUsername(val string) {
+	s.Username = val
 }
 
 type Username string

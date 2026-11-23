@@ -2848,6 +2848,569 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ways to sign in
+         * @description `local` (username and password) always; other providers (Streamero, P9) appear
+         *     here once configured. See D-058.
+         */
+        get: operations["listAuthProviders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check an invite code before signing up */
+        post: operations["checkInvite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create an account with an invite code and sign in */
+        post: operations["signUp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/invites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Invite links (administrators) */
+        get: operations["listInvites"];
+        put?: never;
+        /**
+         * Create an invite link (administrators)
+         * @description The code is only returned once.
+         */
+        post: operations["createInvite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/invites/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Revoke an invite (administrators) */
+        delete: operations["revokeInvite"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/quotas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A user's request quotas (administrators) */
+        get: operations["getUserQuotas"];
+        /** Override a user's request quotas (administrators) */
+        put: operations["setUserQuotas"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Request defaults and quotas (administrators) */
+        get: operations["getRequestSettings"];
+        /** Change request defaults and quotas (administrators) */
+        put: operations["putRequestSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The discover home (rows of titles)
+         * @description Trending, popular, upcoming, now playing, top rated, recently added and the caller's requests, with library and request state.
+         */
+        get: operations["getDiscover"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/discover/lists/{list}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One discover list, paged */
+        get: operations["getDiscoverList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/discover/genres": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Genres, studios and networks to browse by */
+        get: operations["getDiscoverGenres"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/discover/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search movies, series, people and music */
+        get: operations["discoverSearch"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/discover/movies/{tmdbId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A movie's title page */
+        get: operations["getDiscoverMovie"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/discover/series/{tmdbId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A series' title page with per-season availability */
+        get: operations["getDiscoverSeries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/discover/people/{tmdbId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A person and what they are known for */
+        get: operations["getDiscoverPerson"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/discover/artists/{mbid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** An artist and their albums */
+        get: operations["getDiscoverArtist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Requests
+         * @description Requesters see their own; users who manage requests see everyone's.
+         */
+        get: operations["listRequests"];
+        put?: never;
+        /**
+         * Request a movie, series seasons, an album or an artist
+         * @description Approved at once when the user may auto-approve this kind. Refused with
+         *     `already_requested`, `already_available`, `quota_exceeded` or `forbidden`.
+         */
+        post: operations["createRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/requests/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Counts for badges and the caller's remaining quota */
+        get: operations["getRequestSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/requests/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve several pending requests */
+        post: operations["approveRequests"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One request */
+        get: operations["getRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a request's options before it is approved (managers) */
+        patch: operations["updateRequest"];
+        trace?: never;
+    };
+    "/requests/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a request (managers), optionally changing its options */
+        post: operations["approveRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/requests/{id}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decline a request with a reason (managers) */
+        post: operations["declineRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/requests/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw an own request while it is pending */
+        post: operations["cancelRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/requests/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Search again for a failed request (managers) */
+        post: operations["retryRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/requests/{id}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Comments on a request */
+        get: operations["listRequestComments"];
+        put?: never;
+        /** Comment on a request */
+        post: operations["addRequestComment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/issues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Reported problems
+         * @description Requesters see their own; managers see everyone's.
+         */
+        get: operations["listIssues"];
+        put?: never;
+        /** Report a problem with an available title */
+        post: operations["createIssue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/issues/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One issue */
+        get: operations["getIssue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/issues/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Resolve an issue (managers), optionally searching for a replacement
+         * @description With `searchReplacement` the current file(s) go to the recycle bin, their
+         *     release is blocklisted and Locarr searches again.
+         */
+        post: operations["resolveIssue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/issues/{id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reopen a resolved issue (managers and the reporter) */
+        post: operations["reopenIssue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/issues/{id}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Comments on an issue */
+        get: operations["listIssueComments"];
+        put?: never;
+        /** Comment on an issue */
+        post: operations["addIssueComment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The caller's notifications
+         * @description Polling-friendly: pass the largest id seen as `since` to get only newer ones
+         *     (oldest first then); without it the newest come first.
+         */
+        get: operations["listNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark notifications read */
+        post: operations["markNotificationsRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2976,6 +3539,12 @@ export interface components {
             manageLibrary: boolean;
             /** @description Approve and decline other users' requests. */
             manageRequests: boolean;
+            /** @description Movie requests are approved at once (autoApprove covers every kind). */
+            autoApproveMovies: boolean;
+            autoApproveSeries: boolean;
+            autoApproveMusic: boolean;
+            /** @description 4K requests are approved at once. */
+            autoApprove4k: boolean;
         };
         User: {
             /** Format: int64 */
@@ -5391,6 +5960,503 @@ export interface components {
             };
             tokens: components["schemas"]["NamingToken"][];
         };
+        AuthProvider: {
+            /** @description local, or a provider id such as streamero */
+            id: string;
+            /**
+             * @description password = username and password form; redirect = sign in at the provider (reserved, D-058)
+             * @enum {string}
+             */
+            kind: "password" | "redirect";
+            name: string;
+        };
+        InviteCodeRequest: {
+            code: string;
+        };
+        InviteCheck: {
+            role: components["schemas"]["Role"];
+            label?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            instanceName: string;
+        };
+        SignUpRequest: {
+            code: string;
+            username: components["schemas"]["Username"];
+            password: components["schemas"]["Password"];
+            language?: components["schemas"]["Language"];
+            device?: components["schemas"]["DeviceInfo"];
+            useCookie?: boolean;
+        };
+        /** @description At most `limit` requests in `days` days; limit 0 = unlimited. */
+        QuotaRule: {
+            limit: number;
+            days: number;
+        };
+        QuotaRules: {
+            movie: components["schemas"]["QuotaRule"];
+            series: components["schemas"]["QuotaRule"];
+            music: components["schemas"]["QuotaRule"];
+        };
+        /** @description A user's own rules; a missing kind uses the default. */
+        QuotaOverrides: {
+            movie?: components["schemas"]["QuotaRule"];
+            series?: components["schemas"]["QuotaRule"];
+            music?: components["schemas"]["QuotaRule"];
+        };
+        QuotaStatus: {
+            limit: number;
+            days: number;
+            used: number;
+            /** @description Absent when unlimited. */
+            remaining?: number;
+            unlimited: boolean;
+            /** @description The user has an own rule (not the default). */
+            custom: boolean;
+            /**
+             * Format: date-time
+             * @description When the oldest counted request stops counting (only when none remain).
+             */
+            nextSlotAt?: string;
+        };
+        UserQuotas: {
+            overrides: components["schemas"]["QuotaOverrides"];
+            movie: components["schemas"]["QuotaStatus"];
+            series: components["schemas"]["QuotaStatus"];
+            music: components["schemas"]["QuotaStatus"];
+        };
+        Invite: {
+            /** Format: int64 */
+            id: number;
+            label: string;
+            role: components["schemas"]["Role"];
+            permissions: components["schemas"]["Permissions"];
+            quotas?: components["schemas"]["QuotaOverrides"];
+            /** @description 0 = unlimited */
+            maxUses: number;
+            uses: number;
+            /** Format: date-time */
+            expiresAt?: string;
+            /** Format: date-time */
+            createdAt: string;
+            createdBy?: string;
+            revoked: boolean;
+            /** @description Expired or used up. */
+            expired: boolean;
+        };
+        InviteInput: {
+            label?: string;
+            /** @enum {string} */
+            role: "manager" | "requester";
+            permissions?: components["schemas"]["Permissions"];
+            quotas?: components["schemas"]["QuotaOverrides"];
+            maxUses?: number;
+            /** @description Default 7. */
+            expiresInDays?: number;
+        };
+        CreatedInvite: {
+            invite: components["schemas"]["Invite"];
+            /** @description Only shown now; the link is /join#<code>. */
+            code: string;
+        };
+        /** @description Where approved requests of one kind go. 0 = not chosen yet. */
+        KindDefaults: {
+            /** Format: int64 */
+            qualityProfileId: number;
+            /** Format: int64 */
+            rootFolderId: number;
+            /**
+             * Format: int64
+             * @description 4K track (movies and series).
+             */
+            qualityProfile4kId: number;
+            /** Format: int64 */
+            rootFolder4kId: number;
+            /**
+             * Format: int64
+             * @description Music only.
+             */
+            metadataProfileId?: number;
+            minimumAvailability?: components["schemas"]["MinimumAvailability"];
+            tags: string[];
+        };
+        RequestSettings: {
+            movie: components["schemas"]["KindDefaults"];
+            series: components["schemas"]["KindDefaults"];
+            music: components["schemas"]["KindDefaults"];
+            quotas: components["schemas"]["QuotaRules"];
+        };
+        /** @enum {string} */
+        DiscoverMediaType: "movie" | "series" | "person" | "artist" | "album";
+        /**
+         * @description none; pending (requested, waiting for approval); processing (approved, on its way);
+         *     partial (some seasons or tracks are here); available; in_library (added but not downloaded,
+         *     nobody asked); declined is never shown here.
+         * @enum {string}
+         */
+        DiscoverStatus: "none" | "pending" | "processing" | "partial" | "available" | "in_library";
+        DiscoverItem: {
+            mediaType: components["schemas"]["DiscoverMediaType"];
+            /** Format: int64 */
+            tmdbId?: number;
+            mbid?: string;
+            /** @description An album's artist. */
+            artistMbid?: string;
+            title: string;
+            /** @description Album artist, a person's department, an artist's disambiguation. */
+            subtitle?: string;
+            year: number;
+            date?: string;
+            overview?: string;
+            /** @description TMDb image file (movies, series, people) or Cover Art file name (albums). */
+            poster?: string;
+            backdrop?: string;
+            rating?: number;
+            status: components["schemas"]["DiscoverStatus"];
+            status4k: components["schemas"]["DiscoverStatus"];
+            /**
+             * Format: int64
+             * @description The caller's open request for it.
+             */
+            requestId?: number;
+        };
+        /** @enum {string} */
+        DiscoverListKey: "trending" | "trending_movies" | "trending_series" | "popular_movies" | "popular_series" | "upcoming_movies" | "now_playing" | "top_rated_movies" | "top_rated_series" | "airing_series" | "genre_movies" | "genre_series" | "studio" | "network" | "recently_added";
+        DiscoverRow: {
+            key: components["schemas"]["DiscoverListKey"];
+            items: components["schemas"]["DiscoverItem"][];
+        };
+        DiscoverHome: {
+            rows: components["schemas"]["DiscoverRow"][];
+            /** @description The caller's latest requests. */
+            requests: components["schemas"]["MediaRequest"][];
+            /** @description A TMDb key is set. */
+            metadataReady: boolean;
+            musicReady: boolean;
+        };
+        DiscoverPage: {
+            items: components["schemas"]["DiscoverItem"][];
+            page: number;
+            totalPages: number;
+        };
+        Facet: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+        };
+        DiscoverFacets: {
+            movieGenres: components["schemas"]["Facet"][];
+            seriesGenres: components["schemas"]["Facet"][];
+            studios: components["schemas"]["Facet"][];
+            networks: components["schemas"]["Facet"][];
+        };
+        CastMember: {
+            /** Format: int64 */
+            personId?: number;
+            name: string;
+            character?: string;
+            profile?: string;
+        };
+        SeasonAvailability: {
+            number: number;
+            title: string;
+            episodeCount: number;
+            airDate?: string;
+            poster?: string;
+            status: components["schemas"]["DiscoverStatus"];
+            status4k: components["schemas"]["DiscoverStatus"];
+            episodesAvailable?: number;
+        };
+        RequestAbility: {
+            canRequest: boolean;
+            canRequest4k: boolean;
+            autoApprove: boolean;
+            autoApprove4k: boolean;
+            /** @description May pick profile */
+            canSetOptions?: boolean;
+            /** @description Available now (issues can be reported). */
+            canReportIssue?: boolean;
+        };
+        TitleDetail: {
+            item: components["schemas"]["DiscoverItem"];
+            originalTitle?: string;
+            tagline?: string;
+            runtime?: number;
+            genres: string[];
+            certification?: string;
+            releaseDate?: string;
+            studio?: string;
+            network?: string;
+            seriesStatus?: string;
+            /** @description https://www.youtube.com/watch?v=… when TMDb lists a trailer. */
+            trailerUrl?: string;
+            cast: components["schemas"]["CastMember"][];
+            seasons: components["schemas"]["SeasonAvailability"][];
+            /** @description An artist's albums with their state. */
+            albums: components["schemas"]["DiscoverItem"][];
+            /** @description Open requests for this title (own ones for requesters). */
+            requests: components["schemas"]["MediaRequest"][];
+            ability: components["schemas"]["RequestAbility"];
+            /** @description The library item (only for users who manage the library). */
+            libraryRef?: string;
+        };
+        PersonDetail: {
+            /** Format: int64 */
+            tmdbId: number;
+            name: string;
+            biography?: string;
+            profile?: string;
+            birthday?: string;
+            department?: string;
+            knownFor: components["schemas"]["DiscoverItem"][];
+        };
+        /** @enum {string} */
+        RequestKind: "movie" | "series" | "album" | "artist";
+        /**
+         * @description pending → approved → processing → partial / available; or declined, cancelled
+         *     (by the requester while pending) or failed (with the explainer's reason; it can still arrive).
+         * @enum {string}
+         */
+        RequestStatus: "pending" | "approved" | "declined" | "cancelled" | "processing" | "partial" | "available" | "failed";
+        /** @enum {string} */
+        RequestFilter: "all" | "pending" | "approved" | "declined" | "cancelled" | "processing" | "partial" | "available" | "failed" | "active";
+        UserRef: {
+            /** Format: int64 */
+            id: number;
+            username: string;
+        };
+        RequestSeason: {
+            number: number;
+            status: components["schemas"]["RequestStatus"];
+        };
+        RequestProgress: {
+            /** @description 0..1 over the active downloads. */
+            percent: number;
+            downloads: number;
+            state?: string;
+            etaSeconds?: number;
+        };
+        MediaRequest: {
+            /** Format: int64 */
+            id: number;
+            kind: components["schemas"]["RequestKind"];
+            is4k: boolean;
+            status: components["schemas"]["RequestStatus"];
+            /** Format: int64 */
+            tmdbId?: number;
+            mbid?: string;
+            artistMbid?: string;
+            title: string;
+            subtitle?: string;
+            year: number;
+            poster?: string;
+            seasons: components["schemas"]["RequestSeason"][];
+            allSeasons: boolean;
+            futureSeasons: boolean;
+            requestedBy: components["schemas"]["UserRef"];
+            decidedBy?: components["schemas"]["UserRef"];
+            autoApproved: boolean;
+            /** Format: date-time */
+            decidedAt?: string;
+            declineReason?: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            availableAt?: string;
+            explanation?: components["schemas"]["RequestExplanation"];
+            progress?: components["schemas"]["RequestProgress"];
+            /**
+             * Format: int64
+             * @description Only for users who manage requests.
+             */
+            qualityProfileId?: number;
+            /**
+             * Format: int64
+             * @description Only for users who manage requests.
+             */
+            rootFolderId?: number;
+            tags: string[];
+            /** @description Only for users who manage the library. */
+            libraryRef?: string;
+            commentCount: number;
+            canCancel: boolean;
+        };
+        /** @description The library's answer to "why isn't it here yet" (codes as in Explanation). */
+        RequestExplanation: {
+            code: string;
+            /** @enum {string} */
+            tone: "success" | "info" | "warning" | "danger";
+            message: string;
+            params?: {
+                [key: string]: unknown;
+            };
+        };
+        RequestList: {
+            items: components["schemas"]["MediaRequest"][];
+            total: number;
+        };
+        CreateRequest: {
+            kind: components["schemas"]["RequestKind"];
+            /**
+             * Format: int64
+             * @description Movies and series.
+             */
+            tmdbId?: number;
+            /** @description Album (release group) or artist. */
+            mbid?: string;
+            is4k?: boolean;
+            seasons?: number[];
+            /** @description Every season there is now. */
+            allSeasons?: boolean;
+            /** @description Also seasons that appear later. */
+            futureSeasons?: boolean;
+            comment?: string;
+            options?: components["schemas"]["RequestOptions"];
+        };
+        /** @description Library options (managers only; others get the defaults). */
+        RequestOptions: {
+            /** Format: int64 */
+            qualityProfileId?: number;
+            /** Format: int64 */
+            rootFolderId?: number;
+            tags?: string[];
+            seasons?: number[];
+        };
+        DeclineRequest: {
+            reason?: string;
+        };
+        RequestIds: {
+            ids: number[];
+        };
+        BulkResult: {
+            done: number;
+            errors: components["schemas"]["BulkError"][];
+        };
+        BulkError: {
+            /** Format: int64 */
+            id: number;
+            code: string;
+            message: string;
+        };
+        RequestSummary: {
+            /** @description Waiting for approval (everyone's for managers */
+            pending: number;
+            processing: number;
+            failed: number;
+            openIssues: number;
+            quotas: {
+                movie: components["schemas"]["QuotaStatus"];
+                series: components["schemas"]["QuotaStatus"];
+                music: components["schemas"]["QuotaStatus"];
+            };
+        };
+        Comment: {
+            /** Format: int64 */
+            id: number;
+            user: components["schemas"]["UserRef"];
+            body: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CommentInput: {
+            body: string;
+        };
+        /** @enum {string} */
+        IssueType: "video" | "audio" | "subtitles" | "other";
+        /** @enum {string} */
+        IssueStatus: "open" | "resolved";
+        Issue: {
+            /** Format: int64 */
+            id: number;
+            /** @enum {string} */
+            kind: "movie" | "series" | "album";
+            type: components["schemas"]["IssueType"];
+            status: components["schemas"]["IssueStatus"];
+            title: string;
+            /** Format: int64 */
+            tmdbId?: number;
+            mbid?: string;
+            poster?: string;
+            seasonNumber?: number;
+            episodeNumber?: number;
+            message: string;
+            reportedBy: components["schemas"]["UserRef"];
+            resolvedBy?: components["schemas"]["UserRef"];
+            /** Format: date-time */
+            resolvedAt?: string;
+            replacementSearched?: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @description Only for users who manage the library. */
+            libraryRef?: string;
+            commentCount: number;
+        };
+        IssueList: {
+            items: components["schemas"]["Issue"][];
+            total: number;
+        };
+        IssueInput: {
+            /** @enum {string} */
+            kind: "movie" | "series" | "album";
+            /** Format: int64 */
+            tmdbId?: number;
+            mbid?: string;
+            type: components["schemas"]["IssueType"];
+            seasonNumber?: number;
+            episodeNumber?: number;
+            message: string;
+        };
+        ResolveIssueRequest: {
+            searchReplacement?: boolean;
+            comment?: string;
+        };
+        /**
+         * @description Event types (D-057); P9 sends the same events to outward channels.
+         * @enum {string}
+         */
+        NotificationType: "request.created" | "request.approved" | "request.declined" | "request.available" | "request.partial" | "request.failed" | "request.comment" | "issue.created" | "issue.comment" | "issue.resolved" | "issue.reopened";
+        Notification: {
+            /** Format: int64 */
+            id: number;
+            type: components["schemas"]["NotificationType"];
+            /** @description The title the event is about. */
+            title: string;
+            /** @description Decline reason, comment text, failure reason. */
+            message?: string;
+            poster?: string;
+            mediaKind?: string;
+            actor?: components["schemas"]["UserRef"];
+            /** Format: int64 */
+            requestId?: number;
+            /** Format: int64 */
+            issueId?: number;
+            params?: {
+                [key: string]: unknown;
+            };
+            /** Format: date-time */
+            createdAt: string;
+            read: boolean;
+        };
+        NotificationList: {
+            items: components["schemas"]["Notification"][];
+            unread: number;
+            /**
+             * Format: int64
+             * @description Pass as since next time.
+             */
+            latestId: number;
+        };
+        MarkReadRequest: {
+            ids?: number[];
+            all?: boolean;
+        };
+        UnreadCount: {
+            unread: number;
+        };
     };
     responses: {
         /** @description Signed in */
@@ -5436,6 +6502,8 @@ export interface components {
         /** @description Results asked from each indexer (capped by its own maximum). */
         SearchLimit: number;
         SearchOffset: number;
+        TmdbID: number;
+        MBID: string;
     };
     requestBodies: never;
     headers: never;
@@ -10407,6 +11475,940 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listAuthProviders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Providers */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthProvider"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    checkInvite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteCodeRequest"];
+            };
+        };
+        responses: {
+            /** @description The invite is valid */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InviteCheck"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    signUp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignUpRequest"];
+            };
+        };
+        responses: {
+            200: components["responses"]["SignedIn"];
+            default: components["responses"]["Error"];
+        };
+    };
+    listInvites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Invites */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invite"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createInvite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedInvite"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    revokeInvite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Revoked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getUserQuotas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Quotas */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserQuotas"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    setUserQuotas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuotaOverrides"];
+            };
+        };
+        responses: {
+            /** @description Quotas */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserQuotas"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getRequestSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    putRequestSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequestSettings"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDiscover: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rows */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiscoverHome"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDiscoverList: {
+        parameters: {
+            query?: {
+                page?: number;
+                /** @description Genre, studio (company) or network id for the by-genre, studio and network lists. */
+                id?: number;
+            };
+            header?: never;
+            path: {
+                list: components["schemas"]["DiscoverListKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Titles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiscoverPage"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDiscoverGenres: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Genres */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiscoverFacets"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    discoverSearch: {
+        parameters: {
+            query: {
+                q: string;
+                /** @description all = movies, series, people and artists; music = artists and albums. */
+                type?: "all" | "movie" | "series" | "person" | "music";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Results */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiscoverPage"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDiscoverMovie: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tmdbId: components["parameters"]["TmdbID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Title */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TitleDetail"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDiscoverSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tmdbId: components["parameters"]["TmdbID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Title */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TitleDetail"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDiscoverPerson: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tmdbId: components["parameters"]["TmdbID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Person */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonDetail"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getDiscoverArtist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mbid: components["parameters"]["MBID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Artist */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TitleDetail"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listRequests: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["RequestFilter"];
+                kind?: components["schemas"]["RequestKind"];
+                mine?: boolean;
+                userId?: number;
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Requests, newest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaRequest"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getRequestSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestSummary"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    approveRequests: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequestIds"];
+            };
+        };
+        responses: {
+            /** @description Outcome per request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaRequest"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequestOptions"];
+            };
+        };
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaRequest"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    approveRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RequestOptions"];
+            };
+        };
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaRequest"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    declineRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeclineRequest"];
+            };
+        };
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaRequest"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    cancelRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaRequest"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    retryRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaRequest"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listRequestComments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Comments, oldest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comment"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addRequestComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommentInput"];
+            };
+        };
+        responses: {
+            /** @description Comment */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comment"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listIssues: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["IssueStatus"];
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Issues, newest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createIssue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IssueInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Issue"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getIssue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Issue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Issue"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    resolveIssue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolveIssueRequest"];
+            };
+        };
+        responses: {
+            /** @description Issue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Issue"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    reopenIssue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Issue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Issue"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listIssueComments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Comments, oldest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comment"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addIssueComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommentInput"];
+            };
+        };
+        responses: {
+            /** @description Comment */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comment"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listNotifications: {
+        parameters: {
+            query?: {
+                since?: number;
+                unread?: boolean;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notifications */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    markNotificationsRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkReadRequest"];
+            };
+        };
+        responses: {
+            /** @description Unread count after the change */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadCount"];
+                };
             };
             default: components["responses"]["Error"];
         };
