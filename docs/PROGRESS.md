@@ -6,7 +6,15 @@ P0–P10 gotovi.
 
 
 ## Popravak: grab kroz Prowlarr (branch `fix/grab-redirects`)
-- Dohvat datoteke izdanja prati preusmjerenja na drugi host i na magnet bez ključa indexera (D-079); grab u pretrazi: najviše 3 neuspjela pokušaja po ciklusu, indexer s ograničenjem/„disabled till" preskočen i u backoffu, 2 s između grabova s istog indexera, blokada samo za loše datoteke; greške bez upita u URL-u i ljudskim tekstom (EN + HR); „Zašto nije stiglo?" kaže „prihvaćeno N, ali grab nije uspio: …"; „Pokušaj odmah" (`POST /timeline/retry`).
+- Dohvat datoteke izdanja prati preusmjerenja na drugi host i na magnet bez ključa indexera (D-080); grab u pretrazi: najviše 3 neuspjela pokušaja po ciklusu, indexer s ograničenjem/„disabled till" preskočen i u backoffu, 2 s između grabova s istog indexera, blokada samo za loše datoteke; greške bez upita u URL-u i ljudskim tekstom (EN + HR); „Zašto nije stiglo?" kaže „prihvaćeno N, ali grab nije uspio: …"; „Pokušaj odmah" (`POST /timeline/retry`).
+
+## Gotovo: Otkrivanje u Streameru (branch `feat/streamero-discover`)
+- `internal/compat` (D-079): Seerr (`/compat/seerr/api/v1`: status, pretraga, trending, zahtjev), Radarr i Sonarr (`/compat/radarr|sonarr/api/v3`: status, kalendar, filmovi po TMDb ID-u, serije) izvan ogena, prijava Locarr API ključem kao vlasnik ključa; poveznice `/compat/radarr/movie/{id}` i `/compat/sonarr/series/{id}` vode na Locarrove stranice.
+- `metadata.WithLanguage`: jedan poziv TMDb-u na jeziku klijenta; `discover.SearchTMDb` (pretraga bez glazbe).
+- Web (EN + HR): kartica „Otkrivanje u Streameru" u Postavke → Media server (adrese za kopiranje, gumb za ključ).
+- Testovi: `TestCompatSeerrContract`, `TestCompatPermissions`, `TestCompatCalendarAndLibrary` (odgovori se dekodiraju u oblike koje Streamero čita), `TestRealStreameroDiscover` (`-tags streamero`, `scripts/test-streamero-compat.sh`: stvarni Streamero s PostgreSQL-om i Valkeyem, i u CI-ju).
+- Dokumentacija: `docs/user/streamero.md` §6, `docs/compat-api.md`.
+- Poznato: svi zahtjevi iz Streamera su zapisani kao vlasnik ključa (Streamero ne šalje korisnika).
 
 ## Gotovo u P10 (branch `phase/P10-import`)
 - Migracija `00011_migrate.sql`: `migrate_sources` (šifrirani ključ), `migrate_runs`, `migrate_items`, `migrate_links`.

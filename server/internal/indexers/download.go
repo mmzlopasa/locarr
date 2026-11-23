@@ -74,7 +74,7 @@ func (s *Service) FetchToken(ctx context.Context, id int64, token string) (File,
 // Fetch downloads a release's .torrent or .nzb with the indexer's credentials.
 // The link must be on the indexer's own host; the indexer may redirect to
 // another host (the tracker) or to a magnet link (see httpx.FollowRelease and
-// D-079). It counts as a grab against the
+// D-080). It counts as a grab against the
 // indexer's daily limit (ErrGrabLimit when reached).
 func (s *Service) Fetch(ctx context.Context, r Release) (File, error) {
 	if r.DownloadURL == "" {

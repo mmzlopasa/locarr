@@ -140,7 +140,7 @@ type fetched struct {
 // fetchRelease downloads the release through the server: size capped, timed
 // out, guarded against private-metadata addresses. Redirects to other hosts are
 // followed (up to five, each target checked when connecting) with a plain GET;
-// a redirect to a magnet link hands the magnet to the client (D-079).
+// a redirect to a magnet link hands the magnet to the client (D-080).
 func (s *Service) fetchRelease(ctx context.Context, rawURL string, proto downloaders.Protocol) (fetched, error) {
 	rawURL = strings.TrimSpace(rawURL)
 	if strings.HasPrefix(strings.ToLower(rawURL), "magnet:") {
