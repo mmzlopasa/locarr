@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -58,10 +59,14 @@ func run(ctx context.Context, args []string, out io.Writer) error {
 	if err != nil {
 		return err
 	}
-	log := logging.New(os.Stdout, cfg.LogLevel)
+	if cmd == "serve" {
+		// The server also writes rotated files to /config/logs and keeps the
+		// latest records for the in-app log viewer.
+		log, sinks := logging.Setup(os.Stdout, cfg.LogLevel, filepath.Join(cfg.ConfigDir, "logs"))
+		defer func() { _ = sinks.Close() }()
+		return app.ServeWith(ctx, cfg, log, sinks)
+	}
 	switch cmd {
-	case "serve":
-		return app.Serve(ctx, cfg, log)
 	case "migrate":
 		d, _, err := app.OpenStorage(ctx, cfg)
 		if err != nil {
