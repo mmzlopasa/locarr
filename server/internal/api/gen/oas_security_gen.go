@@ -263,6 +263,7 @@ var operationRolesSessionToken = map[string][]string{
 	ResolveIssueOperation:                      []string{},
 	RestoreRecycleEntryOperation:               []string{},
 	ResumeQueueItemOperation:                   []string{},
+	RetryItemOperation:                         []string{},
 	RetryRequestOperation:                      []string{},
 	RevokeInviteOperation:                      []string{},
 	RevokeSessionOperation:                     []string{},

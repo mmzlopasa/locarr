@@ -1,6 +1,7 @@
 package timeline
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -33,6 +34,12 @@ func TestExplainRules(t *testing.T) {
 		{"upgrade wanted", ItemState{Monitored: true, Available: true, HasFile: true}, rejected, ExplainUpgradeWanted},
 		{"nothing found", ItemState{Monitored: true, Available: true}, Facts{Indexers: 1, Clients: 1, Searches: 2,
 			LastDecision: &DecisionSummary{}}, ExplainNothingFound},
+		{"accepted but grab failed", ItemState{Monitored: true, Available: true}, Facts{Indexers: 1, Clients: 1, Searches: 1,
+			LastDecision: &DecisionSummary{Candidates: 116, Accepted: 31}}, ExplainGrabFailed},
+		{"accepted and grabbed", ItemState{Monitored: true, Available: true, HasFile: true}, Facts{Indexers: 1, Clients: 1, Searches: 1,
+			LastDecision: &DecisionSummary{Candidates: 2, Accepted: 2}, GrabbedSince: true}, ExplainUpgradeWanted},
+		{"upgrade search accepted nothing grabbed, no failure", ItemState{Monitored: true, Available: true, HasFile: true}, Facts{Indexers: 1,
+			Clients: 1, Searches: 1, LastDecision: &DecisionSummary{Candidates: 2, Accepted: 2}}, ExplainUpgradeWanted},
 	}
 	for _, c := range cases {
 		if got := Explain(c.st, c.f); got.Code != c.want {
@@ -42,6 +49,21 @@ func TestExplainRules(t *testing.T) {
 	e := Explain(ItemState{Monitored: true, Available: true}, rejected)
 	if len(e.Reasons) != 1 || e.Reasons[0].Code != "size_too_large" || e.Params["searches"] != 3 {
 		t.Fatalf("%+v", e)
+	}
+}
+
+func TestExplainGrabFailed(t *testing.T) {
+	until := time.Date(2026, 11, 23, 12, 53, 0, 0, time.UTC)
+	f := Facts{Indexers: 1, Clients: 1, Searches: 1, LastDecision: &DecisionSummary{Candidates: 116, Accepted: 31},
+		GrabFailure: &GrabFailureFact{Title: "Film.2024.1080p", Indexer: "1337x", Code: "indexer_disabled",
+			Error: "indexer error 429 (rate_limit): Indexer is disabled till 11/23/2026 12:53:00 due to recent failures", Until: &until}}
+	e := Explain(ItemState{Monitored: true, Available: true}, f)
+	if e.Code != ExplainGrabFailed || e.Params["accepted"] != 31 || e.Params["candidates"] != 116 || e.Params["failCode"] != "indexer_disabled" ||
+		e.Params["until"] != until || !strings.Contains(e.Message, "31 releases accepted, but grabbing failed") {
+		t.Fatalf("%+v", e)
+	}
+	if strings.Contains(e.Message, "no indexer had a release") {
+		t.Fatal(e.Message)
 	}
 }
 

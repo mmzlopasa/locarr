@@ -65,4 +65,33 @@ describe("timeline texts", () => {
       .toBe("Downloading Film: 42% (Downloading).");
     expect(describeExplanation(t, { ...ex, code: "brand_new_code" }, "en")).toBe("x");
   });
+  it("says when releases were accepted but grabbing failed", async () => {
+    await i18n.changeLanguage("en");
+    const t = i18n.t.bind(i18n);
+    const until = new Date(Date.now() + 2 * 60_000);
+    until.setSeconds(0, 0);
+    const hhmm = until.toLocaleTimeString("en", { hour: "2-digit", minute: "2-digit" });
+    const ex: Explanation = { code: "grab_failed", tone: "danger", message: "x", reasons: [],
+      params: { searches: 1, candidates: 116, accepted: 31, failCode: "indexer_disabled", indexer: "1337x", until: until.toISOString(),
+        detail: "indexer error 429 (rate_limit): Indexer is disabled till …" } };
+    const text = describeExplanation(t, ex, "en");
+    expect(text).toBe(`31 releases accepted, but grabbing failed: The indexer 1337x is temporarily disabled in Prowlarr until ${hhmm} (too many recent failures).`);
+    expect(text).not.toContain("no indexer had a release");
+    expect(describeExplanation(t, { ...ex, params: { candidates: 116, accepted: 31 } }, "en"))
+      .toBe("The last search accepted 31 of 116 releases, but nothing was grabbed yet.");
+    await i18n.changeLanguage("hr");
+    expect(describeExplanation(i18n.t.bind(i18n), { ...ex, params: { ...ex.params, failCode: "bad_file" } }, "hr"))
+      .toBe("Prihvaćenih izdanja: 31, ali preuzimanje nije uspjelo: 1337x je poslao nešto što nije .torrent ni .nzb (web stranicu?), pa je izdanje blokirano.");
+    await i18n.changeLanguage("en");
+  });
+  it("describes failed grabs in plain words", async () => {
+    await i18n.changeLanguage("en");
+    const t = i18n.t.bind(i18n);
+    expect(describeEvent(t, ev("grab_failed", { title: "Film", indexer: "Nyaa", code: "release_gone", error: "indexer error 404" })))
+      .toBe("Could not grab Film: The release is no longer on Nyaa (404), so it was blocklisted.");
+    expect(describeEvent(t, ev("grab_failed", { title: "Film", code: "other", error: "request https://pro.example/12/download: boom" })))
+      .toBe("Could not grab Film: request https://pro.example/12/download: boom");
+    expect(describeEvent(t, ev("grab_failed", { code: "attempts_exhausted", attempts: 3 })))
+      .toBe("Stopped after 3 failed grabs; the next search tries again.");
+  });
 });

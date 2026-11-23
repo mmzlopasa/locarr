@@ -529,7 +529,12 @@ func TestGrabFetchesThroughTheServer(t *testing.T) {
 	e.addClient(t, "S", "fakeusenet", "sab", nil)
 	tor := testkit.RandomTorrent("fetch", 1000)
 	link, hash := testkit.RandomMagnet("redirected")
-	other := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) { _, _ = w.Write(tor.File) }))
+	crossTor := testkit.RandomTorrent("cross", 1000)
+	var crossQuery string
+	other := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		crossQuery = r.URL.RawQuery
+		_, _ = w.Write(crossTor.File)
+	}))
 	defer other.Close()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -540,7 +545,11 @@ func TestGrabFetchesThroughTheServer(t *testing.T) {
 		case "/magnet":
 			http.Redirect(w, r, link, http.StatusFound)
 		case "/cross":
-			http.Redirect(w, r, strings.Replace(other.URL, "127.0.0.1", "localhost", 1)+"/t", http.StatusFound)
+			http.Redirect(w, r, strings.Replace(other.URL, "127.0.0.1", "localhost", 1)+"/t?apikey=leak&id=7", http.StatusFound)
+		case "/loop":
+			http.Redirect(w, r, "/loop", http.StatusFound)
+		case "/meta":
+			http.Redirect(w, r, "http://169.254.169.254/latest/meta-data", http.StatusFound)
 		case "/big":
 			_, _ = w.Write(make([]byte, MaxTorrentFile+10))
 		case "/html":
@@ -563,11 +572,23 @@ func TestGrabFetchesThroughTheServer(t *testing.T) {
 	if err != nil || d.ClientItemID != hash {
 		t.Fatalf("magnet redirect: %+v %v", d, err)
 	}
-	for path, want := range map[string]string{"/cross": "another host", "/big": "too large", "/html": "not a valid torrent", "/404": "HTTP 404"} {
+	// A redirect to another host is followed for a release file, without the key.
+	d, err = e.s.Grab(ctx, GrabRequest{DownloadURL: srv.URL + "/cross", Protocol: downloaders.Torrent, Title: "cross"})
+	if err != nil || d.InfoHash != crossTor.InfoHash || crossQuery != "id=7" {
+		t.Fatalf("cross-host redirect: %+v %v (query %q)", d, err, crossQuery)
+	}
+	for path, want := range map[string]string{"/big": "too large", "/html": "not a valid torrent", "/404": "HTTP 404",
+		"/loop": "too many redirects", "/meta": "not allowed"} {
 		_, err := e.s.Grab(ctx, GrabRequest{DownloadURL: srv.URL + path, Protocol: downloaders.Torrent, Title: path})
 		if !errors.Is(err, ErrFetch) || !strings.Contains(err.Error(), want) {
 			t.Errorf("%s: %v, want %q", path, err, want)
 		}
+	}
+	if _, err := e.s.Grab(ctx, GrabRequest{DownloadURL: srv.URL + "/html", Protocol: downloaders.Torrent, Title: "h"}); !errors.Is(err, ErrBadTorrent) {
+		t.Fatalf("html is a content error: %v", err)
+	}
+	if _, err := e.s.Grab(ctx, GrabRequest{DownloadURL: srv.URL + "/404", Protocol: downloaders.Torrent, Title: "g"}); !errors.Is(err, ErrReleaseGone) {
+		t.Fatalf("404 is a content error: %v", err)
 	}
 	d, err = e.s.Grab(ctx, GrabRequest{DownloadURL: srv.URL + "/nzb", Protocol: downloaders.Usenet, Title: "Some.Show.S01E01", MediaKind: KindSeries})
 	if err != nil || d.Category != "tv-locarr" || d.Protocol != downloaders.Usenet {

@@ -307,7 +307,7 @@ func (c *Client) Do(ctx context.Context, method, rawURL string, hdr http.Header,
 func (c *Client) do(ctx context.Context, method, rawURL string, hdr http.Header, body []byte) (*Response, error) {
 	u, err := url.Parse(rawURL)
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
-		return nil, fmt.Errorf("invalid URL %s", Redact(rawURL, c.o.Secrets...))
+		return nil, fmt.Errorf("invalid URL %s", ShortURL(rawURL, c.o.Secrets...))
 	}
 	var rd io.Reader
 	if body != nil {
@@ -321,16 +321,7 @@ func (c *Client) do(ctx context.Context, method, rawURL string, hdr http.Header,
 	for k, v := range hdr {
 		req.Header[k] = v
 	}
-	c.mu.Lock()
-	if cf := c.cf; cf != nil && cf.host == u.Host && time.Now().Before(cf.expires) {
-		for _, ck := range cf.cookies {
-			req.AddCookie(ck)
-		}
-		if cf.userAgent != "" {
-			req.Header.Set("User-Agent", cf.userAgent)
-		}
-	}
-	c.mu.Unlock()
+	c.prepare(req)
 	res, err := c.hc.Do(req)
 	if err != nil {
 		return nil, c.wrap(err, rawURL)
@@ -350,7 +341,7 @@ func (c *Client) do(ctx context.Context, method, rawURL string, hdr http.Header,
 func (c *Client) Stream(ctx context.Context, rawURL string, hdr http.Header, read func(io.Reader) error) (int, http.Header, error) {
 	u, err := url.Parse(rawURL)
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
-		return 0, nil, fmt.Errorf("invalid URL %s", Redact(rawURL, c.o.Secrets...))
+		return 0, nil, fmt.Errorf("invalid URL %s", ShortURL(rawURL, c.o.Secrets...))
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
 	if err != nil {
@@ -432,10 +423,10 @@ func (c *Client) wrap(err error, rawURL string) error {
 	if errors.As(err, &ue) {
 		err = ue.Err
 	}
-	return &RequestError{URL: Redact(rawURL, c.o.Secrets...), Err: scrubErr{err, c.o.Secrets}}
+	return &RequestError{URL: ShortURL(rawURL, c.o.Secrets...), Err: scrubErr{err, c.o.Secrets}}
 }
 
-// RequestError is a failed request; URL is already redacted.
+// RequestError is a failed request; URL is already shortened (no query) and scrubbed.
 type RequestError struct {
 	URL string
 	Err error
