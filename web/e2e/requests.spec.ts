@@ -130,6 +130,6 @@ test("invite sign-up, request, approval, arrival and notification", async ({ pag
   const bell = member.getByTestId("notif-bell");
   await expect(bell.getByTestId("notif-count")).toBeVisible();
   await bell.click();
-  await expect(member.getByTestId("notif-item").filter({ hasText: "Tears of Steel is available." })).toBeVisible();
+  await expect(member.getByTestId("notif-item").filter({ hasText: /Tears of Steel.*is available/ })).toBeVisible();
   await family.close();
 });

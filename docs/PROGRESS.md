@@ -1,7 +1,24 @@
 # Napredak
 
 ## Trenutna faza
-P0–P6 gotovi.
+P0–P6 i P8 gotovi.
+
+## Gotovo u P8 (branch `phase/P8-requests`)
+- Migracija `00008_requests.sql`: `requests`, `request_seasons`, `request_comments`, `issues`, `issue_comments`, `notifications`, `user_quotas`, `invites`, `invite_signups`, `user_identities` (rezervirano za P9).
+- `internal/requests` (D-054–D-056): stroj stanja (pending → approved → processing → partial/available; declined, cancelled, failed), odobravanje kroz servise biblioteke (`Bridge`: filmovi, serije s praćenjem samo traženih sezona, album/izvođač), praćenje biblioteke (`Sync` nakon uvoza preko omotača oko `mediaserver.Notifier`, na događaje preuzimanja i svakih 5 min), objašnjenje iz vremenske crte kao razlog za „zapelo", napredak preuzimanja, duplikati po stazi (obična/4K), kvote s kliznim prozorom i iznimkama, komentari, prijave problema s traženjem zamjene (koš + blokiranje izdanja + nova pretraga), zapis „requested/approved" na vremensku crtu stavke.
+- `internal/notify` (D-057): stabilni tipovi događaja, `Hub` s obavijestima po primatelju i `Sink` za P9, `since` za aplikacije, brisanje starih pročitanih (posao `notifications-prune`).
+- `internal/discover` (D-061) i `metadata.DiscoverProvider` (TMDb popisi, žanrovi, pretraga filmova/serija/osoba, glumci, trailer, osobe); MusicBrainz pretraga albuma i dohvat grupe izdanja; lažni TMDb i MusicBrainz to poslužuju.
+- `internal/library/explain`: objašnjenje „zašto nije stiglo" izdvojeno iz API-ja (koriste ga vremenska crta i zahtjevi).
+- `auth`: pozivnice (D-059), bitovi `autoApproveMovies/Series/Music/4k` (D-056), oblik prijave preko drugog servisa (`auth.Provider`, `GET /auth/providers`, D-058).
+- API: `/discover*`, `/requests*`, `/issues*`, `/notifications*`, `/invites*`, `/auth/invite`, `/auth/signup`, `/auth/providers`, `/settings/requests`, `/users/{id}/quotas`. Čitanje biblioteke sada traži `manageLibrary` (D-060).
+- Web (EN + HR): Otkrivanje (redovi plakata, žanrovi/studiji/mreže, pretraga), stranice filma, serije (sezone), osobe i izvođača s dijalogom zahtjeva (sezone, 4K, opcije za upravitelje, preostala kvota) i prijavom problema, Zahtjevi (moji / svi s filtrima, skupnim odobravanjem, uređivanjem, odbijanjem, ponovnim traženjem, komentarima), Problemi, zvonce s obavijestima (bočna traka i mobitel), `/join` za pozivnice, Postavke → Zahtjevi, Korisnici → pozivnice i kvote; tražitelji vide samo Otkrivanje, Zahtjeve i Probleme.
+- Testovi: jedinični (stroj stanja, dostupnost s djelomičnim sezonama, kvote, dozvole, postavke, spajanje stanja na Otkrivanju, obavijesti), integracijski (`TestRequestMovieEndToEnd` uključujući prijavu problema i zamjenu, `TestRequestSeasonAutoApproved`, `TestRequestAlbumEndToEnd`, `TestRequest4K`, `TestRequestRulesQuotasAndInvites`, `TestRequestPermissions` za svaku krajnju točku kao tražitelj, upravitelj i ključ samo za čitanje), Vitest, Playwright `e2e/requests.spec.ts` (pozivnica → zahtjev → odobrenje → Transmission → dostupno + obavijest).
+- Korisnička dokumentacija: `docs/user/requests.md`.
+
+## Za P9 (obavijesti i Streamero)
+- Kanali: implementirati `notify.Sink` i dodati ga u `Deps.Hub.Sinks`; događaji i polja su u `notify.Event` (D-057).
+- Prijava preko Streamera: `auth.Provider` + `Service.RegisterProvider`, tablica `user_identities`, `POST /auth/providers/{id}/login` (D-058).
+- Media server: `arrivals` u `app/requests.go` već omata `Notifier` filmova, serija i glazbe; Streamero notifier ide ispod njega.
 
 ## Gotovo u P5 (branch `phase/P5-series`)
 - Migracija `00007_series.sql`: `series`, `seasons`, `episodes` (scenska numeracija, uklonjene epizode s datotekom), `download_refs` s okidačima (D-045).
@@ -97,6 +114,7 @@ P0–P6 gotovi.
 4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- Zahtjevi: preporuke („slični naslovi") još nisu; 4K staza dijeli jednu stavku biblioteke s običnom (D-055); kvote broje zahtjeve, ne sezone; glazbeni zahtjevi bez profila metapodataka koriste „Everything".
 - Serije: slike za serije dodane s TVDB-a se ne prikazuju (D-053); vrijeme emitiranja za TMDb serije je procjena (20:00 u zoni mreže, D-046); scensko mapiranje je samo ručno i za sada samo kroz API (`PATCH /episodes/{id}`), web ga prikazuje ali ne uređuje (D-047); sortiranje popisa serija po sljedećem emitiranju ili broju nedostajućih epizoda zbraja sve epizode (~130 ms na 5000 serija).
 - Glazba: cue slike (jedan FLAC po albumu) se ne uvoze, tagovi se pišu samo u FLAC (D-044); WAV/APE/DSD se ne čitaju. Uvoz postojeće biblioteke i osvježavanje velikih diskografija su spori zbog 1 zahtjeva/s prema MusicBrainzu. Izvođači nemaju vlastitu sliku (prikazuje se omot najnovijeg albuma).
 - Filmovi: podaci o zapisima iz imena (D-033); NFO i slike uz film, Trakt/IMDb popisi još nisu napravljeni. Film obrisan i ponovno dodan dok mu staro izdanje još seeda u klijentu ne grabi isto izdanje ponovno („already queued" na vremenskoj crti).
