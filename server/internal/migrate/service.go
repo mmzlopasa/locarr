@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
@@ -694,7 +695,7 @@ func (s *Service) plan(ctx context.Context, id int64, o Options, sum *Summary) (
 	if err != nil {
 		return nil, err
 	}
-	sum.PathChecks = CheckPaths(Translator{Mappings: o.PathMappings, DataRoots: s.L.DataRoots}, snaps)
+	sum.PathChecks = CheckPaths(Translator{Mappings: o.PathMappings, DataRoots: s.L.DataRoots, Cache: &lfs.PathCache{Roots: s.L.DataRoots}}, snaps)
 	fillSummary(sum, plan)
 	if err := s.storeItems(ctx, id, plan.Items); err != nil {
 		return nil, err
@@ -792,7 +793,7 @@ func (s *Service) CheckPaths(ctx context.Context, id int64, mappings []PathMappi
 	if err != nil {
 		return nil, err
 	}
-	return CheckPaths(Translator{Mappings: mappings, DataRoots: s.L.DataRoots}, c.snaps), nil
+	return CheckPaths(Translator{Mappings: mappings, DataRoots: s.L.DataRoots, Cache: &lfs.PathCache{Roots: s.L.DataRoots}}, c.snaps), nil
 }
 
 // Import starts applying a planned run.

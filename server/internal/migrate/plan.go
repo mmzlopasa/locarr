@@ -15,6 +15,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
+	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
 	"github.com/mmzlopasa/locarr/server/internal/library/music"
@@ -428,7 +429,7 @@ func Build(ctx context.Context, l *Locarr, opts Options, snaps []*Snapshot, secr
 		secrets = map[int64]string{}
 	}
 	p := &planner{ctx: ctx, l: l, opts: opts, snaps: snaps, plan: &Plan{}, ids: map[string]int64{}, secrets: secrets,
-		tr: Translator{Mappings: opts.PathMappings, DataRoots: l.DataRoots}, plannedRoots: map[string]string{},
+		tr: Translator{Mappings: opts.PathMappings, DataRoots: l.DataRoots, Cache: &lfs.PathCache{Roots: l.DataRoots}}, plannedRoots: map[string]string{},
 		plannedNames: map[string]plannedName{}, prowlarrHosts: map[string]int64{}}
 	if err := p.loadLinks(); err != nil {
 		return nil, nil, err
@@ -564,7 +565,7 @@ func (p *planner) planRootFolders(s *Snapshot, so SourceOptions) {
 
 // rootFor finds (at apply time) the root folder of kind containing path.
 func (p *planner) rootFor(ctx context.Context, path, kind string) (rootfolders.Folder, bool) {
-	list, err := p.l.Roots.List(ctx)
+	list, err := p.l.Roots.Records(ctx)
 	if err != nil {
 		return rootfolders.Folder{}, false
 	}
@@ -980,6 +981,12 @@ func (p *planner) planDelayProfiles(s *Snapshot, so SourceOptions) {
 		}
 		key := idKey(s.SourceID, "delayprofile", dp.ID)
 		it := &Item{Key: key, SourceID: s.SourceID, Category: "delayprofile", Name: name}
+		if !isDefault && len(tags) == 0 {
+			it.Action, it.Reason = ActionSkip, "unknown_tags"
+			it.note("its tags do not exist in %s any more", s.Name)
+			p.add(it)
+			continue
+		}
 		h := hashOf([]any{d.PreferredProtocol, d.UsenetEnabled, d.TorrentEnabled, d.UsenetDelay, d.TorrentDelay, d.BypassIfHighestQuality,
 			d.BypassIfAboveScore, d.MinimumScore, d.Tags})
 		exists := func(id int64) bool {

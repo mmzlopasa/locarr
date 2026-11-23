@@ -20,6 +20,7 @@ type migrateEnv struct {
 	urls    map[string]string
 	lib     *fake.Library
 	sources map[string]int64
+	wait    time.Duration
 }
 
 type apiMigrateRun struct {
@@ -123,7 +124,11 @@ func (me *migrateEnv) run(id int64) apiMigrateRun {
 
 func (me *migrateEnv) waitRun(id int64, status string) apiMigrateRun {
 	me.t.Helper()
-	deadline := time.Now().Add(60 * time.Second)
+	wait := me.wait
+	if wait == 0 {
+		wait = 60 * time.Second
+	}
+	deadline := time.Now().Add(wait)
 	for time.Now().Before(deadline) {
 		r := me.run(id)
 		if r.Status == status {

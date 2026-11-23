@@ -87,7 +87,7 @@ const importBatch = 250
 // has none), never duplicated. Files stay where they are.
 func (s *Service) ImportMovies(ctx context.Context, list []Imported) []ImportOutcome {
 	out := make([]ImportOutcome, len(list))
-	roots, err := s.Roots.List(ctx)
+	roots, err := s.Roots.Records(ctx)
 	if err != nil {
 		for i := range out {
 			out[i].Err = err
@@ -95,6 +95,7 @@ func (s *Service) ImportMovies(ctx context.Context, list []Imported) []ImportOut
 		return out
 	}
 	scorer := newFileScorer(ctx, s)
+	scorer.paths = &lfs.PathCache{Roots: s.DataRoots}
 	for start := 0; start < len(list); start += importBatch {
 		end := min(start+importBatch, len(list))
 		if ctx.Err() != nil {
@@ -217,7 +218,7 @@ func (s *Service) importOne(ctx context.Context, tx *sql.Tx, in *Imported, roots
 // linkImportedFile records the source's file in place when it is on disk.
 func (s *Service) linkImportedFile(ctx context.Context, tx *sql.Tx, id int64, in *Imported, sc *fileScorer, now time.Time) (bool, bool, error) {
 	f := in.File
-	p, err := lfs.SafePath(s.DataRoots, f.Path)
+	p, err := sc.paths.SafePath(f.Path)
 	if err != nil {
 		return false, true, nil
 	}
@@ -280,6 +281,7 @@ type fileScorer struct {
 	s        *Service
 	compiled []*customformats.Compiled
 	profiles map[int64]*quality.Profile
+	paths    *lfs.PathCache
 }
 
 func newFileScorer(ctx context.Context, s *Service) *fileScorer {

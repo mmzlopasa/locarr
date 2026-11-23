@@ -16,6 +16,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/parser"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
+	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/timeline"
 )
 
@@ -114,7 +115,7 @@ func (s *Service) ImportSeries(ctx context.Context, in Imported) ImportOutcome {
 		o.Err = err
 		return o
 	}
-	root, err := s.rootFolder(ctx, in.RootFolderID)
+	root, err := s.importRoot(ctx, in.RootFolderID)
 	if err != nil {
 		o.Err = err
 		return o
@@ -192,6 +193,13 @@ func (s *Service) ImportSeries(ctx context.Context, in Imported) ImportOutcome {
 			}
 		}
 		fileIDs := map[string]int64{}
+		epStmt, err := tx.PrepareContext(ctx, `INSERT INTO episodes (series_id, season_id, season_number, episode_number, absolute_number,
+			tvdb_id, title, overview, air_date, air_date_utc, runtime, monitored, file_id, added_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			ON CONFLICT DO NOTHING`)
+		if err != nil {
+			return err
+		}
+		defer epStmt.Close()
 		for _, e := range in.Episodes {
 			sid, err := ensure(e.Season)
 			if err != nil {
@@ -214,10 +222,8 @@ func (s *Service) ImportSeries(ctx context.Context, in Imported) ImportOutcome {
 				fileID = id
 				o.Files++
 			}
-			if _, err := tx.ExecContext(ctx, `INSERT INTO episodes (series_id, season_id, season_number, episode_number, absolute_number,
-				tvdb_id, title, overview, air_date, air_date_utc, runtime, monitored, file_id, added_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-				ON CONFLICT DO NOTHING`, v.ID, sid, e.Season, e.Number, e.Absolute, e.TVDbID, e.Title, e.Overview, e.AirDate, nullMillis(air),
-				e.Runtime, e.Monitored, fileID, now.UnixMilli()); err != nil {
+			if _, err := epStmt.ExecContext(ctx, v.ID, sid, e.Season, e.Number, e.Absolute, e.TVDbID, e.Title, e.Overview, e.AirDate,
+				nullMillis(air), e.Runtime, e.Monitored, fileID, now.UnixMilli()); err != nil {
 				return err
 			}
 			o.Episodes++
@@ -300,8 +306,9 @@ type checkedFile struct {
 func (s *Service) checkFiles(list []ImportedFile) (map[string]checkedFile, []string) {
 	out := map[string]checkedFile{}
 	var missing []string
+	cache := &lfs.PathCache{Roots: s.DataRoots}
 	for _, f := range list {
-		p, err := lfs.SafePath(s.DataRoots, f.Path)
+		p, err := cache.SafePath(f.Path)
 		if err != nil {
 			missing = append(missing, f.Path)
 			continue
@@ -424,4 +431,22 @@ func (s *Service) NeedsRefresh(ctx context.Context, ids []int64) ([]int64, error
 		}
 	}
 	return out, rows.Err()
+}
+
+// importRoot checks a root folder without looking at the disk (imports add
+// thousands of items).
+func (s *Service) importRoot(ctx context.Context, id int64) (rootfolders.Folder, error) {
+	list, err := s.Roots.Records(ctx)
+	if err != nil {
+		return rootfolders.Folder{}, err
+	}
+	for _, f := range list {
+		if f.ID == id {
+			if f.Kind != rootfolders.KindSeries {
+				return f, invalid("root folder %s is for %s, not series", f.Path, f.Kind)
+			}
+			return f, nil
+		}
+	}
+	return rootfolders.Folder{}, rootfolders.ErrNotFound
 }

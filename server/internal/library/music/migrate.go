@@ -14,6 +14,7 @@ import (
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
 	"github.com/mmzlopasa/locarr/server/internal/library/naming"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
+	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/timeline"
 )
 
@@ -90,7 +91,7 @@ func (s *Service) ImportArtist(ctx context.Context, in ImportedArtist) ArtistOut
 	case err == nil:
 		o.ID = a.ID
 	case errors.Is(err, ErrNotFound):
-		root, err := s.rootFolder(ctx, in.RootFolderID)
+		root, err := s.importRoot(ctx, in.RootFolderID)
 		if err != nil {
 			o.Err = err
 			return o
@@ -227,8 +228,9 @@ func lowerAll(list []string) []string {
 func (s *Service) linkImportedTracks(ctx context.Context, tx *sql.Tx, a *Artist, al *Album, files []ImportedTrackFile, now time.Time) (int, []string, string, error) {
 	n, dir := 0, ""
 	var missing []string
+	cache := &lfs.PathCache{Roots: s.DataRoots}
 	for _, f := range files {
-		p, err := lfs.SafePath(s.DataRoots, f.Path)
+		p, err := cache.SafePath(f.Path)
 		if err != nil {
 			missing = append(missing, f.Path)
 			continue
@@ -288,4 +290,22 @@ func (s *Service) NeedsRefresh(ctx context.Context, ids []int64) ([]int64, error
 		}
 	}
 	return out, rows.Err()
+}
+
+// importRoot checks a root folder without looking at the disk (imports add
+// thousands of items).
+func (s *Service) importRoot(ctx context.Context, id int64) (rootfolders.Folder, error) {
+	list, err := s.Roots.Records(ctx)
+	if err != nil {
+		return rootfolders.Folder{}, err
+	}
+	for _, f := range list {
+		if f.ID == id {
+			if f.Kind != rootfolders.KindMusic {
+				return f, invalid("root folder %s is for %s, not music", f.Path, f.Kind)
+			}
+			return f, nil
+		}
+	}
+	return rootfolders.Folder{}, rootfolders.ErrNotFound
 }

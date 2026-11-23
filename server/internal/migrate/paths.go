@@ -34,6 +34,15 @@ func normSourcePath(p string) string {
 type Translator struct {
 	Mappings  []PathMapping
 	DataRoots []string
+	// Cache resolves folders once (nil = every path in full).
+	Cache *lfs.PathCache
+}
+
+func (t Translator) safe(p string) (string, error) {
+	if t.Cache != nil {
+		return t.Cache.SafePath(p)
+	}
+	return lfs.SafePath(t.DataRoots, p)
 }
 
 // Translate maps a source path to Locarr's view (longest matching prefix
@@ -61,7 +70,7 @@ func (t Translator) Translate(sourceID int64, p string) (string, bool) {
 	if bestLen < 0 {
 		best = filepath.FromSlash(p)
 	}
-	safe, err := lfs.SafePath(t.DataRoots, filepath.Clean(best))
+	safe, err := t.safe(filepath.Clean(best))
 	if err != nil {
 		return filepath.Clean(best), false
 	}

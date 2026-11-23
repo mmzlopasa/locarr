@@ -211,7 +211,7 @@ func titleStatus(s string) string {
 func (p *planner) applyMovies(ctx context.Context, items []*Item) {
 	list := make([]movies.Imported, 0, len(items))
 	ok := make([]*Item, 0, len(items))
-	roots, _ := p.l.Roots.List(ctx)
+	roots, _ := p.l.Roots.Records(ctx)
 	for _, it := range items {
 		j := it.data.(*movieJob)
 		root, found := pickRoot(roots, j.local, rootfolders.KindMovies)
