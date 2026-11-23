@@ -218,6 +218,7 @@ extension APIClient {
     func runHealth() async throws -> HealthReport { try await send("POST", "/system/health/run") }
 
     func indexers() async throws -> [Indexer] { try await get("/indexers") }
+    func indexerCatalog() async throws -> IndexerCatalog { try await get("/indexers/definitions") }
     func testIndexer(_ id: Int64) async throws -> IndexerTestResult { try await send("POST", "/indexers/\(id)/test") }
 
     /// Clients as returned (the raw form is needed to test a stored client).

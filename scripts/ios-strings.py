@@ -29,7 +29,7 @@ SWIFT = ROOT / "ios/Locarr"
 SHARED = [
     "common", "errors", "nav", "roles", "login", "mediaKinds", "downloadStates", "availability", "transfer",
     "explain", "rejectionCodes", "timeline", "board", "health", "history", "overview", "queue", "interactive",
-    "wanted", "calendar", "discover", "title", "request", "requests", "comments", "issues", "notifications",
+    "wanted", "calendar", "indexers", "discover", "title", "request", "requests", "comments", "issues", "notifications",
     "music.types",
 ]
 

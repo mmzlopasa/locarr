@@ -1049,6 +1049,52 @@ struct IndexerHealth: Codable, Sendable, Hashable {
     var lastErrorAt: String?
     var lastSuccessAt: String?
     var retryAt: String?
+    var parseFailures: Int?
+    var selfTestAt: String?
+    var selfTestOk: Bool?
+}
+
+struct IndexerDefinitionRef: Codable, Sendable, Hashable {
+    var id: String
+    var name: String?
+    var builtin: Bool?
+    var overrides: Bool?
+    var missing: Bool?
+}
+
+struct SearchCap: Codable, Sendable, Hashable {
+    var type: String
+    var available: Bool?
+}
+
+/// A site Locarr can search itself (built-in or custom YAML definition).
+struct IndexerDefinition: Codable, Sendable, Hashable, Identifiable {
+    var id: String
+    var name: String
+    var description: String?
+    var builtin: Bool?
+    var overrides: Bool?
+    var `protocol`: String?
+    var language: String?
+    var links: [String]?
+    var flaresolverr: String?
+    var rss: Bool?
+    var searching: [SearchCap]?
+    var indexerIds: [Int64]?
+}
+
+struct UsenetPreset: Codable, Sendable, Hashable, Identifiable {
+    var id: String
+    var name: String
+    var baseUrl: String?
+    var siteUrl: String?
+}
+
+struct IndexerCatalog: Codable, Sendable {
+    struct LoadError: Codable, Sendable, Hashable { var file: String; var message: String }
+    var definitions: [IndexerDefinition]
+    var presets: [UsenetPreset]
+    var errors: [LoadError]?
 }
 
 struct Indexer: Codable, Sendable, Hashable, Identifiable {
@@ -1059,7 +1105,14 @@ struct Indexer: Codable, Sendable, Hashable, Identifiable {
     var baseUrl: String?
     var enabled: Bool?
     var priority: Int?
+    var definition: IndexerDefinitionRef?
+    var source: IndexerSourceRef?
     var health: IndexerHealth?
+}
+
+struct IndexerSourceRef: Codable, Sendable, Hashable {
+    var id: Int64?
+    var name: String
 }
 
 struct IndexerTestResult: Codable, Sendable {
@@ -1067,6 +1120,7 @@ struct IndexerTestResult: Codable, Sendable {
     var durationMs: Int64?
     var errorCode: String?
     var error: String?
+    var probeResults: Int?
 }
 
 struct DownloadClient: Codable, Sendable, Hashable, Identifiable {

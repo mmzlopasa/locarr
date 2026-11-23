@@ -82,62 +82,190 @@ struct HealthView: View {
     }
 }
 
+/// Indexers: the configured ones (state, health, Test) and what can be added — built-in
+/// sites Locarr searches itself and usenet presets. Adding and editing happens on the web.
 struct IndexersView: View {
     @Environment(Session.self) private var session
+    @Environment(\.openURL) private var openURL
+    @State private var part = "configured"
     @State private var indexers = Loader<[Indexer]>()
+    @State private var catalog = Loader<IndexerCatalog>()
     @State private var testing: Set<Int64> = []
     @State private var results: [Int64: IndexerTestResult] = [:]
 
     var body: some View {
         List {
-            if let list = indexers.value {
-                if list.isEmpty { EmptyState(text: L("indexers.none")).listRowBackground(Color.clear) }
-                ForEach(list) { i in
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Circle().fill(statusColor(i)).frame(width: 9, height: 9)
-                            Text(verbatim: i.name).font(.callout.weight(.semibold)).foregroundStyle(i.enabled == false ? Theme.textMuted : Theme.text)
-                            Spacer()
-                            Pill(text: (i.protocol ?? "").capitalized)
-                        }
-                        Text(verbatim: [i.kind?.capitalized ?? "", L("system.priority", ["n": String(i.priority ?? 0)]),
-                                        i.enabled == false ? L("system.disabled") : ""].filter { !$0.isEmpty }.joined(separator: " · "))
-                            .font(.caption).foregroundStyle(Theme.textMuted)
-                        if let h = i.health, h.status == "failing" || h.status == "disabled" {
-                            Text(verbatim: [h.lastError ?? "", h.retryAt.map { L("system.retryAt", ["when": Fmt.relative($0)]) } ?? ""]
-                                    .filter { !$0.isEmpty }.joined(separator: " · "))
-                                .font(.caption).foregroundStyle(Theme.danger)
-                        }
-                        testLine(i)
-                    }
-                    .padding(.vertical, 4)
-                    .listRowBackground(Theme.background)
-                }
-                Section { Text(verbatim: L("system.editOnWeb")).font(.footnote).foregroundStyle(Theme.textMuted) }.listRowBackground(Color.clear)
-            } else if let error = indexers.error {
-                ErrorState(message: error) { await load() }.listRowBackground(Color.clear)
-            } else {
-                LoadingState().listRowBackground(Color.clear)
+            Section {
+                Picker(selection: $part) {
+                    Text(verbatim: L("system.indexersConfigured")).tag("configured")
+                    Text(verbatim: L("indexers.chooser.tabs.builtin")).tag("builtin")
+                    Text(verbatim: L("indexers.chooser.tabs.usenet")).tag("usenet")
+                } label: { Text(verbatim: L("nav.indexers")) }
+                .pickerStyle(.segmented)
             }
+            .listRowBackground(Color.clear)
+            switch part {
+            case "builtin": builtinRows
+            case "usenet": usenetRows
+            default: configuredRows
+            }
+            Section {
+                Button { openURL(session.server.url.appending(path: "indexers")) } label: {
+                    Label { Text(verbatim: L("system.addOnWeb")) } icon: { Image(systemName: "safari") }
+                }
+            } footer: { Text(verbatim: L("system.editOnWeb")) }
         }
-        .listStyle(.plain)
+        .listStyle(.insetGrouped)
         .refreshable { await load() }
         .task { await load() }
         .navigationTitle(Text(verbatim: L("nav.indexers")))
         .screenStyle()
     }
 
+    @ViewBuilder private var configuredRows: some View {
+        if let list = indexers.value {
+            if list.isEmpty { EmptyState(text: L("indexers.none")).listRowBackground(Color.clear) }
+            ForEach(list) { i in
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Circle().fill(statusColor(i)).frame(width: 9, height: 9)
+                        Text(verbatim: i.name).font(.callout.weight(.semibold)).foregroundStyle(i.enabled == false ? Theme.textMuted : Theme.text)
+                        Spacer()
+                        Pill(text: Loc.render("indexers.kinds.\(i.kind ?? "")", [:], fallback: i.kind ?? ""), tone: i.kind == "native" ? "info" : nil)
+                    }
+                    Text(verbatim: facts(i)).font(.caption).foregroundStyle(Theme.textMuted)
+                    if let h = i.health, h.status == "failing" || h.status == "disabled" {
+                        Text(verbatim: [h.lastErrorCode.flatMap { Loc.has("indexers.errorKinds.\($0)") ? L("indexers.errorKinds.\($0)") : nil } ?? h.lastError ?? "",
+                                        h.retryAt.map { L("system.retryAt", ["when": Fmt.relative($0)]) } ?? ""]
+                                .filter { !$0.isEmpty }.joined(separator: " · "))
+                            .font(.caption).foregroundStyle(Theme.danger)
+                    }
+                    if let h = i.health, i.kind == "native" {
+                        if let n = h.parseFailures, n > 0 {
+                            Text(verbatim: L("indexers.builtin.parseFailures", ["n": String(n)])).font(.caption).foregroundStyle(Theme.warning)
+                        }
+                        if let at = h.selfTestAt {
+                            Text(verbatim: L(h.selfTestOk == false ? "indexers.builtin.selfTestFailed" : "indexers.builtin.selfTestOk", ["when": Fmt.relative(at)]))
+                                .font(.caption2).foregroundStyle(h.selfTestOk == false ? Theme.danger : Theme.textFaint)
+                        }
+                    }
+                    if i.definition?.missing == true {
+                        Text(verbatim: L("indexers.builtin.missing")).font(.caption).foregroundStyle(Theme.danger)
+                    }
+                    testLine(i)
+                }
+                .padding(.vertical, 4)
+            }
+        } else if let error = indexers.error {
+            ErrorState(message: error) { await load() }.listRowBackground(Color.clear)
+        } else {
+            LoadingState().listRowBackground(Color.clear)
+        }
+    }
+
+    @ViewBuilder private var builtinRows: some View {
+        Section {
+            Text(verbatim: L("indexers.chooser.builtinIntro")).font(.footnote).foregroundStyle(Theme.textMuted)
+        }
+        .listRowBackground(Color.clear)
+        if let c = catalog.value {
+            if c.definitions.isEmpty { EmptyState(text: L("indexers.builtin.none")).listRowBackground(Color.clear) }
+            ForEach(c.definitions.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) { d in
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack {
+                        Text(verbatim: d.name).font(.callout.weight(.semibold)).foregroundStyle(Theme.text)
+                        if d.builtin == false { Pill(text: L(d.overrides == true ? "indexers.builtin.overrides" : "indexers.builtin.custom"), tone: "info") }
+                        Spacer()
+                        if !(d.indexerIds ?? []).isEmpty {
+                            Label { Text(verbatim: L("system.inUse")) } icon: { Image(systemName: "checkmark.circle.fill") }
+                                .font(.caption.weight(.semibold)).foregroundStyle(Theme.success)
+                        }
+                    }
+                    if let desc = d.description, !desc.isEmpty {
+                        Text(verbatim: desc).font(.caption).foregroundStyle(Theme.textMuted).lineLimit(3)
+                    }
+                    Text(verbatim: definitionFacts(d)).font(.caption2).foregroundStyle(Theme.textFaint)
+                    if d.flaresolverr == "sometimes" || d.flaresolverr == "always" {
+                        Text(verbatim: L("indexers.builtin.flaresolverr.\(d.flaresolverr ?? "")")).font(.caption2).foregroundStyle(Theme.warning)
+                    }
+                }
+                .padding(.vertical, 3)
+                .accessibilityElement(children: .combine)
+            }
+            ForEach(c.errors ?? [], id: \.file) { e in
+                Callout(text: "\(L("indexers.definitions.errors")): \(e.file) — \(e.message)", tone: "danger").listRowBackground(Color.clear)
+            }
+        } else if let error = catalog.error {
+            ErrorState(message: error) { await load() }.listRowBackground(Color.clear)
+        } else {
+            LoadingState().listRowBackground(Color.clear)
+        }
+    }
+
+    @ViewBuilder private var usenetRows: some View {
+        Section {
+            Text(verbatim: L("indexers.chooser.usenetIntro")).font(.footnote).foregroundStyle(Theme.textMuted)
+        }
+        .listRowBackground(Color.clear)
+        if let c = catalog.value {
+            ForEach(c.presets) { p in
+                HStack {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(verbatim: p.name).font(.callout.weight(.semibold)).foregroundStyle(Theme.text)
+                        if let site = p.siteUrl { Text(verbatim: site).font(.caption.monospaced()).foregroundStyle(Theme.textMuted) }
+                    }
+                    Spacer()
+                    if usedPreset(p) {
+                        Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.success)
+                            .accessibilityLabel(Text(verbatim: L("system.inUse")))
+                    } else if let site = p.siteUrl.flatMap({ URL(string: $0) }) {
+                        Button { openURL(site) } label: { Image(systemName: "arrow.up.right.square") }
+                            .buttonStyle(.borderless)
+                            .accessibilityLabel(Text(verbatim: L("indexers.usenet.whereKey", ["site": p.name])))
+                    }
+                }
+            }
+        } else if catalog.error == nil {
+            LoadingState().listRowBackground(Color.clear)
+        }
+    }
+
+    private func usedPreset(_ p: UsenetPreset) -> Bool {
+        guard let base = p.baseUrl?.lowercased(), !base.isEmpty else { return false }
+        return (indexers.value ?? []).contains { ($0.baseUrl ?? "").lowercased().hasPrefix(base) }
+    }
+
+    private func facts(_ i: Indexer) -> String {
+        var parts: [String] = []
+        if let d = i.definition, i.kind == "native", d.name?.isEmpty == false, d.name != i.name { parts.append(d.name ?? "") }
+        parts.append((i.protocol ?? "").capitalized)
+        parts.append(L("indexers.priorityShort", ["n": String(i.priority ?? 0)]))
+        if let src = i.source { parts.append(L("indexers.fromSource", ["name": src.name])) }
+        if i.enabled == false { parts.append(L("system.disabled")) }
+        return parts.filter { !$0.isEmpty }.joined(separator: " · ")
+    }
+
+    private func definitionFacts(_ d: IndexerDefinition) -> String {
+        var parts = [(d.protocol ?? "").capitalized]
+        if let lang = d.language, !lang.isEmpty { parts.append(lang) }
+        let modes = (d.searching ?? []).filter { $0.available != false }.map { Loc.render("indexers.builtin.modes.\($0.type)", [:], fallback: $0.type) }
+        if !modes.isEmpty { parts.append(modes.joined(separator: ", ")) }
+        parts.append(L(d.rss == true ? "indexers.builtin.rss" : "indexers.builtin.noRss"))
+        return parts.filter { !$0.isEmpty }.joined(separator: " · ")
+    }
+
     @ViewBuilder private func testLine(_ i: Indexer) -> some View {
         HStack {
             if let r = results[i.id] {
                 Label {
-                    Text(verbatim: r.ok ? L("system.testOk", ["ms": String(r.durationMs ?? 0)]) : Loc.render("errors.\(r.errorCode ?? "")", [:], fallback: r.error ?? L("errors.unknown")))
+                    Text(verbatim: r.ok ? L("indexers.test.ok", ["n": String(r.probeResults ?? 0), "ms": String(r.durationMs ?? 0)])
+                         : Loc.render("indexers.errorKinds.\(r.errorCode ?? "")", [:], fallback: r.error ?? L("errors.unknown")))
                 } icon: { Image(systemName: r.ok ? "checkmark.circle.fill" : "xmark.octagon.fill") }
                 .font(.caption).foregroundStyle(r.ok ? Theme.success : Theme.danger)
             }
             Spacer()
             if testing.contains(i.id) { ProgressView() } else {
-                Button(L("system.test")) { Task { await test(i) } }.buttonStyle(.borderless).font(.footnote.weight(.semibold))
+                Button(L("indexers.test.button")) { Task { await test(i) } }.buttonStyle(.borderless).font(.footnote.weight(.semibold))
             }
         }
     }
@@ -163,6 +291,7 @@ struct IndexersView: View {
     private func load() async {
         let client = session.client
         await indexers.load { try await client.indexers() }
+        await catalog.load { try await client.indexerCatalog() }
     }
 }
 

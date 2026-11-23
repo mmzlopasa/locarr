@@ -5934,6 +5934,23 @@
         }
       }
     },
+    "explain.indexerErrors": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failing in the last search: {{list}}."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "U zadnjoj pretrazi nisu radili: {{list}}."
+          }
+        }
+      }
+    },
     "explain.retryHint": {
       "extractionState": "manual",
       "localizations": {
@@ -6393,6 +6410,23 @@
         }
       }
     },
+    "health.codes.indexer_challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer {{name}} answers with a Cloudflare challenge. Set a FlareSolverr URL on it."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer {{name}} odgovara Cloudflare provjerom. Postavi mu FlareSolverr URL."
+          }
+        }
+      }
+    },
     "health.codes.indexer_failing": {
       "extractionState": "manual",
       "localizations": {
@@ -6410,6 +6444,23 @@
         }
       }
     },
+    "health.codes.indexer_layout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The pages of {{name}} no longer match its definition (the site changed). Wait for an updated definition or add a custom one."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stranice indexera {{name}} više ne odgovaraju njegovoj definiciji (stranica se promijenila). Pričekaj novu verziju definicije ili dodaj vlastitu."
+          }
+        }
+      }
+    },
     "health.codes.indexer_no_kind": {
       "extractionState": "manual",
       "localizations": {
@@ -6423,6 +6474,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nijedan uključeni indexer ne traži automatski za vrstu: {{kind}}."
+          }
+        }
+      }
+    },
+    "health.codes.indexer_selftest_failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The weekly test of built-in indexer {{name}} failed."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tjedna provjera ugrađenog indexera {{name}} nije prošla."
           }
         }
       }
@@ -7243,6 +7311,2352 @@
         }
       }
     },
+    "indexers.add": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add indexer"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj indexer"
+          }
+        }
+      }
+    },
+    "indexers.advanced.hide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide Prowlarr and Jackett import"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sakrij uvoz iz Prowlarra i Jacketta"
+          }
+        }
+      }
+    },
+    "indexers.advanced.show": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Prowlarr and Jackett import"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži uvoz iz Prowlarra i Jacketta"
+          }
+        }
+      }
+    },
+    "indexers.advanced.text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not needed any more: Locarr searches public sites itself and talks to usenet indexers directly. Import from Prowlarr or Jackett only if you want to keep using them."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Više nije potrebno: Locarr sam pretražuje javne stranice i izravno razgovara s usenet indexerima. Uvezi iz Prowlarra ili Jacketta samo ako ih želiš i dalje koristiti."
+          }
+        }
+      }
+    },
+    "indexers.builtin.address": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Address"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresa"
+          }
+        }
+      }
+    },
+    "indexers.builtin.addressHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The site's own address or one of its mirrors."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glavna adresa stranice ili neki od njezinih mirrora."
+          }
+        }
+      }
+    },
+    "indexers.builtin.custom": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastita"
+          }
+        }
+      }
+    },
+    "indexers.builtin.customAddress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom address"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastita adresa"
+          }
+        }
+      }
+    },
+    "indexers.builtin.flaresolverr.always": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs FlareSolverr"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Treba FlareSolverr"
+          }
+        }
+      }
+    },
+    "indexers.builtin.flaresolverr.sometimes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "May need FlareSolverr"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Možda treba FlareSolverr"
+          }
+        }
+      }
+    },
+    "indexers.builtin.flaresolverrHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needed only when the site shows a Cloudflare challenge."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Treba samo kad stranica traži Cloudflare provjeru."
+          }
+        }
+      }
+    },
+    "indexers.builtin.missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Definition missing"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Definicija nedostaje"
+          }
+        }
+      }
+    },
+    "indexers.builtin.modes.book": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Books"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knjige"
+          }
+        }
+      }
+    },
+    "indexers.builtin.modes.movie": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Movies"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filmovi"
+          }
+        }
+      }
+    },
+    "indexers.builtin.modes.music": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Music"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glazba"
+          }
+        }
+      }
+    },
+    "indexers.builtin.modes.search": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pretraga"
+          }
+        }
+      }
+    },
+    "indexers.builtin.modes.tv": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serije"
+          }
+        }
+      }
+    },
+    "indexers.builtin.noRss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No RSS"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez RSS-a"
+          }
+        }
+      }
+    },
+    "indexers.builtin.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No site definitions are available."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nema dostupnih definicija stranica."
+          }
+        }
+      }
+    },
+    "indexers.builtin.options": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Site options"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postavke stranice"
+          }
+        }
+      }
+    },
+    "indexers.builtin.otherAddress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other address…"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Druga adresa…"
+          }
+        }
+      }
+    },
+    "indexers.builtin.overrides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overrides built-in"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zamjenjuje ugrađenu"
+          }
+        }
+      }
+    },
+    "indexers.builtin.parseFailures": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unreadable results: {{n}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nečitljivih rezultata: {{n}}"
+          }
+        }
+      }
+    },
+    "indexers.builtin.rateLimit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requests"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zahtjevi"
+          }
+        }
+      }
+    },
+    "indexers.builtin.rateLimitHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At most this many requests per period, so the site is not hammered."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najviše toliko zahtjeva po razdoblju, da se stranica ne zatrpa."
+          }
+        }
+      }
+    },
+    "indexers.builtin.rss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RSS"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RSS"
+          }
+        }
+      }
+    },
+    "indexers.builtin.selfTestFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly self-test failed {{when}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tjedna samoprovjera nije prošla {{when}}"
+          }
+        }
+      }
+    },
+    "indexers.builtin.selfTestOk": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly self-test passed {{when}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tjedna samoprovjera prošla {{when}}"
+          }
+        }
+      }
+    },
+    "indexers.builtin.site": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Site"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stranica"
+          }
+        }
+      }
+    },
+    "indexers.builtin.use": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use {{name}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koristi {{name}}"
+          }
+        }
+      }
+    },
+    "indexers.builtin.verified": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How it was checked"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kako je provjereno"
+          }
+        }
+      }
+    },
+    "indexers.builtin.version": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v{{n}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v{{n}}"
+          }
+        }
+      }
+    },
+    "indexers.chooser.builtinIntro": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Public sites Locarr searches itself, without Prowlarr or Jackett. Switch a site on to add it with sensible defaults; fine-tune it later under Edit."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Javne stranice koje Locarr pretražuje sam, bez Prowlarra ili Jacketta. Uključi stranicu i dodat će se s razumnim zadanim postavkama; kasnije je prilagodi pod Uredi."
+          }
+        }
+      }
+    },
+    "indexers.chooser.genericIntro": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Any Torznab or Newznab feed: a private tracker's own Torznab address or an indexer not listed under Usenet."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilo koji Torznab ili Newznab feed: Torznab adresa privatnog trackera ili indexer kojeg nema pod Usenet."
+          }
+        }
+      }
+    },
+    "indexers.chooser.tabs.builtin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Built-in sites"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ugrađene stranice"
+          }
+        }
+      }
+    },
+    "indexers.chooser.tabs.generic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torznab / Newznab"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torznab / Newznab"
+          }
+        }
+      }
+    },
+    "indexers.chooser.tabs.usenet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usenet"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usenet"
+          }
+        }
+      }
+    },
+    "indexers.chooser.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add indexer"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj indexer"
+          }
+        }
+      }
+    },
+    "indexers.chooser.usenetIntro": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick your usenet indexer and paste the API key from your profile there."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odaberi svoj usenet indexer i zalijepi API ključ iz svog profila na njemu."
+          }
+        }
+      }
+    },
+    "indexers.definitions.errors": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not loaded"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nije učitano"
+          }
+        }
+      }
+    },
+    "indexers.definitions.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No custom definitions yet."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Još nema vlastitih definicija."
+          }
+        }
+      }
+    },
+    "indexers.definitions.reload": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponovno učitaj"
+          }
+        }
+      }
+    },
+    "indexers.definitions.reloaded": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Definitions reloaded."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Definicije su ponovno učitane."
+          }
+        }
+      }
+    },
+    "indexers.definitions.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "YAML files in {{dir}}. A file with a built-in site's id replaces it."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "YAML datoteke u {{dir}}. Datoteka s id-jem ugrađene stranice je zamjenjuje."
+          }
+        }
+      }
+    },
+    "indexers.definitions.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom site definitions"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastite definicije stranica"
+          }
+        }
+      }
+    },
+    "indexers.delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši"
+          }
+        }
+      }
+    },
+    "indexers.deleteConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete {{name}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši {{name}}"
+          }
+        }
+      }
+    },
+    "indexers.edit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uredi"
+          }
+        }
+      }
+    },
+    "indexers.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No indexers yet."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Još nema indexera."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.auth": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The indexer refused the API key."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer je odbio API ključ."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.bad_response": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The answer is not a Torznab/Newznab feed. Check the URL and API path."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odgovor nije Torznab/Newznab feed. Provjeri URL i API putanju."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.blocked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This address is blocked for safety. Allow it in the indexer settings below if it is yours."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ova adresa je blokirana iz sigurnosnih razloga. Dopusti je u postavkama indexera ispod ako je tvoja."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The site shows a Cloudflare challenge. Set a FlareSolverr URL for this indexer under Edit."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stranica traži Cloudflare provjeru. Upiši FlareSolverr URL za ovaj indexer pod Uredi."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.disabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The indexer's API or account is disabled."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API ili račun na indexeru je isključen."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.layout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The site's pages changed and its results can no longer be read. Update Locarr or add a fixed custom definition."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stranice ove stranice su se promijenile pa se rezultati više ne mogu pročitati. Ažuriraj Locarr ili dodaj ispravljenu vlastitu definiciju."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.not_found": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The indexer found no such item."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer nema tu stavku."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.rate_limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The indexer's request limit is reached."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dosegnut je limit zahtjeva indexera."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.removed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The source no longer lists this indexer."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izvor više ne navodi ovaj indexer."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The indexer reported an error."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer je prijavio grešku."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.unreachable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The indexer cannot be reached or timed out."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer nije dostupan ili nije odgovorio na vrijeme."
+          }
+        }
+      }
+    },
+    "indexers.errorKinds.unsupported": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The indexer does not support this search."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer ne podržava ovu pretragu."
+          }
+        }
+      }
+    },
+    "indexers.errorShort.auth": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "refused"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "odbijen pristup"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.backoff": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "paused after failures"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pauza nakon grešaka"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.bad_response": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unexpected answer"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "neočekivan odgovor"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.blocked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "address blocked"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "adresa blokirana"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.challenge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cloudflare challenge"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cloudflare provjera"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "error"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "greška"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.layout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "layout changed"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "promijenjen izgled"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.rate_limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rate limited"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ograničenje zahtjeva"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.rate_limited": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rate limited"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ograničenje zahtjeva"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "error"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "greška"
+          }
+        }
+      }
+    },
+    "indexers.errorShort.unreachable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "site down"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "stranica ne radi"
+          }
+        }
+      }
+    },
+    "indexers.form.add": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj"
+          }
+        }
+      }
+    },
+    "indexers.form.addTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add indexer"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj indexer"
+          }
+        }
+      }
+    },
+    "indexers.form.apiKey": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API ključ"
+          }
+        }
+      }
+    },
+    "indexers.form.apiKeyHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stored encrypted; never shown again."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprema se šifrirano i više se ne prikazuje."
+          }
+        }
+      }
+    },
+    "indexers.form.apiKeyKept": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A key is stored. Leave empty to keep it."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ključ je spremljen. Ostavi prazno da ostane."
+          }
+        }
+      }
+    },
+    "indexers.form.apiPath": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API path"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API putanja"
+          }
+        }
+      }
+    },
+    "indexers.form.baseUrl": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        }
+      }
+    },
+    "indexers.form.baseUrlHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Address of the indexer without the API path."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresa indexera bez API putanje."
+          }
+        }
+      }
+    },
+    "indexers.form.categories": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Categories per kind of media"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kategorije po vrsti sadržaja"
+          }
+        }
+      }
+    },
+    "indexers.form.categoriesNeedTest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run a test to load the indexer's categories."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokreni test da se učitaju kategorije indexera."
+          }
+        }
+      }
+    },
+    "indexers.form.category": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Category"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kategorija"
+          }
+        }
+      }
+    },
+    "indexers.form.editTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit {{name}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uredi {{name}}"
+          }
+        }
+      }
+    },
+    "indexers.form.enableAutomatic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use for automatic search"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koristi za automatsku pretragu"
+          }
+        }
+      }
+    },
+    "indexers.form.enableInteractive": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use for manual search"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koristi za ručnu pretragu"
+          }
+        }
+      }
+    },
+    "indexers.form.enableRss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use for RSS sync"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koristi za RSS sync"
+          }
+        }
+      }
+    },
+    "indexers.form.enabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enabled"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uključen"
+          }
+        }
+      }
+    },
+    "indexers.form.flaresolverr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FlareSolverr URL"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FlareSolverr URL"
+          }
+        }
+      }
+    },
+    "indexers.form.flaresolverrHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only for indexers behind a Cloudflare challenge."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samo za indexere iza Cloudflare provjere."
+          }
+        }
+      }
+    },
+    "indexers.form.grabLimit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grabs per day"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preuzimanja na dan"
+          }
+        }
+      }
+    },
+    "indexers.form.hideAdvanced": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide advanced settings"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sakrij napredne postavke"
+          }
+        }
+      }
+    },
+    "indexers.form.kind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kind"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vrsta"
+          }
+        }
+      }
+    },
+    "indexers.form.minimumSeeders": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimum seeders"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najmanje seedera"
+          }
+        }
+      }
+    },
+    "indexers.form.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naziv"
+          }
+        }
+      }
+    },
+    "indexers.form.priority": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prioritet"
+          }
+        }
+      }
+    },
+    "indexers.form.priorityHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 is the most preferred, 50 the least."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 je najpoželjniji, 50 najmanje."
+          }
+        }
+      }
+    },
+    "indexers.form.proxyPassword": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy password"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lozinka za proxy"
+          }
+        }
+      }
+    },
+    "indexers.form.proxyUrl": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy"
+          }
+        }
+      }
+    },
+    "indexers.form.proxyUsername": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proxy user name"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Korisničko ime za proxy"
+          }
+        }
+      }
+    },
+    "indexers.form.requestLimit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Request limit"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ograničenje zahtjeva"
+          }
+        }
+      }
+    },
+    "indexers.form.requestLimitHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requests allowed per period."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopušteni zahtjevi po razdoblju."
+          }
+        }
+      }
+    },
+    "indexers.form.requestPeriod": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Period (seconds)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Razdoblje (sekunde)"
+          }
+        }
+      }
+    },
+    "indexers.form.seedHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used by download clients; empty uses the client's default."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koriste ga download klijenti; prazno znači zadano klijenta."
+          }
+        }
+      }
+    },
+    "indexers.form.seedRatio": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seed ratio"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omjer seedanja"
+          }
+        }
+      }
+    },
+    "indexers.form.seedTime": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seed time (minutes)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vrijeme seedanja (minute)"
+          }
+        }
+      }
+    },
+    "indexers.form.showAdvanced": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show advanced settings"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži napredne postavke"
+          }
+        }
+      }
+    },
+    "indexers.form.tags": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tags"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oznake"
+          }
+        }
+      }
+    },
+    "indexers.form.tagsHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comma-separated."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odvojene zarezom."
+          }
+        }
+      }
+    },
+    "indexers.form.timeout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timeout (seconds)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vremensko ograničenje (sekunde)"
+          }
+        }
+      }
+    },
+    "indexers.fromSource": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from {{name}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iz: {{name}}"
+          }
+        }
+      }
+    },
+    "indexers.health.disabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disabled"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Isključen"
+          }
+        }
+      }
+    },
+    "indexers.health.failing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failing"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne radi"
+          }
+        }
+      }
+    },
+    "indexers.health.healthy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healthy"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ispravan"
+          }
+        }
+      }
+    },
+    "indexers.health.unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not used yet"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Još nekorišten"
+          }
+        }
+      }
+    },
+    "indexers.import.actions.add": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "new"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "novi"
+          }
+        }
+      }
+    },
+    "indexers.import.actions.disable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "will be disabled"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bit će isključen"
+          }
+        }
+      }
+    },
+    "indexers.import.actions.excluded": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "left out"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "izostavljen"
+          }
+        }
+      }
+    },
+    "indexers.import.actions.unchanged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "already imported"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "već uvezen"
+          }
+        }
+      }
+    },
+    "indexers.import.actions.update": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "will be updated"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bit će ažuriran"
+          }
+        }
+      }
+    },
+    "indexers.import.apiKey": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API ključ"
+          }
+        }
+      }
+    },
+    "indexers.import.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import from Prowlarr or Jackett"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvezi iz Prowlarra ili Jacketta"
+          }
+        }
+      }
+    },
+    "indexers.import.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported {{added}} indexers."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvezeno indexera: {{added}}."
+          }
+        }
+      }
+    },
+    "indexers.import.importN": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import {{n}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvezi ({{n}})"
+          }
+        }
+      }
+    },
+    "indexers.import.kind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Application"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplikacija"
+          }
+        }
+      }
+    },
+    "indexers.import.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The source has no indexers configured."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izvor nema postavljenih indexera."
+          }
+        }
+      }
+    },
+    "indexers.import.preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show indexers"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži indexere"
+          }
+        }
+      }
+    },
+    "indexers.import.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lists the indexers configured there and adds each as a Torznab/Newznab indexer. Nothing changes on the source."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikazuje tamo postavljene indexere i dodaje svaki kao Torznab/Newznab indexer. Na izvoru se ništa ne mijenja."
+          }
+        }
+      }
+    },
+    "indexers.import.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import indexers"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvoz indexera"
+          }
+        }
+      }
+    },
+    "indexers.import.url": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        }
+      }
+    },
+    "indexers.kinds.native": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Built-in site"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ugrađena stranica"
+          }
+        }
+      }
+    },
+    "indexers.kinds.newznab": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Newznab (usenet)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Newznab (usenet)"
+          }
+        }
+      }
+    },
+    "indexers.kinds.torznab": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torznab (torrent)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torznab (torrent)"
+          }
+        }
+      }
+    },
+    "indexers.lastSuccess": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "last answered {{when}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zadnji odgovor {{when}}"
+          }
+        }
+      }
+    },
+    "indexers.media.books": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Books"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knjige"
+          }
+        }
+      }
+    },
+    "indexers.media.movies": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Movies"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filmovi"
+          }
+        }
+      }
+    },
+    "indexers.media.music": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Music"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glazba"
+          }
+        }
+      }
+    },
+    "indexers.media.tv": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serije"
+          }
+        }
+      }
+    },
     "indexers.none": {
       "extractionState": "manual",
       "localizations": {
@@ -7256,6 +9670,618 @@
           "stringUnit": {
             "state": "translated",
             "value": "Još nema indexera. Dodaj ih na webu."
+          }
+        }
+      }
+    },
+    "indexers.priorityShort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority {{n}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prioritet {{n}}"
+          }
+        }
+      }
+    },
+    "indexers.resetHealth": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear failures"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poništi greške"
+          }
+        }
+      }
+    },
+    "indexers.retryAt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "next try {{when}} after {{failures}} failures"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "idući pokušaj {{when}}, neuspjeha: {{failures}}"
+          }
+        }
+      }
+    },
+    "indexers.settings.allowedHosts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed local addresses"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopuštene lokalne adrese"
+          }
+        }
+      }
+    },
+    "indexers.settings.allowedHostsHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loopback and link-local addresses are blocked by default. List addresses, networks or host names to allow, e.g. 127.0.0.1."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loopback i link-local adrese su zadano blokirane. Navedi adrese, mreže ili imena hostova koje dopuštaš, npr. 127.0.0.1."
+          }
+        }
+      }
+    },
+    "indexers.settings.blockPrivate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Also block private networks"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blokiraj i privatne mreže"
+          }
+        }
+      }
+    },
+    "indexers.settings.blockPrivateHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off by default, because FlareSolverr and your own services usually run on the same Docker network."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadano isključeno jer FlareSolverr i tvoji servisi obično rade na istoj Docker mreži."
+          }
+        }
+      }
+    },
+    "indexers.settings.cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache identical searches (seconds)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pamti iste pretrage (sekunde)"
+          }
+        }
+      }
+    },
+    "indexers.settings.publicTrackers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trackers for built magnets"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trackeri za složene magnete"
+          }
+        }
+      }
+    },
+    "indexers.settings.publicTrackersHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One per line. Added to magnet links Locarr builds from a site's info hash."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jedan po retku. Dodaju se magnet poveznicama koje Locarr složi iz info hasha sa stranice."
+          }
+        }
+      }
+    },
+    "indexers.settings.retention": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep seen releases (days)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čuvaj viđena izdanja (dana)"
+          }
+        }
+      }
+    },
+    "indexers.settings.rss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RSS sync every (minutes)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RSS sync svakih (minuta)"
+          }
+        }
+      }
+    },
+    "indexers.settings.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply to every indexer."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vrijede za sve indexere."
+          }
+        }
+      }
+    },
+    "indexers.settings.timeout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search time limit (seconds)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vremensko ograničenje pretrage (sekunde)"
+          }
+        }
+      }
+    },
+    "indexers.settings.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer settings"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postavke indexera"
+          }
+        }
+      }
+    },
+    "indexers.settings.userAgent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "User agent"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "User agent"
+          }
+        }
+      }
+    },
+    "indexers.settings.userAgentHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent to every indexer and site. Leave empty to send “Locarr”."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Šalje se svakom indexeru i stranici. Ostavi prazno za „Locarr”."
+          }
+        }
+      }
+    },
+    "indexers.sources.count": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexers: {{n}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexera: {{n}}"
+          }
+        }
+      }
+    },
+    "indexers.sources.forget": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forget"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaboravi"
+          }
+        }
+      }
+    },
+    "indexers.sources.forgetConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forget (indexers stay)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaboravi (indexeri ostaju)"
+          }
+        }
+      }
+    },
+    "indexers.sources.lastSync": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "synced {{when}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sinkronizirano {{when}}"
+          }
+        }
+      }
+    },
+    "indexers.sources.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync adds new indexers and disables removed ones; nothing is deleted."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sinkronizacija dodaje nove indexere i isključuje uklonjene; ništa se ne briše."
+          }
+        }
+      }
+    },
+    "indexers.sources.sync": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sinkroniziraj"
+          }
+        }
+      }
+    },
+    "indexers.sources.synced": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added {{added}}, updated {{updated}}, disabled {{disabled}}."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodano: {{added}}, ažurirano: {{updated}}, isključeno: {{disabled}}."
+          }
+        }
+      }
+    },
+    "indexers.sources.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izvori"
+          }
+        }
+      }
+    },
+    "indexers.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Public sites Locarr searches itself, your usenet indexers and any Torznab or Newznab feed."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Javne stranice koje Locarr pretražuje sam, tvoji usenet indexeri i bilo koji Torznab ili Newznab feed."
+          }
+        }
+      }
+    },
+    "indexers.test.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testiraj"
+          }
+        }
+      }
+    },
+    "indexers.test.ok": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Works: {{n}} results in the probe search ({{ms}} ms)."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radi: {{n}} rezultata u probnoj pretrazi ({{ms}} ms)."
+          }
+        }
+      }
+    },
+    "indexers.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexers"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexeri"
+          }
+        }
+      }
+    },
+    "indexers.usenet.add": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj"
+          }
+        }
+      }
+    },
+    "indexers.usenet.preset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer"
+          }
+        }
+      }
+    },
+    "indexers.usenet.whereKey": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your API key is on your profile page at {{site}}."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API ključ je na stranici tvog profila na {{site}}."
+          }
+        }
+      }
+    },
+    "indexers.uses.automatic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "automatic search"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "automatska pretraga"
+          }
+        }
+      }
+    },
+    "indexers.uses.interactive": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "manual search"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ručna pretraga"
+          }
+        }
+      }
+    },
+    "indexers.uses.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not used"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ne koristi se"
+          }
+        }
+      }
+    },
+    "indexers.uses.rss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RSS"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RSS"
           }
         }
       }
@@ -14179,6 +17205,23 @@
         }
       }
     },
+    "system.addOnWeb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add or edit on the web"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj ili uredi na webu"
+          }
+        }
+      }
+    },
     "system.connected": {
       "extractionState": "manual",
       "localizations": {
@@ -14247,6 +17290,40 @@
         }
       }
     },
+    "system.inUse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In use"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koristi se"
+          }
+        }
+      }
+    },
+    "system.indexersConfigured": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yours"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoji"
+          }
+        }
+      }
+    },
     "system.missingCategories": {
       "extractionState": "manual",
       "localizations": {
@@ -14311,23 +17388,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Testiraj"
-          }
-        }
-      }
-    },
-    "system.testOk": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Works ({{ms}} ms)"
-          }
-        },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Radi ({{ms}} ms)"
           }
         }
       }
