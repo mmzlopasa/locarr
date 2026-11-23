@@ -35,6 +35,8 @@ jobs:
         with:
           version: v2.15.0
           working-directory: server
+      - name: ffmpeg for the subtitle sync tests
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - run: go test ./... -race
 
   web:
@@ -98,6 +100,10 @@ jobs:
             # The fake MusicBrainz and Cover Art Archive (one request per second, like the real one).
             echo "LOCARR_MUSICBRAINZ_URL=http://fake-indexer:9117/musicbrainz"
             echo "LOCARR_COVERART_URL=http://fake-indexer:9117/musicbrainz/coverart"
+            # The fake subtitle providers (OpenSubtitles.com, SubDL, Jimaku).
+            echo "LOCARR_OPENSUBTITLES_URL=http://fake-indexer:9117/opensubtitles/api/v1"
+            echo "LOCARR_SUBDL_URL=http://fake-indexer:9117/subdl/api/v1"
+            echo "LOCARR_JIMAKU_URL=http://fake-indexer:9117/jimaku/api"
           } >> .env
           mkdir -p "$RUNNER_TEMP/locarr/data/media/movies" "$RUNNER_TEMP/locarr/data/media/tv" "$RUNNER_TEMP/locarr/data/media/music" "$RUNNER_TEMP/locarr/data/downloads/fake-seed"
           docker compose -f docker-compose.yml -f compose.dev.yml up -d --build --wait

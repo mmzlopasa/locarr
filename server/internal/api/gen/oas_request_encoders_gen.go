@@ -80,8 +80,36 @@ func encodeAddSeriesRequest(
 	return nil
 }
 
+func encodeAssignSubtitleProfileRequest(
+	req *SubtitleProfileAssign,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeChangePasswordRequest(
 	req *ChangePasswordRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeConvertSubtitleFpsRequest(
+	req *ConvertSubtitleFpsReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -262,6 +290,20 @@ func encodeCreateRootFolderRequest(
 	return nil
 }
 
+func encodeCreateSubtitleProfileRequest(
+	req *SubtitleProfileInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateUserRequest(
 	req *CreateUserRequest,
 	r *http.Request,
@@ -278,6 +320,20 @@ func encodeCreateUserRequest(
 
 func encodeDisableTotpRequest(
 	req *PasswordConfirm,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeDownloadItemSubtitleRequest(
+	req *DownloadItemSubtitleReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -766,6 +822,20 @@ func encodeSearchSeriesBulkRequest(
 	return nil
 }
 
+func encodeSearchWantedSubtitlesRequest(
+	req *SearchWantedSubtitlesReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeSetQueueItemPriorityRequest(
 	req *PriorityRequest,
 	r *http.Request,
@@ -782,6 +852,34 @@ func encodeSetQueueItemPriorityRequest(
 
 func encodeSetupRequest(
 	req *SetupRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeShiftSubtitleRequest(
+	req *ShiftSubtitleReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeSyncSubtitleRequest(
+	req *SyncSubtitleReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -1146,6 +1244,48 @@ func encodeUpdateSeriesNamingRequest(
 
 func encodeUpdateSettingsRequest(
 	req *UpdateSettingsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSubtitleProfileRequest(
+	req *SubtitleProfileInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSubtitleProviderRequest(
+	req *SubtitleProviderInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSubtitleSettingsRequest(
+	req *SubtitleSettingsInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

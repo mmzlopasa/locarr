@@ -59,6 +59,15 @@ func (UnimplementedHandler) AddSeries(ctx context.Context, req *AddSeriesRequest
 	return r, ht.ErrNotImplemented
 }
 
+// AssignSubtitleProfile implements assignSubtitleProfile operation.
+//
+// ProfileId 0 = the kind's default, -1 = no subtitles, else a profile. Episodes follow their series.
+//
+// POST /subtitles/profiles/assign
+func (UnimplementedHandler) AssignSubtitleProfile(ctx context.Context, req *SubtitleProfileAssign) (r *SubtitleCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // BrowseFilesystem implements browseFilesystem operation.
 //
 // Without `path`, lists the data roots themselves.
@@ -84,6 +93,15 @@ func (UnimplementedHandler) CancelJob(ctx context.Context, params CancelJobParam
 // POST /auth/password
 func (UnimplementedHandler) ChangePassword(ctx context.Context, req *ChangePasswordRequest) error {
 	return ht.ErrNotImplemented
+}
+
+// ConvertSubtitleFps implements convertSubtitleFps operation.
+//
+// Convert a subtitle made for one frame rate to another (managers).
+//
+// POST /subtitles/{id}/fps
+func (UnimplementedHandler) ConvertSubtitleFps(ctx context.Context, req *ConvertSubtitleFpsReq, params ConvertSubtitleFpsParams) (r *Subtitle, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // CreateApiKey implements createApiKey operation.
@@ -210,6 +228,15 @@ func (UnimplementedHandler) CreateRemotePathMapping(ctx context.Context, req *Re
 //
 // POST /rootfolders
 func (UnimplementedHandler) CreateRootFolder(ctx context.Context, req *CreateRootFolderRequest) (r *RootFolder, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateSubtitleProfile implements createSubtitleProfile operation.
+//
+// Add a subtitle language profile (administrators).
+//
+// POST /subtitles/profiles
+func (UnimplementedHandler) CreateSubtitleProfile(ctx context.Context, req *SubtitleProfileInput) (r *SubtitleProfile, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -393,6 +420,34 @@ func (UnimplementedHandler) DeleteSeries(ctx context.Context, params DeleteSerie
 	return ht.ErrNotImplemented
 }
 
+// DeleteSubtitle implements deleteSubtitle operation.
+//
+// Move a subtitle file to the recycle bin (managers).
+//
+// DELETE /subtitles/{id}
+func (UnimplementedHandler) DeleteSubtitle(ctx context.Context, params DeleteSubtitleParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteSubtitleBlacklistEntry implements deleteSubtitleBlacklistEntry operation.
+//
+// Allow a rejected subtitle again (managers).
+//
+// DELETE /subtitles/blacklist/{id}
+func (UnimplementedHandler) DeleteSubtitleBlacklistEntry(ctx context.Context, params DeleteSubtitleBlacklistEntryParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteSubtitleProfile implements deleteSubtitleProfile operation.
+//
+// A profile that is a default cannot be deleted (`subtitle_profile_in_use`); items that used it fall
+// back to the default.
+//
+// DELETE /subtitles/profiles/{id}
+func (UnimplementedHandler) DeleteSubtitleProfile(ctx context.Context, params DeleteSubtitleProfileParams) error {
+	return ht.ErrNotImplemented
+}
+
 // DeleteUser implements deleteUser operation.
 //
 // Not the caller's own account and not the last enabled administrator.
@@ -409,6 +464,16 @@ func (UnimplementedHandler) DeleteUser(ctx context.Context, params DeleteUserPar
 // POST /auth/totp/disable
 func (UnimplementedHandler) DisableTotp(ctx context.Context, req *PasswordConfirm) error {
 	return ht.ErrNotImplemented
+}
+
+// DownloadItemSubtitle implements downloadItemSubtitle operation.
+//
+// Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
+// `subtitle_result_expired`.
+//
+// POST /subtitles/items/{ref}/download
+func (UnimplementedHandler) DownloadItemSubtitle(ctx context.Context, req *DownloadItemSubtitleReq, params DownloadItemSubtitleParams) (r *Subtitle, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // DownloadRelease implements downloadRelease operation.
@@ -586,6 +651,16 @@ func (UnimplementedHandler) GetIndexerSettings(ctx context.Context) (r *IndexerS
 	return r, ht.ErrNotImplemented
 }
 
+// GetItemSubtitles implements getItemSubtitles operation.
+//
+// Present and missing languages of its profile, subtitle files, embedded tracks, search state and the
+// explanation.
+//
+// GET /subtitles/items/{ref}
+func (UnimplementedHandler) GetItemSubtitles(ctx context.Context, params GetItemSubtitlesParams) (r *SubtitleItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetMe implements getMe operation.
 //
 // The signed-in user.
@@ -702,6 +777,15 @@ func (UnimplementedHandler) GetSeriesNaming(ctx context.Context) (r *SeriesNamin
 //
 // GET /settings
 func (UnimplementedHandler) GetSettings(ctx context.Context) (r *Settings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetSubtitleSettings implements getSubtitleSettings operation.
+//
+// Subtitle options (administrators).
+//
+// GET /subtitles/settings
+func (UnimplementedHandler) GetSubtitleSettings(ctx context.Context) (r *SubtitleSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1110,6 +1194,33 @@ func (UnimplementedHandler) ListSessions(ctx context.Context) (r []Session, _ er
 	return r, ht.ErrNotImplemented
 }
 
+// ListSubtitleBlacklist implements listSubtitleBlacklist operation.
+//
+// Subtitles rejected for an item (managers).
+//
+// GET /subtitles/items/{ref}/blacklist
+func (UnimplementedHandler) ListSubtitleBlacklist(ctx context.Context, params ListSubtitleBlacklistParams) (r []SubtitleBlacklistEntry, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListSubtitleProfiles implements listSubtitleProfiles operation.
+//
+// Subtitle language profiles (managers).
+//
+// GET /subtitles/profiles
+func (UnimplementedHandler) ListSubtitleProfiles(ctx context.Context) (r []SubtitleProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListSubtitleProviders implements listSubtitleProviders operation.
+//
+// Subtitle providers with health and quota (managers).
+//
+// GET /subtitles/providers
+func (UnimplementedHandler) ListSubtitleProviders(ctx context.Context) (r []SubtitleProvider, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListTasks implements listTasks operation.
 //
 // Scheduled tasks and recent job history (administrators).
@@ -1143,6 +1254,15 @@ func (UnimplementedHandler) ListWantedAlbums(ctx context.Context, params ListWan
 //
 // GET /episodes/wanted
 func (UnimplementedHandler) ListWantedEpisodes(ctx context.Context, params ListWantedEpisodesParams) (r *WantedEpisodeList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListWantedSubtitles implements listWantedSubtitles operation.
+//
+// Movies and episodes missing subtitles of their profile (managers).
+//
+// GET /subtitles/wanted
+func (UnimplementedHandler) ListWantedSubtitles(ctx context.Context, params ListWantedSubtitlesParams) (r *WantedSubtitles, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1207,6 +1327,15 @@ func (UnimplementedHandler) ManualImport(ctx context.Context, req *ManualImportR
 //
 // POST /series/import/manual
 func (UnimplementedHandler) ManualImportSeries(ctx context.Context, req *SeriesManualImportRequest) (r []SeriesManualImportResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ManualSubtitleSearch implements manualSubtitleSearch operation.
+//
+// Manual search: every provider's results with scores (managers).
+//
+// GET /subtitles/items/{ref}/results
+func (UnimplementedHandler) ManualSubtitleSearch(ctx context.Context, params ManualSubtitleSearchParams) (r *SubtitleManualSearch, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1338,6 +1467,15 @@ func (UnimplementedHandler) PreviewSeriesNaming(ctx context.Context, req *Series
 	return r, ht.ErrNotImplemented
 }
 
+// PreviewSubtitle implements previewSubtitle operation.
+//
+// The first lines of a subtitle (managers).
+//
+// GET /subtitles/{id}/preview
+func (UnimplementedHandler) PreviewSubtitle(ctx context.Context, params PreviewSubtitleParams) (r *SubtitlePreview, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RefreshArtist implements refreshArtist operation.
 //
 // Albums are synced at once; editions and track lists follow in the background.
@@ -1439,6 +1577,15 @@ func (UnimplementedHandler) ResetQualityDefinitions(ctx context.Context, req *Re
 	return r, ht.ErrNotImplemented
 }
 
+// ResetSubtitleProviderHealth implements resetSubtitleProviderHealth operation.
+//
+// Clear a provider's failures and backoff (managers).
+//
+// POST /subtitles/providers/{name}/health/reset
+func (UnimplementedHandler) ResetSubtitleProviderHealth(ctx context.Context, params ResetSubtitleProviderHealthParams) (r *SubtitleProvider, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ResetUserPassword implements resetUserPassword operation.
 //
 // Signs the user out everywhere and clears an account lockout.
@@ -1513,6 +1660,15 @@ func (UnimplementedHandler) ScanExistingSeries(ctx context.Context, params ScanE
 	return r, ht.ErrNotImplemented
 }
 
+// ScanSubtitles implements scanSubtitles operation.
+//
+// Scan the library for subtitles on disk and embedded tracks (managers).
+//
+// POST /subtitles/scan
+func (UnimplementedHandler) ScanSubtitles(ctx context.Context) (r *SubtitleCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // Search implements search operation.
 //
 // Indexers are asked in parallel, each with its own timeout and request limit. Results are
@@ -1557,6 +1713,15 @@ func (UnimplementedHandler) SearchArtist(ctx context.Context, params SearchArtis
 //
 // POST /episodes/search
 func (UnimplementedHandler) SearchEpisodes(ctx context.Context, req *EpisodeIdsRequest) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchItemSubtitles implements searchItemSubtitles operation.
+//
+// Search now and download the best subtitles above the minimum score (managers).
+//
+// POST /subtitles/items/{ref}/search
+func (UnimplementedHandler) SearchItemSubtitles(ctx context.Context, params SearchItemSubtitlesParams) (r *SubtitleSearchOutcome, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1621,6 +1786,15 @@ func (UnimplementedHandler) SearchStream(ctx context.Context, params SearchStrea
 	return r, ht.ErrNotImplemented
 }
 
+// SearchWantedSubtitles implements searchWantedSubtitles operation.
+//
+// Queue subtitle searches for items, or for every item missing subtitles (managers).
+//
+// POST /subtitles/wanted/search
+func (UnimplementedHandler) SearchWantedSubtitles(ctx context.Context, req *SearchWantedSubtitlesReq) (r *SubtitleCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // SetQueueItemPriority implements setQueueItemPriority operation.
 //
 // Move a download in its client's queue (library managers).
@@ -1637,6 +1811,15 @@ func (UnimplementedHandler) SetQueueItemPriority(ctx context.Context, req *Prior
 //
 // POST /setup
 func (UnimplementedHandler) Setup(ctx context.Context, req *SetupRequest) (r *SignedInHeaders, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ShiftSubtitle implements shiftSubtitle operation.
+//
+// The previous version goes to the recycle bin.
+//
+// POST /subtitles/{id}/shift
+func (UnimplementedHandler) ShiftSubtitle(ctx context.Context, req *ShiftSubtitleReq, params ShiftSubtitleParams) (r *Subtitle, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1669,6 +1852,18 @@ func (UnimplementedHandler) SyncIndexerSource(ctx context.Context, params SyncIn
 	return r, ht.ErrNotImplemented
 }
 
+// SyncSubtitle implements syncSubtitle operation.
+//
+// Runs in the background; the subtitle's syncState becomes running, then done, not_confident or
+// failed. reference: `audio` (the default audio track), `audio:N`, `track:N` (embedded text subtitle
+// track N) or `subtitle:ID` (another subtitle of the same file). Audio and tracks need ffmpeg
+// (`subtitle_sync_unavailable`).
+//
+// POST /subtitles/{id}/sync
+func (UnimplementedHandler) SyncSubtitle(ctx context.Context, req *SyncSubtitleReq, params SyncSubtitleParams) (r *Subtitle, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // TestDownloadClient implements testDownloadClient operation.
 //
 // Always answers 200 with the outcome. With `id`, password and API key left out are taken from that
@@ -1697,6 +1892,15 @@ func (UnimplementedHandler) TestIndexer(ctx context.Context, params TestIndexerP
 //
 // POST /indexers/test
 func (UnimplementedHandler) TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (r *IndexerTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TestSubtitleProvider implements testSubtitleProvider operation.
+//
+// Check a provider's credentials and read its quota (administrators).
+//
+// POST /subtitles/providers/{name}/test
+func (UnimplementedHandler) TestSubtitleProvider(ctx context.Context, params TestSubtitleProviderParams) (r *SubtitleProvider, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1915,6 +2119,34 @@ func (UnimplementedHandler) UpdateSeriesNaming(ctx context.Context, req *SeriesN
 //
 // PATCH /settings
 func (UnimplementedHandler) UpdateSettings(ctx context.Context, req *UpdateSettingsRequest) (r *Settings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSubtitleProfile implements updateSubtitleProfile operation.
+//
+// Change a subtitle language profile (administrators).
+//
+// PUT /subtitles/profiles/{id}
+func (UnimplementedHandler) UpdateSubtitleProfile(ctx context.Context, req *SubtitleProfileInput, params UpdateSubtitleProfileParams) (r *SubtitleProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSubtitleProvider implements updateSubtitleProvider operation.
+//
+// Credentials are write-only and stored encrypted; an empty string removes one. A provider that needs
+// a key cannot be enabled without it.
+//
+// PUT /subtitles/providers/{name}
+func (UnimplementedHandler) UpdateSubtitleProvider(ctx context.Context, req *SubtitleProviderInput, params UpdateSubtitleProviderParams) (r *SubtitleProvider, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSubtitleSettings implements updateSubtitleSettings operation.
+//
+// Change subtitle options (administrators).
+//
+// PUT /subtitles/settings
+func (UnimplementedHandler) UpdateSubtitleSettings(ctx context.Context, req *SubtitleSettingsInput) (r *SubtitleSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

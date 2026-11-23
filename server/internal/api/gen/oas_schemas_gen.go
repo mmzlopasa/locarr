@@ -2824,6 +2824,33 @@ func (s *ConditionResult) SetUnsupported(val OptBool) {
 	s.Unsupported = val
 }
 
+type ConvertSubtitleFpsReq struct {
+	// Frame rate the subtitle was made for, e.g. 25.
+	From string `json:"from"`
+	// Frame rate of the video, e.g. 23.976.
+	To string `json:"to"`
+}
+
+// GetFrom returns the value of From.
+func (s *ConvertSubtitleFpsReq) GetFrom() string {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *ConvertSubtitleFpsReq) GetTo() string {
+	return s.To
+}
+
+// SetFrom sets the value of From.
+func (s *ConvertSubtitleFpsReq) SetFrom(val string) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *ConvertSubtitleFpsReq) SetTo(val string) {
+	s.To = val
+}
+
 // Ref: #/components/schemas/CreateApiKeyRequest
 type CreateApiKeyRequest struct {
 	Name     string  `json:"name"`
@@ -4058,6 +4085,15 @@ type DeleteRootFolderNoContent struct{}
 
 // DeleteSeriesNoContent is response for DeleteSeries operation.
 type DeleteSeriesNoContent struct{}
+
+// DeleteSubtitleBlacklistEntryNoContent is response for DeleteSubtitleBlacklistEntry operation.
+type DeleteSubtitleBlacklistEntryNoContent struct{}
+
+// DeleteSubtitleNoContent is response for DeleteSubtitle operation.
+type DeleteSubtitleNoContent struct{}
+
+// DeleteSubtitleProfileNoContent is response for DeleteSubtitleProfile operation.
+type DeleteSubtitleProfileNoContent struct{}
 
 // DeleteUserNoContent is response for DeleteUser operation.
 type DeleteUserNoContent struct{}
@@ -5327,6 +5363,20 @@ func (s *DownloadEvent) SetMessage(val string) {
 // SetData sets the value of Data.
 func (s *DownloadEvent) SetData(val jx.Raw) {
 	s.Data = val
+}
+
+type DownloadItemSubtitleReq struct {
+	Key string `json:"key"`
+}
+
+// GetKey returns the value of Key.
+func (s *DownloadItemSubtitleReq) GetKey() string {
+	return s.Key
+}
+
+// SetKey sets the value of Key.
+func (s *DownloadItemSubtitleReq) SetKey(val string) {
+	s.Key = val
 }
 
 // Ref: #/components/schemas/DownloadProtocol
@@ -10943,6 +10993,47 @@ func (s *ListWantedEpisodesKind) UnmarshalText(data []byte) error {
 	}
 }
 
+type ListWantedSubtitlesKind string
+
+const (
+	ListWantedSubtitlesKindMovie   ListWantedSubtitlesKind = "movie"
+	ListWantedSubtitlesKindEpisode ListWantedSubtitlesKind = "episode"
+)
+
+// AllValues returns all ListWantedSubtitlesKind values.
+func (ListWantedSubtitlesKind) AllValues() []ListWantedSubtitlesKind {
+	return []ListWantedSubtitlesKind{
+		ListWantedSubtitlesKindMovie,
+		ListWantedSubtitlesKindEpisode,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListWantedSubtitlesKind) MarshalText() ([]byte, error) {
+	switch s {
+	case ListWantedSubtitlesKindMovie:
+		return []byte(s), nil
+	case ListWantedSubtitlesKindEpisode:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListWantedSubtitlesKind) UnmarshalText(data []byte) error {
+	switch ListWantedSubtitlesKind(data) {
+	case ListWantedSubtitlesKindMovie:
+		*s = ListWantedSubtitlesKindMovie
+		return nil
+	case ListWantedSubtitlesKindEpisode:
+		*s = ListWantedSubtitlesKindEpisode
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/LoginRequest
 type LoginRequest struct {
 	Username     string        `json:"username"`
@@ -11726,6 +11817,158 @@ func (s *MediaManagementSettings) SetAvailabilityDelayDays(val int) {
 // SetSearchOnAddDefault sets the value of SearchOnAddDefault.
 func (s *MediaManagementSettings) SetSearchOnAddDefault(val bool) {
 	s.SearchOnAddDefault = val
+}
+
+// Ref: #/components/schemas/MediaTrack
+type MediaTrack struct {
+	Index           int            `json:"index"`
+	Kind            MediaTrackKind `json:"kind"`
+	Codec           string         `json:"codec"`
+	Language        string         `json:"language"`
+	Name            string         `json:"name"`
+	Default         bool           `json:"default"`
+	Forced          bool           `json:"forced"`
+	HearingImpaired bool           `json:"hearingImpaired"`
+	// A text subtitle track (usable as a sync reference).
+	Text bool `json:"text"`
+}
+
+// GetIndex returns the value of Index.
+func (s *MediaTrack) GetIndex() int {
+	return s.Index
+}
+
+// GetKind returns the value of Kind.
+func (s *MediaTrack) GetKind() MediaTrackKind {
+	return s.Kind
+}
+
+// GetCodec returns the value of Codec.
+func (s *MediaTrack) GetCodec() string {
+	return s.Codec
+}
+
+// GetLanguage returns the value of Language.
+func (s *MediaTrack) GetLanguage() string {
+	return s.Language
+}
+
+// GetName returns the value of Name.
+func (s *MediaTrack) GetName() string {
+	return s.Name
+}
+
+// GetDefault returns the value of Default.
+func (s *MediaTrack) GetDefault() bool {
+	return s.Default
+}
+
+// GetForced returns the value of Forced.
+func (s *MediaTrack) GetForced() bool {
+	return s.Forced
+}
+
+// GetHearingImpaired returns the value of HearingImpaired.
+func (s *MediaTrack) GetHearingImpaired() bool {
+	return s.HearingImpaired
+}
+
+// GetText returns the value of Text.
+func (s *MediaTrack) GetText() bool {
+	return s.Text
+}
+
+// SetIndex sets the value of Index.
+func (s *MediaTrack) SetIndex(val int) {
+	s.Index = val
+}
+
+// SetKind sets the value of Kind.
+func (s *MediaTrack) SetKind(val MediaTrackKind) {
+	s.Kind = val
+}
+
+// SetCodec sets the value of Codec.
+func (s *MediaTrack) SetCodec(val string) {
+	s.Codec = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *MediaTrack) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetName sets the value of Name.
+func (s *MediaTrack) SetName(val string) {
+	s.Name = val
+}
+
+// SetDefault sets the value of Default.
+func (s *MediaTrack) SetDefault(val bool) {
+	s.Default = val
+}
+
+// SetForced sets the value of Forced.
+func (s *MediaTrack) SetForced(val bool) {
+	s.Forced = val
+}
+
+// SetHearingImpaired sets the value of HearingImpaired.
+func (s *MediaTrack) SetHearingImpaired(val bool) {
+	s.HearingImpaired = val
+}
+
+// SetText sets the value of Text.
+func (s *MediaTrack) SetText(val bool) {
+	s.Text = val
+}
+
+type MediaTrackKind string
+
+const (
+	MediaTrackKindVideo    MediaTrackKind = "video"
+	MediaTrackKindAudio    MediaTrackKind = "audio"
+	MediaTrackKindSubtitle MediaTrackKind = "subtitle"
+)
+
+// AllValues returns all MediaTrackKind values.
+func (MediaTrackKind) AllValues() []MediaTrackKind {
+	return []MediaTrackKind{
+		MediaTrackKindVideo,
+		MediaTrackKindAudio,
+		MediaTrackKindSubtitle,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MediaTrackKind) MarshalText() ([]byte, error) {
+	switch s {
+	case MediaTrackKindVideo:
+		return []byte(s), nil
+	case MediaTrackKindAudio:
+		return []byte(s), nil
+	case MediaTrackKindSubtitle:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MediaTrackKind) UnmarshalText(data []byte) error {
+	switch MediaTrackKind(data) {
+	case MediaTrackKindVideo:
+		*s = MediaTrackKindVideo
+		return nil
+	case MediaTrackKindAudio:
+		*s = MediaTrackKindAudio
+		return nil
+	case MediaTrackKindSubtitle:
+		*s = MediaTrackKindSubtitle
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/MetadataProfile
@@ -16118,6 +16361,52 @@ func (o OptListWantedEpisodesKind) Or(d ListWantedEpisodesKind) ListWantedEpisod
 	return d
 }
 
+// NewOptListWantedSubtitlesKind returns new OptListWantedSubtitlesKind with value set to v.
+func NewOptListWantedSubtitlesKind(v ListWantedSubtitlesKind) OptListWantedSubtitlesKind {
+	return OptListWantedSubtitlesKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListWantedSubtitlesKind is optional ListWantedSubtitlesKind.
+type OptListWantedSubtitlesKind struct {
+	Value ListWantedSubtitlesKind
+	Set   bool
+}
+
+// IsSet returns true if OptListWantedSubtitlesKind was set.
+func (o OptListWantedSubtitlesKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListWantedSubtitlesKind) Reset() {
+	var v ListWantedSubtitlesKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListWantedSubtitlesKind) SetTo(v ListWantedSubtitlesKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListWantedSubtitlesKind) Get() (v ListWantedSubtitlesKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListWantedSubtitlesKind) Or(d ListWantedSubtitlesKind) ListWantedSubtitlesKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptMediaKind returns new OptMediaKind with value set to v.
 func NewOptMediaKind(v MediaKind) OptMediaKind {
 	return OptMediaKind{
@@ -17130,6 +17419,52 @@ func (o OptSearchType) Or(d SearchType) SearchType {
 	return d
 }
 
+// NewOptSearchWantedSubtitlesReqKind returns new OptSearchWantedSubtitlesReqKind with value set to v.
+func NewOptSearchWantedSubtitlesReqKind(v SearchWantedSubtitlesReqKind) OptSearchWantedSubtitlesReqKind {
+	return OptSearchWantedSubtitlesReqKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchWantedSubtitlesReqKind is optional SearchWantedSubtitlesReqKind.
+type OptSearchWantedSubtitlesReqKind struct {
+	Value SearchWantedSubtitlesReqKind
+	Set   bool
+}
+
+// IsSet returns true if OptSearchWantedSubtitlesReqKind was set.
+func (o OptSearchWantedSubtitlesReqKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchWantedSubtitlesReqKind) Reset() {
+	var v SearchWantedSubtitlesReqKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchWantedSubtitlesReqKind) SetTo(v SearchWantedSubtitlesReqKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchWantedSubtitlesReqKind) Get() (v SearchWantedSubtitlesReqKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchWantedSubtitlesReqKind) Or(d SearchWantedSubtitlesReqKind) SearchWantedSubtitlesReqKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptSeries returns new OptSeries with value set to v.
 func NewOptSeries(v Series) OptSeries {
 	return OptSeries{
@@ -17354,6 +17689,144 @@ func (o OptString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSubtitleProfile returns new OptSubtitleProfile with value set to v.
+func NewOptSubtitleProfile(v SubtitleProfile) OptSubtitleProfile {
+	return OptSubtitleProfile{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSubtitleProfile is optional SubtitleProfile.
+type OptSubtitleProfile struct {
+	Value SubtitleProfile
+	Set   bool
+}
+
+// IsSet returns true if OptSubtitleProfile was set.
+func (o OptSubtitleProfile) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSubtitleProfile) Reset() {
+	var v SubtitleProfile
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSubtitleProfile) SetTo(v SubtitleProfile) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSubtitleProfile) Get() (v SubtitleProfile, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSubtitleProfile) Or(d SubtitleProfile) SubtitleProfile {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSubtitleProfileAssignAll returns new OptSubtitleProfileAssignAll with value set to v.
+func NewOptSubtitleProfileAssignAll(v SubtitleProfileAssignAll) OptSubtitleProfileAssignAll {
+	return OptSubtitleProfileAssignAll{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSubtitleProfileAssignAll is optional SubtitleProfileAssignAll.
+type OptSubtitleProfileAssignAll struct {
+	Value SubtitleProfileAssignAll
+	Set   bool
+}
+
+// IsSet returns true if OptSubtitleProfileAssignAll was set.
+func (o OptSubtitleProfileAssignAll) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSubtitleProfileAssignAll) Reset() {
+	var v SubtitleProfileAssignAll
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSubtitleProfileAssignAll) SetTo(v SubtitleProfileAssignAll) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSubtitleProfileAssignAll) Get() (v SubtitleProfileAssignAll, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSubtitleProfileAssignAll) Or(d SubtitleProfileAssignAll) SubtitleProfileAssignAll {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSubtitleSettingsInputPreferredFormat returns new OptSubtitleSettingsInputPreferredFormat with value set to v.
+func NewOptSubtitleSettingsInputPreferredFormat(v SubtitleSettingsInputPreferredFormat) OptSubtitleSettingsInputPreferredFormat {
+	return OptSubtitleSettingsInputPreferredFormat{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSubtitleSettingsInputPreferredFormat is optional SubtitleSettingsInputPreferredFormat.
+type OptSubtitleSettingsInputPreferredFormat struct {
+	Value SubtitleSettingsInputPreferredFormat
+	Set   bool
+}
+
+// IsSet returns true if OptSubtitleSettingsInputPreferredFormat was set.
+func (o OptSubtitleSettingsInputPreferredFormat) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSubtitleSettingsInputPreferredFormat) Reset() {
+	var v SubtitleSettingsInputPreferredFormat
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSubtitleSettingsInputPreferredFormat) SetTo(v SubtitleSettingsInputPreferredFormat) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSubtitleSettingsInputPreferredFormat) Get() (v SubtitleSettingsInputPreferredFormat, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSubtitleSettingsInputPreferredFormat) Or(d SubtitleSettingsInputPreferredFormat) SubtitleSettingsInputPreferredFormat {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -21226,6 +21699,83 @@ func (s *SearchType) UnmarshalText(data []byte) error {
 	}
 }
 
+type SearchWantedSubtitlesReq struct {
+	Refs []string                        `json:"refs"`
+	All  OptBool                         `json:"all"`
+	Kind OptSearchWantedSubtitlesReqKind `json:"kind"`
+}
+
+// GetRefs returns the value of Refs.
+func (s *SearchWantedSubtitlesReq) GetRefs() []string {
+	return s.Refs
+}
+
+// GetAll returns the value of All.
+func (s *SearchWantedSubtitlesReq) GetAll() OptBool {
+	return s.All
+}
+
+// GetKind returns the value of Kind.
+func (s *SearchWantedSubtitlesReq) GetKind() OptSearchWantedSubtitlesReqKind {
+	return s.Kind
+}
+
+// SetRefs sets the value of Refs.
+func (s *SearchWantedSubtitlesReq) SetRefs(val []string) {
+	s.Refs = val
+}
+
+// SetAll sets the value of All.
+func (s *SearchWantedSubtitlesReq) SetAll(val OptBool) {
+	s.All = val
+}
+
+// SetKind sets the value of Kind.
+func (s *SearchWantedSubtitlesReq) SetKind(val OptSearchWantedSubtitlesReqKind) {
+	s.Kind = val
+}
+
+type SearchWantedSubtitlesReqKind string
+
+const (
+	SearchWantedSubtitlesReqKindMovie   SearchWantedSubtitlesReqKind = "movie"
+	SearchWantedSubtitlesReqKindEpisode SearchWantedSubtitlesReqKind = "episode"
+)
+
+// AllValues returns all SearchWantedSubtitlesReqKind values.
+func (SearchWantedSubtitlesReqKind) AllValues() []SearchWantedSubtitlesReqKind {
+	return []SearchWantedSubtitlesReqKind{
+		SearchWantedSubtitlesReqKindMovie,
+		SearchWantedSubtitlesReqKindEpisode,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SearchWantedSubtitlesReqKind) MarshalText() ([]byte, error) {
+	switch s {
+	case SearchWantedSubtitlesReqKindMovie:
+		return []byte(s), nil
+	case SearchWantedSubtitlesReqKindEpisode:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SearchWantedSubtitlesReqKind) UnmarshalText(data []byte) error {
+	switch SearchWantedSubtitlesReqKind(data) {
+	case SearchWantedSubtitlesReqKindMovie:
+		*s = SearchWantedSubtitlesReqKindMovie
+		return nil
+	case SearchWantedSubtitlesReqKindEpisode:
+		*s = SearchWantedSubtitlesReqKindEpisode
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/SeasonInfo
 type SeasonInfo struct {
 	ID        int64       `json:"id"`
@@ -23665,6 +24215,20 @@ func (s *SharedCustomFormat) init() SharedCustomFormat {
 	return m
 }
 
+type ShiftSubtitleReq struct {
+	OffsetMs int64 `json:"offsetMs"`
+}
+
+// GetOffsetMs returns the value of OffsetMs.
+func (s *ShiftSubtitleReq) GetOffsetMs() int64 {
+	return s.OffsetMs
+}
+
+// SetOffsetMs sets the value of OffsetMs.
+func (s *ShiftSubtitleReq) SetOffsetMs(val int64) {
+	s.OffsetMs = val
+}
+
 // SignedInHeaders wraps AuthResult with response headers.
 type SignedInHeaders struct {
 	SetCookie OptString
@@ -23689,6 +24253,2346 @@ func (s *SignedInHeaders) SetSetCookie(val OptString) {
 // SetResponse sets the value of Response.
 func (s *SignedInHeaders) SetResponse(val AuthResult) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/Subtitle
+type Subtitle struct {
+	ID              int64          `json:"id"`
+	MediaFileId     int64          `json:"mediaFileId"`
+	ItemRef         string         `json:"itemRef"`
+	Path            string         `json:"path"`
+	Language        string         `json:"language"`
+	Forced          bool           `json:"forced"`
+	HearingImpaired bool           `json:"hearingImpaired"`
+	Format          string         `json:"format"`
+	Source          SubtitleSource `json:"source"`
+	Provider        string         `json:"provider"`
+	ProviderId      string         `json:"providerId"`
+	Release         string         `json:"release"`
+	Score           OptInt         `json:"score"`
+	// Encoding of the original download (the saved file is UTF-8).
+	Encoding string `json:"encoding"`
+	// '' (never), running, done, not_confident, failed, unavailable.
+	SyncState    string      `json:"syncState"`
+	SyncMessage  string      `json:"syncMessage"`
+	SyncOffsetMs int64       `json:"syncOffsetMs"`
+	SyncScale    float64     `json:"syncScale"`
+	SyncAt       OptDateTime `json:"syncAt"`
+	AddedAt      time.Time   `json:"addedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *Subtitle) GetID() int64 {
+	return s.ID
+}
+
+// GetMediaFileId returns the value of MediaFileId.
+func (s *Subtitle) GetMediaFileId() int64 {
+	return s.MediaFileId
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *Subtitle) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetPath returns the value of Path.
+func (s *Subtitle) GetPath() string {
+	return s.Path
+}
+
+// GetLanguage returns the value of Language.
+func (s *Subtitle) GetLanguage() string {
+	return s.Language
+}
+
+// GetForced returns the value of Forced.
+func (s *Subtitle) GetForced() bool {
+	return s.Forced
+}
+
+// GetHearingImpaired returns the value of HearingImpaired.
+func (s *Subtitle) GetHearingImpaired() bool {
+	return s.HearingImpaired
+}
+
+// GetFormat returns the value of Format.
+func (s *Subtitle) GetFormat() string {
+	return s.Format
+}
+
+// GetSource returns the value of Source.
+func (s *Subtitle) GetSource() SubtitleSource {
+	return s.Source
+}
+
+// GetProvider returns the value of Provider.
+func (s *Subtitle) GetProvider() string {
+	return s.Provider
+}
+
+// GetProviderId returns the value of ProviderId.
+func (s *Subtitle) GetProviderId() string {
+	return s.ProviderId
+}
+
+// GetRelease returns the value of Release.
+func (s *Subtitle) GetRelease() string {
+	return s.Release
+}
+
+// GetScore returns the value of Score.
+func (s *Subtitle) GetScore() OptInt {
+	return s.Score
+}
+
+// GetEncoding returns the value of Encoding.
+func (s *Subtitle) GetEncoding() string {
+	return s.Encoding
+}
+
+// GetSyncState returns the value of SyncState.
+func (s *Subtitle) GetSyncState() string {
+	return s.SyncState
+}
+
+// GetSyncMessage returns the value of SyncMessage.
+func (s *Subtitle) GetSyncMessage() string {
+	return s.SyncMessage
+}
+
+// GetSyncOffsetMs returns the value of SyncOffsetMs.
+func (s *Subtitle) GetSyncOffsetMs() int64 {
+	return s.SyncOffsetMs
+}
+
+// GetSyncScale returns the value of SyncScale.
+func (s *Subtitle) GetSyncScale() float64 {
+	return s.SyncScale
+}
+
+// GetSyncAt returns the value of SyncAt.
+func (s *Subtitle) GetSyncAt() OptDateTime {
+	return s.SyncAt
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *Subtitle) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// SetID sets the value of ID.
+func (s *Subtitle) SetID(val int64) {
+	s.ID = val
+}
+
+// SetMediaFileId sets the value of MediaFileId.
+func (s *Subtitle) SetMediaFileId(val int64) {
+	s.MediaFileId = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *Subtitle) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetPath sets the value of Path.
+func (s *Subtitle) SetPath(val string) {
+	s.Path = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *Subtitle) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetForced sets the value of Forced.
+func (s *Subtitle) SetForced(val bool) {
+	s.Forced = val
+}
+
+// SetHearingImpaired sets the value of HearingImpaired.
+func (s *Subtitle) SetHearingImpaired(val bool) {
+	s.HearingImpaired = val
+}
+
+// SetFormat sets the value of Format.
+func (s *Subtitle) SetFormat(val string) {
+	s.Format = val
+}
+
+// SetSource sets the value of Source.
+func (s *Subtitle) SetSource(val SubtitleSource) {
+	s.Source = val
+}
+
+// SetProvider sets the value of Provider.
+func (s *Subtitle) SetProvider(val string) {
+	s.Provider = val
+}
+
+// SetProviderId sets the value of ProviderId.
+func (s *Subtitle) SetProviderId(val string) {
+	s.ProviderId = val
+}
+
+// SetRelease sets the value of Release.
+func (s *Subtitle) SetRelease(val string) {
+	s.Release = val
+}
+
+// SetScore sets the value of Score.
+func (s *Subtitle) SetScore(val OptInt) {
+	s.Score = val
+}
+
+// SetEncoding sets the value of Encoding.
+func (s *Subtitle) SetEncoding(val string) {
+	s.Encoding = val
+}
+
+// SetSyncState sets the value of SyncState.
+func (s *Subtitle) SetSyncState(val string) {
+	s.SyncState = val
+}
+
+// SetSyncMessage sets the value of SyncMessage.
+func (s *Subtitle) SetSyncMessage(val string) {
+	s.SyncMessage = val
+}
+
+// SetSyncOffsetMs sets the value of SyncOffsetMs.
+func (s *Subtitle) SetSyncOffsetMs(val int64) {
+	s.SyncOffsetMs = val
+}
+
+// SetSyncScale sets the value of SyncScale.
+func (s *Subtitle) SetSyncScale(val float64) {
+	s.SyncScale = val
+}
+
+// SetSyncAt sets the value of SyncAt.
+func (s *Subtitle) SetSyncAt(val OptDateTime) {
+	s.SyncAt = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *Subtitle) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// Ref: #/components/schemas/SubtitleBlacklistEntry
+type SubtitleBlacklistEntry struct {
+	ID         int64     `json:"id"`
+	ItemRef    string    `json:"itemRef"`
+	Provider   string    `json:"provider"`
+	ProviderId string    `json:"providerId"`
+	Language   string    `json:"language"`
+	Release    string    `json:"release"`
+	At         time.Time `json:"at"`
+}
+
+// GetID returns the value of ID.
+func (s *SubtitleBlacklistEntry) GetID() int64 {
+	return s.ID
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *SubtitleBlacklistEntry) GetItemRef() string {
+	return s.ItemRef
+}
+
+// GetProvider returns the value of Provider.
+func (s *SubtitleBlacklistEntry) GetProvider() string {
+	return s.Provider
+}
+
+// GetProviderId returns the value of ProviderId.
+func (s *SubtitleBlacklistEntry) GetProviderId() string {
+	return s.ProviderId
+}
+
+// GetLanguage returns the value of Language.
+func (s *SubtitleBlacklistEntry) GetLanguage() string {
+	return s.Language
+}
+
+// GetRelease returns the value of Release.
+func (s *SubtitleBlacklistEntry) GetRelease() string {
+	return s.Release
+}
+
+// GetAt returns the value of At.
+func (s *SubtitleBlacklistEntry) GetAt() time.Time {
+	return s.At
+}
+
+// SetID sets the value of ID.
+func (s *SubtitleBlacklistEntry) SetID(val int64) {
+	s.ID = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *SubtitleBlacklistEntry) SetItemRef(val string) {
+	s.ItemRef = val
+}
+
+// SetProvider sets the value of Provider.
+func (s *SubtitleBlacklistEntry) SetProvider(val string) {
+	s.Provider = val
+}
+
+// SetProviderId sets the value of ProviderId.
+func (s *SubtitleBlacklistEntry) SetProviderId(val string) {
+	s.ProviderId = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *SubtitleBlacklistEntry) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetRelease sets the value of Release.
+func (s *SubtitleBlacklistEntry) SetRelease(val string) {
+	s.Release = val
+}
+
+// SetAt sets the value of At.
+func (s *SubtitleBlacklistEntry) SetAt(val time.Time) {
+	s.At = val
+}
+
+// Ref: #/components/schemas/SubtitleCount
+type SubtitleCount struct {
+	Count int `json:"count"`
+}
+
+// GetCount returns the value of Count.
+func (s *SubtitleCount) GetCount() int {
+	return s.Count
+}
+
+// SetCount sets the value of Count.
+func (s *SubtitleCount) SetCount(val int) {
+	s.Count = val
+}
+
+// Ref: #/components/schemas/SubtitleExplanation
+type SubtitleExplanation struct {
+	// No_file, disabled, no_profile, complete, complete_embedded, no_providers, providers_unavailable,
+	// not_searched, not_found.
+	Code    string                    `json:"code"`
+	Tone    SubtitleExplanationTone   `json:"tone"`
+	Message string                    `json:"message"`
+	Params  SubtitleExplanationParams `json:"params"`
+}
+
+// GetCode returns the value of Code.
+func (s *SubtitleExplanation) GetCode() string {
+	return s.Code
+}
+
+// GetTone returns the value of Tone.
+func (s *SubtitleExplanation) GetTone() SubtitleExplanationTone {
+	return s.Tone
+}
+
+// GetMessage returns the value of Message.
+func (s *SubtitleExplanation) GetMessage() string {
+	return s.Message
+}
+
+// GetParams returns the value of Params.
+func (s *SubtitleExplanation) GetParams() SubtitleExplanationParams {
+	return s.Params
+}
+
+// SetCode sets the value of Code.
+func (s *SubtitleExplanation) SetCode(val string) {
+	s.Code = val
+}
+
+// SetTone sets the value of Tone.
+func (s *SubtitleExplanation) SetTone(val SubtitleExplanationTone) {
+	s.Tone = val
+}
+
+// SetMessage sets the value of Message.
+func (s *SubtitleExplanation) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetParams sets the value of Params.
+func (s *SubtitleExplanation) SetParams(val SubtitleExplanationParams) {
+	s.Params = val
+}
+
+type SubtitleExplanationParams map[string]jx.Raw
+
+func (s *SubtitleExplanationParams) init() SubtitleExplanationParams {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+type SubtitleExplanationTone string
+
+const (
+	SubtitleExplanationToneSuccess SubtitleExplanationTone = "success"
+	SubtitleExplanationToneInfo    SubtitleExplanationTone = "info"
+	SubtitleExplanationToneWarning SubtitleExplanationTone = "warning"
+	SubtitleExplanationToneDanger  SubtitleExplanationTone = "danger"
+)
+
+// AllValues returns all SubtitleExplanationTone values.
+func (SubtitleExplanationTone) AllValues() []SubtitleExplanationTone {
+	return []SubtitleExplanationTone{
+		SubtitleExplanationToneSuccess,
+		SubtitleExplanationToneInfo,
+		SubtitleExplanationToneWarning,
+		SubtitleExplanationToneDanger,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleExplanationTone) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleExplanationToneSuccess:
+		return []byte(s), nil
+	case SubtitleExplanationToneInfo:
+		return []byte(s), nil
+	case SubtitleExplanationToneWarning:
+		return []byte(s), nil
+	case SubtitleExplanationToneDanger:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleExplanationTone) UnmarshalText(data []byte) error {
+	switch SubtitleExplanationTone(data) {
+	case SubtitleExplanationToneSuccess:
+		*s = SubtitleExplanationToneSuccess
+		return nil
+	case SubtitleExplanationToneInfo:
+		*s = SubtitleExplanationToneInfo
+		return nil
+	case SubtitleExplanationToneWarning:
+		*s = SubtitleExplanationToneWarning
+		return nil
+	case SubtitleExplanationToneDanger:
+		*s = SubtitleExplanationToneDanger
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleItem
+type SubtitleItem struct {
+	Ref             string                    `json:"ref"`
+	Title           string                    `json:"title"`
+	FilePath        string                    `json:"filePath"`
+	HasFile         bool                      `json:"hasFile"`
+	Profile         OptSubtitleProfile        `json:"profile"`
+	ProfileSource   SubtitleItemProfileSource `json:"profileSource"`
+	ProfileOverride int64                     `json:"profileOverride"`
+	Wants           []SubtitleWantStatus      `json:"wants"`
+	Subtitles       []Subtitle                `json:"subtitles"`
+	Tracks          []MediaTrack              `json:"tracks"`
+	ProbeError      string                    `json:"probeError"`
+	Searches        int                       `json:"searches"`
+	LastSearchAt    OptDateTime               `json:"lastSearchAt"`
+	NextSearchAt    OptDateTime               `json:"nextSearchAt"`
+	LastResult      string                    `json:"lastResult"`
+	ProvidersAsked  int                       `json:"providersAsked"`
+	Explanation     SubtitleExplanation       `json:"explanation"`
+	SyncAvailable   bool                      `json:"syncAvailable"`
+}
+
+// GetRef returns the value of Ref.
+func (s *SubtitleItem) GetRef() string {
+	return s.Ref
+}
+
+// GetTitle returns the value of Title.
+func (s *SubtitleItem) GetTitle() string {
+	return s.Title
+}
+
+// GetFilePath returns the value of FilePath.
+func (s *SubtitleItem) GetFilePath() string {
+	return s.FilePath
+}
+
+// GetHasFile returns the value of HasFile.
+func (s *SubtitleItem) GetHasFile() bool {
+	return s.HasFile
+}
+
+// GetProfile returns the value of Profile.
+func (s *SubtitleItem) GetProfile() OptSubtitleProfile {
+	return s.Profile
+}
+
+// GetProfileSource returns the value of ProfileSource.
+func (s *SubtitleItem) GetProfileSource() SubtitleItemProfileSource {
+	return s.ProfileSource
+}
+
+// GetProfileOverride returns the value of ProfileOverride.
+func (s *SubtitleItem) GetProfileOverride() int64 {
+	return s.ProfileOverride
+}
+
+// GetWants returns the value of Wants.
+func (s *SubtitleItem) GetWants() []SubtitleWantStatus {
+	return s.Wants
+}
+
+// GetSubtitles returns the value of Subtitles.
+func (s *SubtitleItem) GetSubtitles() []Subtitle {
+	return s.Subtitles
+}
+
+// GetTracks returns the value of Tracks.
+func (s *SubtitleItem) GetTracks() []MediaTrack {
+	return s.Tracks
+}
+
+// GetProbeError returns the value of ProbeError.
+func (s *SubtitleItem) GetProbeError() string {
+	return s.ProbeError
+}
+
+// GetSearches returns the value of Searches.
+func (s *SubtitleItem) GetSearches() int {
+	return s.Searches
+}
+
+// GetLastSearchAt returns the value of LastSearchAt.
+func (s *SubtitleItem) GetLastSearchAt() OptDateTime {
+	return s.LastSearchAt
+}
+
+// GetNextSearchAt returns the value of NextSearchAt.
+func (s *SubtitleItem) GetNextSearchAt() OptDateTime {
+	return s.NextSearchAt
+}
+
+// GetLastResult returns the value of LastResult.
+func (s *SubtitleItem) GetLastResult() string {
+	return s.LastResult
+}
+
+// GetProvidersAsked returns the value of ProvidersAsked.
+func (s *SubtitleItem) GetProvidersAsked() int {
+	return s.ProvidersAsked
+}
+
+// GetExplanation returns the value of Explanation.
+func (s *SubtitleItem) GetExplanation() SubtitleExplanation {
+	return s.Explanation
+}
+
+// GetSyncAvailable returns the value of SyncAvailable.
+func (s *SubtitleItem) GetSyncAvailable() bool {
+	return s.SyncAvailable
+}
+
+// SetRef sets the value of Ref.
+func (s *SubtitleItem) SetRef(val string) {
+	s.Ref = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SubtitleItem) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetFilePath sets the value of FilePath.
+func (s *SubtitleItem) SetFilePath(val string) {
+	s.FilePath = val
+}
+
+// SetHasFile sets the value of HasFile.
+func (s *SubtitleItem) SetHasFile(val bool) {
+	s.HasFile = val
+}
+
+// SetProfile sets the value of Profile.
+func (s *SubtitleItem) SetProfile(val OptSubtitleProfile) {
+	s.Profile = val
+}
+
+// SetProfileSource sets the value of ProfileSource.
+func (s *SubtitleItem) SetProfileSource(val SubtitleItemProfileSource) {
+	s.ProfileSource = val
+}
+
+// SetProfileOverride sets the value of ProfileOverride.
+func (s *SubtitleItem) SetProfileOverride(val int64) {
+	s.ProfileOverride = val
+}
+
+// SetWants sets the value of Wants.
+func (s *SubtitleItem) SetWants(val []SubtitleWantStatus) {
+	s.Wants = val
+}
+
+// SetSubtitles sets the value of Subtitles.
+func (s *SubtitleItem) SetSubtitles(val []Subtitle) {
+	s.Subtitles = val
+}
+
+// SetTracks sets the value of Tracks.
+func (s *SubtitleItem) SetTracks(val []MediaTrack) {
+	s.Tracks = val
+}
+
+// SetProbeError sets the value of ProbeError.
+func (s *SubtitleItem) SetProbeError(val string) {
+	s.ProbeError = val
+}
+
+// SetSearches sets the value of Searches.
+func (s *SubtitleItem) SetSearches(val int) {
+	s.Searches = val
+}
+
+// SetLastSearchAt sets the value of LastSearchAt.
+func (s *SubtitleItem) SetLastSearchAt(val OptDateTime) {
+	s.LastSearchAt = val
+}
+
+// SetNextSearchAt sets the value of NextSearchAt.
+func (s *SubtitleItem) SetNextSearchAt(val OptDateTime) {
+	s.NextSearchAt = val
+}
+
+// SetLastResult sets the value of LastResult.
+func (s *SubtitleItem) SetLastResult(val string) {
+	s.LastResult = val
+}
+
+// SetProvidersAsked sets the value of ProvidersAsked.
+func (s *SubtitleItem) SetProvidersAsked(val int) {
+	s.ProvidersAsked = val
+}
+
+// SetExplanation sets the value of Explanation.
+func (s *SubtitleItem) SetExplanation(val SubtitleExplanation) {
+	s.Explanation = val
+}
+
+// SetSyncAvailable sets the value of SyncAvailable.
+func (s *SubtitleItem) SetSyncAvailable(val bool) {
+	s.SyncAvailable = val
+}
+
+type SubtitleItemProfileSource string
+
+const (
+	SubtitleItemProfileSourceDefault SubtitleItemProfileSource = "default"
+	SubtitleItemProfileSourceItem    SubtitleItemProfileSource = "item"
+	SubtitleItemProfileSourceNone    SubtitleItemProfileSource = "none"
+)
+
+// AllValues returns all SubtitleItemProfileSource values.
+func (SubtitleItemProfileSource) AllValues() []SubtitleItemProfileSource {
+	return []SubtitleItemProfileSource{
+		SubtitleItemProfileSourceDefault,
+		SubtitleItemProfileSourceItem,
+		SubtitleItemProfileSourceNone,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleItemProfileSource) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleItemProfileSourceDefault:
+		return []byte(s), nil
+	case SubtitleItemProfileSourceItem:
+		return []byte(s), nil
+	case SubtitleItemProfileSourceNone:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleItemProfileSource) UnmarshalText(data []byte) error {
+	switch SubtitleItemProfileSource(data) {
+	case SubtitleItemProfileSourceDefault:
+		*s = SubtitleItemProfileSourceDefault
+		return nil
+	case SubtitleItemProfileSourceItem:
+		*s = SubtitleItemProfileSourceItem
+		return nil
+	case SubtitleItemProfileSourceNone:
+		*s = SubtitleItemProfileSourceNone
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleManualSearch
+type SubtitleManualSearch struct {
+	Results   []SubtitleResult         `json:"results"`
+	Providers []SubtitleProviderReport `json:"providers"`
+}
+
+// GetResults returns the value of Results.
+func (s *SubtitleManualSearch) GetResults() []SubtitleResult {
+	return s.Results
+}
+
+// GetProviders returns the value of Providers.
+func (s *SubtitleManualSearch) GetProviders() []SubtitleProviderReport {
+	return s.Providers
+}
+
+// SetResults sets the value of Results.
+func (s *SubtitleManualSearch) SetResults(val []SubtitleResult) {
+	s.Results = val
+}
+
+// SetProviders sets the value of Providers.
+func (s *SubtitleManualSearch) SetProviders(val []SubtitleProviderReport) {
+	s.Providers = val
+}
+
+// Ref: #/components/schemas/SubtitlePreview
+type SubtitlePreview struct {
+	Total int                        `json:"total"`
+	Lines []SubtitlePreviewLinesItem `json:"lines"`
+}
+
+// GetTotal returns the value of Total.
+func (s *SubtitlePreview) GetTotal() int {
+	return s.Total
+}
+
+// GetLines returns the value of Lines.
+func (s *SubtitlePreview) GetLines() []SubtitlePreviewLinesItem {
+	return s.Lines
+}
+
+// SetTotal sets the value of Total.
+func (s *SubtitlePreview) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetLines sets the value of Lines.
+func (s *SubtitlePreview) SetLines(val []SubtitlePreviewLinesItem) {
+	s.Lines = val
+}
+
+type SubtitlePreviewLinesItem struct {
+	StartMs int64  `json:"startMs"`
+	EndMs   int64  `json:"endMs"`
+	Text    string `json:"text"`
+}
+
+// GetStartMs returns the value of StartMs.
+func (s *SubtitlePreviewLinesItem) GetStartMs() int64 {
+	return s.StartMs
+}
+
+// GetEndMs returns the value of EndMs.
+func (s *SubtitlePreviewLinesItem) GetEndMs() int64 {
+	return s.EndMs
+}
+
+// GetText returns the value of Text.
+func (s *SubtitlePreviewLinesItem) GetText() string {
+	return s.Text
+}
+
+// SetStartMs sets the value of StartMs.
+func (s *SubtitlePreviewLinesItem) SetStartMs(val int64) {
+	s.StartMs = val
+}
+
+// SetEndMs sets the value of EndMs.
+func (s *SubtitlePreviewLinesItem) SetEndMs(val int64) {
+	s.EndMs = val
+}
+
+// SetText sets the value of Text.
+func (s *SubtitlePreviewLinesItem) SetText(val string) {
+	s.Text = val
+}
+
+// Ref: #/components/schemas/SubtitleProfile
+type SubtitleProfile struct {
+	ID        int64          `json:"id"`
+	Name      string         `json:"name"`
+	Languages []SubtitleWant `json:"languages"`
+	// A matching text or image track inside the video counts as present.
+	SkipEmbedded bool `json:"skipEmbedded"`
+	// Stop once any language (in order) is present.
+	Cutoff bool `json:"cutoff"`
+}
+
+// GetID returns the value of ID.
+func (s *SubtitleProfile) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *SubtitleProfile) GetName() string {
+	return s.Name
+}
+
+// GetLanguages returns the value of Languages.
+func (s *SubtitleProfile) GetLanguages() []SubtitleWant {
+	return s.Languages
+}
+
+// GetSkipEmbedded returns the value of SkipEmbedded.
+func (s *SubtitleProfile) GetSkipEmbedded() bool {
+	return s.SkipEmbedded
+}
+
+// GetCutoff returns the value of Cutoff.
+func (s *SubtitleProfile) GetCutoff() bool {
+	return s.Cutoff
+}
+
+// SetID sets the value of ID.
+func (s *SubtitleProfile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *SubtitleProfile) SetName(val string) {
+	s.Name = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *SubtitleProfile) SetLanguages(val []SubtitleWant) {
+	s.Languages = val
+}
+
+// SetSkipEmbedded sets the value of SkipEmbedded.
+func (s *SubtitleProfile) SetSkipEmbedded(val bool) {
+	s.SkipEmbedded = val
+}
+
+// SetCutoff sets the value of Cutoff.
+func (s *SubtitleProfile) SetCutoff(val bool) {
+	s.Cutoff = val
+}
+
+// Ref: #/components/schemas/SubtitleProfileAssign
+type SubtitleProfileAssign struct {
+	ItemIds []int64 `json:"itemIds"`
+	// Every movie or every series instead of itemIds.
+	All       OptSubtitleProfileAssignAll `json:"all"`
+	ProfileId int64                       `json:"profileId"`
+}
+
+// GetItemIds returns the value of ItemIds.
+func (s *SubtitleProfileAssign) GetItemIds() []int64 {
+	return s.ItemIds
+}
+
+// GetAll returns the value of All.
+func (s *SubtitleProfileAssign) GetAll() OptSubtitleProfileAssignAll {
+	return s.All
+}
+
+// GetProfileId returns the value of ProfileId.
+func (s *SubtitleProfileAssign) GetProfileId() int64 {
+	return s.ProfileId
+}
+
+// SetItemIds sets the value of ItemIds.
+func (s *SubtitleProfileAssign) SetItemIds(val []int64) {
+	s.ItemIds = val
+}
+
+// SetAll sets the value of All.
+func (s *SubtitleProfileAssign) SetAll(val OptSubtitleProfileAssignAll) {
+	s.All = val
+}
+
+// SetProfileId sets the value of ProfileId.
+func (s *SubtitleProfileAssign) SetProfileId(val int64) {
+	s.ProfileId = val
+}
+
+// Every movie or every series instead of itemIds.
+type SubtitleProfileAssignAll string
+
+const (
+	SubtitleProfileAssignAllMovies SubtitleProfileAssignAll = "movies"
+	SubtitleProfileAssignAllSeries SubtitleProfileAssignAll = "series"
+)
+
+// AllValues returns all SubtitleProfileAssignAll values.
+func (SubtitleProfileAssignAll) AllValues() []SubtitleProfileAssignAll {
+	return []SubtitleProfileAssignAll{
+		SubtitleProfileAssignAllMovies,
+		SubtitleProfileAssignAllSeries,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleProfileAssignAll) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleProfileAssignAllMovies:
+		return []byte(s), nil
+	case SubtitleProfileAssignAllSeries:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleProfileAssignAll) UnmarshalText(data []byte) error {
+	switch SubtitleProfileAssignAll(data) {
+	case SubtitleProfileAssignAllMovies:
+		*s = SubtitleProfileAssignAllMovies
+		return nil
+	case SubtitleProfileAssignAllSeries:
+		*s = SubtitleProfileAssignAllSeries
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleProfileInput
+type SubtitleProfileInput struct {
+	Name         string         `json:"name"`
+	Languages    []SubtitleWant `json:"languages"`
+	SkipEmbedded OptBool        `json:"skipEmbedded"`
+	Cutoff       OptBool        `json:"cutoff"`
+}
+
+// GetName returns the value of Name.
+func (s *SubtitleProfileInput) GetName() string {
+	return s.Name
+}
+
+// GetLanguages returns the value of Languages.
+func (s *SubtitleProfileInput) GetLanguages() []SubtitleWant {
+	return s.Languages
+}
+
+// GetSkipEmbedded returns the value of SkipEmbedded.
+func (s *SubtitleProfileInput) GetSkipEmbedded() OptBool {
+	return s.SkipEmbedded
+}
+
+// GetCutoff returns the value of Cutoff.
+func (s *SubtitleProfileInput) GetCutoff() OptBool {
+	return s.Cutoff
+}
+
+// SetName sets the value of Name.
+func (s *SubtitleProfileInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *SubtitleProfileInput) SetLanguages(val []SubtitleWant) {
+	s.Languages = val
+}
+
+// SetSkipEmbedded sets the value of SkipEmbedded.
+func (s *SubtitleProfileInput) SetSkipEmbedded(val OptBool) {
+	s.SkipEmbedded = val
+}
+
+// SetCutoff sets the value of Cutoff.
+func (s *SubtitleProfileInput) SetCutoff(val OptBool) {
+	s.Cutoff = val
+}
+
+// Ref: #/components/schemas/SubtitleProvider
+type SubtitleProvider struct {
+	Name     string                       `json:"name"`
+	Enabled  bool                         `json:"enabled"`
+	Priority int                          `json:"priority"`
+	Username string                       `json:"username"`
+	ApiKey   SecretState                  `json:"apiKey"`
+	Password SecretState                  `json:"password"`
+	Fields   []SubtitleProviderFieldsItem `json:"fields"`
+	// Languages the provider offers (empty = all).
+	Languages []string    `json:"languages"`
+	NeedsKey  bool        `json:"needsKey"`
+	Website   string      `json:"website"`
+	Failures  int         `json:"failures"`
+	RetryAt   OptDateTime `json:"retryAt"`
+	LastError string      `json:"lastError"`
+	// Quota, rate_limited, auth, missing_key, bad_response, timeout, connection, error.
+	LastErrorCode  string      `json:"lastErrorCode"`
+	LastErrorAt    OptDateTime `json:"lastErrorAt"`
+	LastSuccessAt  OptDateTime `json:"lastSuccessAt"`
+	QuotaRemaining OptInt      `json:"quotaRemaining"`
+	QuotaLimit     OptInt      `json:"quotaLimit"`
+	QuotaResetAt   OptDateTime `json:"quotaResetAt"`
+	Account        string      `json:"account"`
+	DownloadsToday int         `json:"downloadsToday"`
+}
+
+// GetName returns the value of Name.
+func (s *SubtitleProvider) GetName() string {
+	return s.Name
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *SubtitleProvider) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetPriority returns the value of Priority.
+func (s *SubtitleProvider) GetPriority() int {
+	return s.Priority
+}
+
+// GetUsername returns the value of Username.
+func (s *SubtitleProvider) GetUsername() string {
+	return s.Username
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *SubtitleProvider) GetApiKey() SecretState {
+	return s.ApiKey
+}
+
+// GetPassword returns the value of Password.
+func (s *SubtitleProvider) GetPassword() SecretState {
+	return s.Password
+}
+
+// GetFields returns the value of Fields.
+func (s *SubtitleProvider) GetFields() []SubtitleProviderFieldsItem {
+	return s.Fields
+}
+
+// GetLanguages returns the value of Languages.
+func (s *SubtitleProvider) GetLanguages() []string {
+	return s.Languages
+}
+
+// GetNeedsKey returns the value of NeedsKey.
+func (s *SubtitleProvider) GetNeedsKey() bool {
+	return s.NeedsKey
+}
+
+// GetWebsite returns the value of Website.
+func (s *SubtitleProvider) GetWebsite() string {
+	return s.Website
+}
+
+// GetFailures returns the value of Failures.
+func (s *SubtitleProvider) GetFailures() int {
+	return s.Failures
+}
+
+// GetRetryAt returns the value of RetryAt.
+func (s *SubtitleProvider) GetRetryAt() OptDateTime {
+	return s.RetryAt
+}
+
+// GetLastError returns the value of LastError.
+func (s *SubtitleProvider) GetLastError() string {
+	return s.LastError
+}
+
+// GetLastErrorCode returns the value of LastErrorCode.
+func (s *SubtitleProvider) GetLastErrorCode() string {
+	return s.LastErrorCode
+}
+
+// GetLastErrorAt returns the value of LastErrorAt.
+func (s *SubtitleProvider) GetLastErrorAt() OptDateTime {
+	return s.LastErrorAt
+}
+
+// GetLastSuccessAt returns the value of LastSuccessAt.
+func (s *SubtitleProvider) GetLastSuccessAt() OptDateTime {
+	return s.LastSuccessAt
+}
+
+// GetQuotaRemaining returns the value of QuotaRemaining.
+func (s *SubtitleProvider) GetQuotaRemaining() OptInt {
+	return s.QuotaRemaining
+}
+
+// GetQuotaLimit returns the value of QuotaLimit.
+func (s *SubtitleProvider) GetQuotaLimit() OptInt {
+	return s.QuotaLimit
+}
+
+// GetQuotaResetAt returns the value of QuotaResetAt.
+func (s *SubtitleProvider) GetQuotaResetAt() OptDateTime {
+	return s.QuotaResetAt
+}
+
+// GetAccount returns the value of Account.
+func (s *SubtitleProvider) GetAccount() string {
+	return s.Account
+}
+
+// GetDownloadsToday returns the value of DownloadsToday.
+func (s *SubtitleProvider) GetDownloadsToday() int {
+	return s.DownloadsToday
+}
+
+// SetName sets the value of Name.
+func (s *SubtitleProvider) SetName(val string) {
+	s.Name = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *SubtitleProvider) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetPriority sets the value of Priority.
+func (s *SubtitleProvider) SetPriority(val int) {
+	s.Priority = val
+}
+
+// SetUsername sets the value of Username.
+func (s *SubtitleProvider) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *SubtitleProvider) SetApiKey(val SecretState) {
+	s.ApiKey = val
+}
+
+// SetPassword sets the value of Password.
+func (s *SubtitleProvider) SetPassword(val SecretState) {
+	s.Password = val
+}
+
+// SetFields sets the value of Fields.
+func (s *SubtitleProvider) SetFields(val []SubtitleProviderFieldsItem) {
+	s.Fields = val
+}
+
+// SetLanguages sets the value of Languages.
+func (s *SubtitleProvider) SetLanguages(val []string) {
+	s.Languages = val
+}
+
+// SetNeedsKey sets the value of NeedsKey.
+func (s *SubtitleProvider) SetNeedsKey(val bool) {
+	s.NeedsKey = val
+}
+
+// SetWebsite sets the value of Website.
+func (s *SubtitleProvider) SetWebsite(val string) {
+	s.Website = val
+}
+
+// SetFailures sets the value of Failures.
+func (s *SubtitleProvider) SetFailures(val int) {
+	s.Failures = val
+}
+
+// SetRetryAt sets the value of RetryAt.
+func (s *SubtitleProvider) SetRetryAt(val OptDateTime) {
+	s.RetryAt = val
+}
+
+// SetLastError sets the value of LastError.
+func (s *SubtitleProvider) SetLastError(val string) {
+	s.LastError = val
+}
+
+// SetLastErrorCode sets the value of LastErrorCode.
+func (s *SubtitleProvider) SetLastErrorCode(val string) {
+	s.LastErrorCode = val
+}
+
+// SetLastErrorAt sets the value of LastErrorAt.
+func (s *SubtitleProvider) SetLastErrorAt(val OptDateTime) {
+	s.LastErrorAt = val
+}
+
+// SetLastSuccessAt sets the value of LastSuccessAt.
+func (s *SubtitleProvider) SetLastSuccessAt(val OptDateTime) {
+	s.LastSuccessAt = val
+}
+
+// SetQuotaRemaining sets the value of QuotaRemaining.
+func (s *SubtitleProvider) SetQuotaRemaining(val OptInt) {
+	s.QuotaRemaining = val
+}
+
+// SetQuotaLimit sets the value of QuotaLimit.
+func (s *SubtitleProvider) SetQuotaLimit(val OptInt) {
+	s.QuotaLimit = val
+}
+
+// SetQuotaResetAt sets the value of QuotaResetAt.
+func (s *SubtitleProvider) SetQuotaResetAt(val OptDateTime) {
+	s.QuotaResetAt = val
+}
+
+// SetAccount sets the value of Account.
+func (s *SubtitleProvider) SetAccount(val string) {
+	s.Account = val
+}
+
+// SetDownloadsToday sets the value of DownloadsToday.
+func (s *SubtitleProvider) SetDownloadsToday(val int) {
+	s.DownloadsToday = val
+}
+
+type SubtitleProviderFieldsItem string
+
+const (
+	SubtitleProviderFieldsItemApiKey   SubtitleProviderFieldsItem = "apiKey"
+	SubtitleProviderFieldsItemUsername SubtitleProviderFieldsItem = "username"
+	SubtitleProviderFieldsItemPassword SubtitleProviderFieldsItem = "password"
+)
+
+// AllValues returns all SubtitleProviderFieldsItem values.
+func (SubtitleProviderFieldsItem) AllValues() []SubtitleProviderFieldsItem {
+	return []SubtitleProviderFieldsItem{
+		SubtitleProviderFieldsItemApiKey,
+		SubtitleProviderFieldsItemUsername,
+		SubtitleProviderFieldsItemPassword,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleProviderFieldsItem) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleProviderFieldsItemApiKey:
+		return []byte(s), nil
+	case SubtitleProviderFieldsItemUsername:
+		return []byte(s), nil
+	case SubtitleProviderFieldsItemPassword:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleProviderFieldsItem) UnmarshalText(data []byte) error {
+	switch SubtitleProviderFieldsItem(data) {
+	case SubtitleProviderFieldsItemApiKey:
+		*s = SubtitleProviderFieldsItemApiKey
+		return nil
+	case SubtitleProviderFieldsItemUsername:
+		*s = SubtitleProviderFieldsItemUsername
+		return nil
+	case SubtitleProviderFieldsItemPassword:
+		*s = SubtitleProviderFieldsItemPassword
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleProviderInput
+type SubtitleProviderInput struct {
+	Enabled  OptBool   `json:"enabled"`
+	Priority OptInt    `json:"priority"`
+	Username OptString `json:"username"`
+	// Write-only; empty removes it.
+	ApiKey OptString `json:"apiKey"`
+	// Write-only; empty removes it.
+	Password OptString `json:"password"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *SubtitleProviderInput) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetPriority returns the value of Priority.
+func (s *SubtitleProviderInput) GetPriority() OptInt {
+	return s.Priority
+}
+
+// GetUsername returns the value of Username.
+func (s *SubtitleProviderInput) GetUsername() OptString {
+	return s.Username
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *SubtitleProviderInput) GetApiKey() OptString {
+	return s.ApiKey
+}
+
+// GetPassword returns the value of Password.
+func (s *SubtitleProviderInput) GetPassword() OptString {
+	return s.Password
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *SubtitleProviderInput) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetPriority sets the value of Priority.
+func (s *SubtitleProviderInput) SetPriority(val OptInt) {
+	s.Priority = val
+}
+
+// SetUsername sets the value of Username.
+func (s *SubtitleProviderInput) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *SubtitleProviderInput) SetApiKey(val OptString) {
+	s.ApiKey = val
+}
+
+// SetPassword sets the value of Password.
+func (s *SubtitleProviderInput) SetPassword(val OptString) {
+	s.Password = val
+}
+
+type SubtitleProviderName string
+
+const (
+	SubtitleProviderNameOpensubtitles SubtitleProviderName = "opensubtitles"
+	SubtitleProviderNameSubdl         SubtitleProviderName = "subdl"
+	SubtitleProviderNameJimaku        SubtitleProviderName = "jimaku"
+)
+
+// AllValues returns all SubtitleProviderName values.
+func (SubtitleProviderName) AllValues() []SubtitleProviderName {
+	return []SubtitleProviderName{
+		SubtitleProviderNameOpensubtitles,
+		SubtitleProviderNameSubdl,
+		SubtitleProviderNameJimaku,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleProviderName) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleProviderNameOpensubtitles:
+		return []byte(s), nil
+	case SubtitleProviderNameSubdl:
+		return []byte(s), nil
+	case SubtitleProviderNameJimaku:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleProviderName) UnmarshalText(data []byte) error {
+	switch SubtitleProviderName(data) {
+	case SubtitleProviderNameOpensubtitles:
+		*s = SubtitleProviderNameOpensubtitles
+		return nil
+	case SubtitleProviderNameSubdl:
+		*s = SubtitleProviderNameSubdl
+		return nil
+	case SubtitleProviderNameJimaku:
+		*s = SubtitleProviderNameJimaku
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleProviderReport
+type SubtitleProviderReport struct {
+	Provider string    `json:"provider"`
+	Results  int       `json:"results"`
+	Error    OptString `json:"error"`
+	Code     OptString `json:"code"`
+	Skipped  OptString `json:"skipped"`
+}
+
+// GetProvider returns the value of Provider.
+func (s *SubtitleProviderReport) GetProvider() string {
+	return s.Provider
+}
+
+// GetResults returns the value of Results.
+func (s *SubtitleProviderReport) GetResults() int {
+	return s.Results
+}
+
+// GetError returns the value of Error.
+func (s *SubtitleProviderReport) GetError() OptString {
+	return s.Error
+}
+
+// GetCode returns the value of Code.
+func (s *SubtitleProviderReport) GetCode() OptString {
+	return s.Code
+}
+
+// GetSkipped returns the value of Skipped.
+func (s *SubtitleProviderReport) GetSkipped() OptString {
+	return s.Skipped
+}
+
+// SetProvider sets the value of Provider.
+func (s *SubtitleProviderReport) SetProvider(val string) {
+	s.Provider = val
+}
+
+// SetResults sets the value of Results.
+func (s *SubtitleProviderReport) SetResults(val int) {
+	s.Results = val
+}
+
+// SetError sets the value of Error.
+func (s *SubtitleProviderReport) SetError(val OptString) {
+	s.Error = val
+}
+
+// SetCode sets the value of Code.
+func (s *SubtitleProviderReport) SetCode(val OptString) {
+	s.Code = val
+}
+
+// SetSkipped sets the value of Skipped.
+func (s *SubtitleProviderReport) SetSkipped(val OptString) {
+	s.Skipped = val
+}
+
+// Ref: #/components/schemas/SubtitleResult
+type SubtitleResult struct {
+	// Pass to /download.
+	Key               string              `json:"key"`
+	Provider          string              `json:"provider"`
+	ID                string              `json:"id"`
+	Language          string              `json:"language"`
+	Releases          []string            `json:"releases"`
+	FileName          string              `json:"fileName"`
+	HearingImpaired   bool                `json:"hearingImpaired"`
+	Forced            bool                `json:"forced"`
+	HashMatch         bool                `json:"hashMatch"`
+	Fps               OptFloat64          `json:"fps"`
+	Downloads         int                 `json:"downloads"`
+	Rating            OptFloat64          `json:"rating"`
+	Trusted           bool                `json:"trusted"`
+	Uploader          string              `json:"uploader"`
+	MachineTranslated bool                `json:"machineTranslated"`
+	SeasonPack        OptBool             `json:"seasonPack"`
+	PageUrl           OptString           `json:"pageUrl"`
+	Score             int                 `json:"score"`
+	Parts             []SubtitleScorePart `json:"parts"`
+	// Why it does not fit the wanted entry: language, not_forced, forced_only, hearing_impaired,
+	// not_hearing_impaired, other_episode, other_movie.
+	Rejected OptString `json:"rejected"`
+	// The wanted key it was scored for.
+	Want        string `json:"want"`
+	Downloaded  bool   `json:"downloaded"`
+	Blacklisted bool   `json:"blacklisted"`
+	MinScore    int    `json:"minScore"`
+}
+
+// GetKey returns the value of Key.
+func (s *SubtitleResult) GetKey() string {
+	return s.Key
+}
+
+// GetProvider returns the value of Provider.
+func (s *SubtitleResult) GetProvider() string {
+	return s.Provider
+}
+
+// GetID returns the value of ID.
+func (s *SubtitleResult) GetID() string {
+	return s.ID
+}
+
+// GetLanguage returns the value of Language.
+func (s *SubtitleResult) GetLanguage() string {
+	return s.Language
+}
+
+// GetReleases returns the value of Releases.
+func (s *SubtitleResult) GetReleases() []string {
+	return s.Releases
+}
+
+// GetFileName returns the value of FileName.
+func (s *SubtitleResult) GetFileName() string {
+	return s.FileName
+}
+
+// GetHearingImpaired returns the value of HearingImpaired.
+func (s *SubtitleResult) GetHearingImpaired() bool {
+	return s.HearingImpaired
+}
+
+// GetForced returns the value of Forced.
+func (s *SubtitleResult) GetForced() bool {
+	return s.Forced
+}
+
+// GetHashMatch returns the value of HashMatch.
+func (s *SubtitleResult) GetHashMatch() bool {
+	return s.HashMatch
+}
+
+// GetFps returns the value of Fps.
+func (s *SubtitleResult) GetFps() OptFloat64 {
+	return s.Fps
+}
+
+// GetDownloads returns the value of Downloads.
+func (s *SubtitleResult) GetDownloads() int {
+	return s.Downloads
+}
+
+// GetRating returns the value of Rating.
+func (s *SubtitleResult) GetRating() OptFloat64 {
+	return s.Rating
+}
+
+// GetTrusted returns the value of Trusted.
+func (s *SubtitleResult) GetTrusted() bool {
+	return s.Trusted
+}
+
+// GetUploader returns the value of Uploader.
+func (s *SubtitleResult) GetUploader() string {
+	return s.Uploader
+}
+
+// GetMachineTranslated returns the value of MachineTranslated.
+func (s *SubtitleResult) GetMachineTranslated() bool {
+	return s.MachineTranslated
+}
+
+// GetSeasonPack returns the value of SeasonPack.
+func (s *SubtitleResult) GetSeasonPack() OptBool {
+	return s.SeasonPack
+}
+
+// GetPageUrl returns the value of PageUrl.
+func (s *SubtitleResult) GetPageUrl() OptString {
+	return s.PageUrl
+}
+
+// GetScore returns the value of Score.
+func (s *SubtitleResult) GetScore() int {
+	return s.Score
+}
+
+// GetParts returns the value of Parts.
+func (s *SubtitleResult) GetParts() []SubtitleScorePart {
+	return s.Parts
+}
+
+// GetRejected returns the value of Rejected.
+func (s *SubtitleResult) GetRejected() OptString {
+	return s.Rejected
+}
+
+// GetWant returns the value of Want.
+func (s *SubtitleResult) GetWant() string {
+	return s.Want
+}
+
+// GetDownloaded returns the value of Downloaded.
+func (s *SubtitleResult) GetDownloaded() bool {
+	return s.Downloaded
+}
+
+// GetBlacklisted returns the value of Blacklisted.
+func (s *SubtitleResult) GetBlacklisted() bool {
+	return s.Blacklisted
+}
+
+// GetMinScore returns the value of MinScore.
+func (s *SubtitleResult) GetMinScore() int {
+	return s.MinScore
+}
+
+// SetKey sets the value of Key.
+func (s *SubtitleResult) SetKey(val string) {
+	s.Key = val
+}
+
+// SetProvider sets the value of Provider.
+func (s *SubtitleResult) SetProvider(val string) {
+	s.Provider = val
+}
+
+// SetID sets the value of ID.
+func (s *SubtitleResult) SetID(val string) {
+	s.ID = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *SubtitleResult) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetReleases sets the value of Releases.
+func (s *SubtitleResult) SetReleases(val []string) {
+	s.Releases = val
+}
+
+// SetFileName sets the value of FileName.
+func (s *SubtitleResult) SetFileName(val string) {
+	s.FileName = val
+}
+
+// SetHearingImpaired sets the value of HearingImpaired.
+func (s *SubtitleResult) SetHearingImpaired(val bool) {
+	s.HearingImpaired = val
+}
+
+// SetForced sets the value of Forced.
+func (s *SubtitleResult) SetForced(val bool) {
+	s.Forced = val
+}
+
+// SetHashMatch sets the value of HashMatch.
+func (s *SubtitleResult) SetHashMatch(val bool) {
+	s.HashMatch = val
+}
+
+// SetFps sets the value of Fps.
+func (s *SubtitleResult) SetFps(val OptFloat64) {
+	s.Fps = val
+}
+
+// SetDownloads sets the value of Downloads.
+func (s *SubtitleResult) SetDownloads(val int) {
+	s.Downloads = val
+}
+
+// SetRating sets the value of Rating.
+func (s *SubtitleResult) SetRating(val OptFloat64) {
+	s.Rating = val
+}
+
+// SetTrusted sets the value of Trusted.
+func (s *SubtitleResult) SetTrusted(val bool) {
+	s.Trusted = val
+}
+
+// SetUploader sets the value of Uploader.
+func (s *SubtitleResult) SetUploader(val string) {
+	s.Uploader = val
+}
+
+// SetMachineTranslated sets the value of MachineTranslated.
+func (s *SubtitleResult) SetMachineTranslated(val bool) {
+	s.MachineTranslated = val
+}
+
+// SetSeasonPack sets the value of SeasonPack.
+func (s *SubtitleResult) SetSeasonPack(val OptBool) {
+	s.SeasonPack = val
+}
+
+// SetPageUrl sets the value of PageUrl.
+func (s *SubtitleResult) SetPageUrl(val OptString) {
+	s.PageUrl = val
+}
+
+// SetScore sets the value of Score.
+func (s *SubtitleResult) SetScore(val int) {
+	s.Score = val
+}
+
+// SetParts sets the value of Parts.
+func (s *SubtitleResult) SetParts(val []SubtitleScorePart) {
+	s.Parts = val
+}
+
+// SetRejected sets the value of Rejected.
+func (s *SubtitleResult) SetRejected(val OptString) {
+	s.Rejected = val
+}
+
+// SetWant sets the value of Want.
+func (s *SubtitleResult) SetWant(val string) {
+	s.Want = val
+}
+
+// SetDownloaded sets the value of Downloaded.
+func (s *SubtitleResult) SetDownloaded(val bool) {
+	s.Downloaded = val
+}
+
+// SetBlacklisted sets the value of Blacklisted.
+func (s *SubtitleResult) SetBlacklisted(val bool) {
+	s.Blacklisted = val
+}
+
+// SetMinScore sets the value of MinScore.
+func (s *SubtitleResult) SetMinScore(val int) {
+	s.MinScore = val
+}
+
+// Ref: #/components/schemas/SubtitleScorePart
+type SubtitleScorePart struct {
+	Code   string `json:"code"`
+	Points int    `json:"points"`
+}
+
+// GetCode returns the value of Code.
+func (s *SubtitleScorePart) GetCode() string {
+	return s.Code
+}
+
+// GetPoints returns the value of Points.
+func (s *SubtitleScorePart) GetPoints() int {
+	return s.Points
+}
+
+// SetCode sets the value of Code.
+func (s *SubtitleScorePart) SetCode(val string) {
+	s.Code = val
+}
+
+// SetPoints sets the value of Points.
+func (s *SubtitleScorePart) SetPoints(val int) {
+	s.Points = val
+}
+
+// Ref: #/components/schemas/SubtitleSearchOutcome
+type SubtitleSearchOutcome struct {
+	Ref        string                   `json:"ref"`
+	Providers  []SubtitleProviderReport `json:"providers"`
+	Downloaded []Subtitle               `json:"downloaded"`
+	Missing    []string                 `json:"missing"`
+	Message    string                   `json:"message"`
+}
+
+// GetRef returns the value of Ref.
+func (s *SubtitleSearchOutcome) GetRef() string {
+	return s.Ref
+}
+
+// GetProviders returns the value of Providers.
+func (s *SubtitleSearchOutcome) GetProviders() []SubtitleProviderReport {
+	return s.Providers
+}
+
+// GetDownloaded returns the value of Downloaded.
+func (s *SubtitleSearchOutcome) GetDownloaded() []Subtitle {
+	return s.Downloaded
+}
+
+// GetMissing returns the value of Missing.
+func (s *SubtitleSearchOutcome) GetMissing() []string {
+	return s.Missing
+}
+
+// GetMessage returns the value of Message.
+func (s *SubtitleSearchOutcome) GetMessage() string {
+	return s.Message
+}
+
+// SetRef sets the value of Ref.
+func (s *SubtitleSearchOutcome) SetRef(val string) {
+	s.Ref = val
+}
+
+// SetProviders sets the value of Providers.
+func (s *SubtitleSearchOutcome) SetProviders(val []SubtitleProviderReport) {
+	s.Providers = val
+}
+
+// SetDownloaded sets the value of Downloaded.
+func (s *SubtitleSearchOutcome) SetDownloaded(val []Subtitle) {
+	s.Downloaded = val
+}
+
+// SetMissing sets the value of Missing.
+func (s *SubtitleSearchOutcome) SetMissing(val []string) {
+	s.Missing = val
+}
+
+// SetMessage sets the value of Message.
+func (s *SubtitleSearchOutcome) SetMessage(val string) {
+	s.Message = val
+}
+
+// Ref: #/components/schemas/SubtitleSettings
+type SubtitleSettings struct {
+	// 0 = no subtitles by default.
+	DefaultProfileMovies int64 `json:"defaultProfileMovies"`
+	DefaultProfileSeries int64 `json:"defaultProfileSeries"`
+	MinScoreMovies       int   `json:"minScoreMovies"`
+	MinScoreEpisodes     int   `json:"minScoreEpisodes"`
+	// Srt converts ASS/SSA/VTT downloads to SRT; empty keeps the original.
+	PreferredFormat SubtitleSettingsPreferredFormat `json:"preferredFormat"`
+	UpgradeDays     int                             `json:"upgradeDays"`
+	SearchesPerHour int                             `json:"searchesPerHour"`
+	AutoSync        bool                            `json:"autoSync"`
+	// Ffmpeg is present.
+	SyncAvailable bool `json:"syncAvailable"`
+}
+
+// GetDefaultProfileMovies returns the value of DefaultProfileMovies.
+func (s *SubtitleSettings) GetDefaultProfileMovies() int64 {
+	return s.DefaultProfileMovies
+}
+
+// GetDefaultProfileSeries returns the value of DefaultProfileSeries.
+func (s *SubtitleSettings) GetDefaultProfileSeries() int64 {
+	return s.DefaultProfileSeries
+}
+
+// GetMinScoreMovies returns the value of MinScoreMovies.
+func (s *SubtitleSettings) GetMinScoreMovies() int {
+	return s.MinScoreMovies
+}
+
+// GetMinScoreEpisodes returns the value of MinScoreEpisodes.
+func (s *SubtitleSettings) GetMinScoreEpisodes() int {
+	return s.MinScoreEpisodes
+}
+
+// GetPreferredFormat returns the value of PreferredFormat.
+func (s *SubtitleSettings) GetPreferredFormat() SubtitleSettingsPreferredFormat {
+	return s.PreferredFormat
+}
+
+// GetUpgradeDays returns the value of UpgradeDays.
+func (s *SubtitleSettings) GetUpgradeDays() int {
+	return s.UpgradeDays
+}
+
+// GetSearchesPerHour returns the value of SearchesPerHour.
+func (s *SubtitleSettings) GetSearchesPerHour() int {
+	return s.SearchesPerHour
+}
+
+// GetAutoSync returns the value of AutoSync.
+func (s *SubtitleSettings) GetAutoSync() bool {
+	return s.AutoSync
+}
+
+// GetSyncAvailable returns the value of SyncAvailable.
+func (s *SubtitleSettings) GetSyncAvailable() bool {
+	return s.SyncAvailable
+}
+
+// SetDefaultProfileMovies sets the value of DefaultProfileMovies.
+func (s *SubtitleSettings) SetDefaultProfileMovies(val int64) {
+	s.DefaultProfileMovies = val
+}
+
+// SetDefaultProfileSeries sets the value of DefaultProfileSeries.
+func (s *SubtitleSettings) SetDefaultProfileSeries(val int64) {
+	s.DefaultProfileSeries = val
+}
+
+// SetMinScoreMovies sets the value of MinScoreMovies.
+func (s *SubtitleSettings) SetMinScoreMovies(val int) {
+	s.MinScoreMovies = val
+}
+
+// SetMinScoreEpisodes sets the value of MinScoreEpisodes.
+func (s *SubtitleSettings) SetMinScoreEpisodes(val int) {
+	s.MinScoreEpisodes = val
+}
+
+// SetPreferredFormat sets the value of PreferredFormat.
+func (s *SubtitleSettings) SetPreferredFormat(val SubtitleSettingsPreferredFormat) {
+	s.PreferredFormat = val
+}
+
+// SetUpgradeDays sets the value of UpgradeDays.
+func (s *SubtitleSettings) SetUpgradeDays(val int) {
+	s.UpgradeDays = val
+}
+
+// SetSearchesPerHour sets the value of SearchesPerHour.
+func (s *SubtitleSettings) SetSearchesPerHour(val int) {
+	s.SearchesPerHour = val
+}
+
+// SetAutoSync sets the value of AutoSync.
+func (s *SubtitleSettings) SetAutoSync(val bool) {
+	s.AutoSync = val
+}
+
+// SetSyncAvailable sets the value of SyncAvailable.
+func (s *SubtitleSettings) SetSyncAvailable(val bool) {
+	s.SyncAvailable = val
+}
+
+// Ref: #/components/schemas/SubtitleSettingsInput
+type SubtitleSettingsInput struct {
+	DefaultProfileMovies OptInt64                                `json:"defaultProfileMovies"`
+	DefaultProfileSeries OptInt64                                `json:"defaultProfileSeries"`
+	MinScoreMovies       OptInt                                  `json:"minScoreMovies"`
+	MinScoreEpisodes     OptInt                                  `json:"minScoreEpisodes"`
+	PreferredFormat      OptSubtitleSettingsInputPreferredFormat `json:"preferredFormat"`
+	UpgradeDays          OptInt                                  `json:"upgradeDays"`
+	SearchesPerHour      OptInt                                  `json:"searchesPerHour"`
+	AutoSync             OptBool                                 `json:"autoSync"`
+}
+
+// GetDefaultProfileMovies returns the value of DefaultProfileMovies.
+func (s *SubtitleSettingsInput) GetDefaultProfileMovies() OptInt64 {
+	return s.DefaultProfileMovies
+}
+
+// GetDefaultProfileSeries returns the value of DefaultProfileSeries.
+func (s *SubtitleSettingsInput) GetDefaultProfileSeries() OptInt64 {
+	return s.DefaultProfileSeries
+}
+
+// GetMinScoreMovies returns the value of MinScoreMovies.
+func (s *SubtitleSettingsInput) GetMinScoreMovies() OptInt {
+	return s.MinScoreMovies
+}
+
+// GetMinScoreEpisodes returns the value of MinScoreEpisodes.
+func (s *SubtitleSettingsInput) GetMinScoreEpisodes() OptInt {
+	return s.MinScoreEpisodes
+}
+
+// GetPreferredFormat returns the value of PreferredFormat.
+func (s *SubtitleSettingsInput) GetPreferredFormat() OptSubtitleSettingsInputPreferredFormat {
+	return s.PreferredFormat
+}
+
+// GetUpgradeDays returns the value of UpgradeDays.
+func (s *SubtitleSettingsInput) GetUpgradeDays() OptInt {
+	return s.UpgradeDays
+}
+
+// GetSearchesPerHour returns the value of SearchesPerHour.
+func (s *SubtitleSettingsInput) GetSearchesPerHour() OptInt {
+	return s.SearchesPerHour
+}
+
+// GetAutoSync returns the value of AutoSync.
+func (s *SubtitleSettingsInput) GetAutoSync() OptBool {
+	return s.AutoSync
+}
+
+// SetDefaultProfileMovies sets the value of DefaultProfileMovies.
+func (s *SubtitleSettingsInput) SetDefaultProfileMovies(val OptInt64) {
+	s.DefaultProfileMovies = val
+}
+
+// SetDefaultProfileSeries sets the value of DefaultProfileSeries.
+func (s *SubtitleSettingsInput) SetDefaultProfileSeries(val OptInt64) {
+	s.DefaultProfileSeries = val
+}
+
+// SetMinScoreMovies sets the value of MinScoreMovies.
+func (s *SubtitleSettingsInput) SetMinScoreMovies(val OptInt) {
+	s.MinScoreMovies = val
+}
+
+// SetMinScoreEpisodes sets the value of MinScoreEpisodes.
+func (s *SubtitleSettingsInput) SetMinScoreEpisodes(val OptInt) {
+	s.MinScoreEpisodes = val
+}
+
+// SetPreferredFormat sets the value of PreferredFormat.
+func (s *SubtitleSettingsInput) SetPreferredFormat(val OptSubtitleSettingsInputPreferredFormat) {
+	s.PreferredFormat = val
+}
+
+// SetUpgradeDays sets the value of UpgradeDays.
+func (s *SubtitleSettingsInput) SetUpgradeDays(val OptInt) {
+	s.UpgradeDays = val
+}
+
+// SetSearchesPerHour sets the value of SearchesPerHour.
+func (s *SubtitleSettingsInput) SetSearchesPerHour(val OptInt) {
+	s.SearchesPerHour = val
+}
+
+// SetAutoSync sets the value of AutoSync.
+func (s *SubtitleSettingsInput) SetAutoSync(val OptBool) {
+	s.AutoSync = val
+}
+
+type SubtitleSettingsInputPreferredFormat string
+
+const (
+	SubtitleSettingsInputPreferredFormatEmpty SubtitleSettingsInputPreferredFormat = ""
+	SubtitleSettingsInputPreferredFormatSrt   SubtitleSettingsInputPreferredFormat = "srt"
+)
+
+// AllValues returns all SubtitleSettingsInputPreferredFormat values.
+func (SubtitleSettingsInputPreferredFormat) AllValues() []SubtitleSettingsInputPreferredFormat {
+	return []SubtitleSettingsInputPreferredFormat{
+		SubtitleSettingsInputPreferredFormatEmpty,
+		SubtitleSettingsInputPreferredFormatSrt,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleSettingsInputPreferredFormat) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleSettingsInputPreferredFormatEmpty:
+		return []byte(s), nil
+	case SubtitleSettingsInputPreferredFormatSrt:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleSettingsInputPreferredFormat) UnmarshalText(data []byte) error {
+	switch SubtitleSettingsInputPreferredFormat(data) {
+	case SubtitleSettingsInputPreferredFormatEmpty:
+		*s = SubtitleSettingsInputPreferredFormatEmpty
+		return nil
+	case SubtitleSettingsInputPreferredFormatSrt:
+		*s = SubtitleSettingsInputPreferredFormatSrt
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Srt converts ASS/SSA/VTT downloads to SRT; empty keeps the original.
+type SubtitleSettingsPreferredFormat string
+
+const (
+	SubtitleSettingsPreferredFormatEmpty SubtitleSettingsPreferredFormat = ""
+	SubtitleSettingsPreferredFormatSrt   SubtitleSettingsPreferredFormat = "srt"
+)
+
+// AllValues returns all SubtitleSettingsPreferredFormat values.
+func (SubtitleSettingsPreferredFormat) AllValues() []SubtitleSettingsPreferredFormat {
+	return []SubtitleSettingsPreferredFormat{
+		SubtitleSettingsPreferredFormatEmpty,
+		SubtitleSettingsPreferredFormatSrt,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleSettingsPreferredFormat) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleSettingsPreferredFormatEmpty:
+		return []byte(s), nil
+	case SubtitleSettingsPreferredFormatSrt:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleSettingsPreferredFormat) UnmarshalText(data []byte) error {
+	switch SubtitleSettingsPreferredFormat(data) {
+	case SubtitleSettingsPreferredFormatEmpty:
+		*s = SubtitleSettingsPreferredFormatEmpty
+		return nil
+	case SubtitleSettingsPreferredFormatSrt:
+		*s = SubtitleSettingsPreferredFormatSrt
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type SubtitleSource string
+
+const (
+	SubtitleSourceDownloaded SubtitleSource = "downloaded"
+	SubtitleSourceDisk       SubtitleSource = "disk"
+)
+
+// AllValues returns all SubtitleSource values.
+func (SubtitleSource) AllValues() []SubtitleSource {
+	return []SubtitleSource{
+		SubtitleSourceDownloaded,
+		SubtitleSourceDisk,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleSource) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleSourceDownloaded:
+		return []byte(s), nil
+	case SubtitleSourceDisk:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleSource) UnmarshalText(data []byte) error {
+	switch SubtitleSource(data) {
+	case SubtitleSourceDownloaded:
+		*s = SubtitleSourceDownloaded
+		return nil
+	case SubtitleSourceDisk:
+		*s = SubtitleSourceDisk
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleWant
+type SubtitleWant struct {
+	Language string `json:"language"`
+	// Only foreign-parts (forced) subtitles.
+	Forced          bool                        `json:"forced"`
+	HearingImpaired SubtitleWantHearingImpaired `json:"hearingImpaired"`
+}
+
+// GetLanguage returns the value of Language.
+func (s *SubtitleWant) GetLanguage() string {
+	return s.Language
+}
+
+// GetForced returns the value of Forced.
+func (s *SubtitleWant) GetForced() bool {
+	return s.Forced
+}
+
+// GetHearingImpaired returns the value of HearingImpaired.
+func (s *SubtitleWant) GetHearingImpaired() SubtitleWantHearingImpaired {
+	return s.HearingImpaired
+}
+
+// SetLanguage sets the value of Language.
+func (s *SubtitleWant) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetForced sets the value of Forced.
+func (s *SubtitleWant) SetForced(val bool) {
+	s.Forced = val
+}
+
+// SetHearingImpaired sets the value of HearingImpaired.
+func (s *SubtitleWant) SetHearingImpaired(val SubtitleWantHearingImpaired) {
+	s.HearingImpaired = val
+}
+
+type SubtitleWantHearingImpaired string
+
+const (
+	SubtitleWantHearingImpairedInclude SubtitleWantHearingImpaired = "include"
+	SubtitleWantHearingImpairedPrefer  SubtitleWantHearingImpaired = "prefer"
+	SubtitleWantHearingImpairedExclude SubtitleWantHearingImpaired = "exclude"
+	SubtitleWantHearingImpairedOnly    SubtitleWantHearingImpaired = "only"
+)
+
+// AllValues returns all SubtitleWantHearingImpaired values.
+func (SubtitleWantHearingImpaired) AllValues() []SubtitleWantHearingImpaired {
+	return []SubtitleWantHearingImpaired{
+		SubtitleWantHearingImpairedInclude,
+		SubtitleWantHearingImpairedPrefer,
+		SubtitleWantHearingImpairedExclude,
+		SubtitleWantHearingImpairedOnly,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleWantHearingImpaired) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleWantHearingImpairedInclude:
+		return []byte(s), nil
+	case SubtitleWantHearingImpairedPrefer:
+		return []byte(s), nil
+	case SubtitleWantHearingImpairedExclude:
+		return []byte(s), nil
+	case SubtitleWantHearingImpairedOnly:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleWantHearingImpaired) UnmarshalText(data []byte) error {
+	switch SubtitleWantHearingImpaired(data) {
+	case SubtitleWantHearingImpairedInclude:
+		*s = SubtitleWantHearingImpairedInclude
+		return nil
+	case SubtitleWantHearingImpairedPrefer:
+		*s = SubtitleWantHearingImpairedPrefer
+		return nil
+	case SubtitleWantHearingImpairedExclude:
+		*s = SubtitleWantHearingImpairedExclude
+		return nil
+	case SubtitleWantHearingImpairedOnly:
+		*s = SubtitleWantHearingImpairedOnly
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleWantStatus
+type SubtitleWantStatus struct {
+	Key             string                   `json:"key"`
+	Language        string                   `json:"language"`
+	Forced          bool                     `json:"forced"`
+	HearingImpaired string                   `json:"hearingImpaired"`
+	Status          SubtitleWantStatusStatus `json:"status"`
+	SubtitleId      OptInt64                 `json:"subtitleId"`
+	TrackIndex      OptInt                   `json:"trackIndex"`
+}
+
+// GetKey returns the value of Key.
+func (s *SubtitleWantStatus) GetKey() string {
+	return s.Key
+}
+
+// GetLanguage returns the value of Language.
+func (s *SubtitleWantStatus) GetLanguage() string {
+	return s.Language
+}
+
+// GetForced returns the value of Forced.
+func (s *SubtitleWantStatus) GetForced() bool {
+	return s.Forced
+}
+
+// GetHearingImpaired returns the value of HearingImpaired.
+func (s *SubtitleWantStatus) GetHearingImpaired() string {
+	return s.HearingImpaired
+}
+
+// GetStatus returns the value of Status.
+func (s *SubtitleWantStatus) GetStatus() SubtitleWantStatusStatus {
+	return s.Status
+}
+
+// GetSubtitleId returns the value of SubtitleId.
+func (s *SubtitleWantStatus) GetSubtitleId() OptInt64 {
+	return s.SubtitleId
+}
+
+// GetTrackIndex returns the value of TrackIndex.
+func (s *SubtitleWantStatus) GetTrackIndex() OptInt {
+	return s.TrackIndex
+}
+
+// SetKey sets the value of Key.
+func (s *SubtitleWantStatus) SetKey(val string) {
+	s.Key = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *SubtitleWantStatus) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetForced sets the value of Forced.
+func (s *SubtitleWantStatus) SetForced(val bool) {
+	s.Forced = val
+}
+
+// SetHearingImpaired sets the value of HearingImpaired.
+func (s *SubtitleWantStatus) SetHearingImpaired(val string) {
+	s.HearingImpaired = val
+}
+
+// SetStatus sets the value of Status.
+func (s *SubtitleWantStatus) SetStatus(val SubtitleWantStatusStatus) {
+	s.Status = val
+}
+
+// SetSubtitleId sets the value of SubtitleId.
+func (s *SubtitleWantStatus) SetSubtitleId(val OptInt64) {
+	s.SubtitleId = val
+}
+
+// SetTrackIndex sets the value of TrackIndex.
+func (s *SubtitleWantStatus) SetTrackIndex(val OptInt) {
+	s.TrackIndex = val
+}
+
+type SubtitleWantStatusStatus string
+
+const (
+	SubtitleWantStatusStatusPresent  SubtitleWantStatusStatus = "present"
+	SubtitleWantStatusStatusEmbedded SubtitleWantStatusStatus = "embedded"
+	SubtitleWantStatusStatusMissing  SubtitleWantStatusStatus = "missing"
+	SubtitleWantStatusStatusSkipped  SubtitleWantStatusStatus = "skipped"
+)
+
+// AllValues returns all SubtitleWantStatusStatus values.
+func (SubtitleWantStatusStatus) AllValues() []SubtitleWantStatusStatus {
+	return []SubtitleWantStatusStatus{
+		SubtitleWantStatusStatusPresent,
+		SubtitleWantStatusStatusEmbedded,
+		SubtitleWantStatusStatusMissing,
+		SubtitleWantStatusStatusSkipped,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleWantStatusStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleWantStatusStatusPresent:
+		return []byte(s), nil
+	case SubtitleWantStatusStatusEmbedded:
+		return []byte(s), nil
+	case SubtitleWantStatusStatusMissing:
+		return []byte(s), nil
+	case SubtitleWantStatusStatusSkipped:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleWantStatusStatus) UnmarshalText(data []byte) error {
+	switch SubtitleWantStatusStatus(data) {
+	case SubtitleWantStatusStatusPresent:
+		*s = SubtitleWantStatusStatusPresent
+		return nil
+	case SubtitleWantStatusStatusEmbedded:
+		*s = SubtitleWantStatusStatusEmbedded
+		return nil
+	case SubtitleWantStatusStatusMissing:
+		*s = SubtitleWantStatusStatusMissing
+		return nil
+	case SubtitleWantStatusStatusSkipped:
+		*s = SubtitleWantStatusStatusSkipped
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type SyncSubtitleReq struct {
+	Reference OptString `json:"reference"`
+}
+
+// GetReference returns the value of Reference.
+func (s *SyncSubtitleReq) GetReference() OptString {
+	return s.Reference
+}
+
+// SetReference sets the value of Reference.
+func (s *SyncSubtitleReq) SetReference(val OptString) {
+	s.Reference = val
 }
 
 // Ref: #/components/schemas/SystemInfo
@@ -25254,4 +28158,207 @@ func (s *WantedItemSeriesType) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/WantedSubtitle
+type WantedSubtitle struct {
+	Ref          string             `json:"ref"`
+	Kind         WantedSubtitleKind `json:"kind"`
+	ItemId       int64              `json:"itemId"`
+	Title        string             `json:"title"`
+	Season       OptInt             `json:"season"`
+	Episode      OptInt             `json:"episode"`
+	EpisodeTitle OptString          `json:"episodeTitle"`
+	Missing      []string           `json:"missing"`
+	Searches     int                `json:"searches"`
+	LastSearchAt OptDateTime        `json:"lastSearchAt"`
+	NextSearchAt OptDateTime        `json:"nextSearchAt"`
+	LastResult   string             `json:"lastResult"`
+}
+
+// GetRef returns the value of Ref.
+func (s *WantedSubtitle) GetRef() string {
+	return s.Ref
+}
+
+// GetKind returns the value of Kind.
+func (s *WantedSubtitle) GetKind() WantedSubtitleKind {
+	return s.Kind
+}
+
+// GetItemId returns the value of ItemId.
+func (s *WantedSubtitle) GetItemId() int64 {
+	return s.ItemId
+}
+
+// GetTitle returns the value of Title.
+func (s *WantedSubtitle) GetTitle() string {
+	return s.Title
+}
+
+// GetSeason returns the value of Season.
+func (s *WantedSubtitle) GetSeason() OptInt {
+	return s.Season
+}
+
+// GetEpisode returns the value of Episode.
+func (s *WantedSubtitle) GetEpisode() OptInt {
+	return s.Episode
+}
+
+// GetEpisodeTitle returns the value of EpisodeTitle.
+func (s *WantedSubtitle) GetEpisodeTitle() OptString {
+	return s.EpisodeTitle
+}
+
+// GetMissing returns the value of Missing.
+func (s *WantedSubtitle) GetMissing() []string {
+	return s.Missing
+}
+
+// GetSearches returns the value of Searches.
+func (s *WantedSubtitle) GetSearches() int {
+	return s.Searches
+}
+
+// GetLastSearchAt returns the value of LastSearchAt.
+func (s *WantedSubtitle) GetLastSearchAt() OptDateTime {
+	return s.LastSearchAt
+}
+
+// GetNextSearchAt returns the value of NextSearchAt.
+func (s *WantedSubtitle) GetNextSearchAt() OptDateTime {
+	return s.NextSearchAt
+}
+
+// GetLastResult returns the value of LastResult.
+func (s *WantedSubtitle) GetLastResult() string {
+	return s.LastResult
+}
+
+// SetRef sets the value of Ref.
+func (s *WantedSubtitle) SetRef(val string) {
+	s.Ref = val
+}
+
+// SetKind sets the value of Kind.
+func (s *WantedSubtitle) SetKind(val WantedSubtitleKind) {
+	s.Kind = val
+}
+
+// SetItemId sets the value of ItemId.
+func (s *WantedSubtitle) SetItemId(val int64) {
+	s.ItemId = val
+}
+
+// SetTitle sets the value of Title.
+func (s *WantedSubtitle) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetSeason sets the value of Season.
+func (s *WantedSubtitle) SetSeason(val OptInt) {
+	s.Season = val
+}
+
+// SetEpisode sets the value of Episode.
+func (s *WantedSubtitle) SetEpisode(val OptInt) {
+	s.Episode = val
+}
+
+// SetEpisodeTitle sets the value of EpisodeTitle.
+func (s *WantedSubtitle) SetEpisodeTitle(val OptString) {
+	s.EpisodeTitle = val
+}
+
+// SetMissing sets the value of Missing.
+func (s *WantedSubtitle) SetMissing(val []string) {
+	s.Missing = val
+}
+
+// SetSearches sets the value of Searches.
+func (s *WantedSubtitle) SetSearches(val int) {
+	s.Searches = val
+}
+
+// SetLastSearchAt sets the value of LastSearchAt.
+func (s *WantedSubtitle) SetLastSearchAt(val OptDateTime) {
+	s.LastSearchAt = val
+}
+
+// SetNextSearchAt sets the value of NextSearchAt.
+func (s *WantedSubtitle) SetNextSearchAt(val OptDateTime) {
+	s.NextSearchAt = val
+}
+
+// SetLastResult sets the value of LastResult.
+func (s *WantedSubtitle) SetLastResult(val string) {
+	s.LastResult = val
+}
+
+type WantedSubtitleKind string
+
+const (
+	WantedSubtitleKindMovie   WantedSubtitleKind = "movie"
+	WantedSubtitleKindEpisode WantedSubtitleKind = "episode"
+)
+
+// AllValues returns all WantedSubtitleKind values.
+func (WantedSubtitleKind) AllValues() []WantedSubtitleKind {
+	return []WantedSubtitleKind{
+		WantedSubtitleKindMovie,
+		WantedSubtitleKindEpisode,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s WantedSubtitleKind) MarshalText() ([]byte, error) {
+	switch s {
+	case WantedSubtitleKindMovie:
+		return []byte(s), nil
+	case WantedSubtitleKindEpisode:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *WantedSubtitleKind) UnmarshalText(data []byte) error {
+	switch WantedSubtitleKind(data) {
+	case WantedSubtitleKindMovie:
+		*s = WantedSubtitleKindMovie
+		return nil
+	case WantedSubtitleKindEpisode:
+		*s = WantedSubtitleKindEpisode
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/WantedSubtitles
+type WantedSubtitles struct {
+	Items []WantedSubtitle `json:"items"`
+	Total int              `json:"total"`
+}
+
+// GetItems returns the value of Items.
+func (s *WantedSubtitles) GetItems() []WantedSubtitle {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *WantedSubtitles) GetTotal() int {
+	return s.Total
+}
+
+// SetItems sets the value of Items.
+func (s *WantedSubtitles) SetItems(val []WantedSubtitle) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *WantedSubtitles) SetTotal(val int) {
+	s.Total = val
 }
