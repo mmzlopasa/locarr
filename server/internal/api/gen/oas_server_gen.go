@@ -81,6 +81,12 @@ type Handler interface {
 	//
 	// POST /system/jobs/{id}/cancel
 	CancelJob(ctx context.Context, params CancelJobParams) error
+	// CancelMigrateRun implements cancelMigrateRun operation.
+	//
+	// Stop reading or importing (administrators).
+	//
+	// POST /migrate/runs/{id}/cancel
+	CancelMigrateRun(ctx context.Context, params CancelMigrateRunParams) (*MigrateRun, error)
 	// CancelRequest implements cancelRequest operation.
 	//
 	// Withdraw an own request while it is pending.
@@ -99,6 +105,12 @@ type Handler interface {
 	//
 	// POST /auth/invite
 	CheckInvite(ctx context.Context, req *InviteCodeRequest) (*InviteCheck, error)
+	// CheckMigratePaths implements checkMigratePaths operation.
+	//
+	// Count the files Locarr finds with these path mappings (administrators).
+	//
+	// POST /migrate/runs/{id}/paths
+	CheckMigratePaths(ctx context.Context, req *CheckMigratePathsReq, params CheckMigratePathsParams) ([]MigratePathCheck, error)
 	// ConvertSubtitleFps implements convertSubtitleFps operation.
 	//
 	// Convert a subtitle made for one frame rate to another (managers).
@@ -178,6 +190,13 @@ type Handler interface {
 	//
 	// POST /music/metadataprofiles
 	CreateMetadataProfile(ctx context.Context, req *MetadataProfileInput) (*MetadataProfile, error)
+	// CreateMigrateSource implements createMigrateSource operation.
+	//
+	// The application is tested first (its public API, GET requests only; qBittorrent's sign-in). The API
+	// key (or qBittorrent password) is stored encrypted and never returned.
+	//
+	// POST /migrate/sources
+	CreateMigrateSource(ctx context.Context, req *MigrateSourceInput) (*MigrateSource, error)
 	// CreateQualityProfile implements createQualityProfile operation.
 	//
 	// Qualities of the kind that the item list leaves out are added at the end as not allowed.
@@ -299,6 +318,12 @@ type Handler interface {
 	//
 	// DELETE /music/metadataprofiles/{id}
 	DeleteMetadataProfile(ctx context.Context, params DeleteMetadataProfileParams) error
+	// DeleteMigrateSource implements deleteMigrateSource operation.
+	//
+	// What was imported stays, and so do the import marks.
+	//
+	// DELETE /migrate/sources/{id}
+	DeleteMigrateSource(ctx context.Context, params DeleteMigrateSourceParams) error
 	// DeleteMovie implements deleteMovie operation.
 	//
 	// With `deleteFiles` the movie folder goes to the recycle bin; files are never deleted outright.
@@ -577,6 +602,24 @@ type Handler interface {
 	//
 	// GET /settings/metadata
 	GetMetadataSettings(ctx context.Context) (*MetadataSettings, error)
+	// GetMigrateChecklist implements getMigrateChecklist operation.
+	//
+	// Steps on the old applications are instructions only; Locarr never changes them.
+	//
+	// GET /migrate/checklist
+	GetMigrateChecklist(ctx context.Context) ([]MigrateCheckItem, error)
+	// GetMigrateReport implements getMigrateReport operation.
+	//
+	// Everything about a run as one JSON document (administrators).
+	//
+	// GET /migrate/runs/{id}/report
+	GetMigrateReport(ctx context.Context, params GetMigrateReportParams) (*MigrateReport, error)
+	// GetMigrateRun implements getMigrateRun operation.
+	//
+	// One import with its progress and summary (administrators).
+	//
+	// GET /migrate/runs/{id}
+	GetMigrateRun(ctx context.Context, params GetMigrateRunParams) (*MigrateRun, error)
 	// GetMovie implements getMovie operation.
 	//
 	// One movie.
@@ -760,6 +803,12 @@ type Handler interface {
 	//
 	// POST /series/import/existing
 	ImportExistingSeries(ctx context.Context, req *ImportExistingSeriesRequest) ([]ImportExistingSeriesResult, error)
+	// ImportMigrateRun implements importMigrateRun operation.
+	//
+	// Runs in the background; poll the run for progress.
+	//
+	// POST /migrate/runs/{id}/import
+	ImportMigrateRun(ctx context.Context, params ImportMigrateRunParams) (*MigrateRun, error)
 	// InteractiveSearchAlbum implements interactiveSearchAlbum operation.
 	//
 	// Interactive search for an album - every release and the decision on it (library managers).
@@ -893,6 +942,24 @@ type Handler interface {
 	//
 	// GET /music/metadataprofiles
 	ListMetadataProfiles(ctx context.Context) ([]MetadataProfile, error)
+	// ListMigrateItems implements listMigrateItems operation.
+	//
+	// The plan (or result) of a run, item by item (administrators).
+	//
+	// GET /migrate/runs/{id}/items
+	ListMigrateItems(ctx context.Context, params ListMigrateItemsParams) (*MigrateItemList, error)
+	// ListMigrateRuns implements listMigrateRuns operation.
+	//
+	// Recent imports (administrators).
+	//
+	// GET /migrate/runs
+	ListMigrateRuns(ctx context.Context) ([]MigrateRun, error)
+	// ListMigrateSources implements listMigrateSources operation.
+	//
+	// Applications to import from (administrators).
+	//
+	// GET /migrate/sources
+	ListMigrateSources(ctx context.Context) ([]MigrateSource, error)
 	// ListMovies implements listMovies operation.
 	//
 	// Filters combine. `status`: missing (monitored, available, no file), downloaded, downloading,
@@ -1121,6 +1188,12 @@ type Handler interface {
 	//
 	// POST /queue/{id}/pause
 	PauseQueueItem(ctx context.Context, params PauseQueueItemParams) error
+	// PlanMigrateRun implements planMigrateRun operation.
+	//
+	// Plan again with other path mappings or conflict choices (administrators).
+	//
+	// POST /migrate/runs/{id}/plan
+	PlanMigrateRun(ctx context.Context, req *MigratePlanRequest, params PlanMigrateRunParams) (*MigrateRun, error)
 	// PreviewIndexerSource implements previewIndexerSource operation.
 	//
 	// List what a Prowlarr or Jackett source would import (administrators).
@@ -1460,6 +1533,13 @@ type Handler interface {
 	//
 	// POST /auth/signup
 	SignUp(ctx context.Context, req *SignUpRequest) (*SignedInHeaders, error)
+	// StartMigrateRun implements startMigrateRun operation.
+	//
+	// A background job reads the sources (nothing is changed on them) and builds the preview; poll the run
+	// until its status is `planned`.
+	//
+	// POST /migrate/runs
+	StartMigrateRun(ctx context.Context, req *MigrateOptions) (*MigrateRun, error)
 	// StartTotpSetup implements startTotpSetup operation.
 	//
 	// Returns a new secret to add to an authenticator app. Two-factor is on only after
@@ -1511,6 +1591,18 @@ type Handler interface {
 	//
 	// POST /indexers/test
 	TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (*IndexerTestResult, error)
+	// TestMigrateSource implements testMigrateSource operation.
+	//
+	// Test an application without saving it (administrators).
+	//
+	// POST /migrate/sources/test
+	TestMigrateSource(ctx context.Context, req *MigrateSourceInput) (*MigrateTestResult, error)
+	// TestSavedMigrateSource implements testSavedMigrateSource operation.
+	//
+	// Test a saved source again (administrators).
+	//
+	// POST /migrate/sources/{id}/test
+	TestSavedMigrateSource(ctx context.Context, params TestSavedMigrateSourceParams) (*MigrateTestResult, error)
 	// TestSubtitleProvider implements testSubtitleProvider operation.
 	//
 	// Check a provider's credentials and read its quota (administrators).
@@ -1602,6 +1694,12 @@ type Handler interface {
 	//
 	// PUT /settings/metadata
 	UpdateMetadataSettings(ctx context.Context, req *MetadataSettingsInput) (*MetadataSettings, error)
+	// UpdateMigrateSource implements updateMigrateSource operation.
+	//
+	// An absent `secret` keeps the stored one.
+	//
+	// PUT /migrate/sources/{id}
+	UpdateMigrateSource(ctx context.Context, req *MigrateSourceInput, params UpdateMigrateSourceParams) (*MigrateSource, error)
 	// UpdateMovie implements updateMovie operation.
 	//
 	// The folder can change only while the movie has no file (`has_file`).

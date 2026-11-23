@@ -181,6 +181,7 @@ func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger)
 	attachMusic(h, d, log)
 	attachSubtitles(h, d)
 	attachRequests(h, d)
+	attachMigrate(h, d)
 	return h
 }
 

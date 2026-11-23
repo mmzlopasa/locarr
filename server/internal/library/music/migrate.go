@@ -289,4 +289,3 @@ func (s *Service) NeedsRefresh(ctx context.Context, ids []int64) ([]int64, error
 	}
 	return out, rows.Err()
 }
-

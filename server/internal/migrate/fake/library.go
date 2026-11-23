@@ -132,7 +132,7 @@ func Default() *Library {
 		{ID: 12, MBID: mbfake.GroupFreeEP, Title: "Free EP", Type: "EP", Date: "2021-06-01", Monitored: false},
 	}}}
 	lib.Users = []User{
-		{ID: 1, Username: "owner", Email: "owner@example.org", Permissions: 2},
+		{ID: 1, Username: "admin", Email: "owner@example.org", Permissions: 2},
 		{ID: 2, Username: "mama", Email: "mama@example.org", Permissions: 32 | 256},
 		{ID: 3, Username: "helper", Email: "helper@example.org", Permissions: 16 | 32},
 	}

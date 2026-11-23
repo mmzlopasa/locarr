@@ -174,4 +174,3 @@ func (s *Service) SetDefaultQuotas(ctx context.Context, rules map[string]Rule) e
 	_, err = s.SaveSettings(ctx, cur)
 	return err
 }
-

@@ -26,6 +26,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
 	"github.com/mmzlopasa/locarr/server/internal/library/series"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
+	"github.com/mmzlopasa/locarr/server/internal/migrate"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
 	"github.com/mmzlopasa/locarr/server/internal/requests"
@@ -63,6 +64,8 @@ type Handler struct {
 	Requests *requests.Service
 	Discover *discover.Service
 	Hub      *notify.Hub
+	// Migrate imports an existing setup (P10).
+	Migrate  *migrate.Service
 	Timeline *timeline.Store
 	Recycle  *recycle.Bin
 	Images   *metadata.ImageCache
@@ -133,6 +136,9 @@ func mapError(err error) *StatusError {
 		return se
 	}
 	if se := mapSubtitlesError(err); se != nil {
+		return se
+	}
+	if se := mapMigrateError(err); se != nil {
 		return se
 	}
 	if se := mapRequestsError(err); se != nil {
