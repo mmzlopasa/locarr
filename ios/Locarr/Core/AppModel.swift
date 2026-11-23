@@ -165,7 +165,7 @@ final class AppModel {
 final class Session {
     let server: SavedServer
     let client: APIClient
-    weak var app: AppModel?
+    @ObservationIgnored weak var app: AppModel?
     var me: User?
     var meError: String?
     var unread = 0
@@ -173,7 +173,7 @@ final class Session {
     /// Set by deep links; the shell selects the right section and pushes the screen.
     var link: DeepLink?
     var linkTick = 0
-    private var pollTask: Task<Void, Never>?
+    @ObservationIgnored private var pollTask: Task<Void, Never>?
 
     init(server: SavedServer, client: APIClient, app: AppModel?) {
         self.server = server

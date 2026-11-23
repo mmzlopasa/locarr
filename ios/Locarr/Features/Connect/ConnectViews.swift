@@ -228,7 +228,7 @@ struct SignInView: View {
             field = username.isEmpty ? .username : .password
         }
         .onChange(of: method) { _, _ in error = nil }
-        .sheet(isPresented: $switching) { NavigationStack { ServerListView() } }
+        .sheet(isPresented: $switching) { NavigationStack { ServerListView() }.environment(app) }
     }
 
     private var subtitle: String {

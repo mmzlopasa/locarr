@@ -9,6 +9,7 @@ enum ServerURL {
         var text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return nil }
         let lower = text.lowercased()
+        if lower.contains("://") && !lower.hasPrefix("http://") && !lower.hasPrefix("https://") { return nil }
         if !lower.hasPrefix("http://") && !lower.hasPrefix("https://") {
             let host = String(lower.split(separator: "/").first ?? "").split(separator: ":").first.map { String($0) } ?? ""
             text = (isLocal(host: host) ? "http://" : "https://") + text
