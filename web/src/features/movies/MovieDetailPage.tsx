@@ -11,8 +11,10 @@ import { splitTags } from "./AddMoviePage";
 import { AVAILABILITIES, Poster, StatusBadge, movieFacts, useMovie, useQualityProfiles } from "./common";
 import { HistoryTab } from "./HistoryTab";
 import { InteractiveSearch, movieReleases } from "./InteractiveSearch";
+import { SubtitlesSection } from "@/features/subtitles/SubtitlesSection";
+import { SubtitleProfilePicker } from "@/features/subtitles/SubtitleProfilePicker";
 
-type TabKey = "overview" | "search" | "history";
+type TabKey = "overview" | "search" | "subtitles" | "history";
 
 export function MovieDetailPage() {
   const { id } = useParams({ from: "/app/movies/$id" });
@@ -25,7 +27,7 @@ export function MovieDetailPage() {
   if (movie.isLoading) return <Spinner />;
   if (movie.error || !movie.data) return <ErrorAlert error={movie.error} />;
   const m = movie.data;
-  const tabs: TabKey[] = canManage ? ["overview", "search", "history"] : ["overview"];
+  const tabs: TabKey[] = canManage ? ["overview", "search", "subtitles", "history"] : ["overview"];
   return (
     <div>
       <Hero m={m} canManage={canManage} />
@@ -40,6 +42,7 @@ export function MovieDetailPage() {
       <div role="tabpanel">
         {tab === "overview" ? <Overview m={m} /> : null}
         {tab === "search" ? <InteractiveSearch source={movieReleases(m.id)} itemRef={m.itemRef ?? `movie:${m.id}`} /> : null}
+        {tab === "subtitles" ? <SubtitlesSection itemRef={m.itemRef ?? `movie:${m.id}`} /> : null}
         {tab === "history" ? <HistoryTab itemRef={m.itemRef ?? `movie:${m.id}`} /> : null}
       </div>
     </div>
@@ -123,9 +126,14 @@ function EditPanel({ m, onDone }: { m: Movie; onDone: () => void }) {
   const [avail, setAvail] = useState<MinimumAvailability>(m.minimumAvailability);
   const [tags, setTags] = useState(m.tags.join(", "));
   const [path, setPath] = useState(m.path);
+  const [subs, setSubs] = useState<number>(Number.NaN);
   const save = useMutation({
-    mutationFn: async () => unwrap(await api.PATCH("/movies/{id}", { params: { path: { id: m.id } }, body: {
-      qualityProfileId: profile, minimumAvailability: avail, tags: splitTags(tags), ...(path !== m.path ? { path } : {}) } })),
+    mutationFn: async () => {
+      const out = unwrap(await api.PATCH("/movies/{id}", { params: { path: { id: m.id } }, body: {
+        qualityProfileId: profile, minimumAvailability: avail, tags: splitTags(tags), ...(path !== m.path ? { path } : {}) } }));
+      if (!Number.isNaN(subs)) unwrap(await api.POST("/subtitles/profiles/assign", { body: { itemIds: [m.id], profileId: subs } }));
+      return out;
+    },
     onSuccess: onDone,
   });
   return (
@@ -140,6 +148,7 @@ function EditPanel({ m, onDone }: { m: Movie; onDone: () => void }) {
         <TextInput label={t("addMovie.tags")} value={tags} onChange={(e) => setTags(e.target.value)} />
         <TextInput label={t("movie.path")} value={path} onChange={(e) => setPath(e.target.value)} disabled={!!m.file}
           hint={m.file ? t("movie.pathLocked") : undefined} />
+        <SubtitleProfilePicker itemRef={`movie:${m.id}`} value={subs} onChange={setSubs} />
       </div>
       <div className="mt-3 flex gap-2">
         <Button variant="primary" onClick={() => save.mutate()} busy={save.isPending}>{t("common.save")}</Button>

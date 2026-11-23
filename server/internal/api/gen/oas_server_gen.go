@@ -63,6 +63,12 @@ type Handler interface {
 	//
 	// POST /requests/approve
 	ApproveRequests(ctx context.Context, req *RequestIds) (*BulkResult, error)
+	// AssignSubtitleProfile implements assignSubtitleProfile operation.
+	//
+	// ProfileId 0 = the kind's default, -1 = no subtitles, else a profile. Episodes follow their series.
+	//
+	// POST /subtitles/profiles/assign
+	AssignSubtitleProfile(ctx context.Context, req *SubtitleProfileAssign) (*SubtitleCount, error)
 	// BrowseFilesystem implements browseFilesystem operation.
 	//
 	// Without `path`, lists the data roots themselves.
@@ -93,6 +99,12 @@ type Handler interface {
 	//
 	// POST /auth/invite
 	CheckInvite(ctx context.Context, req *InviteCodeRequest) (*InviteCheck, error)
+	// ConvertSubtitleFps implements convertSubtitleFps operation.
+	//
+	// Convert a subtitle made for one frame rate to another (managers).
+	//
+	// POST /subtitles/{id}/fps
+	ConvertSubtitleFps(ctx context.Context, req *ConvertSubtitleFpsReq, params ConvertSubtitleFpsParams) (*Subtitle, error)
 	// CreateApiKey implements createApiKey operation.
 	//
 	// The key is returned once and cannot be shown again. Needs a session (not an API key).
@@ -197,6 +209,12 @@ type Handler interface {
 	//
 	// POST /rootfolders
 	CreateRootFolder(ctx context.Context, req *CreateRootFolderRequest) (*RootFolder, error)
+	// CreateSubtitleProfile implements createSubtitleProfile operation.
+	//
+	// Add a subtitle language profile (administrators).
+	//
+	// POST /subtitles/profiles
+	CreateSubtitleProfile(ctx context.Context, req *SubtitleProfileInput) (*SubtitleProfile, error)
 	// CreateUser implements createUser operation.
 	//
 	// Create a user (administrators).
@@ -323,6 +341,25 @@ type Handler interface {
 	//
 	// DELETE /series/{id}
 	DeleteSeries(ctx context.Context, params DeleteSeriesParams) error
+	// DeleteSubtitle implements deleteSubtitle operation.
+	//
+	// Move a subtitle file to the recycle bin (managers).
+	//
+	// DELETE /subtitles/{id}
+	DeleteSubtitle(ctx context.Context, params DeleteSubtitleParams) error
+	// DeleteSubtitleBlacklistEntry implements deleteSubtitleBlacklistEntry operation.
+	//
+	// Allow a rejected subtitle again (managers).
+	//
+	// DELETE /subtitles/blacklist/{id}
+	DeleteSubtitleBlacklistEntry(ctx context.Context, params DeleteSubtitleBlacklistEntryParams) error
+	// DeleteSubtitleProfile implements deleteSubtitleProfile operation.
+	//
+	// A profile that is a default cannot be deleted (`subtitle_profile_in_use`); items that used it fall
+	// back to the default.
+	//
+	// DELETE /subtitles/profiles/{id}
+	DeleteSubtitleProfile(ctx context.Context, params DeleteSubtitleProfileParams) error
 	// DeleteUser implements deleteUser operation.
 	//
 	// Not the caller's own account and not the last enabled administrator.
@@ -341,6 +378,13 @@ type Handler interface {
 	//
 	// GET /discover/search
 	DiscoverSearch(ctx context.Context, params DiscoverSearchParams) (*DiscoverPage, error)
+	// DownloadItemSubtitle implements downloadItemSubtitle operation.
+	//
+	// Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
+	// `subtitle_result_expired`.
+	//
+	// POST /subtitles/items/{ref}/download
+	DownloadItemSubtitle(ctx context.Context, req *DownloadItemSubtitleReq, params DownloadItemSubtitleParams) (*Subtitle, error)
 	// DownloadRelease implements downloadRelease operation.
 	//
 	// `token` comes from a search result's `downloadLink`. The server fetches the .torrent or .nzb with
@@ -508,6 +552,13 @@ type Handler interface {
 	//
 	// GET /issues/{id}
 	GetIssue(ctx context.Context, params GetIssueParams) (*Issue, error)
+	// GetItemSubtitles implements getItemSubtitles operation.
+	//
+	// Present and missing languages of its profile, subtitle files, embedded tracks, search state and the
+	// explanation.
+	//
+	// GET /subtitles/items/{ref}
+	GetItemSubtitles(ctx context.Context, params GetItemSubtitlesParams) (*SubtitleItem, error)
 	// GetMe implements getMe operation.
 	//
 	// The signed-in user.
@@ -606,6 +657,12 @@ type Handler interface {
 	//
 	// GET /settings
 	GetSettings(ctx context.Context) (*Settings, error)
+	// GetSubtitleSettings implements getSubtitleSettings operation.
+	//
+	// Subtitle options (administrators).
+	//
+	// GET /subtitles/settings
+	GetSubtitleSettings(ctx context.Context) (*SubtitleSettings, error)
 	// GetSystemInfo implements getSystemInfo operation.
 	//
 	// Unauthenticated. Clients use it to check a server address and whether first-run setup is needed.
@@ -929,6 +986,24 @@ type Handler interface {
 	//
 	// GET /auth/sessions
 	ListSessions(ctx context.Context) ([]Session, error)
+	// ListSubtitleBlacklist implements listSubtitleBlacklist operation.
+	//
+	// Subtitles rejected for an item (managers).
+	//
+	// GET /subtitles/items/{ref}/blacklist
+	ListSubtitleBlacklist(ctx context.Context, params ListSubtitleBlacklistParams) ([]SubtitleBlacklistEntry, error)
+	// ListSubtitleProfiles implements listSubtitleProfiles operation.
+	//
+	// Subtitle language profiles (managers).
+	//
+	// GET /subtitles/profiles
+	ListSubtitleProfiles(ctx context.Context) ([]SubtitleProfile, error)
+	// ListSubtitleProviders implements listSubtitleProviders operation.
+	//
+	// Subtitle providers with health and quota (managers).
+	//
+	// GET /subtitles/providers
+	ListSubtitleProviders(ctx context.Context) ([]SubtitleProvider, error)
 	// ListTasks implements listTasks operation.
 	//
 	// Scheduled tasks and recent job history (administrators).
@@ -953,6 +1028,12 @@ type Handler interface {
 	//
 	// GET /episodes/wanted
 	ListWantedEpisodes(ctx context.Context, params ListWantedEpisodesParams) (*WantedEpisodeList, error)
+	// ListWantedSubtitles implements listWantedSubtitles operation.
+	//
+	// Movies and episodes missing subtitles of their profile (managers).
+	//
+	// GET /subtitles/wanted
+	ListWantedSubtitles(ctx context.Context, params ListWantedSubtitlesParams) (*WantedSubtitles, error)
 	// Login implements login operation.
 	//
 	// When the account has two-factor authentication on and neither `totpCode` nor `recoveryCode` is
@@ -996,6 +1077,12 @@ type Handler interface {
 	//
 	// POST /series/import/manual
 	ManualImportSeries(ctx context.Context, req *SeriesManualImportRequest) ([]SeriesManualImportResult, error)
+	// ManualSubtitleSearch implements manualSubtitleSearch operation.
+	//
+	// Manual search: every provider's results with scores (managers).
+	//
+	// GET /subtitles/items/{ref}/results
+	ManualSubtitleSearch(ctx context.Context, params ManualSubtitleSearchParams) (*SubtitleManualSearch, error)
 	// MarkNotificationsRead implements markNotificationsRead operation.
 	//
 	// Mark notifications read.
@@ -1088,6 +1175,12 @@ type Handler interface {
 	//
 	// POST /settings/mediamanagement/series/preview
 	PreviewSeriesNaming(ctx context.Context, req *SeriesNamingSettings) (*SeriesNamingPreview, error)
+	// PreviewSubtitle implements previewSubtitle operation.
+	//
+	// The first lines of a subtitle (managers).
+	//
+	// GET /subtitles/{id}/preview
+	PreviewSubtitle(ctx context.Context, params PreviewSubtitleParams) (*SubtitlePreview, error)
 	// PutRequestSettings implements putRequestSettings operation.
 	//
 	// Change request defaults and quotas (administrators).
@@ -1168,6 +1261,12 @@ type Handler interface {
 	//
 	// POST /qualitydefinitions/reset
 	ResetQualityDefinitions(ctx context.Context, req *ResetQualityDefinitionsRequest) ([]QualityDefinition, error)
+	// ResetSubtitleProviderHealth implements resetSubtitleProviderHealth operation.
+	//
+	// Clear a provider's failures and backoff (managers).
+	//
+	// POST /subtitles/providers/{name}/health/reset
+	ResetSubtitleProviderHealth(ctx context.Context, params ResetSubtitleProviderHealthParams) (*SubtitleProvider, error)
 	// ResetUserPassword implements resetUserPassword operation.
 	//
 	// Signs the user out everywhere and clears an account lockout.
@@ -1237,6 +1336,12 @@ type Handler interface {
 	//
 	// GET /series/import/scan
 	ScanExistingSeries(ctx context.Context, params ScanExistingSeriesParams) ([]ExistingSeriesFolder, error)
+	// ScanSubtitles implements scanSubtitles operation.
+	//
+	// Scan the library for subtitles on disk and embedded tracks (managers).
+	//
+	// POST /subtitles/scan
+	ScanSubtitles(ctx context.Context) (*SubtitleCount, error)
 	// Search implements search operation.
 	//
 	// Indexers are asked in parallel, each with its own timeout and request limit. Results are
@@ -1269,6 +1374,12 @@ type Handler interface {
 	//
 	// POST /episodes/search
 	SearchEpisodes(ctx context.Context, req *EpisodeIdsRequest) (*QueuedCount, error)
+	// SearchItemSubtitles implements searchItemSubtitles operation.
+	//
+	// Search now and download the best subtitles above the minimum score (managers).
+	//
+	// POST /subtitles/items/{ref}/search
+	SearchItemSubtitles(ctx context.Context, params SearchItemSubtitlesParams) (*SubtitleSearchOutcome, error)
 	// SearchMovie implements searchMovie operation.
 	//
 	// The search, the decision and any grab appear on the movie's timeline.
@@ -1312,6 +1423,12 @@ type Handler interface {
 	//
 	// GET /search/stream
 	SearchStream(ctx context.Context, params SearchStreamParams) (SearchStreamOK, error)
+	// SearchWantedSubtitles implements searchWantedSubtitles operation.
+	//
+	// Queue subtitle searches for items, or for every item missing subtitles (managers).
+	//
+	// POST /subtitles/wanted/search
+	SearchWantedSubtitles(ctx context.Context, req *SearchWantedSubtitlesReq) (*SubtitleCount, error)
 	// SetQueueItemPriority implements setQueueItemPriority operation.
 	//
 	// Move a download in its client's queue (library managers).
@@ -1331,6 +1448,12 @@ type Handler interface {
 	//
 	// POST /setup
 	Setup(ctx context.Context, req *SetupRequest) (*SignedInHeaders, error)
+	// ShiftSubtitle implements shiftSubtitle operation.
+	//
+	// The previous version goes to the recycle bin.
+	//
+	// POST /subtitles/{id}/shift
+	ShiftSubtitle(ctx context.Context, req *ShiftSubtitleReq, params ShiftSubtitleParams) (*Subtitle, error)
 	// SignUp implements signUp operation.
 	//
 	// Create an account with an invite code and sign in.
@@ -1357,6 +1480,15 @@ type Handler interface {
 	//
 	// POST /indexers/sources/{id}/sync
 	SyncIndexerSource(ctx context.Context, params SyncIndexerSourceParams) (*IndexerSourceSyncResult, error)
+	// SyncSubtitle implements syncSubtitle operation.
+	//
+	// Runs in the background; the subtitle's syncState becomes running, then done, not_confident or
+	// failed. reference: `audio` (the default audio track), `audio:N`, `track:N` (embedded text subtitle
+	// track N) or `subtitle:ID` (another subtitle of the same file). Audio and tracks need ffmpeg
+	// (`subtitle_sync_unavailable`).
+	//
+	// POST /subtitles/{id}/sync
+	SyncSubtitle(ctx context.Context, req *SyncSubtitleReq, params SyncSubtitleParams) (*Subtitle, error)
 	// TestDownloadClient implements testDownloadClient operation.
 	//
 	// Always answers 200 with the outcome. With `id`, password and API key left out are taken from that
@@ -1379,6 +1511,12 @@ type Handler interface {
 	//
 	// POST /indexers/test
 	TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (*IndexerTestResult, error)
+	// TestSubtitleProvider implements testSubtitleProvider operation.
+	//
+	// Check a provider's credentials and read its quota (administrators).
+	//
+	// POST /subtitles/providers/{name}/test
+	TestSubtitleProvider(ctx context.Context, params TestSubtitleProviderParams) (*SubtitleProvider, error)
 	// UpdateAlbum implements updateAlbum operation.
 	//
 	// `releaseId` picks an edition and keeps it; 0 lets Locarr choose again.
@@ -1531,6 +1669,25 @@ type Handler interface {
 	//
 	// PATCH /settings
 	UpdateSettings(ctx context.Context, req *UpdateSettingsRequest) (*Settings, error)
+	// UpdateSubtitleProfile implements updateSubtitleProfile operation.
+	//
+	// Change a subtitle language profile (administrators).
+	//
+	// PUT /subtitles/profiles/{id}
+	UpdateSubtitleProfile(ctx context.Context, req *SubtitleProfileInput, params UpdateSubtitleProfileParams) (*SubtitleProfile, error)
+	// UpdateSubtitleProvider implements updateSubtitleProvider operation.
+	//
+	// Credentials are write-only and stored encrypted; an empty string removes one. A provider that needs
+	// a key cannot be enabled without it.
+	//
+	// PUT /subtitles/providers/{name}
+	UpdateSubtitleProvider(ctx context.Context, req *SubtitleProviderInput, params UpdateSubtitleProviderParams) (*SubtitleProvider, error)
+	// UpdateSubtitleSettings implements updateSubtitleSettings operation.
+	//
+	// Change subtitle options (administrators).
+	//
+	// PUT /subtitles/settings
+	UpdateSubtitleSettings(ctx context.Context, req *SubtitleSettingsInput) (*SubtitleSettings, error)
 	// UpdateUser implements updateUser operation.
 	//
 	// The last enabled administrator cannot be demoted or disabled.

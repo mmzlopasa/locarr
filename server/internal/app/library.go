@@ -179,6 +179,7 @@ func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger)
 		Recycle: d.Recycle, Images: d.Images, TMDb: d.TMDb, MetaCache: d.MetaCache,
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
 	attachMusic(h, d, log)
+	attachSubtitles(h, d)
 	attachRequests(h, d)
 	return h
 }

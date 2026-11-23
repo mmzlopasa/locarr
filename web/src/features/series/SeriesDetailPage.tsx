@@ -2,7 +2,7 @@ import { memo, useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Bookmark, BookmarkX, ChevronDown, ChevronRight, History, ListFilter, Pencil, RefreshCw, Search, Trash2 } from "lucide-react";
+import { Bookmark, BookmarkX, Captions, ChevronDown, ChevronRight, History, ListFilter, Pencil, RefreshCw, Search, Trash2 } from "lucide-react";
 import { api, imageUrl, queryKeys, unwrap, type Episode, type SeasonInfo, type SeriesDetail } from "@/api/client";
 import { formatBytes } from "@/components/format";
 import { Badge, Button, Checkbox, ErrorAlert, SelectInput, Spinner, TextInput } from "@/components/ui";
@@ -13,8 +13,10 @@ import { HistoryTab } from "@/features/movies/HistoryTab";
 import { InteractiveSearch, type ReleaseSource } from "@/features/movies/InteractiveSearch";
 import { bySeason, EpisodeStateBadge, episodeCode, formatAir, MONITOR_OPTIONS, SERIES_TYPES, SeriesStatusBadge, useEpisodes, useSeriesDetail } from "./common";
 import { Drawer } from "./Drawer";
+import { SubtitlesSection } from "@/features/subtitles/SubtitlesSection";
+import { SubtitleProfilePicker } from "@/features/subtitles/SubtitleProfilePicker";
 
-type Panel = { kind: "history" | "search"; title: string; itemRef: string; source?: ReleaseSource } | null;
+type Panel = { kind: "history" | "search" | "subtitles"; title: string; itemRef: string; source?: ReleaseSource } | null;
 
 function episodeReleases(id: number, seriesId: number): ReleaseSource {
   return {
@@ -62,6 +64,7 @@ export function SeriesDetailPage() {
       {panel ? (
         <Drawer title={panel.title} onClose={() => setPanel(null)} testId={`drawer-${panel.kind}`}>
           {panel.kind === "history" ? <HistoryTab itemRef={panel.itemRef} /> : null}
+          {panel.kind === "subtitles" ? <SubtitlesSection itemRef={panel.itemRef} /> : null}
           {panel.kind === "search" && panel.source ? <InteractiveSearch source={panel.source} itemRef={panel.itemRef} autoStart /> : null}
         </Drawer>
       ) : null}
@@ -154,10 +157,15 @@ function EditPanel({ s, onDone }: { s: SeriesDetail; onDone: () => void }) {
   const [monitor, setMonitor] = useState<string>("");
   const [tags, setTags] = useState(s.tags.join(", "));
   const [path, setPath] = useState(s.path);
+  const [subs, setSubs] = useState<number>(Number.NaN);
   const save = useMutation({
-    mutationFn: async () => unwrap(await api.PATCH("/series/{id}", { params: { path: { id: s.id } }, body: {
-      qualityProfileId: profile, seriesType: type, seasonFolder, monitorNewSeasons: newSeasons, tags: splitTags(tags),
-      ...(monitor ? { monitor: monitor as (typeof MONITOR_OPTIONS)[number] } : {}), ...(path !== s.path ? { path } : {}) } })),
+    mutationFn: async () => {
+      const out = unwrap(await api.PATCH("/series/{id}", { params: { path: { id: s.id } }, body: {
+        qualityProfileId: profile, seriesType: type, seasonFolder, monitorNewSeasons: newSeasons, tags: splitTags(tags),
+        ...(monitor ? { monitor: monitor as (typeof MONITOR_OPTIONS)[number] } : {}), ...(path !== s.path ? { path } : {}) } }));
+      if (!Number.isNaN(subs)) unwrap(await api.POST("/subtitles/profiles/assign", { body: { itemIds: [s.id], profileId: subs } }));
+      return out;
+    },
     onSuccess: onDone,
   });
   const hasFiles = s.stats.episodeFileCount > 0;
@@ -183,6 +191,7 @@ function EditPanel({ s, onDone }: { s: SeriesDetail; onDone: () => void }) {
           <TextInput label={t("movie.path")} value={path} onChange={(e) => setPath(e.target.value)} disabled={hasFiles}
             hint={hasFiles ? t("series.pathLocked") : undefined} />
         </div>
+        <SubtitleProfilePicker value={subs} onChange={setSubs} />
         <Checkbox label={t("addSeries.seasonFolder")} checked={seasonFolder} onChange={(e) => setSeasonFolder(e.target.checked)} />
       </div>
       <div className="mt-3 flex gap-2">
@@ -407,6 +416,10 @@ const EpisodeRow = memo(function EpisodeRow({ e, s, canManage, selected, select,
             <Button variant="ghost" title={t("episode.interactive")} data-testid="episode-interactive"
               onClick={() => openPanel({ kind: "search", title: t("series.releasesFor", { title: label }), itemRef: e.itemRef, source: episodeReleases(e.id, s.id) })}>
               <ListFilter className="size-3.5" /><span className="sr-only">{t("episode.interactive")}</span>
+            </Button>
+            <Button variant="ghost" title={t("subtitles.episodeButton")} data-testid="episode-subtitles" disabled={!e.file}
+              onClick={() => openPanel({ kind: "subtitles", title: t("subtitles.drawerTitle", { title: `${label}${e.title ? ` · ${e.title}` : ""}` }), itemRef: e.itemRef })}>
+              <Captions className="size-3.5" /><span className="sr-only">{t("subtitles.episodeButton")}</span>
             </Button>
             <Button variant="ghost" title={t("episode.why")} data-testid="episode-history"
               onClick={() => openPanel({ kind: "history", title: t("series.history", { title: `${label}${e.title ? ` · ${e.title}` : ""}` }), itemRef: e.itemRef })}>
