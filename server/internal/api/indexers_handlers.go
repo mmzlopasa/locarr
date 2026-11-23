@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"mime"
+	"net/http"
 	"net/url"
 	"slices"
 	"strconv"
@@ -314,6 +315,10 @@ func (h *Handler) DownloadRelease(ctx context.Context, params gen.DownloadReleas
 	f, err := h.Indexers.FetchToken(ctx, params.ID, params.Token)
 	if err != nil {
 		return nil, err
+	}
+	if f.Magnet != "" {
+		return nil, &StatusError{Status: http.StatusConflict, Code: "magnet",
+			Message: "the indexer answered with a magnet link instead of a file: use the release's magnet link or send it to a download client"}
 	}
 	disp := mime.FormatMediaType("attachment", map[string]string{"filename": f.Name})
 	return &gen.DownloadReleaseOKHeaders{ContentDisposition: optStr(disp),

@@ -16,6 +16,9 @@ P0–P10 gotovi.
 
 
 
+## Popravak: grab kroz Prowlarr (branch `fix/grab-redirects`)
+- Dohvat datoteke izdanja prati preusmjerenja na drugi host i na magnet bez ključa indexera (D-080); grab u pretrazi: najviše 3 neuspjela pokušaja po ciklusu, indexer s ograničenjem/„disabled till" preskočen i u backoffu, 2 s između grabova s istog indexera, blokada samo za loše datoteke; greške bez upita u URL-u i ljudskim tekstom (EN + HR); „Zašto nije stiglo?" kaže „prihvaćeno N, ali grab nije uspio: …"; „Pokušaj odmah" (`POST /timeline/retry`).
+
 ## Gotovo: Otkrivanje u Streameru (branch `feat/streamero-discover`)
 - `internal/compat` (D-079): Seerr (`/compat/seerr/api/v1`: status, pretraga, trending, zahtjev), Radarr i Sonarr (`/compat/radarr|sonarr/api/v3`: status, kalendar, filmovi po TMDb ID-u, serije) izvan ogena, prijava Locarr API ključem kao vlasnik ključa; poveznice `/compat/radarr/movie/{id}` i `/compat/sonarr/series/{id}` vode na Locarrove stranice.
 - `metadata.WithLanguage`: jedan poziv TMDb-u na jeziku klijenta; `discover.SearchTMDb` (pretraga bez glazbe).

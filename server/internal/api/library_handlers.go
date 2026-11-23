@@ -345,6 +345,21 @@ func (h *Handler) ExplainItem(ctx context.Context, p gen.ExplainItemParams) (*ge
 	return &out, err
 }
 
+// RetryItem implements POST /timeline/retry.
+func (h *Handler) RetryItem(ctx context.Context, p gen.RetryItemParams) (*gen.QueuedCount, error) {
+	if _, err := manager(ctx); err != nil {
+		return nil, err
+	}
+	ref, err := library.ParseRef(p.Item)
+	if err != nil {
+		return nil, err
+	}
+	if err := h.Wanted.RetryNow(ctx, ref); err != nil {
+		return nil, err
+	}
+	return &gen.QueuedCount{Count: 1}, nil
+}
+
 func day(t time.Time) string { return t.Format("2006-01-02") }
 
 // GetCalendar implements GET /calendar.

@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
 )
 
 // tokenTTL is how long a download link from a search stays valid.
@@ -43,11 +45,13 @@ func (s *Service) DownloadToken(r Release) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(ct), nil
 }
 
-// File is a downloaded release file.
+// File is a downloaded release file, or the magnet link the indexer sent
+// instead (Magnet set, no Data).
 type File struct {
 	Name        string
 	ContentType string
 	Data        []byte
+	Magnet      string
 }
 
 // FetchToken downloads the release a token points at (for indexer id).
@@ -68,7 +72,9 @@ func (s *Service) FetchToken(ctx context.Context, id int64, token string) (File,
 }
 
 // Fetch downloads a release's .torrent or .nzb with the indexer's credentials.
-// The link must be on the indexer's own host. It counts as a grab against the
+// The link must be on the indexer's own host; the indexer may redirect to
+// another host (the tracker) or to a magnet link (see httpx.FollowRelease and
+// D-080). It counts as a grab against the
 // indexer's daily limit (ErrGrabLimit when reached).
 func (s *Service) Fetch(ctx context.Context, r Release) (File, error) {
 	if r.DownloadURL == "" {
@@ -96,15 +102,15 @@ func (s *Service) Fetch(ctx context.Context, r Release) (File, error) {
 	full := strings.ReplaceAll(r.DownloadURL, keyPlaceholder, c.secret())
 	res, err := c.Fetch(ctx, full)
 	if err != nil {
-		if countsAsFailure(ctx, err) {
+		// A bad file says something about the release, not the indexer's health.
+		if countsAsFailure(ctx, err) && !strings.Contains(err.Error(), httpx.ErrNotReleaseFile.Error()) {
 			s.recordFailure(ctx, ind, err)
 		}
 		return File{}, err
 	}
-	if t := strings.TrimSpace(string(res.Body[:min(len(res.Body), 8)])); strings.EqualFold(t, "magnet:?") {
-		// A built-in site that finds the magnet on the details page at grab time.
-		return File{Name: safeFileName(r.Title, strconv.FormatInt(r.IndexerID, 10)) + ".magnet", ContentType: "text/plain",
-			Data: []byte(strings.TrimSpace(string(res.Body)))}, nil
+	if res.Magnet != "" {
+		return File{Magnet: res.Magnet, Name: safeFileName(r.Title, strconv.FormatInt(r.IndexerID, 10)) + ".magnet",
+			ContentType: "text/plain"}, nil
 	}
 	f := File{Data: res.Body, ContentType: "application/octet-stream"}
 	if _, params, err := mime.ParseMediaType(res.Header.Get("Content-Disposition")); err == nil && params["filename"] != "" {

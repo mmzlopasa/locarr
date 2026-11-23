@@ -26,7 +26,7 @@ var (
 type backend interface {
 	Caps(ctx context.Context) (*znab.Caps, error)
 	Search(ctx context.Context, r znab.Request) (*znab.Page, error)
-	Fetch(ctx context.Context, link string) (*httpx.Response, error)
+	Fetch(ctx context.Context, link string) (*httpx.ReleaseFile, error)
 	// secret is the API key that must not leave the server ("" for none).
 	secret() string
 	// probe is the search a test runs.

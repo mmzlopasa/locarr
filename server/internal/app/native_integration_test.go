@@ -145,9 +145,8 @@ func TestBuiltinIndexers(t *testing.T) {
 	if _, ok := fake.items["45bb7b3ac77116ef4e7ec743e2a8319caddf87b1"]; !ok {
 		t.Fatalf("details-page grab: %+v", fake.items)
 	}
-	// The browser download of such a result is the magnet as text.
-	r := e.expect(e.do("GET", sr.Releases[0].DownloadLink, nil), 200)
-	if !strings.HasPrefix(string(r.body), "magnet:?xt=urn:btih:45BB7B3AC77116EF4E7EC743E2A8319CADDF87B1") {
+	// A browser download of such a result says it is a magnet (D-080).
+	if r := e.expect(e.do("GET", sr.Releases[0].DownloadLink, nil), 409); r.code() != "magnet" {
 		t.Fatalf("%s", r.body)
 	}
 

@@ -2174,6 +2174,17 @@ func (UnimplementedHandler) ResumeQueueItem(ctx context.Context, params ResumeQu
 	return ht.ErrNotImplemented
 }
 
+// RetryItem implements retryItem operation.
+//
+// For a movie, episode, season or album (`movie:42`). The item's search backoff is cleared and an
+// automatic search is queued at once; the decision and any grab appear on the timeline. Indexer limits
+// and grab pacing still apply.
+//
+// POST /timeline/retry
+func (UnimplementedHandler) RetryItem(ctx context.Context, params RetryItemParams) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RetryRequest implements retryRequest operation.
 //
 // Search again for a failed request (managers).

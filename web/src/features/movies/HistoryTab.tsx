@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, Info, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, Info, RotateCw, XCircle } from "lucide-react";
 import { api, queryKeys, unwrap, type Explanation, type Rejection, type TimelineEvent } from "@/api/client";
 import { formatDateTime, formatRelative } from "@/components/format";
-import { EmptyState, ErrorAlert, Spinner } from "@/components/ui";
+import { Button, EmptyState, ErrorAlert, Spinner } from "@/components/ui";
 import { describeRejection } from "@/features/profiles/rejections";
 import { describeEvent, describeExplanation, eventTone } from "./timeline";
 import { SubtitleWhyForItem } from "@/features/subtitles/SubtitlesSection";
@@ -17,9 +17,32 @@ const toneClass = {
   neutral: "border-line-strong bg-surface-3 text-muted",
 } as const;
 
+/** Explanations after which searching again right away can help. */
+const retryable = new Set(["grab_failed", "nothing_found", "all_rejected", "download_failed", "not_searched_yet", "upgrade_wanted"]);
+
+/** "Retry now": clear the item's search backoff and search and grab at once. */
+function RetryNow({ itemRef }: { itemRef: string }) {
+  const { t } = useTranslation();
+  const qc = useQueryClient();
+  const retry = useMutation({
+    mutationFn: async () => unwrap(await api.POST("/timeline/retry", { params: { query: { item: itemRef } } })),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.timeline(itemRef) }),
+  });
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2">
+      <Button onClick={() => retry.mutate()} busy={retry.isPending} title={t("explain.retryHint")} data-testid="retry-now">
+        <RotateCw className="size-3.5" aria-hidden /> {retry.isPending ? t("explain.retrying") : t("explain.retryNow")}
+      </Button>
+      {retry.isSuccess ? <span role="status" className="text-[12px] text-muted">{t("explain.retryQueued")}</span> : null}
+      {retry.error ? <ErrorAlert error={retry.error} /> : null}
+    </div>
+  );
+}
+
 /** The one-line answer to "why isn't it here?", with the most common rejection reasons. */
-export function WhyBox({ ex }: { ex: Explanation }) {
+export function WhyBox({ ex, itemRef }: { ex: Explanation; itemRef?: string }) {
   const { t, i18n } = useTranslation();
+  const canRetry = itemRef !== undefined && /^(movie|episode|season|album):/.test(itemRef) && retryable.has(ex.code);
   const Icon = ex.tone === "success" ? CheckCircle2 : ex.tone === "danger" ? XCircle : ex.tone === "warning" ? AlertTriangle : Info;
   return (
     <section aria-label={t("explain.title")} data-testid="why-box" data-code={ex.code}
@@ -38,6 +61,7 @@ export function WhyBox({ ex }: { ex: Explanation }) {
               ))}
             </ul>
           ) : null}
+          {canRetry ? <RetryNow itemRef={itemRef} /> : null}
         </div>
       </div>
     </section>
@@ -82,7 +106,7 @@ function Event({ e }: { e: TimelineEvent }) {
               <span className="sr-only">{t("timeline.details")}</span>
             </button>
           ) : null}
-          {describeEvent(t, e)}
+          {describeEvent(t, e, i18n.language)}
         </p>
         <time dateTime={e.at} title={formatDateTime(e.at, i18n.language)} className="text-[12px] tabular-nums text-faint">
           {formatRelative(e.at, i18n.language)}
@@ -114,7 +138,7 @@ export function HistoryTab({ itemRef }: { itemRef: string }) {
   if (!tl.data) return null;
   return (
     <div>
-      <WhyBox ex={tl.data.explanation} />
+      <WhyBox ex={tl.data.explanation} itemRef={itemRef} />
       {/^(movie|episode):/.test(itemRef) ? <SubtitleWhyForItem itemRef={itemRef} /> : null}
       {tl.data.events.length === 0 ? (
         <EmptyState>{t("timeline.empty")}</EmptyState>

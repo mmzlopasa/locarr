@@ -12,11 +12,13 @@ import (
 
 // Blocklist reasons.
 const (
-	ReasonManual   = "manual"
-	ReasonFailed   = "download_failed"
-	ReasonStalled  = "stalled"
-	ReasonImport   = "import_failed"
-	maxBlockReason = 64
+	ReasonManual  = "manual"
+	ReasonFailed  = "download_failed"
+	ReasonStalled = "stalled"
+	ReasonImport  = "import_failed"
+	// ReasonBadRelease: the release file was broken, not a release, or gone.
+	ReasonBadRelease = "bad_release"
+	maxBlockReason   = 64
 )
 
 // BlockEntry is a release that must not be grabbed again.

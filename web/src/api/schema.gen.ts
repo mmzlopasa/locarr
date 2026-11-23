@@ -2262,6 +2262,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/timeline/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Retry now - clear an item's search backoff and search and grab immediately (library managers)
+         * @description For a movie, episode, season or album (`movie:42`). The item's search backoff is cleared and an
+         *     automatic search is queued at once; the decision and any grab appear on the timeline. Indexer
+         *     limits and grab pacing still apply.
+         */
+        post: operations["retryItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/calendar": {
         parameters: {
             query?: never;
@@ -6209,7 +6231,7 @@ export interface components {
             /**
              * @description available, downloading, importing, import_failed, not_monitored, not_available_yet,
              *     no_indexers, no_download_client, waiting_delay, download_failed, not_searched_yet,
-             *     all_rejected, nothing_found, upgrade_wanted.
+             *     all_rejected, nothing_found, grab_failed, upgrade_wanted.
              */
             code: string;
             /** @enum {string} */
@@ -12228,6 +12250,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Explanation"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    retryItem: {
+        parameters: {
+            query: {
+                item: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
                 };
             };
             default: components["responses"]["Error"];

@@ -662,7 +662,8 @@
       "manual": "Blocked by hand",
       "download_failed": "Download failed",
       "stalled": "Stalled",
-      "import_failed": "Import failed"
+      "import_failed": "Import failed",
+      "bad_release": "Bad or missing file"
     }
   },
   "search": {
@@ -1489,9 +1490,15 @@
       "not_searched_yet": "Not searched yet. The next automatic search is at {{next}}.",
       "all_rejected": "Searches so far: {{searches}}. The last one found {{candidates}} and every release was rejected. Most common reason: {{reason}}.",
       "nothing_found": "Searches so far: {{searches}}, and no indexer had a release. Next search: {{next}}.",
-      "upgrade_wanted": "In the library, below the quality profile's cutoff; Locarr keeps looking for an upgrade."
+      "upgrade_wanted": "In the library, below the quality profile's cutoff; Locarr keeps looking for an upgrade.",
+      "grab_failed": "{{accepted}} releases accepted, but grabbing failed: {{detail}}",
+      "grab_failed_unknown": "The last search accepted {{accepted}} of {{candidates}} releases, but nothing was grabbed yet."
     },
-    "titleOk": "In the library"
+    "titleOk": "In the library",
+    "retryNow": "Retry now",
+    "retrying": "Searching…",
+    "retryQueued": "Searching again now. Indexer limits still apply.",
+    "retryHint": "Clears the wait between automatic searches and searches right away."
   },
   "rejectionCodes": {
     "parse_failed": "name not readable",
@@ -1590,7 +1597,8 @@
       "albumRemoved": "{{message}}",
       "importSkipped": "Not imported: {{message}}",
       "notifiedScan": "Told {{server}} to scan {{libraries}}.",
-      "notifyFailedReason": "Could not tell {{server}}: {{reason}}"
+      "notifyFailedReason": "Could not tell {{server}}: {{reason}}",
+      "grabSkipped": "Skipped releases: {{reason}}"
     },
     "coverSources": {
       "download": "the download"
@@ -1599,6 +1607,24 @@
       "no_matching_episode": "Not imported from {{download}}: {{path}} matches no episode of the series",
       "not_an_upgrade": "{{path}} was not imported: it is not an upgrade",
       "already_imported": "{{path}} is already in the library"
+    },
+    "grabErrors": {
+      "theIndexer": "the indexer",
+      "indexer_disabled_until": "The indexer {{indexer}} is temporarily disabled in Prowlarr until {{until}} (too many recent failures).",
+      "indexer_disabled": "The indexer {{indexer}} is disabled (by its manager or the site).",
+      "indexer_limited_until": "{{indexer}} is limiting requests; Locarr leaves it alone until {{until}}.",
+      "indexer_limited": "{{indexer}} is limiting requests; Locarr tries it again later.",
+      "indexer_error": "{{indexer}} could not deliver the file ({{error}}). Its other releases wait for the next search.",
+      "indexer_unreachable": "{{indexer}} did not answer. Its other releases wait for the next search.",
+      "indexer_auth": "{{indexer}} refused the API key. Check the indexer's settings.",
+      "grab_limit": "{{indexer}} reached its daily grab limit.",
+      "release_gone": "The release is no longer on {{indexer}} (404), so it was blocklisted.",
+      "bad_file": "{{indexer}} sent something that is not a .torrent or .nzb (a web page?), so the release was blocklisted.",
+      "blocked_address": "The download pointed to an address Locarr does not reach (local or cloud metadata). Allow it under Indexers → Settings if it is yours.",
+      "bad_redirect": "The download redirected in a loop or to an unusable address.",
+      "already_queued": "It is already in the download queue.",
+      "no_client": "No download client takes this release.",
+      "attempts_exhausted": "Stopped after {{attempts}} failed grabs; the next search tries again."
     }
   },
   "interactive": {

@@ -251,8 +251,8 @@ func TestX1337(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.HasPrefix(string(res.Body), "magnet:?xt=urn:btih:45BB7B3AC77116EF4E7EC743E2A8319CADDF87B1") {
-		t.Fatalf("%s", res.Body)
+	if !strings.HasPrefix(res.Magnet, "magnet:?xt=urn:btih:45BB7B3AC77116EF4E7EC743E2A8319CADDF87B1") {
+		t.Fatalf("%+v", res)
 	}
 	if items := search(t, c, znab.Request{Query: "nothing"}); len(items) != 0 {
 		t.Fatal(items)

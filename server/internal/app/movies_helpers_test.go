@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,6 +14,7 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/downloaders"
+	ifake "github.com/mmzlopasa/locarr/server/internal/indexers/fake"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 )
 
@@ -148,18 +151,29 @@ type libraryEnv struct {
 	downloads string
 }
 
-func newLibraryEnv(t *testing.T) *libraryEnv {
+func newLibraryEnv(t *testing.T) *libraryEnv { return newLibraryEnvWrapped(t, nil) }
+
+// newLibraryEnvWrapped is newLibraryEnv with the fake indexer behind wrap
+// (to change how it answers, e.g. release downloads).
+func newLibraryEnvWrapped(t *testing.T, wrap func(http.Handler) http.Handler) *libraryEnv {
 	t.Helper()
 	e := newEnv(t, noLimits)
 	e.setup()
-	_, base := startFakes(t)
+	var base string
+	if wrap == nil {
+		_, base = startFakes(t)
+	} else {
+		srv := httptest.NewServer(wrap(ifake.New("fakekey", "sourcekey")))
+		t.Cleanup(srv.Close)
+		base = srv.URL
+	}
 	le := &libraryEnv{env: e, movies: filepath.Join(e.data, "media", "movies"), downloads: filepath.Join(e.data, "downloads")}
 	le.client = newFlowClient(le.downloads)
 	e.deps.Downloads.NewClient = func(downloaders.Implementation, downloaders.Config) (downloaders.Client, error) {
 		return le.client, nil
 	}
 	e.expect(e.do("PUT", "/api/v1/settings/metadata", map[string]any{"tmdbApiKey": fake.APIKey}), 200)
-	e.expect(e.do("PATCH", "/api/v1/indexers/settings", map[string]any{"allowedHosts": []string{"127.0.0.1"}}), 200)
+	e.expect(e.do("PATCH", "/api/v1/indexers/settings", map[string]any{"allowedHosts": []string{"127.0.0.1", "localhost"}}), 200)
 	e.expect(e.do("POST", "/api/v1/indexers", map[string]any{"name": "Fake Torznab", "kind": "torznab", "baseUrl": base + "/torznab",
 		"apiKey": "fakekey"}), 201)
 	e.expect(e.do("POST", "/api/v1/downloadclients", map[string]any{"name": "Flow", "implementation": "apifake", "host": "flow.lan",

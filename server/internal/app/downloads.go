@@ -29,10 +29,19 @@ func (r releaseSource) Indexer(ctx context.Context, id int64) (downloads.Indexer
 
 func (r releaseSource) Fetch(ctx context.Context, id int64, title, link string) ([]byte, error) {
 	f, err := r.ix.Fetch(ctx, indexers.Release{IndexerID: id, Title: title, DownloadURL: link})
-	return f.Data, err
+	return fileBytes(f), err
 }
 
 func (r releaseSource) FetchToken(ctx context.Context, id int64, token string) ([]byte, error) {
 	f, err := r.ix.FetchToken(ctx, id, token)
-	return f.Data, err
+	return fileBytes(f), err
+}
+
+// fileBytes is the release file, or the magnet link the indexer redirected to
+// as plain text (downloads reads either).
+func fileBytes(f indexers.File) []byte {
+	if f.Magnet != "" {
+		return []byte(f.Magnet)
+	}
+	return f.Data
 }

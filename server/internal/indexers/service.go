@@ -253,10 +253,13 @@ func (s *Service) recordFailure(ctx context.Context, ind Indexer, err error) {
 	n := ind.Health.Failures + 1
 	wait := Backoff(n)
 	var ze *znab.Error
+	now := s.now()
 	if errors.As(err, &ze) && ze.RetryAfter > 0 {
 		wait = max(wait, time.Duration(min(ze.RetryAfter, 86400))*time.Second)
 	}
-	now := s.now()
+	if until, ok := LimitedUntil(err, now); ok {
+		wait = max(wait, until.Sub(now))
+	}
 	msg := errorText(err)
 	code := string(znab.KindOf(err))
 	if _, dberr := s.DB.W.ExecContext(context.WithoutCancel(ctx), `UPDATE indexers SET failures = failures + 1, retry_at = ?,
@@ -274,6 +277,31 @@ func (s *Service) recordParseFailures(ctx context.Context, ind Indexer, n int) {
 		s.Log.Warn("record parse failures", "indexer", ind.ID, "err", err)
 	}
 	s.Log.Warn("indexer rows could not be read", "indexer", ind.Name, "rows", n)
+}
+
+// LimitedUntil reads when an indexer that refused a request will take
+// requests again: a Retry-After, or the time in an "indexer is disabled till
+// <time>" message (Prowlarr's answer after repeated failures, in its local
+// time). At most a day ahead; ok is false when the error names no time.
+func LimitedUntil(err error, now time.Time) (time.Time, bool) {
+	var ze *znab.Error
+	if !errors.As(err, &ze) {
+		return time.Time{}, false
+	}
+	if t, ok := znab.DisabledUntil(ze.Message, time.Local); ok && t.After(now) {
+		return minTime(t, now.Add(24*time.Hour)), true
+	}
+	if ze.RetryAfter > 0 {
+		return now.Add(time.Duration(min(ze.RetryAfter, 86400)) * time.Second), true
+	}
+	return time.Time{}, false
+}
+
+func minTime(a, b time.Time) time.Time {
+	if a.Before(b) {
+		return a
+	}
+	return b
 }
 
 // ResetHealth clears failures and backoff.

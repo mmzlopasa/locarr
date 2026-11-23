@@ -3,6 +3,7 @@ package znab
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -130,23 +131,55 @@ func (c *Client) Search(ctx context.Context, r Request) (*Page, error) {
 	return ParseFeed(body)
 }
 
-// Fetch downloads a release file (a .torrent or .nzb) from link, which must be
-// on the indexer's host or a host the indexer redirected to on the same host.
-func (c *Client) Fetch(ctx context.Context, link string) (*httpx.Response, error) {
-	res, err := c.HTTP.Get(ctx, link, nil)
+// Fetch downloads a release file (a .torrent or .nzb) from link. Redirects
+// are followed to other hosts too (Prowlarr and Jackett hand downloads on to
+// the tracker), without the indexer's credentials; a redirect to a magnet
+// link returns that link in File.Magnet. The answer must be a .torrent, an
+// NZB or a magnet link in plain text.
+func (c *Client) Fetch(ctx context.Context, link string) (*httpx.ReleaseFile, error) {
+	rf, err := c.HTTP.FetchRelease(ctx, link, nil)
 	if err != nil {
 		return nil, transportError(err)
 	}
+	if rf.Magnet != "" {
+		return rf, nil
+	}
+	res := rf.Response
 	if res.Status < 200 || res.Status > 299 {
 		if e := detectError(res.Body); e != nil {
+			var ze *Error
+			if errors.As(e, &ze) && ze.RetryAfter == 0 {
+				ze.RetryAfter, _ = strconv.Atoi(res.Header.Get("Retry-After"))
+			}
 			return nil, e
+		}
+		if res.Status == 404 || res.Status == 410 {
+			return nil, &Error{Kind: KindNotFound, Code: res.Status, Message: fmt.Sprintf("HTTP %d: the release file is gone", res.Status)}
 		}
 		return nil, httpError(res.Status, res.Header.Get("Retry-After"))
 	}
 	if e := detectError(res.Body); e != nil {
 		return nil, e
 	}
-	return res, nil
+	if httpx.ReleaseKind(res.Body) == "" {
+		return nil, &Error{Kind: KindBadResponse, Message: httpx.ErrNotReleaseFile.Error() + " (" + describeBody(res) + ")"}
+	}
+	return rf, nil
+}
+
+// describeBody names what came back instead of a release file.
+func describeBody(res *httpx.Response) string {
+	ct := strings.ToLower(res.Header.Get("Content-Type"))
+	head := strings.ToLower(string(res.Body[:min(len(res.Body), 512)]))
+	switch {
+	case len(res.Body) == 0:
+		return "empty answer"
+	case strings.Contains(ct, "html") || strings.Contains(head, "<html") || strings.Contains(head, "<!doctype html"):
+		return "a web page"
+	case ct != "":
+		return ct
+	}
+	return "unknown content"
 }
 
 func (c *Client) get(ctx context.Context, v url.Values) ([]byte, error) {
@@ -173,7 +206,8 @@ func transportError(err error) error {
 	switch {
 	case errors.Is(err, httpx.ErrBlocked):
 		kind = KindBlocked
-	case errors.Is(err, httpx.ErrTooLarge), errors.Is(err, httpx.ErrCrossHostRedirect):
+	case errors.Is(err, httpx.ErrTooLarge), errors.Is(err, httpx.ErrCrossHostRedirect), errors.Is(err, httpx.ErrTooManyRedirects),
+		errors.Is(err, httpx.ErrBadRedirect):
 		kind = KindBadResponse
 	case errors.Is(err, httpx.ErrChallenge):
 		kind = KindChallenge

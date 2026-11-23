@@ -718,9 +718,9 @@ func (c *Client) onSite(link string) bool {
 // Fetch gets a release at grab time: with a download block, the details
 // page is read for its magnet (returned as the body) or .torrent link;
 // otherwise link is fetched as a .torrent.
-func (c *Client) Fetch(ctx context.Context, link string) (*httpx.Response, error) {
+func (c *Client) Fetch(ctx context.Context, link string) (*httpx.ReleaseFile, error) {
 	if c.Def.Download == nil {
-		return c.Do(ctx, http.MethodGet, link, http.Header{"Accept": {"application/x-bittorrent, */*;q=0.5"}}, nil)
+		return c.torrent(ctx, link)
 	}
 	res, err := c.Do(ctx, http.MethodGet, link, nil, nil)
 	if err != nil {
@@ -757,11 +757,23 @@ func (c *Client) Fetch(ctx context.Context, link string) (*httpx.Response, error
 		return nil, layoutError("no download link on the details page")
 	}
 	if strings.HasPrefix(strings.ToLower(target), "magnet:") {
-		return &httpx.Response{Status: http.StatusOK, Header: http.Header{"Content-Type": {"text/plain"}}, Body: []byte(target)}, nil
+		return &httpx.ReleaseFile{Magnet: target}, nil
 	}
 	abs := c.resolve(target)
 	if !c.onSite(abs) {
 		return nil, &znab.Error{Kind: znab.KindBadResponse, Message: "the download link points to another site"}
 	}
-	return c.Do(ctx, http.MethodGet, abs, http.Header{"Accept": {"application/x-bittorrent, */*;q=0.5"}}, nil)
+	return c.torrent(ctx, abs)
+}
+
+// torrent fetches a .torrent from the site.
+func (c *Client) torrent(ctx context.Context, link string) (*httpx.ReleaseFile, error) {
+	res, err := c.Do(ctx, http.MethodGet, link, http.Header{"Accept": {"application/x-bittorrent, */*;q=0.5"}}, nil)
+	if err != nil {
+		return nil, err
+	}
+	if httpx.ReleaseKind(res.Body) == "" {
+		return nil, &znab.Error{Kind: znab.KindBadResponse, Message: httpx.ErrNotReleaseFile.Error()}
+	}
+	return &httpx.ReleaseFile{Response: res}, nil
 }
