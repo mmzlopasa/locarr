@@ -492,9 +492,12 @@ export interface paths {
         get: operations["listIndexers"];
         put?: never;
         /**
-         * Add a Torznab or Newznab indexer (administrators)
+         * Add a Torznab/Newznab indexer or a built-in site (administrators)
          * @description Categories left empty are filled from the indexer's capabilities when they
-         *     can be fetched. The API key is write-only.
+         *     can be fetched (for a built-in site, from its definition). The API key is write-only.
+         *     For a built-in site (`kind: native`, `definition`), unset fields take the site's
+         *     defaults: its address, request limit, timeout and RSS (off when the site has no
+         *     list of latest releases).
          */
         post: operations["createIndexer"];
         delete?: never;
@@ -620,6 +623,43 @@ export interface paths {
         head?: never;
         /** Change indexer-wide settings (administrators) */
         patch: operations["updateIndexerSettings"];
+        trace?: never;
+    };
+    "/indexers/definitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Built-in and custom site definitions, usenet presets and definition load errors (administrators) */
+        get: operations["listIndexerDefinitions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/definitions/reload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Re-read the custom definitions folder (administrators)
+         * @description Invalid files are skipped and listed in `errors`; indexers pick up changed definitions immediately.
+         */
+        post: operations["reloadIndexerDefinitions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/indexers/sources": {
@@ -4641,10 +4681,11 @@ export interface components {
             entries: components["schemas"]["FolderEntry"][];
         };
         /**
-         * @description `torznab` indexers are torrent indexers, `newznab` ones usenet.
+         * @description `torznab` indexers are torrent indexers, `newznab` ones usenet. `native` indexers are public
+         *     sites Locarr searches itself through a built-in or custom site definition (`definition`).
          * @enum {string}
          */
-        IndexerKind: "torznab" | "newznab";
+        IndexerKind: "torznab" | "newznab" | "native";
         /** @enum {string} */
         Protocol: "torrent" | "usenet";
         /** @enum {string} */
@@ -4691,6 +4732,14 @@ export interface components {
             lastSuccessAt?: string;
             /** Format: date-time */
             retryAt?: string;
+            /** @description For built-in sites: result rows that could not be read since the last reset (the site layout may have changed). */
+            parseFailures?: number;
+            /**
+             * Format: date-time
+             * @description For built-in sites: when the weekly self-test last ran.
+             */
+            selfTestAt?: string;
+            selfTestOk?: boolean;
         };
         IndexerSourceRef: {
             /** Format: int64 */
@@ -4730,6 +4779,8 @@ export interface components {
             proxyUsername?: string;
             proxyPassword: components["schemas"]["SecretState"];
             flaresolverrUrl?: string;
+            definition?: components["schemas"]["IndexerDefinitionRef"];
+            options?: components["schemas"]["IndexerOptions"];
             source?: components["schemas"]["IndexerSourceRef"];
             caps?: components["schemas"]["IndexerCaps"];
             /** Format: date-time */
@@ -4740,10 +4791,25 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        /** @description Settings of a built-in site (names from its definition's `settings`). */
+        IndexerOptions: {
+            [key: string]: string;
+        };
+        IndexerDefinitionRef: {
+            id: string;
+            name: string;
+            version: number;
+            builtin: boolean;
+            /** @description A custom file replaces the built-in definition. */
+            overrides: boolean;
+            /** @description The definition is no longer available (a custom file was removed); the indexer cannot search. */
+            missing: boolean;
+        };
         IndexerInput: {
             name: string;
             kind: components["schemas"]["IndexerKind"];
-            baseUrl: string;
+            /** @description Required for Torznab/Newznab. For a built-in site, the address to use (a mirror); empty uses its default. */
+            baseUrl?: string;
             /** @description Default `/api`. */
             apiPath?: string;
             /** @description Write-only. */
@@ -4774,6 +4840,9 @@ export interface components {
             /** @description Write-only. */
             proxyPassword?: string;
             flaresolverrUrl?: string;
+            /** @description The site definition id (kind `native`). */
+            definition?: string;
+            options?: components["schemas"]["IndexerOptions"];
         };
         IndexerTestRequest: {
             indexer: components["schemas"]["IndexerInput"];
@@ -4788,7 +4857,10 @@ export interface components {
             defaultCategories?: components["schemas"]["IndexerCategories"];
             /** @description Results of the probe search. */
             probeResults?: number;
-            /** @description auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked or unknown. */
+            /**
+             * @description auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked, challenge
+             *     (a Cloudflare challenge: set FlareSolverr), layout (a built-in site's pages changed) or unknown.
+             */
             errorCode?: string;
             error?: string;
         };
@@ -4801,8 +4873,12 @@ export interface components {
             searchCacheSeconds: number;
             /** @description Addresses, networks or host names indexers may reach even though they are blocked by default (loopback, link-local). */
             allowedHosts: string[];
-            /** @description Also refuse private (RFC 1918) addresses. Off by default because Prowlarr and Jackett usually share the Docker network. */
+            /** @description Also refuse private (RFC 1918) addresses. Off by default because download tools and FlareSolverr usually share the Docker network. */
             blockPrivateNetworks: boolean;
+            /** @description Trackers added to magnets Locarr builds from a built-in site's bare info hash. */
+            publicTrackers: string[];
+            /** @description User-Agent sent to indexers and sites; empty sends "Locarr". */
+            userAgent: string;
         };
         UpdateIndexerSettingsRequest: {
             rssSyncIntervalMinutes?: number;
@@ -4811,6 +4887,75 @@ export interface components {
             searchCacheSeconds?: number;
             allowedHosts?: string[];
             blockPrivateNetworks?: boolean;
+            publicTrackers?: string[];
+            userAgent?: string;
+        };
+        IndexerCatalog: {
+            definitions: components["schemas"]["IndexerDefinition"][];
+            presets: components["schemas"]["UsenetPreset"][];
+            /** @description Custom definition files that could not be loaded. */
+            errors: components["schemas"]["IndexerDefinitionError"][];
+            /** @description The folder custom definitions are read from. */
+            customDir: string;
+        };
+        IndexerDefinitionError: {
+            file: string;
+            message: string;
+        };
+        IndexerDefinition: {
+            id: string;
+            name: string;
+            description: string;
+            version: number;
+            builtin: boolean;
+            overrides: boolean;
+            /** @description For a custom definition: its file name in the custom folder. */
+            file?: string;
+            protocol: components["schemas"]["Protocol"];
+            language?: string;
+            /** @description The site's addresses; the first is the default, the others known mirrors. */
+            links: string[];
+            /** @description How the definition was written and checked. */
+            verified: string;
+            /**
+             * @description Whether the site shows a Cloudflare challenge (FlareSolverr needed).
+             * @enum {string}
+             */
+            flaresolverr: "never" | "sometimes" | "always";
+            rateLimit?: components["schemas"]["IndexerRateLimit"];
+            /** @description The site lists its latest releases (RSS sync). */
+            rss: boolean;
+            searching: components["schemas"]["IndexerSearchCap"][];
+            /** @description Newznab categories the site's categories map onto. */
+            categories: components["schemas"]["IndexerCategory"][];
+            settings: components["schemas"]["IndexerDefinitionSetting"][];
+            aliases: string[];
+            /** @description Indexers that use this definition. */
+            indexerIds: number[];
+        };
+        IndexerRateLimit: {
+            requests: number;
+            periodSeconds: number;
+        };
+        IndexerDefinitionSetting: {
+            name: string;
+            /** @enum {string} */
+            type: "text" | "bool" | "select";
+            label: string;
+            default: string;
+            options: components["schemas"]["IndexerSettingOption"][];
+        };
+        IndexerSettingOption: {
+            value: string;
+            label: string;
+        };
+        UsenetPreset: {
+            id: string;
+            name: string;
+            baseUrl: string;
+            apiPath: string;
+            /** @description Where to find the API key (the indexer's profile page). */
+            siteUrl: string;
         };
         /** @enum {string} */
         IndexerSourceKind: "prowlarr" | "jackett";
@@ -8017,6 +8162,11 @@ export interface components {
              * @enum {string}
              */
             prowlarrMode?: "source" | "direct";
+            /**
+             * @description Prowlarr only (default true) - add Locarr's built-in version of every Prowlarr indexer it knows,
+             *     and usenet indexers as direct Newznab indexers, so Prowlarr is not needed afterwards.
+             */
+            builtinReplace?: boolean;
         };
         MigratePathMapping: {
             /**
@@ -9205,6 +9355,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IndexerSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listIndexerDefinitions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerCatalog"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    reloadIndexerDefinitions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalog after the reload */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerCatalog"];
                 };
             };
             default: components["responses"]["Error"];

@@ -729,7 +729,7 @@
   },
   "indexers": {
     "title": "Indexers",
-    "subtitle": "Torznab and Newznab indexers, directly or through Prowlarr or Jackett.",
+    "subtitle": "Public sites Locarr searches itself, your usenet indexers and any Torznab or Newznab feed.",
     "add": "Add indexer",
     "empty": "No indexers yet.",
     "edit": "Edit",
@@ -754,7 +754,8 @@
     },
     "kinds": {
       "torznab": "Torznab (torrent)",
-      "newznab": "Newznab (usenet)"
+      "newznab": "Newznab (usenet)",
+      "native": "Built-in site"
     },
     "media": {
       "movies": "Movies",
@@ -772,7 +773,9 @@
       "unreachable": "The indexer cannot be reached or timed out.",
       "blocked": "This address is blocked for safety. Allow it in the indexer settings below if it is yours.",
       "unknown": "The indexer reported an error.",
-      "removed": "The source no longer lists this indexer."
+      "removed": "The source no longer lists this indexer.",
+      "challenge": "The site shows a Cloudflare challenge. Set a FlareSolverr URL for this indexer under Edit.",
+      "layout": "The site's pages changed and its results can no longer be read. Update Locarr or add a fixed custom definition."
     },
     "test": {
       "button": "Test",
@@ -857,7 +860,74 @@
       "allowedHosts": "Allowed local addresses",
       "allowedHostsHint": "Loopback and link-local addresses are blocked by default. List addresses, networks or host names to allow, e.g. 127.0.0.1.",
       "blockPrivate": "Also block private networks",
-      "blockPrivateHint": "Off by default, because Prowlarr and Jackett usually run on the same Docker network."
+      "blockPrivateHint": "Off by default, because FlareSolverr and your own services usually run on the same Docker network.",
+      "publicTrackers": "Trackers for built magnets",
+      "publicTrackersHint": "One per line. Added to magnet links Locarr builds from a site's info hash.",
+      "userAgent": "User agent",
+      "userAgentHint": "Sent to every indexer and site. Leave empty to send “Locarr”."
+    },
+    "chooser": {
+      "title": "Add indexer",
+      "tabs": {
+        "builtin": "Built-in sites",
+        "usenet": "Usenet",
+        "generic": "Torznab / Newznab"
+      },
+      "builtinIntro": "Public sites Locarr searches itself, without Prowlarr or Jackett. Switch a site on to add it with sensible defaults; fine-tune it later under Edit.",
+      "usenetIntro": "Pick your usenet indexer and paste the API key from your profile there.",
+      "genericIntro": "Any Torznab or Newznab feed: a private tracker's own Torznab address or an indexer not listed under Usenet."
+    },
+    "builtin": {
+      "use": "Use {{name}}",
+      "none": "No site definitions are available.",
+      "modes": {
+        "search": "Search",
+        "tv": "TV",
+        "movie": "Movies",
+        "music": "Music",
+        "book": "Books"
+      },
+      "rss": "RSS",
+      "noRss": "No RSS",
+      "version": "v{{n}}",
+      "verified": "How it was checked",
+      "flaresolverr": {
+        "sometimes": "May need FlareSolverr",
+        "always": "Needs FlareSolverr"
+      },
+      "custom": "Custom",
+      "overrides": "Overrides built-in",
+      "missing": "Definition missing",
+      "parseFailures": "Unreadable results: {{n}}",
+      "selfTestOk": "Weekly self-test passed {{when}}",
+      "selfTestFailed": "Weekly self-test failed {{when}}",
+      "site": "Site",
+      "address": "Address",
+      "addressHint": "The site's own address or one of its mirrors.",
+      "otherAddress": "Other address…",
+      "customAddress": "Custom address",
+      "options": "Site options",
+      "flaresolverrHint": "Needed only when the site shows a Cloudflare challenge.",
+      "rateLimit": "Requests",
+      "rateLimitHint": "At most this many requests per period, so the site is not hammered."
+    },
+    "usenet": {
+      "preset": "Indexer",
+      "whereKey": "Your API key is on your profile page at {{site}}.",
+      "add": "Add"
+    },
+    "advanced": {
+      "show": "Show Prowlarr and Jackett import",
+      "hide": "Hide Prowlarr and Jackett import",
+      "text": "Not needed any more: Locarr searches public sites itself and talks to usenet indexers directly. Import from Prowlarr or Jackett only if you want to keep using them."
+    },
+    "definitions": {
+      "title": "Custom site definitions",
+      "subtitle": "YAML files in {{dir}}. A file with a built-in site's id replaces it.",
+      "reload": "Reload",
+      "none": "No custom definitions yet.",
+      "errors": "Not loaded",
+      "reloaded": "Definitions reloaded."
     }
   },
   "profiles": {
@@ -3079,7 +3149,9 @@
       "source": "Keep Prowlarr as an indexer source",
       "sourceHint": "Locarr syncs the indexers from Prowlarr: new ones appear by themselves.",
       "direct": "Add each indexer on its own",
-      "directHint": "Every indexer becomes a Locarr indexer (still searched through Prowlarr unless it is a plain Torznab/Newznab one)."
+      "directHint": "Every indexer becomes a Locarr indexer (still searched through Prowlarr unless it is a plain Torznab/Newznab one).",
+      "builtin": "Use Locarr's own indexers where possible",
+      "builtinHint": "Public sites Locarr has built in (Nyaa, The Pirate Bay, YTS, 1337x, …) are added as built-in indexers and usenet indexers are added directly, so Prowlarr is no longer needed. Others stay with Prowlarr."
     },
     "phase": {
       "reading": "Reading",
@@ -3203,7 +3275,8 @@
       "link_files": "In the library: missing episode files are linked",
       "merge_albums": "In the library: new albums and files are added",
       "subtitles_unavailable": "Subtitles are not available",
-      "unsupported_provider": "Locarr has no such provider"
+      "unsupported_provider": "Locarr has no such provider",
+      "all_replaced": "Every indexer is replaced by Locarr's own"
     },
     "attention": {
       "needs_secret": "{{count}} need a key or password entered",
@@ -3279,6 +3352,10 @@
         "prowlarr_apps": {
           "title": "Remove the old applications from {{names}}",
           "body": "Under Settings → Apps in Prowlarr, remove Sonarr, Radarr and Lidarr once you stop them, so Prowlarr stops syncing indexers to them."
+        },
+        "prowlarr_not_needed": {
+          "title": "Stop using {{names}}",
+          "body": "No indexer searches through Prowlarr any more ({{indexers}} still do while this is open). Once usenet API keys are entered, Prowlarr can be switched off and deleted."
         },
         "stop_requests": {
           "title": "Point people to Locarr instead of {{names}}",

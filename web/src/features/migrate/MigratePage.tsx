@@ -233,7 +233,7 @@ function ChooseStep({ run, onStarted }: { run: MigrateRun | undefined; onStarted
   const sources = list.data ?? [];
   const get = (s: MigrateSource): MigrateSourceOptions =>
     opts[s.id] ?? { id: s.id, settings: s.supports.settings, library: s.supports.library, users: s.supports.users, history: false,
-      prowlarrMode: s.kind === "prowlarr" ? "source" : undefined };
+      prowlarrMode: s.kind === "prowlarr" ? "source" : undefined, builtinReplace: s.kind === "prowlarr" ? true : undefined };
   const set = (s: MigrateSource, patch: Partial<MigrateSourceOptions>) => setOpts((o) => ({ ...o, [s.id]: { ...get(s), ...patch } }));
   const start = useMutation({
     mutationFn: async () => unwrap(await api.POST("/migrate/runs", { body: {
@@ -269,6 +269,8 @@ function ChooseStep({ run, onStarted }: { run: MigrateRun | undefined; onStarted
                       <span>{t(`migrate.prowlarr.${m}`)}<span className="block text-[12px] text-faint">{t(`migrate.prowlarr.${m}Hint`)}</span></span>
                     </label>
                   ))}
+                  <Checkbox label={t("migrate.prowlarr.builtin")} description={t("migrate.prowlarr.builtinHint")}
+                    checked={o.builtinReplace ?? true} onChange={(e) => set(s, { builtinReplace: e.target.checked })} />
                 </div>
               ) : null}
             </fieldset>
