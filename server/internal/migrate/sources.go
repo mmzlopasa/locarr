@@ -1137,4 +1137,3 @@ func sameEndpoint(aHost string, aPort int, bHost string, bPort int) bool {
 	}
 	return norm(aHost) == norm(bHost) && aPort == bPort
 }
-

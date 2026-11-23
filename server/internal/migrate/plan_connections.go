@@ -97,7 +97,9 @@ func (p *planner) planNaming(s *Snapshot, so SourceOptions) {
 			"movieFolderFormat":   {tokens: naming.MovieTokens, set: stringSetting(library.MovieFolderFormat)},
 		}
 		renameKey = "renameMovies"
-		rename = func(ctx context.Context, on bool) error { return settings.Set(ctx, p.l.Settings, nil, library.RenameMovies, on) }
+		rename = func(ctx context.Context, on bool) error {
+			return settings.Set(ctx, p.l.Settings, nil, library.RenameMovies, on)
+		}
 	case Sonarr:
 		fields = map[string]namingSetting{
 			"standardEpisodeFormat": {tokens: naming.EpisodeTokens, set: stringSetting(series.StandardEpisodeFormat)},
@@ -108,7 +110,9 @@ func (p *planner) planNaming(s *Snapshot, so SourceOptions) {
 			"specialsFolderFormat":  {tokens: naming.SeasonFolderTokens, set: stringSetting(series.SpecialsFolderFormat)},
 		}
 		renameKey = "renameEpisodes"
-		rename = func(ctx context.Context, on bool) error { return settings.Set(ctx, p.l.Settings, nil, series.RenameEpisodes, on) }
+		rename = func(ctx context.Context, on bool) error {
+			return settings.Set(ctx, p.l.Settings, nil, series.RenameEpisodes, on)
+		}
 	case Lidarr:
 		fields = map[string]namingSetting{
 			"standardTrackFormat":  {tokens: naming.TrackTokens, set: stringSetting(music.TrackFormat)},
@@ -116,7 +120,9 @@ func (p *planner) planNaming(s *Snapshot, so SourceOptions) {
 			"artistFolderFormat":   {tokens: naming.ArtistTokens, set: stringSetting(music.ArtistFolderFormat)},
 		}
 		renameKey = "renameTracks"
-		rename = func(ctx context.Context, on bool) error { return settings.Set(ctx, p.l.Settings, nil, music.RenameTracks, on) }
+		rename = func(ctx context.Context, on bool) error {
+			return settings.Set(ctx, p.l.Settings, nil, music.RenameTracks, on)
+		}
 	}
 	type change struct {
 		set func(context.Context, *settings.Store, string) error
@@ -821,10 +827,10 @@ func (p *planner) planImportLists(s *Snapshot, so SourceOptions) {
 	existing, _ := p.l.Movies.Lists(p.ctx)
 	type want struct {
 		ext, name, kind, listID, root string
-		profile                      int64
-		avail                        string
-		monitored, search, enabled   bool
-		tags                         []int64
+		profile                       int64
+		avail                         string
+		monitored, search, enabled    bool
+		tags                          []int64
 	}
 	var wants []want
 	for _, l := range s.ImportLists {
@@ -943,4 +949,3 @@ func (p *planner) planExclusions(s *Snapshot, so SourceOptions) {
 	}
 	p.add(it)
 }
-

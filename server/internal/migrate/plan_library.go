@@ -2,8 +2,8 @@ package migrate
 
 import (
 	"context"
-	"database/sql"
 	"crypto/rand"
+	"database/sql"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -19,6 +19,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/quality"
 	"github.com/mmzlopasa/locarr/server/internal/requests"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
+	"github.com/mmzlopasa/locarr/server/internal/subtitles"
 	"github.com/mmzlopasa/locarr/server/internal/timeline"
 )
 
@@ -813,6 +814,9 @@ func (p *planner) planSubtitles(s *Snapshot, so SourceOptions) {
 			}
 			if contains(it.Attention, AttnSecret) {
 				it.note("Bazarr hides its credentials: enter them in Subtitles → Providers")
+			} else if needsKey(name) && fields["apikey"] == "" {
+				it.attn(AttnSecret)
+				it.note("Locarr needs an API key for %s; it stays off until you add one", name)
 			}
 			d := p.decideNamed(it, s, "subtitleprovider", pr.Name, name, hashOf(fields), func(int64) bool { return true },
 				func(string) (int64, bool) { return 0, false })
@@ -1110,3 +1114,7 @@ func (p *planner) episodeRef(ctx context.Context, s *Snapshot, seriesRef string,
 	return ""
 }
 
+func needsKey(name string) bool {
+	info, ok := subtitles.ImplementationOf(name)
+	return ok && info.NeedsKey
+}

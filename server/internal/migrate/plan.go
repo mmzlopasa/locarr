@@ -259,7 +259,9 @@ func (p *planner) id(k string) int64 {
 	return p.ids[k]
 }
 
-func idKey(sourceID int64, entity string, ext any) string { return fmt.Sprintf("%d:%s:%v", sourceID, entity, ext) }
+func idKey(sourceID int64, entity string, ext any) string {
+	return fmt.Sprintf("%d:%s:%v", sourceID, entity, ext)
+}
 
 func hashOf(v any) string {
 	b, _ := json.Marshal(v)
@@ -1087,4 +1089,3 @@ func dirExists(p string) bool {
 	st, err := statDir(p)
 	return err == nil && st
 }
-

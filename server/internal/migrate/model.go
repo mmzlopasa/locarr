@@ -493,7 +493,7 @@ type SubtitleProvider struct {
 
 // SubtitleAssignment is the profile Bazarr uses for a movie or series.
 type SubtitleAssignment struct {
-	Kind      string `json:"kind"` // movie or series
+	Kind      string `json:"kind"`  // movie or series
 	AppID     int64  `json:"appId"` // Radarr movie id or Sonarr series id
 	TMDbID    int64  `json:"tmdbId,omitempty"`
 	TVDbID    int64  `json:"tvdbId,omitempty"`

@@ -394,10 +394,10 @@ const runCols = `id, status, options, progress, summary, error, created_at, upda
 
 func scanRun(row interface{ Scan(...any) error }) (Run, error) {
 	var (
-		r                  Run
-		opts, prog, sum    string
-		created, updated   int64
-		finished           sql.NullInt64
+		r                Run
+		opts, prog, sum  string
+		created, updated int64
+		finished         sql.NullInt64
 	)
 	err := row.Scan(&r.ID, &r.Status, &opts, &prog, &sum, &r.Error, &created, &updated, &finished)
 	if errors.Is(err, sql.ErrNoRows) {
