@@ -36,6 +36,10 @@ func TestExplainRules(t *testing.T) {
 			LastDecision: &DecisionSummary{}}, ExplainNothingFound},
 		{"accepted but grab failed", ItemState{Monitored: true, Available: true}, Facts{Indexers: 1, Clients: 1, Searches: 1,
 			LastDecision: &DecisionSummary{Candidates: 116, Accepted: 31}}, ExplainGrabFailed},
+		{"accepted and grabbed", ItemState{Monitored: true, Available: true, HasFile: true}, Facts{Indexers: 1, Clients: 1, Searches: 1,
+			LastDecision: &DecisionSummary{Candidates: 2, Accepted: 2}, GrabbedSince: true}, ExplainUpgradeWanted},
+		{"upgrade search accepted nothing grabbed, no failure", ItemState{Monitored: true, Available: true, HasFile: true}, Facts{Indexers: 1,
+			Clients: 1, Searches: 1, LastDecision: &DecisionSummary{Candidates: 2, Accepted: 2}}, ExplainUpgradeWanted},
 	}
 	for _, c := range cases {
 		if got := Explain(c.st, c.f); got.Code != c.want {

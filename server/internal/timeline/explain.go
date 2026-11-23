@@ -132,6 +132,8 @@ type Facts struct {
 	LastDecision *DecisionSummary
 	// GrabFailure is the latest failed grab since the last decision.
 	GrabFailure *GrabFailureFact
+	// GrabbedSince: a release was sent to a client after the last decision.
+	GrabbedSince bool
 	// Indexers usable for automatic search; Clients enabled download clients.
 	Indexers int
 	Clients  int
@@ -240,7 +242,7 @@ func Explain(st ItemState, f Facts) Explanation {
 			return set(ExplainUpgradeWanted, "info", "in the library below the cutoff; "+msg)
 		}
 		return set(ExplainAllRejected, "warning", msg)
-	case f.LastDecision != nil && f.LastDecision.Accepted > 0:
+	case f.LastDecision != nil && f.LastDecision.Accepted > 0 && !f.GrabbedSince && (f.GrabFailure != nil || !st.HasFile):
 		e.Params["candidates"], e.Params["accepted"] = f.LastDecision.Candidates, f.LastDecision.Accepted
 		msg := fmt.Sprintf("the last search found %d releases and accepted %d, but nothing was grabbed", f.LastDecision.Candidates, f.LastDecision.Accepted)
 		if g := f.GrabFailure; g != nil {
@@ -347,6 +349,14 @@ func (s *Store) FactsRefs(ctx context.Context, refs []string, kindCategory strin
 		return f, err
 	}
 	if f.LastDecision != nil && f.LastDecision.Accepted > 0 {
+		var n int
+		if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM downloads WHERE added_at >= ?
+			AND id IN (SELECT download_id FROM download_refs WHERE item_ref IN (`+marks+`))`, append([]any{decisionAt}, args...)...).Scan(&n); err != nil { // #nosec G202 -- placeholders only
+			return f, err
+		}
+		f.GrabbedSince = n > 0
+	}
+	if f.LastDecision != nil && f.LastDecision.Accepted > 0 && !f.GrabbedSince {
 		// The failure that matters is a real attempt; "skipped" notes and the
 		// "stopped after N" line only say what happened around it.
 		rows, err := s.DB.R.QueryContext(ctx, `SELECT data FROM timeline_events WHERE item_ref IN (`+marks+`) AND type = ? AND at >= ?
