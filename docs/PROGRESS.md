@@ -3,6 +3,17 @@
 ## Trenutna faza
 P0–P10 gotovi.
 
+## Gotovo: ugrađeni indexeri bez Prowlarra (branch `feat/native-indexers`)
+- Migracija `00012_native_indexers.sql`: `indexers.definition`, `options`, `parse_failures`, `self_test_at`, `self_test_ok`.
+- `internal/indexers/native` (D-081 – D-083): vlastiti YAML format definicija (predlošci zahtjeva, CSS selektori preko `x/net/html` + `cascadia` za HTML i RSS, JSON putanje, veličine, datumi uključujući relativne, kategorije, magneti iz hex/base32 hasha, stranice, `download` blok za magnet sa stranice detalja), Go implementacije za API-je (YTS, EZTV, The Pirate Bay/apibay, SubsPlease, Knaben), deklarativne definicije (Nyaa, Tokyo Toshokan, LimeTorrents, 1337x, BitSearch), registar s vlastitim definicijama u `/config/definitions` (provjera, greške, zamjena ugrađene, ponovno učitavanje), prepoznavanje stranice po imenu/aliasu/adresi.
+- Servis indexera radi preko sučelja `backend` (Torznab ili ugrađena stranica): isti search, RSS, zdravlje, ograničenja, `search_log`, grab; nove vrste grešaka `challenge` i `layout`, broj nepročitanih redaka, tjedni posao `indexer-selftest`, postavke `indexers.publicTrackers` i `indexers.userAgent`, popis poznatih usenet indexera; pretrage serija nose sve ID-eve, a indexer dobije najjači koji podržava.
+- API: `kind: native`, `definition`, `options`, zdravlje (`parseFailures`, `selfTestAt`, `selfTestOk`), `GET /indexers/definitions`, `POST /indexers/definitions/reload`; `builtinReplace` u opcijama uvoza.
+- Uvoz iz Prowlarra (D-084): zadano zamjenjuje poznate javne stranice ugrađenima i usenet izravnim Newznabom; izvor ih isključuje; popis za prelazak javlja kad Prowlarr više ne treba.
+- Web (EN + HR): „Dodaj indexer" s karticama Ugrađene / Usenet / Torznab-Newznab, uređivanje ugrađenog indexera (mirror, postavke stranice, FlareSolverr, ograničenja, kategorije), razlozi zdravlja, vlastite definicije s greškama, trackeri i User-Agent; uvoz iz Prowlarra/Jacketta skriven pod naprednim.
+- Testovi: jedinični (parseri, predlošci, validacija, registar), test po definiciji nad snimljenim odgovorima (`native/sitefake`, i u `locarr-fakes` pod `/sites/<id>`), `TestBuiltinIndexers` (katalog → dodavanje → test → pretraga → grab magneta i magneta sa stranice detalja → promijenjen izgled → samotest → vlastita definicija), uvoz iz lažnog Prowlarra, Vitest, Playwright (Nyaa iz lažnih snimki), `go test -tags live` (nije u CI-ju; 2026-11-23 prošlo svih deset stranica, 1337x uz FlareSolverr).
+- Korisnička dokumentacija: `docs/user/indexers.md`.
+- Poznato: Tokyo Toshokan je pri pisanju povremeno vraćao 522; FlareSolverr za 1337x ne uspije uvijek iz prvog puta; TorrentGalaxy, World-torrent i BigFANGroup nisu ugrađeni (vlastita definicija ili Torznab).
+
 
 
 ## Gotovo: Otkrivanje u Streameru (branch `feat/streamero-discover`)
