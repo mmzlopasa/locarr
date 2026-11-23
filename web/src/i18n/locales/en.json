@@ -110,7 +110,15 @@
     "subtitle_provider_not_found": "The subtitle is no longer available at the provider.",
     "subtitle_provider_error": "The provider answered with an error.",
     "subtitle_quota": "The provider's download quota is used up.",
-    "subtitle_rate_limited": "The provider asks to wait before the next request."
+    "subtitle_rate_limited": "The provider asks to wait before the next request.",
+    "migrate_expired": "What was read from the applications is no longer in memory. Read them again.",
+    "migrate_busy": "Another import is running.",
+    "source_unreachable": "Locarr could not reach the application.",
+    "source_unauthorized": "The application refused the API key or password.",
+    "source_wrong_app": "This address is another application.",
+    "source_unsupported_version": "This version is too old to import from.",
+    "source_bad_response": "The application answered in an unexpected way.",
+    "source_not_found": "Nothing answers at this address (check the URL base)."
   },
   "errorPage": {
     "title": "This page could not be shown",
@@ -155,7 +163,8 @@
     "system": "System",
     "search": "Search",
     "discover": "Discover",
-    "issues": "Issues"
+    "issues": "Issues",
+    "migrate": "Import setup"
   },
   "roles": {
     "admin": "Administrator",
@@ -2705,5 +2714,348 @@
       "apply": "Apply ({{count}})"
     },
     "tracksOnlyMkvMp4": "Locarr reads the tracks of MKV/WebM and MP4/MOV files only."
+  },
+  "migrate": {
+    "title": "Import setup",
+    "subtitle": "Move from Sonarr, Radarr, Lidarr, Prowlarr, Bazarr, Overseerr/Seerr, qBittorrent and SABnzbd in one go.",
+    "readOnly": "Locarr only reads these applications through their API. Nothing is changed on them, and files stay where they are.",
+    "steps": "Steps",
+    "next": "Next",
+    "step": {
+      "sources": "Applications",
+      "choose": "What to import",
+      "paths": "Folders",
+      "preview": "Preview",
+      "import": "Import"
+    },
+    "kinds": {
+      "sonarr": "Sonarr",
+      "radarr": "Radarr",
+      "lidarr": "Lidarr",
+      "prowlarr": "Prowlarr",
+      "bazarr": "Bazarr",
+      "overseerr": "Overseerr",
+      "seerr": "Seerr / Jellyseerr",
+      "qbittorrent": "qBittorrent",
+      "sabnzbd": "SABnzbd"
+    },
+    "keyHint": {
+      "sonarr": "Settings → General → API Key in Sonarr.",
+      "radarr": "Settings → General → API Key in Radarr.",
+      "lidarr": "Settings → General → API Key in Lidarr.",
+      "prowlarr": "Settings → General → API Key in Prowlarr.",
+      "bazarr": "Settings → General → Security → API Key in Bazarr.",
+      "overseerr": "Settings → General → API Key in Overseerr.",
+      "seerr": "Settings → General → API Key in Seerr.",
+      "qbittorrent": "The Web UI password (leave empty if the Web UI allows this address without signing in).",
+      "sabnzbd": "Config → General → API Key in SABnzbd."
+    },
+    "sources": {
+      "title": "Applications",
+      "description": "Add every application you are moving from. Each one is tested before it is saved.",
+      "empty": "No applications yet. Add one below.",
+      "add": "Add an application",
+      "kind": "Application",
+      "name": "Name",
+      "url": "Address",
+      "urlHint": "With the URL base, if it has one, e.g. http://192.168.1.10:8989/sonarr",
+      "username": "User name",
+      "password": "Password",
+      "apiKey": "API key",
+      "test": "Test",
+      "save": "Test and add",
+      "removeConfirm": "Remove",
+      "version": "v{{version}}",
+      "keySaved": "Key saved",
+      "ok": "Connected to {{app}} {{version}}."
+    },
+    "sourceErrors": {
+      "unreachable": "Locarr could not reach it.",
+      "unauthorized": "It refused the API key or password.",
+      "wrong_app": "This address is another application.",
+      "unsupported_version": "This version is too old to import from.",
+      "bad_response": "It answered in an unexpected way.",
+      "not_found": "Nothing answers at this address (check the URL base)."
+    },
+    "choose": {
+      "title": "What to import",
+      "description": "Choose what to read from each application. Reading changes nothing yet: you will see a preview first.",
+      "read": "Read the applications",
+      "historyDays": "History to bring (days)",
+      "historyHint": "Grabs, imports and failures newer than this go to each title's timeline."
+    },
+    "scope": {
+      "settings": "Settings",
+      "library": "Library",
+      "users": "Users and requests",
+      "history": "History and blocklist"
+    },
+    "scopeHint": {
+      "sonarr": {
+        "settings": "Profiles, custom formats, root folders, naming, indexers, download clients, lists",
+        "library": "Series, episode monitoring and files (linked in place)"
+      },
+      "radarr": {
+        "settings": "Profiles, custom formats, root folders, naming, indexers, download clients, lists, exclusions",
+        "library": "Movies and files (linked in place)"
+      },
+      "lidarr": {
+        "settings": "Profiles, metadata profiles, root folders, naming, indexers, download clients",
+        "library": "Artists, albums and track files"
+      },
+      "bazarr": {
+        "settings": "Language profiles and providers",
+        "library": "Which profile each title uses"
+      },
+      "overseerr": {
+        "settings": "Default quotas",
+        "users": "Users with their permissions, requests, issues and quotas"
+      },
+      "seerr": {
+        "settings": "Default quotas",
+        "users": "Users with their permissions, requests, issues and quotas"
+      },
+      "qbittorrent": {
+        "settings": "The connection and categories"
+      },
+      "sabnzbd": {
+        "settings": "The connection and categories"
+      },
+      "prowlarr": {
+        "settings": "Indexers"
+      }
+    },
+    "prowlarr": {
+      "label": "How to bring Prowlarr's indexers",
+      "source": "Keep Prowlarr as an indexer source",
+      "sourceHint": "Locarr syncs the indexers from Prowlarr: new ones appear by themselves.",
+      "direct": "Add each indexer on its own",
+      "directHint": "Every indexer becomes a Locarr indexer (still searched through Prowlarr unless it is a plain Torznab/Newznab one)."
+    },
+    "phase": {
+      "reading": "Reading",
+      "planning": "Planning",
+      "planned": "Ready",
+      "importing": "Importing",
+      "done": "Done",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "paths": {
+      "title": "Folders",
+      "description": "The applications often run in their own containers and see your media under other paths. Tell Locarr where those folders are here.",
+      "preview": "Preview the import",
+      "ok": "Found",
+      "problem": "Check",
+      "found": "Found {{found}} of {{files}} files under {{path}}",
+      "folderOk": "The folder exists here.",
+      "outside": "This folder is outside the folders Locarr may use (LOCARR_DATA_ROOTS).",
+      "missing": "This folder does not exist here: add a mapping.",
+      "examples": "Examples of files not found",
+      "mappings": "Path mappings",
+      "mappingsHint": "A folder as the application sees it and the same folder as Locarr sees it. The check above updates as you type.",
+      "source": "Application",
+      "allSources": "All applications",
+      "from": "Application's folder",
+      "to": "Locarr's folder",
+      "add": "Add a mapping"
+    },
+    "preview": {
+      "title": "Preview",
+      "description": "Everything below is what the import will do. Nothing has been created yet.",
+      "apply": "Update the preview",
+      "import": "Import now",
+      "category": "What",
+      "countsHint": "Skipped items say why. Items already imported before are updated, not duplicated.",
+      "warnings": "{{count}} notes from reading",
+      "conflicts": "{{count}} name conflicts",
+      "items": "Items",
+      "all": "All",
+      "action": "Action",
+      "search": "Search",
+      "attentionOnly": "Needs attention only",
+      "conflictsOnly": "Conflicts only",
+      "none": "Nothing here.",
+      "page": "{{from}}–{{to}} of {{total}}",
+      "prev": "Previous",
+      "nextPage": "Next",
+      "conflict": "Already exists: {{name}}"
+    },
+    "action": {
+      "create": "Create",
+      "update": "Merge",
+      "skip": "Skip"
+    },
+    "status": {
+      "planned": "Planned",
+      "done": "Done",
+      "failed": "Failed",
+      "skipped": "Skipped"
+    },
+    "resolution": {
+      "merge": "Merge into it",
+      "rename": "Create renamed",
+      "skip": "Skip"
+    },
+    "category": {
+      "rootfolder": "Root folders",
+      "qualitydefinitions": "Quality sizes",
+      "customformat": "Custom formats",
+      "qualityprofile": "Quality profiles",
+      "metadataprofile": "Metadata profiles",
+      "delayprofile": "Delay profiles",
+      "naming": "Naming",
+      "indexersource": "Indexer sources",
+      "indexer": "Indexers",
+      "releaseprofile": "Release profiles",
+      "downloadclient": "Download clients",
+      "pathmapping": "Remote path mappings",
+      "importlist": "Import lists",
+      "exclusions": "List exclusions",
+      "movie": "Movies",
+      "series": "Series",
+      "artist": "Artists",
+      "user": "Users",
+      "requestdefaults": "Request defaults",
+      "request": "Requests",
+      "issue": "Issues",
+      "subtitleprofile": "Subtitle profiles",
+      "subtitleprovider": "Subtitle providers",
+      "subtitleassignments": "Subtitle profile of titles",
+      "blocklist": "Blocklist",
+      "history": "History"
+    },
+    "reason": {
+      "unchanged": "Unchanged since the last import",
+      "imported_before": "Imported before; updated with the application's settings",
+      "duplicate": "The same as one from another application",
+      "name_exists": "Merged into the one Locarr already has",
+      "renamed": "Created under another name",
+      "conflict_skipped": "Skipped: the name is taken",
+      "outside_data_roots": "Outside the folders Locarr may use",
+      "path_not_found": "The folder does not exist here",
+      "kind_mismatch": "Locarr already uses this folder for something else",
+      "exists": "Already in Locarr",
+      "invalid": "Not valid in Locarr",
+      "empty": "Nothing to take",
+      "unknown_tags": "Its tags no longer exist",
+      "nothing_to_take": "Nothing to take",
+      "provided_by_prowlarr": "Comes from Prowlarr, which is imported too",
+      "unsupported_implementation": "Not supported by Locarr",
+      "merged": "Merged with the same one from another application",
+      "needs_secret": "Cannot be added without its key or password",
+      "unsupported_kind": "Not available in Locarr yet",
+      "no_root_folder": "No Locarr root folder contains it",
+      "no_tmdb_id": "No TMDb id",
+      "no_provider_id": "No TVDB or TMDb id",
+      "no_mbid": "No MusicBrainz id",
+      "already_in_library": "Already in the library",
+      "link_file": "In the library without a file: the file is linked",
+      "link_files": "In the library: missing episode files are linked",
+      "merge_albums": "In the library: new albums and files are added",
+      "subtitles_unavailable": "Subtitles are not available",
+      "unsupported_provider": "Locarr has no such provider"
+    },
+    "attention": {
+      "needs_secret": "{{count}} need a key or password entered",
+      "needs_password": "{{count}} users need a password",
+      "file_not_found": "{{count}} with files not found",
+      "unknown_condition": "{{count}} with conditions Locarr does not know",
+      "path_problem": "{{count}} folder problems",
+      "profile_fallback": "{{count}} use a fallback profile",
+      "unsupported": "{{count}} not supported",
+      "metadata_pending": "{{count}} waiting for metadata"
+    },
+    "attentionShort": {
+      "needs_secret": "Key needed",
+      "needs_password": "Password needed",
+      "file_not_found": "File not found",
+      "unknown_condition": "Unknown condition",
+      "path_problem": "Folder",
+      "profile_fallback": "Fallback profile",
+      "unsupported": "Not supported",
+      "metadata_pending": "Metadata pending"
+    },
+    "report": {
+      "title": {
+        "importing": "Importing",
+        "done": "Import finished",
+        "failed": "Import failed",
+        "cancelled": "Import cancelled"
+      },
+      "cancel": "Stop",
+      "download": "Download the report (JSON)",
+      "again": "Start another import",
+      "summary": "{{done}} done, {{skipped}} skipped, {{failed}} failed",
+      "failedHint": "{{count}} items failed: filter by “Failed” below to see why.",
+      "refreshing": "Loading metadata in the background: {{done}} of {{total}}",
+      "refreshed": "Metadata loaded for {{total}} titles ({{failed}} failed).",
+      "next": "Next: the switch-over checklist",
+      "items": "What happened",
+      "status": "Status"
+    },
+    "checklist": {
+      "link": "Switch-over checklist",
+      "title": "Switch-over checklist",
+      "subtitle": "Let Locarr take over without two applications grabbing the same releases.",
+      "back": "Back to the import",
+      "done": "Done",
+      "todo": "To do",
+      "manual": "On the other application",
+      "tick": "I did this",
+      "go": {
+        "download_clients": "Open download clients",
+        "rss": "Open indexers",
+        "test_search": "Open search",
+        "secrets": "See what needs a key",
+        "import_done": "Open the import"
+      },
+      "items": {
+        "import_done": {
+          "title": "Import your setup",
+          "body": "Run the import at least once."
+        },
+        "stop_sonarr": {
+          "title": "Stop automatic searches in {{names}}",
+          "body": "In Sonarr turn off RSS sync (Settings → Indexers → RSS Sync Interval 0) and automatic search on its indexers, or stop the container. Locarr does not change Sonarr."
+        },
+        "stop_radarr": {
+          "title": "Stop automatic searches in {{names}}",
+          "body": "In Radarr turn off RSS sync and automatic search on its indexers, or stop the container. Locarr does not change Radarr."
+        },
+        "stop_lidarr": {
+          "title": "Stop automatic searches in {{names}}",
+          "body": "In Lidarr turn off RSS sync and automatic search on its indexers, or stop the container. Locarr does not change Lidarr."
+        },
+        "prowlarr_apps": {
+          "title": "Remove the old applications from {{names}}",
+          "body": "Under Settings → Apps in Prowlarr, remove Sonarr, Radarr and Lidarr once you stop them, so Prowlarr stops syncing indexers to them."
+        },
+        "stop_requests": {
+          "title": "Point people to Locarr instead of {{names}}",
+          "body": "Share Locarr's address (or an invite), and stop the old request application so new requests arrive here."
+        },
+        "stop_bazarr": {
+          "title": "Stop {{names}}",
+          "body": "Locarr searches subtitles itself now; two applications would download the same subtitles twice."
+        },
+        "download_clients": {
+          "title": "Download clients and categories",
+          "body": "{{clients}} clients are on. Categories Locarr uses: {{categories}}. Make sure each client has them and that finished downloads land where Locarr can see them."
+        },
+        "rss": {
+          "title": "Turn on RSS sync",
+          "body": "{{indexers}} indexers have RSS on; sync runs every {{minutes}} minutes. With 0 indexers or 0 minutes Locarr only searches when asked."
+        },
+        "test_search": {
+          "title": "Run a test search",
+          "body": "Search for one title by hand to check indexers and the decision rules before letting Locarr work alone."
+        },
+        "secrets": {
+          "title": "Enter the keys the applications did not reveal",
+          "body": "{{count}} imported items wait for a key or password: the applications hide them in their API. Until then those indexers and clients stay off."
+        }
+      }
+    }
   }
 }

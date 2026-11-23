@@ -3,6 +3,16 @@ import type { components, paths } from "./schema.gen";
 
 type Schemas = components["schemas"];
 export type SystemInfo = Schemas["SystemInfo"];
+export type MigrateKind = Schemas["MigrateKind"];
+export type MigrateSource = Schemas["MigrateSource"];
+export type MigrateSourceInput = Schemas["MigrateSourceInput"];
+export type MigrateTestResult = Schemas["MigrateTestResult"];
+export type MigrateSourceOptions = Schemas["MigrateSourceOptions"];
+export type MigratePathMapping = Schemas["MigratePathMapping"];
+export type MigratePathCheck = Schemas["MigratePathCheck"];
+export type MigrateRun = Schemas["MigrateRun"];
+export type MigrateItem = Schemas["MigrateItem"];
+export type MigrateCheckItem = Schemas["MigrateCheckItem"];
 export type SystemStatus = Schemas["SystemStatus"];
 export type User = Schemas["User"];
 export type Role = Schemas["Role"];
@@ -292,6 +302,11 @@ export const queryKeys = {
   discoverSearch: (q: string, type: string) => ["discover", "search", q, type] as const,
   title: (kind: string, id: string | number) => ["discover", "title", kind, String(id)] as const,
   person: (id: number) => ["discover", "person", id] as const,
+  migrateSources: ["migrate", "sources"] as const,
+  migrateRuns: ["migrate", "runs"] as const,
+  migrateRun: (id: number) => ["migrate", "runs", id] as const,
+  migrateItems: (id: number, filter: object) => ["migrate", "runs", id, "items", filter] as const,
+  migrateChecklist: ["migrate", "checklist"] as const,
   requests: ["requests"] as const,
   requestList: (filter: object) => ["requests", "list", filter] as const,
   request: (id: number) => ["requests", id] as const,
