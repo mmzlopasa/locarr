@@ -15605,6 +15605,83 @@ func decodeResumeQueueItemParams(args [1]string, argsEscaped bool, r *http.Reque
 	return params, nil
 }
 
+// RetryItemParams is parameters of retryItem operation.
+type RetryItemParams struct {
+	Item string
+}
+
+func unpackRetryItemParams(packed middleware.Parameters) (params RetryItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "item",
+			In:   "query",
+		}
+		params.Item = packed[key].(string)
+	}
+	return params
+}
+
+func decodeRetryItemParams(args [0]string, argsEscaped bool, r *http.Request) (params RetryItemParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: item.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "item",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Item = c
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.String{
+					MinLength:     0,
+					MinLengthSet:  false,
+					MaxLength:     64,
+					MaxLengthSet:  true,
+					Email:         false,
+					Hostname:      false,
+					Regex:         nil,
+					MinNumeric:    0,
+					MinNumericSet: false,
+					MaxNumeric:    0,
+					MaxNumericSet: false,
+				}).Validate(string(params.Item)); err != nil {
+					return errors.Wrap(err, "string")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "item",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // RetryRequestParams is parameters of retryRequest operation.
 type RetryRequestParams struct {
 	ID int64

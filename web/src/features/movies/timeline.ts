@@ -45,7 +45,7 @@ export function eventTone(e: TimelineEvent): "success" | "danger" | "warning" | 
  * One line for an event in the user's language. Unknown types fall back to
  * the server's English message.
  */
-export function describeEvent(t: TFunction, e: TimelineEvent): string {
+export function describeEvent(t: TFunction, e: TimelineEvent, locale = "en"): string {
   const d = (e.data ?? {}) as Data;
   const summary = (d.summary ?? {}) as Data;
   const sub = describeSubtitleEvent(t, e);
@@ -76,7 +76,7 @@ export function describeEvent(t: TFunction, e: TimelineEvent): string {
     case "pending":
       return t("timeline.events.pending", { title: str(d.title) });
     case "grab_failed":
-      return t("timeline.events.grabFailed", { title: str(d.title), error: str(d.error) });
+      return describeGrabFailure(t, d, locale);
     case "retry":
       return t("timeline.events.retry", { title: str(d.title), message: str(d.message) });
     case "file_imported":
@@ -144,6 +144,35 @@ export function describeEvent(t: TFunction, e: TimelineEvent): string {
   return e.message;
 }
 
+/** A time of day (with the date when it is not today). */
+function untilText(iso: string, locale: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  const sameDay = d.toDateString() === new Date().toDateString();
+  return sameDay ? d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) : formatDateTime(iso, locale);
+}
+
+/**
+ * Why one grab failed, in plain words: indexer limits and disabled indexers,
+ * bad or missing files, refused redirects. Unknown codes show the server's
+ * (already shortened) error.
+ */
+export function grabFailureReason(t: TFunction, d: Data, locale: string): string {
+  const code = str(d.code);
+  const vars = { indexer: str(d.indexer) || t("timeline.grabErrors.theIndexer"), error: str(d.error), attempts: Number(d.attempts ?? 0),
+    until: d.until ? untilText(str(d.until), locale) : "" };
+  if (!code || code === "other") return vars.error;
+  const key = d.until && t(`timeline.grabErrors.${code}_until`, { defaultValue: "" }) ? `${code}_until` : code;
+  return t(`timeline.grabErrors.${key}`, { ...vars, defaultValue: vars.error || code });
+}
+
+function describeGrabFailure(t: TFunction, d: Data, locale: string): string {
+  const code = str(d.code);
+  if (code === "attempts_exhausted") return t("timeline.grabErrors.attempts_exhausted", { attempts: Number(d.attempts ?? 0) });
+  if (d.skipped) return t("timeline.events.grabSkipped", { reason: grabFailureReason(t, d, locale) });
+  return t("timeline.events.grabFailed", { title: str(d.title), error: grabFailureReason(t, d, locale) });
+}
+
 /** The "why isn't it here?" answer in the user's language. */
 export function describeExplanation(t: TFunction, ex: Explanation, locale: string): string {
   const p = (ex.params ?? {}) as Data;
@@ -161,6 +190,11 @@ export function describeExplanation(t: TFunction, ex: Explanation, locale: strin
     from: when(p.availableFrom),
     retry: when(p.retryAt),
     reason: reasonText,
+    accepted: Number(p.accepted ?? 0),
   };
+  if (ex.code === "grab_failed") {
+    const why = p.failCode || p.detail ? grabFailureReason(t, { code: p.failCode, error: p.detail, indexer: p.indexer, until: p.until }, locale) : "";
+    return why ? t("explain.codes.grab_failed", { ...vars, detail: why }) : t("explain.codes.grab_failed_unknown", vars);
+  }
   return t(`explain.codes.${ex.code}`, { ...vars, defaultValue: ex.message });
 }
