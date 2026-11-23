@@ -75,10 +75,21 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: "YES"
         CODE_SIGNING_ALLOWED: "NO"
+  LocarrUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [LocarrUITests]
+    dependencies:
+      - target: Locarr
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: "YES"
+        CODE_SIGNING_ALLOWED: "NO"
+        TEST_TARGET_NAME: Locarr
 schemes:
   Locarr:
     build:
       targets:
         Locarr: all
     test:
-      targets: [LocarrTests]
+      targets: [LocarrTests, LocarrUITests]
