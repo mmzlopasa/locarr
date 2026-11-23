@@ -15,7 +15,21 @@
       "iconURL": "https://raw.githubusercontent.com/mmzlopasa/locarr/main/ios/Locarr/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
       "tintColor": "#4FD1A5",
       "category": "utilities",
-      "versions": []
+      "versions": [
+        {
+          "version": "0.5.0",
+          "buildVersion": "500",
+          "date": "2026-11-23",
+          "downloadURL": "https://github.com/mmzlopasa/locarr/releases/download/v0.5.0/Locarr-v0.5.0.ipa",
+          "size": 2315228,
+          "localizedDescription": "Locarr 0.5.0",
+          "minOSVersion": "17.0"
+        }
+      ],
+      "version": "0.5.0",
+      "versionDate": "2026-11-23",
+      "downloadURL": "https://github.com/mmzlopasa/locarr/releases/download/v0.5.0/Locarr-v0.5.0.ipa",
+      "size": 2315228
     }
   ],
   "news": []
