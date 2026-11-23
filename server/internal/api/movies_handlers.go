@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"net/http"
 
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
@@ -161,8 +162,13 @@ func (h *Handler) LookupMovies(ctx context.Context, p gen.LookupMoviesParams) ([
 		return nil, err
 	}
 	out := make([]gen.MovieLookup, 0, len(list))
+	titles := make([]streamero.Title, 0, len(list))
 	for _, r := range list {
 		out = append(out, toLookup(r.MovieSummary, r.MovieID))
+		titles = append(titles, streamero.Title{Kind: "movie", TMDbID: r.TMDbID})
+	}
+	for i, link := range h.streameroLinks(ctx, titles) {
+		out[i].StreameroUrl = gen.NewOptString(link)
 	}
 	return out, nil
 }

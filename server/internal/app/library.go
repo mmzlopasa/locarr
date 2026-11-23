@@ -180,6 +180,7 @@ func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger)
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
 	attachMusic(h, d, log)
 	attachRequests(h, d)
+	attachMediaServer(h, d)
 	return h
 }
 

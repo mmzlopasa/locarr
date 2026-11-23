@@ -32,6 +32,10 @@ type Config struct {
 	// and the fake services only).
 	MusicBrainzURL string
 	CoverArtURL    string
+	// TelegramURL and PushoverURL replace the Telegram Bot API and Pushover
+	// addresses (LOCARR_TELEGRAM_URL, LOCARR_PUSHOVER_URL; tests only).
+	TelegramURL string
+	PushoverURL string
 	// TrustedProxies are CIDRs whose X-Forwarded-For is believed (LOCARR_TRUSTED_PROXIES).
 	TrustedProxies string
 	// SetupCode fixes the first-run setup code instead of a random one (LOCARR_SETUP_CODE).
@@ -65,6 +69,8 @@ func load(env func(string) string) (Config, error) {
 		TVDBURL:        get("LOCARR_TVDB_URL", ""),
 		MusicBrainzURL: get("LOCARR_MUSICBRAINZ_URL", ""),
 		CoverArtURL:    get("LOCARR_COVERART_URL", ""),
+		TelegramURL:    get("LOCARR_TELEGRAM_URL", ""),
+		PushoverURL:    get("LOCARR_PUSHOVER_URL", ""),
 	}
 	switch c.LogLevel {
 	case "debug", "info", "warn", "error":

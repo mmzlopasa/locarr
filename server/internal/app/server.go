@@ -28,7 +28,9 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/tvdb"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
+	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
+	"github.com/mmzlopasa/locarr/server/internal/notify/delivery"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
 	"github.com/mmzlopasa/locarr/server/internal/requests"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
@@ -79,6 +81,9 @@ type Deps struct {
 	Hub      *notify.Hub
 	Requests *requests.Service
 	Discover *discover.Service
+	// Media server and outward notifications (P9).
+	Streamero *streamero.Service
+	Channels  *delivery.Service
 }
 
 // Close stops the jobs and closes the database.
@@ -143,7 +148,10 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 		_ = d.Close()
 		return nil, err
 	}
+	buildMediaServer(ctx, deps, cfg, log)
 	buildRequests(ctx, deps, log)
+	deps.Hub.Sinks = append(deps.Hub.Sinks, deps.Channels)
+	deps.Discover.Streamero = deps.Streamero
 	return deps, nil
 }
 

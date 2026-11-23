@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"net/http"
 	"strings"
 
@@ -167,8 +168,13 @@ func (h *Handler) LookupSeries(ctx context.Context, p gen.LookupSeriesParams) ([
 		return nil, err
 	}
 	out := make([]gen.SeriesLookup, 0, len(list))
+	titles := make([]streamero.Title, 0, len(list))
 	for _, r := range list {
 		out = append(out, toSeriesLookup(r.SeriesSummary, r.Source, r.SeriesID))
+		titles = append(titles, streamero.Title{Kind: "series", TMDbID: r.TMDbID, TVDbID: r.TVDbID})
+	}
+	for i, link := range h.streameroLinks(ctx, titles) {
+		out[i].StreameroUrl = gen.NewOptString(link)
 	}
 	return out, nil
 }
