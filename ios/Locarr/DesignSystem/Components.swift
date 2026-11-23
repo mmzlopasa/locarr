@@ -121,25 +121,34 @@ struct SectionTitle: View {
     }
 }
 
-/// Loading, empty and error states.
+/// Loading, empty and error states. Inside a list they are a row of their own without a
+/// separator: a list aligns a row's separator with the row's first text, which for centred
+/// text starts in the middle of the screen.
 struct LoadingState: View {
     var body: some View {
         ProgressView().tint(Theme.accent).frame(maxWidth: .infinity, minHeight: 160)
             .accessibilityLabel(Text(verbatim: L("common.loading")))
+            .stateRow()
     }
 }
 
+/// Nothing to show: an icon and a line, centred in most of the visible height.
 struct EmptyState: View {
     let text: String
     var systemImage = "tray"
     var body: some View {
-        VStack(spacing: 10) {
-            Image(systemName: systemImage).font(.system(size: 34, weight: .light)).foregroundStyle(Theme.textFaint)
+        VStack(spacing: 12) {
+            Image(systemName: systemImage).font(.system(size: 40, weight: .light)).foregroundStyle(Theme.textFaint)
+                .accessibilityHidden(true)
             Text(verbatim: text).font(.callout).foregroundStyle(Theme.textMuted).multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .frame(maxWidth: .infinity, minHeight: 180)
-        .padding()
+        .padding(.horizontal, 32)
+        .padding(.vertical, 24)
+        .frame(maxWidth: .infinity)
+        .containerRelativeFrame(.vertical, alignment: .center) { length, _ in max(220, length * 0.55) }
         .accessibilityElement(children: .combine)
+        .stateRow()
     }
 }
 
@@ -157,6 +166,16 @@ struct ErrorState: View {
         }
         .frame(maxWidth: .infinity, minHeight: 180)
         .padding()
+        .stateRow()
+    }
+}
+
+extension View {
+    /// A full-width list row with no separator or background (no effect outside a list).
+    func stateRow() -> some View {
+        self.listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
     }
 }
 
