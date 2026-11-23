@@ -10,6 +10,7 @@ import { RequestStatusBadge, ProgressBar, requestExplanation, requestScope } fro
 import { AvailabilityBadge, itemKey, PosterGrid, PosterImage } from "./common";
 import { IssueDialog } from "./IssueDialog";
 import { RequestDialog } from "./RequestDialog";
+import { InStreameroBadge, WatchInStreamero } from "@/features/mediaserver/streamero";
 
 type Kind = "movie" | "series" | "artist";
 
@@ -70,6 +71,7 @@ function TitlePage({ kind, id }: { kind: Kind; id: string }) {
             <div className="flex flex-wrap items-center gap-2">
               <AvailabilityBadge status={it.status} testId="title-status" />
               {it.status4k !== "none" ? <AvailabilityBadge status={it.status4k} is4k testId="title-status-4k" /> : null}
+              <InStreameroBadge url={it.streameroUrl} testId="title-streamero" />
             </div>
             <h1 className="text-[26px] font-semibold leading-tight tracking-tight text-fg md:text-[32px]" data-testid="title-name">{it.title}</h1>
             {it.subtitle ? <p className="text-[13px] text-muted">{it.subtitle}</p> : null}
@@ -80,8 +82,9 @@ function TitlePage({ kind, id }: { kind: Kind; id: string }) {
               </div>
             ) : null}
             <div className="mt-1 flex flex-wrap items-center gap-2">
+              <WatchInStreamero url={it.streameroUrl} />
               {ab.canRequest || ab.canRequest4k ? (
-                <Button variant="primary" className="h-9 rounded-full px-4" onClick={() => setDialog({ type: "request", kind: requestKind })}
+                <Button variant={it.streameroUrl ? "secondary" : "primary"} className="h-9 rounded-full px-4" onClick={() => setDialog({ type: "request", kind: requestKind })}
                   data-testid="request-button">
                   <Plus className="size-4" />
                   {kind === "artist" ? t("title.requestArtist") : anyStatus === "partial" ? t("title.requestMore") : t("title.request")}

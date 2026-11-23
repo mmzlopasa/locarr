@@ -60,6 +60,8 @@ import { RequestsPage, validateRequestsSearch } from "@/features/requests/Reques
 import { RequestDetailPage } from "@/features/requests/RequestDetailPage";
 import { IssueDetailPage, IssuesPage, validateIssuesSearch } from "@/features/issues/IssuesPage";
 import { RequestSettingsPage } from "@/features/settings/RequestSettingsPage";
+import { MediaServerPage } from "@/features/settings/MediaServerPage";
+import { NotificationSettingsPage } from "@/features/settings/NotificationSettingsPage";
 import { canManageLibrary } from "@/features/users/permissions";
 import type { User } from "@/api/client";
 
@@ -199,6 +201,8 @@ const metadataRoute = createRoute({ getParentRoute: () => settingsRoute, path: "
 const requestSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/requests", component: RequestSettingsPage });
 const metadataProfilesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadataprofiles", component: MetadataProfilesPage });
 const importListsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/importlists", component: ImportListsPage });
+const mediaServerRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/mediaserver", component: MediaServerPage });
+const notificationSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/notifications", component: NotificationSettingsPage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
 const systemIndexRoute = createRoute({
@@ -251,7 +255,8 @@ export const routeTree = rootRoute.addChildren([
       downloadersRoute,
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
-        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, requestSettingsRoute]),
+        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, requestSettingsRoute,
+        mediaServerRoute, notificationSettingsRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
   ]),

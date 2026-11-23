@@ -99,7 +99,10 @@
     "invite_invalid": "This invite link is not valid any more (expired, used up or revoked).",
     "defaults_missing": "An administrator first has to choose where requests go (Settings → Requests).",
     "not_available": "Problems can only be reported for titles that are in the library.",
-    "nothing_to_request": "Everything you picked is already here or already requested."
+    "nothing_to_request": "Everything you picked is already here or already requested.",
+    "identity_not_linked": "No Locarr account is linked to this Streamero account. Ask the administrator to link it or to allow new accounts.",
+    "provider_unavailable": "Streamero cannot be reached right now. Try again later or sign in with your Locarr account.",
+    "identity_taken": "That account is already linked to another Locarr user."
   },
   "errorPage": {
     "title": "This page could not be shown",
@@ -162,7 +165,13 @@
     "useRecovery": "Use a recovery code instead",
     "useTotp": "Use an authenticator code instead",
     "verify": "Verify",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "method": "Sign-in method",
+    "localAccount": "Locarr account",
+    "providerSubtitle": "Use your {{name}} username and password.",
+    "providerTotpHint": "{{name}} asks for your two-factor code.",
+    "streameroCode": "Two-factor code from Streamero",
+    "submitWith": "Sign in with {{name}}"
   },
   "setup": {
     "title": "Welcome to Locarr",
@@ -236,6 +245,27 @@
       "fullBadge": "Full",
       "revoke": "Revoke",
       "revokeConfirm": "Revoke key"
+    },
+    "notifications": {
+      "title": "My notifications",
+      "hint": "Get news about your own requests and problem reports on your phone or by e-mail."
+    },
+    "linked": {
+      "title": "Linked accounts",
+      "hint": "Sign in to Locarr with an account you already use elsewhere.",
+      "as": "{{provider}}: {{username}}",
+      "providers": {
+        "streamero": "Streamero"
+      },
+      "lastUsed": "Last used to sign in {{when}}",
+      "notUsed": "Not used to sign in yet",
+      "unlink": "Unlink",
+      "unlinkConfirm": "Yes, unlink",
+      "none": "No linked accounts.",
+      "linkHint": "Sign in with your Streamero account once to link it. Locarr checks it at Streamero and does not keep the password.",
+      "streameroUsername": "Streamero username",
+      "streameroPassword": "Streamero password",
+      "link": "Link Streamero account"
     }
   },
   "users": {
@@ -263,7 +293,16 @@
     "resetPassword": "New password",
     "resetPasswordHint": "Signs the user out everywhere and unlocks the account.",
     "setPassword": "Set password",
-    "passwordSet": "Password set. The user was signed out everywhere."
+    "passwordSet": "Password set. The user was signed out everywhere.",
+    "streamero": {
+      "title": "Streamero account",
+      "account": "Streamero account",
+      "choose": "Choose an account…",
+      "linkedTo": "linked to {{username}}",
+      "link": "Link",
+      "unlink": "Unlink",
+      "hint": "A linked user can sign in with their Streamero username and password. Being an administrator in Streamero never makes anyone an administrator here."
+    }
   },
   "permissions": {
     "requestMovies": {
@@ -325,7 +364,9 @@
       "metadata": "Metadata",
       "importLists": "Import lists",
       "metadataProfiles": "Metadata profiles",
-      "requests": "Requests"
+      "requests": "Requests",
+      "mediaServer": "Media server",
+      "notifications": "Notifications"
     },
     "general": {
       "title": "General",
@@ -2403,5 +2444,192 @@
     "ownRule": "Own rule",
     "rule": "Rule",
     "saveQuotas": "Save quotas"
+  },
+  "streamero": {
+    "inStreamero": "In Streamero",
+    "watch": "Watch in Streamero"
+  },
+  "mediaServer": {
+    "title": "Media server",
+    "subtitle": "Connect Streamero: new files appear there by themselves, requesters see what they can already watch, and family members can sign in with their Streamero account.",
+    "connection": "Streamero",
+    "connectionHint": "The address Locarr uses to reach Streamero and an API key.",
+    "enabled": "Use Streamero",
+    "enabledHint": "Library scans after imports, the \"In Streamero\" marks and sign-in.",
+    "url": "Address",
+    "urlHint": "As Locarr reaches it, e.g. http://streamero:8787 in the same Docker network.",
+    "publicUrl": "Address for links (optional)",
+    "publicUrlHint": "What browsers open for \"Watch in Streamero\". Empty = the address above.",
+    "apiKey": "API key",
+    "apiKeyHint": "Create a dedicated key for Locarr as an administrator in Streamero → Settings → API keys (not read-only: Locarr starts library scans).",
+    "test": "Test",
+    "testOk": "Connected to {{name}} (version {{version}}).",
+    "errors": {
+      "unreachable": "Streamero cannot be reached at this address.",
+      "auth_failed": "Streamero refused the API key.",
+      "not_admin": "The key works but does not belong to an administrator; library scans need an administrator's key.",
+      "not_streamero": "Something answers at this address, but it is not Streamero.",
+      "address_blocked": "This address is not allowed (see the allowed hosts in Indexers → Settings).",
+      "invalid": "The address is not valid.",
+      "unknown": "The test failed."
+    },
+    "paths": "Path mappings",
+    "pathsHint": "Only when Locarr and Streamero see the same folders under different paths (different containers).",
+    "addMapping": "Add mapping",
+    "noMappings": "No mappings: both see the same paths.",
+    "locarrPath": "Path in Locarr",
+    "streameroPath": "Path in Streamero",
+    "libraries": "Libraries",
+    "librariesHint": "Which Streamero libraries hold each media folder. After an import only those libraries are scanned.",
+    "useSuggestions": "Use suggestions",
+    "suggested": "suggested by path",
+    "noLibraries": "Test the connection or save it to see Streamero's libraries.",
+    "unmappedHint": "Folders without a choice are matched by path (after the mappings) to the library that contains them.",
+    "signIn": "Sign-in with Streamero",
+    "signInHint": "Family members type their Streamero username and password on Locarr's sign-in page. Locarr checks them at Streamero and keeps neither the password nor a Streamero session.",
+    "signInEnabled": "Offer \"Sign in with Streamero\"",
+    "autoCreate": "Create accounts for new Streamero users",
+    "autoCreateHint": "An unknown Streamero account gets a Locarr requester account with the default quotas. Otherwise an administrator links accounts in Users.",
+    "neverAdmin": "Streamero administrators never become Locarr administrators; change roles in Users.",
+    "status": "Status",
+    "refresh": "Refresh now",
+    "indexed": "Titles known in Streamero",
+    "indexedCount": "{{count}} titles",
+    "lastScan": "Last library scan",
+    "pending": "Changes waiting",
+    "indexError": "Last refresh failed: {{message}}",
+    "scanError": "Last scan request failed: {{message}}",
+    "syncQueued": "Refresh queued."
+  },
+  "notificationSettings": {
+    "title": "Notifications",
+    "subtitle": "Send request, issue and library news to chat apps, push services, e-mail and webhooks.",
+    "channels": "Channels for everyone",
+    "channelsHint": "These channels get the chosen events of all users. People add their own channels on their account page.",
+    "delivery": "Links and e-mail",
+    "deliveryHint": "Used by every channel.",
+    "baseUrl": "Locarr address for links",
+    "baseUrlHint": "Messages link here, e.g. https://locarr.example.com. Empty = no links.",
+    "mailServer": "Mail server (SMTP)",
+    "host": "Host",
+    "port": "Port",
+    "portHint": "Empty = 587 (STARTTLS), 465 (TLS) or 25.",
+    "security": "Encryption",
+    "securities": {
+      "starttls": "STARTTLS",
+      "tls": "TLS (implicit)",
+      "none": "None"
+    },
+    "username": "Username",
+    "password": "Password",
+    "from": "From"
+  },
+  "channels": {
+    "add": "Add channel",
+    "empty": "No channels yet.",
+    "emptyPersonal": "You have no channels yet. Add one to get your news on your phone or by e-mail.",
+    "off": "Off",
+    "failing": "Failing ({{count}})",
+    "eventCount": "Events: {{count}}",
+    "lastSent": "Last sent {{when}}",
+    "neverSent": "Nothing sent yet",
+    "edit": "Edit",
+    "deleteConfirm": "Delete {{name}}",
+    "editTitle": "Edit {{name}}",
+    "addTitle": "New channel",
+    "test": "Send test",
+    "name": "Name",
+    "kind": "Type",
+    "language": "Message language",
+    "events": "Events",
+    "eventsPersonal": "Your events",
+    "enabled": "Enabled",
+    "testOk": "Test message sent.",
+    "testFailed": "Sending failed: {{message}}",
+    "secretSet": "set (type to replace)",
+    "secretWillRemove": "Will be removed when saved",
+    "set": "Set",
+    "keepSecret": "Keep",
+    "removeSecret": "Remove",
+    "kinds": {
+      "webhook": "Webhook",
+      "ntfy": "ntfy",
+      "gotify": "Gotify",
+      "discord": "Discord",
+      "telegram": "Telegram",
+      "pushover": "Pushover",
+      "email": "E-mail",
+      "apprise": "Apprise API"
+    },
+    "kindHints": {
+      "webhook": "Locarr sends each event as JSON. With a secret it adds an X-Locarr-Signature header (HMAC-SHA256 of the body).",
+      "ntfy": "Push to a topic on ntfy.sh or your own ntfy server; subscribe to the topic in the ntfy app.",
+      "gotify": "Push to your Gotify server with an application token.",
+      "discord": "Post to a channel through a Discord webhook (Channel settings → Integrations → Webhooks).",
+      "telegram": "Messages from your bot to a chat, group or channel.",
+      "pushover": "Push through Pushover with your application token and user key.",
+      "email": "E-mail through the mail server set in Settings → Notifications.",
+      "apprise": "Hand messages to an Apprise API server, which forwards them to the services it knows."
+    },
+    "groups": {
+      "requests": "Requests",
+      "issues": "Problems",
+      "library": "Library",
+      "system": "System"
+    },
+    "eventNames": {
+      "request_created": "New request",
+      "request_approved": "Request approved",
+      "request_declined": "Request declined",
+      "request_available": "Available",
+      "request_partial": "Partly available",
+      "request_failed": "Stuck",
+      "request_comment": "Comment on a request",
+      "issue_created": "Problem reported",
+      "issue_comment": "Comment on a problem",
+      "issue_resolved": "Problem resolved",
+      "issue_reopened": "Problem reopened",
+      "library_grabbed": "Grabbed",
+      "library_imported": "Imported",
+      "library_upgraded": "Upgraded",
+      "library_download_failed": "Download failed",
+      "library_import_failed": "Import failed",
+      "health_warning": "Health warnings"
+    },
+    "fields": {
+      "url": "URL",
+      "method": "Method",
+      "hmacSecret": "Signing secret",
+      "hmacSecretHint": "Optional; the receiver checks the signature with it.",
+      "ntfyServer": "Server",
+      "ntfyServerHint": "Empty = https://ntfy.sh",
+      "topic": "Topic",
+      "ntfyToken": "Access token",
+      "ntfyTokenHint": "For protected topics; or a username and password below.",
+      "ntfyUsername": "Username",
+      "ntfyPassword": "Password",
+      "priority": "Priority",
+      "ntfyPriorityHint": "1 (min) to 5 (urgent); empty = default.",
+      "tags": "Tags",
+      "tagsHint": "Separated by commas, e.g. tv, movie_camera",
+      "gotifyServer": "Server",
+      "gotifyToken": "Application token",
+      "gotifyTokenHint": "Sent in the X-Gotify-Key header.",
+      "discordWebhook": "Webhook URL",
+      "discordWebhookHint": "Kept secret: anyone with it can post to the channel.",
+      "discordName": "Sender name",
+      "botToken": "Bot token",
+      "botTokenHint": "From @BotFather.",
+      "chatId": "Chat ID",
+      "chatIdHint": "Your user ID, a group ID (-100…) or @channelname.",
+      "pushoverToken": "Application token",
+      "userKey": "User or group key",
+      "sound": "Sound",
+      "device": "Device",
+      "to": "Recipients",
+      "toHint": "E-mail addresses separated by commas.",
+      "appriseUrl": "Notify endpoint",
+      "appriseTag": "Tag"
+    }
   }
 }

@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { InStreameroBadge, WatchInStreamero } from "@/features/mediaserver/streamero";
 import { Search } from "lucide-react";
 import { api, queryKeys, unwrap, type MonitorOption, type SeriesLookup, type SeriesType } from "@/api/client";
 import { Alert, Button, Checkbox, ErrorAlert, PageHeader, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
@@ -169,7 +170,9 @@ export function AddSeriesPage() {
                     .filter(Boolean).join(" · ")}
                 </p>
                 <p className="mt-1 line-clamp-3 text-[12px] text-muted">{s.overview}</p>
-                <div className="mt-auto pt-2">
+                <div className="mt-auto flex flex-wrap items-center gap-2 pt-2">
+                  <InStreameroBadge url={s.streameroUrl} testId={`lookup-streamero-${s.tmdbId}`} />
+                  <WatchInStreamero url={s.streameroUrl} size="sm" testId={`lookup-watch-${s.tmdbId}`} />
                   {s.seriesId ? (
                     <Link to="/series/$id" params={{ id: String(s.seriesId) }} className="text-[13px] text-accent hover:underline">{t("addMovie.inLibrary")}</Link>
                   ) : (
