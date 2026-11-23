@@ -17308,6 +17308,9 @@ type MigrateSourceOptions struct {
 	History  OptBool `json:"history"`
 	// Prowlarr only - keep it as a synced indexer source, or add each indexer on its own.
 	ProwlarrMode OptMigrateSourceOptionsProwlarrMode `json:"prowlarrMode"`
+	// Prowlarr only (default true) - add Locarr's built-in version of every Prowlarr indexer it knows, and
+	// usenet indexers as direct Newznab indexers, so Prowlarr is not needed afterwards.
+	BuiltinReplace OptBool `json:"builtinReplace"`
 }
 
 // GetID returns the value of ID.
@@ -17340,6 +17343,11 @@ func (s *MigrateSourceOptions) GetProwlarrMode() OptMigrateSourceOptionsProwlarr
 	return s.ProwlarrMode
 }
 
+// GetBuiltinReplace returns the value of BuiltinReplace.
+func (s *MigrateSourceOptions) GetBuiltinReplace() OptBool {
+	return s.BuiltinReplace
+}
+
 // SetID sets the value of ID.
 func (s *MigrateSourceOptions) SetID(val int64) {
 	s.ID = val
@@ -17368,6 +17376,11 @@ func (s *MigrateSourceOptions) SetHistory(val OptBool) {
 // SetProwlarrMode sets the value of ProwlarrMode.
 func (s *MigrateSourceOptions) SetProwlarrMode(val OptMigrateSourceOptionsProwlarrMode) {
 	s.ProwlarrMode = val
+}
+
+// SetBuiltinReplace sets the value of BuiltinReplace.
+func (s *MigrateSourceOptions) SetBuiltinReplace(val OptBool) {
+	s.BuiltinReplace = val
 }
 
 // Prowlarr only - keep it as a synced indexer source, or add each indexer on its own.

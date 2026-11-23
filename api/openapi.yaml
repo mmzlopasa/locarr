@@ -11176,6 +11176,11 @@ components:
           type: string
           enum: [source, direct]
           description: Prowlarr only - keep it as a synced indexer source, or add each indexer on its own.
+        builtinReplace:
+          type: boolean
+          description: |
+            Prowlarr only (default true) - add Locarr's built-in version of every Prowlarr indexer it knows,
+            and usenet indexers as direct Newznab indexers, so Prowlarr is not needed afterwards.
     MigratePathMapping:
       type: object
       required: [sourceId, from, to]

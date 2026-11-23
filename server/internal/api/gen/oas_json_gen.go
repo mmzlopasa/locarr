@@ -36754,15 +36754,22 @@ func (s *MigrateSourceOptions) encodeFields(e *jx.Encoder) {
 			s.ProwlarrMode.Encode(e)
 		}
 	}
+	{
+		if s.BuiltinReplace.Set {
+			e.FieldStart("builtinReplace")
+			s.BuiltinReplace.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMigrateSourceOptions = [6]string{
+var jsonFieldsNameOfMigrateSourceOptions = [7]string{
 	0: "id",
 	1: "settings",
 	2: "library",
 	3: "users",
 	4: "history",
 	5: "prowlarrMode",
+	6: "builtinReplace",
 }
 
 // Decode decodes MigrateSourceOptions from json.
@@ -36835,6 +36842,16 @@ func (s *MigrateSourceOptions) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"prowlarrMode\"")
+			}
+		case "builtinReplace":
+			if err := func() error {
+				s.BuiltinReplace.Reset()
+				if err := s.BuiltinReplace.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"builtinReplace\"")
 			}
 		default:
 			return d.Skip()

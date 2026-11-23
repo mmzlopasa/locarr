@@ -392,6 +392,14 @@ func (lib *Library) prowlarrIndexers() []any {
 		map[string]any{"id": 6, "name": "Generic Newznab", "implementation": "Newznab", "protocol": "usenet", "enable": true, "priority": 25,
 			"tags": []int{}, "fields": []any{field("baseUrl", "https://nzb.example"), field("apiPath", "/api"), field("apiKey", "********")},
 			"capabilities": map[string]any{"categories": []any{map[string]any{"id": 2000, "name": "Movies"}, map[string]any{"id": 3000, "name": "Audio"}}}},
+		// Public sites Locarr has built in (Prowlarr names its definition and the site address).
+		map[string]any{"id": 7, "name": "Nyaa.si", "implementation": "Cardigann", "definitionName": "nyaasi", "protocol": "torrent",
+			"enable": true, "priority": 30, "tags": []int{}, "indexerUrls": []string{"https://nyaa.si/"}, "fields": []any{field("definitionFile", "nyaasi")},
+			"capabilities": map[string]any{"categories": []any{map[string]any{"id": 5070, "name": "TV/Anime"}}}},
+		map[string]any{"id": 8, "name": "The Pirate Bay", "implementation": "Cardigann", "definitionName": "thepiratebay", "protocol": "torrent",
+			"enable": false, "priority": 40, "tags": []int{}, "indexerUrls": []string{"https://thepiratebay.org/"},
+			"fields": []any{field("definitionFile", "thepiratebay")},
+			"capabilities": map[string]any{"categories": []any{map[string]any{"id": 2000, "name": "Movies"}}}},
 	}
 }
 
