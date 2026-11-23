@@ -51,6 +51,7 @@ import { ArtistDetailPage } from "@/features/music/ArtistDetailPage";
 import { AlbumDetailPage } from "@/features/music/AlbumDetailPage";
 import { MusicImportPage } from "@/features/music/MusicImportPage";
 import { MetadataProfilesPage } from "@/features/music/MetadataProfilesPage";
+import { SubtitleSettingsPage } from "@/features/subtitles/SubtitleSettingsPage";
 import { JoinPage } from "@/routes/JoinPage";
 import { DiscoverPage } from "@/features/discover/DiscoverPage";
 import { DiscoverListPage, validateListSearch } from "@/features/discover/DiscoverListPage";
@@ -199,6 +200,7 @@ const metadataRoute = createRoute({ getParentRoute: () => settingsRoute, path: "
 const requestSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/requests", component: RequestSettingsPage });
 const metadataProfilesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadataprofiles", component: MetadataProfilesPage });
 const importListsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/importlists", component: ImportListsPage });
+const subtitleSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/subtitles", component: SubtitleSettingsPage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
 const systemIndexRoute = createRoute({
@@ -251,7 +253,8 @@ export const routeTree = rootRoute.addChildren([
       downloadersRoute,
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
-        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, requestSettingsRoute]),
+        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, subtitleSettingsRoute,
+        requestSettingsRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
   ]),

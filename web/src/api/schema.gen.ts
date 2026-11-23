@@ -3411,6 +3411,441 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/subtitles/profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Subtitle language profiles (managers) */
+        get: operations["listSubtitleProfiles"];
+        put?: never;
+        /** Add a subtitle language profile (administrators) */
+        post: operations["createSubtitleProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/profiles/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set the subtitle profile of movies or series (managers)
+         * @description profileId 0 = the kind's default, -1 = no subtitles, else a profile. Episodes follow their series.
+         */
+        post: operations["assignSubtitleProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/profiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a subtitle language profile (administrators) */
+        put: operations["updateSubtitleProfile"];
+        post?: never;
+        /**
+         * Delete a subtitle language profile (administrators)
+         * @description A profile that is a default cannot be deleted (`subtitle_profile_in_use`); items that used it fall back to the default.
+         */
+        delete: operations["deleteSubtitleProfile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Subtitle options (administrators) */
+        get: operations["getSubtitleSettings"];
+        /** Change subtitle options (administrators) */
+        put: operations["updateSubtitleSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Subtitle providers with health and quota (managers) */
+        get: operations["listSubtitleProviders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/providers/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleProviderName"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Change a provider (administrators)
+         * @description Credentials are write-only and stored encrypted; an empty string removes one. A provider that needs a key cannot be enabled without it.
+         */
+        put: operations["updateSubtitleProvider"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/providers/{name}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleProviderName"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check a provider's credentials and read its quota (administrators) */
+        post: operations["testSubtitleProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/providers/{name}/health/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleProviderName"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Clear a provider's failures and backoff (managers) */
+        post: operations["resetSubtitleProviderHealth"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/items/{ref}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        /**
+         * Subtitles of a movie or episode (managers)
+         * @description Present and missing languages of its profile, subtitle files, embedded tracks, search state and the explanation.
+         */
+        get: operations["getItemSubtitles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/items/{ref}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Search now and download the best subtitles above the minimum score (managers) */
+        post: operations["searchItemSubtitles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/items/{ref}/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        /** Manual search: every provider's results with scores (managers) */
+        get: operations["manualSubtitleSearch"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/items/{ref}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Download a result of the last manual search (managers)
+         * @description Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers `subtitle_result_expired`.
+         */
+        post: operations["downloadItemSubtitle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/items/{ref}/blacklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        /** Subtitles rejected for an item (managers) */
+        get: operations["listSubtitleBlacklist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/blacklist/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Allow a rejected subtitle again (managers) */
+        delete: operations["deleteSubtitleBlacklistEntry"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/wanted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Movies and episodes missing subtitles of their profile (managers) */
+        get: operations["listWantedSubtitles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/wanted/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue subtitle searches for items, or for every item missing subtitles (managers) */
+        post: operations["searchWantedSubtitles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Scan the library for subtitles on disk and embedded tracks (managers) */
+        post: operations["scanSubtitles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Move a subtitle file to the recycle bin (managers) */
+        delete: operations["deleteSubtitle"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/{id}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** The first lines of a subtitle (managers) */
+        get: operations["previewSubtitle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/{id}/shift": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Move every line by an offset (managers)
+         * @description The previous version goes to the recycle bin.
+         */
+        post: operations["shiftSubtitle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/{id}/fps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Convert a subtitle made for one frame rate to another (managers) */
+        post: operations["convertSubtitleFps"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/{id}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Re-time a subtitle against the audio or another subtitle (managers)
+         * @description Runs in the background; the subtitle's syncState becomes running, then done, not_confident or failed.
+         *     reference: `audio` (the default audio track), `audio:N`, `track:N` (embedded text subtitle track N)
+         *     or `subtitle:ID` (another subtitle of the same file). Audio and tracks need ffmpeg (`subtitle_sync_unavailable`).
+         */
+        post: operations["syncSubtitle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -6457,6 +6892,296 @@ export interface components {
         UnreadCount: {
             unread: number;
         };
+        SubtitleCount: {
+            count: number;
+        };
+        SubtitleWant: {
+            language: string;
+            /** @description Only foreign-parts (forced) subtitles. */
+            forced: boolean;
+            /** @enum {string} */
+            hearingImpaired: "include" | "prefer" | "exclude" | "only";
+        };
+        SubtitleProfile: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            languages: components["schemas"]["SubtitleWant"][];
+            /** @description A matching text or image track inside the video counts as present. */
+            skipEmbedded: boolean;
+            /** @description Stop once any language (in order) is present. */
+            cutoff: boolean;
+        };
+        SubtitleProfileInput: {
+            name: string;
+            languages: components["schemas"]["SubtitleWant"][];
+            skipEmbedded?: boolean;
+            cutoff?: boolean;
+        };
+        SubtitleProfileAssign: {
+            itemIds?: number[];
+            /**
+             * @description Every movie or every series instead of itemIds.
+             * @enum {string}
+             */
+            all?: "movies" | "series";
+            /** Format: int64 */
+            profileId: number;
+        };
+        SubtitleSettings: {
+            /**
+             * Format: int64
+             * @description 0 = no subtitles by default.
+             */
+            defaultProfileMovies: number;
+            /** Format: int64 */
+            defaultProfileSeries: number;
+            minScoreMovies: number;
+            minScoreEpisodes: number;
+            /**
+             * @description srt converts ASS/SSA/VTT downloads to SRT; empty keeps the original.
+             * @enum {string}
+             */
+            preferredFormat: "" | "srt";
+            upgradeDays: number;
+            searchesPerHour: number;
+            autoSync: boolean;
+            /** @description ffmpeg is present */
+            syncAvailable: boolean;
+        };
+        SubtitleSettingsInput: {
+            /** Format: int64 */
+            defaultProfileMovies?: number;
+            /** Format: int64 */
+            defaultProfileSeries?: number;
+            minScoreMovies?: number;
+            minScoreEpisodes?: number;
+            /** @enum {string} */
+            preferredFormat?: "" | "srt";
+            upgradeDays?: number;
+            searchesPerHour?: number;
+            autoSync?: boolean;
+        };
+        SubtitleProvider: {
+            name: string;
+            enabled: boolean;
+            priority: number;
+            username: string;
+            apiKey: components["schemas"]["SecretState"];
+            password: components["schemas"]["SecretState"];
+            fields: ("apiKey" | "username" | "password")[];
+            /** @description Languages the provider offers (empty = all). */
+            languages: string[];
+            needsKey: boolean;
+            website: string;
+            failures: number;
+            /** Format: date-time */
+            retryAt?: string;
+            lastError: string;
+            /** @description quota, rate_limited, auth, missing_key, bad_response, timeout, connection, error */
+            lastErrorCode: string;
+            /** Format: date-time */
+            lastErrorAt?: string;
+            /** Format: date-time */
+            lastSuccessAt?: string;
+            quotaRemaining?: number;
+            quotaLimit?: number;
+            /** Format: date-time */
+            quotaResetAt?: string;
+            account: string;
+            downloadsToday: number;
+        };
+        SubtitleProviderInput: {
+            enabled?: boolean;
+            priority?: number;
+            username?: string;
+            /** @description Write-only; empty removes it. */
+            apiKey?: string;
+            /** @description Write-only; empty removes it. */
+            password?: string;
+        };
+        Subtitle: {
+            /** Format: int64 */
+            id: number;
+            /** Format: int64 */
+            mediaFileId: number;
+            itemRef: string;
+            path: string;
+            language: string;
+            forced: boolean;
+            hearingImpaired: boolean;
+            format: string;
+            /** @enum {string} */
+            source: "downloaded" | "disk";
+            provider: string;
+            providerId: string;
+            release: string;
+            score?: number;
+            /** @description Encoding of the original download (the saved file is UTF-8). */
+            encoding: string;
+            /** @description '' (never), running, done, not_confident, failed, unavailable */
+            syncState: string;
+            syncMessage: string;
+            /** Format: int64 */
+            syncOffsetMs: number;
+            syncScale: number;
+            /** Format: date-time */
+            syncAt?: string;
+            /** Format: date-time */
+            addedAt: string;
+        };
+        MediaTrack: {
+            index: number;
+            /** @enum {string} */
+            kind: "video" | "audio" | "subtitle";
+            codec: string;
+            language: string;
+            name: string;
+            default: boolean;
+            forced: boolean;
+            hearingImpaired: boolean;
+            /** @description A text subtitle track (usable as a sync reference). */
+            text: boolean;
+        };
+        SubtitleWantStatus: {
+            key: string;
+            language: string;
+            forced: boolean;
+            hearingImpaired: string;
+            /** @enum {string} */
+            status: "present" | "embedded" | "missing" | "skipped";
+            /** Format: int64 */
+            subtitleId?: number;
+            trackIndex?: number;
+        };
+        SubtitleExplanation: {
+            /** @description no_file, disabled, no_profile, complete, complete_embedded, no_providers, providers_unavailable, not_searched, not_found. */
+            code: string;
+            /** @enum {string} */
+            tone: "success" | "info" | "warning" | "danger";
+            message: string;
+            params: {
+                [key: string]: unknown;
+            };
+        };
+        SubtitleItem: {
+            ref: string;
+            title: string;
+            filePath: string;
+            hasFile: boolean;
+            profile?: components["schemas"]["SubtitleProfile"];
+            /** @enum {string} */
+            profileSource: "default" | "item" | "none";
+            /** Format: int64 */
+            profileOverride: number;
+            wants: components["schemas"]["SubtitleWantStatus"][];
+            subtitles: components["schemas"]["Subtitle"][];
+            tracks: components["schemas"]["MediaTrack"][];
+            probeError: string;
+            searches: number;
+            /** Format: date-time */
+            lastSearchAt?: string;
+            /** Format: date-time */
+            nextSearchAt?: string;
+            lastResult: string;
+            providersAsked: number;
+            explanation: components["schemas"]["SubtitleExplanation"];
+            syncAvailable: boolean;
+        };
+        SubtitleProviderReport: {
+            provider: string;
+            results: number;
+            error?: string;
+            code?: string;
+            skipped?: string;
+        };
+        SubtitleSearchOutcome: {
+            ref: string;
+            providers: components["schemas"]["SubtitleProviderReport"][];
+            downloaded: components["schemas"]["Subtitle"][];
+            missing: string[];
+            message: string;
+        };
+        SubtitleScorePart: {
+            code: string;
+            points: number;
+        };
+        SubtitleResult: {
+            /** @description Pass to /download. */
+            key: string;
+            provider: string;
+            id: string;
+            language: string;
+            releases: string[];
+            fileName: string;
+            hearingImpaired: boolean;
+            forced: boolean;
+            hashMatch: boolean;
+            fps?: number;
+            downloads: number;
+            rating?: number;
+            trusted: boolean;
+            uploader: string;
+            machineTranslated: boolean;
+            seasonPack?: boolean;
+            pageUrl?: string;
+            score: number;
+            parts: components["schemas"]["SubtitleScorePart"][];
+            /** @description Why it does not fit the wanted entry: language, not_forced, forced_only, hearing_impaired, not_hearing_impaired, other_episode, other_movie. */
+            rejected?: string;
+            /** @description The wanted key it was scored for. */
+            want: string;
+            downloaded: boolean;
+            blacklisted: boolean;
+            minScore: number;
+        };
+        SubtitleManualSearch: {
+            results: components["schemas"]["SubtitleResult"][];
+            providers: components["schemas"]["SubtitleProviderReport"][];
+        };
+        SubtitleBlacklistEntry: {
+            /** Format: int64 */
+            id: number;
+            itemRef: string;
+            provider: string;
+            providerId: string;
+            language: string;
+            release: string;
+            /** Format: date-time */
+            at: string;
+        };
+        SubtitlePreview: {
+            total: number;
+            lines: {
+                /** Format: int64 */
+                startMs: number;
+                /** Format: int64 */
+                endMs: number;
+                text: string;
+            }[];
+        };
+        WantedSubtitle: {
+            ref: string;
+            /** @enum {string} */
+            kind: "movie" | "episode";
+            /** Format: int64 */
+            itemId: number;
+            title: string;
+            season?: number;
+            episode?: number;
+            episodeTitle?: string;
+            missing: string[];
+            searches: number;
+            /** Format: date-time */
+            lastSearchAt?: string;
+            /** Format: date-time */
+            nextSearchAt?: string;
+            lastResult: string;
+        };
+        WantedSubtitles: {
+            items: components["schemas"]["WantedSubtitle"][];
+            total: number;
+        };
     };
     responses: {
         /** @description Signed in */
@@ -6481,6 +7206,9 @@ export interface components {
         };
     };
     parameters: {
+        SubtitleProviderName: "opensubtitles" | "subdl" | "jimaku";
+        /** @description movie:ID or episode:ID */
+        SubtitleItemRef: string;
         ID: number;
         /** @description Free text. */
         SearchQ: string;
@@ -12408,6 +13136,631 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UnreadCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listSubtitleProfiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profiles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleProfile"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createSubtitleProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubtitleProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    assignSubtitleProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubtitleProfileAssign"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSubtitleProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubtitleProfileInput"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleProfile"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteSubtitleProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getSubtitleSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSubtitleSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubtitleSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listSubtitleProviders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Providers by priority */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleProvider"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSubtitleProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleProviderName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubtitleProviderInput"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleProvider"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testSubtitleProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleProviderName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The provider answered */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleProvider"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    resetSubtitleProviderHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleProviderName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleProvider"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getItemSubtitles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The item's subtitles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchItemSubtitles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description What was found */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleSearchOutcome"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    manualSubtitleSearch: {
+        parameters: {
+            query?: {
+                /** @description One language instead of the profile's. */
+                language?: string;
+            };
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Scored results */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleManualSearch"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    downloadItemSubtitle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    key: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Subtitle"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listSubtitleBlacklist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rejected subtitles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleBlacklistEntry"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteSubtitleBlacklistEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listWantedSubtitles: {
+        parameters: {
+            query?: {
+                kind?: "movie" | "episode";
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Missing subtitles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WantedSubtitles"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchWantedSubtitles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    refs?: string[];
+                    all?: boolean;
+                    /** @enum {string} */
+                    kind?: "movie" | "episode";
+                };
+            };
+        };
+        responses: {
+            /** @description Queued */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    scanSubtitles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteSubtitle: {
+        parameters: {
+            query?: {
+                /** @description Never download this subtitle for the item again. */
+                blacklist?: boolean;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Moved to the recycle bin */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    previewSubtitle: {
+        parameters: {
+            query?: {
+                lines?: number;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lines */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitlePreview"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    shiftSubtitle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: int64 */
+                    offsetMs: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Shifted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Subtitle"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    convertSubtitleFps: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Frame rate the subtitle was made for, e.g. 25 */
+                    from: string;
+                    /** @description Frame rate of the video, e.g. 23.976 */
+                    to: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Converted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Subtitle"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    syncSubtitle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reference?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Subtitle"];
                 };
             };
             default: components["responses"]["Error"];

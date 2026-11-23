@@ -34,6 +34,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/secrets"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
+	"github.com/mmzlopasa/locarr/server/internal/subtitles"
 	"github.com/mmzlopasa/locarr/server/internal/timeline"
 	"github.com/mmzlopasa/locarr/server/internal/version"
 	"github.com/mmzlopasa/locarr/server/internal/wanted"
@@ -75,6 +76,8 @@ type Deps struct {
 	Music       *music.Service
 	MusicBrainz *musicbrainz.Client
 	CoverArt    *metadata.ImageCache
+	// Subtitles (P7).
+	Subtitles *subtitles.Service
 	// Requests (P8).
 	Hub      *notify.Hub
 	Requests *requests.Service
@@ -143,6 +146,7 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 		_ = d.Close()
 		return nil, err
 	}
+	buildSubtitles(deps, cfg, log)
 	buildRequests(ctx, deps, log)
 	return deps, nil
 }

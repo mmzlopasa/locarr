@@ -43,6 +43,7 @@ tags:
   - name: calendar
   - name: images
   - name: recyclebin
+  - name: subtitles
   - name: discover
   - name: requests
   - name: issues
@@ -4549,6 +4550,469 @@ paths:
               schema: {$ref: "#/components/schemas/UnreadCount"}
         default:
           $ref: "#/components/responses/Error"
+  /subtitles/profiles:
+    get:
+      operationId: listSubtitleProfiles
+      summary: Subtitle language profiles (managers)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: Profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/SubtitleProfile"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createSubtitleProfile
+      summary: Add a subtitle language profile (administrators)
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SubtitleProfileInput"}
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleProfile"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/profiles/assign:
+    post:
+      operationId: assignSubtitleProfile
+      summary: Set the subtitle profile of movies or series (managers)
+      description: profileId 0 = the kind's default, -1 = no subtitles, else a profile. Episodes follow their series.
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SubtitleProfileAssign"}
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleCount"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/profiles/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    put:
+      operationId: updateSubtitleProfile
+      summary: Change a subtitle language profile (administrators)
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SubtitleProfileInput"}
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleProfile"}
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteSubtitleProfile
+      summary: Delete a subtitle language profile (administrators)
+      description: A profile that is a default cannot be deleted (`subtitle_profile_in_use`); items that used it fall back to the default.
+      tags: [subtitles]
+      responses:
+        "204":
+          description: Deleted
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/settings:
+    get:
+      operationId: getSubtitleSettings
+      summary: Subtitle options (administrators)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateSubtitleSettings
+      summary: Change subtitle options (administrators)
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SubtitleSettingsInput"}
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/providers:
+    get:
+      operationId: listSubtitleProviders
+      summary: Subtitle providers with health and quota (managers)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: Providers by priority
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/SubtitleProvider"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/providers/{name}:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleProviderName"
+    put:
+      operationId: updateSubtitleProvider
+      summary: Change a provider (administrators)
+      description: Credentials are write-only and stored encrypted; an empty string removes one. A provider that needs a key cannot be enabled without it.
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SubtitleProviderInput"}
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleProvider"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/providers/{name}/test:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleProviderName"
+    post:
+      operationId: testSubtitleProvider
+      summary: Check a provider's credentials and read its quota (administrators)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: The provider answered
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleProvider"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/providers/{name}/health/reset:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleProviderName"
+    post:
+      operationId: resetSubtitleProviderHealth
+      summary: Clear a provider's failures and backoff (managers)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: Reset
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleProvider"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/items/{ref}:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleItemRef"
+    get:
+      operationId: getItemSubtitles
+      summary: Subtitles of a movie or episode (managers)
+      description: Present and missing languages of its profile, subtitle files, embedded tracks, search state and the explanation.
+      tags: [subtitles]
+      responses:
+        "200":
+          description: The item's subtitles
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleItem"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/items/{ref}/search:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleItemRef"
+    post:
+      operationId: searchItemSubtitles
+      summary: Search now and download the best subtitles above the minimum score (managers)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: What was found
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleSearchOutcome"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/items/{ref}/results:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleItemRef"
+    get:
+      operationId: manualSubtitleSearch
+      summary: "Manual search: every provider's results with scores (managers)"
+      tags: [subtitles]
+      parameters:
+        - name: language
+          in: query
+          required: false
+          description: One language instead of the profile's.
+          schema: {type: string, maxLength: 10}
+      responses:
+        "200":
+          description: Scored results
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleManualSearch"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/items/{ref}/download:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleItemRef"
+    post:
+      operationId: downloadItemSubtitle
+      summary: Download a result of the last manual search (managers)
+      description: Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers `subtitle_result_expired`.
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [key]
+              properties:
+                key: {type: string, maxLength: 300}
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Subtitle"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/items/{ref}/blacklist:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleItemRef"
+    get:
+      operationId: listSubtitleBlacklist
+      summary: Subtitles rejected for an item (managers)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: Rejected subtitles
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/SubtitleBlacklistEntry"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/blacklist/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    delete:
+      operationId: deleteSubtitleBlacklistEntry
+      summary: Allow a rejected subtitle again (managers)
+      tags: [subtitles]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/wanted:
+    get:
+      operationId: listWantedSubtitles
+      summary: Movies and episodes missing subtitles of their profile (managers)
+      tags: [subtitles]
+      parameters:
+        - name: kind
+          in: query
+          required: false
+          schema: {type: string, enum: [movie, episode]}
+        - name: offset
+          in: query
+          required: false
+          schema: {type: integer, minimum: 0, default: 0}
+        - name: limit
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 500, default: 100}
+      responses:
+        "200":
+          description: Missing subtitles
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/WantedSubtitles"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/wanted/search:
+    post:
+      operationId: searchWantedSubtitles
+      summary: Queue subtitle searches for items, or for every item missing subtitles (managers)
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refs:
+                  type: array
+                  maxItems: 1000
+                  items: {type: string, maxLength: 40}
+                all: {type: boolean}
+                kind: {type: string, enum: [movie, episode]}
+      responses:
+        "200":
+          description: Queued
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleCount"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/scan:
+    post:
+      operationId: scanSubtitles
+      summary: Scan the library for subtitles on disk and embedded tracks (managers)
+      tags: [subtitles]
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleCount"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    delete:
+      operationId: deleteSubtitle
+      summary: Move a subtitle file to the recycle bin (managers)
+      tags: [subtitles]
+      parameters:
+        - name: blacklist
+          in: query
+          required: false
+          description: Never download this subtitle for the item again.
+          schema: {type: boolean, default: false}
+      responses:
+        "204":
+          description: Moved to the recycle bin
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/{id}/preview:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: previewSubtitle
+      summary: The first lines of a subtitle (managers)
+      tags: [subtitles]
+      parameters:
+        - name: lines
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 200, default: 12}
+      responses:
+        "200":
+          description: Lines
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitlePreview"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/{id}/shift:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: shiftSubtitle
+      summary: Move every line by an offset (managers)
+      description: The previous version goes to the recycle bin.
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [offsetMs]
+              properties:
+                offsetMs: {type: integer, format: int64, minimum: -3600000, maximum: 3600000}
+      responses:
+        "200":
+          description: Shifted
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Subtitle"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/{id}/fps:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: convertSubtitleFps
+      summary: Convert a subtitle made for one frame rate to another (managers)
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [from, to]
+              properties:
+                from: {type: string, maxLength: 10, description: "Frame rate the subtitle was made for, e.g. 25"}
+                to: {type: string, maxLength: 10, description: "Frame rate of the video, e.g. 23.976"}
+      responses:
+        "200":
+          description: Converted
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Subtitle"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/{id}/sync:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: syncSubtitle
+      summary: Re-time a subtitle against the audio or another subtitle (managers)
+      description: |
+        Runs in the background; the subtitle's syncState becomes running, then done, not_confident or failed.
+        reference: `audio` (the default audio track), `audio:N`, `track:N` (embedded text subtitle track N)
+        or `subtitle:ID` (another subtitle of the same file). Audio and tracks need ffmpeg (`subtitle_sync_unavailable`).
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reference: {type: string, maxLength: 40}
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Subtitle"}
+        default:
+          $ref: "#/components/responses/Error"
 components:
   securitySchemes:
     sessionToken:
@@ -4558,6 +5022,21 @@ components:
         A session token from /auth/login or /setup, or an API key (`lk_…`). The web client's
         HttpOnly `locarr_session` cookie and the `X-Api-Key` header are accepted too.
   parameters:
+    SubtitleProviderName:
+      name: name
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [opensubtitles, subdl, jimaku]
+    SubtitleItemRef:
+      name: ref
+      in: path
+      required: true
+      description: "movie:ID or episode:ID"
+      schema:
+        type: string
+        pattern: "^(movie|episode):[0-9]+$"
     ID:
       name: id
       in: path
@@ -9189,3 +9668,323 @@ components:
       required: [unread]
       properties:
         unread: {type: integer}
+    SubtitleCount:
+      type: object
+      required: [count]
+      properties:
+        count: {type: integer}
+    SubtitleWant:
+      type: object
+      required: [language, forced, hearingImpaired]
+      properties:
+        language: {type: string, maxLength: 10}
+        forced: {type: boolean, description: Only foreign-parts (forced) subtitles.}
+        hearingImpaired: {type: string, enum: [include, prefer, exclude, only]}
+    SubtitleProfile:
+      type: object
+      required: [id, name, languages, skipEmbedded, cutoff]
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+        languages:
+          type: array
+          items: {$ref: "#/components/schemas/SubtitleWant"}
+        skipEmbedded: {type: boolean, description: A matching text or image track inside the video counts as present.}
+        cutoff: {type: boolean, description: Stop once any language (in order) is present.}
+    SubtitleProfileInput:
+      type: object
+      required: [name, languages]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 100}
+        languages:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items: {$ref: "#/components/schemas/SubtitleWant"}
+        skipEmbedded: {type: boolean}
+        cutoff: {type: boolean}
+    SubtitleProfileAssign:
+      type: object
+      required: [profileId]
+      properties:
+        itemIds:
+          type: array
+          maxItems: 10000
+          items: {type: integer, format: int64}
+        all:
+          type: string
+          enum: [movies, series]
+          description: Every movie or every series instead of itemIds.
+        profileId: {type: integer, format: int64, minimum: -1}
+    SubtitleSettings:
+      type: object
+      required: [defaultProfileMovies, defaultProfileSeries, minScoreMovies, minScoreEpisodes, preferredFormat, upgradeDays, searchesPerHour, autoSync, syncAvailable]
+      properties:
+        defaultProfileMovies: {type: integer, format: int64, description: 0 = no subtitles by default.}
+        defaultProfileSeries: {type: integer, format: int64}
+        minScoreMovies: {type: integer}
+        minScoreEpisodes: {type: integer}
+        preferredFormat: {type: string, enum: ["", srt], description: "srt converts ASS/SSA/VTT downloads to SRT; empty keeps the original."}
+        upgradeDays: {type: integer}
+        searchesPerHour: {type: integer}
+        autoSync: {type: boolean}
+        syncAvailable: {type: boolean, description: ffmpeg is present, so audio sync works.}
+    SubtitleSettingsInput:
+      type: object
+      properties:
+        defaultProfileMovies: {type: integer, format: int64, minimum: 0}
+        defaultProfileSeries: {type: integer, format: int64, minimum: 0}
+        minScoreMovies: {type: integer, minimum: 0, maximum: 100}
+        minScoreEpisodes: {type: integer, minimum: 0, maximum: 100}
+        preferredFormat: {type: string, enum: ["", srt]}
+        upgradeDays: {type: integer, minimum: 0, maximum: 365}
+        searchesPerHour: {type: integer, minimum: 0, maximum: 1000}
+        autoSync: {type: boolean}
+    SubtitleProvider:
+      type: object
+      required: [name, enabled, priority, username, apiKey, password, fields, needsKey, website, failures, lastError, lastErrorCode, account, downloadsToday, languages]
+      properties:
+        name: {type: string}
+        enabled: {type: boolean}
+        priority: {type: integer}
+        username: {type: string}
+        apiKey: {$ref: "#/components/schemas/SecretState"}
+        password: {$ref: "#/components/schemas/SecretState"}
+        fields:
+          type: array
+          items: {type: string, enum: [apiKey, username, password]}
+        languages:
+          type: array
+          description: Languages the provider offers (empty = all).
+          items: {type: string}
+        needsKey: {type: boolean}
+        website: {type: string}
+        failures: {type: integer}
+        retryAt: {type: string, format: date-time}
+        lastError: {type: string}
+        lastErrorCode: {type: string, description: "quota, rate_limited, auth, missing_key, bad_response, timeout, connection, error"}
+        lastErrorAt: {type: string, format: date-time}
+        lastSuccessAt: {type: string, format: date-time}
+        quotaRemaining: {type: integer}
+        quotaLimit: {type: integer}
+        quotaResetAt: {type: string, format: date-time}
+        account: {type: string}
+        downloadsToday: {type: integer}
+    SubtitleProviderInput:
+      type: object
+      properties:
+        enabled: {type: boolean}
+        priority: {type: integer, minimum: 1, maximum: 100}
+        username: {type: string, maxLength: 200}
+        apiKey: {type: string, maxLength: 512, description: Write-only; empty removes it.}
+        password: {type: string, maxLength: 512, description: Write-only; empty removes it.}
+    Subtitle:
+      type: object
+      required: [id, mediaFileId, itemRef, path, language, forced, hearingImpaired, format, source, provider, providerId, release, encoding, syncState, syncMessage, syncOffsetMs, syncScale, addedAt]
+      properties:
+        id: {type: integer, format: int64}
+        mediaFileId: {type: integer, format: int64}
+        itemRef: {type: string}
+        path: {type: string}
+        language: {type: string}
+        forced: {type: boolean}
+        hearingImpaired: {type: boolean}
+        format: {type: string}
+        source: {type: string, enum: [downloaded, disk]}
+        provider: {type: string}
+        providerId: {type: string}
+        release: {type: string}
+        score: {type: integer}
+        encoding: {type: string, description: Encoding of the original download (the saved file is UTF-8).}
+        syncState: {type: string, description: "'' (never), running, done, not_confident, failed, unavailable"}
+        syncMessage: {type: string}
+        syncOffsetMs: {type: integer, format: int64}
+        syncScale: {type: number}
+        syncAt: {type: string, format: date-time}
+        addedAt: {type: string, format: date-time}
+    MediaTrack:
+      type: object
+      required: [index, kind, codec, language, name, default, forced, hearingImpaired, text]
+      properties:
+        index: {type: integer}
+        kind: {type: string, enum: [video, audio, subtitle]}
+        codec: {type: string}
+        language: {type: string}
+        name: {type: string}
+        default: {type: boolean}
+        forced: {type: boolean}
+        hearingImpaired: {type: boolean}
+        text: {type: boolean, description: A text subtitle track (usable as a sync reference).}
+    SubtitleWantStatus:
+      type: object
+      required: [key, language, forced, hearingImpaired, status]
+      properties:
+        key: {type: string}
+        language: {type: string}
+        forced: {type: boolean}
+        hearingImpaired: {type: string}
+        status: {type: string, enum: [present, embedded, missing, skipped]}
+        subtitleId: {type: integer, format: int64}
+        trackIndex: {type: integer}
+    SubtitleExplanation:
+      type: object
+      required: [code, tone, message, params]
+      properties:
+        code:
+          type: string
+          description: no_file, disabled, no_profile, complete, complete_embedded, no_providers, providers_unavailable, not_searched, not_found.
+        tone: {type: string, enum: [success, info, warning, danger]}
+        message: {type: string}
+        params: {type: object, additionalProperties: true}
+    SubtitleItem:
+      type: object
+      required: [ref, title, filePath, hasFile, profileSource, profileOverride, wants, subtitles, tracks, probeError, searches, lastResult, providersAsked, explanation, syncAvailable]
+      properties:
+        ref: {type: string}
+        title: {type: string}
+        filePath: {type: string}
+        hasFile: {type: boolean}
+        profile: {$ref: "#/components/schemas/SubtitleProfile"}
+        profileSource: {type: string, enum: [default, item, none]}
+        profileOverride: {type: integer, format: int64}
+        wants:
+          type: array
+          items: {$ref: "#/components/schemas/SubtitleWantStatus"}
+        subtitles:
+          type: array
+          items: {$ref: "#/components/schemas/Subtitle"}
+        tracks:
+          type: array
+          items: {$ref: "#/components/schemas/MediaTrack"}
+        probeError: {type: string}
+        searches: {type: integer}
+        lastSearchAt: {type: string, format: date-time}
+        nextSearchAt: {type: string, format: date-time}
+        lastResult: {type: string}
+        providersAsked: {type: integer}
+        explanation: {$ref: "#/components/schemas/SubtitleExplanation"}
+        syncAvailable: {type: boolean}
+    SubtitleProviderReport:
+      type: object
+      required: [provider, results]
+      properties:
+        provider: {type: string}
+        results: {type: integer}
+        error: {type: string}
+        code: {type: string}
+        skipped: {type: string}
+    SubtitleSearchOutcome:
+      type: object
+      required: [ref, providers, downloaded, missing, message]
+      properties:
+        ref: {type: string}
+        providers:
+          type: array
+          items: {$ref: "#/components/schemas/SubtitleProviderReport"}
+        downloaded:
+          type: array
+          items: {$ref: "#/components/schemas/Subtitle"}
+        missing:
+          type: array
+          items: {type: string}
+        message: {type: string}
+    SubtitleScorePart:
+      type: object
+      required: [code, points]
+      properties:
+        code: {type: string}
+        points: {type: integer}
+    SubtitleResult:
+      type: object
+      required: [key, provider, id, language, releases, fileName, hearingImpaired, forced, hashMatch, downloads, trusted, uploader,
+        machineTranslated, score, parts, want, downloaded, blacklisted, minScore]
+      properties:
+        key: {type: string, description: Pass to /download.}
+        provider: {type: string}
+        id: {type: string}
+        language: {type: string}
+        releases:
+          type: array
+          items: {type: string}
+        fileName: {type: string}
+        hearingImpaired: {type: boolean}
+        forced: {type: boolean}
+        hashMatch: {type: boolean}
+        fps: {type: number}
+        downloads: {type: integer}
+        rating: {type: number}
+        trusted: {type: boolean}
+        uploader: {type: string}
+        machineTranslated: {type: boolean}
+        seasonPack: {type: boolean}
+        pageUrl: {type: string}
+        score: {type: integer}
+        parts:
+          type: array
+          items: {$ref: "#/components/schemas/SubtitleScorePart"}
+        rejected: {type: string, description: "Why it does not fit the wanted entry: language, not_forced, forced_only, hearing_impaired, not_hearing_impaired, other_episode, other_movie."}
+        want: {type: string, description: The wanted key it was scored for.}
+        downloaded: {type: boolean}
+        blacklisted: {type: boolean}
+        minScore: {type: integer}
+    SubtitleManualSearch:
+      type: object
+      required: [results, providers]
+      properties:
+        results:
+          type: array
+          items: {$ref: "#/components/schemas/SubtitleResult"}
+        providers:
+          type: array
+          items: {$ref: "#/components/schemas/SubtitleProviderReport"}
+    SubtitleBlacklistEntry:
+      type: object
+      required: [id, itemRef, provider, providerId, language, release, at]
+      properties:
+        id: {type: integer, format: int64}
+        itemRef: {type: string}
+        provider: {type: string}
+        providerId: {type: string}
+        language: {type: string}
+        release: {type: string}
+        at: {type: string, format: date-time}
+    SubtitlePreview:
+      type: object
+      required: [total, lines]
+      properties:
+        total: {type: integer}
+        lines:
+          type: array
+          items:
+            type: object
+            required: [startMs, endMs, text]
+            properties:
+              startMs: {type: integer, format: int64}
+              endMs: {type: integer, format: int64}
+              text: {type: string}
+    WantedSubtitle:
+      type: object
+      required: [ref, kind, itemId, title, missing, searches, lastResult]
+      properties:
+        ref: {type: string}
+        kind: {type: string, enum: [movie, episode]}
+        itemId: {type: integer, format: int64}
+        title: {type: string}
+        season: {type: integer}
+        episode: {type: integer}
+        episodeTitle: {type: string}
+        missing:
+          type: array
+          items: {type: string}
+        searches: {type: integer}
+        lastSearchAt: {type: string, format: date-time}
+        nextSearchAt: {type: string, format: date-time}
+        lastResult: {type: string}
+    WantedSubtitles:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/WantedSubtitle"}
+        total: {type: integer}

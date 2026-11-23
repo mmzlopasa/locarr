@@ -19,6 +19,7 @@ import (
 
 var regexMap = map[string]ogenregex.Regexp{
 	"^([A-Z]{2})?$":                               ogenregex.MustCompile("^([A-Z]{2})?$"),
+	"^(movie|episode):[0-9]+$":                    ogenregex.MustCompile("^(movie|episode):[0-9]+$"),
 	"^(rg|r)-[0-9a-f-]{36}\\.jpg$":                ogenregex.MustCompile("^(rg|r)-[0-9a-f-]{36}\\.jpg$"),
 	"^(tt)?[0-9]{1,10}$":                          ogenregex.MustCompile("^(tt)?[0-9]{1,10}$"),
 	"^0?[0-7]{3}$":                                ogenregex.MustCompile("^0?[0-7]{3}$"),

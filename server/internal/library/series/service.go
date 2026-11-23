@@ -51,6 +51,8 @@ type Service struct {
 	// search. Both are set by the app (nil = nothing happens).
 	SearchRequested func(ctx context.Context, ref library.Ref, reason string)
 	MakeDue         func(ctx context.Context, ref library.Ref)
+	// Imported is told about every imported episode file (subtitles, P7).
+	Imported func(ctx context.Context, refs []library.Ref)
 }
 
 func (s *Service) now() time.Time {
