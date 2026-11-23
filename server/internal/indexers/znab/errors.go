@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Kind classifies an indexer error.
@@ -115,4 +117,29 @@ func httpError(status int, retryAfter string) *Error {
 		e.Kind = KindUnknown
 	}
 	return e
+}
+
+var disabledTill = regexp.MustCompile(`(?i)disabled\s+(?:till|until)\s+(.+?)(?:\s+due\s+to|\s*\.?\s*$)`)
+
+// disabledLayouts are the date forms a "disabled till <time>" message has been
+// seen with (the time is the indexer manager's local time).
+var disabledLayouts = []string{time.RFC3339, "2006-01-02T15:04:05", "2006-01-02 15:04:05", "2006-01-02 15:04",
+	"1/2/2006 3:04:05 PM", "1/2/2006 15:04:05", "01/02/2006 15:04:05", "2.1.2006. 15:04:05", "2.1.2006 15:04:05",
+	"02.01.2006 15:04:05", "2/1/2006 15:04:05"}
+
+// DisabledUntil reads the time out of a message such as Prowlarr's "Indexer is
+// disabled till 11/23/2026 12:53:01 due to recent failures". Times without a
+// zone are read in loc. ok is false when there is no such time.
+func DisabledUntil(msg string, loc *time.Location) (time.Time, bool) {
+	m := disabledTill.FindStringSubmatch(msg)
+	if m == nil {
+		return time.Time{}, false
+	}
+	v := strings.TrimSpace(m[1])
+	for _, l := range disabledLayouts {
+		if t, err := time.ParseInLocation(l, v, loc); err == nil {
+			return t, true
+		}
+	}
+	return time.Time{}, false
 }

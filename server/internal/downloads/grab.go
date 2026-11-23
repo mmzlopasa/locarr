@@ -16,6 +16,7 @@ import (
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/downloaders"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
 )
 
 // Release file size caps.
@@ -137,8 +138,9 @@ type fetched struct {
 }
 
 // fetchRelease downloads the release through the server: size capped, timed
-// out, guarded against private-metadata addresses, no redirects to other hosts
-// (except to a magnet link, which indexers use for magnet-only releases).
+// out, guarded against private-metadata addresses. Redirects to other hosts are
+// followed (up to five, each target checked when connecting) with a plain GET;
+// a redirect to a magnet link hands the magnet to the client (D-079).
 func (s *Service) fetchRelease(ctx context.Context, rawURL string, proto downloaders.Protocol) (fetched, error) {
 	rawURL = strings.TrimSpace(rawURL)
 	if strings.HasPrefix(strings.ToLower(rawURL), "magnet:") {
@@ -157,33 +159,31 @@ func (s *Service) fetchRelease(ctx context.Context, rawURL string, proto downloa
 	}
 	ctx, cancel := context.WithTimeout(ctx, fetchTimeout)
 	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return fetched{}, invalid("bad download URL")
-	}
-	req.Header.Set("User-Agent", "Locarr")
-	hc := downloaders.NewHTTPClient(downloaders.HTTPOptions{Timeout: fetchTimeout, AllowLinkLocal: s.AllowLinkLocal})
-	resp, err := hc.Do(req)
-	if err != nil {
-		var redir *downloaders.CrossHostRedirect
-		if errors.As(err, &redir) && strings.EqualFold(redir.Location.Scheme, "magnet") && proto == downloaders.Torrent {
-			return s.fetchRelease(ctx, redir.Location.String(), proto)
-		}
-		return fetched{}, fmt.Errorf("%w: %s", ErrFetch, downloaders.ClassifyTransportError(err).Error())
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return fetched{}, fmt.Errorf("%w: the indexer answered HTTP %d", ErrFetch, resp.StatusCode)
-	}
 	limit := int64(MaxTorrentFile)
 	if proto == downloaders.Usenet {
 		limit = MaxNZBFile
 	}
-	body, err := downloaders.ReadLimited(resp.Body, limit)
+	hc := downloaders.NewHTTPClient(downloaders.HTTPOptions{Timeout: fetchTimeout, AllowLinkLocal: s.AllowLinkLocal})
+	rf, err := httpx.FollowRelease(ctx, hc, u.String(), httpx.FollowOptions{MaxBytes: limit})
 	if err != nil {
-		return fetched{}, fmt.Errorf("%w: %s", ErrFetch, err.Error())
+		if errors.Is(err, httpx.ErrTooLarge) {
+			return fetched{}, fmt.Errorf("%w: %s", ErrFetch, downloaders.ErrResponseTooLarge.Error())
+		}
+		return fetched{}, fmt.Errorf("%w: %s", ErrFetch, downloaders.ClassifyTransportError(err).Error())
 	}
-	return s.parseRelease(ctx, body, proto)
+	if rf.Magnet != "" {
+		if proto != downloaders.Torrent {
+			return fetched{}, fmt.Errorf("%w: the link redirected to a magnet link, which is not usenet", ErrFetch)
+		}
+		return s.fetchRelease(ctx, rf.Magnet, proto)
+	}
+	if rf.Status == http.StatusNotFound || rf.Status == http.StatusGone {
+		return fetched{}, fmt.Errorf("%w: %w (HTTP %d)", ErrFetch, ErrReleaseGone, rf.Status)
+	}
+	if rf.Status != http.StatusOK {
+		return fetched{}, fmt.Errorf("%w: the indexer answered HTTP %d", ErrFetch, rf.Status)
+	}
+	return s.parseRelease(ctx, rf.Body, proto)
 }
 
 // parseRelease checks a fetched file: an NZB, a .torrent, or a magnet link in plain text.
@@ -194,7 +194,7 @@ func (s *Service) parseRelease(ctx context.Context, body []byte, proto downloade
 	if proto == downloaders.Usenet {
 		head := body[:min(len(body), 4096)]
 		if !bytes.Contains(bytes.ToLower(head), []byte("<nzb")) {
-			return fetched{}, fmt.Errorf("%w: the file is not an NZB", ErrFetch)
+			return fetched{}, fmt.Errorf("%w: %w", ErrFetch, ErrNotRelease)
 		}
 		return fetched{nzb: body}, nil
 	}
@@ -203,7 +203,7 @@ func (s *Service) parseRelease(ctx context.Context, body []byte, proto downloade
 	}
 	ti, err := downloaders.ParseTorrent(body)
 	if err != nil {
-		return fetched{}, fmt.Errorf("%w: the file is not a valid torrent", ErrFetch)
+		return fetched{}, fmt.Errorf("%w: %w", ErrFetch, ErrBadTorrent)
 	}
 	return fetched{torrent: body, hash: ti.InfoHash}, nil
 }

@@ -26,7 +26,11 @@ var (
 	ErrNoClient      = errors.New("no enabled download client for this protocol")
 	ErrAlreadyQueued = errors.New("this release is already in the download queue")
 	ErrFetch         = errors.New("could not fetch the release file")
-	ErrUnknownItem   = errors.New("items added outside Locarr are not managed")
+	// Content errors: the release itself is bad (grabbing it again will not help).
+	ErrBadTorrent  = errors.New("the file is not a valid torrent")
+	ErrNotRelease  = errors.New("the file is not an NZB")
+	ErrReleaseGone = errors.New("the release file is gone")
+	ErrUnknownItem = errors.New("items added outside Locarr are not managed")
 )
 
 func invalid(format string, args ...any) error {

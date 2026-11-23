@@ -223,7 +223,70 @@ func TestClientKeepsKeyOutOfErrors(t *testing.T) {
 	if err == nil || strings.Contains(err.Error(), "supersecretkey") || KindOf(err) != KindUnreachable {
 		t.Fatalf("%v", err)
 	}
-	if !strings.Contains(err.Error(), "apikey=redacted") {
-		t.Fatalf("expected redacted URL: %v", err)
+	// Error messages carry scheme, host and path only: no query string at all.
+	if !strings.Contains(err.Error(), "request http://127.0.0.1:1/api:") || strings.Contains(err.Error(), "apikey") || strings.Contains(err.Error(), "?") {
+		t.Fatalf("expected a short URL: %v", err)
+	}
+}
+
+func TestFetchReleaseAnswers(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/1/download":
+			http.Redirect(w, r, "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567", http.StatusMovedPermanently)
+		case "/2/download":
+			w.Header().Set("Content-Type", "text/html")
+			_, _ = w.Write([]byte("<!DOCTYPE html><html><body>Cloud login</body></html>"))
+		case "/3/download":
+			w.WriteHeader(http.StatusTooManyRequests)
+			_, _ = w.Write([]byte(`<?xml version="1.0" encoding="UTF-8"?><error code="429" description="Indexer is disabled till 11/23/2026 12:53:00 due to recent failures." />`))
+		case "/4/download":
+			http.NotFound(w, r)
+		default:
+			_, _ = w.Write([]byte("d4:infod4:name1:aee"))
+		}
+	}))
+	defer srv.Close()
+	hc, _ := httpx.New(httpx.Options{Policy: httpx.Policy{Allowed: []netip.Prefix{netip.MustParsePrefix("127.0.0.0/8")}}})
+	c := &Client{HTTP: hc, BaseURL: srv.URL}
+	ctx := context.Background()
+	if rf, err := c.Fetch(ctx, srv.URL+"/1/download?apikey=k"); err != nil || rf.Magnet == "" {
+		t.Fatalf("magnet: %+v %v", rf, err)
+	}
+	_, err := c.Fetch(ctx, srv.URL+"/2/download")
+	if KindOf(err) != KindBadResponse || !strings.Contains(err.Error(), "not a .torrent or .nzb") || !strings.Contains(err.Error(), "a web page") {
+		t.Fatalf("html: %v", err)
+	}
+	_, err = c.Fetch(ctx, srv.URL+"/3/download")
+	var ze *Error
+	if !errors.As(err, &ze) || ze.Kind != KindRateLimit {
+		t.Fatalf("disabled: %v", err)
+	}
+	until, ok := DisabledUntil(ze.Message, time.UTC)
+	if !ok || !until.Equal(time.Date(2026, 11, 23, 12, 53, 0, 0, time.UTC)) {
+		t.Fatalf("disabled till: %v %v", until, ok)
+	}
+	if _, err := c.Fetch(ctx, srv.URL+"/4/download"); KindOf(err) != KindNotFound {
+		t.Fatalf("404: %v", err)
+	}
+	if rf, err := c.Fetch(ctx, srv.URL+"/5/download"); err != nil || string(rf.Body) != "d4:infod4:name1:aee" {
+		t.Fatalf("torrent: %v", err)
+	}
+}
+
+func TestDisabledUntil(t *testing.T) {
+	for msg, want := range map[string]string{
+		"Indexer is disabled till 11/23/2026 12:53:00 due to recent failures.":  "2026-11-23T12:53:00Z",
+		"Indexer is disabled till 11/23/2026 1:53:00 PM due to recent failures": "2026-11-23T13:53:00Z",
+		"Indexer is disabled till 2026-11-23 12:53:00 due to recent failures.":  "2026-11-23T12:53:00Z",
+		"Indexer is disabled until 2026-11-23T12:53:00Z":                        "2026-11-23T12:53:00Z",
+	} {
+		got, ok := DisabledUntil(msg, time.UTC)
+		if !ok || got.UTC().Format(time.RFC3339) != want {
+			t.Errorf("%q: %v %v, want %s", msg, got, ok, want)
+		}
+	}
+	if _, ok := DisabledUntil("Download failed", time.UTC); ok {
+		t.Fatal("no time in message")
 	}
 }
