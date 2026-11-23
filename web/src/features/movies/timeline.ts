@@ -1,6 +1,7 @@
 import type { TFunction } from "i18next";
 import type { Explanation, TimelineEvent } from "@/api/client";
 import { formatDateTime } from "@/components/format";
+import { describeSubtitleEvent, subtitleEventTone } from "@/features/subtitles/common";
 
 type Data = Record<string, unknown>;
 
@@ -8,6 +9,8 @@ const str = (v: unknown) => (v === undefined || v === null ? "" : String(v));
 
 /** The icon tone of an event on the timeline. */
 export function eventTone(e: TimelineEvent): "success" | "danger" | "warning" | "info" | "neutral" {
+  const sub = subtitleEventTone(e.type);
+  if (sub) return sub;
   switch (e.type) {
     case "file_imported":
     case "download_imported":
@@ -45,6 +48,8 @@ export function eventTone(e: TimelineEvent): "success" | "danger" | "warning" | 
 export function describeEvent(t: TFunction, e: TimelineEvent): string {
   const d = (e.data ?? {}) as Data;
   const summary = (d.summary ?? {}) as Data;
+  const sub = describeSubtitleEvent(t, e);
+  if (sub !== null) return sub;
   switch (e.type) {
     case "added":
       return t("timeline.events.added", { path: str(d.path) });

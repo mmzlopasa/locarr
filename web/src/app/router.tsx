@@ -52,6 +52,7 @@ import { ArtistDetailPage } from "@/features/music/ArtistDetailPage";
 import { AlbumDetailPage } from "@/features/music/AlbumDetailPage";
 import { MusicImportPage } from "@/features/music/MusicImportPage";
 import { MetadataProfilesPage } from "@/features/music/MetadataProfilesPage";
+import { SubtitleSettingsPage } from "@/features/subtitles/SubtitleSettingsPage";
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -172,6 +173,7 @@ const mediaManagementRoute = createRoute({ getParentRoute: () => settingsRoute, 
 const metadataRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadata", component: MetadataPage });
 const metadataProfilesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadataprofiles", component: MetadataProfilesPage });
 const importListsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/importlists", component: ImportListsPage });
+const subtitleSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/subtitles", component: SubtitleSettingsPage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
 const systemIndexRoute = createRoute({
@@ -213,7 +215,7 @@ export const routeTree = rootRoute.addChildren([
       downloadersRoute,
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
-        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute]),
+        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, subtitleSettingsRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
   ]),

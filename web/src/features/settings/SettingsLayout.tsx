@@ -15,6 +15,7 @@ export function SettingsLayout() {
           { to: "/settings/metadata", label: t("settings.tabs.metadata") },
           { to: "/settings/importlists", label: t("settings.tabs.importLists") },
           { to: "/settings/metadataprofiles", label: t("settings.tabs.metadataProfiles") },
+          { to: "/settings/subtitles", label: t("settings.tabs.subtitles") },
           { to: "/settings/profiles", label: t("settings.tabs.profiles") },
           { to: "/settings/quality", label: t("settings.tabs.quality") },
           { to: "/settings/customformats", label: t("settings.tabs.customFormats") },

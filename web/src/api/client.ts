@@ -112,6 +112,20 @@ export type SeriesNamingSettings = Schemas["SeriesNamingSettings"];
 export type SeriesNamingPreview = Schemas["SeriesNamingPreview"];
 export type ExistingSeriesFolder = Schemas["ExistingSeriesFolder"];
 export type SeriesImportCandidate = Schemas["SeriesImportCandidate"];
+export type SubtitleProfile = Schemas["SubtitleProfile"];
+export type SubtitleProfileInput = Schemas["SubtitleProfileInput"];
+export type SubtitleWant = Schemas["SubtitleWant"];
+export type SubtitleSettings = Schemas["SubtitleSettings"];
+export type SubtitleProvider = Schemas["SubtitleProvider"];
+export type Subtitle = Schemas["Subtitle"];
+export type SubtitleItem = Schemas["SubtitleItem"];
+export type SubtitleWantStatus = Schemas["SubtitleWantStatus"];
+export type SubtitleExplanation = Schemas["SubtitleExplanation"];
+export type SubtitleResult = Schemas["SubtitleResult"];
+export type SubtitleProviderReport = Schemas["SubtitleProviderReport"];
+export type MediaTrack = Schemas["MediaTrack"];
+export type WantedSubtitle = Schemas["WantedSubtitle"];
+
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -220,6 +234,11 @@ export const queryKeys = {
   mediaManagement: ["settings", "mediamanagement"] as const,
   metadataSettings: ["settings", "metadata"] as const,
   importLists: ["importlists"] as const,
+  subtitleItem: (ref: string) => ["subtitles", "items", ref] as const,
+  subtitleProfiles: ["subtitles", "profiles"] as const,
+  subtitleProviders: ["subtitles", "providers"] as const,
+  subtitleSettings: ["subtitles", "settings"] as const,
+  wantedSubtitles: (kind: string, offset: number) => ["subtitles", "wanted", kind, offset] as const,
   exclusions: ["exclusions"] as const,
 };
 
