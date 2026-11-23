@@ -3540,11 +3540,11 @@ export interface components {
             /** @description Approve and decline other users' requests. */
             manageRequests: boolean;
             /** @description Movie requests are approved at once (autoApprove covers every kind). */
-            autoApproveMovies: boolean;
-            autoApproveSeries: boolean;
-            autoApproveMusic: boolean;
+            autoApproveMovies?: boolean;
+            autoApproveSeries?: boolean;
+            autoApproveMusic?: boolean;
             /** @description 4K requests are approved at once. */
-            autoApprove4k: boolean;
+            autoApprove4k?: boolean;
         };
         User: {
             /** Format: int64 */

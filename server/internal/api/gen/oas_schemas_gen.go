@@ -21672,11 +21672,11 @@ type Permissions struct {
 	// Approve and decline other users' requests.
 	ManageRequests bool `json:"manageRequests"`
 	// Movie requests are approved at once (autoApprove covers every kind).
-	AutoApproveMovies bool `json:"autoApproveMovies"`
-	AutoApproveSeries bool `json:"autoApproveSeries"`
-	AutoApproveMusic  bool `json:"autoApproveMusic"`
+	AutoApproveMovies OptBool `json:"autoApproveMovies"`
+	AutoApproveSeries OptBool `json:"autoApproveSeries"`
+	AutoApproveMusic  OptBool `json:"autoApproveMusic"`
 	// 4K requests are approved at once.
-	AutoApprove4k bool `json:"autoApprove4k"`
+	AutoApprove4k OptBool `json:"autoApprove4k"`
 }
 
 // GetRequestMovies returns the value of RequestMovies.
@@ -21715,22 +21715,22 @@ func (s *Permissions) GetManageRequests() bool {
 }
 
 // GetAutoApproveMovies returns the value of AutoApproveMovies.
-func (s *Permissions) GetAutoApproveMovies() bool {
+func (s *Permissions) GetAutoApproveMovies() OptBool {
 	return s.AutoApproveMovies
 }
 
 // GetAutoApproveSeries returns the value of AutoApproveSeries.
-func (s *Permissions) GetAutoApproveSeries() bool {
+func (s *Permissions) GetAutoApproveSeries() OptBool {
 	return s.AutoApproveSeries
 }
 
 // GetAutoApproveMusic returns the value of AutoApproveMusic.
-func (s *Permissions) GetAutoApproveMusic() bool {
+func (s *Permissions) GetAutoApproveMusic() OptBool {
 	return s.AutoApproveMusic
 }
 
 // GetAutoApprove4k returns the value of AutoApprove4k.
-func (s *Permissions) GetAutoApprove4k() bool {
+func (s *Permissions) GetAutoApprove4k() OptBool {
 	return s.AutoApprove4k
 }
 
@@ -21770,22 +21770,22 @@ func (s *Permissions) SetManageRequests(val bool) {
 }
 
 // SetAutoApproveMovies sets the value of AutoApproveMovies.
-func (s *Permissions) SetAutoApproveMovies(val bool) {
+func (s *Permissions) SetAutoApproveMovies(val OptBool) {
 	s.AutoApproveMovies = val
 }
 
 // SetAutoApproveSeries sets the value of AutoApproveSeries.
-func (s *Permissions) SetAutoApproveSeries(val bool) {
+func (s *Permissions) SetAutoApproveSeries(val OptBool) {
 	s.AutoApproveSeries = val
 }
 
 // SetAutoApproveMusic sets the value of AutoApproveMusic.
-func (s *Permissions) SetAutoApproveMusic(val bool) {
+func (s *Permissions) SetAutoApproveMusic(val OptBool) {
 	s.AutoApproveMusic = val
 }
 
 // SetAutoApprove4k sets the value of AutoApprove4k.
-func (s *Permissions) SetAutoApprove4k(val bool) {
+func (s *Permissions) SetAutoApprove4k(val OptBool) {
 	s.AutoApprove4k = val
 }
 

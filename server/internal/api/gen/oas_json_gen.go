@@ -40443,20 +40443,28 @@ func (s *Permissions) encodeFields(e *jx.Encoder) {
 		e.Bool(s.ManageRequests)
 	}
 	{
-		e.FieldStart("autoApproveMovies")
-		e.Bool(s.AutoApproveMovies)
+		if s.AutoApproveMovies.Set {
+			e.FieldStart("autoApproveMovies")
+			s.AutoApproveMovies.Encode(e)
+		}
 	}
 	{
-		e.FieldStart("autoApproveSeries")
-		e.Bool(s.AutoApproveSeries)
+		if s.AutoApproveSeries.Set {
+			e.FieldStart("autoApproveSeries")
+			s.AutoApproveSeries.Encode(e)
+		}
 	}
 	{
-		e.FieldStart("autoApproveMusic")
-		e.Bool(s.AutoApproveMusic)
+		if s.AutoApproveMusic.Set {
+			e.FieldStart("autoApproveMusic")
+			s.AutoApproveMusic.Encode(e)
+		}
 	}
 	{
-		e.FieldStart("autoApprove4k")
-		e.Bool(s.AutoApprove4k)
+		if s.AutoApprove4k.Set {
+			e.FieldStart("autoApprove4k")
+			s.AutoApprove4k.Encode(e)
+		}
 	}
 }
 
@@ -40568,11 +40576,9 @@ func (s *Permissions) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"manageRequests\"")
 			}
 		case "autoApproveMovies":
-			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
-				v, err := d.Bool()
-				s.AutoApproveMovies = bool(v)
-				if err != nil {
+				s.AutoApproveMovies.Reset()
+				if err := s.AutoApproveMovies.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -40580,11 +40586,9 @@ func (s *Permissions) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"autoApproveMovies\"")
 			}
 		case "autoApproveSeries":
-			requiredBitSet[1] |= 1 << 0
 			if err := func() error {
-				v, err := d.Bool()
-				s.AutoApproveSeries = bool(v)
-				if err != nil {
+				s.AutoApproveSeries.Reset()
+				if err := s.AutoApproveSeries.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -40592,11 +40596,9 @@ func (s *Permissions) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"autoApproveSeries\"")
 			}
 		case "autoApproveMusic":
-			requiredBitSet[1] |= 1 << 1
 			if err := func() error {
-				v, err := d.Bool()
-				s.AutoApproveMusic = bool(v)
-				if err != nil {
+				s.AutoApproveMusic.Reset()
+				if err := s.AutoApproveMusic.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -40604,11 +40606,9 @@ func (s *Permissions) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"autoApproveMusic\"")
 			}
 		case "autoApprove4k":
-			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
-				v, err := d.Bool()
-				s.AutoApprove4k = bool(v)
-				if err != nil {
+				s.AutoApprove4k.Reset()
+				if err := s.AutoApprove4k.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -40625,8 +40625,8 @@ func (s *Permissions) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
-		0b11111111,
-		0b00000111,
+		0b01111111,
+		0b00000000,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

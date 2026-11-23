@@ -46,7 +46,8 @@ func rateLimited(r *http.Request) bool {
 	}
 	switch r.URL.Path {
 	case "/api/v1/auth/login", "/api/v1/setup", "/api/v1/auth/password",
-		"/api/v1/auth/totp/enable", "/api/v1/auth/totp/disable", "/api/v1/auth/totp/recovery-codes":
+		"/api/v1/auth/totp/enable", "/api/v1/auth/totp/disable", "/api/v1/auth/totp/recovery-codes",
+		"/api/v1/auth/invite", "/api/v1/auth/signup":
 		return true
 	}
 	return false

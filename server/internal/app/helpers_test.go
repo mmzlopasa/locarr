@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
 	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 	"io"
 	"log/slog"
@@ -48,7 +49,11 @@ func newEnvWith(t *testing.T, cfgMod func(*config.Config), mod func(*RouterOptio
 	tm := tmdbfake.New()
 	tmdbSrv := httptest.NewServer(tm)
 	t.Cleanup(tmdbSrv.Close)
-	cfg := config.Config{ConfigDir: filepath.Join(base, "config"), DataRoots: []string{data}, LogLevel: "info", TMDbURL: tmdbSrv.URL}
+	// MusicBrainz too is a fake unless a test brings its own (no test reaches the real one).
+	mbSrv := httptest.NewServer(mbfake.New())
+	t.Cleanup(mbSrv.Close)
+	cfg := config.Config{ConfigDir: filepath.Join(base, "config"), DataRoots: []string{data}, LogLevel: "info", TMDbURL: tmdbSrv.URL,
+		MusicBrainzURL: mbSrv.URL + "/mb", CoverArtURL: mbSrv.URL + "/mb/coverart"}
 	if cfgMod != nil {
 		cfgMod(&cfg)
 	}
