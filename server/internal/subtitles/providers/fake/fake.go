@@ -134,6 +134,8 @@ func DefaultCatalog() []Sub {
 		{Provider: "opensubtitles", ID: "9100004", Language: "en", IMDb: "tt1254207", TMDb: 10378, Year: 2008, Release: "Big.Buck.Bunny.2008.1080p.BluRay.x264-LOCARR", Body: en},
 		{Provider: "subdl", ID: "3197651-3213944", Language: "hr", IMDb: "tt1254207", TMDb: 10378, Year: 2008, Release: "Big.Buck.Bunny.2008.BDRip.XviD-OLD", Body: hr},
 		{Provider: "opensubtitles", ID: "9200001", Language: "en", IMDb: "tt1727587", TMDb: 45745, Year: 2010, Release: "Sintel.2010.1080p.BluRay.x264-LOCARR", Body: en},
+		{Provider: "opensubtitles", ID: "9300001", Language: "hr", IMDb: "tt2285752", TMDb: 133701, Year: 2012, Release: "Tears.of.Steel.2012.720p.WEBRip.x264-LOCARR", Trusted: true, Body: hr},
+		{Provider: "subdl", ID: "3300001-3300002", Language: "hr", IMDb: "tt2285752", TMDb: 133701, Year: 2012, Release: "Tears.of.Steel.2012.1080p.BluRay.x264-OTHER", Body: hrUTF8},
 	}
 	for i := 1; i <= 3; i++ {
 		rel := fmt.Sprintf("Cosmos.Laundromat.S01E%02d.720p.WEB-DL.AAC2.0.x264-LOCARR", i)

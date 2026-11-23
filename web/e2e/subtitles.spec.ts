@@ -41,10 +41,11 @@ async function prepare(page: Page) {
   expect(ok(cl.status()), await cl.text()).toBeTruthy();
   const rf = await page.request.post("/api/v1/rootfolders", { data: { path: moviesRoot, kind: "movies" } });
   expect(ok(rf.status()), await rf.text()).toBeTruthy();
-  const list = await (await page.request.get("/api/v1/movies?q=Big%20Buck")).json();
+  const list = await (await page.request.get("/api/v1/movies?q=Tears%20of%20Steel")).json();
   for (const m of list.items ?? []) await page.request.delete(`/api/v1/movies/${m.id}?deleteFiles=true`);
 }
 
+// A movie of its own (not the one movies.spec.ts imports), so the grab is not "already queued".
 test("subtitles: imported movie gets its Croatian subtitle, a manual pick replaces it, the shift tool re-times it", async ({ page }) => {
   test.skip(tmHost === "none", "no Transmission instance for this run");
   test.setTimeout(240_000);
@@ -79,14 +80,14 @@ test("subtitles: imported movie gets its Croatian subtitle, a manual pick replac
 
   // Add the movie with a search: grab → Transmission → import → subtitle search.
   await page.goto("/movies/add");
-  await page.getByTestId("add-movie-term").fill("Big Buck Bunny");
+  await page.getByTestId("add-movie-term").fill("Tears of Steel");
   await page.getByRole("button", { name: "Search", exact: true }).click();
-  await page.getByTestId("pick-10378").click();
+  await page.getByTestId("pick-133701").click();
   await page.getByLabel("Root folder").selectOption({ label: moviesRoot });
   await page.getByLabel("Quality profile").selectOption({ label: "HD-720p/1080p" });
   await page.getByLabel("Search now").check();
   await page.getByTestId("add-movie-confirm").click();
-  await expect(page.getByTestId("movie-title")).toHaveText("Big Buck Bunny");
+  await expect(page.getByTestId("movie-title")).toHaveText("Tears of Steel");
 
   await page.getByTestId("tab-subtitles").click();
   const hr = page.locator('[data-testid="subtitle-want"][data-key="hr"]');
