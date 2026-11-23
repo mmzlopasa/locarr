@@ -19,14 +19,14 @@ import (
 
 // Errors returned by the client.
 var (
-	ErrUnreachable  = errors.New("Streamero cannot be reached")
-	ErrAuth         = errors.New("Streamero refused the API key")
+	ErrUnreachable  = errors.New("streamero cannot be reached")
+	ErrAuth         = errors.New("streamero refused the API key")
 	ErrNotAdmin     = errors.New("the API key does not belong to a Streamero administrator")
 	ErrNotStreamero = errors.New("the address does not answer like Streamero")
 	ErrBadURL       = errors.New("the Streamero address must be an http:// or https:// URL")
 	// Sign-in answers.
 	ErrInvalidCredentials = errors.New("wrong Streamero username or password")
-	ErrTOTPRequired       = errors.New("Streamero asks for a two-factor code")
+	ErrTOTPRequired       = errors.New("streamero asks for a two-factor code")
 	ErrInvalidTOTP        = errors.New("wrong Streamero two-factor code")
 	ErrLocked             = errors.New("the Streamero account is locked for now")
 )
@@ -117,7 +117,7 @@ func (c *Client) do(ctx context.Context, method, path, token string, body, out a
 	}
 	if out != nil && len(res.Body) > 0 {
 		if err := json.Unmarshal(res.Body, out); err != nil {
-			return res.Status, fmt.Errorf("%w: %v", ErrNotStreamero, err)
+			return res.Status, fmt.Errorf("%w: %w", ErrNotStreamero, err)
 		}
 	}
 	return res.Status, nil

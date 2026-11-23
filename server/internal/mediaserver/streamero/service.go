@@ -110,7 +110,7 @@ func (s *Service) log() *slog.Logger {
 }
 
 // ErrNotConfigured is returned while there is no address or key.
-var ErrNotConfigured = errors.New("Streamero is not set up")
+var ErrNotConfigured = errors.New("streamero is not set up")
 
 // Load returns the configuration.
 func (s *Service) Load(ctx context.Context) (Config, error) {

@@ -294,7 +294,7 @@ func (s *Service) Create(ctx context.Context, o Owner, in Input) (Channel, error
 func (s *Service) storeSecrets(ctx context.Context, q db.Querier, id int64, sec channels.Secrets) error {
 	var sealed []byte
 	if len(sec.Names()) > 0 {
-		raw, _ := json.Marshal(sec)
+		raw, _ := json.Marshal(sec) // #nosec G117 -- sealed with the secret box right below
 		var err error
 		if sealed, err = s.Box.Seal(raw, aad(id)); err != nil {
 			return err
@@ -377,7 +377,7 @@ func (s *Service) Deliver(ctx context.Context, ev notify.Event) error {
 			events  []notify.Type
 		)
 		if err := rows.Scan(&id, &uid, &raw); err != nil {
-			rows.Close()
+			_ = rows.Close()
 			return err
 		}
 		_ = json.Unmarshal([]byte(raw), &events)
@@ -390,7 +390,7 @@ func (s *Service) Deliver(ctx context.Context, ev notify.Event) error {
 		}
 		to = append(to, target{id})
 	}
-	rows.Close()
+	_ = rows.Close()
 	if err := rows.Err(); err != nil {
 		return err
 	}

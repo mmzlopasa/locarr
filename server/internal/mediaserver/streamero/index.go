@@ -70,12 +70,12 @@ func (s *Service) refresh(ctx context.Context, cl *Client) (int, error) {
 			ids bool
 		)
 		if err := rows.Scan(&id, &ids); err != nil {
-			rows.Close()
+			_ = rows.Close()
 			return 0, err
 		}
 		have[id] = known{hasIDs: ids}
 	}
-	rows.Close()
+	_ = rows.Close()
 	if err := rows.Err(); err != nil {
 		return 0, err
 	}
@@ -207,12 +207,12 @@ func (s *Service) Links(ctx context.Context, titles []Title) (map[int]string, er
 		for rows.Next() {
 			var id, kind, tm string
 			if err := rows.Scan(&id, &kind, &tm); err != nil {
-				rows.Close()
+				_ = rows.Close()
 				return out, err
 			}
 			found[kind+":"+tm] = id
 		}
-		rows.Close()
+		_ = rows.Close()
 		if err := rows.Err(); err != nil {
 			return out, err
 		}

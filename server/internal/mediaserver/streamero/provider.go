@@ -56,7 +56,7 @@ func (p Provider) Authenticate(ctx context.Context, c auth.Credentials) (auth.Id
 	}
 	cl, err := p.S.NewClient(ctx, cfg.URL, "")
 	if err != nil {
-		return auth.Identity{}, fmt.Errorf("%w: %v", auth.ErrProviderUnavailable, err)
+		return auth.Identity{}, fmt.Errorf("%w: %w", auth.ErrProviderUnavailable, err)
 	}
 	token, u, err := cl.Login(ctx, c.Username, c.Password, c.TOTPCode)
 	switch {
@@ -69,7 +69,7 @@ func (p Provider) Authenticate(ctx context.Context, c auth.Credentials) (auth.Id
 	case errors.Is(err, ErrLocked):
 		return auth.Identity{}, auth.ErrInvalidCredentials
 	case err != nil:
-		return auth.Identity{}, fmt.Errorf("%w: %v", auth.ErrProviderUnavailable, err)
+		return auth.Identity{}, fmt.Errorf("%w: %w", auth.ErrProviderUnavailable, err)
 	}
 	// End the session Streamero just created; a failure is logged (the token
 	// is never stored, and Streamero expires sessions itself).
