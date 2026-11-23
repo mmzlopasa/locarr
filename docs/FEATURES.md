@@ -3,13 +3,13 @@
 Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Temelji (P0)
-- [ ] Prvo pokretanje: postavljanje admin računa, jezik (EN/HR), mapa za medije
+- [x] Prvo pokretanje: postavljanje admin računa, jezik (EN/HR), mape za medije (odabir ili stvaranje, provjera pisanja), poveznica na uvoz postojećih aplikacija
 - [x] Korisnici i uloge (admin, upravitelj, korisnik koji samo traži), sesije, odjava s uređaja
 - [x] API ključevi (puni i samo za čitanje), 2FA (TOTP + kodovi za oporavak)
 - [x] Zaštita prijave: ograničenje po adresi, zaključavanje računa, zabrana nakon ponovljenih neuspjeha
 - [x] Postavke na jednom mjestu, šifrirane tajne vanjskih servisa (nikad se ne vraćaju klijentu)
 - [x] Jedan Docker image (amd64 + arm64), `docker-compose.yml` s jednim servisom, healthcheck, PUID/PGID
-- [ ] Backup i vraćanje (automatski i ručno), migracije baze pri pokretanju
+- [x] Backup i vraćanje (automatski i ručno, učitavanje zipa, vraćanje bez restarta kontejnera; D-076), migracije baze pri pokretanju
 
 ## Indexeri (P1)
 - [x] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/TVmaze) i tekstu, RSS (glazba po izvođaču/albumu: Newznab nema MusicBrainz parametar)
@@ -94,11 +94,11 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Pregled prije uvoza, izvori se nikad ne mijenjaju
 
 ## Vremenska crta i nadzor (P11)
-- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
-- [ ] „Zašto nije stiglo": jedan ekran koji objašnjava trenutno stanje svakog nedostajućeg naslova (za filmove na stranici filma od P4)
-- [ ] Aktivnost (red preuzimanja), povijest, blokirana izdanja, nedostajuće/ispod granice
-- [ ] Zdravlje sustava (indexeri, klijenti, disk, putanje, prava), logovi, zadaci
-- [ ] `/api/stats` za nadzorne ploče, Prometheus metrike
+- [x] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
+- [x] „Zašto nije stiglo?": ploča svih nedostajućih filmova, epizoda, albuma i titlova po razlogu, sa zbrojenim razlozima odbijanja, poveznicom za popravak i skupnim radnjama (D-072)
+- [x] Aktivnost (red preuzimanja), povijest cijele biblioteke, blokirana izdanja (i brisanje svih), statistika po indexeru i klijentu, nedostajuće/ispod granice (D-073)
+- [x] Zdravlje sustava (indexeri, klijenti, kategorije, putanje, root mape i prostor, koš, zapeli uvozi, metapodaci, titlovi, Streamero, sat, baza, kopije, nova verzija) s uputama (D-074), logovi s pretragom, uživo i rotiranim datotekama (D-075), zadaci
+- [x] `/api/stats` za nadzorne ploče, Prometheus metrike, održavanje baze i predmemorije (D-077)
 
 ## Aplikacije (P12)
 - [ ] Android i iOS: sve iz weba (biblioteka, dodavanje, pretraga, aktivnost, kalendar, zahtjevi, postavke za admina)

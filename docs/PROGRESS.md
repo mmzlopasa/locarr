@@ -1,7 +1,20 @@
 # Napredak
 
 ## Trenutna faza
-P0–P9 gotovi.
+P0–P9 i P11 gotovi.
+
+## Gotovo u P11 (branch `phase/P11-operations`)
+- Migracija `00012_operations.sql`: `board_items` (unaprijed izračunati odgovori ploče) i indeksi za povijest, statistiku i najnoviju odluku po stavci.
+- `internal/board` (D-072): ploča „Zašto nije stiglo?" za filmove, emitirane epizode, izdane albume i titlove; potpuni izračun (`board-rebuild` pri pokretanju i svakih 15 min) i osvježavanje pojedinih stavki ~2 s nakon zapisa na vremensku crtu ili događaja preuzimanja; novi kodovi `stalled`, `path_not_visible`, `subtitle_*`; `fix` po grupi; zbrojeni razlozi odbijanja; skupne radnje (pretraži, promijeni profil, blokiraj i ponovi, ponovi uvoz, prestani pratiti).
+- `internal/history` (D-073): povijest cijele biblioteke iz vremenske crte i događaja preuzimanja (filtri, pretraga, straničenje), statistika po indexeru i klijentu.
+- `internal/health` (D-074): provjere s kodovima, sidrima u dokumentaciji i stranicom popravka; `health.warning` jednom po pojavi problema (zamjenjuje `health-notify` iz P9); provjera verzije na GitHubu i pomaka sata (isključivo); `metadata.Health` bilježi ishod zahtjeva TMDb/TVDB/MusicBrainz.
+- `internal/logging` (D-075): `/config/logs` s rotacijom (10 MB × 6), prsten od 5000 zapisa, SSE uživo, maskiranje tajni i u vrijednostima.
+- `internal/backup` (D-076): zip s `VACUUM INTO` snimkom, ključem, postavkama i manifestom; zakazano (24 h, čuva 7), ručno, učitavanje; vraćanje s provjerom, kopijom prije vraćanja, restartom u istom procesu (`app.ServeWith` petlja) i odjavom svih osim vraćača.
+- `internal/stats`, `internal/housekeeping` (D-077): `/api/stats` (+ `/api/v1/system/stats`), `/metrics` uz token, zadržavanje povijesti, tjedni `VACUUM`, ograničenje predmemorije slika.
+- API: `/board*`, `/history`, `/activity/stats`, `DELETE /queue/blocklist`, `/system/health*`, `/system/stats`, `/system/logs*`, `/system/backups*`, `/settings/system`, `create` za `POST /rootfolders`.
+- Web (EN + HR): pregled za administratore na `/`, Aktivnost → Zašto nije stiglo? / Povijest / Statistika, Sustav → Zdravlje / Logovi / Sigurnosne kopije, Postavke → Nadzor, čarobnjak `/welcome` (mape za medije, uvoz iz drugih aplikacija kad postoji `/migrate`).
+- Testovi: ploča (grupiranje, zbrajanje razloga, razvrstavanje neuspjelih uvoza, titlovi, 20 000 stavki), integracijski `TestBoardPathMappingFlow` (krivo mapiranje → ploča i zdravlje → popravak → ponovi uvoz → film u biblioteci → povijest i statistika), `TestBoardBulkActions`, `TestBoardRebuildPerformance` (10 000 filmova), `TestHealthChecks` (svaka provjera s lažnim servisima, jedna obavijest), `TestStatsAndMetrics` (ključ samo za čitanje, tražitelj 403, JSON greške, token), `TestHousekeepingRetention`, `TestLogViewerAPI`, `TestBackupRestoreRoundTrip` (stvarni poslužitelj: kopija → izmjene → vraćanje → podaci kao prije, druga sesija odjavljena, mediji netaknuti → vraćanje učitanog zipa), dosljednost kopije dok se piše, logovi (maskiranje, rotacija); Vitest; Playwright `e2e/operations.spec.ts`.
+- Korisnička dokumentacija: `docs/user/troubleshooting.md`, `docs/user/backup.md`.
 
 ## Gotovo u P9 (branch `phase/P9-mediaserver`)
 - Migracija `00010_mediaserver.sql`: `mediaserver_pending` (promjene koje čekaju skeniranje), `streamero_items` (indeks naslova koje Streamero ima, po TMDb/IMDb/TVDB ID-u), `notification_channels` (zajednički i osobni kanali, šifrirane tajne, stanje neuspjeha), `subtitle_missing_notified`.
@@ -129,14 +142,13 @@ P0–P9 gotovi.
 - Dev instanca na ovom hostu: `scripts/deploy-dev.sh` (projekt `locarr`, `127.0.0.1:8484`, podaci u `~/locarr-data`).
 
 ## Sljedeći koraci
-1. P0 ostatak:
-   - Prvo pokretanje: korak za odabir mape za medije u čarobnjaku (danas se root mape dodaju u Postavke → Mape za medije odmah nakon postavljanja).
-   - Backup i vraćanje (automatski i ručno); migracije pri pokretanju već rade.
+1. P12 mobilne aplikacije: ploča, povijest i zdravlje već imaju API (`/board`, `/history`, `/system/health`).
 2. P4 filmovi: adapter `indexers.Release` → `decision.Candidate` (naslov, veličina, protokol, indexer i njegove postavke, seederi, datum, ID-jevi, zastavice), adapter `decision.Blocklist` → `downloads.BlocklistChecker`, poziv `decision.Evaluate` za RSS i pretragu, spremanje `DecisionReport` u vremensku crtu; uvoz se pretplaćuje na `downloads.Bus`.
 3. P2 ostatak: zastavice indexera (freeleech…) treba P1 adapter preslikati u nazive iz `customformats.IndexerFlags`; profili izdanja po indexeru u webu (API već prima `indexerId`).
 4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- Operacije (P11): pomak sata se mjeri samo uz uključenu provjeru verzije; promjene bez traga na vremenskoj crti (npr. praćenje pojedine epizode) vide se na ploči najkasnije nakon 15 min; prvi sažetak ploče nakon promjene s 20 000 stavki traje ~0,3 s (zatim se pamti); pregled logova počinje prazan nakon restarta (datoteke ostaju).
 - Streamero (P9): nema krajnje točke za samu provjeru lozinke (Locarr se prijavi i odmah odjavi), popis stavki nema ID-jeve providera (indeks čita detalje svake nove stavke) i skenira se cijela biblioteka; vidi D-067–D-069. Brisanje epizoda pri osvježavanju serije ne zove notifier.
 - Titlovi: provideri su provjereni samo s lažnim servisima iz javne dokumentacije (stvarni ključevi nisu korišteni u testovima); Podnapisi, Addic7ed i Titlovi.com nisu uključeni (D-063). Zapisi se čitaju samo iz MKV/MP4. Kod nadogradnje videa pod novim imenom titlovi starog imena ostaju na disku; Locarr ih više ne veže uz film i traži nove pod novim imenom. Sinkronizacija nalazi jedan pomak za cijeli titl.
 - Zahtjevi: preporuke („slični naslovi") još nisu; 4K staza dijeli jednu stavku biblioteke s običnom (D-055); kvote broje zahtjeve, ne sezone; glazbeni zahtjevi bez profila metapodataka koriste „Everything".
