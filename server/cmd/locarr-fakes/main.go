@@ -11,18 +11,22 @@
 // /musicbrainz/ws/2, covers at /musicbrainz/coverart), and fake subtitle
 // providers: OpenSubtitles.com under /opensubtitles/api/v1, SubDL under
 // /subdl/api/v1 and Jimaku under /jimaku/api (keys in
-// internal/subtitles/providers/fake).
+// internal/subtitles/providers/fake). The applications an existing setup is
+// imported from are faked under /arr/<kind> (API key migratekey; qBittorrent
+// admin / migratepass); with a seed folder their files go to <seed>/migrate.
 package main
 
 import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/indexers/fake"
 	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
 	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
+	migratefake "github.com/mmzlopasa/locarr/server/internal/migrate/fake"
 	subfake "github.com/mmzlopasa/locarr/server/internal/subtitles/providers/fake"
 )
 
@@ -46,6 +50,24 @@ func main() {
 	subs := subfake.New()
 	for _, p := range []string{"/opensubtitles/", "/subdl/", "/jimaku/"} {
 		mux.Handle(p, subs)
+	}
+	// The applications an existing setup is imported from (P10), each under
+	// /arr/<kind> with API key "migratekey" (qBittorrent: admin / migratepass).
+	// With a seed folder their library's files are written to <seed>/migrate.
+	lib := migratefake.Default()
+	if seed := os.Getenv("LOCARR_FAKES_SEED_DIR"); seed != "" {
+		root := filepath.Join(seed, "migrate")
+		if err := lib.WriteFiles(filepath.Join(root, "movies"), filepath.Join(root, "tv"), filepath.Join(root, "music"), nil); err != nil {
+			log.Printf("migrate fixtures: %v", err)
+		}
+	}
+	for _, k := range []string{"sonarr", "radarr", "lidarr", "prowlarr", "bazarr", "overseerr", "seerr", "qbittorrent", "sabnzbd"} {
+		f := migratefake.New(k, "migratekey", lib)
+		f.Prefix = "/arr/" + k
+		if k == "qbittorrent" {
+			f.Username, f.Password = "admin", "migratepass"
+		}
+		mux.Handle(f.Prefix+"/", f)
 	}
 	mux.Handle("/", ix)
 	srv := &http.Server{Addr: addr, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
