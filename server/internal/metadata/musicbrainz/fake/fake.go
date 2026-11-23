@@ -5,6 +5,8 @@
 //	GET {prefix}/ws/2/artist?query=…                 search
 //	GET {prefix}/ws/2/artist/{mbid}?inc=aliases+genres
 //	GET {prefix}/ws/2/release-group?artist={mbid}    browse
+//	GET {prefix}/ws/2/release-group/{mbid}?inc=artist-credits
+//	GET {prefix}/ws/2/release-group?query=…          search (title words; artist:"…" narrows)
 //	GET {prefix}/ws/2/release?artist=|release-group= browse (media, release groups)
 //	GET {prefix}/ws/2/release/{mbid}?inc=recordings… lookup with tracks
 //	GET {prefix}/coverart/release-group/{mbid}/front-{250|500|1200}  (redirects like the real one)
@@ -226,6 +228,18 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.searchArtists(w, q.Get("query"))
 	case entity == "artist":
 		s.artist(w, strings.ToLower(id))
+	case entity == "release-group" && id == "" && q.Get("query") != "":
+		s.searchGroups(w, q.Get("query"))
+	case entity == "release-group" && id != "":
+		g, ok := s.group(strings.ToLower(id))
+		if !ok {
+			errorJSON(w, http.StatusNotFound, "Not Found")
+			return
+		}
+		a := s.artistOf(g.Artist)
+		out := groupJSON(g)
+		out["artist-credit"] = []map[string]any{{"name": a.Name, "artist": map[string]any{"id": a.ID, "name": a.Name}}}
+		writeJSON(w, out)
 	case entity == "release-group" && id == "":
 		s.browseGroups(w, strings.ToLower(q.Get("artist")), q)
 	case entity == "release" && id == "":
@@ -545,4 +559,33 @@ func ReleaseFiles(releaseID string, o FileOptions) []File {
 	}
 	out = append(out, File{Path: "cover.jpg", Data: Cover(rel.ID)})
 	return out
+}
+
+// searchGroups matches release groups whose title (or artist name) contains
+// a word of the query.
+func (s *Server) searchGroups(w http.ResponseWriter, query string) {
+	q := strings.ToLower(unescape(query))
+	for _, junk := range []string{"releasegroup:", "artist:", "\"", " and "} {
+		q = strings.ReplaceAll(q, junk, " ")
+	}
+	words := strings.Fields(q)
+	list := []map[string]any{}
+	for _, g := range s.groups() {
+		a := s.artistOf(g.Artist)
+		hay := strings.ToLower(g.Title + " " + a.Name)
+		hits := 0
+		for _, wd := range words {
+			if strings.Contains(hay, wd) {
+				hits++
+			}
+		}
+		if len(words) == 0 || hits < len(words) {
+			continue
+		}
+		out := groupJSON(g)
+		out["score"] = 100
+		out["artist-credit"] = []map[string]any{{"name": a.Name, "artist": map[string]any{"id": a.ID, "name": a.Name}}}
+		list = append(list, out)
+	}
+	writeJSON(w, map[string]any{"created": time.Now().UTC().Format(time.RFC3339), "count": len(list), "offset": 0, "release-groups": list})
 }

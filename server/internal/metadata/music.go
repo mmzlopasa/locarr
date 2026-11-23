@@ -124,3 +124,11 @@ type MusicProvider interface {
 	// Release returns one release with its track lists.
 	Release(ctx context.Context, mbid string) (Release, error)
 }
+
+// AlbumSummary is a release group found by a search, with its artist.
+type AlbumSummary struct {
+	ReleaseGroup
+	ArtistMBID string `json:"artistMbid"`
+	ArtistName string `json:"artistName"`
+	Score      int    `json:"score"`
+}
