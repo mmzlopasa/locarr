@@ -1,5 +1,5 @@
 // Package stats computes the numbers for monitoring dashboards (/api/stats,
-// D-077) and renders them as Prometheus metrics (/metrics). The database part
+// D-084) and renders them as Prometheus metrics (/metrics). The database part
 // is cached for 15 seconds, so dashboards may poll often.
 package stats
 

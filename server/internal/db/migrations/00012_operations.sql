@@ -1,5 +1,5 @@
 -- +goose Up
--- P11: timeline, monitoring and operations (D-072 … D-077).
+-- P11: timeline, monitoring and operations (D-079 … D-084).
 
 -- "Why didn't it land?" board: one row per monitored item that is missing
 -- (movie, episode, album) or misses subtitles, with the explainer's current

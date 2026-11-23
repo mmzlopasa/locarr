@@ -387,9 +387,10 @@ func (appriseSender) Send(ctx context.Context, cfg Config, sec Secrets, env Env,
 // severity is the Apprise notification type of an event.
 func severity(t notify.Type) string {
 	switch t {
-	case notify.RequestAvailable, notify.LibraryImported, notify.LibraryUpgraded, notify.IssueResolved, notify.RequestApproved:
+	case notify.RequestAvailable, notify.LibraryImported, notify.LibraryUpgraded, notify.IssueResolved, notify.RequestApproved,
+		notify.MigrateFinished:
 		return "success"
-	case notify.RequestFailed, notify.LibraryDownloadFailed, notify.LibraryImportFailed:
+	case notify.RequestFailed, notify.LibraryDownloadFailed, notify.LibraryImportFailed, notify.MigrateFailed:
 		return "failure"
 	case notify.RequestDeclined, notify.HealthWarning, notify.IssueCreated, notify.IssueReopened:
 		return "warning"

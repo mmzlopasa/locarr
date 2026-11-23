@@ -343,6 +343,62 @@ func (c *Client) do(ctx context.Context, method, rawURL string, hdr http.Header,
 	return &Response{Status: res.StatusCode, Header: res.Header, Body: b}, nil
 }
 
+// Stream sends a GET request and hands the body to read without buffering
+// it (capped at MaxBytes, like Do). read is only called for a 200 answer; the
+// status and headers are returned either way. Large JSON listings are decoded
+// this way, one element at a time.
+func (c *Client) Stream(ctx context.Context, rawURL string, hdr http.Header, read func(io.Reader) error) (int, http.Header, error) {
+	u, err := url.Parse(rawURL)
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+		return 0, nil, fmt.Errorf("invalid URL %s", Redact(rawURL, c.o.Secrets...))
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
+	if err != nil {
+		return 0, nil, c.wrap(err, rawURL)
+	}
+	req.Header.Set("User-Agent", userAgent)
+	for k, v := range hdr {
+		req.Header[k] = v
+	}
+	res, err := c.hc.Do(req)
+	if err != nil {
+		return 0, nil, c.wrap(err, rawURL)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		_, _ = io.Copy(io.Discard, io.LimitReader(res.Body, 64<<10))
+		return res.StatusCode, res.Header, nil
+	}
+	lr := &cappedReader{r: res.Body, left: c.o.MaxBytes}
+	if err := read(lr); err != nil {
+		if lr.over {
+			return res.StatusCode, res.Header, c.wrap(ErrTooLarge, rawURL)
+		}
+		return res.StatusCode, res.Header, c.wrap(err, rawURL)
+	}
+	return res.StatusCode, res.Header, nil
+}
+
+// cappedReader fails once more than left bytes were read.
+type cappedReader struct {
+	r    io.Reader
+	left int64
+	over bool
+}
+
+func (c *cappedReader) Read(p []byte) (int, error) {
+	if c.left <= 0 {
+		c.over = true
+		return 0, ErrTooLarge
+	}
+	if int64(len(p)) > c.left {
+		p = p[:c.left]
+	}
+	n, err := c.r.Read(p)
+	c.left -= int64(n)
+	return n, err
+}
+
 // ReadCapped reads r (gunzipping it when it is gzip even without a
 // Content-Encoding header) and fails when it is larger than limit.
 func ReadCapped(r io.Reader, limit int64) ([]byte, error) {

@@ -63,6 +63,10 @@ const (
 	// SubtitleMissing: a file still has no subtitle in a wanted language
 	// some days after it arrived (sent once per file).
 	SubtitleMissing Type = "subtitles.missing"
+	// MigrateFinished, MigrateFailed: an import of an existing setup (P10)
+	// ended (Message = the counts or the reason).
+	MigrateFinished Type = "migrate.finished"
+	MigrateFailed   Type = "migrate.failed"
 	// Test is only sent by a channel's Test button.
 	Test Type = "test"
 )
@@ -73,7 +77,7 @@ var Types = []Type{RequestCreated, RequestApproved, RequestDeclined, RequestAvai
 
 // LibraryTypes lists the library and system event types.
 var LibraryTypes = []Type{LibraryGrabbed, LibraryImported, LibraryUpgraded, LibraryDownloadFailed, LibraryImportFailed, HealthWarning,
-	SubtitleDownloaded, SubtitleMissing}
+	SubtitleDownloaded, SubtitleMissing, MigrateFinished, MigrateFailed}
 
 // Personal reports whether t is about requests or issues (the events a
 // user's own channel can receive).

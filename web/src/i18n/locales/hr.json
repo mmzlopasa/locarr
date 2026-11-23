@@ -13,7 +13,8 @@
     "close": "Zatvori",
     "add": "Dodaj",
     "delete": "Obriši",
-    "yes": "Da"
+    "yes": "Da",
+    "remove": "Ukloni"
   },
   "languages": {
     "en": "English",
@@ -113,7 +114,15 @@
     "subtitle_provider_not_found": "Titl više nije dostupan kod providera.",
     "subtitle_provider_error": "Provider je odgovorio greškom.",
     "subtitle_quota": "Kvota preuzimanja kod providera je potrošena.",
-    "subtitle_rate_limited": "Provider traži da se pričeka prije idućeg zahtjeva."
+    "subtitle_rate_limited": "Provider traži da se pričeka prije idućeg zahtjeva.",
+    "migrate_expired": "Ono što je pročitano iz aplikacija više nije u memoriji. Pročitaj ih ponovno.",
+    "migrate_busy": "Drugi uvoz je u tijeku.",
+    "source_unreachable": "Locarr ne može dosegnuti aplikaciju.",
+    "source_unauthorized": "Aplikacija je odbila API ključ ili lozinku.",
+    "source_wrong_app": "Na ovoj adresi je druga aplikacija.",
+    "source_unsupported_version": "Ova je verzija prestara za uvoz.",
+    "source_bad_response": "Aplikacija je odgovorila na neočekivan način.",
+    "source_not_found": "Na ovoj adresi ništa ne odgovara (provjeri URL bazu)."
   },
   "errorPage": {
     "title": "Ova stranica se ne može prikazati",
@@ -160,7 +169,8 @@
     "discover": "Otkrivanje",
     "issues": "Problemi",
     "overview": "Pregled",
-    "board": "Zašto nije stiglo?"
+    "board": "Zašto nije stiglo?",
+    "migrate": "Uvoz setupa"
   },
   "roles": {
     "admin": "Administrator",
@@ -2634,7 +2644,9 @@
       "library_import_failed": "Uvoz nije uspio",
       "health_warning": "Upozorenja o zdravlju",
       "subtitles_downloaded": "Titl preuzet",
-      "subtitles_missing": "Titl još nedostaje"
+      "subtitles_missing": "Titl još nedostaje",
+      "migrate_finished": "Uvoz setupa je gotov",
+      "migrate_failed": "Uvoz setupa nije uspio"
     },
     "fields": {
       "url": "URL",
@@ -3319,5 +3331,348 @@
     "importHint": "Već koristiš druge aplikacije za filmove, serije, glazbu, indexere ili zahtjeve? Locarr može pročitati njihove postavke bez ikakve promjene kod njih.",
     "importLink": "Otvori čarobnjak za uvoz",
     "importLater": "Uvoz postojećeg sustava stiže u jednoj od sljedećih verzija. Do tada sve možeš dodati ručno."
+  },
+  "migrate": {
+    "title": "Uvoz postojećeg setupa",
+    "subtitle": "Prijeđi sa Sonarra, Radarra, Lidarra, Prowlarra, Bazarra, Overseerra/Seerra, qBittorrenta i SABnzbd-a odjednom.",
+    "readOnly": "Locarr te aplikacije samo čita preko njihova API-ja. Na njima se ništa ne mijenja, a datoteke ostaju gdje jesu.",
+    "steps": "Koraci",
+    "next": "Dalje",
+    "step": {
+      "sources": "Aplikacije",
+      "choose": "Što uvesti",
+      "paths": "Mape",
+      "preview": "Pregled",
+      "import": "Uvoz"
+    },
+    "kinds": {
+      "sonarr": "Sonarr",
+      "radarr": "Radarr",
+      "lidarr": "Lidarr",
+      "prowlarr": "Prowlarr",
+      "bazarr": "Bazarr",
+      "overseerr": "Overseerr",
+      "seerr": "Seerr / Jellyseerr",
+      "qbittorrent": "qBittorrent",
+      "sabnzbd": "SABnzbd"
+    },
+    "keyHint": {
+      "sonarr": "U Sonarru: Settings → General → API Key.",
+      "radarr": "U Radarru: Settings → General → API Key.",
+      "lidarr": "U Lidarru: Settings → General → API Key.",
+      "prowlarr": "U Prowlarru: Settings → General → API Key.",
+      "bazarr": "U Bazarru: Settings → General → Security → API Key.",
+      "overseerr": "U Overseerru: Settings → General → API Key.",
+      "seerr": "U Seerru: Settings → General → API Key.",
+      "qbittorrent": "Lozinka web sučelja (ostavi prazno ako web sučelje s ove adrese ne traži prijavu).",
+      "sabnzbd": "U SABnzbd-u: Config → General → API Key."
+    },
+    "sources": {
+      "title": "Aplikacije",
+      "description": "Dodaj svaku aplikaciju s koje prelaziš. Svaka se provjeri prije spremanja.",
+      "empty": "Još nema aplikacija. Dodaj jednu ispod.",
+      "add": "Dodaj aplikaciju",
+      "kind": "Aplikacija",
+      "name": "Naziv",
+      "url": "Adresa",
+      "urlHint": "S URL bazom, ako je ima, npr. http://192.168.1.10:8989/sonarr",
+      "username": "Korisničko ime",
+      "password": "Lozinka",
+      "apiKey": "API ključ",
+      "test": "Provjeri",
+      "save": "Provjeri i dodaj",
+      "removeConfirm": "Ukloni",
+      "version": "v{{version}}",
+      "keySaved": "Ključ spremljen",
+      "ok": "Spojeno na {{app}} {{version}}."
+    },
+    "sourceErrors": {
+      "unreachable": "Locarr je ne može dosegnuti.",
+      "unauthorized": "Odbila je API ključ ili lozinku.",
+      "wrong_app": "Na ovoj adresi je druga aplikacija.",
+      "unsupported_version": "Ova je verzija prestara za uvoz.",
+      "bad_response": "Odgovorila je na neočekivan način.",
+      "not_found": "Na ovoj adresi ništa ne odgovara (provjeri URL bazu)."
+    },
+    "choose": {
+      "title": "Što uvesti",
+      "description": "Odaberi što pročitati iz svake aplikacije. Čitanje još ništa ne mijenja: prvo ćeš vidjeti pregled.",
+      "read": "Pročitaj aplikacije",
+      "historyDays": "Koliko povijesti prenijeti (dana)",
+      "historyHint": "Grabovi, uvozi i neuspjesi noviji od toga idu na vremensku crtu naslova."
+    },
+    "scope": {
+      "settings": "Postavke",
+      "library": "Biblioteka",
+      "users": "Korisnici i zahtjevi",
+      "history": "Povijest i blokirana izdanja"
+    },
+    "scopeHint": {
+      "sonarr": {
+        "settings": "Profili, custom formati, root mape, imena, indexeri, download klijenti, liste",
+        "library": "Serije, praćenje epizoda i datoteke (povezane na mjestu)"
+      },
+      "radarr": {
+        "settings": "Profili, custom formati, root mape, imena, indexeri, download klijenti, liste, isključenja",
+        "library": "Filmovi i datoteke (povezane na mjestu)"
+      },
+      "lidarr": {
+        "settings": "Profili, profili metapodataka, root mape, imena, indexeri, download klijenti",
+        "library": "Izvođači, albumi i datoteke pjesama"
+      },
+      "bazarr": {
+        "settings": "Jezični profili i provideri",
+        "library": "Koji profil koristi koji naslov"
+      },
+      "overseerr": {
+        "settings": "Zadane kvote",
+        "users": "Korisnici s dozvolama, zahtjevi, problemi i kvote"
+      },
+      "seerr": {
+        "settings": "Zadane kvote",
+        "users": "Korisnici s dozvolama, zahtjevi, problemi i kvote"
+      },
+      "qbittorrent": {
+        "settings": "Veza i kategorije"
+      },
+      "sabnzbd": {
+        "settings": "Veza i kategorije"
+      },
+      "prowlarr": {
+        "settings": "Indexeri"
+      }
+    },
+    "prowlarr": {
+      "label": "Kako prenijeti Prowlarrove indexere",
+      "source": "Zadrži Prowlarr kao izvor indexera",
+      "sourceHint": "Locarr sinkronizira indexere iz Prowlarra: novi se pojave sami.",
+      "direct": "Dodaj svaki indexer zasebno",
+      "directHint": "Svaki indexer postaje Locarrov indexer (i dalje se pretražuje kroz Prowlarr, osim ako je običan Torznab/Newznab)."
+    },
+    "phase": {
+      "reading": "Čitanje",
+      "planning": "Planiranje",
+      "planned": "Spremno",
+      "importing": "Uvoz",
+      "done": "Gotovo",
+      "failed": "Neuspjelo",
+      "cancelled": "Prekinuto"
+    },
+    "paths": {
+      "title": "Mape",
+      "description": "Aplikacije često rade u vlastitim kontejnerima i vide medije pod drugim putanjama. Ovdje reci Locarru gdje su te mape.",
+      "preview": "Pregledaj uvoz",
+      "ok": "Pronađeno",
+      "problem": "Provjeri",
+      "found": "Pronađeno {{found}} od {{files}} datoteka u {{path}}",
+      "folderOk": "Mapa ovdje postoji.",
+      "outside": "Ova mapa je izvan mapa koje Locarr smije koristiti (LOCARR_DATA_ROOTS).",
+      "missing": "Ova mapa ovdje ne postoji: dodaj mapiranje.",
+      "examples": "Primjeri datoteka koje nisu pronađene",
+      "mappings": "Mapiranja putanja",
+      "mappingsHint": "Mapa kako je vidi aplikacija i ista mapa kako je vidi Locarr. Provjera iznad se osvježava dok tipkaš.",
+      "source": "Aplikacija",
+      "allSources": "Sve aplikacije",
+      "from": "Mapa u aplikaciji",
+      "to": "Mapa u Locarru",
+      "add": "Dodaj mapiranje"
+    },
+    "preview": {
+      "title": "Pregled",
+      "description": "Sve ispod je ono što će uvoz napraviti. Još ništa nije stvoreno.",
+      "apply": "Osvježi pregled",
+      "import": "Uvezi sada",
+      "category": "Što",
+      "countsHint": "Preskočene stavke kažu zašto. Ono što je već uvezeno se ažurira, ne duplicira.",
+      "warnings": "Napomene pri čitanju: {{count}}",
+      "conflicts": "Sukobi imena: {{count}}",
+      "items": "Stavke",
+      "all": "Sve",
+      "action": "Radnja",
+      "search": "Traži",
+      "attentionOnly": "Samo ono što traži pažnju",
+      "conflictsOnly": "Samo sukobi",
+      "none": "Ovdje nema ničega.",
+      "page": "{{from}}–{{to}} od {{total}}",
+      "prev": "Prethodna",
+      "nextPage": "Sljedeća",
+      "conflict": "Već postoji: {{name}}"
+    },
+    "action": {
+      "create": "Stvori",
+      "update": "Spoji",
+      "skip": "Preskoči"
+    },
+    "status": {
+      "planned": "Planirano",
+      "done": "Gotovo",
+      "failed": "Neuspjelo",
+      "skipped": "Preskočeno"
+    },
+    "resolution": {
+      "merge": "Spoji s postojećim",
+      "rename": "Stvori pod drugim imenom",
+      "skip": "Preskoči"
+    },
+    "category": {
+      "rootfolder": "Root mape",
+      "qualitydefinitions": "Veličine kvaliteta",
+      "customformat": "Custom formati",
+      "qualityprofile": "Profili kvalitete",
+      "metadataprofile": "Profili metapodataka",
+      "delayprofile": "Profili kašnjenja",
+      "naming": "Imena",
+      "indexersource": "Izvori indexera",
+      "indexer": "Indexeri",
+      "releaseprofile": "Profili izdanja",
+      "downloadclient": "Download klijenti",
+      "pathmapping": "Mapiranja udaljenih putanja",
+      "importlist": "Popisi za uvoz",
+      "exclusions": "Isključenja s popisa",
+      "movie": "Filmovi",
+      "series": "Serije",
+      "artist": "Izvođači",
+      "user": "Korisnici",
+      "requestdefaults": "Zadano za zahtjeve",
+      "request": "Zahtjevi",
+      "issue": "Problemi",
+      "subtitleprofile": "Profili titlova",
+      "subtitleprovider": "Provideri titlova",
+      "subtitleassignments": "Profili titlova po naslovu",
+      "blocklist": "Blokirana izdanja",
+      "history": "Povijest"
+    },
+    "reason": {
+      "unchanged": "Nepromijenjeno od zadnjeg uvoza",
+      "imported_before": "Već uvezeno; ažurirano postavkama iz aplikacije",
+      "duplicate": "Isto kao ono iz druge aplikacije",
+      "name_exists": "Spojeno s onim što Locarr već ima",
+      "renamed": "Stvoreno pod drugim imenom",
+      "conflict_skipped": "Preskočeno: ime je zauzeto",
+      "outside_data_roots": "Izvan mapa koje Locarr smije koristiti",
+      "path_not_found": "Mapa ovdje ne postoji",
+      "kind_mismatch": "Locarr ovu mapu već koristi za nešto drugo",
+      "exists": "Već postoji u Locarru",
+      "invalid": "Nije valjano u Locarru",
+      "empty": "Nema se što prenijeti",
+      "unknown_tags": "Njegove oznake više ne postoje",
+      "nothing_to_take": "Nema se što prenijeti",
+      "provided_by_prowlarr": "Dolazi iz Prowlarra, koji se također uvozi",
+      "unsupported_implementation": "Locarr to ne podržava",
+      "merged": "Spojeno s istim iz druge aplikacije",
+      "needs_secret": "Ne može se dodati bez ključa ili lozinke",
+      "unsupported_kind": "Još nije dostupno u Locarru",
+      "no_root_folder": "Nijedna root mapa u Locarru to ne sadrži",
+      "no_tmdb_id": "Nema TMDb ID",
+      "no_provider_id": "Nema TVDB ni TMDb ID",
+      "no_mbid": "Nema MusicBrainz ID",
+      "already_in_library": "Već je u biblioteci",
+      "link_file": "U biblioteci je bez datoteke: datoteka se povezuje",
+      "link_files": "U biblioteci je: povezuju se datoteke epizoda koje nedostaju",
+      "merge_albums": "U biblioteci je: dodaju se novi albumi i datoteke",
+      "subtitles_unavailable": "Titlovi nisu dostupni",
+      "unsupported_provider": "Locarr nema takav provider"
+    },
+    "attention": {
+      "needs_secret": "Treba unijeti ključ ili lozinku: {{count}}",
+      "needs_password": "Korisnici kojima treba lozinka: {{count}}",
+      "file_not_found": "S datotekama koje nisu pronađene: {{count}}",
+      "unknown_condition": "S uvjetima koje Locarr ne poznaje: {{count}}",
+      "path_problem": "Problemi s mapama: {{count}}",
+      "profile_fallback": "Koriste zamjenski profil: {{count}}",
+      "unsupported": "Nije podržano: {{count}}",
+      "metadata_pending": "Čeka metapodatke: {{count}}"
+    },
+    "attentionShort": {
+      "needs_secret": "Treba ključ",
+      "needs_password": "Treba lozinka",
+      "file_not_found": "Datoteka nije pronađena",
+      "unknown_condition": "Nepoznat uvjet",
+      "path_problem": "Mapa",
+      "profile_fallback": "Zamjenski profil",
+      "unsupported": "Nije podržano",
+      "metadata_pending": "Čeka metapodatke"
+    },
+    "report": {
+      "title": {
+        "importing": "Uvoz u tijeku",
+        "done": "Uvoz je gotov",
+        "failed": "Uvoz nije uspio",
+        "cancelled": "Uvoz je prekinut"
+      },
+      "cancel": "Zaustavi",
+      "download": "Preuzmi izvještaj (JSON)",
+      "again": "Pokreni novi uvoz",
+      "summary": "Gotovo: {{done}}, preskočeno: {{skipped}}, neuspjelo: {{failed}}",
+      "failedHint": "Neuspjelih stavki: {{count}}. Filtriraj ispod po „Neuspjelo” da vidiš zašto.",
+      "refreshing": "Metapodaci se učitavaju u pozadini: {{done}} od {{total}}",
+      "refreshed": "Metapodaci učitani za {{total}} naslova (neuspjelo: {{failed}}).",
+      "next": "Dalje: popis za prelazak",
+      "items": "Što se dogodilo",
+      "status": "Stanje"
+    },
+    "checklist": {
+      "link": "Popis za prelazak",
+      "title": "Popis za prelazak",
+      "subtitle": "Neka Locarr preuzme posao, a da dvije aplikacije ne grabe ista izdanja.",
+      "back": "Natrag na uvoz",
+      "done": "Gotovo",
+      "todo": "Za napraviti",
+      "manual": "U drugoj aplikaciji",
+      "tick": "Napravio sam ovo",
+      "go": {
+        "download_clients": "Otvori download klijente",
+        "rss": "Otvori indexere",
+        "test_search": "Otvori pretragu",
+        "secrets": "Pogledaj što traži ključ",
+        "import_done": "Otvori uvoz"
+      },
+      "items": {
+        "import_done": {
+          "title": "Uvezi svoj setup",
+          "body": "Pokreni uvoz barem jednom."
+        },
+        "stop_sonarr": {
+          "title": "Isključi automatske pretrage u: {{names}}",
+          "body": "U Sonarru isključi RSS sync (Settings → Indexers → RSS Sync Interval 0) i automatsku pretragu na indexerima ili zaustavi kontejner. Locarr Sonarr ne mijenja."
+        },
+        "stop_radarr": {
+          "title": "Isključi automatske pretrage u: {{names}}",
+          "body": "U Radarru isključi RSS sync i automatsku pretragu na indexerima ili zaustavi kontejner. Locarr Radarr ne mijenja."
+        },
+        "stop_lidarr": {
+          "title": "Isključi automatske pretrage u: {{names}}",
+          "body": "U Lidarru isključi RSS sync i automatsku pretragu na indexerima ili zaustavi kontejner. Locarr Lidarr ne mijenja."
+        },
+        "prowlarr_apps": {
+          "title": "Ukloni stare aplikacije iz: {{names}}",
+          "body": "U Prowlarru pod Settings → Apps ukloni Sonarr, Radarr i Lidarr kad ih zaustaviš, da im Prowlarr prestane slati indexere."
+        },
+        "stop_requests": {
+          "title": "Uputi ljude na Locarr umjesto: {{names}}",
+          "body": "Podijeli adresu Locarra (ili pozivnicu) i zaustavi staru aplikaciju za zahtjeve, da novi zahtjevi stižu ovamo."
+        },
+        "stop_bazarr": {
+          "title": "Zaustavi: {{names}}",
+          "body": "Locarr sada sam traži titlove; dvije aplikacije bi iste titlove skinule dvaput."
+        },
+        "download_clients": {
+          "title": "Download klijenti i kategorije",
+          "body": "Uključenih klijenata: {{clients}}. Kategorije koje Locarr koristi: {{categories}}. Provjeri da ih svaki klijent ima i da završena preuzimanja stižu tamo gdje ih Locarr vidi."
+        },
+        "rss": {
+          "title": "Uključi RSS sync",
+          "body": "Indexera s uključenim RSS-om: {{indexers}}; sync se pokreće svakih {{minutes}} minuta. S 0 indexera ili 0 minuta Locarr traži samo kad ga pitaš."
+        },
+        "test_search": {
+          "title": "Pokreni probnu pretragu",
+          "body": "Ručno potraži jedan naslov da provjeriš indexere i pravila odluke prije nego što Locarr nastavi sam."
+        },
+        "secrets": {
+          "title": "Unesi ključeve koje aplikacije nisu otkrile",
+          "body": "Uvezenih stavki koje čekaju ključ ili lozinku: {{count}}. Aplikacije ih skrivaju u svom API-ju. Do tada su ti indexeri i klijenti isključeni."
+        }
+      }
+    }
   }
 }

@@ -134,6 +134,15 @@ func (UnimplementedHandler) CancelJob(ctx context.Context, params CancelJobParam
 	return ht.ErrNotImplemented
 }
 
+// CancelMigrateRun implements cancelMigrateRun operation.
+//
+// Stop reading or importing (administrators).
+//
+// POST /migrate/runs/{id}/cancel
+func (UnimplementedHandler) CancelMigrateRun(ctx context.Context, params CancelMigrateRunParams) (r *MigrateRun, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CancelRequest implements cancelRequest operation.
 //
 // Withdraw an own request while it is pending.
@@ -158,6 +167,15 @@ func (UnimplementedHandler) ChangePassword(ctx context.Context, req *ChangePassw
 //
 // POST /auth/invite
 func (UnimplementedHandler) CheckInvite(ctx context.Context, req *InviteCodeRequest) (r *InviteCheck, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CheckMigratePaths implements checkMigratePaths operation.
+//
+// Count the files Locarr finds with these path mappings (administrators).
+//
+// POST /migrate/runs/{id}/paths
+func (UnimplementedHandler) CheckMigratePaths(ctx context.Context, req *CheckMigratePathsReq, params CheckMigratePathsParams) (r []MigratePathCheck, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -294,6 +312,16 @@ func (UnimplementedHandler) CreateIssue(ctx context.Context, req *IssueInput) (r
 //
 // POST /music/metadataprofiles
 func (UnimplementedHandler) CreateMetadataProfile(ctx context.Context, req *MetadataProfileInput) (r *MetadataProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateMigrateSource implements createMigrateSource operation.
+//
+// The application is tested first (its public API, GET requests only; qBittorrent's sign-in). The API
+// key (or qBittorrent password) is stored encrypted and never returned.
+//
+// POST /migrate/sources
+func (UnimplementedHandler) CreateMigrateSource(ctx context.Context, req *MigrateSourceInput) (r *MigrateSource, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -496,6 +524,15 @@ func (UnimplementedHandler) DeleteIndexerSource(ctx context.Context, params Dele
 //
 // DELETE /music/metadataprofiles/{id}
 func (UnimplementedHandler) DeleteMetadataProfile(ctx context.Context, params DeleteMetadataProfileParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteMigrateSource implements deleteMigrateSource operation.
+//
+// What was imported stays, and so do the import marks.
+//
+// DELETE /migrate/sources/{id}
+func (UnimplementedHandler) DeleteMigrateSource(ctx context.Context, params DeleteMigrateSourceParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -969,6 +1006,33 @@ func (UnimplementedHandler) GetMetadataSettings(ctx context.Context) (r *Metadat
 	return r, ht.ErrNotImplemented
 }
 
+// GetMigrateChecklist implements getMigrateChecklist operation.
+//
+// Steps on the old applications are instructions only; Locarr never changes them.
+//
+// GET /migrate/checklist
+func (UnimplementedHandler) GetMigrateChecklist(ctx context.Context) (r []MigrateCheckItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMigrateReport implements getMigrateReport operation.
+//
+// Everything about a run as one JSON document (administrators).
+//
+// GET /migrate/runs/{id}/report
+func (UnimplementedHandler) GetMigrateReport(ctx context.Context, params GetMigrateReportParams) (r *MigrateReport, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMigrateRun implements getMigrateRun operation.
+//
+// One import with its progress and summary (administrators).
+//
+// GET /migrate/runs/{id}
+func (UnimplementedHandler) GetMigrateRun(ctx context.Context, params GetMigrateRunParams) (r *MigrateRun, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetMovie implements getMovie operation.
 //
 // One movie.
@@ -1285,6 +1349,15 @@ func (UnimplementedHandler) ImportExistingSeries(ctx context.Context, req *Impor
 	return r, ht.ErrNotImplemented
 }
 
+// ImportMigrateRun implements importMigrateRun operation.
+//
+// Runs in the background; poll the run for progress.
+//
+// POST /migrate/runs/{id}/import
+func (UnimplementedHandler) ImportMigrateRun(ctx context.Context, params ImportMigrateRunParams) (r *MigrateRun, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // InteractiveSearchAlbum implements interactiveSearchAlbum operation.
 //
 // Interactive search for an album - every release and the decision on it (library managers).
@@ -1548,6 +1621,33 @@ func (UnimplementedHandler) ListLogs(ctx context.Context, params ListLogsParams)
 //
 // GET /music/metadataprofiles
 func (UnimplementedHandler) ListMetadataProfiles(ctx context.Context) (r []MetadataProfile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListMigrateItems implements listMigrateItems operation.
+//
+// The plan (or result) of a run, item by item (administrators).
+//
+// GET /migrate/runs/{id}/items
+func (UnimplementedHandler) ListMigrateItems(ctx context.Context, params ListMigrateItemsParams) (r *MigrateItemList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListMigrateRuns implements listMigrateRuns operation.
+//
+// Recent imports (administrators).
+//
+// GET /migrate/runs
+func (UnimplementedHandler) ListMigrateRuns(ctx context.Context) (r []MigrateRun, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListMigrateSources implements listMigrateSources operation.
+//
+// Applications to import from (administrators).
+//
+// GET /migrate/sources
+func (UnimplementedHandler) ListMigrateSources(ctx context.Context) (r []MigrateSource, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1940,6 +2040,15 @@ func (UnimplementedHandler) ParseRelease(ctx context.Context, req *ParseRequest)
 // POST /queue/{id}/pause
 func (UnimplementedHandler) PauseQueueItem(ctx context.Context, params PauseQueueItemParams) error {
 	return ht.ErrNotImplemented
+}
+
+// PlanMigrateRun implements planMigrateRun operation.
+//
+// Plan again with other path mappings or conflict choices (administrators).
+//
+// POST /migrate/runs/{id}/plan
+func (UnimplementedHandler) PlanMigrateRun(ctx context.Context, req *MigratePlanRequest, params PlanMigrateRunParams) (r *MigrateRun, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // PreviewIndexerSource implements previewIndexerSource operation.
@@ -2482,6 +2591,16 @@ func (UnimplementedHandler) SignUp(ctx context.Context, req *SignUpRequest) (r *
 	return r, ht.ErrNotImplemented
 }
 
+// StartMigrateRun implements startMigrateRun operation.
+//
+// A background job reads the sources (nothing is changed on them) and builds the preview; poll the run
+// until its status is `planned`.
+//
+// POST /migrate/runs
+func (UnimplementedHandler) StartMigrateRun(ctx context.Context, req *MigrateOptions) (r *MigrateRun, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // StartTotpSetup implements startTotpSetup operation.
 //
 // Returns a new secret to add to an authenticator app. Two-factor is on only after
@@ -2572,12 +2691,30 @@ func (UnimplementedHandler) TestIndexerConfig(ctx context.Context, req *IndexerT
 	return r, ht.ErrNotImplemented
 }
 
+// TestMigrateSource implements testMigrateSource operation.
+//
+// Test an application without saving it (administrators).
+//
+// POST /migrate/sources/test
+func (UnimplementedHandler) TestMigrateSource(ctx context.Context, req *MigrateSourceInput) (r *MigrateTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // TestNotificationChannel implements testNotificationChannel operation.
 //
 // Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
 //
 // POST /notificationchannels/test
 func (UnimplementedHandler) TestNotificationChannel(ctx context.Context, req *NotificationChannelTestRequest) (r *NotificationTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TestSavedMigrateSource implements testSavedMigrateSource operation.
+//
+// Test a saved source again (administrators).
+//
+// POST /migrate/sources/{id}/test
+func (UnimplementedHandler) TestSavedMigrateSource(ctx context.Context, params TestSavedMigrateSourceParams) (r *MigrateTestResult, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2742,6 +2879,15 @@ func (UnimplementedHandler) UpdateMetadataProfile(ctx context.Context, req *Meta
 //
 // PUT /settings/metadata
 func (UnimplementedHandler) UpdateMetadataSettings(ctx context.Context, req *MetadataSettingsInput) (r *MetadataSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateMigrateSource implements updateMigrateSource operation.
+//
+// An absent `secret` keeps the stored one.
+//
+// PUT /migrate/sources/{id}
+func (UnimplementedHandler) UpdateMigrateSource(ctx context.Context, req *MigrateSourceInput, params UpdateMigrateSourceParams) (r *MigrateSource, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

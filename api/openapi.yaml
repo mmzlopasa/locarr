@@ -48,6 +48,7 @@ tags:
   - name: requests
   - name: issues
   - name: notifications
+  - name: migrate
   - name: invites
   - name: mediaserver
   - name: board
@@ -5368,6 +5369,291 @@ paths:
           content:
             application/json:
               schema: {$ref: "#/components/schemas/NotificationSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/sources:
+    get:
+      operationId: listMigrateSources
+      summary: Applications to import from (administrators)
+      tags: [migrate]
+      responses:
+        "200":
+          description: Sources
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/MigrateSource"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createMigrateSource
+      summary: Add an application to import from (administrators)
+      description: |
+        The application is tested first (its public API, GET requests only; qBittorrent's
+        sign-in). The API key (or qBittorrent password) is stored encrypted and never returned.
+      tags: [migrate]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MigrateSourceInput"}
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateSource"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/sources/test:
+    post:
+      operationId: testMigrateSource
+      summary: Test an application without saving it (administrators)
+      tags: [migrate]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MigrateSourceInput"}
+      responses:
+        "200":
+          description: Result (ok false with a code and message when it failed)
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateTestResult"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/sources/{id}:
+    put:
+      operationId: updateMigrateSource
+      summary: Change a source (administrators)
+      description: An absent `secret` keeps the stored one.
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MigrateSourceInput"}
+      responses:
+        "200":
+          description: Changed
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateSource"}
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteMigrateSource
+      summary: Forget a source (administrators)
+      description: What was imported stays, and so do the import marks.
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/sources/{id}/test:
+    post:
+      operationId: testSavedMigrateSource
+      summary: Test a saved source again (administrators)
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Result
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateTestResult"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/runs:
+    get:
+      operationId: listMigrateRuns
+      summary: Recent imports (administrators)
+      tags: [migrate]
+      responses:
+        "200":
+          description: Runs, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/MigrateRun"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: startMigrateRun
+      summary: Read the chosen sources and plan the import (administrators)
+      description: |
+        A background job reads the sources (nothing is changed on them) and builds the
+        preview; poll the run until its status is `planned`.
+      tags: [migrate]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MigrateOptions"}
+      responses:
+        "202":
+          description: Started
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateRun"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/runs/{id}:
+    get:
+      operationId: getMigrateRun
+      summary: One import with its progress and summary (administrators)
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Run
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateRun"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/runs/{id}/plan:
+    post:
+      operationId: planMigrateRun
+      summary: Plan again with other path mappings or conflict choices (administrators)
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MigratePlanRequest"}
+      responses:
+        "200":
+          description: The run with the new plan
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateRun"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/runs/{id}/paths:
+    post:
+      operationId: checkMigratePaths
+      summary: Count the files Locarr finds with these path mappings (administrators)
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pathMappings]
+              properties:
+                pathMappings:
+                  type: array
+                  items: {$ref: "#/components/schemas/MigratePathMapping"}
+      responses:
+        "200":
+          description: One check per source folder
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/MigratePathCheck"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/runs/{id}/import:
+    post:
+      operationId: importMigrateRun
+      summary: Import what the preview shows (administrators)
+      description: Runs in the background; poll the run for progress.
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "202":
+          description: Started
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateRun"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/runs/{id}/cancel:
+    post:
+      operationId: cancelMigrateRun
+      summary: Stop reading or importing (administrators)
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Cancelled
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateRun"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/runs/{id}/items:
+    get:
+      operationId: listMigrateItems
+      summary: The plan (or result) of a run, item by item (administrators)
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+        - {name: category, in: query, required: false, schema: {type: string, maxLength: 40}}
+        - {name: action, in: query, required: false, schema: {$ref: "#/components/schemas/MigrateAction"}}
+        - {name: status, in: query, required: false, schema: {$ref: "#/components/schemas/MigrateItemStatus"}}
+        - {name: attention, in: query, required: false, schema: {type: boolean}}
+        - {name: conflicts, in: query, required: false, schema: {type: boolean}}
+        - {name: sourceId, in: query, required: false, schema: {type: integer, format: int64}}
+        - {name: q, in: query, required: false, schema: {type: string, maxLength: 200}}
+        - {name: offset, in: query, required: false, schema: {type: integer, minimum: 0}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 1000}}
+      responses:
+        "200":
+          description: Items
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateItemList"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/runs/{id}/report:
+    get:
+      operationId: getMigrateReport
+      summary: Everything about a run as one JSON document (administrators)
+      tags: [migrate]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Report (no secrets)
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MigrateReport"}
+        default:
+          $ref: "#/components/responses/Error"
+  /migrate/checklist:
+    get:
+      operationId: getMigrateChecklist
+      summary: The switch-over checklist after an import (administrators)
+      description: Steps on the old applications are instructions only; Locarr never changes them.
+      tags: [migrate]
+      responses:
+        "200":
+          description: Steps
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/MigrateCheckItem"}
         default:
           $ref: "#/components/responses/Error"
   /board:
@@ -10868,7 +11154,7 @@ components:
       type: string
       enum: [request.created, request.approved, request.declined, request.available, request.partial, request.failed,
         request.comment, issue.created, issue.comment, issue.resolved, issue.reopened, library.grabbed, library.imported,
-        library.upgraded, library.download_failed, library.import_failed, health.warning, subtitles.downloaded, subtitles.missing, test]
+        library.upgraded, library.download_failed, library.import_failed, health.warning, subtitles.downloaded, subtitles.missing, migrate.finished, migrate.failed, test]
     NotificationChannelSettings:
       type: object
       description: Plain settings; each kind uses only its own fields.
@@ -10986,6 +11272,274 @@ components:
         subtitleMissingDays: {type: integer, minimum: 1, maximum: 90}
         baseUrl: {type: string, maxLength: 500}
         smtp: {$ref: "#/components/schemas/SmtpSettingsInput"}
+    MigrateKind:
+      type: string
+      enum: [sonarr, radarr, lidarr, prowlarr, bazarr, overseerr, seerr, qbittorrent, sabnzbd]
+    MigrateScopes:
+      type: object
+      required: [settings, library, users, history]
+      properties:
+        settings: {type: boolean}
+        library: {type: boolean}
+        users: {type: boolean}
+        history: {type: boolean}
+    MigrateSource:
+      type: object
+      required: [id, kind, name, url, username, secretSet, appName, version, lastError, createdAt, supports]
+      properties:
+        id: {type: integer, format: int64}
+        kind: {$ref: "#/components/schemas/MigrateKind"}
+        name: {type: string}
+        url: {type: string}
+        username: {type: string}
+        secretSet: {type: boolean, description: "The API key (or password) is stored; it is never returned."}
+        appName: {type: string}
+        version: {type: string}
+        lastTestAt: {type: string, format: date-time}
+        lastError: {type: string}
+        createdAt: {type: string, format: date-time}
+        supports: {$ref: "#/components/schemas/MigrateScopes"}
+    MigrateSourceInput:
+      type: object
+      required: [kind, url]
+      properties:
+        kind: {$ref: "#/components/schemas/MigrateKind"}
+        name: {type: string, maxLength: 100}
+        url: {type: string, maxLength: 500, description: "http(s)://host:port with the URL base, if any"}
+        username: {type: string, maxLength: 200, description: "qBittorrent only"}
+        secret: {type: string, maxLength: 500, description: "The API key (qBittorrent: the password). Write-only."}
+    MigrateTestResult:
+      type: object
+      required: [ok]
+      properties:
+        ok: {type: boolean}
+        appName: {type: string}
+        version: {type: string}
+        code: {type: string, description: "unreachable, unauthorized, wrong_app, unsupported_version, bad_response, not_found"}
+        message: {type: string}
+    MigrateSourceOptions:
+      type: object
+      required: [id]
+      properties:
+        id: {type: integer, format: int64}
+        settings: {type: boolean}
+        library: {type: boolean}
+        users: {type: boolean}
+        history: {type: boolean}
+        prowlarrMode:
+          type: string
+          enum: [source, direct]
+          description: Prowlarr only - keep it as a synced indexer source, or add each indexer on its own.
+    MigratePathMapping:
+      type: object
+      required: [sourceId, from, to]
+      properties:
+        sourceId: {type: integer, format: int64, description: "0 applies to every source"}
+        from: {type: string, maxLength: 1000, description: "The folder as the source sees it"}
+        to: {type: string, maxLength: 1000, description: "The same folder as Locarr sees it"}
+    MigrateOptions:
+      type: object
+      required: [sources]
+      properties:
+        sources:
+          type: array
+          maxItems: 20
+          items: {$ref: "#/components/schemas/MigrateSourceOptions"}
+        pathMappings:
+          type: array
+          maxItems: 100
+          items: {$ref: "#/components/schemas/MigratePathMapping"}
+        historyDays: {type: integer, minimum: 1, maximum: 3650}
+    MigrateRunOptions:
+      type: object
+      required: [sources, pathMappings, resolutions, historyDays]
+      properties:
+        sources:
+          type: array
+          items: {$ref: "#/components/schemas/MigrateSourceOptions"}
+        pathMappings:
+          type: array
+          items: {$ref: "#/components/schemas/MigratePathMapping"}
+        resolutions:
+          type: object
+          additionalProperties: {type: string}
+        historyDays: {type: integer}
+    MigrateProwlarrMode:
+      type: object
+      required: [sourceId, mode]
+      properties:
+        sourceId: {type: integer, format: int64}
+        mode: {type: string, enum: [source, direct]}
+    MigratePlanRequest:
+      type: object
+      properties:
+        pathMappings:
+          type: array
+          maxItems: 100
+          items: {$ref: "#/components/schemas/MigratePathMapping"}
+        resolutions:
+          type: object
+          description: Plan item key → merge, rename or skip.
+          additionalProperties: {type: string, enum: [merge, rename, skip]}
+        prowlarrModes:
+          type: array
+          items: {$ref: "#/components/schemas/MigrateProwlarrMode"}
+    MigratePathCheck:
+      type: object
+      required: [sourceId, sourcePath, localPath, inside, exists, files, found, missing]
+      properties:
+        sourceId: {type: integer, format: int64}
+        sourcePath: {type: string}
+        localPath: {type: string}
+        inside: {type: boolean, description: "Inside the folders Locarr may use"}
+        exists: {type: boolean}
+        files: {type: integer}
+        found: {type: integer}
+        missing:
+          type: array
+          description: A few examples of files not found
+          items: {type: string}
+    MigrateProgress:
+      type: object
+      required: [phase, done, total, message]
+      properties:
+        phase: {type: string}
+        done: {type: integer}
+        total: {type: integer}
+        message: {type: string}
+    MigrateSourceSummary:
+      type: object
+      required: [id, kind, name, version, read, roots]
+      properties:
+        id: {type: integer, format: int64}
+        kind: {$ref: "#/components/schemas/MigrateKind"}
+        name: {type: string}
+        version: {type: string}
+        read:
+          type: object
+          additionalProperties: {type: integer}
+        roots:
+          type: array
+          items: {type: string}
+    MigrateRefresh:
+      type: object
+      required: [total, done, failed]
+      properties:
+        total: {type: integer}
+        done: {type: integer}
+        failed: {type: integer}
+        error: {type: string}
+    MigrateSummary:
+      type: object
+      required: [sources, pathChecks, suggested, counts, statuses, attention, conflicts, warnings]
+      properties:
+        sources:
+          type: array
+          items: {$ref: "#/components/schemas/MigrateSourceSummary"}
+        pathChecks:
+          type: array
+          items: {$ref: "#/components/schemas/MigratePathCheck"}
+        suggested:
+          type: array
+          items: {$ref: "#/components/schemas/MigratePathMapping"}
+        counts:
+          type: object
+          description: Category → action → count
+          additionalProperties:
+            type: object
+            additionalProperties: {type: integer}
+        statuses:
+          type: object
+          additionalProperties: {type: integer}
+        attention:
+          type: object
+          additionalProperties: {type: integer}
+        conflicts: {type: integer}
+        warnings:
+          type: array
+          items: {type: string}
+        refresh: {$ref: "#/components/schemas/MigrateRefresh"}
+        durationMs: {type: integer, format: int64}
+    MigrateRunStatus:
+      type: string
+      enum: [analysing, analysed, planned, importing, done, failed, cancelled]
+    MigrateRun:
+      type: object
+      required: [id, status, options, progress, summary, error, createdAt, updatedAt]
+      properties:
+        id: {type: integer, format: int64}
+        status: {$ref: "#/components/schemas/MigrateRunStatus"}
+        options: {$ref: "#/components/schemas/MigrateRunOptions"}
+        progress: {$ref: "#/components/schemas/MigrateProgress"}
+        summary: {$ref: "#/components/schemas/MigrateSummary"}
+        error: {type: string}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        finishedAt: {type: string, format: date-time}
+    MigrateAction:
+      type: string
+      enum: [create, update, skip]
+    MigrateItemStatus:
+      type: string
+      enum: [planned, done, failed, skipped]
+    MigrateConflict:
+      type: object
+      required: [existing, options, chosen]
+      properties:
+        existing: {type: string}
+        options:
+          type: array
+          items: {type: string, enum: [merge, rename, skip]}
+        chosen: {type: string, enum: [merge, rename, skip]}
+    MigrateItem:
+      type: object
+      required: [seq, key, sourceId, category, name, action, reason, message, attention, status, localRef, error]
+      properties:
+        seq: {type: integer}
+        key: {type: string}
+        sourceId: {type: integer, format: int64}
+        category: {type: string}
+        name: {type: string}
+        action: {$ref: "#/components/schemas/MigrateAction"}
+        reason: {type: string}
+        message: {type: string}
+        conflict: {$ref: "#/components/schemas/MigrateConflict"}
+        attention:
+          type: array
+          items: {type: string}
+        status: {$ref: "#/components/schemas/MigrateItemStatus"}
+        localRef: {type: string}
+        error: {type: string}
+    MigrateItemList:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/MigrateItem"}
+        total: {type: integer}
+    MigrateReport:
+      type: object
+      required: [run, sources, items, generated]
+      properties:
+        run: {$ref: "#/components/schemas/MigrateRun"}
+        sources:
+          type: array
+          items: {$ref: "#/components/schemas/MigrateSource"}
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/MigrateItem"}
+        generated: {type: string, format: date-time}
+    MigrateCheckItem:
+      type: object
+      required: [key, done, manual, params]
+      properties:
+        key: {type: string}
+        done: {type: boolean}
+        manual: {type: boolean, description: "A step on another application that Locarr cannot check"}
+        params:
+          type: object
+          additionalProperties: {type: string}
     BoardKind:
       type: string
       enum: [movie, episode, album, subtitle]

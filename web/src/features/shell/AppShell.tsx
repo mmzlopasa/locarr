@@ -3,6 +3,7 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { useTranslation } from "react-i18next";
 import {
   Activity,
+  ArrowRightLeft,
   AlertTriangle,
   CalendarDays,
   Compass,
@@ -58,6 +59,7 @@ const NAV: NavItem[][] = [
     { to: "/downloaders", key: "downloaders", icon: Download, admin: true },
     { to: "/settings", key: "settings", icon: Settings, admin: true },
     { to: "/system", key: "system", icon: Server, admin: true },
+    { to: "/migrate", key: "migrate", icon: ArrowRightLeft, admin: true },
   ],
 ];
 

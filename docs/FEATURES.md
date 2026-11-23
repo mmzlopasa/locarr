@@ -9,7 +9,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Zaštita prijave: ograničenje po adresi, zaključavanje računa, zabrana nakon ponovljenih neuspjeha
 - [x] Postavke na jednom mjestu, šifrirane tajne vanjskih servisa (nikad se ne vraćaju klijentu)
 - [x] Jedan Docker image (amd64 + arm64), `docker-compose.yml` s jednim servisom, healthcheck, PUID/PGID
-- [x] Backup i vraćanje (automatski i ručno, učitavanje zipa, vraćanje bez restarta kontejnera; D-076), migracije baze pri pokretanju
+- [x] Backup i vraćanje (automatski i ručno, učitavanje zipa, vraćanje bez restarta kontejnera; D-083), migracije baze pri pokretanju
 
 ## Indexeri (P1)
 - [x] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/TVmaze) i tekstu, RSS (glazba po izvođaču/albumu: Newznab nema MusicBrainz parametar)
@@ -88,17 +88,17 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Streamero: obavijest pri brisanju i preimenovanju serija te brisanju glazbe (danas ih vidi Streamerov nadzor datoteka)
 
 ## Uvoz setupa (P10)
-- [ ] Sonarr, Radarr, Lidarr: biblioteka, profili kvalitete, custom formati, root mape, oznake, indexeri, download klijenti, liste
-- [ ] Prowlarr: indexeri; Bazarr: jezični profili i provideri; Seerr/Overseerr: korisnici i zahtjevi
-- [ ] qBittorrent, SABnzbd: veza i kategorije
-- [ ] Pregled prije uvoza, izvori se nikad ne mijenjaju
+- [x] Sonarr, Radarr, Lidarr: biblioteka (datoteke na mjestu, praćenje), profili kvalitete, definicije veličina, custom formati, profili izdanja i kašnjenja, root mape, oznake, imena, indexeri, download klijenti, mapiranja putanja, liste i isključenja (liste samo TMDb za filmove; Locarr nema popise za serije i glazbu), povijest i blokirana izdanja (D-072 – D-076)
+- [x] Prowlarr: indexeri (kao izvor ili pojedinačno, D-078); Bazarr: jezični profili, provideri i profil po naslovu; Seerr/Overseerr: korisnici s dozvolama, zahtjevi, problemi, kvote (korisnici i zahtjevi provjereni s lažnim Overseerrom)
+- [x] qBittorrent, SABnzbd: veza, kategorije, prijedlozi mapiranja putanja
+- [x] Pregled prije uvoza (stvori/spoji/preskoči s razlozima, sukobi), uvoz u pozadini s napretkom, izvještaj (JSON), popis za prelazak; izvori se nikad ne mijenjaju, ponovni uvoz ne duplicira (D-077)
 
 ## Vremenska crta i nadzor (P11)
 - [x] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
-- [x] „Zašto nije stiglo?": ploča svih nedostajućih filmova, epizoda, albuma i titlova po razlogu, sa zbrojenim razlozima odbijanja, poveznicom za popravak i skupnim radnjama (D-072)
-- [x] Aktivnost (red preuzimanja), povijest cijele biblioteke, blokirana izdanja (i brisanje svih), statistika po indexeru i klijentu, nedostajuće/ispod granice (D-073)
-- [x] Zdravlje sustava (indexeri, klijenti, kategorije, putanje, root mape i prostor, koš, zapeli uvozi, metapodaci, titlovi, Streamero, sat, baza, kopije, nova verzija) s uputama (D-074), logovi s pretragom, uživo i rotiranim datotekama (D-075), zadaci
-- [x] `/api/stats` za nadzorne ploče, Prometheus metrike, održavanje baze i predmemorije (D-077)
+- [x] „Zašto nije stiglo?": ploča svih nedostajućih filmova, epizoda, albuma i titlova po razlogu, sa zbrojenim razlozima odbijanja, poveznicom za popravak i skupnim radnjama (D-079)
+- [x] Aktivnost (red preuzimanja), povijest cijele biblioteke, blokirana izdanja (i brisanje svih), statistika po indexeru i klijentu, nedostajuće/ispod granice (D-080)
+- [x] Zdravlje sustava (indexeri, klijenti, kategorije, putanje, root mape i prostor, koš, zapeli uvozi, metapodaci, titlovi, Streamero, sat, baza, kopije, nova verzija) s uputama (D-081), logovi s pretragom, uživo i rotiranim datotekama (D-082), zadaci
+- [x] `/api/stats` za nadzorne ploče, Prometheus metrike, održavanje baze i predmemorije (D-084)
 
 ## Aplikacije (P12)
 - [ ] Android i iOS: sve iz weba (biblioteka, dodavanje, pretraga, aktivnost, kalendar, zahtjevi, postavke za admina)

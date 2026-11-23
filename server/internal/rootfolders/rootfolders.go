@@ -72,6 +72,19 @@ func inspect(f *Folder) {
 
 // List returns every root folder with its state on disk.
 func (s *Service) List(ctx context.Context) ([]Folder, error) {
+	out, err := s.Records(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for i := range out {
+		inspect(&out[i])
+	}
+	return out, nil
+}
+
+// Records returns every root folder without looking at the disk (cheap; for
+// bulk work such as importing a whole library).
+func (s *Service) Records(ctx context.Context) ([]Folder, error) {
 	rows, err := s.DB.R.QueryContext(ctx, `SELECT id, path, kind, created_at FROM root_folders ORDER BY path`)
 	if err != nil {
 		return nil, err
@@ -89,13 +102,7 @@ func (s *Service) List(ctx context.Context) ([]Folder, error) {
 		f.CreatedAt = db.Time(created)
 		out = append(out, f)
 	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	for i := range out {
-		inspect(&out[i])
-	}
-	return out, nil
+	return out, rows.Err()
 }
 
 // Create makes path (inside the data roots) when it does not exist yet and

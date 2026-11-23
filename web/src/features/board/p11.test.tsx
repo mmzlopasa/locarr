@@ -163,8 +163,8 @@ describe("first run", () => {
     expect(created[0]!.body).toEqual({ path: "/data/media/movies", kind: "movies", create: true });
     expect(await within(screen.getByTestId("welcome-movies")).findByText("writable")).toBeInTheDocument();
     await userEvent.click(screen.getByTestId("welcome-next"));
-    // This build has no import wizard route yet.
-    expect(await screen.findByTestId("welcome-no-migrate")).toBeInTheDocument();
+    // The import wizard (P10) is offered as the next step.
+    expect(await screen.findByTestId("welcome-migrate")).toHaveAttribute("href", "/migrate");
   });
 });
 

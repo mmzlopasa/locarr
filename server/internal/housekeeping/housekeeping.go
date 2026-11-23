@@ -1,4 +1,4 @@
-// Package housekeeping keeps the config folder small (D-077): it prunes old
+// Package housekeeping keeps the config folder small (D-084): it prunes old
 // timeline events, search log entries, download events and RSS releases by
 // their retention settings, compacts the database on a schedule and caps the
 // image cache.

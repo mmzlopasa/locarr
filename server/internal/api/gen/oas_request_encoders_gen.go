@@ -198,6 +198,20 @@ func encodeCheckInviteRequest(
 	return nil
 }
 
+func encodeCheckMigratePathsRequest(
+	req *CheckMigratePathsReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeConvertSubtitleFpsRequest(
 	req *ConvertSubtitleFpsReq,
 	r *http.Request,
@@ -340,6 +354,20 @@ func encodeCreateIssueRequest(
 
 func encodeCreateMetadataProfileRequest(
 	req *MetadataProfileInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeCreateMigrateSourceRequest(
+	req *MigrateSourceInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -814,6 +842,20 @@ func encodeParseReleaseRequest(
 	return nil
 }
 
+func encodePlanMigrateRunRequest(
+	req *MigratePlanRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodePreviewIndexerSourceRequest(
 	req *IndexerSourcePreviewRequest,
 	r *http.Request,
@@ -1160,6 +1202,20 @@ func encodeSignUpRequest(
 	return nil
 }
 
+func encodeStartMigrateRunRequest(
+	req *MigrateOptions,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeSyncSubtitleRequest(
 	req *SyncSubtitleReq,
 	r *http.Request,
@@ -1190,6 +1246,20 @@ func encodeTestDownloadClientRequest(
 
 func encodeTestIndexerConfigRequest(
 	req *IndexerTestRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeTestMigrateSourceRequest(
+	req *MigrateSourceInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -1414,6 +1484,20 @@ func encodeUpdateMetadataProfileRequest(
 
 func encodeUpdateMetadataSettingsRequest(
 	req *MetadataSettingsInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateMigrateSourceRequest(
+	req *MigrateSourceInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

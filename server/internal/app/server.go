@@ -35,6 +35,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/tvdb"
+	"github.com/mmzlopasa/locarr/server/internal/migrate"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/notify/delivery"
@@ -88,6 +89,8 @@ type Deps struct {
 	CoverArt    *metadata.ImageCache
 	// Subtitles (P7).
 	Subtitles *subtitles.Service
+	// Migrate imports an existing setup (P10).
+	Migrate *migrate.Service
 	// Requests (P8).
 	Hub      *notify.Hub
 	Requests *requests.Service
@@ -178,6 +181,7 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 	deps.Hub.Sinks = append(deps.Hub.Sinks, deps.Channels)
 	deps.Discover.Streamero = deps.Streamero
 	buildOperations(ctx, deps, cfg, log)
+	buildMigrate(deps, cfg, log)
 	return deps, nil
 }
 
@@ -221,7 +225,7 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 
 // ServeWith is Serve with the log sinks the log viewer reads (nil = none).
 //
-// Restoring a backup restarts the services in this process (D-076): the
+// Restoring a backup restarts the services in this process (D-083): the
 // listener stays open and answers "starting" while the jobs and background
 // work stop, the database closes, the staged backup replaces it and
 // everything starts again.

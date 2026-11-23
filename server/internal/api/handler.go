@@ -32,6 +32,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/logging"
 	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
+	"github.com/mmzlopasa/locarr/server/internal/migrate"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/notify/delivery"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
@@ -74,6 +75,8 @@ type Handler struct {
 	// Streamero (P9) and the outward notification channels.
 	Streamero *streamero.Service
 	Channels  *delivery.Service
+	// Migrate imports an existing setup (P10).
+	Migrate   *migrate.Service
 	Timeline  *timeline.Store
 	Recycle   *recycle.Bin
 	Images    *metadata.ImageCache
@@ -162,6 +165,9 @@ func mapError(err error) *StatusError {
 		return se
 	}
 	if se := mapSubtitlesError(err); se != nil {
+		return se
+	}
+	if se := mapMigrateError(err); se != nil {
 		return se
 	}
 	if se := mapRequestsError(err); se != nil {
