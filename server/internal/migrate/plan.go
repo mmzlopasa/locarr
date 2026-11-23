@@ -437,8 +437,8 @@ func (p *planner) loadLocal() error {
 	return nil
 }
 
-// Build plans the import of snaps.
-func Build(ctx context.Context, l *Locarr, opts Options, snaps []*Snapshot, secrets map[int64]string) (*Plan, *planner, error) {
+// build plans the import of snaps.
+func build(ctx context.Context, l *Locarr, opts Options, snaps []*Snapshot, secrets map[int64]string) (*Plan, *planner, error) {
 	if secrets == nil {
 		secrets = map[int64]string{}
 	}

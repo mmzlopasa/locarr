@@ -708,7 +708,7 @@ func (s *Service) plan(ctx context.Context, id int64, o Options, sum *Summary) (
 	}
 	snaps := make([]*Snapshot, len(c.snaps))
 	copy(snaps, c.snaps)
-	plan, p, err := Build(ctx, s.L, o, snaps, c.secrets)
+	plan, p, err := build(ctx, s.L, o, snaps, c.secrets)
 	if err != nil {
 		return nil, err
 	}
