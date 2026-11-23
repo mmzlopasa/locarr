@@ -16,6 +16,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/api"
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
+	"github.com/mmzlopasa/locarr/server/internal/compat"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
 	"github.com/mmzlopasa/locarr/server/internal/webui"
 )
@@ -86,6 +87,9 @@ func NewRouter(h *api.Handler, o RouterOptions) (http.Handler, error) {
 	compress := compressor()
 	r.Mount("/api/v1", compress(limitBody(flushStream(apiServer))))
 	r.Handle("/api/*", http.HandlerFunc(api.NotFound))
+	// The Seerr/Radarr/Sonarr compatible routes for media servers (D-079).
+	compatAPI := &compat.Handler{Auth: h.Auth, DB: h.DB, Discover: h.Discover, Requests: h.Requests, Log: log}
+	r.Mount(compat.Prefix, compress(limitBody(compatAPI.Routes())))
 	web := o.Web
 	if web == nil {
 		web = webui.Handler()

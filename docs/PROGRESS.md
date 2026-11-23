@@ -5,6 +5,14 @@ P0–P10 gotovi.
 
 
 
+## Gotovo: Otkrivanje u Streameru (branch `feat/streamero-discover`)
+- `internal/compat` (D-079): Seerr (`/compat/seerr/api/v1`: status, pretraga, trending, zahtjev), Radarr i Sonarr (`/compat/radarr|sonarr/api/v3`: status, kalendar, filmovi po TMDb ID-u, serije) izvan ogena, prijava Locarr API ključem kao vlasnik ključa; poveznice `/compat/radarr/movie/{id}` i `/compat/sonarr/series/{id}` vode na Locarrove stranice.
+- `metadata.WithLanguage`: jedan poziv TMDb-u na jeziku klijenta; `discover.SearchTMDb` (pretraga bez glazbe).
+- Web (EN + HR): kartica „Otkrivanje u Streameru" u Postavke → Media server (adrese za kopiranje, gumb za ključ).
+- Testovi: `TestCompatSeerrContract`, `TestCompatPermissions`, `TestCompatCalendarAndLibrary` (odgovori se dekodiraju u oblike koje Streamero čita), `TestRealStreameroDiscover` (`-tags streamero`, `scripts/test-streamero-compat.sh`: stvarni Streamero s PostgreSQL-om i Valkeyem, i u CI-ju).
+- Dokumentacija: `docs/user/streamero.md` §6, `docs/compat-api.md`.
+- Poznato: svi zahtjevi iz Streamera su zapisani kao vlasnik ključa (Streamero ne šalje korisnika).
+
 ## Gotovo u P10 (branch `phase/P10-import`)
 - Migracija `00011_migrate.sql`: `migrate_sources` (šifrirani ključ), `migrate_runs`, `migrate_items`, `migrate_links`.
 - `internal/migrate` (D-072 – D-078): adapteri za Sonarr (v3, v4), Radarr, Lidarr, Prowlarr, Bazarr, Overseerr/Seerr, qBittorrent (prijava v4 i v5) i SABnzbd iz njihove javne API dokumentacije, samo GET (uz prijavu qBittorrenta); prepoznavanje aplikacije i verzije; strujano čitanje velikih lista; pravila mapiranja (kvalitete, profili, jezici, oznake, imena, dozvole → uloge, stanja zahtjeva); mapiranja putanja s prijedlozima i provjerom uživo (`fs.PathCache`); plan s radnjama, razlozima, sukobima i oznakama pažnje; primjena kroz servise; oznake uvoza za idempotentnost; izvještaj; popis za prelazak; kraj uvoza (`migrate.finished` / `migrate.failed`) na zajedničkim kanalima obavijesti.
