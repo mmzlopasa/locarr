@@ -45,7 +45,13 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 		key, _, err := d.Settings.Secret(ctx, settings.TMDbAPIKey)
 		return key, err
 	}, d.MetaCache)
-	client.Language = func(ctx context.Context) string { v, _ := settings.Get(ctx, d.Settings, metadata.Language); return v }
+	client.Language = func(ctx context.Context) string {
+		if l := metadata.LanguageFrom(ctx); l != "" {
+			return l
+		}
+		v, _ := settings.Get(ctx, d.Settings, metadata.Language)
+		return v
+	}
 	client.Region = func(ctx context.Context) string { v, _ := settings.Get(ctx, d.Settings, metadata.Region); return v }
 	d.TMDb = client
 	d.Images = &metadata.ImageCache{Dir: filepath.Join(cfg.ConfigDir, "cache", "images", "tmdb"), Source: client}
