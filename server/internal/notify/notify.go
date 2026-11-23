@@ -275,7 +275,7 @@ func (h *Hub) MarkRead(ctx context.Context, userID int64, ids []int64, all bool)
 		for _, id := range ids {
 			args = append(args, id)
 		}
-		if _, err := h.DB.W.ExecContext(ctx, `UPDATE notifications SET read_at = ? WHERE user_id = ? AND read_at IS NULL AND id IN (`+ph+`)`,
+		if _, err := h.DB.W.ExecContext(ctx, `UPDATE notifications SET read_at = ? WHERE user_id = ? AND read_at IS NULL AND id IN (`+ph+`)`, // #nosec G202 -- placeholders only
 			args...); err != nil {
 			return 0, err
 		}

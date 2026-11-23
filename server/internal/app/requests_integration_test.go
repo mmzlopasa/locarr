@@ -7,7 +7,9 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
+	ixfake "github.com/mmzlopasa/locarr/server/internal/indexers/fake"
 	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
 )
 
@@ -733,4 +735,83 @@ func TestRequestPermissions(t *testing.T) {
 	if u.Permissions["autoApproveMovies"] || !strings.Contains(string(raw), "autoApprove4k") {
 		t.Fatalf("permissions: %s", raw)
 	}
+}
+
+// A 4K request is its own track: it uses the 4K profile and folder, and the
+// discover badge shows the 4K state apart from the normal one.
+func TestRequest4K(t *testing.T) {
+	// A 2160p release that fits the size limits of a 15-minute film.
+	saved := ixfake.Catalog
+	ixfake.Catalog = append(append([]ixfake.Release{}, saved...), ixfake.Release{Title: "Sintel.2010.2160p.WEB-DL.DDP5.1.HEVC-SMALL",
+		Cat: 2045, Size: 3_000_000_000, Seeders: 40, Peers: 41, IMDB: "tt1727587", TMDB: 45745, Hash: "c1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+		Age: 5 * time.Hour})
+	t.Cleanup(func() { ixfake.Catalog = saved })
+	le := newLibraryEnv(t)
+	runRequests(t, le.env)
+	var profiles []struct {
+		ID         int64
+		Name, Kind string
+	}
+	le.expect(le.do("GET", "/api/v1/qualityprofiles", nil), 200).json(&profiles)
+	var uhd int64
+	for _, p := range profiles {
+		if p.Kind == "movies" && p.Name == "UHD" {
+			uhd = p.ID
+		}
+	}
+	if uhd == 0 {
+		t.Fatal("no UHD profile")
+	}
+	le.requestSettings(func(s map[string]any) {
+		d := kindDefaults(le.profileID, le.rootID)
+		d["qualityProfile4kId"] = uhd
+		s["movie"] = d
+	})
+	plain := le.user("plain", "requester", nil)
+	le.as(plain, func() {
+		if r := le.expect(le.do("POST", "/api/v1/requests", map[string]any{"kind": "movie", "tmdbId": 45745, "is4k": true}), 403); r.code() != "forbidden" {
+			t.Fatalf("4K without the permission: %s", r.code())
+		}
+	})
+	tok := le.user("cinephile", "requester", requesterPerms("request4k", "autoApprove4k", "autoApproveMovies"))
+	var req apiRequest
+	le.as(tok, func() {
+		le.expect(le.do("POST", "/api/v1/requests", map[string]any{"kind": "movie", "tmdbId": 45745, "is4k": true}), 201).json(&req)
+	})
+	if req.Status != "processing" || !req.Is4k {
+		t.Fatalf("4K request: %+v", req)
+	}
+	r := le.request(req.ID)
+	var movieID int64
+	_, _ = fmt.Sscanf(r.LibraryRef, "movie:%d", &movieID)
+	var m struct{ QualityProfileId int64 }
+	le.expect(le.do("GET", fmt.Sprintf("/api/v1/movies/%d", movieID), nil), 200).json(&m)
+	if m.QualityProfileId != uhd {
+		t.Fatalf("profile %d, want the 4K one %d", m.QualityProfileId, uhd)
+	}
+	defer func() {
+		if t.Failed() {
+			for _, ev := range le.timeline(movieID).Events {
+				t.Logf("%s %s %s", ev.Type, ev.Message, ev.Data)
+			}
+		}
+	}()
+	waitFor(t, "the 2160p grab", func() bool { return le.downloadCount(movieID) == 1 })
+	if got := le.client.added; len(got) != 1 || !strings.Contains(got[0], "2160p") {
+		t.Fatalf("grabbed %v", got)
+	}
+	le.poll()
+	le.client.finish(t)
+	le.poll()
+	waitFor(t, "the 4K request to be available", func() bool { return le.request(req.ID).Status == "available" })
+	le.as(tok, func() {
+		var page struct{ Item apiDiscoverItem }
+		le.expect(le.do("GET", "/api/v1/discover/movies/45745", nil), 200).json(&page)
+		if page.Item.Status4k != "available" {
+			t.Fatalf("4K badge: %+v", page.Item)
+		}
+		if r := le.expect(le.do("POST", "/api/v1/requests", map[string]any{"kind": "movie", "tmdbId": 45745, "is4k": true}), 409); r.code() != "already_available" {
+			t.Fatalf("4K again: %s", r.code())
+		}
+	})
 }

@@ -477,7 +477,7 @@ func (s *Service) requestStates(ctx context.Context, p auth.Principal, ids map[s
 		return out, nil
 	}
 	rows, err := s.DB.R.QueryContext(ctx, `SELECT id, kind, tmdb_id, mbid, is_4k, status, requested_by, item_ref FROM requests
-		WHERE status NOT IN ('declined', 'cancelled') AND (`+strings.Join(conds, " OR ")+`) ORDER BY id`, args...)
+		WHERE status NOT IN ('declined', 'cancelled') AND (`+strings.Join(conds, " OR ")+`) ORDER BY id`, args...) // #nosec G202 -- only placeholders are joined
 	if err != nil {
 		return nil, err
 	}

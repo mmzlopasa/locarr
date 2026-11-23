@@ -1,6 +1,7 @@
 package notify
 
 import (
+	"errors"
 	"context"
 	"testing"
 	"time"
@@ -60,7 +61,7 @@ func TestHub(t *testing.T) {
 	if n, _ := h.MarkRead(ctx, 1, nil, true); n != 0 {
 		t.Fatal("mark all")
 	}
-	if _, err := h.MarkRead(ctx, 1, nil, false); err != ErrNothingToMark {
+	if _, err := h.MarkRead(ctx, 1, nil, false); !errors.Is(err, ErrNothingToMark) {
 		t.Fatal(err)
 	}
 	if n, err := h.Prune(ctx, time.Now().Add(time.Hour)); err != nil || n != 2 {

@@ -77,7 +77,7 @@ func (s *Service) loadSeasons(ctx context.Context, list []Request) error {
 		return nil
 	}
 	rows, err := s.DB.R.QueryContext(ctx, `SELECT request_id, number, status FROM request_seasons WHERE request_id IN (`+
-		strings.TrimSuffix(strings.Repeat("?,", len(ids)), ",")+`) ORDER BY request_id, number`, ids...)
+		strings.TrimSuffix(strings.Repeat("?,", len(ids)), ",")+`) ORDER BY request_id, number`, ids...) // #nosec G202 -- placeholders only
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (s *Service) List(ctx context.Context, f Filter) ([]Request, int, error) {
 	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM requests r`+where, args...).Scan(&total); err != nil {
 		return nil, 0, err
 	}
-	rows, err := s.DB.R.QueryContext(ctx, `SELECT `+requestColumns+requestFrom+where+` ORDER BY r.created_at DESC, r.id DESC LIMIT ? OFFSET ?`,
+	rows, err := s.DB.R.QueryContext(ctx, `SELECT `+requestColumns+requestFrom+where+` ORDER BY r.created_at DESC, r.id DESC LIMIT ? OFFSET ?`, // #nosec G202 -- fixed columns, clauses and placeholders only
 		append(args, f.Limit, f.Offset)...)
 	if err != nil {
 		return nil, 0, err
@@ -289,7 +289,7 @@ func (s *Service) update(ctx context.Context, id int64, c change) error {
 	}
 	args = append(args, id)
 	return s.DB.Tx(ctx, func(tx *sql.Tx) error {
-		if _, err := tx.ExecContext(ctx, `UPDATE requests SET `+strings.Join(sets, ", ")+` WHERE id = ?`, args...); err != nil {
+		if _, err := tx.ExecContext(ctx, `UPDATE requests SET `+strings.Join(sets, ", ")+` WHERE id = ?`, args...); err != nil { // #nosec G202 -- fixed columns, clauses and placeholders only
 			return err
 		}
 		if c.setSeasons != nil {
@@ -431,8 +431,9 @@ func (s *Service) Usage(ctx context.Context, userID int64, quotaKind string) (Us
 	for _, k := range kinds {
 		args = append(args, k)
 	}
-	rows, err := s.DB.R.QueryContext(ctx, `SELECT created_at FROM requests WHERE requested_by = ? AND created_at > ?
-		AND status NOT IN ('declined', 'cancelled') AND kind IN (`+strings.TrimSuffix(strings.Repeat("?,", len(kinds)), ",")+`)`, args...)
+	ph := strings.TrimSuffix(strings.Repeat("?,", len(kinds)), ",")
+	q := "SELECT created_at FROM requests WHERE requested_by = ? AND created_at > ? AND status NOT IN ('declined', 'cancelled') AND kind IN (" + ph + ")" // #nosec G202 -- placeholders only
+	rows, err := s.DB.R.QueryContext(ctx, q, args...)
 	if err != nil {
 		return Usage{}, err
 	}

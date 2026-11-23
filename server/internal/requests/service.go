@@ -274,7 +274,7 @@ func (s *Service) freeSeasons(ctx context.Context, r *Request, seasons []int) ([
 			out = append(out, n)
 		}
 	}
-	if len(out) == 0 && !(r.FutureSeasons && !futureTaken) {
+	if len(out) == 0 && (!r.FutureSeasons || futureTaken) {
 		if requested || (len(seasons) == 0 && futureTaken) {
 			return nil, ErrAlreadyRequested
 		}
