@@ -9,14 +9,12 @@ import (
 	"log/slog"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/api"
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
-	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library"
 	"github.com/mmzlopasa/locarr/server/internal/mediaserver"
@@ -27,9 +25,6 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 	"github.com/mmzlopasa/locarr/server/internal/subtitles"
 )
-
-// TaskHealthNotify looks for indexers and download clients that stopped working.
-const TaskHealthNotify = "health-notify"
 
 // buildMediaServer creates the Streamero integration and the notification
 // channels (P9). It runs before buildRequests, which wraps the notifiers
@@ -53,10 +48,6 @@ func buildMediaServer(_ context.Context, d *Deps, cfg config.Config, log *slog.L
 	d.Jobs.Schedule(streamero.TaskIndex, streamero.TaskIndex, streamero.IndexInterval)
 
 	hub := func() *notify.Hub { return d.Hub }
-	health := &healthWatch{hub: hub, failing: map[string]bool{}}
-	d.Streamero.Health = func(ctx context.Context, ok bool, reason string) {
-		health.report(ctx, "streamero", "Streamero", ok, reason)
-	}
 	d.Movies.Notifier = libraryEvents{next: streamero.Notifier{S: d.Streamero}, hub: hub, d: d}
 	d.Series.Notifier = libraryEvents{next: streamero.Notifier{S: d.Streamero}, hub: hub, d: d}
 	d.Music.Notifier = libraryEvents{next: streamero.Notifier{S: d.Streamero}, hub: hub, d: d}
@@ -85,11 +76,6 @@ func buildMediaServer(_ context.Context, d *Deps, cfg config.Config, log *slog.L
 				ItemRef: info.ref, Params: map[string]any{"downloadId": ev.Download.ID, "indexer": ev.Download.Indexer}})
 		}
 	})
-
-	d.Jobs.Register(TaskHealthNotify, func(ctx context.Context, _ *jobs.Job) error {
-		return health.check(ctx, d)
-	}, jobs.KindOptions{MaxAttempts: 1, Timeout: 2 * time.Minute})
-	d.Jobs.Schedule(TaskHealthNotify, TaskHealthNotify, 5*time.Minute)
 }
 
 func joinReason(title, msg, reason string) string {
@@ -202,53 +188,6 @@ func describeRef(ctx context.Context, d *Deps, r library.Ref) refInfo {
 	}
 	info.ref = r.Kind + ":" + strconv.FormatInt(id, 10)
 	return info
-}
-
-// healthWatch publishes health.warning once when something starts failing.
-type healthWatch struct {
-	hub     func() *notify.Hub
-	mu      sync.Mutex
-	failing map[string]bool
-}
-
-func (w *healthWatch) report(ctx context.Context, key, name string, ok bool, reason string) {
-	w.mu.Lock()
-	was := w.failing[key]
-	w.failing[key] = !ok
-	w.mu.Unlock()
-	if ok || was {
-		return
-	}
-	if h := w.hub(); h != nil {
-		h.Publish(ctx, notify.Event{Type: notify.HealthWarning, Title: name, Message: reason, Params: map[string]any{"source": key}})
-	}
-}
-
-func (w *healthWatch) check(ctx context.Context, d *Deps) error {
-	list, err := d.Indexers.List(ctx)
-	if err != nil {
-		return err
-	}
-	for _, ix := range list {
-		st := ix.HealthStatus()
-		if st == indexers.HealthDisabled {
-			continue
-		}
-		w.report(ctx, "indexer:"+strconv.FormatInt(ix.ID, 10), ix.Name, st != indexers.HealthFailing, ix.Health.LastError)
-	}
-	clients, err := d.Downloads.Clients(ctx)
-	if err != nil {
-		return err
-	}
-	snaps := d.Downloads.Snapshots()
-	for _, c := range clients {
-		sn, ok := snaps[c.ID]
-		if !c.Enabled || !ok {
-			continue
-		}
-		w.report(ctx, "client:"+strconv.FormatInt(c.ID, 10), c.Name, sn.OK, sn.Error)
-	}
-	return nil
 }
 
 // wireSubtitleEvents sends subtitle downloads to the channels, and a file's

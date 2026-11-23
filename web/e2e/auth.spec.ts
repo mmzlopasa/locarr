@@ -34,8 +34,8 @@ test("first-run setup, sign-in, creating a user and signing out", async ({ page,
   }
 
   await signIn(page, adminUser, adminPassword);
-  // Sign-in lands on the movie library for administrators.
-  await expect(page.getByTestId("movie-library")).toBeVisible();
+  // Sign-in lands on the overview for administrators.
+  await expect(page.getByTestId("overview")).toBeVisible();
   await page.getByRole("link", { name: "Requests" }).first().click();
   await expect(page.getByRole("heading", { name: "Requests" })).toBeVisible();
 

@@ -15,7 +15,7 @@ describe("sign-in", () => {
     await userEvent.type(await screen.findByLabelText("Username"), "ana");
     await userEvent.type(screen.getByLabelText("Password"), "secret-pass");
     await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
-    await waitFor(() => expect(router.state.location.pathname).toBe("/movies"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/"));
     expect(calls).toHaveBeenCalled();
   });
 
@@ -44,7 +44,7 @@ describe("sign-in", () => {
     await userEvent.click(screen.getByRole("button", { name: "Use a recovery code instead" }));
     await userEvent.type(screen.getByLabelText("Recovery code"), "abcd-efgh-jkmn");
     await userEvent.click(screen.getByRole("button", { name: "Verify" }));
-    await waitFor(() => expect(router.state.location.pathname).toBe("/movies"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/"));
     expect(bodies.at(-1)).toMatchObject({ username: "ana", recoveryCode: "abcd-efgh-jkmn" });
     expect(bodies.at(-1)).not.toHaveProperty("totpCode");
     // The account's language is applied after sign-in.

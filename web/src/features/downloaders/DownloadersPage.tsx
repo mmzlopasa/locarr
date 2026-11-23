@@ -101,7 +101,13 @@ export function DownloadersPage() {
                     {cats.length ? ` · ${t("downloaders.categoriesList", { categories: cats.join(", ") })}` : ""}
                     {` · ${t("downloaders.priorityShort", { priority: c.priority })}`}
                   </p>
-                  {c.status.error && !c.status.ok ? <p className="mt-0.5 break-words text-[12px] text-danger">{c.status.error}</p> : null}
+                  {c.status.error && !c.status.ok && c.enabled ? (
+                    <p className="mt-0.5 break-words text-[12px] text-danger" data-testid="client-error">
+                      {t(`downloaders.testErrors.${c.status.errorCode ?? "client_error"}`, { defaultValue: t("downloaders.testErrors.client_error") })}
+                      {" — "}
+                      <span className="font-mono text-[11px]">{c.status.error}</span>
+                    </p>
+                  ) : null}
                 </div>
                 {impl ? (
                   <Button onClick={() => setEditing({ impl, client: c })}>{t("downloaders.edit")}</Button>

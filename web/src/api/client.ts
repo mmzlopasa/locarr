@@ -200,6 +200,27 @@ export type NotificationTestResult = Schemas["NotificationTestResult"];
 export type NotificationSettings = Schemas["NotificationSettings"];
 export type NotificationSettingsInput = Schemas["NotificationSettingsInput"];
 export type SmtpSecurity = Schemas["SmtpSecurity"];
+export type BoardKind = Schemas["BoardKind"];
+export type BoardGroup = Schemas["BoardGroup"];
+export type BoardSummary = Schemas["BoardSummary"];
+export type BoardItem = Schemas["BoardItem"];
+export type BoardActionRequest = Schemas["BoardActionRequest"];
+export type BoardActionResult = Schemas["BoardActionResult"];
+export type HistoryCategory = Schemas["HistoryCategory"];
+export type HistoryEntry = Schemas["HistoryEntry"];
+export type HistoryPage = Schemas["HistoryPage"];
+export type SourceStats = Schemas["SourceStats"];
+export type ActivityStats = Schemas["ActivityStats"];
+export type HealthSeverity = Schemas["HealthSeverity"];
+export type HealthIssue = Schemas["HealthIssue"];
+export type HealthReport = Schemas["HealthReport"];
+export type LogLevel = Schemas["LogLevel"];
+export type LogEntry = Schemas["LogEntry"];
+export type LogFile = Schemas["LogFile"];
+export type Backup = Schemas["Backup"];
+export type RestoreStarted = Schemas["RestoreStarted"];
+export type SystemSettings = Schemas["SystemSettings"];
+export type SystemSettingsInput = Schemas["SystemSettingsInput"];
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -346,6 +367,15 @@ export const queryKeys = {
   streameroUsers: ["mediaserver", "streamero", "users"] as const,
   channels: (personal: boolean) => ["notificationchannels", personal ? "mine" : "shared"] as const,
   notificationSettings: ["settings", "notifications"] as const,
+  board: (kind: string) => ["board", kind] as const,
+  boardItems: (code: string, kind: string, q: string, offset: number) => ["board", "items", code, kind, q, offset] as const,
+  history: (filter: object) => ["history", filter] as const,
+  activityStats: (days: number) => ["activity", "stats", days] as const,
+  health: ["system", "health"] as const,
+  logs: (level: string, q: string) => ["system", "logs", level, q] as const,
+  logFiles: ["system", "logs", "files"] as const,
+  backups: ["system", "backups"] as const,
+  systemSettings: ["settings", "system"] as const,
 };
 
 /** URL of a cached TMDb image ("" when there is none). */

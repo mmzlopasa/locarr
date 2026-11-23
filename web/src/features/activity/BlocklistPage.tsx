@@ -12,10 +12,18 @@ export function BlocklistPage() {
     mutationFn: async (id: number) => unwrap(await api.DELETE("/queue/blocklist/{id}", { params: { path: { id } } })),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.blocklist }),
   });
+  const clear = useMutation({
+    mutationFn: async () => unwrap(await api.DELETE("/queue/blocklist")),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.blocklist }),
+  });
   return (
-    <Panel title={t("blocklist.title")} description={t("blocklist.subtitle")}>
+    <Panel title={t("blocklist.title")} description={t("blocklist.subtitle")}
+      actions={list.data?.length ? (
+        <ConfirmButton label={t("blocklist.clear")} confirmLabel={t("blocklist.clearConfirm", { count: list.data.length })}
+          busy={clear.isPending} onConfirm={() => clear.mutate()} testId="blocklist-clear" />
+      ) : undefined}>
       {list.isPending ? <Spinner /> : null}
-      <ErrorAlert error={list.error ?? remove.error} />
+      <ErrorAlert error={list.error ?? remove.error ?? clear.error} />
       {list.data?.length === 0 ? <EmptyState>{t("blocklist.none")}</EmptyState> : null}
       <ul className="divide-y divide-line" data-testid="blocklist">
         {list.data?.map((b) => (

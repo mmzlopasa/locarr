@@ -1,18 +1,12 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { ApiError } from "@/api/client";
 import { ErrorAlert } from "@/components/ui";
 
 /** An API error, with the server's explanation for validation errors. */
 export function ApiErrorDetail({ error }: { error: unknown }) {
   if (!error) return null;
-  const detail = error instanceof ApiError && error.code === "validation" ? error.message : null;
-  return (
-    <div className="flex flex-col gap-1">
-      <ErrorAlert error={error} />
-      {detail ? <p className="font-mono text-[12px] text-faint" data-testid="error-detail">{detail}</p> : null}
-    </div>
-  );
+  // ErrorAlert shows the server's reason (for example a validation message) under the sentence.
+  return <ErrorAlert error={error} />;
 }
 
 /** A small label/value row used in the result cards. */

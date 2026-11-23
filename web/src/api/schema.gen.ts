@@ -432,7 +432,7 @@ export interface paths {
         put?: never;
         /**
          * Add a root folder (administrators)
-         * @description The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
+         * @description The folder must be inside one of the allowed data roots (`LOCARR_DATA_ROOTS`); it must exist unless `create` is set.
          */
         post: operations["createRootFolder"];
         delete?: never;
@@ -999,7 +999,8 @@ export interface paths {
         put?: never;
         /** Block a release (library managers) */
         post: operations["addBlocklistEntry"];
-        delete?: never;
+        /** Unblock every release (library managers) */
+        delete: operations["clearBlocklist"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4394,6 +4395,350 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/board": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * "Why didn't it land?": monitored missing items grouped by their current reason and fix (library managers)
+         * @description Groups every monitored item that is missing (movies, episodes, albums) or misses
+         *     subtitles by the explainer's current answer. The answers are precomputed and kept
+         *     up to date on events, so this is cheap even with tens of thousands of items.
+         *     For groups of searched items, `reasons` adds up the top rejection reasons.
+         */
+        get: operations["getBoard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/board/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One page of board items (library managers) */
+        get: operations["listBoardItems"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/board/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Act on several board items at once (library managers)
+         * @description `search` searches now; `unmonitor` stops monitoring; `change_profile` sets
+         *     `qualityProfileId` (on the movie, the episode's series or the album's artist);
+         *     `blocklist_retry` removes the item's last download from its client, blocks the
+         *     release and searches again; `retry_import` imports a finished download again
+         *     (or polls the clients when the files were not visible yet).
+         */
+        post: operations["boardAction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/board/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Recompute every board item now (library managers) */
+        post: operations["refreshBoard"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What happened across the whole library, newest first (library managers) */
+        get: operations["listHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/activity/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Grabs, success rate and time to import per indexer and download client (library managers) */
+        get: operations["getActivityStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Current health issues with how to fix them (administrators) */
+        get: operations["getHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/health/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run every health check now (administrators) */
+        post: operations["runHealthChecks"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Numbers for monitoring dashboards (administrators and their read-only keys)
+         * @description Also served at `/api/stats` (send `X-Api-Key`). At most 15 seconds old.
+         *     Fields are documented in docs/user/troubleshooting.md.
+         */
+        get: operations["getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recent log entries, newest last (administrators) */
+        get: operations["listLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/logs/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * New log entries as they happen (administrators)
+         * @description Server-sent events; each `entry` event's `data` is one LogEntry as JSON.
+         */
+        get: operations["streamLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/logs/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Log files in the config folder (administrators) */
+        get: operations["listLogFiles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/logs/files/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download one log file (administrators) */
+        get: operations["downloadLogFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/backups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Backups in the config folder (administrators) */
+        get: operations["listBackups"];
+        put?: never;
+        /**
+         * Make a backup now (administrators)
+         * @description The zip holds the database, the secret key and the settings; keep it private.
+         */
+        post: operations["createBackup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/backups/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore an uploaded backup (administrators)
+         * @description The body is a backup zip made by Locarr (at most 2 GiB). `confirm` must be
+         *     `RESTORE`. Locarr first backs up the current state, stops its background work,
+         *     replaces the database and the secret key, starts again in the same process and
+         *     signs out every session except the caller's. Media files are never touched.
+         */
+        post: operations["restoreUploadedBackup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/backups/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download a backup (administrators) */
+        get: operations["downloadBackup"];
+        put?: never;
+        post?: never;
+        /** Delete a backup (administrators) */
+        delete: operations["deleteBackup"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/backups/{name}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore a backup from the config folder (administrators)
+         * @description See `POST /system/backups/restore`.
+         */
+        post: operations["restoreBackup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/system": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Health thresholds, backups, retention, version check and metrics (administrators) */
+        get: operations["getSystemSettings"];
+        /**
+         * Change system settings (administrators)
+         * @description Leave `metricsToken` out to keep it, "" to turn `/metrics` off.
+         */
+        put: operations["updateSystemSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4640,6 +4985,13 @@ export interface components {
             /** @description The folder exists and can be listed. */
             accessible: boolean;
             writable: boolean;
+            /**
+             * @description Why the write test failed (absent when writable).
+             * @enum {string}
+             */
+            notWritableReason?: "permission_denied" | "read_only_filesystem" | "not_found" | "other";
+            /** @description The error of the write test, as the system reported it. */
+            notWritableDetail?: string;
             /** Format: int64 */
             freeSpaceBytes?: number;
             /** Format: int64 */
@@ -4650,6 +5002,8 @@ export interface components {
         CreateRootFolderRequest: {
             path: string;
             kind: components["schemas"]["MediaKind"];
+            /** @description Create the folder (inside the data roots) when it does not exist yet. */
+            create?: boolean;
         };
         FolderEntry: {
             name: string;
@@ -8199,6 +8553,289 @@ export interface components {
                 [key: string]: string;
             };
         };
+        /** @enum {string} */
+        BoardKind: "movie" | "episode" | "album" | "subtitle";
+        BoardKindCounts: {
+            movie: number;
+            episode: number;
+            album: number;
+            subtitle: number;
+        };
+        BoardGroup: {
+            /**
+             * @description The explanation code (see `Explanation`) plus `stalled`, `path_not_visible`,
+             *     `subtitle_not_searched`, `subtitle_not_found`, `subtitle_no_providers`, `subtitle_quota`.
+             */
+            code: string;
+            /** @enum {string} */
+            tone: "success" | "info" | "warning" | "danger";
+            /**
+             * @description What usually fixes the group: path_mapping, permissions, client_category, disk_space,
+             *     indexers, download_clients, subtitle_providers, manual_import, profile, or "".
+             */
+            fix: string;
+            count: number;
+            kinds: components["schemas"]["BoardKindCounts"];
+            /** @description Searches made for the items of the group, added up. */
+            searches: number;
+            /** @description Rejection reasons of the items' last searches, added up (most common first, at most 8). */
+            reasons: components["schemas"]["ReasonCount"][];
+        };
+        BoardSummary: {
+            total: number;
+            /**
+             * Format: date-time
+             * @description When the board was last rebuilt in full.
+             */
+            updatedAt?: string;
+            groups: components["schemas"]["BoardGroup"][];
+        };
+        BoardItem: {
+            key: string;
+            kind: components["schemas"]["BoardKind"];
+            itemRef: string;
+            /** @description The series or artist ("" for movies). */
+            parentRef: string;
+            title: string;
+            code: string;
+            /** @enum {string} */
+            tone: "success" | "info" | "warning" | "danger";
+            fix: string;
+            /** @description English text; clients render `code` and `params`. */
+            message: string;
+            params: {
+                [key: string]: unknown;
+            };
+            reasons: components["schemas"]["ReasonCount"][];
+            searches: number;
+            /** Format: int64 */
+            downloadId?: number;
+            /** Format: int64 */
+            qualityProfileId?: number;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        BoardItemPage: {
+            total: number;
+            items: components["schemas"]["BoardItem"][];
+        };
+        BoardActionRequest: {
+            /** @enum {string} */
+            action: "search" | "unmonitor" | "change_profile" | "blocklist_retry" | "retry_import";
+            keys: string[];
+            /** Format: int64 */
+            qualityProfileId?: number;
+        };
+        BoardActionFailure: {
+            key: string;
+            code: string;
+            message: string;
+        };
+        BoardActionResult: {
+            done: number;
+            failed: components["schemas"]["BoardActionFailure"][];
+        };
+        /** @enum {string} */
+        HistoryCategory: "grabbed" | "imported" | "upgraded" | "failed" | "deleted" | "renamed" | "subtitles" | "notifications";
+        HistoryEntry: {
+            /** @description Stable within its source ("t:12", "d:7", "s:3"). */
+            id: string;
+            /** Format: date-time */
+            at: string;
+            category: components["schemas"]["HistoryCategory"];
+            type: string;
+            /** @enum {string} */
+            kind?: "movie" | "series" | "music";
+            itemRef: string;
+            title: string;
+            release?: string;
+            indexer?: string;
+            client?: string;
+            message: string;
+            /** Format: int64 */
+            downloadId?: number;
+        };
+        HistoryPage: {
+            items: components["schemas"]["HistoryEntry"][];
+            hasMore: boolean;
+        };
+        SourceStats: {
+            /** Format: int64 */
+            id?: number;
+            name: string;
+            grabs: number;
+            imported: number;
+            /** @description Downloads that failed in the client or were given up as stalled. */
+            failed: number;
+            inProgress: number;
+            /** @description imported / (imported + failed); absent when nothing finished. */
+            successRate?: number;
+            /**
+             * Format: int64
+             * @description Average time from grab to import.
+             */
+            avgImportSeconds?: number;
+        };
+        ActivityStats: {
+            days: number;
+            indexers: components["schemas"]["SourceStats"][];
+            clients: components["schemas"]["SourceStats"][];
+        };
+        BlocklistCleared: {
+            count: number;
+        };
+        /** @enum {string} */
+        HealthSeverity: "error" | "warning" | "info";
+        HealthIssue: {
+            /** @description Unique per problem ("indexer:3", "rootfolder:2:space"). */
+            key: string;
+            check: string;
+            severity: components["schemas"]["HealthSeverity"];
+            /** @description Stable code the clients translate. */
+            code: string;
+            /** @description English text. */
+            message: string;
+            params: {
+                [key: string]: unknown;
+            };
+            /** @description Anchor in docs/user/troubleshooting.md. */
+            docs: string;
+            /** @description The web client page where it is fixed. */
+            fixRoute?: string;
+            /** Format: date-time */
+            since: string;
+        };
+        HealthReport: {
+            /** Format: date-time */
+            checkedAt?: string;
+            issues: components["schemas"]["HealthIssue"][];
+        };
+        StatsRootFolder: {
+            path: string;
+            kind: components["schemas"]["MediaKind"];
+            accessible: boolean;
+            /** Format: int64 */
+            freeBytes?: number;
+            /** Format: int64 */
+            totalBytes?: number;
+        };
+        Stats: {
+            version: string;
+            commit: string;
+            /** Format: date-time */
+            generatedAt: string;
+            movies: number;
+            moviesHave: number;
+            /** @description Monitored movies without a file. */
+            moviesMissing: number;
+            series: number;
+            episodes: number;
+            episodesHave: number;
+            /** @description Monitored episodes that aired and have no file. */
+            episodesMissing: number;
+            artists: number;
+            albums: number;
+            /** @description Albums with at least one track file. */
+            albumsHave: number;
+            /** @description Monitored released albums without any track file. */
+            albumsMissing: number;
+            /** @description Downloads still in a client (active or waiting for import). */
+            queueSize: number;
+            activeDownloads: number;
+            /**
+             * Format: int64
+             * @description Total download speed in bytes per second.
+             */
+            downloadSpeedBytes: number;
+            /** @description Monitored, available movies without a file. */
+            wantedMovies: number;
+            wantedEpisodes: number;
+            wantedAlbums: number;
+            /** @description Finished downloads whose import failed. */
+            failedImports: number;
+            healthErrors: number;
+            healthWarnings: number;
+            healthInfo: number;
+            indexers: number;
+            indexersHealthy: number;
+            indexersFailing: number;
+            indexersDisabled: number;
+            requestsPending: number;
+            /** @description Files missing at least one wanted subtitle language. */
+            subtitlesMissing: number;
+            /** Format: date-time */
+            lastRssSyncAt?: string;
+            rootFolders: components["schemas"]["StatsRootFolder"][];
+        };
+        /** @enum {string} */
+        LogLevel: "debug" | "info" | "warn" | "error";
+        LogEntry: {
+            /** Format: int64 */
+            seq: number;
+            /** Format: date-time */
+            time: string;
+            level: components["schemas"]["LogLevel"];
+            message: string;
+            fields: {
+                [key: string]: unknown;
+            };
+        };
+        LogFile: {
+            name: string;
+            /** Format: int64 */
+            size: number;
+            /** Format: date-time */
+            modifiedAt: string;
+        };
+        Backup: {
+            name: string;
+            /** @enum {string} */
+            kind: "scheduled" | "manual" | "pre_restore" | "uploaded";
+            /** Format: int64 */
+            size: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** @description Locarr version that made it. */
+            version?: string;
+        };
+        RestoreStarted: {
+            restarting: boolean;
+            /** @description The backup of the state before the restore. */
+            preRestoreBackup?: string;
+        };
+        SystemSettings: {
+            /** @description Ask GitHub once a day whether a newer Locarr exists. */
+            updateCheck: boolean;
+            minFreeSpaceGb: number;
+            recycleBinWarnGb: number;
+            stuckImportMinutes: number;
+            /** @description 0 turns scheduled backups off. */
+            backupIntervalHours: number;
+            backupKeep: number;
+            timelineDays: number;
+            searchLogDays: number;
+            downloadEventsDays: number;
+            releasesSeenDays: number;
+            /** @description 0 turns the database compaction off. */
+            vacuumIntervalDays: number;
+            imageCacheMaxMb: number;
+            metricsTokenSet: boolean;
+        };
+        SystemSettingsInput: {
+            updateCheck?: boolean;
+            minFreeSpaceGb?: number;
+            recycleBinWarnGb?: number;
+            stuckImportMinutes?: number;
+            backupIntervalHours?: number;
+            backupKeep?: number;
+            timelineDays?: number;
+            searchLogDays?: number;
+            downloadEventsDays?: number;
+            releasesSeenDays?: number;
+            vacuumIntervalDays?: number;
+            imageCacheMaxMb?: number;
+            metricsToken?: string;
+        };
     };
     responses: {
         /** @description Signed in */
@@ -8227,6 +8864,7 @@ export interface components {
         SubtitleProviderName: "opensubtitles" | "subdl" | "jimaku";
         /** @description movie:ID or episode:ID */
         SubtitleItemRef: string;
+        BackupName: string;
         ID: number;
         /** @description Free text. */
         SearchQ: string;
@@ -9891,6 +10529,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BlocklistEntry"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    clearBlocklist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlocklistCleared"];
                 };
             };
             default: components["responses"]["Error"];
@@ -15652,6 +16311,492 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MigrateCheckItem"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getBoard: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["BoardKind"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Groups */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardSummary"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listBoardItems: {
+        parameters: {
+            query?: {
+                code?: string;
+                fix?: string;
+                kind?: components["schemas"]["BoardKind"];
+                q?: string;
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Items, by title */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardItemPage"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    boardAction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BoardActionRequest"];
+            };
+        };
+        responses: {
+            /** @description What was done */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardActionResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    refreshBoard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listHistory: {
+        parameters: {
+            query?: {
+                category?: components["schemas"]["HistoryCategory"];
+                kind?: components["schemas"]["MediaKind"];
+                q?: string;
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Entries */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HistoryPage"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getActivityStats: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statistics */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivityStats"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Issues (empty when all is well) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthReport"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    runHealthChecks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Issues */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthReport"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Stats */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Stats"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listLogs: {
+        parameters: {
+            query?: {
+                level?: components["schemas"]["LogLevel"];
+                q?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Entries */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LogEntry"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    streamLogs: {
+        parameters: {
+            query?: {
+                level?: components["schemas"]["LogLevel"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Event stream */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listLogFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Files, newest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LogFile"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    downloadLogFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The file (JSON lines) */
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listBackups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Backups, newest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Backup"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createBackup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Made */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Backup"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    restoreUploadedBackup: {
+        parameters: {
+            query: {
+                confirm: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/zip": string;
+            };
+        };
+        responses: {
+            /** @description Restarting with the restored data */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RestoreStarted"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    downloadBackup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["BackupName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The zip */
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/zip": string;
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteBackup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["BackupName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    restoreBackup: {
+        parameters: {
+            query: {
+                confirm: string;
+            };
+            header?: never;
+            path: {
+                name: components["parameters"]["BackupName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Restarting with the restored data */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RestoreStarted"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getSystemSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SystemSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSystemSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SystemSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SystemSettings"];
                 };
             };
             default: components["responses"]["Error"];

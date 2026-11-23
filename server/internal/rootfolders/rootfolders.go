@@ -38,8 +38,10 @@ type Folder struct {
 	Kind       string
 	Accessible bool
 	Writable   bool
-	Space      *lfs.Space
-	CreatedAt  time.Time
+	// WriteProblem says why it is not writable (nil when it is).
+	WriteProblem *lfs.WriteProblem
+	Space        *lfs.Space
+	CreatedAt    time.Time
 }
 
 // Service manages root folders inside the allowed data roots.
@@ -61,7 +63,8 @@ func inspect(f *Folder) {
 	if !f.Accessible {
 		return
 	}
-	f.Writable = lfs.Writable(f.Path)
+	f.WriteProblem = lfs.CheckWritable(f.Path)
+	f.Writable = f.WriteProblem == nil
 	if sp, err := lfs.DiskSpace(f.Path); err == nil {
 		f.Space = &sp
 	}
@@ -100,6 +103,24 @@ func (s *Service) Records(ctx context.Context) ([]Folder, error) {
 		out = append(out, f)
 	}
 	return out, rows.Err()
+}
+
+// Create makes path (inside the data roots) when it does not exist yet and
+// adds it as a root folder.
+func (s *Service) Create(ctx context.Context, path, kind string) (Folder, error) {
+	switch kind {
+	case KindMovies, KindSeries, KindMusic:
+	default:
+		return Folder{}, ErrInvalidKind
+	}
+	p, err := lfs.SafePath(s.Roots, path)
+	if err != nil {
+		return Folder{}, err
+	}
+	if err := os.MkdirAll(p, 0o775); err != nil { // #nosec G301 -- media folders are shared with the media server
+		return Folder{}, err
+	}
+	return s.Add(ctx, p, kind)
 }
 
 // Add records an existing folder inside the data roots as a root folder.

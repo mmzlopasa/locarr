@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { errorMessage } from "./errors";
+import { errorDetail, errorMessage } from "./errors";
 
 type Variant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -142,7 +142,13 @@ export function Alert({ tone = "danger", children }: { tone?: Tone; children: Re
 export function ErrorAlert({ error }: { error: unknown }) {
   const { t } = useTranslation();
   if (!error) return null;
-  return <Alert>{errorMessage(t, error)}</Alert>;
+  const detail = errorDetail(error);
+  return (
+    <Alert>
+      {errorMessage(t, error)}
+      {detail ? <span className="mt-1 block break-words font-mono text-[11px] opacity-80" data-testid="error-detail">{detail}</span> : null}
+    </Alert>
+  );
 }
 
 export function Spinner({ label }: { label?: string }) {

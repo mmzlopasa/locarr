@@ -273,6 +273,30 @@ func (s *Store) Facts(ctx context.Context, ref, kindCategory string) (Facts, err
 // related items whose searches and decisions also concern it (an episode's
 // season). Searches add up; the latest decision of any ref counts.
 func (s *Store) FactsRefs(ctx context.Context, refs []string, kindCategory string) (Facts, error) {
+	return s.FactsCounted(ctx, refs, kindCategory, nil)
+}
+
+// Counts are the indexers usable for automatic search of one kind and the
+// enabled download clients.
+type Counts struct{ Indexers, Clients int }
+
+// Counts loads Counts for kindCategory ("movies", "tv", "music").
+func (s *Store) Counts(ctx context.Context, kindCategory string) (Counts, error) {
+	var c Counts
+	// An indexer counts when it is enabled for automatic search and offers
+	// categories of this kind (an empty list means "the standard ones").
+	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM indexers WHERE enabled = 1 AND enable_automatic = 1
+		AND (json_extract(categories, '$.`+kindCategory+`') IS NULL OR json_array_length(json_extract(categories, '$.`+kindCategory+`')) > 0)`).
+		Scan(&c.Indexers); err != nil { // #nosec G202 -- kindCategory is a constant from the caller
+		return c, err
+	}
+	err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM download_clients WHERE enabled = 1`).Scan(&c.Clients)
+	return c, err
+}
+
+// FactsCounted is FactsRefs with the indexer and client counts already
+// loaded (nil = load them), for callers that explain many items at once.
+func (s *Store) FactsCounted(ctx context.Context, refs []string, kindCategory string, counts *Counts) (Facts, error) {
 	var f Facts
 	if len(refs) == 0 {
 		return f, nil
@@ -392,15 +416,13 @@ func (s *Store) FactsRefs(ctx context.Context, refs []string, kindCategory strin
 			f.GrabFailure = skipped
 		}
 	}
-	// An indexer counts when it is enabled for automatic search and offers
-	// categories of this kind (an empty list means "the standard ones").
-	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM indexers WHERE enabled = 1 AND enable_automatic = 1
-		AND (json_extract(categories, '$.`+kindCategory+`') IS NULL OR json_array_length(json_extract(categories, '$.`+kindCategory+`')) > 0)`).
-		Scan(&f.Indexers); err != nil { // #nosec G202 -- kindCategory is a constant from the caller
-		return f, err
+	if counts == nil {
+		c, err := s.Counts(ctx, kindCategory)
+		if err != nil {
+			return f, err
+		}
+		counts = &c
 	}
-	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM download_clients WHERE enabled = 1`).Scan(&f.Clients); err != nil {
-		return f, err
-	}
+	f.Indexers, f.Clients = counts.Indexers, counts.Clients
 	return f, nil
 }

@@ -1,9 +1,10 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Folder, FolderOpen } from "lucide-react";
 import { api, queryKeys, unwrap, type MediaKind } from "@/api/client";
 import { formatBytes } from "@/components/format";
+import { DOCS_BASE } from "@/features/board/board";
 import { Alert, Badge, Button, ConfirmButton, EmptyState, ErrorAlert, PageHeader, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 
 const KINDS: MediaKind[] = ["movies", "series", "music"];
@@ -42,7 +43,7 @@ export function RootFoldersPage() {
         <form onSubmit={submit} className="flex flex-col gap-3">
           <div className="flex flex-wrap items-end gap-3">
             <div className="min-w-64 flex-1">
-              <TextInput label={t("rootFolders.path")} className="font-mono" placeholder="/data/media/movies" value={path}
+              <TextInput label={t("rootFolders.path")} className="font-mono" placeholder="/data/movies" value={path}
                 onChange={(e) => setPath(e.target.value)} />
             </div>
             <div className="w-40">
@@ -77,8 +78,18 @@ export function RootFoldersPage() {
                 <p className="flex flex-wrap items-center gap-2">
                   <span className="break-all font-mono text-[13px] text-fg">{f.path}</span>
                   <Badge>{t(`mediaKinds.${f.kind}`)}</Badge>
-                  {!f.accessible ? <Badge tone="danger">{t("rootFolders.missing")}</Badge> : !f.writable ? <Badge tone="warning">{t("rootFolders.readOnly")}</Badge> : null}
+                  {!f.accessible ? <Badge tone="danger">{t("rootFolders.missing")}</Badge> : !f.writable ? (
+                    <span title={f.notWritableDetail}><Badge tone="warning">{t("rootFolders.readOnly")}</Badge></span>
+                  ) : null}
                 </p>
+                {!f.accessible || !f.writable ? (
+                  <p className="text-[12px] text-warning" data-testid="rootfolder-problem">
+                    {!f.accessible ? t("rootFolders.notAccessible") : t(`rootFolders.notWritable.${f.notWritableReason ?? "other"}`)}
+                    {f.accessible && f.notWritableDetail ? <span className="font-mono text-[11px]"> ({f.notWritableDetail})</span> : null}{" "}
+                    <a href={`${DOCS_BASE}#${f.accessible ? "permissions" : "root-folders"}`} target="_blank" rel="noreferrer"
+                      className="text-info hover:underline">{t("rootFolders.howToFix")}</a>
+                  </p>
+                ) : null}
                 {f.accessible ? (
                   <p className="text-[12px] text-faint">
                     {t("rootFolders.space", {
@@ -100,7 +111,7 @@ export function RootFoldersPage() {
 }
 
 /** Lets an administrator click through the folders inside the allowed data roots. */
-function FolderBrowser({ start, onPick }: { start: string; onPick: (p: string) => void }) {
+export function FolderBrowser({ start, onPick }: { start: string; onPick: (p: string) => void }) {
   const { t } = useTranslation();
   const [current, setCurrent] = useState(start);
   const listing = useQuery({
@@ -112,6 +123,11 @@ function FolderBrowser({ start, onPick }: { start: string; onPick: (p: string) =
     setCurrent(p);
     onPick(p);
   };
+  // With a single data folder (usually /data) open it straight away.
+  const only = !current && !listing.data?.path && listing.data?.entries.length === 1 ? (listing.data.entries[0]?.path ?? "") : "";
+  useEffect(() => {
+    if (only) setCurrent(only);
+  }, [only]);
   return (
     <div className="rounded-ui border border-line bg-surface-2 p-2" data-testid="folder-browser">
       <div className="mb-1 flex items-center justify-between gap-2 px-1">
