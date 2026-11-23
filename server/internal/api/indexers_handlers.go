@@ -172,7 +172,7 @@ func (h *Handler) fromInput(g *gen.IndexerInput) indexers.Input {
 		in.RequestLimit, in.RequestPeriodSec = ptrInt(g.RequestLimit), ptrInt(g.RequestPeriodSeconds)
 	}
 	// The API fills its default timeout (30 s) in; a slow site keeps its own.
-	if t := g.TimeoutSeconds.Or(0); t > 0 && !(isNative && t == 30) {
+	if t := g.TimeoutSeconds.Or(0); t > 0 && (!isNative || t != 30) {
 		in.TimeoutSeconds = t
 	}
 	in.ProxyURL, in.ProxyUsername, in.FlareSolverrURL = g.ProxyUrl.Or(""), g.ProxyUsername.Or(""), g.FlaresolverrUrl.Or("")

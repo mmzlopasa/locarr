@@ -134,7 +134,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	if strings.HasPrefix(name, "{") {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = io.WriteString(w, name)
+		_, _ = io.WriteString(w, name) // #nosec G705 -- a fixed JSON answer of the test fake
 		return
 	}
 	b, err := files.ReadFile("testdata/" + site + "/" + name)
@@ -150,5 +150,5 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	}
-	_, _ = w.Write(b)
+	_, _ = w.Write(b) // #nosec G705 -- an embedded recording served by the test fake
 }

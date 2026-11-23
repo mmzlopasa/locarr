@@ -71,10 +71,10 @@ func search(t *testing.T, c *native.Client, r znab.Request) []znab.Item {
 }
 
 // checkItems asserts what every built-in result must have.
-func checkItems(t *testing.T, items []znab.Item, min int) {
+func checkItems(t *testing.T, items []znab.Item, least int) {
 	t.Helper()
-	if len(items) < min {
-		t.Fatalf("got %d items, want at least %d", len(items), min)
+	if len(items) < least {
+		t.Fatalf("got %d items, want at least %d", len(items), least)
 	}
 	for _, it := range items {
 		if it.Title == "" || it.GUID == "" {

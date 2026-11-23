@@ -30,7 +30,7 @@ var templateFuncs = template.FuncMap{
 		return v
 	},
 	"lower":   strings.ToLower,
-	"replace": func(old, new, s string) string { return strings.ReplaceAll(s, old, new) },
+	"replace": func(from, to, s string) string { return strings.ReplaceAll(s, from, to) },
 	// dashed turns "Big Buck Bunny" into "Big-Buck-Bunny" (path-style searches).
 	"dashed": func(s string) string { return strings.Join(strings.Fields(s), "-") },
 	"pad2": func(s string) string {
