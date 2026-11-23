@@ -46,8 +46,10 @@ type Client struct {
 	Creds    func(ctx context.Context) (Credentials, error)
 	Language func(ctx context.Context) string // e.g. "en-US"
 	Cache    *metadata.Cache
-	Limiter  *metadata.Limiter
-	HTTP     *http.Client
+	// Health records how requests go (nil = not recorded).
+	Health  *metadata.Health
+	Limiter *metadata.Limiter
+	HTTP    *http.Client
 
 	mu       sync.Mutex
 	token    string
@@ -182,11 +184,12 @@ func (c *Client) Validate(ctx context.Context, cr Credentials) (string, error) {
 }
 
 // get fetches path through the cache, logging in (again) when needed.
-func (c *Client) get(ctx context.Context, path string, ttl time.Duration, out any) error {
+func (c *Client) get(ctx context.Context, path string, ttl time.Duration, out any) (err error) {
 	key := metadata.CacheKey(providerName, path)
 	if body, ok := c.Cache.Get(ctx, key); ok {
 		return json.Unmarshal(body, out)
 	}
+	defer func() { c.Health.Record(providerName, err) }()
 	for attempt := 0; attempt < 2; attempt++ {
 		tok, err := c.login(ctx, attempt > 0)
 		if err != nil {

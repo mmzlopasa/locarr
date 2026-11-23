@@ -51,6 +51,8 @@ type Client struct {
 	// Contact returns the operator's contact for the User-Agent ("" = ProjectURL).
 	Contact func(ctx context.Context) string
 	Cache   *metadata.Cache
+	// Health records how requests go (nil = not recorded).
+	Health *metadata.Health
 	// Limiter: one request per second to MusicBrainz (the Cover Art Archive
 	// has no such limit but shares it to stay polite).
 	Limiter *metadata.Limiter
@@ -119,6 +121,7 @@ func (c *Client) get(ctx context.Context, path string, q url.Values, ttl time.Du
 		}
 	}
 	body, err := c.fetch(ctx, c.BaseURL+"/ws/2/"+path+"?"+q.Encode(), "application/json", maxBody)
+	c.Health.Record(providerName, err)
 	if err != nil {
 		return err
 	}
@@ -172,7 +175,7 @@ func (c *Client) fetch(ctx context.Context, u, accept string, limit int64) ([]by
 		}
 		return body, nil
 	}
-	return nil, fmt.Errorf("%w: rate limited", metadata.ErrUnavailable)
+	return nil, fmt.Errorf("%w: %w", metadata.ErrUnavailable, metadata.ErrRateLimited)
 }
 
 // Wire types (MusicBrainz JSON).

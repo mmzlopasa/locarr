@@ -255,3 +255,44 @@ func (s *Service) Item(ctx context.Context, id int64) (ListItem, error) {
 	}
 	return items[0], nil
 }
+
+// MissingMovie is a monitored movie without a file (for the "why didn't it
+// land?" board).
+type MissingMovie struct {
+	ID               int64
+	Title            string
+	SortTitle        string
+	Year             int
+	QualityProfileID int64
+	Available        bool
+	AvailableFrom    *time.Time
+}
+
+// Missing returns monitored movies without a file; ids limits it to those
+// movies (nil = all).
+func (s *Service) Missing(ctx context.Context, ids []int64) ([]MissingMovie, error) {
+	where := " WHERE i.kind = 'movie' AND i.monitored = 1 AND f.id IS NULL"
+	args := []any{}
+	if ids != nil {
+		if len(ids) == 0 {
+			return []MissingMovie{}, nil
+		}
+		where += " AND i.id IN (" + strings.TrimSuffix(strings.Repeat("?,", len(ids)), ",") + ")"
+		for _, id := range ids {
+			args = append(args, id)
+		}
+	}
+	list, err := s.query(ctx, `SELECT `+movieColumns+movieFrom+where, args...) // #nosec G202 -- placeholders only
+	if err != nil {
+		return nil, err
+	}
+	delay := s.availabilityDelay(ctx)
+	out := make([]MissingMovie, 0, len(list))
+	for i := range list {
+		m := &list[i]
+		avail, from := s.availableWith(m, delay)
+		out = append(out, MissingMovie{ID: m.ID, Title: m.Title, SortTitle: m.SortTitle, Year: m.Year, QualityProfileID: m.QualityProfileID,
+			Available: avail, AvailableFrom: from})
+	}
+	return out, nil
+}

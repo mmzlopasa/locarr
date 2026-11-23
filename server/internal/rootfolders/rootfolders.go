@@ -95,6 +95,24 @@ func (s *Service) List(ctx context.Context) ([]Folder, error) {
 	return out, nil
 }
 
+// Create makes path (inside the data roots) when it does not exist yet and
+// adds it as a root folder.
+func (s *Service) Create(ctx context.Context, path, kind string) (Folder, error) {
+	switch kind {
+	case KindMovies, KindSeries, KindMusic:
+	default:
+		return Folder{}, ErrInvalidKind
+	}
+	p, err := lfs.SafePath(s.Roots, path)
+	if err != nil {
+		return Folder{}, err
+	}
+	if err := os.MkdirAll(p, 0o775); err != nil { // #nosec G301 -- media folders are shared with the media server
+		return Folder{}, err
+	}
+	return s.Add(ctx, p, kind)
+}
+
 // Add records an existing folder inside the data roots as a root folder.
 func (s *Service) Add(ctx context.Context, path, kind string) (Folder, error) {
 	switch kind {

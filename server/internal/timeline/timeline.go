@@ -60,6 +60,8 @@ type Event struct {
 type Store struct {
 	DB  *db.DB
 	Now func() time.Time
+	// OnRecord is told about every recorded event's item (the board refreshes it).
+	OnRecord func(ref string)
 }
 
 func (s *Store) now() time.Time {
@@ -80,6 +82,9 @@ func (s *Store) Record(ctx context.Context, ref, typ, message string, data any, 
 	}
 	_, err := s.DB.W.ExecContext(ctx, `INSERT INTO timeline_events (item_ref, at, type, message, data, download_id) VALUES (?, ?, ?, ?, ?, ?)`,
 		ref, db.Millis(s.now()), typ, message, string(raw), downloadID)
+	if err == nil && s.OnRecord != nil {
+		s.OnRecord(ref)
+	}
 	return err
 }
 

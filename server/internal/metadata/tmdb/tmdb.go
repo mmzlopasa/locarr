@@ -41,8 +41,10 @@ type Client struct {
 	Language func(ctx context.Context) string
 	Region   func(ctx context.Context) string
 	Cache    *metadata.Cache
-	Limiter  *metadata.Limiter
-	HTTP     *http.Client
+	// Health records how requests go (nil = not recorded).
+	Health  *metadata.Health
+	Limiter *metadata.Limiter
+	HTTP    *http.Client
 }
 
 var _ metadata.MovieProvider = (*Client)(nil)
@@ -107,6 +109,7 @@ func (c *Client) getWith(ctx context.Context, key, path string, q url.Values, tt
 		}
 	}
 	body, err := c.fetch(ctx, key, path, q)
+	c.Health.Record(providerName, err)
 	if err != nil {
 		return err
 	}
@@ -169,7 +172,7 @@ func (c *Client) fetch(ctx context.Context, key, path string, q url.Values) ([]b
 		}
 		return body, nil
 	}
-	return nil, fmt.Errorf("%w: rate limited", metadata.ErrUnavailable)
+	return nil, fmt.Errorf("%w: %w", metadata.ErrUnavailable, metadata.ErrRateLimited)
 }
 
 func redact(s, key string) string {
