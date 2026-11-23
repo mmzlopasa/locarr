@@ -48,7 +48,8 @@ func (c *PathCache) SafePath(p string) (string, error) {
 		c.mu.Unlock()
 	}
 	if r.err != nil {
-		return "", r.err
+		// The folder itself is outside, but p may be a root.
+		return SafePath(c.Roots, p)
 	}
 	full := filepath.Join(r.path, base)
 	if st, err := os.Lstat(full); err == nil && st.Mode()&os.ModeSymlink != 0 {

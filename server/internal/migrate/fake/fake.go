@@ -65,6 +65,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !s.authorized(r, p) {
+		if s.Kind == "qbittorrent" {
+			http.Error(w, "Forbidden", http.StatusForbidden) // as qBittorrent answers without a session
+			return
+		}
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -390,7 +394,7 @@ func (s *Server) qbit(p string) (any, bool) {
 			"tv-sonarr": map[string]any{"name": "tv-sonarr", "savePath": ""},
 			"music":     map[string]any{"name": "music", "savePath": "/downloads/music"},
 		}, true
-	case "/api/v2/torrents/tags":
+	case "/api/v2/torrents/tags", "/api/v2/torrents/info":
 		return []string{}, true
 	}
 	return nil, false

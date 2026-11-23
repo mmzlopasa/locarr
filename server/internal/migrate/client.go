@@ -201,11 +201,14 @@ func (c *client) qbitLogin(ctx context.Context) error {
 	if res.Status == http.StatusForbidden {
 		return &SourceError{Code: "unauthorized", Message: "qBittorrent refused the sign-in (too many failed attempts block the address for a while)"}
 	}
-	if res.Status != http.StatusOK || !strings.HasPrefix(strings.TrimSpace(string(res.Body)), "Ok") {
+	// 200 "Ok." (v4) or 204 (v5); "Fails." is a wrong user or password.
+	body := strings.TrimSpace(string(res.Body))
+	if (res.Status != http.StatusOK && res.Status != http.StatusNoContent) || strings.HasPrefix(body, "Fails") {
 		return &SourceError{Code: "unauthorized", Message: "qBittorrent refused the user name or password"}
 	}
 	for _, ck := range (&http.Response{Header: res.Header}).Cookies() {
-		if ck.Name == "SID" || strings.HasSuffix(ck.Name, "_SID") {
+		// "SID", or "QBT_SID_<port>" in v5.
+		if ck.Name == "SID" || strings.Contains(ck.Name, "_SID") {
 			c.cookie = ck.Name + "=" + ck.Value
 		}
 	}

@@ -1002,6 +1002,14 @@ func (p *planner) planDelayProfiles(s *Snapshot, so SourceOptions) {
 		}
 		key := idKey(s.SourceID, "delayprofile", dp.ID)
 		it := &Item{Key: key, SourceID: s.SourceID, Category: "delayprofile", Name: name}
+		check := d
+		check.Default = isDefault
+		if err := check.Validate(); err != nil && (isDefault || len(tags) > 0) {
+			it.Action, it.Reason = ActionSkip, "invalid"
+			it.note("%v", err)
+			p.add(it)
+			continue
+		}
 		if !isDefault && len(tags) == 0 {
 			it.Action, it.Reason = ActionSkip, "unknown_tags"
 			it.note("its tags do not exist in %s any more", s.Name)

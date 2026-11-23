@@ -28,7 +28,7 @@ func TestPathCacheMatchesSafePath(t *testing.T) {
 	c := &PathCache{Roots: []string{root}}
 	for _, p := range []string{filepath.Join(root, "a", "b", "f.mkv"), filepath.Join(root, "a", "b", "link.mkv"),
 		filepath.Join(root, "a", "out", "secret"), filepath.Join(root, "a", "b", "..", "..", "..", "etc"), filepath.Join(root, "new", "x.mkv"),
-		"relative/x", ""} {
+		"relative/x", "", root, filepath.Dir(root)} {
 		for range 2 { // second time from the cache
 			got, err := c.SafePath(p)
 			want, werr := SafePath([]string{root}, p)
