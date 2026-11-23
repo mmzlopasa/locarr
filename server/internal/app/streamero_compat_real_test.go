@@ -172,8 +172,8 @@ func TestRealStreameroDiscover(t *testing.T) {
 			Kind          string
 			Title         string
 			Status        string
-			AllSeasons    bool `json:"allSeasons"`
-			FutureSeasons bool `json:"futureSeasons"`
+			AllSeasons    bool                      `json:"allSeasons"`
+			FutureSeasons bool                      `json:"futureSeasons"`
 			RequestedBy   struct{ Username string } `json:"requestedBy"`
 		}
 	}
