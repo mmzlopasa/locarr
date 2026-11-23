@@ -91,6 +91,8 @@ type Service struct {
 	setupCode string
 	now       func() time.Time
 
+	providers []Provider
+
 	mu            sync.Mutex
 	setupFailures int
 	setupBlocked  time.Time
