@@ -271,7 +271,10 @@ type rawProvider struct {
 	Priority                int        `json:"priority"`
 	Tags                    []int64    `json:"tags"`
 	Fields                  []arrField `json:"fields"`
-	Capabilities            *struct {
+	// Prowlarr: the indexer's definition and the site addresses it uses.
+	DefinitionName string   `json:"definitionName"`
+	IndexerURLs    []string `json:"indexerUrls"`
+	Capabilities   *struct {
 		Categories []struct {
 			ID            int `json:"id"`
 			SubCategories []struct {
@@ -290,7 +293,7 @@ func arrIndexers(ctx context.Context, c *client) ([]Indexer, error) {
 	for _, r := range raw {
 		ix := Indexer{ID: r.ID, Name: r.Name, Implementation: r.Implementation, Protocol: r.Protocol, Enable: r.Enable == nil || *r.Enable,
 			EnableRSS: r.EnableRSS, EnableAutomatic: r.EnableAutomaticSearch, EnableInteractive: r.EnableInteractiveSearch,
-			Priority: r.Priority, Tags: r.Tags, Fields: fieldMap(r.Fields)}
+			Priority: r.Priority, Tags: r.Tags, Fields: fieldMap(r.Fields), DefinitionName: r.DefinitionName, IndexerURLs: r.IndexerURLs}
 		if r.Enable == nil {
 			ix.Enable = r.EnableRSS || r.EnableAutomaticSearch || r.EnableInteractiveSearch
 		}

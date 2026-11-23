@@ -1,0 +1,74 @@
+{
+ "status": "ok",
+ "status_message": "Query was successful",
+ "data": {
+  "movie_count": 1,
+  "limit": 1,
+  "page_number": 1,
+  "movies": [
+   {
+    "id": 3709,
+    "url": "https://yts.pw/movies/the-shawshank-redemption-1994",
+    "imdb_code": "tt0111161",
+    "title": "The Shawshank Redemption",
+    "title_english": "The Shawshank Redemption",
+    "title_long": "The Shawshank Redemption (1994)",
+    "slug": "the-shawshank-redemption-1994",
+    "year": 1994,
+    "state": "ok",
+    "torrents": [
+     {
+      "url": "https://yts.pw/torrent/download/AC418DB33FA5CEA4FAB11BC58008FE08F291C9BE",
+      "hash": "AC418DB33FA5CEA4FAB11BC58008FE08F291C9BE",
+      "quality": "720p",
+      "type": "bluray",
+      "is_repack": "0",
+      "video_codec": "x264",
+      "bit_depth": "8",
+      "audio_channels": "2.0",
+      "seeds": 100,
+      "peers": 50,
+      "size": "848.96 MB",
+      "size_bytes": 890199081,
+      "date_uploaded": "2015-11-01 03:20:23",
+      "date_uploaded_unix": 1446344423
+     },
+     {
+      "url": "https://yts.pw/torrent/download/E0D00667650ABA9EE05AACBBBD8B55EA8A51F534",
+      "hash": "E0D00667650ABA9EE05AACBBBD8B55EA8A51F534",
+      "quality": "1080p",
+      "type": "bluray",
+      "is_repack": "0",
+      "video_codec": "x264",
+      "bit_depth": "8",
+      "audio_channels": "2.0",
+      "seeds": 100,
+      "peers": 100,
+      "size": "1.60 GB",
+      "size_bytes": 1717986918,
+      "date_uploaded": "2015-11-01 03:20:25",
+      "date_uploaded_unix": 1446344425
+     },
+     {
+      "url": "https://yts.pw/torrent/download/C3DA9A3DC2CE14D0D4FC0E87D1B2023502F8DCD6",
+      "hash": "C3DA9A3DC2CE14D0D4FC0E87D1B2023502F8DCD6",
+      "quality": "2160p",
+      "type": "bluray",
+      "is_repack": "",
+      "video_codec": "x265",
+      "bit_depth": "10",
+      "audio_channels": "5.1",
+      "seeds": 100,
+      "peers": 100,
+      "size": "6.91 GB",
+      "size_bytes": 7419556004,
+      "date_uploaded": "2021-09-16 20:45:52",
+      "date_uploaded_unix": 1631817952
+     }
+    ],
+    "date_uploaded": "2015-11-01 03:20:23",
+    "date_uploaded_unix": 1446344423
+   }
+  ]
+ }
+}

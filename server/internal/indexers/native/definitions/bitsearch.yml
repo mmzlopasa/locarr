@@ -1,0 +1,45 @@
+id: bitsearch
+name: BitSearch
+description: A torrent search engine fed by the DHT, read from its search pages.
+version: 1
+language: en
+links:
+  - https://bitsearch.eu
+  - https://bitsearch.to
+verified: Written by observing bitsearch.eu's search pages (/search?q=&category=) on 2026-11-23; robots.txt allows them.
+flaresolverr: never
+rateLimit: {requests: 20, periodSeconds: 60}
+delayMillis: 1000
+aliases: [bitsearch, "bitsearch.to", "bitsearch.eu"]
+modes:
+  search: [q]
+  tv: [q, season, ep]
+  movie: [q]
+  music: [q]
+  book: [q]
+categories:
+  - {id: "2", cat: 2000, desc: Movies}
+  - {id: "3", cat: 5000, desc: TV}
+  - {id: "4", cat: 5070, desc: Anime}
+  - {id: "7", cat: 3000, desc: Music}
+  - {id: "8", cat: 3030, desc: AudioBook}
+  - {id: "9", cat: 7000, desc: Ebook}
+search:
+  requests:
+    - if: [keywords]
+      path: '/search?q={{ .Keywords | urlquery }}&category={{ first .Categories "" }}&sort=seeders'
+  response: html
+  rows: div.torrent-result-card
+  empty: "div.torrent-results[data-impression-ids='[]']"
+  fields:
+    title: {select: 'h3 a'}
+    details: {select: 'h3 a', attr: href}
+    magnet: {select: 'a[href^="magnet:"]', attr: href}
+    category: {select: 'div.torrent-result-meta span.inline-flex:nth-child(1) > span', regex: '^([A-Za-z]+)'}
+    size: {select: 'div.torrent-result-meta span.inline-flex:nth-child(2) > span'}
+    date: {select: 'div.torrent-result-meta span.inline-flex:nth-child(3) > span', layouts: ["1/2/2006"]}
+    seeders: {select: 'span.text-green-600 span.font-medium'}
+    leechers: {select: 'span.text-red-600 span.font-medium'}
+    grabs: {select: 'span.text-blue-600 span.font-medium'}
+test:
+  query: ubuntu

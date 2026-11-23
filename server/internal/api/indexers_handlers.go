@@ -17,6 +17,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/native"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/znab"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 )
@@ -79,7 +80,7 @@ func toCaps(c *znab.Caps) gen.IndexerCaps {
 	return out
 }
 
-func toIndexer(i indexers.Indexer, now time.Time) gen.Indexer {
+func toIndexer(i indexers.Indexer, now time.Time, defs func(string) (*native.Definition, bool)) gen.Indexer {
 	out := gen.Indexer{
 		ID: i.ID, Name: i.Name, Kind: gen.IndexerKind(i.Kind), Protocol: gen.Protocol(i.Protocol()), BaseUrl: i.BaseURL,
 		ApiPath: i.APIPath, ApiKey: gen.SecretState{Configured: i.HasAPIKey}, Enabled: i.Enabled, EnableRss: i.EnableRSS,
@@ -106,18 +107,56 @@ func toIndexer(i indexers.Indexer, now time.Time) gen.Indexer {
 	if i.Caps != nil {
 		out.Caps = gen.NewOptIndexerCaps(toCaps(i.Caps))
 	}
+	if i.Kind == indexers.Native {
+		out.Health.ParseFailures = gen.NewOptInt(i.Health.ParseFailures)
+		out.Health.SelfTestAt = optTime(i.Health.SelfTestAt)
+		if i.Health.SelfTestOK != nil {
+			out.Health.SelfTestOk = gen.NewOptBool(*i.Health.SelfTestOK)
+		}
+		ref := gen.IndexerDefinitionRef{ID: i.Definition, Name: i.Definition, Missing: true}
+		if def, ok := defs(i.Definition); ok {
+			ref = gen.IndexerDefinitionRef{ID: def.ID, Name: def.Name, Version: def.Version, Builtin: def.Builtin, Overrides: def.Overrides}
+		}
+		out.Definition = gen.NewOptIndexerDefinitionRef(ref)
+		opts := gen.IndexerOptions{}
+		for k, v := range i.Options {
+			opts[k] = v
+		}
+		out.Options = gen.NewOptIndexerOptions(opts)
+	}
 	return out
 }
 
-func fromInput(g *gen.IndexerInput) indexers.Input {
+// toIndexer converts with the handler's site definitions.
+func (h *Handler) toIndexer(i indexers.Indexer, now time.Time) gen.Indexer {
+	return toIndexer(i, now, h.Indexers.Definition)
+}
+
+func (h *Handler) fromInput(g *gen.IndexerInput) indexers.Input {
 	in := indexers.DefaultInput()
-	in.Name, in.Kind, in.BaseURL = g.Name, indexers.Kind(g.Kind), g.BaseUrl
+	isNative := indexers.Kind(g.Kind) == indexers.Native
+	if isNative {
+		if def, ok := h.Indexers.Definition(g.Definition.Or("")); ok {
+			in = h.Indexers.NativeInput(def)
+		}
+		in.Definition = g.Definition.Or("")
+		in.Options = map[string]string{}
+		if o, ok := g.Options.Get(); ok {
+			for k, v := range o {
+				in.Options[k] = v
+			}
+		}
+	}
+	in.Name, in.Kind = g.Name, indexers.Kind(g.Kind)
+	if v := g.BaseUrl.Or(""); v != "" || !isNative {
+		in.BaseURL = v
+	}
 	in.APIPath = g.ApiPath.Or("/api")
 	if v, ok := g.ApiKey.Get(); ok {
 		in.APIKey = &v
 	}
 	in.Enabled = g.Enabled.Or(true)
-	in.EnableRSS = g.EnableRss.Or(true)
+	in.EnableRSS = g.EnableRss.Or(in.EnableRSS)
 	in.EnableAutomatic = g.EnableAutomaticSearch.Or(true)
 	in.EnableInteractive = g.EnableInteractiveSearch.Or(true)
 	in.Priority = g.Priority.Or(25)
@@ -129,9 +168,14 @@ func fromInput(g *gen.IndexerInput) indexers.Input {
 	if v, ok := g.SeedRatio.Get(); ok {
 		in.SeedRatio = &v
 	}
-	in.SeedTimeMinutes, in.RequestLimit, in.RequestPeriodSec, in.GrabLimitPerDay =
-		ptrInt(g.SeedTimeMinutes), ptrInt(g.RequestLimit), ptrInt(g.RequestPeriodSeconds), ptrInt(g.GrabLimitPerDay)
-	in.TimeoutSeconds = g.TimeoutSeconds.Or(30)
+	in.SeedTimeMinutes, in.GrabLimitPerDay = ptrInt(g.SeedTimeMinutes), ptrInt(g.GrabLimitPerDay)
+	if g.RequestLimit.Set || g.RequestPeriodSeconds.Set || !isNative {
+		in.RequestLimit, in.RequestPeriodSec = ptrInt(g.RequestLimit), ptrInt(g.RequestPeriodSeconds)
+	}
+	// The API fills its default timeout (30 s) in; a slow site keeps its own.
+	if t := g.TimeoutSeconds.Or(0); t > 0 && (!isNative || t != 30) {
+		in.TimeoutSeconds = t
+	}
 	in.ProxyURL, in.ProxyUsername, in.FlareSolverrURL = g.ProxyUrl.Or(""), g.ProxyUsername.Or(""), g.FlaresolverrUrl.Or("")
 	if v, ok := g.ProxyPassword.Get(); ok {
 		in.ProxyPassword = &v
@@ -151,7 +195,7 @@ func (h *Handler) ListIndexers(ctx context.Context) ([]gen.Indexer, error) {
 	now := time.Now()
 	out := make([]gen.Indexer, 0, len(list))
 	for _, i := range list {
-		out = append(out, toIndexer(i, now))
+		out = append(out, h.toIndexer(i, now))
 	}
 	return out, nil
 }
@@ -161,11 +205,11 @@ func (h *Handler) CreateIndexer(ctx context.Context, req *gen.IndexerInput) (*ge
 	if _, err := admin(ctx); err != nil {
 		return nil, err
 	}
-	i, err := h.Indexers.Create(ctx, fromInput(req))
+	i, err := h.Indexers.Create(ctx, h.fromInput(req))
 	if err != nil {
 		return nil, err
 	}
-	out := toIndexer(i, time.Now())
+	out := h.toIndexer(i, time.Now())
 	return &out, nil
 }
 
@@ -178,7 +222,7 @@ func (h *Handler) GetIndexer(ctx context.Context, params gen.GetIndexerParams) (
 	if err != nil {
 		return nil, err
 	}
-	out := toIndexer(i, time.Now())
+	out := h.toIndexer(i, time.Now())
 	return &out, nil
 }
 
@@ -187,11 +231,11 @@ func (h *Handler) UpdateIndexer(ctx context.Context, req *gen.IndexerInput, para
 	if _, err := admin(ctx); err != nil {
 		return nil, err
 	}
-	i, err := h.Indexers.Update(ctx, params.ID, fromInput(req))
+	i, err := h.Indexers.Update(ctx, params.ID, h.fromInput(req))
 	if err != nil {
 		return nil, err
 	}
-	out := toIndexer(i, time.Now())
+	out := h.toIndexer(i, time.Now())
 	return &out, nil
 }
 
@@ -236,7 +280,7 @@ func (h *Handler) TestIndexerConfig(ctx context.Context, req *gen.IndexerTestReq
 	if v, ok := req.IndexerId.Get(); ok {
 		existing = &v
 	}
-	r, err := h.Indexers.TestInput(ctx, fromInput(&req.Indexer), existing)
+	r, err := h.Indexers.TestInput(ctx, h.fromInput(&req.Indexer), existing)
 	if err != nil {
 		return nil, err
 	}
@@ -252,7 +296,7 @@ func (h *Handler) ResetIndexerHealth(ctx context.Context, params gen.ResetIndexe
 	if err != nil {
 		return nil, err
 	}
-	out := toIndexer(i, time.Now())
+	out := h.toIndexer(i, time.Now())
 	return &out, nil
 }
 
@@ -313,6 +357,15 @@ func (h *Handler) indexerSettings(ctx context.Context) (*gen.IndexerSettings, er
 	if out.BlockPrivateNetworks, err = settings.Get(ctx, h.Settings, indexers.BlockPrivateNetworks); err != nil {
 		return nil, err
 	}
+	if out.PublicTrackers, err = settings.Get(ctx, h.Settings, indexers.PublicTrackers); err != nil {
+		return nil, err
+	}
+	if out.PublicTrackers == nil {
+		out.PublicTrackers = []string{}
+	}
+	if out.UserAgent, err = settings.Get(ctx, h.Settings, indexers.UserAgent); err != nil {
+		return nil, err
+	}
 	return &out, nil
 }
 
@@ -344,6 +397,25 @@ func (h *Handler) UpdateIndexerSettings(ctx context.Context, req *gen.UpdateInde
 			if err := settings.Set(ctx, h.Settings, nil, kv.k, v); err != nil {
 				return nil, err
 			}
+		}
+	}
+	if req.PublicTrackers != nil {
+		trackers := []string{}
+		for _, t := range req.PublicTrackers {
+			if t = strings.TrimSpace(t); t != "" {
+				if err := indexers.ValidateTracker(t); err != nil {
+					return nil, err
+				}
+				trackers = append(trackers, t)
+			}
+		}
+		if err := settings.Set(ctx, h.Settings, nil, indexers.PublicTrackers, trackers); err != nil {
+			return nil, err
+		}
+	}
+	if v, ok := req.UserAgent.Get(); ok {
+		if err := settings.Set(ctx, h.Settings, nil, indexers.UserAgent, strings.TrimSpace(v)); err != nil {
+			return nil, err
 		}
 	}
 	if v, ok := req.BlockPrivateNetworks.Get(); ok {

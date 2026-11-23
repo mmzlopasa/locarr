@@ -1,0 +1,40 @@
+id: tokyotosho
+name: Tokyo Toshokan
+description: A Japanese media torrent listing (anime, music, raws), through its RSS feed.
+version: 1
+language: en
+links:
+  - https://www.tokyotosho.info
+verified: >-
+  Written from the site's RSS feed (rss.php with terms and filter) as published on 2026-10-31
+  (read from the Internet Archive's copy; the site itself answered HTTP 522 on 2026-11-23).
+flaresolverr: never
+rateLimit: {requests: 12, periodSeconds: 60}
+delayMillis: 2000
+aliases: [tokyotosho, "tokyo toshokan", "tokyotosho.info"]
+modes:
+  search: [q]
+  tv: [q, season, ep]
+  music: [q]
+categories:
+  - {id: "1", cat: 5070, desc: Anime}
+  - {id: "11", cat: 5070, desc: Batch}
+  - {id: "7", cat: 5070, desc: Raws}
+  - {id: "10", cat: 5070, desc: Non-English}
+  - {id: "8", cat: 5000, desc: Drama}
+  - {id: "2", cat: 3000, desc: Music}
+  - {id: "3", cat: 7030, desc: Manga}
+search:
+  requests:
+    - path: '/rss.php?terms={{ .Keywords | urlquery }}{{ if .Categories }}&filter={{ .Categories | join "," }}{{ end }}'
+  response: xml
+  rows: item
+  fields:
+    title: {select: title}
+    details: {select: guid}
+    magnet: {select: description, regex: '(magnet:\?[^"<\s]+)'}
+    size: {select: description, regex: 'Size: ([\d.,]+\s*[KMGT]?i?B)'}
+    date: {select: pubdate}
+    category: {select: category}
+test:
+  query: subsplease

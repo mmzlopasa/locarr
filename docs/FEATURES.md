@@ -13,7 +13,9 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Indexeri (P1)
 - [x] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/TVmaze) i tekstu, RSS (glazba po izvođaču/albumu: Newznab nema MusicBrainz parametar)
-- [x] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab)
+- [x] Ugrađeni javni indexeri bez Prowlarra/Jacketta (D-087 – D-089): YTS, EZTV, The Pirate Bay, SubsPlease, Knaben, Nyaa, Tokyo Toshokan, LimeTorrents, 1337x (uz FlareSolverr), BitSearch; vlastite definicije u `/config/definitions`; zdravlje s razlozima (stranica pala, promijenjen izgled, Cloudflare, ograničenje), tjedni samotest
+- [x] Usenet indexeri izravno (popis poznatih Newznab indexera: odaberi i upiši ključ)
+- [x] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab) — pod „Napredno"; više nisu potrebni
 - [x] Prioriteti, oznake (tagovi), ograničenja zahtjeva (rate limit), dnevni limiti, backoff i zdravlje
 - [x] Paralelna pretraga svih indexera, rezultati čim stignu, ručna (interaktivna) pretraga
 - [ ] Proxyji po indexeru (HTTP/SOCKS5), FlareSolverr po izboru (ugrađeno; FlareSolverr testiran s lažnim servisom, proxyji još nisu testirani end-to-end)
@@ -90,7 +92,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Uvoz setupa (P10)
 - [x] Sonarr, Radarr, Lidarr: biblioteka (datoteke na mjestu, praćenje), profili kvalitete, definicije veličina, custom formati, profili izdanja i kašnjenja, root mape, oznake, imena, indexeri, download klijenti, mapiranja putanja, liste i isključenja (liste samo TMDb za filmove; Locarr nema popise za serije i glazbu), povijest i blokirana izdanja (D-072 – D-076)
-- [x] Prowlarr: indexeri (kao izvor ili pojedinačno, D-078); Bazarr: jezični profili, provideri i profil po naslovu; Seerr/Overseerr: korisnici s dozvolama, zahtjevi, problemi, kvote (korisnici i zahtjevi provjereni s lažnim Overseerrom)
+- [x] Prowlarr: indexeri (kao izvor ili pojedinačno, D-078; zadano se zamjenjuju Locarrovim ugrađenima i izravnim usenetom, D-090); Bazarr: jezični profili, provideri i profil po naslovu; Seerr/Overseerr: korisnici s dozvolama, zahtjevi, problemi, kvote (korisnici i zahtjevi provjereni s lažnim Overseerrom)
 - [x] qBittorrent, SABnzbd: veza, kategorije, prijedlozi mapiranja putanja
 - [x] Pregled prije uvoza (stvori/spoji/preskoči s razlozima, sukobi), uvoz u pozadini s napretkom, izvještaj (JSON), popis za prelazak; izvori se nikad ne mijenjaju, ponovni uvoz ne duplicira (D-077)
 

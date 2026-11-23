@@ -1,0 +1,31 @@
+id: knaben
+name: Knaben
+description: A search engine over many public trackers, through its documented public API.
+version: 1
+language: en
+links:
+  - https://api.knaben.org
+verified: Written from knaben.org/api/v1 (POST /v1 with a JSON body) and checked on 2026-11-23; category ids observed in answers.
+flaresolverr: never
+rateLimit: {requests: 20, periodSeconds: 60}
+delayMillis: 1000
+aliases: [knaben, "knaben database", "knaben.org", "knaben.eu"]
+impl: knaben
+modes:
+  search: [q]
+  tv: [q, season, ep]
+  movie: [q]
+  music: [q]
+  book: [q]
+categories:
+  - {id: "1000000", cat: 3000, desc: Audio}
+  - {id: "2000000", cat: 5000, desc: TV}
+  - {id: "3000000", cat: 2000, desc: Movies}
+  - {id: "3001000", cat: 2040, desc: Movies / HD}
+  - {id: "6000000", cat: 5070, desc: Anime}
+  - {id: "6001000", cat: 5070, desc: Anime / Subbed}
+  - {id: "6004000", cat: 5070, desc: Anime / Raw}
+  - {id: "6008000", cat: 5070, desc: Anime / non-english translated}
+  - {id: "9000000", cat: 7000, desc: Books}
+test:
+  query: ubuntu

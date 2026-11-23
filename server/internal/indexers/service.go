@@ -12,6 +12,7 @@ import (
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/native"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/znab"
 	"github.com/mmzlopasa/locarr/server/internal/secrets"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
@@ -42,6 +43,8 @@ type Service struct {
 	Now      func() time.Time
 	// PolicyOverride replaces the address policy from the settings (tests).
 	PolicyOverride *httpx.Policy
+	// Natives holds the built-in and custom site definitions (nil: none).
+	Natives *native.Registry
 
 	limiter *limiter
 	cache   *cache
@@ -54,7 +57,7 @@ type Service struct {
 type cachedClient struct {
 	updated time.Time
 	policy  string
-	c       *znab.Client
+	c       backend
 }
 
 // New returns a Service.
@@ -112,7 +115,7 @@ func (s *Service) forget(id int64) {
 }
 
 // buildClient makes a protocol client from an input and its secrets.
-func (s *Service) buildClient(ctx context.Context, in Input, apiKey, proxyPassword string) (*znab.Client, error) {
+func (s *Service) buildClient(ctx context.Context, in Input, apiKey, proxyPassword string) (backend, error) {
 	pol, err := s.policy(ctx)
 	if err != nil {
 		return nil, err
@@ -132,16 +135,23 @@ func (s *Service) buildClient(ctx context.Context, in Input, apiKey, proxyPasswo
 	if timeout <= 0 {
 		timeout = httpx.DefaultTimeout
 	}
-	hc, err := httpx.New(httpx.Options{Policy: pol, Timeout: timeout, Proxy: proxy, FlareSolverr: in.FlareSolverrURL,
-		Secrets: []string{apiKey, proxyPassword}})
+	ua, err := settings.Get(ctx, s.Settings, UserAgent)
 	if err != nil {
 		return nil, err
 	}
-	return &znab.Client{HTTP: hc, BaseURL: in.BaseURL, APIPath: in.APIPath, APIKey: apiKey}, nil
+	hc, err := httpx.New(httpx.Options{Policy: pol, Timeout: timeout, Proxy: proxy, FlareSolverr: in.FlareSolverrURL,
+		Secrets: []string{apiKey, proxyPassword}, UserAgent: ua})
+	if err != nil {
+		return nil, err
+	}
+	if in.Kind == Native {
+		return s.nativeClient(ctx, in, hc)
+	}
+	return znabBackend{&znab.Client{HTTP: hc, BaseURL: in.BaseURL, APIPath: in.APIPath, APIKey: apiKey}}, nil
 }
 
 // client returns the (cached) protocol client of a saved indexer.
-func (s *Service) client(ctx context.Context, ind Indexer) (*znab.Client, error) {
+func (s *Service) client(ctx context.Context, ind Indexer) (backend, error) {
 	pol, err := s.policy(ctx)
 	if err != nil {
 		return nil, err
@@ -181,7 +191,7 @@ func (s *Service) capsFor(ctx context.Context, in Input, existingID *int64) (*zn
 	return c.Caps(ctx)
 }
 
-func (s *Service) inputClient(ctx context.Context, in Input, existingID *int64) (*znab.Client, error) {
+func (s *Service) inputClient(ctx context.Context, in Input, existingID *int64) (backend, error) {
 	var key, pw string
 	if in.APIKey != nil {
 		key = *in.APIKey
@@ -260,6 +270,15 @@ func (s *Service) recordFailure(ctx context.Context, ind Indexer, err error) {
 	s.Log.Warn("indexer request failed", "indexer", ind.Name, "kind", code, "failures", n, "retry_in", wait.String(), "err", msg)
 }
 
+// recordParseFailures counts result rows a built-in site returned that could
+// not be read (its layout may have changed).
+func (s *Service) recordParseFailures(ctx context.Context, ind Indexer, n int) {
+	if _, err := s.DB.W.ExecContext(ctx, `UPDATE indexers SET parse_failures = parse_failures + ? WHERE id = ?`, n, ind.ID); err != nil {
+		s.Log.Warn("record parse failures", "indexer", ind.ID, "err", err)
+	}
+	s.Log.Warn("indexer rows could not be read", "indexer", ind.Name, "rows", n)
+}
+
 // LimitedUntil reads when an indexer that refused a request will take
 // requests again: a Retry-After, or the time in an "indexer is disabled till
 // <time>" message (Prowlarr's answer after repeated failures, in its local
@@ -287,7 +306,7 @@ func minTime(a, b time.Time) time.Time {
 
 // ResetHealth clears failures and backoff.
 func (s *Service) ResetHealth(ctx context.Context, id int64) (Indexer, error) {
-	res, err := s.DB.W.ExecContext(ctx, `UPDATE indexers SET failures = 0, retry_at = NULL WHERE id = ?`, id)
+	res, err := s.DB.W.ExecContext(ctx, `UPDATE indexers SET failures = 0, retry_at = NULL, parse_failures = 0 WHERE id = ?`, id)
 	if err != nil {
 		return Indexer{}, err
 	}
@@ -378,7 +397,7 @@ type probeResult struct {
 	err error
 }
 
-func (s *Service) probe(ctx context.Context, c *znab.Client, cats *Categories) probeResult {
+func (s *Service) probe(ctx context.Context, c backend, cats *Categories) probeResult {
 	fail := func(err error) probeResult {
 		return probeResult{TestResult: TestResult{ErrorCode: string(znab.KindOf(err)), Error: errorText(err)}, err: err}
 	}
@@ -386,10 +405,11 @@ func (s *Service) probe(ctx context.Context, c *znab.Client, cats *Categories) p
 	if err != nil {
 		return fail(err)
 	}
-	r := znab.Request{Type: znab.SearchGeneric, Limit: 10}
+	var cs []int
 	if cats != nil && !cats.Empty() {
-		r.Categories = searchCategories(cats.All())
+		cs = searchCategories(cats.All())
 	}
+	r := c.probe(cs)
 	page, err := c.Search(ctx, r)
 	if err != nil {
 		res := fail(err)

@@ -1,0 +1,89 @@
+{
+ "status": "ok",
+ "status_message": "Query was successful",
+ "data": {
+  "movie_count": 78637,
+  "limit": 2,
+  "page_number": 1,
+  "movies": [
+   {
+    "id": 80024,
+    "url": "https://yts.pw/movies/primetime-preacher-2026",
+    "imdb_code": "tt48434154",
+    "title": "Primetime Preacher$",
+    "title_english": "Primetime Preacher$",
+    "title_long": "Primetime Preacher$ (2026)",
+    "slug": "primetime-preacher-2026",
+    "year": 2026,
+    "state": "ok",
+    "torrents": [
+     {
+      "url": "https://yts.pw/torrent/download/E8AFDDAB602681F78E2D85FBF2E06EA2B90F6D47",
+      "hash": "E8AFDDAB602681F78E2D85FBF2E06EA2B90F6D47",
+      "quality": "720p",
+      "type": "web",
+      "is_repack": "0",
+      "video_codec": "x264",
+      "bit_depth": "8",
+      "audio_channels": "2.0",
+      "seeds": 0,
+      "peers": 0,
+      "size": "1.04 GB",
+      "size_bytes": 1116691497,
+      "date_uploaded": "2026-11-23 12:37:28",
+      "date_uploaded_unix": 1795433848
+     }
+    ],
+    "date_uploaded": "2026-11-23 12:37:28",
+    "date_uploaded_unix": 1795433848
+   },
+   {
+    "id": 80022,
+    "url": "https://yts.pw/movies/blue-emanuelle-2026",
+    "imdb_code": "tt39287838",
+    "title": "Blue Emanuelle",
+    "title_english": "Blue Emanuelle",
+    "title_long": "Blue Emanuelle (2026)",
+    "slug": "blue-emanuelle-2026",
+    "year": 2026,
+    "state": "ok",
+    "torrents": [
+     {
+      "url": "https://yts.pw/torrent/download/E175A54D6D32E3443656C7DCCCB6F7990F54DC6B",
+      "hash": "E175A54D6D32E3443656C7DCCCB6F7990F54DC6B",
+      "quality": "720p",
+      "type": "web",
+      "is_repack": "0",
+      "video_codec": "x264",
+      "bit_depth": "8",
+      "audio_channels": "2.0",
+      "seeds": 0,
+      "peers": 0,
+      "size": "612.29 MB",
+      "size_bytes": 642032599,
+      "date_uploaded": "2026-11-23 10:47:01",
+      "date_uploaded_unix": 1795427221
+     },
+     {
+      "url": "https://yts.pw/torrent/download/20CF6874896A8F4F7A917BE7D08A3CB097A8364A",
+      "hash": "20CF6874896A8F4F7A917BE7D08A3CB097A8364A",
+      "quality": "1080p",
+      "type": "web",
+      "is_repack": "0",
+      "video_codec": "x264",
+      "bit_depth": "8",
+      "audio_channels": "2.0",
+      "seeds": 0,
+      "peers": 0,
+      "size": "1.11 GB",
+      "size_bytes": 1191853425,
+      "date_uploaded": "2026-11-23 11:45:29",
+      "date_uploaded_unix": 1795430729
+     }
+    ],
+    "date_uploaded": "2026-11-23 10:47:01",
+    "date_uploaded_unix": 1795427221
+   }
+  ]
+ }
+}

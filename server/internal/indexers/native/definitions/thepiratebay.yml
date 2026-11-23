@@ -1,0 +1,38 @@
+id: thepiratebay
+name: The Pirate Bay
+description: The general torrent index, searched through the JSON API its own web site uses (apibay).
+version: 1
+language: en
+links:
+  - https://apibay.org
+verified: >-
+  Written by observing the requests thepiratebay.org's own page makes (q.php, precompiled lists)
+  and checked against apibay.org on 2026-11-23. Category ids from the site's browse pages.
+flaresolverr: never
+rateLimit: {requests: 30, periodSeconds: 60}
+delayMillis: 1000
+aliases: [thepiratebay, "the pirate bay", tpb, apibay, "thepiratebay.org"]
+impl: apibay
+modes:
+  search: [q, imdbid]
+  tv: [q, season, ep]
+  movie: [q, imdbid]
+  music: [q]
+  book: [q]
+categories:
+  - {id: "101", cat: 3000, desc: Music}
+  - {id: "102", cat: 3030, desc: Audio books}
+  - {id: "104", cat: 3040, desc: FLAC}
+  - {id: "201", cat: 2000, desc: Movies}
+  - {id: "202", cat: 2070, desc: Movies DVDR}
+  - {id: "207", cat: 2040, desc: HD Movies}
+  - {id: "209", cat: 2060, desc: 3D}
+  - {id: "211", cat: 2045, desc: UHD/4k Movies}
+  - {id: "205", cat: 5000, desc: TV shows}
+  - {id: "208", cat: 5040, desc: HD TV shows}
+  - {id: "212", cat: 5045, desc: UHD/4k TV shows}
+  - {id: "601", cat: 7020, desc: E-books}
+  - {id: "602", cat: 7030, desc: Comics}
+test:
+  mode: movie
+  imdbid: tt0111161

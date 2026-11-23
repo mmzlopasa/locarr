@@ -1117,6 +1117,22 @@ func (s *Service) Checklist(ctx context.Context) ([]CheckItem, error) {
 	if names, ok := kinds[Prowlarr]; ok {
 		out = append(out, CheckItem{Key: "prowlarr_apps", Manual: true, Params: map[string]any{"names": strings.Join(names, ", ")}})
 	}
+	if names, ok := kinds[Prowlarr]; ok {
+		// Searches that still go through Prowlarr: indexers synced from it or
+		// pointing at one of its feeds.
+		var through int
+		for _, src := range srcs {
+			if src.Kind != Prowlarr {
+				continue
+			}
+			var n int
+			_ = s.L.DB.R.QueryRowContext(ctx, `SELECT count(*) FROM indexers i LEFT JOIN indexer_sources o ON o.id = i.source_id
+				WHERE o.kind = 'prowlarr' OR lower(i.base_url) LIKE ?`, strings.ToLower(strings.TrimRight(src.URL, "/"))+"/%").Scan(&n)
+			through += n
+		}
+		out = append(out, CheckItem{Key: "prowlarr_not_needed", Done: through == 0,
+			Params: map[string]any{"names": strings.Join(names, ", "), "indexers": through}})
+	}
 	if names, ok := append(kinds[Overseerr], kinds[Seerr]...), len(kinds[Overseerr])+len(kinds[Seerr]) > 0; ok {
 		out = append(out, CheckItem{Key: "stop_requests", Manual: true, Params: map[string]any{"names": strings.Join(names, ", ")}})
 	}

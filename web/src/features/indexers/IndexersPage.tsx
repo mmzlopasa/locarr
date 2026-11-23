@@ -3,9 +3,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { api, queryKeys, unwrap, type Indexer, type IndexerSourceItem, type IndexerSourceKind, type IndexerSource } from "@/api/client";
 import { formatDateTime, formatRelative } from "@/components/format";
-import { Alert, Badge, Button, Checkbox, ConfirmButton, EmptyState, ErrorAlert, PageHeader, Panel, SelectInput, Spinner,
+import { Alert, Badge, Button, Checkbox, ConfirmButton, EmptyState, ErrorAlert, Field, PageHeader, Panel, SelectInput, Spinner,
   TextInput } from "@/components/ui";
 import { IndexerForm, TestResult } from "./IndexerForm";
+import { AddIndexer, DefinitionsPanel, NativeIndexerForm } from "./BuiltinIndexers";
 
 export function healthTone(s: Indexer["health"]["status"]) {
   return s === "healthy" ? ("success" as const) : s === "failing" ? ("danger" as const) : s === "disabled" ? ("neutral" as const) : ("info" as const);
@@ -13,7 +14,7 @@ export function healthTone(s: Indexer["health"]["status"]) {
 
 export function IndexersPage() {
   const { t } = useTranslation();
-  const [mode, setMode] = useState<"none" | "add" | "import">("none");
+  const [mode, setMode] = useState<"none" | "add">("none");
   const list = useQuery({ queryKey: queryKeys.indexers, queryFn: async () => unwrap(await api.GET("/indexers")), refetchInterval: 30_000 });
   return (
     <div className="flex flex-col gap-4">
@@ -22,25 +23,22 @@ export function IndexersPage() {
         description={t("indexers.subtitle")}
         actions={
           mode === "none" ? (
-            <>
-              <Button onClick={() => setMode("import")}>{t("indexers.import.button")}</Button>
-              <Button variant="primary" onClick={() => setMode("add")}>
-                {t("indexers.add")}
-              </Button>
-            </>
+            <Button variant="primary" onClick={() => setMode("add")}>
+              {t("indexers.add")}
+            </Button>
           ) : null
         }
       />
-      {mode === "add" ? <IndexerForm onDone={() => setMode("none")} /> : null}
-      {mode === "import" ? <ImportWizard onDone={() => setMode("none")} /> : null}
+      {mode === "add" ? <AddIndexer onDone={() => setMode("none")} /> : null}
       {list.isPending ? <Spinner /> : null}
       <ErrorAlert error={list.error} />
       {list.data && !list.data.length && mode === "none" ? <EmptyState>{t("indexers.empty")}</EmptyState> : null}
       <div className="flex flex-col gap-2" data-testid="indexer-list">
         {list.data?.map((i) => <IndexerRow key={i.id} indexer={i} />)}
       </div>
-      <SourcesPanel />
+      <DefinitionsPanel />
       <IndexerSettingsPanel />
+      <AdvancedSources />
     </div>
   );
 }
@@ -55,7 +53,9 @@ function IndexerRow({ indexer }: { indexer: Indexer }) {
   const reset = useMutation({ mutationFn: async () => unwrap(await api.POST("/indexers/{id}/health/reset", path)), onSuccess: () => refresh() });
   const remove = useMutation({ mutationFn: async () => unwrap(await api.DELETE("/indexers/{id}", path)), onSuccess: () => refresh() });
   const h = indexer.health;
+  if (editing && indexer.kind === "native") return <NativeIndexerForm indexer={indexer} onDone={() => setEditing(false)} />;
   if (editing) return <IndexerForm indexer={indexer} onDone={() => setEditing(false)} />;
+  const def = indexer.definition;
   return (
     <div className="rounded-ui border border-line bg-surface" data-testid={`indexer-${indexer.name}`}>
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5">
@@ -64,18 +64,31 @@ function IndexerRow({ indexer }: { indexer: Indexer }) {
             <span className="font-medium">{indexer.name}</span>
             <Badge tone={healthTone(h.status)}>{t(`indexers.health.${h.status}`)}</Badge>
             <Badge>{t(`indexers.kinds.${indexer.kind}`)}</Badge>
+            {def ? <span className="font-mono text-[11px] text-faint">{t("indexers.builtin.version", { n: def.version })}</span> : null}
+            {def && !def.builtin && !def.missing ? <Badge tone="info">{t("indexers.builtin.custom")}</Badge> : null}
+            {def?.overrides ? <Badge tone="info">{t("indexers.builtin.overrides")}</Badge> : null}
+            {def?.missing ? <Badge tone="danger">{t("indexers.builtin.missing")}</Badge> : null}
             {indexer.source ? <Badge tone="info">{t("indexers.fromSource", { name: indexer.source.name })}</Badge> : null}
             {indexer.tags.map((tag) => (
               <Badge key={tag}>{tag}</Badge>
             ))}
           </p>
-          <p className="mt-0.5 break-all font-mono text-[11px] text-faint">{indexer.baseUrl + indexer.apiPath}</p>
+          <p className="mt-0.5 break-all font-mono text-[11px] text-faint">
+            {indexer.kind === "native" ? indexer.baseUrl : indexer.baseUrl + indexer.apiPath}
+          </p>
           <p className="mt-0.5 text-[12px] text-muted">
             {t("indexers.priorityShort", { n: indexer.priority })} ·{" "}
             {[indexer.enableRss && t("indexers.uses.rss"), indexer.enableAutomaticSearch && t("indexers.uses.automatic"),
               indexer.enableInteractiveSearch && t("indexers.uses.interactive")].filter(Boolean).join(", ") || t("indexers.uses.none")}
             {h.lastSuccessAt ? ` · ${t("indexers.lastSuccess", { when: formatRelative(h.lastSuccessAt, i18n.language) })}` : ""}
           </p>
+          {indexer.kind === "native" && (h.parseFailures || h.selfTestAt) ? (
+            <p className="mt-0.5 text-[12px] text-muted" data-testid="indexer-quality">
+              {[h.parseFailures ? t("indexers.builtin.parseFailures", { n: h.parseFailures }) : "",
+                h.selfTestAt ? t(h.selfTestOk ? "indexers.builtin.selfTestOk" : "indexers.builtin.selfTestFailed",
+                  { when: formatRelative(h.selfTestAt, i18n.language) }) : ""].filter(Boolean).join(" · ")}
+            </p>
+          ) : null}
           {h.status === "failing" || (h.status === "disabled" && h.lastError) ? (
             <p className="mt-1 text-[12px] text-danger" data-testid="indexer-error">
               {t(`indexers.errorKinds.${h.lastErrorCode ?? "unknown"}`, { defaultValue: t("indexers.errorKinds.unknown") })}
@@ -189,6 +202,35 @@ function ImportWizard({ onDone }: { onDone: () => void }) {
   );
 }
 
+/** Prowlarr and Jackett import, tucked away: Locarr no longer needs them. */
+function AdvancedSources() {
+  const { t } = useTranslation();
+  const sources = useQuery({ queryKey: queryKeys.indexerSources, queryFn: async () => unwrap(await api.GET("/indexers/sources")) });
+  const [open, setOpen] = useState<boolean | undefined>(undefined);
+  const [importing, setImporting] = useState(false);
+  const shown = open ?? !!sources.data?.length;
+  return (
+    <div className="flex flex-col gap-3" data-testid="advanced-sources">
+      <div>
+        <Button variant="ghost" aria-expanded={shown} onClick={() => setOpen(!shown)}>
+          {shown ? t("indexers.advanced.hide") : t("indexers.advanced.show")}
+        </Button>
+      </div>
+      {shown ? (
+        <>
+          <p className="text-[12px] text-muted">{t("indexers.advanced.text")}</p>
+          {importing ? <ImportWizard onDone={() => setImporting(false)} /> : (
+            <div>
+              <Button onClick={() => setImporting(true)}>{t("indexers.import.button")}</Button>
+            </div>
+          )}
+          <SourcesPanel />
+        </>
+      ) : null}
+    </div>
+  );
+}
+
 function SourcesPanel() {
   const { t } = useTranslation();
   const sources = useQuery({ queryKey: queryKeys.indexerSources, queryFn: async () => unwrap(await api.GET("/indexers/sources")) });
@@ -250,6 +292,7 @@ function IndexerSettingsPanel() {
   const st = useQuery({ queryKey: queryKeys.indexerSettings, queryFn: async () => unwrap(await api.GET("/indexers/settings")) });
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [block, setBlock] = useState<boolean | undefined>(undefined);
+  const [trackers, setTrackers] = useState<string | undefined>(undefined);
   const save = useMutation({
     mutationFn: async () => {
       const n = (k: string) => (draft[k] !== undefined && draft[k] !== "" ? Number(draft[k]) : undefined);
@@ -257,12 +300,15 @@ function IndexerSettingsPanel() {
         rssSyncIntervalMinutes: n("rss"), releaseRetentionDays: n("retention"), searchTimeoutSeconds: n("timeout"),
         searchCacheSeconds: n("cache"), blockPrivateNetworks: block,
         allowedHosts: draft.hosts !== undefined ? draft.hosts.split(/[\s,]+/).filter(Boolean) : undefined,
+        publicTrackers: trackers !== undefined ? trackers.split(/\s+/).filter(Boolean) : undefined,
+        userAgent: draft.ua,
       } }));
     },
     onSuccess: (s) => {
       qc.setQueryData(queryKeys.indexerSettings, s);
       setDraft({});
       setBlock(undefined);
+      setTrackers(undefined);
     },
   });
   if (!st.data) return null;
@@ -287,6 +333,12 @@ function IndexerSettingsPanel() {
         </div>
         <TextInput label={t("indexers.settings.allowedHosts")} value={val("hosts", s.allowedHosts.join(", "))}
           hint={t("indexers.settings.allowedHostsHint")} placeholder="127.0.0.1, prowlarr" onChange={set("hosts")} />
+        <TextInput label={t("indexers.settings.userAgent")} value={val("ua", s.userAgent)} placeholder="Locarr"
+          hint={t("indexers.settings.userAgentHint")} onChange={set("ua")} />
+        <Field label={t("indexers.settings.publicTrackers")} hint={t("indexers.settings.publicTrackersHint")} htmlFor="public-trackers">
+          <textarea id="public-trackers" rows={4} value={trackers ?? s.publicTrackers.join("\n")} onChange={(e) => setTrackers(e.target.value)}
+            className="w-full rounded-ui border border-line-strong bg-surface-2 px-2.5 py-1.5 font-mono text-[12px] text-fg focus:border-info focus:outline-none" />
+        </Field>
         <Checkbox label={t("indexers.settings.blockPrivate")} description={t("indexers.settings.blockPrivateHint")}
           checked={block ?? s.blockPrivateNetworks} onChange={(e) => setBlock(e.target.checked)} />
         <ErrorAlert error={save.error} />

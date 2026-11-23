@@ -24,6 +24,7 @@ test("add a fake indexer, test it and search with streamed results", async ({ pa
   const name = `Fake ${Date.now().toString(36)}`;
   await page.getByRole("link", { name: "Indexers" }).click();
   await page.getByRole("button", { name: "Add indexer" }).click();
+  await page.getByRole("tab", { name: "Torznab / Newznab" }).click();
   const form = page.getByTestId("indexer-form");
   await form.getByLabel("Name").fill(name);
   await form.getByLabel("URL", { exact: true }).fill(`${fakeBase}/torznab`);
@@ -48,5 +49,43 @@ test("add a fake indexer, test it and search with streamed results", async ({ pa
   await page.getByRole("link", { name: "Indexers" }).click();
   await row.getByRole("button", { name: "Delete" }).click();
   await row.getByRole("button", { name: `Delete ${name}` }).click();
+  await expect(row).toHaveCount(0);
+});
+
+test("switch on a built-in site, point it at a local copy and search it", async ({ page }) => {
+  await signInAsAdmin(page);
+  await page.getByRole("link", { name: "Indexers" }).click();
+  // A leftover from an earlier run would make the switch flip it off.
+  const old = page.getByTestId("indexer-Nyaa");
+  if (await old.count()) {
+    await old.getByRole("button", { name: "Delete" }).click();
+    await old.getByRole("button", { name: "Delete Nyaa" }).click();
+    await expect(old).toHaveCount(0);
+  }
+  await page.getByRole("button", { name: "Add indexer" }).click();
+  await expect(page.getByRole("tab", { name: "Built-in sites" })).toHaveAttribute("aria-selected", "true");
+  await page.getByTestId("builtin-nyaa").getByRole("switch", { name: "Use Nyaa" }).click();
+  const row = page.getByTestId("indexer-Nyaa");
+  await expect(row).toBeVisible();
+
+  // The recorded answers of the site, served by the fakes.
+  await row.getByRole("button", { name: "Edit" }).click();
+  const form = page.getByTestId("native-form");
+  await form.getByLabel("Address").selectOption({ label: "Other address…" });
+  await form.getByLabel("Custom address").fill(`${fakeBase}/sites/nyaa`);
+  await form.getByRole("button", { name: "Save" }).click();
+  await expect(row).toContainText(`${fakeBase}/sites/nyaa`);
+  await row.getByRole("button", { name: "Test" }).click();
+  await expect(row.getByText(/Works: \d+ results/)).toBeVisible();
+
+  await page.getByRole("link", { name: "Search" }).click();
+  await page.getByLabel("Search for").fill("frieren");
+  await page.getByRole("button", { name: "Search", exact: true }).click();
+  const results = page.getByTestId("search-results");
+  await expect(results.getByText(/^\[Erai-raws\] Sousou no Frieren 2nd Season/).first()).toBeVisible();
+
+  await page.getByRole("link", { name: "Indexers" }).click();
+  await row.getByRole("button", { name: "Delete" }).click();
+  await row.getByRole("button", { name: "Delete Nyaa" }).click();
   await expect(row).toHaveCount(0);
 });

@@ -84,15 +84,31 @@ func (d *Deps) checkIndexers(ctx context.Context) ([]Issue, error) {
 		if ix.Enabled {
 			enabled++
 		}
+		key := "indexer:" + strconv.FormatInt(ix.ID, 10)
 		if ix.HealthStatus() != indexers.HealthFailing {
+			// A built-in site whose weekly self-test failed although searches
+			// have not (yet) failed.
+			if ix.Enabled && ix.Kind == indexers.Native && ix.Health.SelfTestOK != nil && !*ix.Health.SelfTestOK {
+				out = append(out, Issue{Key: key, Severity: SeverityWarning, Code: "indexer_selftest_failed",
+					Message: fmt.Sprintf("the weekly test of built-in indexer %s failed", ix.Name), Params: map[string]any{"name": ix.Name},
+					Docs: "indexer-builtin", FixRoute: "/indexers"})
+			}
 			continue
 		}
 		p := map[string]any{"name": ix.Name, "error": ix.Health.LastError}
 		if ix.Health.RetryAt != nil {
 			p["retryAt"] = ix.Health.RetryAt.UTC()
 		}
-		out = append(out, Issue{Key: "indexer:" + strconv.FormatInt(ix.ID, 10), Severity: SeverityWarning, Code: "indexer_failing",
-			Message: fmt.Sprintf("indexer %s is failing: %s", ix.Name, ix.Health.LastError), Params: p, Docs: "indexer-failing", FixRoute: "/indexers"})
+		code, docs := "indexer_failing", "indexer-failing"
+		switch ix.Health.LastErrorCode {
+		case "challenge": // a Cloudflare challenge: FlareSolverr helps
+			code, docs = "indexer_challenge", "indexer-builtin"
+		case "layout": // a built-in site's pages no longer match its definition
+			code, docs = "indexer_layout", "indexer-builtin"
+			p["parseFailures"] = ix.Health.ParseFailures
+		}
+		out = append(out, Issue{Key: key, Severity: SeverityWarning, Code: code,
+			Message: fmt.Sprintf("indexer %s is failing: %s", ix.Name, ix.Health.LastError), Params: p, Docs: docs, FixRoute: "/indexers"})
 	}
 	kinds, err := d.libraryKinds(ctx)
 	if err != nil {

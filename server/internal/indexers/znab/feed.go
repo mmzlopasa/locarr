@@ -90,6 +90,9 @@ type Page struct {
 	Items  []Item
 	Offset int
 	Total  int // -1 when the indexer does not say
+	// Dropped counts result rows that could not be read (built-in sites:
+	// a sign that the site's layout changed).
+	Dropped int
 }
 
 // ParseFeed parses a search or RSS response. An <error> document becomes *Error.

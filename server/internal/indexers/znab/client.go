@@ -210,7 +210,7 @@ func transportError(err error) error {
 		errors.Is(err, httpx.ErrBadRedirect):
 		kind = KindBadResponse
 	case errors.Is(err, httpx.ErrChallenge):
-		kind = KindAuth
+		kind = KindChallenge
 	}
 	return &Error{Kind: kind, Message: err.Error()}
 }

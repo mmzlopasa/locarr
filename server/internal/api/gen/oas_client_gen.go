@@ -203,8 +203,10 @@ type Invoker interface {
 	CreateImportList(ctx context.Context, request *ImportListInput) (*ImportList, error)
 	// CreateIndexer invokes createIndexer operation.
 	//
-	// Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
-	// key is write-only.
+	// Categories left empty are filled from the indexer's capabilities when they can be fetched (for a
+	// built-in site, from its definition). The API key is write-only. For a built-in site (`kind: native`,
+	// `definition`), unset fields take the site's defaults: its address, request limit, timeout and RSS
+	// (off when the site has no list of latest releases).
 	//
 	// POST /indexers
 	CreateIndexer(ctx context.Context, request *IndexerInput) (*Indexer, error)
@@ -1061,6 +1063,12 @@ type Invoker interface {
 	//
 	// GET /movies/importlists
 	ListImportLists(ctx context.Context) ([]ImportList, error)
+	// ListIndexerDefinitions invokes listIndexerDefinitions operation.
+	//
+	// Built-in and custom site definitions, usenet presets and definition load errors (administrators).
+	//
+	// GET /indexers/definitions
+	ListIndexerDefinitions(ctx context.Context) (*IndexerCatalog, error)
 	// ListIndexerSources invokes listIndexerSources operation.
 	//
 	// Prowlarr and Jackett instances indexers are imported from (administrators).
@@ -1506,6 +1514,12 @@ type Invoker interface {
 	//
 	// POST /auth/totp/recovery-codes
 	RegenerateRecoveryCodes(ctx context.Context, request *PasswordConfirm) (*RecoveryCodes, error)
+	// ReloadIndexerDefinitions invokes reloadIndexerDefinitions operation.
+	//
+	// Invalid files are skipped and listed in `errors`; indexers pick up changed definitions immediately.
+	//
+	// POST /indexers/definitions/reload
+	ReloadIndexerDefinitions(ctx context.Context) (*IndexerCatalog, error)
 	// RemoveQueueItem invokes removeQueueItem operation.
 	//
 	// `deleteData` also deletes the downloaded files (by the client, or by Locarr inside the data roots
@@ -5548,8 +5562,10 @@ func (c *Client) sendCreateImportList(ctx context.Context, request *ImportListIn
 
 // CreateIndexer invokes createIndexer operation.
 //
-// Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
-// key is write-only.
+// Categories left empty are filled from the indexer's capabilities when they can be fetched (for a
+// built-in site, from its definition). The API key is write-only. For a built-in site (`kind: native`,
+// `definition`), unset fields take the site's defaults: its address, request limit, timeout and RSS
+// (off when the site has no list of latest releases).
 //
 // POST /indexers
 func (c *Client) CreateIndexer(ctx context.Context, request *IndexerInput) (*Indexer, error) {
@@ -23316,6 +23332,119 @@ func (c *Client) sendListImportLists(ctx context.Context) (res []ImportList, err
 	return result, nil
 }
 
+// ListIndexerDefinitions invokes listIndexerDefinitions operation.
+//
+// Built-in and custom site definitions, usenet presets and definition load errors (administrators).
+//
+// GET /indexers/definitions
+func (c *Client) ListIndexerDefinitions(ctx context.Context) (*IndexerCatalog, error) {
+	res, err := c.sendListIndexerDefinitions(ctx)
+	return res, err
+}
+
+func (c *Client) sendListIndexerDefinitions(ctx context.Context) (res *IndexerCatalog, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listIndexerDefinitions"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/indexers/definitions"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListIndexerDefinitionsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/indexers/definitions"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListIndexerDefinitionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListIndexerDefinitionsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ListIndexerSources invokes listIndexerSources operation.
 //
 // Prowlarr and Jackett instances indexers are imported from (administrators).
@@ -32948,6 +33077,119 @@ func (c *Client) sendRegenerateRecoveryCodes(ctx context.Context, request *Passw
 
 	stage = "DecodeResponse"
 	result, err := decodeRegenerateRecoveryCodesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ReloadIndexerDefinitions invokes reloadIndexerDefinitions operation.
+//
+// Invalid files are skipped and listed in `errors`; indexers pick up changed definitions immediately.
+//
+// POST /indexers/definitions/reload
+func (c *Client) ReloadIndexerDefinitions(ctx context.Context) (*IndexerCatalog, error) {
+	res, err := c.sendReloadIndexerDefinitions(ctx)
+	return res, err
+}
+
+func (c *Client) sendReloadIndexerDefinitions(ctx context.Context) (res *IndexerCatalog, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("reloadIndexerDefinitions"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/indexers/definitions/reload"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ReloadIndexerDefinitionsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/indexers/definitions/reload"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ReloadIndexerDefinitionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeReloadIndexerDefinitionsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

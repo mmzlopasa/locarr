@@ -78,3 +78,14 @@ func TestSummarize(t *testing.T) {
 		t.Fatalf("%+v", s)
 	}
 }
+
+func TestExplainNothingFoundNamesFailingIndexers(t *testing.T) {
+	f := Facts{Indexers: 2, Clients: 1, Searches: 2, IndexerErrors: []IndexerError{{Name: "Nyaa", Code: "layout"}, {Name: "1337x", Code: "challenge"}}}
+	e := Explain(ItemState{Monitored: true, Available: true}, f)
+	if e.Code != ExplainNothingFound || !strings.Contains(e.Message, "Nyaa (layout), 1337x (challenge)") {
+		t.Fatalf("%+v", e)
+	}
+	if errs, ok := e.Params["indexerErrors"].([]IndexerError); !ok || len(errs) != 2 {
+		t.Fatalf("%+v", e.Params)
+	}
+}

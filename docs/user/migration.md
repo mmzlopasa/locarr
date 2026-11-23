@@ -62,6 +62,12 @@ Za svaku aplikaciju označite što želite:
 - **Dodaj svaki indexer zasebno**: svaki Prowlarrov indexer postaje Locarrov indexer. Običan
   Torznab/Newznab indexer pokazuje izravno na svoju stranicu, ostali i dalje idu kroz Prowlarr.
 
+Uz oba načina je zadano uključeno **„Gdje može, koristi Locarrove indexere"**: javne stranice koje
+Locarr ima ugrađene (Nyaa, The Pirate Bay, YTS, 1337x, LimeTorrents …) postaju Locarrovi ugrađeni
+indexeri, a usenet indexeri izravni Newznab indexeri (upiši im ključ i uključi ih). Ti se indexeri
+više ne pretražuju kroz Prowlarr, a kad nijedan ne ostane na Prowlarru, Prowlarr se može obrisati
+(vidi [indexers.md](indexers.md)).
+
 Kliknite **Pročitaj aplikacije**. Čitanje velike biblioteke traje desetak sekundi do minutu; ništa
 se još ne stvara.
 
@@ -129,7 +135,8 @@ ista izdanja. Locarr stare aplikacije **ne mijenja**, pa su koraci na njima uput
 1. Uvezi setup.
 2. Isključi automatske pretrage u Sonarru, Radarru i Lidarru (RSS i automatska pretraga) ili zaustavi
    kontejnere.
-3. Ukloni stare aplikacije iz Prowlarra (*Settings → Apps*).
+3. Ukloni stare aplikacije iz Prowlarra (*Settings → Apps*), a kad popis javi da nijedan indexer više
+   ne ide kroz Prowlarr, ugasi i Prowlarr.
 4. Uputi ljude na Locarr umjesto starog alata za zahtjeve.
 5. Zaustavi Bazarr.
 6. Provjeri download klijente i kategorije koje Locarr koristi.
