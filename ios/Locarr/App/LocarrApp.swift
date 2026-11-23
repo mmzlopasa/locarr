@@ -35,7 +35,12 @@ struct LocarrApp: App {
 
 /// Notification categories, taps and the Approve action.
 final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    let model = AppModel()
+    let model: AppModel = {
+        #if DEBUG
+        if ScreenshotStub.isActive { return ScreenshotStub.model() }
+        #endif
+        return AppModel()
+    }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self

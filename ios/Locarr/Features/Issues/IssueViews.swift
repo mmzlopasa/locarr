@@ -36,16 +36,11 @@ struct IssuesView: View {
 
     var body: some View {
         List {
-            Section {
-                HStack(spacing: 8) {
-                    ForEach(["open", "resolved", "all"], id: \.self) { f in
-                        Chip(text: L("issues.filters.\(f)"), selected: filter == f) { filter = f }
-                    }
-                }
-                Text(verbatim: L(session.canManageRequests ? "issues.subtitleAll" : "issues.subtitleMine")).font(.footnote).foregroundStyle(Theme.textMuted)
-            }
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+            SegmentPicker(options: ["open", "resolved", "all"], selection: $filter, label: L("issues.title")) { L("issues.filters.\($0)") }
+                .segmentRow()
+            Text(verbatim: L(session.canManageRequests ? "issues.subtitleAll" : "issues.subtitleMine")).font(.footnote).foregroundStyle(Theme.textMuted)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             if let pager {
                 ForEach(pager.items) { i in
                     NavigationLink(value: Route.issue(i.id)) { IssueRow(issue: i) }

@@ -17,17 +17,11 @@ struct WantedView: View {
 
     var body: some View {
         List {
-            Section {
-                Picker(selection: $media) {
-                    ForEach(["movies", "episodes", "albums"], id: \.self) { Text(verbatim: L("wanted.mediaKinds.\($0)")).tag($0) }
-                } label: { Text(verbatim: L("wanted.media")) }
-                .pickerStyle(.segmented)
-                Picker(selection: $kind) {
-                    ForEach(["missing", "cutoff_unmet"], id: \.self) { Text(verbatim: L("wanted.tabs.\($0)")).tag($0) }
-                } label: { Text(verbatim: L("wanted.media")) }
-                .pickerStyle(.segmented)
-            }
-            .listRowBackground(Color.clear)
+            ScreenHeaderRow()
+            SegmentPicker(options: ["movies", "episodes", "albums"], selection: $media, label: L("wanted.media")) { L("wanted.mediaKinds.\($0)") }
+                .segmentRow()
+            SegmentPicker(options: ["missing", "cutoff_unmet"], selection: $kind, label: L("wanted.media")) { L("wanted.tabs.\($0)") }
+                .segmentRow()
             if let pager {
                 ForEach(pager.items) { row in
                     NavigationLink(value: row.value.route) {
@@ -56,7 +50,7 @@ struct WantedView: View {
                 }
             }
         }
-        .navigationTitle(Text(verbatim: L("nav.wanted")))
+        .screenTitle(L("nav.wanted"))
         .screenStyle()
         .toast($toast)
     }
@@ -190,6 +184,7 @@ struct CalendarAgendaView: View {
 
     var body: some View {
         List {
+            ScreenHeaderRow()
             Section {
                 HStack {
                     Button { start = start.addingTimeInterval(-span) } label: { Image(systemName: "chevron.left") }
@@ -231,7 +226,7 @@ struct CalendarAgendaView: View {
                 Button(L("calendar.today")) { start = Calendar.current.startOfDay(for: Date()) }
             }
         }
-        .navigationTitle(Text(verbatim: L("nav.calendar")))
+        .screenTitle(L("nav.calendar"))
         .screenStyle()
     }
 
@@ -266,16 +261,9 @@ struct HistoryView: View {
 
     var body: some View {
         List {
-            Section {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(categories, id: \.self) { c in
-                            Chip(text: c == "all" ? L("history.all") : L("history.categories.\(c)"), selected: category == c) { category = c }
-                        }
-                    }
-                }
-            }
-            .listRowBackground(Color.clear)
+            ScreenHeaderRow()
+            ChipRow(options: categories, selection: $category) { $0 == "all" ? L("history.all") : L("history.categories.\($0)") }
+                .segmentRow()
             if let pager {
                 ForEach(pager.items) { h in
                     Group {
@@ -301,7 +289,7 @@ struct HistoryView: View {
             pager = p
             await p.reload()
         }
-        .navigationTitle(Text(verbatim: L("history.title")))
+        .screenTitle(L("history.title"))
         .screenStyle()
     }
 

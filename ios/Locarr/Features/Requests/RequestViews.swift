@@ -58,24 +58,20 @@ struct RequestsView: View {
 
     var body: some View {
         List {
-            Section {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        if session.canManageRequests {
-                            Chip(text: L(mine ? "requests.viewMine" : "requests.viewAll"), selected: true) { mine.toggle() }
-                        }
-                        ForEach(filters, id: \.self) { f in
-                            Chip(text: L("requests.filters.\(f)"), selected: filter == f) { filter = f }
-                        }
-                    }
-                    .padding(.horizontal, 2)
+            ChipScroller {
+                if session.canManageRequests {
+                    Chip(text: L(mine ? "requests.viewMine" : "requests.viewAll"), selected: true) { mine.toggle() }
                 }
-                if !session.canManageRequests || mine, let quota = quotaLine {
-                    Text(verbatim: quota).font(.footnote).foregroundStyle(Theme.textMuted)
+                ForEach(filters, id: \.self) { f in
+                    Chip(text: L("requests.filters.\(f)"), selected: filter == f) { filter = f }
                 }
             }
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+            .segmentRow()
+            if !session.canManageRequests || mine, let quota = quotaLine {
+                Text(verbatim: quota).font(.footnote).foregroundStyle(Theme.textMuted)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+            }
 
             if let pager {
                 Section {
@@ -156,25 +152,6 @@ struct RequestsView: View {
             toast = L("requests.approvedMany", ["done": String(result.done), "failed": String(result.errors?.count ?? 0)])
             await reload()
         } catch { toast = error.userMessage }
-    }
-}
-
-/// A selectable filter chip.
-struct Chip: View {
-    let text: String
-    var selected = false
-    let action: () -> Void
-    var body: some View {
-        Button(action: action) {
-            Text(verbatim: text)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(selected ? Theme.accentInk : Theme.text)
-                .padding(.horizontal, 12).padding(.vertical, 7)
-                .background(selected ? Theme.accent : Theme.surface2, in: Capsule())
-                .overlay(Capsule().stroke(selected ? Color.clear : Theme.border))
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
 
