@@ -76,7 +76,7 @@ fun OverviewScreen() {
                     // Queue
                     d.queue?.let { q ->
                         val active = q.items.filter { it.status == "active" }
-                        SectionTitle(stringResource(R.string.queue_n, active.size), Modifier.padding(horizontal = 0.dp).offset(x = (-16).dp), action = { TextButton(onClick = { nav.navigate("activity") }) { Text(stringResource(R.string.see_all)) } })
+                        SectionTitle(stringResource(R.string.queue_n, active.size), edge = 0.dp, action = { TextButton(onClick = { nav.navigate("activity") }) { Text(stringResource(R.string.see_all)) } })
                         if (active.isEmpty()) Text(stringResource(R.string.queue_empty), color = Lc.faint, style = MaterialTheme.typography.bodySmall)
                         active.take(4).forEach { QueueLine(it) }
                         q.clients.filter { it.enabled && !it.status.ok }.forEach { c ->
@@ -85,14 +85,14 @@ fun OverviewScreen() {
                     }
                     // Why didn't it land?
                     d.board?.let { b ->
-                        SectionTitle(stringResource(R.string.board_title), Modifier.offset(x = (-16).dp))
+                        SectionTitle(stringResource(R.string.board_title), edge = 0.dp)
                         val groups = b.groups.filter { it.code !in setOf("available", "downloading", "importing", "not_monitored") && it.count > 0 }
                         if (groups.isEmpty()) Text(stringResource(R.string.board_ok), color = Lc.faint, style = MaterialTheme.typography.bodySmall)
                         groups.take(5).forEach { g -> BoardGroupRow(g) { nav.navigate("board/${g.code}") } }
                     }
                     // Upcoming
                     if (d.upcoming.isNotEmpty()) {
-                        SectionTitle(stringResource(R.string.upcoming), Modifier.offset(x = (-16).dp), action = { TextButton(onClick = { nav.navigate("calendar") }) { Text(stringResource(R.string.see_all)) } })
+                        SectionTitle(stringResource(R.string.upcoming), edge = 0.dp, action = { TextButton(onClick = { nav.navigate("calendar") }) { Text(stringResource(R.string.see_all)) } })
                         d.upcoming.take(6).forEach { e -> CalendarLine(e) }
                     }
                 }

@@ -90,8 +90,8 @@ fun Pill(text: String, tone: Tone = Tone.Neutral, modifier: Modifier = Modifier)
 fun Dot(tone: Tone, modifier: Modifier = Modifier) = Box(modifier.size(8.dp).background(tone.fg, CircleShape))
 
 @Composable
-fun SectionTitle(text: String, modifier: Modifier = Modifier, action: (@Composable () -> Unit)? = null) {
-    Row(modifier.fillMaxWidth().padding(horizontal = Edge, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+fun SectionTitle(text: String, modifier: Modifier = Modifier, edge: Dp = Edge, action: (@Composable () -> Unit)? = null) {
+    Row(modifier.fillMaxWidth().padding(horizontal = edge, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(text, style = MaterialTheme.typography.titleMedium, color = Lc.text, modifier = Modifier.weight(1f).semantics { heading() })
         action?.invoke()
     }

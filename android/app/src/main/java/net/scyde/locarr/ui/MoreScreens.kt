@@ -116,12 +116,12 @@ fun AccountScreen() {
             items(state.accounts, key = { it.id }) { acc ->
                 Readable {
                     ListRow(acc.name.ifBlank { acc.url }, subtitle = listOf(acc.username, acc.url, if (acc.sealedToken == null) stringResource(R.string.signed_out) else "").filter { it.isNotBlank() }.joinToString(" · "),
-                        leading = { RadioButton(acc.id == state.account?.id, onClick = { scope.launch { state.switchTo(acc.id) } }) },
+                        leading = { RadioButton(acc.id == state.account?.id, onClick = { state.scope.launch { state.switchTo(acc.id) } }) },
                         trailing = { IconButton(onClick = { removing = acc.id }) { Icon(Icons.Default.Delete, stringResource(R.string.remove_server)) } },
                         onClick = { if (acc.id != state.account?.id) scope.launch { state.switchTo(acc.id) } })
                 }
             }
-            item { Readable { ListRow(stringResource(R.string.add_server), leading = { Icon(Icons.Default.Add, null, tint = Lc.accent) }) { scope.launch { state.addServer() } } } }
+            item { Readable { ListRow(stringResource(R.string.add_server), leading = { Icon(Icons.Default.Add, null, tint = Lc.accent) }) { state.scope.launch { state.addServer() } } } }
             item { SectionTitle(stringResource(R.string.language)) }
             item {
                 FilterChips(listOf("" to stringResource(R.string.lang_system), "en" to "English", "hr" to "Hrvatski"), current, { applyLanguage(it) })
@@ -136,6 +136,6 @@ fun AccountScreen() {
             item { Readable { ListRow(stringResource(R.string.sign_out), leading = { Icon(Icons.AutoMirrored.Filled.ExitToApp, null, tint = Lc.danger) }) { confirmSignOut = true } } }
         }
     }
-    if (confirmSignOut) ConfirmDialog(stringResource(R.string.sign_out), stringResource(R.string.sign_out_hint), stringResource(R.string.sign_out), { confirmSignOut = false }, danger = true) { scope.launch { state.signOut() } }
-    removing?.let { id -> ConfirmDialog(stringResource(R.string.remove_server), stringResource(R.string.remove_server_hint), stringResource(R.string.remove), { removing = null }, danger = true) { scope.launch { state.removeServer(id) } } }
+    if (confirmSignOut) ConfirmDialog(stringResource(R.string.sign_out), stringResource(R.string.sign_out_hint), stringResource(R.string.sign_out), { confirmSignOut = false }, danger = true) { state.scope.launch { state.signOut() } }
+    removing?.let { id -> ConfirmDialog(stringResource(R.string.remove_server), stringResource(R.string.remove_server_hint), stringResource(R.string.remove), { removing = null }, danger = true) { state.scope.launch { state.removeServer(id) } } }
 }

@@ -75,8 +75,8 @@ private fun Unreachable(state: AppState) {
     Box(Modifier.fillMaxSize().systemBarsPadding(), contentAlignment = androidx.compose.ui.Alignment.Center) {
         MessageBox(Icons.Default.CloudOff, stringResource(R.string.unreachable_title), detail = stringResource(R.string.unreachable_detail, state.account?.url ?: "")) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { scope.launch { state.start() } }) { Text(stringResource(R.string.retry)) }
-                if (state.accounts.size > 1) OutlinedButton(onClick = { scope.launch { state.addServer() } }) { Text(stringResource(R.string.other_server)) }
+                Button(onClick = { state.scope.launch { state.start() } }) { Text(stringResource(R.string.retry)) }
+                if (state.accounts.size > 1) OutlinedButton(onClick = { state.scope.launch { state.addServer() } }) { Text(stringResource(R.string.other_server)) }
             }
         }
     }
@@ -106,7 +106,7 @@ private fun MainShell(state: AppState) {
     LaunchedEffect(link) {
         if (link == null) return@LaunchedEffect
         if (link.serverId != null && link.serverId != state.account?.id && state.accounts.any { it.id == link.serverId }) {
-            state.switchTo(link.serverId)
+            state.scope.launch { state.switchTo(link.serverId) }
             return@LaunchedEffect // MainShell is recreated for the other server; the link is handled then.
         }
         state.pendingLink = null

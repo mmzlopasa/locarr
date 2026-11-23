@@ -33,7 +33,7 @@ import net.scyde.locarr.ui.notificationText
 import java.util.concurrent.TimeUnit
 
 /**
- * Notifications without Firebase (D-087): every 15 minutes (the shortest WorkManager period)
+ * Notifications without Firebase (D-096): every 15 minutes (the shortest WorkManager period)
  * and whenever the app opens, ask each signed-in server for notifications newer than the last
  * one seen (`GET /notifications?since=`) and post them locally.
  */

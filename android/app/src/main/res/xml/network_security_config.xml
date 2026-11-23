@@ -2,7 +2,7 @@
 <!--
   Locarr usually runs at home (http://192.168.1.10:8484), so plain HTTP is allowed: Android
   blocks it by default since 9. HTTPS servers are verified against the system CAs and the CAs
-  the user installed on the phone (a home CA for a self-signed certificate). See D-087.
+  the user installed on the phone (a home CA for a self-signed certificate). See D-097.
 -->
 <network-security-config>
     <base-config cleartextTrafficPermitted="true">

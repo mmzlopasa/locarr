@@ -3,7 +3,10 @@ package net.scyde.locarr.ui
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -110,7 +113,7 @@ fun ConnectScreen(state: AppState) {
             HorizontalDivider(color = Lc.border)
             Text(stringResource(R.string.servers_saved), color = Lc.muted, style = MaterialTheme.typography.labelLarge)
             state.accounts.forEach { a ->
-                ListRow(a.name.ifBlank { a.url }, subtitle = listOf(a.username, a.url).filter { it.isNotBlank() }.joinToString(" · "), onClick = { scope.launch { state.switchTo(a.id) } })
+                ListRow(a.name.ifBlank { a.url }, subtitle = listOf(a.username, a.url).filter { it.isNotBlank() }.joinToString(" · "), onClick = { state.scope.launch { state.switchTo(a.id) } })
             }
         }
     }
@@ -132,6 +135,25 @@ fun SignInScreen(state: AppState, url: String, onBack: (() -> Unit)? = null) {
     var recovery by rememberSaveable { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<Throwable?>(null) }
+    val canSubmit = !busy && username.isNotBlank() && password.isNotEmpty() && (!needCode || code.isNotBlank())
+    val codeFocus = remember { FocusRequester() }
+    LaunchedEffect(needCode) { if (needCode) runCatching { codeFocus.requestFocus() } }
+    val submit: () -> Unit = submit@{
+        if (!canSubmit) return@submit
+        busy = true; error = null
+        scope.launch {
+            try {
+                val api = Api(url)
+                val totp = code.takeIf { needCode && !recovery }
+                val res = if (provider == "local") api.login(username.trim(), password, totp, code.takeIf { needCode && recovery }, state.device)
+                else api.providerLogin(provider, username.trim(), password, code.takeIf { needCode }, state.device)
+                // On the app's scope: this screen goes away while the server opens.
+                state.scope.launch { state.signedIn(url, res) }
+            } catch (e: CancellationException) { throw e } catch (e: Exception) {
+                if (e is ApiException && e.code == "totp_required") { needCode = true } else error = e
+            } finally { busy = false }
+        }
+    }
     LaunchedEffect(url) { runCatching { Api(url).providers() }.onSuccess { list -> providers = list.filter { it.kind == "password" }.ifEmpty { providers } } }
 
     AuthFrame(
@@ -154,37 +176,26 @@ fun SignInScreen(state: AppState, url: String, onBack: (() -> Unit)? = null) {
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next), modifier = Modifier.fillMaxWidth(), colors = fieldColors())
         OutlinedTextField(password, { password = it }, label = { Text(stringResource(R.string.signin_password)) }, singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done), modifier = Modifier.fillMaxWidth(), colors = fieldColors())
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done), keyboardActions = KeyboardActions(onDone = { submit() }),
+            modifier = Modifier.fillMaxWidth(), colors = fieldColors())
         if (needCode) {
             OutlinedTextField(code, { code = it.trim() }, singleLine = true,
                 label = { Text(stringResource(if (recovery) R.string.signin_recovery else R.string.signin_code)) },
                 supportingText = { Text(stringResource(R.string.signin_code_hint)) },
                 keyboardOptions = KeyboardOptions(keyboardType = if (recovery) KeyboardType.Ascii else KeyboardType.NumberPassword, imeAction = ImeAction.Done),
-                modifier = Modifier.fillMaxWidth(), colors = fieldColors())
+                keyboardActions = KeyboardActions(onDone = { submit() }),
+                modifier = Modifier.fillMaxWidth().focusRequester(codeFocus), colors = fieldColors())
             if (provider == "local") TextButton(onClick = { recovery = !recovery; code = "" }) {
                 Text(stringResource(if (recovery) R.string.signin_use_code else R.string.signin_use_recovery))
             }
         }
         error?.let { Text(errorText(it), color = Lc.danger, style = MaterialTheme.typography.bodyMedium) }
         Button(
-            onClick = {
-                busy = true; error = null
-                scope.launch {
-                    try {
-                        val api = Api(url)
-                        val totp = code.takeIf { needCode && !recovery }
-                        val res = if (provider == "local") api.login(username.trim(), password, totp, code.takeIf { needCode && recovery }, state.device)
-                        else api.providerLogin(provider, username.trim(), password, code.takeIf { needCode }, state.device)
-                        state.signedIn(url, res)
-                    } catch (e: CancellationException) { throw e } catch (e: Exception) {
-                        if (e is ApiException && e.code == "totp_required") { needCode = true } else error = e
-                    } finally { busy = false }
-                }
-            },
-            enabled = !busy && username.isNotBlank() && password.isNotEmpty() && (!needCode || code.isNotBlank()),
+            onClick = submit,
+            enabled = canSubmit,
             modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp), shape = Shape,
         ) { if (busy) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp) else Text(stringResource(R.string.signin_button)) }
         if (onBack != null) TextButton(onClick = onBack) { Text(stringResource(R.string.signin_other_server)) }
-        else TextButton(onClick = { scope.launch { state.addServer() } }) { Text(stringResource(R.string.signin_other_server)) }
+        else TextButton(onClick = { state.scope.launch { state.addServer() } }) { Text(stringResource(R.string.signin_other_server)) }
     }
 }
