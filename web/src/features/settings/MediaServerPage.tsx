@@ -15,6 +15,7 @@ import {
 import { formatRelative } from "@/components/format";
 import { Alert, Badge, Button, Checkbox, EmptyState, ErrorAlert, PageHeader, Panel, Spinner, TextInput } from "@/components/ui";
 import { SecretField } from "@/features/notifications/channels";
+import { StreameroCompatPanel } from "./StreameroCompatPanel";
 
 type Form = {
   enabled: boolean;
@@ -215,6 +216,8 @@ export function MediaServerPage() {
           {sync.isSuccess ? <p className="mt-2 text-[12px] text-muted">{t("mediaServer.syncQueued")}</p> : null}
         </Panel>
       ) : null}
+
+      <StreameroCompatPanel />
     </div>
   );
 }
