@@ -13,7 +13,8 @@
     "close": "Zatvori",
     "add": "Dodaj",
     "delete": "Obriši",
-    "yes": "Da"
+    "yes": "Da",
+    "remove": "Ukloni"
   },
   "languages": {
     "en": "English",

@@ -13,7 +13,8 @@
     "close": "Close",
     "add": "Add",
     "delete": "Delete",
-    "yes": "Yes"
+    "yes": "Yes",
+    "remove": "Remove"
   },
   "languages": {
     "en": "English",
