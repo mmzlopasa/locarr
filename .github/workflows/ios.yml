@@ -1,0 +1,124 @@
+name: ios
+on:
+  push:
+    branches: [main]
+    # Path filters are not evaluated for tag pushes, so every v* tag builds the release .ipa.
+    tags: ["v*"]
+    paths: ["ios/**", "web/src/i18n/locales/**", "scripts/ios-*.py", "scripts/update-feather-source.py", ".github/workflows/ios.yml"]
+  pull_request:
+    paths: ["ios/**", "web/src/i18n/locales/**", "scripts/ios-*.py", "scripts/update-feather-source.py", ".github/workflows/ios.yml"]
+  workflow_dispatch:
+
+# A newer push to the same pull request replaces the run in progress.
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: ios
+    steps:
+      - uses: actions/checkout@v4
+      - name: String catalog is complete and up to date
+        run: python3 ../scripts/ios-strings.py --check
+      - run: brew install xcodegen
+      - run: xcodegen generate
+      - name: Unit tests (simulator)
+        run: |
+          # Runner images change which simulators they ship; use whichever iPhone is available.
+          UDID=$(xcrun simctl list devices available -j | jq -r '[.devices[][] | select(.name | startswith("iPhone"))][0].udid // empty')
+          if [ -z "$UDID" ]; then echo "No iPhone simulator on this runner"; xcrun simctl list runtimes; exit 1; fi
+          set -o pipefail
+          xcodebuild test -project Locarr.xcodeproj -scheme Locarr \
+            -destination "platform=iOS Simulator,id=$UDID" \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- | xcpretty
+      - name: Build the unsigned .ipa
+        run: |
+          # On a tag "v1.2.3": version 1.2.3, build 1*10000 + 2*100 + 3 (the same number
+          # scripts/update-feather-source.py writes as the Feather buildVersion). Otherwise the
+          # project's version with the run number as build.
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            VERSION="${GITHUB_REF_NAME}"
+            MARKETING="${VERSION#v}"; MARKETING="${MARKETING%%-*}"
+            IFS=. read -r MAJOR MINOR PATCH <<< "$MARKETING"
+            BUILD=$((MAJOR * 10000 + MINOR * 100 + PATCH))
+          else
+            MARKETING=$(grep -m1 'MARKETING_VERSION' project.yml | sed -E 's/.*"(.*)".*/\1/')
+            VERSION="v${MARKETING}-${GITHUB_RUN_NUMBER}"
+            BUILD="${GITHUB_RUN_NUMBER}"
+          fi
+          echo "Version $MARKETING, build $BUILD"
+          set -o pipefail
+          xcodebuild -project Locarr.xcodeproj -scheme Locarr -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build \
+            MARKETING_VERSION="$MARKETING" CURRENT_PROJECT_VERSION="$BUILD" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build | xcpretty
+          rm -rf Payload && mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/Locarr.app Payload/
+          /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" Payload/Locarr.app/Info.plist
+          zip -qry "Locarr-${VERSION}.ipa" Payload
+          ls -l *.ipa
+      - uses: actions/upload-artifact@v4
+        with:
+          name: locarr-ipa
+          path: ios/Locarr-*.ipa
+
+  release:
+    # Tags only: attach the .ipa to the release of the tag and add it to the Feather source.
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: locarr-ipa
+          path: dist
+      - name: Upload to the GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          IPA="dist/Locarr-${TAG}.ipa"
+          test -f "$IPA" || { echo "missing $IPA"; ls dist; exit 1; }
+          # The maintainer usually creates the release (gh release create); give that a
+          # moment, then create it ourselves. Another workflow may create it at the same time.
+          for _ in $(seq 1 8); do
+            gh release view "$TAG" >/dev/null 2>&1 && break
+            sleep 15
+          done
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --verify-tag --generate-notes --title "$TAG" || gh release view "$TAG" >/dev/null
+          fi
+          gh release upload "$TAG" "$IPA" --clobber
+      - name: Update the Feather source
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          IPA="dist/Locarr-${TAG}.ipa"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            python3 scripts/update-feather-source.py feather/source.json \
+              --bundle-id net.scyde.locarr \
+              --version "${TAG#v}" \
+              --url "https://github.com/${{ github.repository }}/releases/download/${TAG}/Locarr-${TAG}.ipa" \
+              --size "$(stat -c%s "$IPA")"
+            git diff --quiet && { echo "already in the source"; exit 0; }
+            git commit -am "chore(feather): add ${TAG} to source"
+            git push origin HEAD:main && exit 0
+            sleep $((attempt * 5))
+          done
+          exit 1

@@ -1,7 +1,16 @@
 # Napredak
 
 ## Trenutna faza
-P0–P11 gotovi.
+P0–P11 gotovi. P12: iOS aplikacija gotova (Android u zasebnom branchu).
+
+## Gotovo u P12 — iOS (branch `phase/P12-ios`)
+- `ios/` (D-091): SwiftUI, Swift 6, XcodeGen (`ios/project.yml`), `net.scyde.locarr`, iOS 17+, iPhone i iPad. Ručno pisan `APIClient` s tolerantnim modelima (`OpenEnum`, `JSONValue`), Keychain token (`AfterFirstUnlockThisDeviceOnly`), više poslužitelja, 401 → prijava. Dizajn iz web tokena (`DesignSystem/Theme.swift`), ikona iz web oznake (`scripts/ios-icon.py`).
+- Tekstovi: `scripts/ios-strings.py` gradi `Localizable.xcstrings` iz web locala (zajednički prostori imena) i `ios/strings/app.json` (EN + HR); `--check` u CI-ju.
+- Ekrani: povezivanje (LAN HTTP uz uske ATS iznimke, D-092), prijava s 2FA i preko Streamera; Otkrivanje, pretraga, naslov, osoba, zahtjev (sezone, 4K, album, izvođač), moji zahtjevi i detalj s „zašto", komentari, prijava problema, centar obavijesti; za upravitelje Pregled, Filmovi/Serije/Glazba s detaljima (datoteka, sezone i epizode, pjesme, „Zašto nije ovdje?" + Pokušaj odmah, vremenska crta), dodavanje, ručna pretraga s odlukama i grab, red (pauza, nastavak, prioritet, uklanjanje), ploča sa skupnim radnjama, traženo, kalendar (agenda), povijest, odobravanje, problemi, zdravlje, indexeri (vaši, ugrađene stranice, usenet predlošci) i klijenti s testom, mape za medije, Postavke na webu. iPad: bočna traka.
+- Obavijesti (D-093): `BGAppRefreshTask` + polling pri otvaranju i svake minute, lokalne obavijesti s kategorijama (Odobri), `locarr://` poveznice s poslužiteljem, značka.
+- CI i izdanje (D-094): `.github/workflows/ios.yml` (katalog, testovi na simulatoru, .ipa; na `v*` oznaci .ipa na GitHub izdanje i `feather/source.json` preko `scripts/update-feather-source.py`).
+- Testovi (`ios/LocarrTests`): čitanje s nepoznatim vrijednostima i poljima, greške API-ja, prijava (lozinka → TOTP, Streamero, krivi podaci, istek sesije), više poslužitelja, adrese i ATS pravila, poller (prvi upit, kursor, samo nove nepročitane, više poslužitelja), banneri i kategorije, duboke poveznice i kartice, lokalizacija i opisi kodova.
+- Korisnička dokumentacija: `docs/user/ios.md` (Feather izvor, instalacija, LAN, obavijesti).
 
 ## Gotovo u P11 (branch `phase/P11-operations`)
 - Migracija `00012_operations.sql`: `board_items` (unaprijed izračunati odgovori ploče) i indeksi za povijest, statistiku i najnoviju odluku po stavci.
@@ -177,12 +186,13 @@ P0–P11 gotovi.
 - Dev instanca na ovom hostu: `scripts/deploy-dev.sh` (projekt `locarr`, `127.0.0.1:8484`, podaci u `~/locarr-data`).
 
 ## Sljedeći koraci
-1. P12 mobilne aplikacije: ploča, povijest i zdravlje već imaju API (`/board`, `/history`, `/system/health`).
+1. P12: provjeriti iOS aplikaciju na stvarnom uređaju (Feather instalacija, dozvola lokalne mreže, osvježavanje u pozadini, radnja Odobri iz obavijesti, iPad bočna traka); Android aplikacija.
 2. P4 filmovi: adapter `indexers.Release` → `decision.Candidate` (naslov, veličina, protokol, indexer i njegove postavke, seederi, datum, ID-jevi, zastavice), adapter `decision.Blocklist` → `downloads.BlocklistChecker`, poziv `decision.Evaluate` za RSS i pretragu, spremanje `DecisionReport` u vremensku crtu; uvoz se pretplaćuje na `downloads.Bus`.
 3. P2 ostatak: zastavice indexera (freeleech…) treba P1 adapter preslikati u nazive iz `customformats.IndexerFlags`; profili izdanja po indexeru u webu (API već prima `indexerId`).
 4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- iOS: obavijesti u pozadini ovise o iOS-u (Background App Refresh), mogu kasniti ili ne stići nakon prisilnog zatvaranja (D-093). Duboke postavke i dodavanje indexera/klijenata samo na webu. Aplikacija je provjerena samo u CI-ju (simulator, jedinični testovi); ekrani nisu testirani UI testovima.
 - Operacije (P11): pomak sata se mjeri samo uz uključenu provjeru verzije; promjene bez traga na vremenskoj crti (npr. praćenje pojedine epizode) vide se na ploči najkasnije nakon 15 min; prvi sažetak ploče nakon promjene s 20 000 stavki traje ~0,3 s (zatim se pamti); pregled logova počinje prazan nakon restarta (datoteke ostaju).
 - Streamero (P9): nema krajnje točke za samu provjeru lozinke (Locarr se prijavi i odmah odjavi), popis stavki nema ID-jeve providera (indeks čita detalje svake nove stavke) i skenira se cijela biblioteka; vidi D-067–D-069. Brisanje epizoda pri osvježavanju serije ne zove notifier.
 - Uvoz: stvarni Overseerr se ne može postaviti bez Plexa, pa su korisnici, zahtjevi i problemi provjereni samo s lažnim Overseerrom (stvarni Overseerr 1.35 bez administratora odbija i API ključ). Stvarni Sonarr/Radarr/Prowlarr skrivaju ključeve indexera i lozinke klijenata, pa ih treba ponovno upisati. Popisi za serije i glazbu i preferirani izrazi Sonarra v3 se ne uvoze. Snimka pročitanih aplikacija je samo u memoriji (restart → pročitati ponovno).
