@@ -3846,6 +3846,288 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/providers/{id}/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign in with another service's account
+         * @description For `password` providers (Streamero): the username and password (and, when the
+         *     service asks, `totpCode`) are checked at the service and never stored (D-068).
+         *     A linked account signs in its Locarr user; an unknown one creates a requester
+         *     only when the provider settings allow it, otherwise 403 `identity_not_linked`.
+         *     Errors: 401 `invalid_credentials`, 401 `totp_required` (the password was right;
+         *     send it again with `totpCode`), 401 `invalid_totp`, 404 `not_found` (unknown or
+         *     disabled provider), 503 `provider_unavailable`. Rate-limited and counted towards
+         *     the sign-in ban like `/auth/login`.
+         */
+        post: operations["loginWithProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/identities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Accounts at other services linked to the caller */
+        get: operations["listMyIdentities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/identities/{provider}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: components["parameters"]["Provider"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Link the caller to their account at a provider (by signing in there)
+         * @description Checks the credentials at the provider like a provider sign-in, then links that
+         *     account to the caller. 409 `identity_taken` when it is linked to someone else.
+         *     Rate-limited and counted towards the sign-in ban.
+         */
+        post: operations["linkMyIdentity"];
+        /** Remove the caller's link to a provider */
+        delete: operations["unlinkMyIdentity"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/identities/{provider}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                provider: components["parameters"]["Provider"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Link a user to an account at a provider (administrators)
+         * @description `subject` is the provider's id for the account (for Streamero: from
+         *     `GET /mediaserver/streamero/users`). The provider's administrator flag never
+         *     makes the user an administrator here.
+         */
+        put: operations["linkUserIdentity"];
+        post?: never;
+        /** Remove a user's link to a provider (administrators) */
+        delete: operations["unlinkUserIdentity"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mediaserver/streamero": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The Streamero connection (administrators) */
+        get: operations["getStreameroSettings"];
+        /**
+         * Change the Streamero connection (administrators)
+         * @description Leave `apiKey` out to keep it, send "" to remove it. The key is checked before it is stored.
+         */
+        put: operations["updateStreameroSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mediaserver/streamero/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check a Streamero address and key (administrators)
+         * @description Always 200 with the outcome. Without `apiKey` the stored key is used. `errorCode`
+         *     is `unreachable`, `auth_failed`, `not_admin`, `not_streamero`, `address_blocked`
+         *     or `invalid`.
+         */
+        post: operations["testStreamero"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mediaserver/streamero/libraries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Streamero's libraries with the root folders that match them (administrators) */
+        get: operations["listStreameroLibraries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mediaserver/streamero/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh the list of titles Streamero already has (administrators) */
+        post: operations["syncStreamero"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mediaserver/streamero/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Streamero accounts and the Locarr users they are linked to (administrators) */
+        get: operations["listStreameroUsers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notificationchannels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Notification channels
+         * @description Without `personal`: the channels for everyone (administrators). With
+         *     `personal=true`: the caller's own channels (any signed-in user).
+         */
+        get: operations["listNotificationChannels"];
+        put?: never;
+        /**
+         * Add a channel
+         * @description `personal: false` (administrators) sends the chosen events of everyone;
+         *     `personal: true` sends the caller's own request and issue events. Personal
+         *     channels of non-administrators may not use `webhook` or `apprise` and cannot
+         *     reach private network addresses.
+         */
+        post: operations["createNotificationChannel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notificationchannels/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a test message through a channel configuration
+         * @description Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
+         */
+        post: operations["testNotificationChannel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notificationchannels/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** One channel (its owner, or administrators for shared channels) */
+        get: operations["getNotificationChannel"];
+        /**
+         * Change a channel
+         * @description Secrets left out are kept; "" removes one. `personal` cannot change.
+         */
+        put: operations["updateNotificationChannel"];
+        post?: never;
+        /** Remove a channel */
+        delete: operations["deleteNotificationChannel"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Address for links and the mail server (administrators) */
+        get: operations["getNotificationSettings"];
+        /**
+         * Change the address for links and the mail server (administrators)
+         * @description Leave `smtp.password` out to keep it, "" to remove it.
+         */
+        put: operations["updateNotificationSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -5298,6 +5580,8 @@ export interface components {
              * @description Set when the movie is in the library.
              */
             movieId?: number;
+            /** @description Link to the title in Streamero's web client when Streamero already has it (D-069). */
+            streameroUrl?: string;
         };
         AddOptions: {
             /** Format: int64 */
@@ -6220,6 +6504,8 @@ export interface components {
              * @description Set when the series is in the library.
              */
             seriesId?: number;
+            /** @description Link to the title in Streamero's web client when Streamero already has it (D-069). */
+            streameroUrl?: string;
         };
         SeriesAddOptions: {
             /** Format: int64 */
@@ -6554,6 +6840,8 @@ export interface components {
              * @description The caller's open request for it.
              */
             requestId?: number;
+            /** @description Link to the title in Streamero's web client when Streamero already has it (D-069). */
+            streameroUrl?: string;
         };
         /** @enum {string} */
         DiscoverListKey: "trending" | "trending_movies" | "trending_series" | "popular_movies" | "popular_series" | "upcoming_movies" | "now_playing" | "top_rated_movies" | "top_rated_series" | "airing_series" | "genre_movies" | "genre_series" | "studio" | "network" | "recently_added";
@@ -7182,6 +7470,253 @@ export interface components {
             items: components["schemas"]["WantedSubtitle"][];
             total: number;
         };
+        ProviderCredentials: {
+            username: string;
+            password: string;
+            /** @description The service's two-factor or recovery code, when it asks (totp_required). */
+            totpCode?: string;
+        };
+        ProviderLoginRequest: {
+            username: string;
+            password: string;
+            totpCode?: string;
+            device?: components["schemas"]["DeviceInfo"];
+            useCookie?: boolean;
+        };
+        LinkedIdentity: {
+            provider: string;
+            /** @description The provider's id for the account. */
+            subject: string;
+            /** @description The account's name at the provider (when it was last seen). */
+            username: string;
+            /** Format: int64 */
+            userId: number;
+            /** Format: date-time */
+            linkedAt: string;
+            /** Format: date-time */
+            lastLoginAt?: string;
+        };
+        LinkIdentityRequest: {
+            subject: string;
+            username?: string;
+        };
+        PathMapping: {
+            /** @description Folder as Locarr sees it (e.g. /data/movies). */
+            locarrPath: string;
+            /** @description The same folder as Streamero sees it (e.g. /media/movies). */
+            streameroPath: string;
+        };
+        StreameroLibraryMapping: {
+            /** Format: int64 */
+            rootFolderId: number;
+            libraryIds: string[];
+        };
+        StreameroSignIn: {
+            /** @description Offer "Sign in with Streamero" on the sign-in page. */
+            enabled: boolean;
+            /** @description An unknown Streamero account creates a requester with the default quotas. */
+            autoCreate: boolean;
+        };
+        StreameroStatus: {
+            /** @description Titles Streamero has (movies and series). */
+            indexedItems: number;
+            /** Format: date-time */
+            indexedAt?: string;
+            indexError?: string;
+            /** Format: date-time */
+            lastScanAt?: string;
+            lastScanError?: string;
+            /** @description Library changes waiting to be sent. */
+            pendingChanges?: number;
+        };
+        StreameroSettings: {
+            enabled: boolean;
+            /** @description Address Locarr uses (e.g. http://streamero:8787). */
+            url: string;
+            /** @description Address for "Watch in Streamero" links in browsers (empty = url). */
+            publicUrl: string;
+            apiKey: components["schemas"]["SecretState"];
+            pathMappings: components["schemas"]["PathMapping"][];
+            libraryMap: components["schemas"]["StreameroLibraryMapping"][];
+            signIn: components["schemas"]["StreameroSignIn"];
+            status: components["schemas"]["StreameroStatus"];
+        };
+        StreameroSettingsInput: {
+            enabled: boolean;
+            url: string;
+            publicUrl?: string;
+            /** @description Write-only. Omit to keep, an empty string to clear. */
+            apiKey?: string;
+            pathMappings?: components["schemas"]["PathMapping"][];
+            libraryMap?: components["schemas"]["StreameroLibraryMapping"][];
+            signIn?: components["schemas"]["StreameroSignIn"];
+        };
+        StreameroTestRequest: {
+            url: string;
+            apiKey?: string;
+        };
+        StreameroLibrary: {
+            id: string;
+            name: string;
+            /** @description movies, shows, music, mixed, books, audiobooks or photos */
+            kind: string;
+            paths: string[];
+            itemCount: number;
+            /** @description Root folders whose path (after the path mappings) is inside one of this library's folders, or holds one. */
+            suggestedRootFolderIds: number[];
+        };
+        StreameroTestResult: {
+            ok: boolean;
+            errorCode?: string;
+            message?: string;
+            serverName?: string;
+            version?: string;
+            libraries: components["schemas"]["StreameroLibrary"][];
+        };
+        StreameroUser: {
+            id: string;
+            username: string;
+            /** @description Administrator in Streamero (never makes anyone an administrator here). */
+            isAdmin: boolean;
+            disabled: boolean;
+            /** Format: int64 */
+            linkedUserId?: number;
+            linkedUsername?: string;
+        };
+        /** @enum {string} */
+        NotificationChannelKind: "webhook" | "ntfy" | "gotify" | "discord" | "telegram" | "pushover" | "email" | "apprise";
+        /** @enum {string} */
+        NotificationEventType: "request.created" | "request.approved" | "request.declined" | "request.available" | "request.partial" | "request.failed" | "request.comment" | "issue.created" | "issue.comment" | "issue.resolved" | "issue.reopened" | "library.grabbed" | "library.imported" | "library.upgraded" | "library.download_failed" | "library.import_failed" | "health.warning" | "subtitles.downloaded" | "subtitles.missing" | "test";
+        /** @description Plain settings; each kind uses only its own fields. */
+        NotificationChannelSettings: {
+            /** @description webhook: target URL; ntfy and gotify: server; apprise: notify endpoint (e.g. http://apprise:8000/notify/apprise). */
+            url?: string;
+            /**
+             * @description webhook
+             * @enum {string}
+             */
+            method?: "POST" | "PUT";
+            /** @description ntfy */
+            topic?: string;
+            /** @description ntfy 1–5, gotify 0–10, pushover -2–2 */
+            priority?: number;
+            /** @description ntfy tags (emoji short codes or words) */
+            tags?: string[];
+            /** @description apprise tag */
+            tag?: string;
+            /** @description telegram */
+            chatId?: string;
+            /** @description pushover */
+            sound?: string;
+            /** @description pushover */
+            device?: string;
+            /** @description e-mail recipients */
+            to?: string[];
+            /** @description discord sender name */
+            username?: string;
+            /**
+             * @description Language of the messages.
+             * @enum {string}
+             */
+            language?: "en" | "hr";
+        };
+        /** @description Write-only. Omit a field to keep it, "" to remove it. */
+        NotificationChannelSecrets: {
+            /** @description ntfy access token, gotify application token, pushover application token */
+            token?: string;
+            /** @description webhook HMAC secret */
+            secret?: string;
+            /** @description telegram */
+            botToken?: string;
+            /** @description discord webhook URL */
+            webhookUrl?: string;
+            /** @description pushover user or group key */
+            userKey?: string;
+            /** @description ntfy password (with username in settings) */
+            password?: string;
+        };
+        NotificationChannelInput: {
+            name: string;
+            kind: components["schemas"]["NotificationChannelKind"];
+            /** @default true */
+            enabled: boolean;
+            /** @default false */
+            personal: boolean;
+            events: components["schemas"]["NotificationEventType"][];
+            settings?: components["schemas"]["NotificationChannelSettings"];
+            secrets?: components["schemas"]["NotificationChannelSecrets"];
+        };
+        NotificationChannel: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            kind: components["schemas"]["NotificationChannelKind"];
+            enabled: boolean;
+            personal: boolean;
+            /**
+             * Format: int64
+             * @description The owner of a personal channel.
+             */
+            ownerId?: number;
+            events: components["schemas"]["NotificationEventType"][];
+            settings: components["schemas"]["NotificationChannelSettings"];
+            /** @description Names of the secrets that are set. */
+            secretsSet: string[];
+            /** @description Deliveries that failed in a row (0 = fine). */
+            failures: number;
+            lastError?: string;
+            /** Format: date-time */
+            lastErrorAt?: string;
+            /** Format: date-time */
+            lastSentAt?: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        NotificationChannelTestRequest: {
+            /**
+             * Format: int64
+             * @description Take secrets left out from this channel.
+             */
+            id?: number;
+            channel: components["schemas"]["NotificationChannelInput"];
+        };
+        NotificationTestResult: {
+            ok: boolean;
+            message?: string;
+        };
+        /** @enum {string} */
+        SmtpSecurity: "none" | "starttls" | "tls";
+        SmtpSettings: {
+            host: string;
+            port: number;
+            security: components["schemas"]["SmtpSecurity"];
+            username: string;
+            password: components["schemas"]["SecretState"];
+            from: string;
+        };
+        SmtpSettingsInput: {
+            host?: string;
+            port?: number;
+            security?: components["schemas"]["SmtpSecurity"];
+            username?: string;
+            /** @description Write-only. Omit to keep, an empty string to clear. */
+            password?: string;
+            from?: string;
+        };
+        NotificationSettings: {
+            /** @description subtitles.missing is sent when a file still lacks a wanted subtitle this many days after it arrived. */
+            subtitleMissingDays: number;
+            /** @description Locarr's address for links in messages (e.g. https://locarr.example.com). */
+            baseUrl: string;
+            smtp: components["schemas"]["SmtpSettings"];
+        };
+        NotificationSettingsInput: {
+            subtitleMissingDays?: number;
+            baseUrl?: string;
+            smtp?: components["schemas"]["SmtpSettingsInput"];
+        };
     };
     responses: {
         /** @description Signed in */
@@ -7206,6 +7741,7 @@ export interface components {
         };
     };
     parameters: {
+        Provider: string;
         SubtitleProviderName: "opensubtitles" | "subdl" | "jimaku";
         /** @description movie:ID or episode:ID */
         SubtitleItemRef: string;
@@ -13761,6 +14297,466 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Subtitle"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    loginWithProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProviderLoginRequest"];
+            };
+        };
+        responses: {
+            200: components["responses"]["SignedIn"];
+            default: components["responses"]["Error"];
+        };
+    };
+    listMyIdentities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Identities */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedIdentity"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    linkMyIdentity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: components["parameters"]["Provider"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProviderCredentials"];
+            };
+        };
+        responses: {
+            /** @description Linked */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedIdentity"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    unlinkMyIdentity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: components["parameters"]["Provider"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    linkUserIdentity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                provider: components["parameters"]["Provider"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkIdentityRequest"];
+            };
+        };
+        responses: {
+            /** @description Linked */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkedIdentity"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    unlinkUserIdentity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                provider: components["parameters"]["Provider"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getStreameroSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StreameroSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateStreameroSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StreameroSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StreameroSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testStreamero: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StreameroTestRequest"];
+            };
+        };
+        responses: {
+            /** @description Outcome */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StreameroTestResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listStreameroLibraries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Libraries */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StreameroLibrary"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    syncStreamero: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listStreameroUsers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Accounts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StreameroUser"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listNotificationChannels: {
+        parameters: {
+            query?: {
+                personal?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Channels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationChannel"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createNotificationChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationChannelInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationChannel"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testNotificationChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationChannelTestRequest"];
+            };
+        };
+        responses: {
+            /** @description Outcome */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationTestResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getNotificationChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Channel */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationChannel"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateNotificationChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationChannelInput"];
+            };
+        };
+        responses: {
+            /** @description Channel */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationChannel"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteNotificationChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getNotificationSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateNotificationSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
                 };
             };
             default: components["responses"]["Error"];

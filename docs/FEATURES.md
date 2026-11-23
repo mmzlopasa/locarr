@@ -76,12 +76,16 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Zahtjev za film, seriju (po sezonama, i buduće sezone), album i izvođača; 4K zahtjevi kao zasebna staza (D-054, D-055)
 - [x] Odobravanje (pojedinačno, skupno, uz izmjenu opcija), odbijanje s razlogom, automatsko odobravanje po korisniku i vrsti, kvote s iznimkama, komentari, prijave problema s traženjem zamjene (D-054, D-056)
 - [x] Lokalni korisnici i pozivnice za obitelj (rok, broj korištenja, uloga, dozvole, kvote; D-059)
-- [ ] Prijava korisnika preko Streamera (isti računi) — oblik rezerviran (D-058), izvodi se u P9
+- [x] Prijava korisnika preko Streamera (isti računi, 2FA, automatsko stvaranje tražitelja ili povezivanje; D-058, D-068)
 - [x] Obavijesti u aplikaciji: odobreno, odbijeno, dostupno, djelomično, zapelo, komentari, problemi; `GET /notifications?since=` za aplikacije (D-057)
 
 ## Media server i obavijesti (P9)
-- [ ] Streamero: osvježavanje biblioteke nakon uvoza, „već imaš" na otkrivanju, prijava korisnika
-- [ ] Obavijesti: webhook, ntfy, Gotify, Discord, Telegram, e-mail, Apprise-kompatibilno
+- [x] Streamero: veza (URL + API ključ, test, mapiranje putanja i biblioteka), skeniranje samo pogođene biblioteke nakon uvoza/nadogradnje/preimenovanja filma (skupljeno, s ponovnim pokušajima, na vremenskoj crti; D-067)
+- [x] Streamero: „U Streameru" i „Gledaj u Streameru" na Otkrivanju, stranicama naslova i u dodavanju (D-069)
+- [x] Streamero: prijava korisnika (D-068)
+- [x] Obavijesti: webhook (HMAC potpis), ntfy, Gotify, Discord, Telegram, Pushover, e-mail (SMTP), Apprise API; zajednički i osobni kanali, izbor događaja, Test, ponovni pokušaji, stanje neuspjeha (D-070)
+- [x] Obavijesti o biblioteci, titlovima i zdravlju sustava (D-071)
+- [ ] Streamero: obavijest pri brisanju i preimenovanju serija te brisanju glazbe (danas ih vidi Streamerov nadzor datoteka)
 
 ## Uvoz setupa (P10)
 - [ ] Sonarr, Radarr, Lidarr: biblioteka, profili kvalitete, custom formati, root mape, oznake, indexeri, download klijenti, liste

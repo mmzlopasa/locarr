@@ -19,7 +19,7 @@ func toDiscoverItem(it discover.Item) gen.DiscoverItem {
 	out := gen.DiscoverItem{MediaType: gen.DiscoverMediaType(it.MediaType), TmdbId: optPos(it.TMDbID), Mbid: optStr(it.MBID),
 		ArtistMbid: optStr(it.ArtistMBID), Title: it.Title, Subtitle: optStr(it.Subtitle), Year: it.Year, Date: optStr(it.Date),
 		Overview: optStr(it.Overview), Poster: optStr(it.Poster), Backdrop: optStr(it.Backdrop), Status: gen.DiscoverStatus(it.Status),
-		Status4k: gen.DiscoverStatus(it.Status4K), RequestId: optPos(it.RequestID)}
+		Status4k: gen.DiscoverStatus(it.Status4K), RequestId: optPos(it.RequestID), StreameroUrl: optStr(it.StreameroURL)}
 	if out.Status == "" {
 		out.Status = gen.DiscoverStatusNone
 	}

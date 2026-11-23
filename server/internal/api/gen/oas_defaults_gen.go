@@ -181,3 +181,15 @@ func (s *IndexerInput) setDefaults() {
 		s.TimeoutSeconds.SetTo(val)
 	}
 }
+
+// setDefaults set default value of fields.
+func (s *NotificationChannelInput) setDefaults() {
+	{
+		val := bool(true)
+		s.Enabled.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.Personal.SetTo(val)
+	}
+}

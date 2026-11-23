@@ -18,6 +18,7 @@ import {
   TextInput,
 } from "@/components/ui";
 import { useChangeLanguage, useCurrentUser } from "@/features/auth/hooks";
+import { LinkedAccountsPanel, MyNotificationsPanel } from "./ConnectedPanels";
 
 export function AccountPage() {
   const { t } = useTranslation();
@@ -30,6 +31,10 @@ export function AccountPage() {
         <PasswordPanel />
         <TwoFactorPanel />
         <SessionsPanel />
+        <div className="lg:col-span-2">
+          <MyNotificationsPanel />
+        </div>
+        <LinkedAccountsPanel />
         <div className="lg:col-span-2">
           <ApiKeysPanel />
         </div>

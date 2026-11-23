@@ -18,6 +18,7 @@ import {
 } from "@/components/ui";
 import { useCurrentUser } from "@/features/auth/hooks";
 import { InvitesPanel, QuotaEditor } from "./InvitesPanel";
+import { StreameroLink } from "./StreameroLink";
 import { PERMISSION_KEYS, ROLES, defaultPermissions } from "./permissions";
 
 export function UsersPage() {
@@ -206,6 +207,7 @@ function UserRow({ user }: { user: User }) {
             ) : null}
           </div>
           {user.role !== "admin" ? <QuotaEditor userId={user.id} /> : null}
+          <StreameroLink user={user} />
           <form
             className="flex flex-wrap items-end gap-2 border-t border-line pt-3"
             onSubmit={(e) => {

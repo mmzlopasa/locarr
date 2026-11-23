@@ -338,6 +338,20 @@ func encodeCreateMetadataProfileRequest(
 	return nil
 }
 
+func encodeCreateNotificationChannelRequest(
+	req *NotificationChannelInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateQualityProfileRequest(
 	req *QualityProfileInput,
 	r *http.Request,
@@ -632,8 +646,50 @@ func encodeImportExistingSeriesRequest(
 	return nil
 }
 
+func encodeLinkMyIdentityRequest(
+	req *ProviderCredentials,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeLinkUserIdentityRequest(
+	req *LinkIdentityRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeLoginRequest(
 	req *LoginRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeLoginWithProviderRequest(
+	req *ProviderLoginRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -1122,6 +1178,34 @@ func encodeTestIndexerConfigRequest(
 	return nil
 }
 
+func encodeTestNotificationChannelRequest(
+	req *NotificationChannelTestRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeTestStreameroRequest(
+	req *StreameroTestRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeUpdateAlbumRequest(
 	req *AlbumUpdate,
 	r *http.Request,
@@ -1346,6 +1430,34 @@ func encodeUpdateMusicSettingsRequest(
 	return nil
 }
 
+func encodeUpdateNotificationChannelRequest(
+	req *NotificationChannelInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateNotificationSettingsRequest(
+	req *NotificationSettingsInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeUpdateQualityDefinitionsRequest(
 	req *UpdateQualityDefinitionsRequest,
 	r *http.Request,
@@ -1460,6 +1572,20 @@ func encodeUpdateSeriesNamingRequest(
 
 func encodeUpdateSettingsRequest(
 	req *UpdateSettingsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateStreameroSettingsRequest(
+	req *StreameroSettingsInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

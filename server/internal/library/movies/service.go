@@ -415,6 +415,7 @@ func (s *Service) Delete(ctx context.Context, id int64, o DeleteOptions) error {
 				return fmt.Errorf("move %s to the recycle bin: %w", m.Path, err)
 			}
 			msg = "removed from the library; folder moved to the recycle bin (" + e.RecycledPath + ")"
+			defer s.notify(ctx, &m, "deleted", m.Path)
 		} else {
 			msg = "removed from the library; the folder did not exist"
 		}

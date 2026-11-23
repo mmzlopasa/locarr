@@ -47,7 +47,9 @@ type Identity struct {
 // ProviderRedirect.
 type Credentials struct {
 	Username, Password string
-	Code, RedirectURL  string
+	// TOTPCode is the provider's own two-factor code, when it asks for one.
+	TOTPCode          string
+	Code, RedirectURL string
 }
 
 // Provider verifies credentials at another service.
@@ -65,11 +67,26 @@ type Provider interface {
 	Authenticate(ctx context.Context, c Credentials) (Identity, error)
 }
 
+// Available is implemented by providers that can be switched off: they are
+// listed and usable only while Available is true.
+type Available interface {
+	Available(ctx context.Context) bool
+}
+
+// SignUpPolicy is implemented by providers whose unknown accounts may create
+// local users. The role is never admin (enforced here).
+type SignUpPolicy interface {
+	AutoCreate(ctx context.Context) (allowed bool, role Role, perms Permissions)
+}
+
 // Providers lists the ways to sign in: local accounts and every registered
-// provider.
-func (s *Service) Providers() []ProviderInfo {
+// provider that is available.
+func (s *Service) Providers(ctx context.Context) []ProviderInfo {
 	out := []ProviderInfo{{ID: LocalProvider, Kind: ProviderPassword, Name: "Locarr"}}
 	for _, p := range s.providers {
+		if a, ok := p.(Available); ok && !a.Available(ctx) {
+			continue
+		}
 		out = append(out, p.Info())
 	}
 	return out

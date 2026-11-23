@@ -782,6 +782,9 @@ func (s *Service) notify(ctx context.Context, a *Artist, al *Album, action, path
 	}
 	err := s.Notifier.Notify(ctx, mediaserver.Change{ItemRef: al.Ref().String(), Kind: "album", Action: action, Title: a.Name + " - " + al.Title,
 		Year: al.Year(), Paths: []string{path}, IDs: map[string]string{"musicbrainz": al.MBID}})
+	if err == nil && mediaserver.RecordsOutcome(s.Notifier) {
+		return
+	}
 	msg := "notified " + s.Notifier.Name()
 	if err != nil {
 		msg = "could not notify " + s.Notifier.Name() + ": " + err.Error()

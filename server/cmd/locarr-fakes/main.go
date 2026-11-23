@@ -8,10 +8,12 @@
 //
 // It also serves a fake TMDb under /tmdb (API key in internal/metadata/tmdb/fake)
 // and a fake MusicBrainz and Cover Art Archive under /musicbrainz (ws/2 at
-// /musicbrainz/ws/2, covers at /musicbrainz/coverart), and fake subtitle
+// /musicbrainz/ws/2, covers at /musicbrainz/coverart), fake subtitle
 // providers: OpenSubtitles.com under /opensubtitles/api/v1, SubDL under
 // /subdl/api/v1 and Jimaku under /jimaku/api (keys in
-// internal/subtitles/providers/fake).
+// internal/subtitles/providers/fake), and a fake Streamero under /streamero
+// (accounts and keys in internal/mediaserver/streamero/fake; state at
+// /streamero/_fake/state, reset with POST /streamero/_fake/reset).
 package main
 
 import (
@@ -21,6 +23,7 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/indexers/fake"
+	stfake "github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero/fake"
 	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
 	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 	subfake "github.com/mmzlopasa/locarr/server/internal/subtitles/providers/fake"
@@ -43,6 +46,7 @@ func main() {
 	// Like MusicBrainz, refuse clients that send more than one request per second.
 	mb.MinInterval = 950 * time.Millisecond
 	mux.Handle("/musicbrainz/", mb)
+	mux.Handle("/streamero/", http.StripPrefix("/streamero", stfake.New()))
 	subs := subfake.New()
 	for _, p := range []string{"/opensubtitles/", "/subdl/", "/jimaku/"} {
 		mux.Handle(p, subs)

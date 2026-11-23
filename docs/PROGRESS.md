@@ -1,7 +1,19 @@
 # Napredak
 
 ## Trenutna faza
-P0–P8 gotovi.
+P0–P9 gotovi.
+
+## Gotovo u P9 (branch `phase/P9-mediaserver`)
+- Migracija `00010_mediaserver.sql`: `mediaserver_pending` (promjene koje čekaju skeniranje), `streamero_items` (indeks naslova koje Streamero ima, po TMDb/IMDb/TVDB ID-u), `notification_channels` (zajednički i osobni kanali, šifrirane tajne, stanje neuspjeha), `subtitle_missing_notified`.
+- `internal/mediaserver/streamero` (D-067–D-069): klijent za Streamerov izvorni API (`/system/info`, `/auth/login` s 2FA korakom, `/auth/logout`, `/auth/me`, `/users`, `/libraries`, `/libraries/{id}/scan`, `/libraries/{id}/items`, `/items/{id}`), postavke (URL, javni URL, šifrirani API ključ, mapiranje putanja, biblioteke po root mapi, prijava), test s prijedlozima biblioteka, notifier (posao `streamero-scan`: 30 s skupljanja, jedna biblioteka jednom, 6 pokušaja, ishod na vremenskoj crti), indeks (`streamero-index` svakih 6 h i nakon skeniranja), poveznice „Gledaj u Streameru", provider za prijavu. Lažni Streamero: `streamero/fake` (i u `locarr-fakes` pod `/streamero`).
+- `mediaserver.SelfRecording`: notifier koji sam piše ishod; filmovi (uvoz, nadogradnja, preimenovanje, brisanje u koš), serije (uvoz, preimenovanje, brisanje u koš) i glazba (uvoz, brisanje izvođača u koš) zovu notifier.
+- `auth` (D-068): `LoginWithProvider` (automatsko stvaranje tražitelja ili 403 `identity_not_linked`, admin kod servisa nikad ne daje admina), `Link`/`Unlink`/`Identities`, `Providers(ctx)` samo dostupnih providera, `Credentials.TOTPCode`.
+- `internal/notify/channels` (D-070): webhook (HMAC), ntfy, Gotify, Discord, Telegram (MarkdownV2), Pushover, e-mail (SMTP bez šifriranja/STARTTLS/TLS, tekst + HTML), Apprise API; poruke EN i HR s poveznicama i plakatima. `internal/notify/delivery`: kanali, `notify.Sink`, posao `notify-deliver` (5 pokušaja), postavke dostave (adresa za poveznice, poslužitelj pošte, dani za „titl još nedostaje").
+- Događaji za kanale (D-071): `library.grabbed/imported/upgraded/download_failed/import_failed`, `subtitles.downloaded/missing`, `health.warning` (posao `health-notify` svakih 5 min).
+- API: `/mediaserver/streamero*` (postavke, test, biblioteke, sync, korisnici), `/auth/providers/{id}/login`, `/auth/identities*`, `/users/{id}/identities/{provider}`, `/notificationchannels*` (uz `test`), `/settings/notifications`; `streameroUrl` na `DiscoverItem`, `MovieLookup`, `SeriesLookup`. Prijava i povezivanje preko providera idu kroz ograničenje i zabranu kao lokalna prijava.
+- Web (EN + HR): Postavke → Media server, Postavke → Obavijesti (dostava, kanali s poljima po vrsti, događaji, Test, stanje), Račun → Moje obavijesti i Povezani računi, izbor načina prijave (Locarr / Streamero, 2FA korak), povezivanje Streamero računa u Korisnicima, „U Streameru" i „Gledaj u Streameru".
+- Testovi: Streamero klijent, mapiranje i prijedlozi, skupljanje i ponovni pokušaji skeniranja, indeks i poveznice, provider (uspjeh, kriva lozinka, 2FA, automatsko stvaranje uključeno/isključeno, povezivanje, admin kod Streamera, onemogućen korisnik, svaka Streamero sesija zatvorena); kanali sa lažnim primateljima za svaku vrstu (potpis, Gotify token nije u adresi, MarkdownV2, SMTP preko malog SMTP poslužitelja u procesu sa STARTTLS i TLS); usmjeravanje i pravila kanala; integracijski `TestStreameroLibraryUpdatesEndToEnd` (uvoz → skeniranje biblioteke Movies → vremenska crta → webhook → indeks → poveznice), `TestStreameroSignInAndPermissions`, `TestProviderSignInIsRateLimitedAndBanned`; Vitest; Playwright `e2e/streamero.spec.ts`.
+- Korisnička dokumentacija: `docs/user/streamero.md`, `docs/user/notifications.md`. Potreban Streamero 0.11.4+.
 
 ## Gotovo u P7 (branch `phase/P7-subtitles`)
 - Migracija `00009_subtitles.sql`: `subtitle_profiles`, `subtitle_item_profiles`, `subtitle_providers` (šifrirani ključ i lozinka, zdravlje, kvota), `subtitles`, `media_file_tracks` + `media_file_probes`, `subtitle_history`, `subtitle_blacklist`, `subtitle_state` (što nedostaje i stanje pretrage po stavci).
@@ -125,6 +137,7 @@ P0–P8 gotovi.
 4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- Streamero (P9): nema krajnje točke za samu provjeru lozinke (Locarr se prijavi i odmah odjavi), popis stavki nema ID-jeve providera (indeks čita detalje svake nove stavke) i skenira se cijela biblioteka; vidi D-067–D-069. Brisanje epizoda pri osvježavanju serije ne zove notifier.
 - Titlovi: provideri su provjereni samo s lažnim servisima iz javne dokumentacije (stvarni ključevi nisu korišteni u testovima); Podnapisi, Addic7ed i Titlovi.com nisu uključeni (D-063). Zapisi se čitaju samo iz MKV/MP4. Kod nadogradnje videa pod novim imenom titlovi starog imena ostaju na disku; Locarr ih više ne veže uz film i traži nove pod novim imenom. Sinkronizacija nalazi jedan pomak za cijeli titl.
 - Zahtjevi: preporuke („slični naslovi") još nisu; 4K staza dijeli jednu stavku biblioteke s običnom (D-055); kvote broje zahtjeve, ne sezone; glazbeni zahtjevi bez profila metapodataka koriste „Everything".
 - Serije: slike za serije dodane s TVDB-a se ne prikazuju (D-053); vrijeme emitiranja za TMDb serije je procjena (20:00 u zoni mreže, D-046); scensko mapiranje je samo ručno i za sada samo kroz API (`PATCH /episodes/{id}`), web ga prikazuje ali ne uređuje (D-047); sortiranje popisa serija po sljedećem emitiranju ili broju nedostajućih epizoda zbraja sve epizode (~130 ms na 5000 serija).

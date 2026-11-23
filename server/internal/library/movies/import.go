@@ -304,6 +304,9 @@ func (s *Service) notify(ctx context.Context, m *Movie, action, path string) {
 	}
 	err := s.Notifier.Notify(ctx, mediaserver.Change{ItemRef: m.Ref().String(), Kind: "movie", Action: action, Title: m.Title, Year: m.Year,
 		Paths: []string{path}, IDs: map[string]string{"tmdb": fmt.Sprint(m.TMDbID), "imdb": m.IMDbID}})
+	if err == nil && mediaserver.RecordsOutcome(s.Notifier) {
+		return
+	}
 	msg := "notified " + s.Notifier.Name()
 	if err != nil {
 		msg = "could not notify " + s.Notifier.Name() + ": " + err.Error()
