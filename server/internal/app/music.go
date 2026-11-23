@@ -35,7 +35,11 @@ type artistArgs struct {
 // library, registers its wanted source and jobs, and imports album downloads.
 func buildMusic(_ context.Context, d *Deps, cfg config.Config, log *slog.Logger) error {
 	mb := musicbrainz.New(cfg.MusicBrainzURL, cfg.CoverArtURL, d.MetaCache)
-	mb.Contact = func(ctx context.Context) string { v, _ := settings.Get(ctx, d.Settings, metadata.MusicBrainzContact); return v }
+	mb.Health = d.MetaHealth
+	mb.Contact = func(ctx context.Context) string {
+		v, _ := settings.Get(ctx, d.Settings, metadata.MusicBrainzContact)
+		return v
+	}
 	d.MusicBrainz = mb
 	d.CoverArt = &metadata.ImageCache{Dir: filepath.Join(cfg.ConfigDir, "cache", "images", "coverart"), Source: mb, Sizes: musicbrainz.CoverSizes}
 	d.Music = &music.Service{DB: d.DB, Settings: d.Settings, Meta: mb, Covers: mb, Quality: d.Quality, Formats: d.Formats, Roots: d.Roots,

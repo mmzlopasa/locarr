@@ -1,14 +1,28 @@
 # Napredak
 
 ## Trenutna faza
-P0–P10 gotovi.
+P0–P11 gotovi.
+
+## Gotovo u P11 (branch `phase/P11-operations`)
+- Migracija `00012_operations.sql`: `board_items` (unaprijed izračunati odgovori ploče) i indeksi za povijest, statistiku i najnoviju odluku po stavci.
+- `internal/board` (D-081): ploča „Zašto nije stiglo?" za filmove, emitirane epizode, izdane albume i titlove; potpuni izračun (`board-rebuild` pri pokretanju i svakih 15 min) i osvježavanje pojedinih stavki ~2 s nakon zapisa na vremensku crtu ili događaja preuzimanja; novi kodovi `stalled`, `path_not_visible`, `subtitle_*`; `fix` po grupi; zbrojeni razlozi odbijanja; skupne radnje (pretraži, promijeni profil, blokiraj i ponovi, ponovi uvoz, prestani pratiti).
+- `internal/history` (D-082): povijest cijele biblioteke iz vremenske crte i događaja preuzimanja (filtri, pretraga, straničenje), statistika po indexeru i klijentu.
+- `internal/health` (D-083): provjere s kodovima, sidrima u dokumentaciji i stranicom popravka; `health.warning` jednom po pojavi problema (zamjenjuje `health-notify` iz P9); provjera verzije na GitHubu i pomaka sata (isključivo); `metadata.Health` bilježi ishod zahtjeva TMDb/TVDB/MusicBrainz.
+- `internal/logging` (D-084): `/config/logs` s rotacijom (10 MB × 6), prsten od 5000 zapisa, SSE uživo, maskiranje tajni i u vrijednostima.
+- `internal/backup` (D-085): zip s `VACUUM INTO` snimkom, ključem, postavkama i manifestom; zakazano (24 h, čuva 7), ručno, učitavanje; vraćanje s provjerom, kopijom prije vraćanja, restartom u istom procesu (`app.ServeWith` petlja) i odjavom svih osim vraćača.
+- `internal/stats`, `internal/housekeeping` (D-086): `/api/stats` (+ `/api/v1/system/stats`), `/metrics` uz token, zadržavanje povijesti, tjedni `VACUUM`, ograničenje predmemorije slika.
+- API: `/board*`, `/history`, `/activity/stats`, `DELETE /queue/blocklist`, `/system/health*`, `/system/stats`, `/system/logs*`, `/system/backups*`, `/settings/system`, `create` za `POST /rootfolders`.
+- Web (EN + HR): pregled za administratore na `/`, Aktivnost → Zašto nije stiglo? / Povijest / Statistika, Sustav → Zdravlje / Logovi / Sigurnosne kopije, Postavke → Nadzor, čarobnjak `/welcome` (mape za medije, uvoz iz drugih aplikacija kad postoji `/migrate`).
+- Testovi: ploča (grupiranje, zbrajanje razloga, razvrstavanje neuspjelih uvoza, titlovi, 20 000 stavki), integracijski `TestBoardPathMappingFlow` (krivo mapiranje → ploča i zdravlje → popravak → ponovi uvoz → film u biblioteci → povijest i statistika), `TestBoardBulkActions`, `TestBoardRebuildPerformance` (10 000 filmova), `TestHealthChecks` (svaka provjera s lažnim servisima, jedna obavijest), `TestStatsAndMetrics` (ključ samo za čitanje, tražitelj 403, JSON greške, token), `TestHousekeepingRetention`, `TestLogViewerAPI`, `TestBackupRestoreRoundTrip` (stvarni poslužitelj: kopija → izmjene → vraćanje → podaci kao prije, druga sesija odjavljena, mediji netaknuti → vraćanje učitanog zipa), dosljednost kopije dok se piše, logovi (maskiranje, rotacija); Vitest; Playwright `e2e/operations.spec.ts`.
+- Popravci s prve stvarne instalacije: greške prikazuju i razlog sa servera (npr. odgovor qBittorrenta) ispod prevedene rečenice; Mape za medije objašnjavaju da Locarr vidi mape hosta pod `/data` (i u grešci „izvan dopuštenih mapa"), preglednik se otvara u `/data`; mapa „samo za čitanje" pokazuje razlog provjere pisanja (dopuštenja, mount samo za čitanje poput NFS-a s `ro`, nestala mapa) i poveznicu na upute.
+- Korisnička dokumentacija: `docs/user/troubleshooting.md`, `docs/user/backup.md`.
 
 ## Gotovo: ugrađeni indexeri bez Prowlarra (branch `feat/native-indexers`)
-- Migracija `00012_native_indexers.sql`: `indexers.definition`, `options`, `parse_failures`, `self_test_at`, `self_test_ok`.
-- `internal/indexers/native` (D-081 – D-083): vlastiti YAML format definicija (predlošci zahtjeva, CSS selektori preko `x/net/html` + `cascadia` za HTML i RSS, JSON putanje, veličine, datumi uključujući relativne, kategorije, magneti iz hex/base32 hasha, stranice, `download` blok za magnet sa stranice detalja), Go implementacije za API-je (YTS, EZTV, The Pirate Bay/apibay, SubsPlease, Knaben), deklarativne definicije (Nyaa, Tokyo Toshokan, LimeTorrents, 1337x, BitSearch), registar s vlastitim definicijama u `/config/definitions` (provjera, greške, zamjena ugrađene, ponovno učitavanje), prepoznavanje stranice po imenu/aliasu/adresi.
+- Migracija `00013_native_indexers.sql`: `indexers.definition`, `options`, `parse_failures`, `self_test_at`, `self_test_ok`.
+- `internal/indexers/native` (D-087 – D-089): vlastiti YAML format definicija (predlošci zahtjeva, CSS selektori preko `x/net/html` + `cascadia` za HTML i RSS, JSON putanje, veličine, datumi uključujući relativne, kategorije, magneti iz hex/base32 hasha, stranice, `download` blok za magnet sa stranice detalja), Go implementacije za API-je (YTS, EZTV, The Pirate Bay/apibay, SubsPlease, Knaben), deklarativne definicije (Nyaa, Tokyo Toshokan, LimeTorrents, 1337x, BitSearch), registar s vlastitim definicijama u `/config/definitions` (provjera, greške, zamjena ugrađene, ponovno učitavanje), prepoznavanje stranice po imenu/aliasu/adresi.
 - Servis indexera radi preko sučelja `backend` (Torznab ili ugrađena stranica): isti search, RSS, zdravlje, ograničenja, `search_log`, grab; nove vrste grešaka `challenge` i `layout`, broj nepročitanih redaka, tjedni posao `indexer-selftest`, postavke `indexers.publicTrackers` i `indexers.userAgent`, popis poznatih usenet indexera; pretrage serija nose sve ID-eve, a indexer dobije najjači koji podržava.
 - API: `kind: native`, `definition`, `options`, zdravlje (`parseFailures`, `selfTestAt`, `selfTestOk`), `GET /indexers/definitions`, `POST /indexers/definitions/reload`; `builtinReplace` u opcijama uvoza.
-- Uvoz iz Prowlarra (D-084): zadano zamjenjuje poznate javne stranice ugrađenima i usenet izravnim Newznabom; izvor ih isključuje; popis za prelazak javlja kad Prowlarr više ne treba.
+- Uvoz iz Prowlarra (D-090): zadano zamjenjuje poznate javne stranice ugrađenima i usenet izravnim Newznabom; izvor ih isključuje; popis za prelazak javlja kad Prowlarr više ne treba.
 - Web (EN + HR): „Dodaj indexer" s karticama Ugrađene / Usenet / Torznab-Newznab, uređivanje ugrađenog indexera (mirror, postavke stranice, FlareSolverr, ograničenja, kategorije), razlozi zdravlja, vlastite definicije s greškama, trackeri i User-Agent; uvoz iz Prowlarra/Jacketta skriven pod naprednim.
 - Testovi: jedinični (parseri, predlošci, validacija, registar), test po definiciji nad snimljenim odgovorima (`native/sitefake`, i u `locarr-fakes` pod `/sites/<id>`), `TestBuiltinIndexers` (katalog → dodavanje → test → pretraga → grab magneta i magneta sa stranice detalja → promijenjen izgled → samotest → vlastita definicija), uvoz iz lažnog Prowlarra, Vitest, Playwright (Nyaa iz lažnih snimki), `go test -tags live` (nije u CI-ju; 2026-11-23 prošlo svih deset stranica, 1337x uz FlareSolverr).
 - Korisnička dokumentacija: `docs/user/indexers.md`.
@@ -163,14 +177,13 @@ P0–P10 gotovi.
 - Dev instanca na ovom hostu: `scripts/deploy-dev.sh` (projekt `locarr`, `127.0.0.1:8484`, podaci u `~/locarr-data`).
 
 ## Sljedeći koraci
-1. P0 ostatak:
-   - Prvo pokretanje: korak za odabir mape za medije u čarobnjaku (danas se root mape dodaju u Postavke → Mape za medije odmah nakon postavljanja).
-   - Backup i vraćanje (automatski i ručno); migracije pri pokretanju već rade.
+1. P12 mobilne aplikacije: ploča, povijest i zdravlje već imaju API (`/board`, `/history`, `/system/health`).
 2. P4 filmovi: adapter `indexers.Release` → `decision.Candidate` (naslov, veličina, protokol, indexer i njegove postavke, seederi, datum, ID-jevi, zastavice), adapter `decision.Blocklist` → `downloads.BlocklistChecker`, poziv `decision.Evaluate` za RSS i pretragu, spremanje `DecisionReport` u vremensku crtu; uvoz se pretplaćuje na `downloads.Bus`.
 3. P2 ostatak: zastavice indexera (freeleech…) treba P1 adapter preslikati u nazive iz `customformats.IndexerFlags`; profili izdanja po indexeru u webu (API već prima `indexerId`).
 4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- Operacije (P11): pomak sata se mjeri samo uz uključenu provjeru verzije; promjene bez traga na vremenskoj crti (npr. praćenje pojedine epizode) vide se na ploči najkasnije nakon 15 min; prvi sažetak ploče nakon promjene s 20 000 stavki traje ~0,3 s (zatim se pamti); pregled logova počinje prazan nakon restarta (datoteke ostaju).
 - Streamero (P9): nema krajnje točke za samu provjeru lozinke (Locarr se prijavi i odmah odjavi), popis stavki nema ID-jeve providera (indeks čita detalje svake nove stavke) i skenira se cijela biblioteka; vidi D-067–D-069. Brisanje epizoda pri osvježavanju serije ne zove notifier.
 - Uvoz: stvarni Overseerr se ne može postaviti bez Plexa, pa su korisnici, zahtjevi i problemi provjereni samo s lažnim Overseerrom (stvarni Overseerr 1.35 bez administratora odbija i API ključ). Stvarni Sonarr/Radarr/Prowlarr skrivaju ključeve indexera i lozinke klijenata, pa ih treba ponovno upisati. Popisi za serije i glazbu i preferirani izrazi Sonarra v3 se ne uvoze. Snimka pročitanih aplikacija je samo u memoriji (restart → pročitati ponovno).
 - Titlovi: provideri su provjereni samo s lažnim servisima iz javne dokumentacije (stvarni ključevi nisu korišteni u testovima); Podnapisi, Addic7ed i Titlovi.com nisu uključeni (D-063). Zapisi se čitaju samo iz MKV/MP4. Kod nadogradnje videa pod novim imenom titlovi starog imena ostaju na disku; Locarr ih više ne veže uz film i traži nove pod novim imenom. Sinkronizacija nalazi jedan pomak za cijeli titl.

@@ -55,6 +55,10 @@ func (h *Handler) UpdateSettings(ctx context.Context, req *gen.UpdateSettingsReq
 func toRootFolder(f rootfolders.Folder) gen.RootFolder {
 	out := gen.RootFolder{ID: f.ID, Path: f.Path, Kind: gen.MediaKind(f.Kind), Accessible: f.Accessible,
 		Writable: f.Writable, CreatedAt: f.CreatedAt}
+	if p := f.WriteProblem; p != nil && f.Accessible {
+		out.NotWritableReason = gen.NewOptRootFolderNotWritableReason(gen.RootFolderNotWritableReason(p.Reason))
+		out.NotWritableDetail = gen.NewOptString(p.Detail)
+	}
 	if f.Space != nil {
 		out.FreeSpaceBytes = gen.NewOptInt64(f.Space.Free)
 		out.TotalSpaceBytes = gen.NewOptInt64(f.Space.Total)
@@ -83,7 +87,11 @@ func (h *Handler) CreateRootFolder(ctx context.Context, req *gen.CreateRootFolde
 	if _, err := admin(ctx); err != nil {
 		return nil, err
 	}
-	f, err := h.RootFolders.Add(ctx, req.Path, string(req.Kind))
+	add := h.RootFolders.Add
+	if req.Create.Or(false) {
+		add = h.RootFolders.Create
+	}
+	f, err := add(ctx, req.Path, string(req.Kind))
 	if err != nil {
 		return nil, err
 	}

@@ -177,7 +177,7 @@ func link(ev notify.Event, baseURL string) string {
 	for _, t := range notify.LibraryTypes {
 		if t == ev.Type {
 			if t == notify.HealthWarning {
-				return base + "/system/status"
+				return base + "/system/health"
 			}
 			return base + "/activity/queue"
 		}

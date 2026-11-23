@@ -196,5 +196,11 @@ export function describeExplanation(t: TFunction, ex: Explanation, locale: strin
     const why = p.failCode || p.detail ? grabFailureReason(t, { code: p.failCode, error: p.detail, indexer: p.indexer, until: p.until }, locale) : "";
     return why ? t("explain.codes.grab_failed", { ...vars, detail: why }) : t("explain.codes.grab_failed_unknown", vars);
   }
-  return t(`explain.codes.${ex.code}`, { ...vars, defaultValue: ex.message });
+  const text = t(`explain.codes.${ex.code}`, { ...vars, defaultValue: ex.message });
+  const failing = Array.isArray(p.indexerErrors) ? (p.indexerErrors as { name?: string; code?: string }[]) : [];
+  if (ex.code === "nothing_found" && failing.length > 0) {
+    const list = failing.map((x) => `${str(x.name)} (${t(`indexers.errorShort.${str(x.code)}`, { defaultValue: str(x.code) })})`).join(", ");
+    return `${text} ${t("explain.indexerErrors", { list })}`;
+  }
+  return text;
 }

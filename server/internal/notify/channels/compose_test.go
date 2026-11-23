@@ -59,7 +59,7 @@ func TestComposeLinksAndPosters(t *testing.T) {
 		{notify.Event{Type: notify.LibraryImported, ItemRef: "album:6"}, "http://l/music/albums/6"},
 		{notify.Event{Type: notify.LibraryGrabbed, ItemRef: "artist:7"}, "http://l/music/artists/7"},
 		{notify.Event{Type: notify.LibraryDownloadFailed, ItemRef: "episode:8"}, "http://l/activity/queue"},
-		{notify.Event{Type: notify.HealthWarning}, "http://l/system/status"},
+		{notify.Event{Type: notify.HealthWarning}, "http://l/system/health"},
 	} {
 		if got := Compose(c.ev, "en", "http://l").URL; got != c.want {
 			t.Errorf("%+v: %q, want %q", c.ev, got, c.want)

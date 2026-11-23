@@ -168,6 +168,18 @@ func TestBuiltinIndexers(t *testing.T) {
 	if !found {
 		t.Fatalf("layout error not reported: %+v", sr.Indexers)
 	}
+	// The system health check names the reason.
+	var rep struct {
+		Issues []struct{ Code, Docs string }
+	}
+	e.expect(e.do("POST", "/api/v1/system/health/run", nil), 200).json(&rep)
+	found = false
+	for _, is := range rep.Issues {
+		found = found || (is.Code == "indexer_layout" && is.Docs == "indexer-builtin")
+	}
+	if !found {
+		t.Fatalf("health: %+v", rep.Issues)
+	}
 
 	// Self-test: every enabled built-in, outcome stored.
 	res, err := e.deps.Indexers.SelfTest(context.Background())

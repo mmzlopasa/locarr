@@ -44,7 +44,7 @@
     "internal": "Something went wrong on the server. Details are in the server log.",
     "totp_already_on": "Two-factor authentication is already on.",
     "totp_not_started": "Start the two-factor setup first.",
-    "path_not_allowed": "That folder is outside the allowed data folders.",
+    "path_not_allowed": "That folder is outside the allowed data folders. Locarr sees your host folders under /data inside its container (for example host /mnt/media/movies → /data/movies, as mounted in docker-compose.yml): enter that path, not the host path.",
     "path_not_found": "That folder does not exist.",
     "already_exists": "It has already been added.",
     "unknown_task": "There is no task with that name.",
@@ -168,6 +168,8 @@
     "search": "Search",
     "discover": "Discover",
     "issues": "Issues",
+    "overview": "Overview",
+    "board": "Why not here?",
     "migrate": "Import setup"
   },
   "roles": {
@@ -388,7 +390,8 @@
       "requests": "Requests",
       "mediaServer": "Media server",
       "notifications": "Notifications",
-      "subtitles": "Subtitles"
+      "subtitles": "Subtitles",
+      "system": "Monitoring"
     },
     "general": {
       "title": "General",
@@ -413,7 +416,7 @@
   "rootFolders": {
     "title": "Media folders",
     "subtitle": "Where your movies, series and music live.",
-    "layoutHint": "Keep media and downloads on the same mount (for example /data/media/movies and /data/downloads) so imports can use hardlinks instead of copying.",
+    "layoutHint": "Locarr sees folders as they are mounted into its container, under /data: with \"/mnt/media:/data\" in docker-compose.yml the host folder /mnt/media/movies is /data/movies here. Keep media and downloads on the same mount (for example /data/movies and /data/downloads) so imports can use hardlinks instead of copying.",
     "add": "Add a folder",
     "path": "Folder",
     "kind": "Contains",
@@ -429,7 +432,15 @@
     "removeHint": "Removing a folder only forgets it; nothing on disk is touched.",
     "dataRoots": "Data folders",
     "up": "Up",
-    "noSubfolders": "No folders here."
+    "noSubfolders": "No folders here.",
+    "notAccessible": "The folder is missing or cannot be read (is the disk mounted?).",
+    "notWritable": {
+      "permission_denied": "Locarr may not write here: the folder belongs to another user (check PUID/PGID and the folder's owner).",
+      "read_only_filesystem": "The disk is mounted read-only (for example an NFS share mounted with ro, or :ro in docker-compose.yml).",
+      "not_found": "The folder disappeared while it was checked.",
+      "other": "Locarr cannot create files here."
+    },
+    "howToFix": "How to fix"
   },
   "mediaKinds": {
     "movies": "Movies",
@@ -439,7 +450,10 @@
   "system": {
     "tabs": {
       "status": "Status",
-      "tasks": "Tasks"
+      "tasks": "Tasks",
+      "health": "Health",
+      "logs": "Logs",
+      "backups": "Backups"
     },
     "status": {
       "title": "Status",
@@ -600,7 +614,10 @@
   "activity": {
     "tabs": {
       "queue": "Queue",
-      "blocklist": "Blocklist"
+      "blocklist": "Blocklist",
+      "board": "Why didn't it land?",
+      "history": "History",
+      "stats": "Statistics"
     },
     "forbidden": "Only library managers can see the download queue."
   },
@@ -664,7 +681,9 @@
       "stalled": "Stalled",
       "import_failed": "Import failed",
       "bad_release": "Bad or missing file"
-    }
+    },
+    "clear": "Clear all",
+    "clearConfirm": "Unblock all {{count}}"
   },
   "search": {
     "title": "Search",
@@ -929,6 +948,19 @@
       "none": "No custom definitions yet.",
       "errors": "Not loaded",
       "reloaded": "Definitions reloaded."
+    },
+    "errorShort": {
+      "challenge": "Cloudflare challenge",
+      "layout": "layout changed",
+      "unreachable": "site down",
+      "rate_limit": "rate limited",
+      "rate_limited": "rate limited",
+      "backoff": "paused after failures",
+      "auth": "refused",
+      "blocked": "address blocked",
+      "bad_response": "unexpected answer",
+      "unknown": "error",
+      "error": "error"
     }
   },
   "profiles": {
@@ -1498,7 +1530,8 @@
     "retryNow": "Retry now",
     "retrying": "Searching…",
     "retryQueued": "Searching again now. Indexer limits still apply.",
-    "retryHint": "Clears the wait between automatic searches and searches right away."
+    "retryHint": "Clears the wait between automatic searches and searches right away.",
+    "indexerErrors": "Failing in the last search: {{list}}."
   },
   "rejectionCodes": {
     "parse_failed": "name not readable",
@@ -3059,6 +3092,373 @@
       "apply": "Apply ({{count}})"
     },
     "tracksOnlyMkvMp4": "Locarr reads the tracks of MKV/WebM and MP4/MOV files only."
+  },
+  "board": {
+    "title": "Why didn't it land?",
+    "subtitle": "Every monitored movie, episode and album that is still missing (and files still missing subtitles), grouped by what is holding it up.",
+    "kind": "Show",
+    "kinds": {
+      "all": "Everything",
+      "movie": "Movies",
+      "episode": "Episodes",
+      "album": "Albums",
+      "subtitle": "Subtitles"
+    },
+    "kindCount": {
+      "movie": "movies: {{count}}",
+      "episode": "episodes: {{count}}",
+      "album": "albums: {{count}}",
+      "subtitle": "subtitles: {{count}}"
+    },
+    "recompute": "Recompute",
+    "total": "Missing items: {{count}}",
+    "updated": "checked {{when}}",
+    "empty": "Nothing is missing. Everything you monitor is in the library.",
+    "topReasons": "Most common rejections:",
+    "fixIt": "Fix it",
+    "howToFix": "How to fix",
+    "fix": {
+      "path_mapping": "Check the remote path mappings",
+      "client_category": "Check the client's categories",
+      "download_clients": "Open download clients",
+      "indexers": "Open indexers",
+      "disk_space": "Check the media folders",
+      "subtitle_providers": "Open subtitle providers",
+      "manual_import": "Import by hand",
+      "profile": "Review quality profiles",
+      "permissions": "Fix the permissions"
+    },
+    "filter": "Filter by title",
+    "actionsLabel": "Bulk actions",
+    "actions": {
+      "search": "Search now",
+      "change_profile": "Change profile",
+      "blocklist_retry": "Blocklist and retry",
+      "retry_import": "Retry import",
+      "unmonitor": "Unmonitor"
+    },
+    "profile": "Quality profile",
+    "pickProfile": "Pick a profile…",
+    "result": "Done: {{done}}, failed: {{failed}}",
+    "noItems": "No items match.",
+    "selectPage": "Select this page (selected: {{count}})",
+    "searches": "searched {{count}}×",
+    "range": "{{from}}–{{to}} of {{total}}",
+    "prev": "Previous",
+    "next": "Next",
+    "groups": {
+      "available": {
+        "title": "Available",
+        "hint": "In the library."
+      },
+      "downloading": {
+        "title": "Downloading",
+        "hint": "A download is running; it is imported when it finishes."
+      },
+      "importing": {
+        "title": "Waiting for import",
+        "hint": "The download finished and is about to be imported."
+      },
+      "import_failed": {
+        "title": "Import failed",
+        "hint": "The download finished but could not be imported. Each item shows the exact reason."
+      },
+      "not_monitored": {
+        "title": "Not monitored",
+        "hint": "Locarr does not search for these."
+      },
+      "not_available_yet": {
+        "title": "Not available yet",
+        "hint": "Not released yet for the minimum availability; searching starts on the release date."
+      },
+      "no_indexers": {
+        "title": "No indexers for this kind",
+        "hint": "No enabled indexer is used for automatic searches of this kind."
+      },
+      "no_download_client": {
+        "title": "No download client",
+        "hint": "No download client is enabled, so nothing can be grabbed."
+      },
+      "waiting_delay": {
+        "title": "Waiting on a delay profile",
+        "hint": "A release was found and is held back by a delay profile."
+      },
+      "download_failed": {
+        "title": "Download failed",
+        "hint": "The last download failed; Locarr blocks it and tries the next release."
+      },
+      "not_searched_yet": {
+        "title": "Not searched yet",
+        "hint": "The automatic search has not reached these yet."
+      },
+      "all_rejected": {
+        "title": "Found, but every release was rejected",
+        "hint": "Searched {{searches}} times in total. The rejections below are added up over all items."
+      },
+      "nothing_found": {
+        "title": "Nothing found",
+        "hint": "Searched {{searches}} times in total and no indexer had a release."
+      },
+      "upgrade_wanted": {
+        "title": "Only partly here",
+        "hint": "Some files are in the library; Locarr keeps looking for the rest."
+      },
+      "stalled": {
+        "title": "Stalled",
+        "hint": "The download is not moving: no seeds or no speed for a long time."
+      },
+      "path_not_visible": {
+        "title": "Finished, but the files are not visible",
+        "hint": "The client finished, but Locarr cannot see the files under that path. Usually a remote path mapping or a missing volume."
+      },
+      "subtitle_not_searched": {
+        "title": "Subtitles: not searched yet",
+        "hint": "The subtitle search has not reached these files yet."
+      },
+      "subtitle_not_found": {
+        "title": "Subtitles: not found",
+        "hint": "Providers had no subtitle good enough for these files."
+      },
+      "subtitle_no_providers": {
+        "title": "Subtitles: no providers",
+        "hint": "No subtitle provider is enabled."
+      },
+      "subtitle_quota": {
+        "title": "Subtitles: provider quota used up",
+        "hint": "The providers' daily download quota is used up; searching resumes when it resets."
+      },
+      "grab_failed": {
+        "title": "Accepted, but the grab failed",
+        "hint": "A release was accepted but could not be sent to the download client (indexer download, client or limit). Each item shows the reason."
+      }
+    },
+    "itemCodes": {
+      "stalled": "{{title}} is stalled at {{progress}}%: no seeds and nothing downloaded since {{since}}.",
+      "path_not_visible": "{{title}} finished in the client, but Locarr cannot see its files: {{detail}}. Add a remote path mapping or fix the /data mount, then retry the import.",
+      "subtitle_not_searched": "Missing {{languages}}; not searched yet.",
+      "subtitle_not_found": "Missing {{languages}}; searched {{searches}}× without a good enough match. Next search: {{next}}.",
+      "subtitle_no_providers": "Missing {{languages}}; no subtitle provider is enabled.",
+      "subtitle_quota": "Missing {{languages}}; every enabled provider has used up its download quota."
+    }
+  },
+  "history": {
+    "title": "History",
+    "subtitle": "What Locarr grabbed, imported, upgraded, renamed and deleted, failures, subtitles and media server notifications.",
+    "category": "What",
+    "kind": "Kind",
+    "search": "Search",
+    "all": "All",
+    "none": "Nothing happened yet.",
+    "indexer": "indexer: {{name}}",
+    "client": "client: {{name}}",
+    "categories": {
+      "grabbed": "Grabbed",
+      "imported": "Imported",
+      "upgraded": "Upgraded",
+      "failed": "Failed",
+      "deleted": "Deleted",
+      "renamed": "Renamed",
+      "subtitles": "Subtitles",
+      "notifications": "Notified"
+    }
+  },
+  "activityStats": {
+    "period": "Period",
+    "days": "Last {{count}} days",
+    "indexers": "Indexers",
+    "clients": "Download clients",
+    "none": "No grabs in this period.",
+    "name": "Name",
+    "grabs": "Grabs",
+    "imported": "Imported",
+    "failed": "Failed",
+    "inProgress": "In progress",
+    "successRate": "Success rate",
+    "avgImport": "Avg. time to import",
+    "unknown": "(deleted)"
+  },
+  "health": {
+    "title": "Health",
+    "subtitle": "Problems Locarr found and how to fix them.",
+    "checked": "Checked {{when}}.",
+    "runNow": "Run checks now",
+    "allGood": "No problems found.",
+    "since": "since {{when}}",
+    "fixHere": "Fix it",
+    "howToFix": "How to fix",
+    "severity": {
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Info"
+    },
+    "codes": {
+      "indexer_failing": "Indexer {{name}} is failing: {{error}}",
+      "indexers_none": "No indexer is enabled, so Locarr cannot search for anything.",
+      "indexer_no_kind": "No enabled indexer searches for {{kind}} automatically.",
+      "client_unreachable": "Download client {{name}} cannot be reached: {{error}}",
+      "client_category_missing": "Download client {{name}} has no category {{category}}.",
+      "clients_none": "No download client is enabled, so nothing can be downloaded.",
+      "path_not_visible": "{{title}} finished, but {{path}} is not visible to Locarr (remote path mapping or volume).",
+      "mapping_local_missing": "Remote path mapping for {{host}} points to {{localPath}}, which does not exist here.",
+      "rootfolder_missing": "Media folder {{path}} is missing.",
+      "rootfolder_unwritable": "Locarr cannot write to media folder {{path}}.",
+      "rootfolder_low_space": "Media folder {{path}} has only {{freeBytes}} free (warning below {{minBytes}}).",
+      "rootfolders_none": "No media folders yet. Add one for movies, series or music.",
+      "client_low_space": "Download client {{name}} has only {{freeBytes}} free (warning below {{minBytes}}).",
+      "recycle_bin_large": "The recycle bin holds {{sizeBytes}} (warning above {{limitBytes}}).",
+      "import_stuck": "{{title}} finished {{minutes}} minutes ago and is still not imported.",
+      "metadata_no_tmdb_key": "No TMDb API key is set; movies and series cannot be looked up.",
+      "metadata_invalid_key": "{{provider}} refused the API key.",
+      "metadata_rate_limited": "{{provider}} is rate limiting Locarr.",
+      "metadata_unavailable": "{{provider}} cannot be reached: {{error}}",
+      "subtitle_provider_quota": "Subtitle provider {{provider}} has no downloads left until {{resetAt}}.",
+      "subtitle_provider_failing": "Subtitle provider {{provider}} is failing: {{error}}",
+      "streamero_unreachable": "Streamero cannot be reached: {{error}}",
+      "time_skew": "This server's clock is off by {{seconds}} seconds.",
+      "database_wal_large": "The database write-ahead log has grown to {{walBytes}}.",
+      "database_large": "The database is {{sizeBytes}}.",
+      "update_available": "Locarr {{latest}} is available (this is {{current}}).",
+      "backup_failed": "The last scheduled backup failed: {{error}}",
+      "check_failed": "The {{check}} check could not run: {{error}}",
+      "indexer_challenge": "Indexer {{name}} answers with a Cloudflare challenge. Set a FlareSolverr URL on it.",
+      "indexer_layout": "The pages of {{name}} no longer match its definition (the site changed). Wait for an updated definition or add a custom one.",
+      "indexer_selftest_failed": "The weekly test of built-in indexer {{name}} failed."
+    }
+  },
+  "logs": {
+    "title": "Logs",
+    "subtitle": "Recent log entries. Passwords, keys and tokens are always replaced with [redacted].",
+    "level": "Level",
+    "search": "Search",
+    "live": "Live",
+    "none": "No entries.",
+    "levels": {
+      "debug": "Debug",
+      "info": "Info",
+      "warn": "Warning",
+      "error": "Error"
+    },
+    "files": "Log files",
+    "filesHint": "Files in /config/logs, rotated by size.",
+    "noFiles": "No log files yet."
+  },
+  "backups": {
+    "title": "Backups",
+    "subtitle": "The database, the secret key and the settings in one zip. Media files are never part of a backup.",
+    "now": "Back up now",
+    "secretWarning": "A backup contains the secret key and every setting, including the encrypted passwords and API keys of your services. Keep it as private as the server itself.",
+    "scheduleHint": "Scheduled backups and how many to keep:",
+    "scheduleLink": "Settings → Monitoring",
+    "list": "Backups",
+    "none": "No backups yet.",
+    "kinds": {
+      "scheduled": "Scheduled",
+      "manual": "Manual",
+      "pre_restore": "Before restore",
+      "uploaded": "Uploaded"
+    },
+    "version": "Locarr {{version}}",
+    "download": "Download",
+    "restore": "Restore",
+    "deleteConfirm": "Delete it",
+    "upload": "Restore from a file",
+    "uploadHint": "A backup zip made by Locarr (this or another installation).",
+    "chooseFile": "Choose a backup…",
+    "confirmTitle": "Restore {{name}}",
+    "confirmText": "Everything Locarr knows is replaced with the backup: library, settings, users and history. Locarr first backs up the current state, then restarts. Everyone except you is signed out. Media files are not touched.",
+    "typeWord": "Type {{word}} to confirm",
+    "restoreNow": "Restore and restart",
+    "restarting": "Restoring and restarting…",
+    "restartingHint": "The page reloads by itself when Locarr is back."
+  },
+  "monitoring": {
+    "title": "Monitoring",
+    "subtitle": "Health checks, backups, cleanup and metrics for dashboards.",
+    "health": "Health checks",
+    "updateCheck": "Check for new versions",
+    "updateCheckHint": "Asks GitHub once a day whether a newer Locarr is out. Nothing about your setup is sent.",
+    "backups": "Scheduled backups",
+    "housekeeping": "Cleanup",
+    "housekeepingHint": "Old history is removed after these many days; the database is compacted on schedule.",
+    "metrics": "Metrics",
+    "metricsHint": "Prometheus metrics at /metrics need this token as a bearer token. Without a token /metrics is off.",
+    "metricsState": "/metrics:",
+    "on": "on",
+    "off": "off",
+    "token": "Token",
+    "tokenKeep": "Set (leave empty to keep it)",
+    "generate": "Generate",
+    "turnOff": "Turn off",
+    "statsHint": "Dashboards can read /api/stats with an administrator's read-only API key (Account → API keys).",
+    "fields": {
+      "minFreeSpaceGb": "Warn below free space (GB)",
+      "recycleBinWarnGb": "Warn when the recycle bin is over (GB)",
+      "stuckImportMinutes": "Import stuck after (minutes)",
+      "backupIntervalHours": "Every (hours)",
+      "backupKeep": "Keep",
+      "timelineDays": "Timeline (days)",
+      "searchLogDays": "Search log (days)",
+      "downloadEventsDays": "Download steps (days)",
+      "releasesSeenDays": "RSS releases seen (days)",
+      "vacuumIntervalDays": "Compact the database every (days)",
+      "imageCacheMaxMb": "Image cache limit (MB)"
+    },
+    "hints": {
+      "minFreeSpaceGb": "For media folders and download clients.",
+      "recycleBinWarnGb": "0 turns the warning off.",
+      "stuckImportMinutes": "A finished download not imported after this long is reported.",
+      "backupIntervalHours": "0 turns scheduled backups off.",
+      "backupKeep": "Older scheduled backups are deleted.",
+      "timelineDays": "Per-title history entries.",
+      "searchLogDays": "Every search and what each indexer answered.",
+      "downloadEventsDays": "Steps of finished downloads.",
+      "releasesSeenDays": "Releases remembered from RSS feeds.",
+      "vacuumIntervalDays": "0 turns it off.",
+      "imageCacheMaxMb": "Oldest posters and covers are removed above this."
+    }
+  },
+  "overview": {
+    "title": "Overview",
+    "subtitle": "What is downloading, what is coming, what needs your attention.",
+    "noFolders": "No media folders yet.",
+    "openWelcome": "Set them up",
+    "queue": "Downloads",
+    "openQueue": "Queue",
+    "queueSummary": "{{count}} in the queue, {{active}} downloading at {{speed}}",
+    "openBoard": "All reasons",
+    "openHealth": "Details",
+    "upcoming": "Next 7 days",
+    "openCalendar": "Calendar",
+    "nothingUpcoming": "Nothing in the next 7 days.",
+    "activity": "Recent activity",
+    "openHistory": "History",
+    "disk": "Disk space",
+    "manage": "Media folders",
+    "more": "and {{count}} more"
+  },
+  "welcome": {
+    "title": "Welcome to Locarr",
+    "subtitle": "Two quick steps and you are ready.",
+    "steps": {
+      "folders": "Media folders",
+      "import": "Your existing apps"
+    },
+    "kinds": {
+      "movies": "Movies",
+      "series": "Series",
+      "music": "Music"
+    },
+    "folderHint": "Where this kind of media lives. A missing folder is created inside the data folders.",
+    "use": "Use this folder",
+    "addAnother": "Add another",
+    "writable": "writable",
+    "notWritable": "Locarr cannot write to this folder. Fix its owner or permissions (PUID/PGID) before importing.",
+    "next": "Next",
+    "skip": "Skip for now",
+    "importTitle": "Import from your existing apps",
+    "importHint": "Already using other apps for movies, series, music, indexers or requests? Locarr can read their setup without changing anything there.",
+    "importLink": "Open the import wizard",
+    "importLater": "Importing an existing setup comes in a later version. You can add everything by hand meanwhile."
   },
   "migrate": {
     "title": "Import setup",

@@ -104,6 +104,18 @@ func (UnimplementedHandler) AssignSubtitleProfile(ctx context.Context, req *Subt
 	return r, ht.ErrNotImplemented
 }
 
+// BoardAction implements boardAction operation.
+//
+// `search` searches now; `unmonitor` stops monitoring; `change_profile` sets `qualityProfileId` (on
+// the movie, the episode's series or the album's artist); `blocklist_retry` removes the item's last
+// download from its client, blocks the release and searches again; `retry_import` imports a finished
+// download again (or polls the clients when the files were not visible yet).
+//
+// POST /board/actions
+func (UnimplementedHandler) BoardAction(ctx context.Context, req *BoardActionRequest) (r *BoardActionResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // BrowseFilesystem implements browseFilesystem operation.
 //
 // Without `path`, lists the data roots themselves.
@@ -167,6 +179,15 @@ func (UnimplementedHandler) CheckMigratePaths(ctx context.Context, req *CheckMig
 	return r, ht.ErrNotImplemented
 }
 
+// ClearBlocklist implements clearBlocklist operation.
+//
+// Unblock every release (library managers).
+//
+// DELETE /queue/blocklist
+func (UnimplementedHandler) ClearBlocklist(ctx context.Context) (r *BlocklistCleared, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ConvertSubtitleFps implements convertSubtitleFps operation.
 //
 // Convert a subtitle made for one frame rate to another (managers).
@@ -182,6 +203,15 @@ func (UnimplementedHandler) ConvertSubtitleFps(ctx context.Context, req *Convert
 //
 // POST /auth/apikeys
 func (UnimplementedHandler) CreateApiKey(ctx context.Context, req *CreateApiKeyRequest) (r *CreatedApiKey, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateBackup implements createBackup operation.
+//
+// The zip holds the database, the secret key and the settings; keep it private.
+//
+// POST /system/backups
+func (UnimplementedHandler) CreateBackup(ctx context.Context) (r *Backup, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -347,7 +377,8 @@ func (UnimplementedHandler) CreateRequest(ctx context.Context, req *CreateReques
 
 // CreateRootFolder implements createRootFolder operation.
 //
-// The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
+// The folder must be inside one of the allowed data roots (`LOCARR_DATA_ROOTS`); it must exist unless
+// `create` is set.
 //
 // POST /rootfolders
 func (UnimplementedHandler) CreateRootFolder(ctx context.Context, req *CreateRootFolderRequest) (r *RootFolder, _ error) {
@@ -396,6 +427,15 @@ func (UnimplementedHandler) DeleteApiKey(ctx context.Context, params DeleteApiKe
 //
 // DELETE /music/artists/{id}
 func (UnimplementedHandler) DeleteArtist(ctx context.Context, params DeleteArtistParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteBackup implements deleteBackup operation.
+//
+// Delete a backup (administrators).
+//
+// DELETE /system/backups/{name}
+func (UnimplementedHandler) DeleteBackup(ctx context.Context, params DeleteBackupParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -625,6 +665,15 @@ func (UnimplementedHandler) DiscoverSearch(ctx context.Context, params DiscoverS
 	return r, ht.ErrNotImplemented
 }
 
+// DownloadBackup implements downloadBackup operation.
+//
+// Download a backup (administrators).
+//
+// GET /system/backups/{name}
+func (UnimplementedHandler) DownloadBackup(ctx context.Context, params DownloadBackupParams) (r *DownloadBackupOKHeaders, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DownloadItemSubtitle implements downloadItemSubtitle operation.
 //
 // Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
@@ -632,6 +681,15 @@ func (UnimplementedHandler) DiscoverSearch(ctx context.Context, params DiscoverS
 //
 // POST /subtitles/items/{ref}/download
 func (UnimplementedHandler) DownloadItemSubtitle(ctx context.Context, req *DownloadItemSubtitleReq, params DownloadItemSubtitleParams) (r *Subtitle, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// DownloadLogFile implements downloadLogFile operation.
+//
+// Download one log file (administrators).
+//
+// GET /system/logs/files/{name}
+func (UnimplementedHandler) DownloadLogFile(ctx context.Context, params DownloadLogFileParams) (r *DownloadLogFileOKHeaders, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -692,6 +750,15 @@ func (UnimplementedHandler) ExportCustomFormat(ctx context.Context, params Expor
 	return r, ht.ErrNotImplemented
 }
 
+// GetActivityStats implements getActivityStats operation.
+//
+// Grabs, success rate and time to import per indexer and download client (library managers).
+//
+// GET /activity/stats
+func (UnimplementedHandler) GetActivityStats(ctx context.Context, params GetActivityStatsParams) (r *ActivityStats, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetAlbum implements getAlbum operation.
 //
 // The track list loads from MusicBrainz on first view when the background refresh has not got to it
@@ -708,6 +775,18 @@ func (UnimplementedHandler) GetAlbum(ctx context.Context, params GetAlbumParams)
 //
 // GET /music/artists/{id}
 func (UnimplementedHandler) GetArtist(ctx context.Context, params GetArtistParams) (r *Artist, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetBoard implements getBoard operation.
+//
+// Groups every monitored item that is missing (movies, episodes, albums) or misses subtitles by the
+// explainer's current answer. The answers are precomputed and kept up to date on events, so this is
+// cheap even with tens of thousands of items. For groups of searched items, `reasons` adds up the top
+// rejection reasons.
+//
+// GET /board
+func (UnimplementedHandler) GetBoard(ctx context.Context, params GetBoardParams) (r *BoardSummary, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -853,6 +932,15 @@ func (UnimplementedHandler) GetDownloadSettings(ctx context.Context) (r *Downloa
 //
 // GET /episodes/{id}
 func (UnimplementedHandler) GetEpisode(ctx context.Context, params GetEpisodeParams) (r *Episode, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetHealth implements getHealth operation.
+//
+// Current health issues with how to fix them (administrators).
+//
+// GET /system/health
+func (UnimplementedHandler) GetHealth(ctx context.Context) (r *HealthReport, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1084,6 +1172,16 @@ func (UnimplementedHandler) GetSettings(ctx context.Context) (r *Settings, _ err
 	return r, ht.ErrNotImplemented
 }
 
+// GetStats implements getStats operation.
+//
+// Also served at `/api/stats` (send `X-Api-Key`). At most 15 seconds old. Fields are documented in
+// docs/user/troubleshooting.md.
+//
+// GET /system/stats
+func (UnimplementedHandler) GetStats(ctx context.Context) (r *Stats, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetStreameroSettings implements getStreameroSettings operation.
 //
 // The Streamero connection (administrators).
@@ -1108,6 +1206,15 @@ func (UnimplementedHandler) GetSubtitleSettings(ctx context.Context) (r *Subtitl
 //
 // GET /system/info
 func (UnimplementedHandler) GetSystemInfo(ctx context.Context) (r *SystemInfo, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetSystemSettings implements getSystemSettings operation.
+//
+// Health thresholds, backups, retention, version check and metrics (administrators).
+//
+// GET /settings/system
+func (UnimplementedHandler) GetSystemSettings(ctx context.Context) (r *SystemSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1348,12 +1455,30 @@ func (UnimplementedHandler) ListAuthProviders(ctx context.Context) (r []AuthProv
 	return r, ht.ErrNotImplemented
 }
 
+// ListBackups implements listBackups operation.
+//
+// Backups in the config folder (administrators).
+//
+// GET /system/backups
+func (UnimplementedHandler) ListBackups(ctx context.Context) (r []Backup, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListBlocklist implements listBlocklist operation.
 //
 // Blocked releases (library managers).
 //
 // GET /queue/blocklist
 func (UnimplementedHandler) ListBlocklist(ctx context.Context, params ListBlocklistParams) (r []BlocklistEntry, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListBoardItems implements listBoardItems operation.
+//
+// One page of board items (library managers).
+//
+// GET /board/items
+func (UnimplementedHandler) ListBoardItems(ctx context.Context, params ListBoardItemsParams) (r *BoardItemPage, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1390,6 +1515,15 @@ func (UnimplementedHandler) ListDownloadClientImplementations(ctx context.Contex
 //
 // GET /downloadclients
 func (UnimplementedHandler) ListDownloadClients(ctx context.Context) (r []DownloadClient, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListHistory implements listHistory operation.
+//
+// What happened across the whole library, newest first (library managers).
+//
+// GET /history
+func (UnimplementedHandler) ListHistory(ctx context.Context, params ListHistoryParams) (r *HistoryPage, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1471,6 +1605,24 @@ func (UnimplementedHandler) ListIssues(ctx context.Context, params ListIssuesPar
 //
 // GET /languages
 func (UnimplementedHandler) ListLanguages(ctx context.Context) (r []LanguageInfo, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListLogFiles implements listLogFiles operation.
+//
+// Log files in the config folder (administrators).
+//
+// GET /system/logs/files
+func (UnimplementedHandler) ListLogFiles(ctx context.Context) (r []LogFile, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListLogs implements listLogs operation.
+//
+// Recent log entries, newest last (administrators).
+//
+// GET /system/logs
+func (UnimplementedHandler) ListLogs(ctx context.Context, params ListLogsParams) (r []LogEntry, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2018,6 +2170,15 @@ func (UnimplementedHandler) RefreshArtist(ctx context.Context, params RefreshArt
 	return r, ht.ErrNotImplemented
 }
 
+// RefreshBoard implements refreshBoard operation.
+//
+// Recompute every board item now (library managers).
+//
+// POST /board/refresh
+func (UnimplementedHandler) RefreshBoard(ctx context.Context) error {
+	return ht.ErrNotImplemented
+}
+
 // RefreshMovie implements refreshMovie operation.
 //
 // Reload a movie's metadata and check its file (library managers).
@@ -2156,12 +2317,33 @@ func (UnimplementedHandler) ResolveIssue(ctx context.Context, req *ResolveIssueR
 	return r, ht.ErrNotImplemented
 }
 
+// RestoreBackup implements restoreBackup operation.
+//
+// See `POST /system/backups/restore`.
+//
+// POST /system/backups/{name}/restore
+func (UnimplementedHandler) RestoreBackup(ctx context.Context, params RestoreBackupParams) (r *RestoreStarted, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RestoreRecycleEntry implements restoreRecycleEntry operation.
 //
 // Fails with `restore_conflict` when something else is at the original place.
 //
 // POST /recyclebin/{id}/restore
 func (UnimplementedHandler) RestoreRecycleEntry(ctx context.Context, params RestoreRecycleEntryParams) (r *RecycleEntry, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RestoreUploadedBackup implements restoreUploadedBackup operation.
+//
+// The body is a backup zip made by Locarr (at most 2 GiB). `confirm` must be `RESTORE`. Locarr first
+// backs up the current state, stops its background work, replaces the database and the secret key,
+// starts again in the same process and signs out every session except the caller's. Media files are
+// never touched.
+//
+// POST /system/backups/restore
+func (UnimplementedHandler) RestoreUploadedBackup(ctx context.Context, req RestoreUploadedBackupReq, params RestoreUploadedBackupParams) (r *RestoreStarted, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2210,6 +2392,15 @@ func (UnimplementedHandler) RevokeInvite(ctx context.Context, params RevokeInvit
 // DELETE /auth/sessions/{id}
 func (UnimplementedHandler) RevokeSession(ctx context.Context, params RevokeSessionParams) error {
 	return ht.ErrNotImplemented
+}
+
+// RunHealthChecks implements runHealthChecks operation.
+//
+// Run every health check now (administrators).
+//
+// POST /system/health/run
+func (UnimplementedHandler) RunHealthChecks(ctx context.Context) (r *HealthReport, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // RunTask implements runTask operation.
@@ -2448,6 +2639,15 @@ func (UnimplementedHandler) StartMigrateRun(ctx context.Context, req *MigrateOpt
 //
 // POST /auth/totp/setup
 func (UnimplementedHandler) StartTotpSetup(ctx context.Context) (r *TotpSetup, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// StreamLogs implements streamLogs operation.
+//
+// Server-sent events; each `entry` event's `data` is one LogEntry as JSON.
+//
+// GET /system/logs/stream
+func (UnimplementedHandler) StreamLogs(ctx context.Context, params StreamLogsParams) (r StreamLogsOK, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2874,6 +3074,15 @@ func (UnimplementedHandler) UpdateSubtitleProvider(ctx context.Context, req *Sub
 //
 // PUT /subtitles/settings
 func (UnimplementedHandler) UpdateSubtitleSettings(ctx context.Context, req *SubtitleSettingsInput) (r *SubtitleSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSystemSettings implements updateSystemSettings operation.
+//
+// Leave `metricsToken` out to keep it, "" to turn `/metrics` off.
+//
+// PUT /settings/system
+func (UnimplementedHandler) UpdateSystemSettings(ctx context.Context, req *SystemSettingsInput) (r *SystemSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

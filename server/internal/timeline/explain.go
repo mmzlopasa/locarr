@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
@@ -137,6 +138,15 @@ type Facts struct {
 	// Indexers usable for automatic search; Clients enabled download clients.
 	Indexers int
 	Clients  int
+	// IndexerErrors are the indexers that failed in the item's last search
+	// (site down, Cloudflare challenge, layout changed, rate limited, …).
+	IndexerErrors []IndexerError
+}
+
+// IndexerError is one indexer that failed in a search.
+type IndexerError struct {
+	Name string `json:"name"`
+	Code string `json:"code"`
 }
 
 // Explanation is the one answer to "why isn't it here?".
@@ -258,7 +268,16 @@ func Explain(st ItemState, f Facts) Explanation {
 	case st.HasFile:
 		return set(ExplainUpgradeWanted, "info", "in the library below the quality profile's cutoff; Locarr keeps looking for an upgrade")
 	default:
-		return set(ExplainNothingFound, "warning", fmt.Sprintf("searched %d times and no indexer had a release; next search %s", f.Searches, fmtTime(f.NextSearch)))
+		msg := fmt.Sprintf("searched %d times and no indexer had a release; next search %s", f.Searches, fmtTime(f.NextSearch))
+		if len(f.IndexerErrors) > 0 {
+			e.Params["indexerErrors"] = f.IndexerErrors
+			names := make([]string, len(f.IndexerErrors))
+			for i, x := range f.IndexerErrors {
+				names[i] = x.Name + " (" + x.Code + ")"
+			}
+			msg += "; failing in the last search: " + strings.Join(names, ", ")
+		}
+		return set(ExplainNothingFound, "warning", msg)
 	}
 }
 
@@ -273,6 +292,30 @@ func (s *Store) Facts(ctx context.Context, ref, kindCategory string) (Facts, err
 // related items whose searches and decisions also concern it (an episode's
 // season). Searches add up; the latest decision of any ref counts.
 func (s *Store) FactsRefs(ctx context.Context, refs []string, kindCategory string) (Facts, error) {
+	return s.FactsCounted(ctx, refs, kindCategory, nil)
+}
+
+// Counts are the indexers usable for automatic search of one kind and the
+// enabled download clients.
+type Counts struct{ Indexers, Clients int }
+
+// Counts loads Counts for kindCategory ("movies", "tv", "music").
+func (s *Store) Counts(ctx context.Context, kindCategory string) (Counts, error) {
+	var c Counts
+	// An indexer counts when it is enabled for automatic search and offers
+	// categories of this kind (an empty list means "the standard ones").
+	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM indexers WHERE enabled = 1 AND enable_automatic = 1
+		AND (json_extract(categories, '$.`+kindCategory+`') IS NULL OR json_array_length(json_extract(categories, '$.`+kindCategory+`')) > 0)`).
+		Scan(&c.Indexers); err != nil { // #nosec G202 -- kindCategory is a constant from the caller
+		return c, err
+	}
+	err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM download_clients WHERE enabled = 1`).Scan(&c.Clients)
+	return c, err
+}
+
+// FactsCounted is FactsRefs with the indexer and client counts already
+// loaded (nil = load them), for callers that explain many items at once.
+func (s *Store) FactsCounted(ctx context.Context, refs []string, kindCategory string, counts *Counts) (Facts, error) {
 	var f Facts
 	if len(refs) == 0 {
 		return f, nil
@@ -392,15 +435,40 @@ func (s *Store) FactsRefs(ctx context.Context, refs []string, kindCategory strin
 			f.GrabFailure = skipped
 		}
 	}
-	// An indexer counts when it is enabled for automatic search and offers
-	// categories of this kind (an empty list means "the standard ones").
-	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM indexers WHERE enabled = 1 AND enable_automatic = 1
-		AND (json_extract(categories, '$.`+kindCategory+`') IS NULL OR json_array_length(json_extract(categories, '$.`+kindCategory+`')) > 0)`).
-		Scan(&f.Indexers); err != nil { // #nosec G202 -- kindCategory is a constant from the caller
-		return f, err
+	if counts == nil {
+		c, err := s.Counts(ctx, kindCategory)
+		if err != nil {
+			return f, err
+		}
+		counts = &c
 	}
-	if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM download_clients WHERE enabled = 1`).Scan(&f.Clients); err != nil {
-		return f, err
+	f.Indexers, f.Clients = counts.Indexers, counts.Clients
+	if f.Searches > 0 {
+		errs, err := s.indexerErrors(ctx, marks, args)
+		if err != nil {
+			return f, err
+		}
+		f.IndexerErrors = errs
 	}
 	return f, nil
+}
+
+// indexerErrors lists the indexers that failed in the latest search of the refs.
+func (s *Store) indexerErrors(ctx context.Context, marks string, args []any) ([]IndexerError, error) {
+	rows, err := s.DB.R.QueryContext(ctx, `SELECT indexer_name, CASE WHEN status = 'backoff' THEN 'backoff' ELSE COALESCE(error_code, status) END FROM search_log_indexers
+		WHERE search_id = (SELECT id FROM search_log WHERE item_ref IN (`+marks+`) ORDER BY started_at DESC, id DESC LIMIT 1)
+		AND status IN ('error', 'rate_limited', 'backoff') ORDER BY indexer_name`, args...) // #nosec G202 -- placeholders only
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []IndexerError
+	for rows.Next() {
+		var e IndexerError
+		if err := rows.Scan(&e.Name, &e.Code); err != nil {
+			return nil, err
+		}
+		out = append(out, e)
+	}
+	return out, rows.Err()
 }

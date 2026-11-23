@@ -3,17 +3,17 @@
 Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Temelji (P0)
-- [ ] Prvo pokretanje: postavljanje admin računa, jezik (EN/HR), mapa za medije
+- [x] Prvo pokretanje: postavljanje admin računa, jezik (EN/HR), mape za medije (odabir ili stvaranje, provjera pisanja), poveznica na uvoz postojećih aplikacija
 - [x] Korisnici i uloge (admin, upravitelj, korisnik koji samo traži), sesije, odjava s uređaja
 - [x] API ključevi (puni i samo za čitanje), 2FA (TOTP + kodovi za oporavak)
 - [x] Zaštita prijave: ograničenje po adresi, zaključavanje računa, zabrana nakon ponovljenih neuspjeha
 - [x] Postavke na jednom mjestu, šifrirane tajne vanjskih servisa (nikad se ne vraćaju klijentu)
 - [x] Jedan Docker image (amd64 + arm64), `docker-compose.yml` s jednim servisom, healthcheck, PUID/PGID
-- [ ] Backup i vraćanje (automatski i ručno), migracije baze pri pokretanju
+- [x] Backup i vraćanje (automatski i ručno, učitavanje zipa, vraćanje bez restarta kontejnera; D-085), migracije baze pri pokretanju
 
 ## Indexeri (P1)
 - [x] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/TVmaze) i tekstu, RSS (glazba po izvođaču/albumu: Newznab nema MusicBrainz parametar)
-- [x] Ugrađeni javni indexeri bez Prowlarra/Jacketta (D-081 – D-083): YTS, EZTV, The Pirate Bay, SubsPlease, Knaben, Nyaa, Tokyo Toshokan, LimeTorrents, 1337x (uz FlareSolverr), BitSearch; vlastite definicije u `/config/definitions`; zdravlje s razlozima (stranica pala, promijenjen izgled, Cloudflare, ograničenje), tjedni samotest
+- [x] Ugrađeni javni indexeri bez Prowlarra/Jacketta (D-087 – D-089): YTS, EZTV, The Pirate Bay, SubsPlease, Knaben, Nyaa, Tokyo Toshokan, LimeTorrents, 1337x (uz FlareSolverr), BitSearch; vlastite definicije u `/config/definitions`; zdravlje s razlozima (stranica pala, promijenjen izgled, Cloudflare, ograničenje), tjedni samotest
 - [x] Usenet indexeri izravno (popis poznatih Newznab indexera: odaberi i upiši ključ)
 - [x] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab) — pod „Napredno"; više nisu potrebni
 - [x] Prioriteti, oznake (tagovi), ograničenja zahtjeva (rate limit), dnevni limiti, backoff i zdravlje
@@ -92,16 +92,16 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Uvoz setupa (P10)
 - [x] Sonarr, Radarr, Lidarr: biblioteka (datoteke na mjestu, praćenje), profili kvalitete, definicije veličina, custom formati, profili izdanja i kašnjenja, root mape, oznake, imena, indexeri, download klijenti, mapiranja putanja, liste i isključenja (liste samo TMDb za filmove; Locarr nema popise za serije i glazbu), povijest i blokirana izdanja (D-072 – D-076)
-- [x] Prowlarr: indexeri (kao izvor ili pojedinačno, D-078; zadano se zamjenjuju Locarrovim ugrađenima i izravnim usenetom, D-084); Bazarr: jezični profili, provideri i profil po naslovu; Seerr/Overseerr: korisnici s dozvolama, zahtjevi, problemi, kvote (korisnici i zahtjevi provjereni s lažnim Overseerrom)
+- [x] Prowlarr: indexeri (kao izvor ili pojedinačno, D-078; zadano se zamjenjuju Locarrovim ugrađenima i izravnim usenetom, D-090); Bazarr: jezični profili, provideri i profil po naslovu; Seerr/Overseerr: korisnici s dozvolama, zahtjevi, problemi, kvote (korisnici i zahtjevi provjereni s lažnim Overseerrom)
 - [x] qBittorrent, SABnzbd: veza, kategorije, prijedlozi mapiranja putanja
 - [x] Pregled prije uvoza (stvori/spoji/preskoči s razlozima, sukobi), uvoz u pozadini s napretkom, izvještaj (JSON), popis za prelazak; izvori se nikad ne mijenjaju, ponovni uvoz ne duplicira (D-077)
 
 ## Vremenska crta i nadzor (P11)
-- [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
-- [ ] „Zašto nije stiglo": jedan ekran koji objašnjava trenutno stanje svakog nedostajućeg naslova (za filmove na stranici filma od P4)
-- [ ] Aktivnost (red preuzimanja), povijest, blokirana izdanja, nedostajuće/ispod granice
-- [ ] Zdravlje sustava (indexeri, klijenti, disk, putanje, prava), logovi, zadaci
-- [ ] `/api/stats` za nadzorne ploče, Prometheus metrike
+- [x] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
+- [x] „Zašto nije stiglo?": ploča svih nedostajućih filmova, epizoda, albuma i titlova po razlogu, sa zbrojenim razlozima odbijanja, poveznicom za popravak i skupnim radnjama (D-081)
+- [x] Aktivnost (red preuzimanja), povijest cijele biblioteke, blokirana izdanja (i brisanje svih), statistika po indexeru i klijentu, nedostajuće/ispod granice (D-082)
+- [x] Zdravlje sustava (indexeri, klijenti, kategorije, putanje, root mape i prostor, koš, zapeli uvozi, metapodaci, titlovi, Streamero, sat, baza, kopije, nova verzija) s uputama (D-083), logovi s pretragom, uživo i rotiranim datotekama (D-084), zadaci
+- [x] `/api/stats` za nadzorne ploče, Prometheus metrike, održavanje baze i predmemorije (D-086)
 
 ## Aplikacije (P12)
 - [ ] Android i iOS: sve iz weba (biblioteka, dodavanje, pretraga, aktivnost, kalendar, zahtjevi, postavke za admina)

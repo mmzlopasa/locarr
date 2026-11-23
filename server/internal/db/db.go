@@ -170,3 +170,19 @@ type Querier interface {
 	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
 	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
 }
+
+// LatestVersion is the newest schema version this build knows.
+func LatestVersion() int64 {
+	entries, err := fs.ReadDir(migrations, "migrations")
+	if err != nil {
+		return 0
+	}
+	var latest int64
+	for _, e := range entries {
+		var v int64
+		if _, err := fmt.Sscanf(e.Name(), "%d_", &v); err == nil && v > latest {
+			latest = v
+		}
+	}
+	return latest
+}

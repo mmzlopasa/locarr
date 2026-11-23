@@ -45,6 +45,7 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 		key, _, err := d.Settings.Secret(ctx, settings.TMDbAPIKey)
 		return key, err
 	}, d.MetaCache)
+	client.Health = d.MetaHealth
 	client.Language = func(ctx context.Context) string {
 		if l := metadata.LanguageFrom(ctx); l != "" {
 			return l
@@ -78,6 +79,7 @@ func buildLibrary(ctx context.Context, d *Deps, cfg config.Config, log *slog.Log
 		return tvdb.Credentials{Key: key, PIN: pin}, err
 	}, d.MetaCache)
 	d.TVDB.Language = client.Language
+	d.TVDB.Health = d.MetaHealth
 	d.Series = &series.Service{DB: d.DB, Settings: d.Settings, TMDb: client, TVDB: d.TVDB, Quality: d.Quality, Formats: d.Formats,
 		Roots: d.Roots, DataRoots: cfg.DataRoots, Timeline: d.Timeline, Recycle: d.Recycle, Downloads: d.Downloads,
 		Notifier: mediaserver.Noop{}, Log: log}
@@ -188,6 +190,7 @@ func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger)
 	attachSubtitles(h, d)
 	attachRequests(h, d)
 	attachMediaServer(h, d)
+	attachOperations(h, d)
 	attachMigrate(h, d)
 	return h
 }
@@ -205,5 +208,12 @@ func runBackground(ctx context.Context, d *Deps) func() {
 		defer close(reqs)
 		d.Requests.Run(ctx)
 	}()
-	return func() { <-done; <-reqs }
+	boardDone := make(chan struct{})
+	go func() {
+		defer close(boardDone)
+		if d.Board != nil {
+			d.Board.Run(ctx)
+		}
+	}()
+	return func() { <-done; <-reqs; <-boardDone }
 }

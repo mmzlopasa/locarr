@@ -44,7 +44,7 @@
     "internal": "Na serveru je nešto pošlo po zlu. Detalji su u logu servera.",
     "totp_already_on": "Dvofaktorska autentifikacija je već uključena.",
     "totp_not_started": "Prvo pokreni postavljanje dvofaktorske autentifikacije.",
-    "path_not_allowed": "Ta mapa je izvan dopuštenih podatkovnih mapa.",
+    "path_not_allowed": "Ta mapa je izvan dopuštenih podatkovnih mapa. Locarr u svom kontejneru vidi mape hosta pod /data (npr. host /mnt/media/movies → /data/movies, kako je montirano u docker-compose.yml): upiši tu putanju, ne putanju na hostu.",
     "path_not_found": "Ta mapa ne postoji.",
     "already_exists": "To je već dodano.",
     "unknown_task": "Ne postoji zadatak s tim imenom.",
@@ -168,6 +168,8 @@
     "search": "Pretraga",
     "discover": "Otkrivanje",
     "issues": "Problemi",
+    "overview": "Pregled",
+    "board": "Zašto nije stiglo?",
     "migrate": "Uvoz setupa"
   },
   "roles": {
@@ -388,7 +390,8 @@
       "requests": "Zahtjevi",
       "mediaServer": "Media server",
       "notifications": "Obavijesti",
-      "subtitles": "Titlovi"
+      "subtitles": "Titlovi",
+      "system": "Nadzor"
     },
     "general": {
       "title": "Općenito",
@@ -413,7 +416,7 @@
   "rootFolders": {
     "title": "Mape za medije",
     "subtitle": "Gdje se nalaze tvoji filmovi, serije i glazba.",
-    "layoutHint": "Drži medije i preuzimanja na istom mountu (npr. /data/media/movies i /data/downloads) kako bi uvoz mogao koristiti hardlinkove umjesto kopiranja.",
+    "layoutHint": "Locarr vidi mape onako kako su montirane u njegov kontejner, pod /data: uz \"/mnt/media:/data\" u docker-compose.yml mapa hosta /mnt/media/movies ovdje je /data/movies. Drži medije i preuzimanja na istom mountu (npr. /data/movies i /data/downloads) kako bi uvoz mogao koristiti hardlinkove umjesto kopiranja.",
     "add": "Dodaj mapu",
     "path": "Mapa",
     "kind": "Sadrži",
@@ -429,7 +432,15 @@
     "removeHint": "Uklanjanje mape samo je zaboravlja; ništa na disku se ne dira.",
     "dataRoots": "Podatkovne mape",
     "up": "Gore",
-    "noSubfolders": "Ovdje nema mapa."
+    "noSubfolders": "Ovdje nema mapa.",
+    "notAccessible": "Mapa ne postoji ili se ne može čitati (je li disk montiran?).",
+    "notWritable": {
+      "permission_denied": "Locarr ovdje ne smije pisati: mapa pripada drugom korisniku (provjeri PUID/PGID i vlasnika mape).",
+      "read_only_filesystem": "Disk je montiran samo za čitanje (npr. NFS dijeljenje montirano s ro ili :ro u docker-compose.yml).",
+      "not_found": "Mapa je nestala tijekom provjere.",
+      "other": "Locarr ovdje ne može stvarati datoteke."
+    },
+    "howToFix": "Kako popraviti"
   },
   "mediaKinds": {
     "movies": "Filmovi",
@@ -439,7 +450,10 @@
   "system": {
     "tabs": {
       "status": "Stanje",
-      "tasks": "Zadaci"
+      "tasks": "Zadaci",
+      "health": "Zdravlje",
+      "logs": "Logovi",
+      "backups": "Sigurnosne kopije"
     },
     "status": {
       "title": "Stanje",
@@ -600,7 +614,10 @@
   "activity": {
     "tabs": {
       "queue": "Red",
-      "blocklist": "Blokirana izdanja"
+      "blocklist": "Blokirana izdanja",
+      "board": "Zašto nije stiglo?",
+      "history": "Povijest",
+      "stats": "Statistika"
     },
     "forbidden": "Red preuzimanja vide samo upravitelji biblioteke."
   },
@@ -664,7 +681,9 @@
       "stalled": "Zapelo",
       "import_failed": "Uvoz nije uspio",
       "bad_release": "Neispravna ili nestala datoteka"
-    }
+    },
+    "clear": "Obriši sve",
+    "clearConfirm": "Odblokiraj svih {{count}}"
   },
   "search": {
     "title": "Pretraga",
@@ -929,6 +948,19 @@
       "none": "Još nema vlastitih definicija.",
       "errors": "Nije učitano",
       "reloaded": "Definicije su ponovno učitane."
+    },
+    "errorShort": {
+      "challenge": "Cloudflare provjera",
+      "layout": "promijenjen izgled",
+      "unreachable": "stranica ne radi",
+      "rate_limit": "ograničenje zahtjeva",
+      "rate_limited": "ograničenje zahtjeva",
+      "backoff": "pauza nakon grešaka",
+      "auth": "odbijen pristup",
+      "blocked": "adresa blokirana",
+      "bad_response": "neočekivan odgovor",
+      "unknown": "greška",
+      "error": "greška"
     }
   },
   "profiles": {
@@ -1498,7 +1530,8 @@
     "retryNow": "Pokušaj odmah",
     "retrying": "Traženje…",
     "retryQueued": "Ponovno se traži. Ograničenja indexera i dalje vrijede.",
-    "retryHint": "Poništava čekanje između automatskih pretraga i odmah traži."
+    "retryHint": "Poništava čekanje između automatskih pretraga i odmah traži.",
+    "indexerErrors": "U zadnjoj pretrazi nisu radili: {{list}}."
   },
   "rejectionCodes": {
     "parse_failed": "ime nečitljivo",
@@ -3059,6 +3092,373 @@
       "apply": "Primijeni ({{count}})"
     },
     "tracksOnlyMkvMp4": "Locarr čita zapise samo iz MKV/WebM i MP4/MOV datoteka."
+  },
+  "board": {
+    "title": "Zašto nije stiglo?",
+    "subtitle": "Svaki praćeni film, epizoda i album koji još nedostaje (i datoteke kojima nedostaju titlovi), grupirano po onome što ih zadržava.",
+    "kind": "Prikaži",
+    "kinds": {
+      "all": "Sve",
+      "movie": "Filmovi",
+      "episode": "Epizode",
+      "album": "Albumi",
+      "subtitle": "Titlovi"
+    },
+    "kindCount": {
+      "movie": "filmova: {{count}}",
+      "episode": "epizoda: {{count}}",
+      "album": "albuma: {{count}}",
+      "subtitle": "titlova: {{count}}"
+    },
+    "recompute": "Izračunaj ponovno",
+    "total": "Nedostaje stavki: {{count}}",
+    "updated": "provjereno {{when}}",
+    "empty": "Ništa ne nedostaje. Sve što pratiš je u biblioteci.",
+    "topReasons": "Najčešća odbijanja:",
+    "fixIt": "Popravi",
+    "howToFix": "Kako popraviti",
+    "fix": {
+      "path_mapping": "Provjeri mapiranja udaljenih putanja",
+      "client_category": "Provjeri kategorije klijenta",
+      "download_clients": "Otvori download klijente",
+      "indexers": "Otvori indexere",
+      "disk_space": "Provjeri mape za medije",
+      "subtitle_providers": "Otvori providere titlova",
+      "manual_import": "Uvezi ručno",
+      "profile": "Pregledaj profile kvalitete",
+      "permissions": "Popravi prava pristupa"
+    },
+    "filter": "Filtriraj po naslovu",
+    "actionsLabel": "Skupne radnje",
+    "actions": {
+      "search": "Traži sada",
+      "change_profile": "Promijeni profil",
+      "blocklist_retry": "Blokiraj i pokušaj ponovno",
+      "retry_import": "Ponovi uvoz",
+      "unmonitor": "Prestani pratiti"
+    },
+    "profile": "Profil kvalitete",
+    "pickProfile": "Odaberi profil…",
+    "result": "Gotovo: {{done}}, neuspjelo: {{failed}}",
+    "noItems": "Nijedna stavka ne odgovara.",
+    "selectPage": "Odaberi ovu stranicu (odabrano: {{count}})",
+    "searches": "traženo {{count}}×",
+    "range": "{{from}}–{{to}} od {{total}}",
+    "prev": "Prethodna",
+    "next": "Sljedeća",
+    "groups": {
+      "available": {
+        "title": "Dostupno",
+        "hint": "U biblioteci."
+      },
+      "downloading": {
+        "title": "Preuzima se",
+        "hint": "Preuzimanje traje; uvozi se kad završi."
+      },
+      "importing": {
+        "title": "Čeka uvoz",
+        "hint": "Preuzimanje je završilo i uskoro se uvozi."
+      },
+      "import_failed": {
+        "title": "Uvoz nije uspio",
+        "hint": "Preuzimanje je završilo, ali se nije moglo uvesti. Svaka stavka navodi točan razlog."
+      },
+      "not_monitored": {
+        "title": "Ne prati se",
+        "hint": "Locarr ih ne traži."
+      },
+      "not_available_yet": {
+        "title": "Još nije dostupno",
+        "hint": "Još nije izašlo prema minimalnoj dostupnosti; traženje počinje na dan izlaska."
+      },
+      "no_indexers": {
+        "title": "Nema indexera za ovu vrstu",
+        "hint": "Nijedan uključeni indexer ne koristi se za automatsku pretragu ove vrste."
+      },
+      "no_download_client": {
+        "title": "Nema download klijenta",
+        "hint": "Nijedan download klijent nije uključen, pa se ništa ne može preuzeti."
+      },
+      "waiting_delay": {
+        "title": "Čeka profil kašnjenja",
+        "hint": "Izdanje je pronađeno i zadržano zbog profila kašnjenja."
+      },
+      "download_failed": {
+        "title": "Preuzimanje nije uspjelo",
+        "hint": "Zadnje preuzimanje nije uspjelo; Locarr ga blokira i pokušava sljedeće izdanje."
+      },
+      "not_searched_yet": {
+        "title": "Još nije traženo",
+        "hint": "Automatska pretraga još nije stigla do ovih stavki."
+      },
+      "all_rejected": {
+        "title": "Pronađeno, ali je svako izdanje odbijeno",
+        "hint": "Ukupno traženo {{searches}} puta. Odbijanja ispod zbrojena su za sve stavke."
+      },
+      "nothing_found": {
+        "title": "Ništa nije pronađeno",
+        "hint": "Ukupno traženo {{searches}} puta i nijedan indexer nije imao izdanje."
+      },
+      "upgrade_wanted": {
+        "title": "Samo djelomično ovdje",
+        "hint": "Dio datoteka je u biblioteci; Locarr traži ostatak."
+      },
+      "stalled": {
+        "title": "Zapelo",
+        "hint": "Preuzimanje se ne miče: dugo nema seedera ni brzine."
+      },
+      "path_not_visible": {
+        "title": "Završeno, ali datoteke nisu vidljive",
+        "hint": "Klijent je završio, ali Locarr ne vidi datoteke na toj putanji. Obično nedostaje mapiranje udaljene putanje ili volumen."
+      },
+      "subtitle_not_searched": {
+        "title": "Titlovi: još nije traženo",
+        "hint": "Pretraga titlova još nije stigla do ovih datoteka."
+      },
+      "subtitle_not_found": {
+        "title": "Titlovi: nije pronađeno",
+        "hint": "Provideri nisu imali dovoljno dobar titl za ove datoteke."
+      },
+      "subtitle_no_providers": {
+        "title": "Titlovi: nema providera",
+        "hint": "Nijedan provider titlova nije uključen."
+      },
+      "subtitle_quota": {
+        "title": "Titlovi: potrošena kvota providera",
+        "hint": "Dnevna kvota preuzimanja kod providera je potrošena; pretraga se nastavlja kad se obnovi."
+      },
+      "grab_failed": {
+        "title": "Prihvaćeno, ali grab nije uspio",
+        "hint": "Izdanje je prihvaćeno, ali nije poslano download klijentu (preuzimanje s indexera, klijent ili limit). Uz svaku stavku piše razlog."
+      }
+    },
+    "itemCodes": {
+      "stalled": "{{title}} je zapelo na {{progress}} %: nema seedera i ništa se nije preuzelo od {{since}}.",
+      "path_not_visible": "{{title}} je završeno u klijentu, ali Locarr ne vidi njegove datoteke: {{detail}}. Dodaj mapiranje udaljene putanje ili popravi montiranje /data, zatim ponovi uvoz.",
+      "subtitle_not_searched": "Nedostaje {{languages}}; još nije traženo.",
+      "subtitle_not_found": "Nedostaje {{languages}}; traženo {{searches}}× bez dovoljno dobrog podudaranja. Sljedeća pretraga: {{next}}.",
+      "subtitle_no_providers": "Nedostaje {{languages}}; nijedan provider titlova nije uključen.",
+      "subtitle_quota": "Nedostaje {{languages}}; svi uključeni provideri potrošili su kvotu preuzimanja."
+    }
+  },
+  "history": {
+    "title": "Povijest",
+    "subtitle": "Što je Locarr preuzeo, uvezao, nadogradio, preimenovao i obrisao, neuspjesi, titlovi i obavijesti media serveru.",
+    "category": "Što",
+    "kind": "Vrsta",
+    "search": "Traži",
+    "all": "Sve",
+    "none": "Još se ništa nije dogodilo.",
+    "indexer": "indexer: {{name}}",
+    "client": "klijent: {{name}}",
+    "categories": {
+      "grabbed": "Poslano klijentu",
+      "imported": "Uvezeno",
+      "upgraded": "Nadograđeno",
+      "failed": "Neuspjelo",
+      "deleted": "Obrisano",
+      "renamed": "Preimenovano",
+      "subtitles": "Titlovi",
+      "notifications": "Obaviješteno"
+    }
+  },
+  "activityStats": {
+    "period": "Razdoblje",
+    "days": "Zadnjih {{count}} dana",
+    "indexers": "Indexeri",
+    "clients": "Download klijenti",
+    "none": "U ovom razdoblju nema preuzimanja.",
+    "name": "Naziv",
+    "grabs": "Poslano",
+    "imported": "Uvezeno",
+    "failed": "Neuspjelo",
+    "inProgress": "U tijeku",
+    "successRate": "Uspješnost",
+    "avgImport": "Prosječno do uvoza",
+    "unknown": "(obrisano)"
+  },
+  "health": {
+    "title": "Zdravlje",
+    "subtitle": "Problemi koje je Locarr pronašao i kako ih popraviti.",
+    "checked": "Provjereno {{when}}.",
+    "runNow": "Provjeri sada",
+    "allGood": "Nema problema.",
+    "since": "od {{when}}",
+    "fixHere": "Popravi",
+    "howToFix": "Kako popraviti",
+    "severity": {
+      "error": "Greška",
+      "warning": "Upozorenje",
+      "info": "Obavijest"
+    },
+    "codes": {
+      "indexer_failing": "Indexer {{name}} ne radi: {{error}}",
+      "indexers_none": "Nijedan indexer nije uključen, pa Locarr ne može ništa tražiti.",
+      "indexer_no_kind": "Nijedan uključeni indexer ne traži automatski za vrstu: {{kind}}.",
+      "client_unreachable": "Download klijent {{name}} nije dostupan: {{error}}",
+      "client_category_missing": "Download klijent {{name}} nema kategoriju {{category}}.",
+      "clients_none": "Nijedan download klijent nije uključen, pa se ništa ne može preuzeti.",
+      "path_not_visible": "{{title}} je završeno, ali Locarr ne vidi {{path}} (mapiranje udaljene putanje ili volumen).",
+      "mapping_local_missing": "Mapiranje udaljene putanje za {{host}} vodi na {{localPath}}, a ta mapa ovdje ne postoji.",
+      "rootfolder_missing": "Mapa za medije {{path}} ne postoji.",
+      "rootfolder_unwritable": "Locarr ne može pisati u mapu za medije {{path}}.",
+      "rootfolder_low_space": "Mapa za medije {{path}} ima samo {{freeBytes}} slobodno (upozorenje ispod {{minBytes}}).",
+      "rootfolders_none": "Još nema mapa za medije. Dodaj jednu za filmove, serije ili glazbu.",
+      "client_low_space": "Download klijent {{name}} ima samo {{freeBytes}} slobodno (upozorenje ispod {{minBytes}}).",
+      "recycle_bin_large": "Koš za smeće zauzima {{sizeBytes}} (upozorenje iznad {{limitBytes}}).",
+      "import_stuck": "{{title}} je završeno prije {{minutes}} minuta i još nije uvezeno.",
+      "metadata_no_tmdb_key": "TMDb API ključ nije postavljen; filmovi i serije ne mogu se pretraživati.",
+      "metadata_invalid_key": "{{provider}} je odbio API ključ.",
+      "metadata_rate_limited": "{{provider}} ograničava Locarrove zahtjeve.",
+      "metadata_unavailable": "{{provider}} nije dostupan: {{error}}",
+      "subtitle_provider_quota": "Provider titlova {{provider}} nema preostalih preuzimanja do {{resetAt}}.",
+      "subtitle_provider_failing": "Provider titlova {{provider}} ne radi: {{error}}",
+      "streamero_unreachable": "Streamero nije dostupan: {{error}}",
+      "time_skew": "Sat ovog poslužitelja odstupa za {{seconds}} sekundi.",
+      "database_wal_large": "Dnevnik zapisivanja baze (WAL) narastao je na {{walBytes}}.",
+      "database_large": "Baza zauzima {{sizeBytes}}.",
+      "update_available": "Dostupan je Locarr {{latest}} (ovo je {{current}}).",
+      "backup_failed": "Zadnja zakazana sigurnosna kopija nije uspjela: {{error}}",
+      "check_failed": "Provjera {{check}} nije se mogla izvršiti: {{error}}",
+      "indexer_challenge": "Indexer {{name}} odgovara Cloudflare provjerom. Postavi mu FlareSolverr URL.",
+      "indexer_layout": "Stranice indexera {{name}} više ne odgovaraju njegovoj definiciji (stranica se promijenila). Pričekaj novu verziju definicije ili dodaj vlastitu.",
+      "indexer_selftest_failed": "Tjedna provjera ugrađenog indexera {{name}} nije prošla."
+    }
+  },
+  "logs": {
+    "title": "Logovi",
+    "subtitle": "Nedavni zapisi u logu. Lozinke, ključevi i tokeni uvijek su zamijenjeni s [redacted].",
+    "level": "Razina",
+    "search": "Traži",
+    "live": "Uživo",
+    "none": "Nema zapisa.",
+    "levels": {
+      "debug": "Debug",
+      "info": "Info",
+      "warn": "Upozorenje",
+      "error": "Greška"
+    },
+    "files": "Datoteke logova",
+    "filesHint": "Datoteke u /config/logs, rotiraju se po veličini.",
+    "noFiles": "Još nema datoteka logova."
+  },
+  "backups": {
+    "title": "Sigurnosne kopije",
+    "subtitle": "Baza, tajni ključ i postavke u jednom zipu. Medijske datoteke nikad nisu dio sigurnosne kopije.",
+    "now": "Napravi kopiju sada",
+    "secretWarning": "Sigurnosna kopija sadrži tajni ključ i sve postavke, uključujući šifrirane lozinke i API ključeve tvojih servisa. Čuvaj je jednako privatno kao i sam poslužitelj.",
+    "scheduleHint": "Zakazane kopije i koliko ih čuvati:",
+    "scheduleLink": "Postavke → Nadzor",
+    "list": "Kopije",
+    "none": "Još nema sigurnosnih kopija.",
+    "kinds": {
+      "scheduled": "Zakazana",
+      "manual": "Ručna",
+      "pre_restore": "Prije vraćanja",
+      "uploaded": "Učitana"
+    },
+    "version": "Locarr {{version}}",
+    "download": "Preuzmi",
+    "restore": "Vrati",
+    "deleteConfirm": "Obriši je",
+    "upload": "Vrati iz datoteke",
+    "uploadHint": "Zip sigurnosne kopije koji je napravio Locarr (ova ili druga instalacija).",
+    "chooseFile": "Odaberi kopiju…",
+    "confirmTitle": "Vrati {{name}}",
+    "confirmText": "Sve što Locarr zna zamjenjuje se kopijom: biblioteka, postavke, korisnici i povijest. Locarr najprije spremi trenutno stanje, zatim se ponovno pokrene. Svi osim tebe bit će odjavljeni. Medijske datoteke se ne diraju.",
+    "typeWord": "Upiši {{word}} za potvrdu",
+    "restoreNow": "Vrati i ponovno pokreni",
+    "restarting": "Vraćanje i ponovno pokretanje…",
+    "restartingHint": "Stranica će se sama osvježiti kad se Locarr vrati."
+  },
+  "monitoring": {
+    "title": "Nadzor",
+    "subtitle": "Provjere zdravlja, sigurnosne kopije, čišćenje i metrike za nadzorne ploče.",
+    "health": "Provjere zdravlja",
+    "updateCheck": "Provjeravaj nove verzije",
+    "updateCheckHint": "Jednom dnevno pita GitHub postoji li novija verzija Locarra. Ništa o tvom sustavu se ne šalje.",
+    "backups": "Zakazane sigurnosne kopije",
+    "housekeeping": "Čišćenje",
+    "housekeepingHint": "Stara povijest briše se nakon ovoliko dana; baza se sažima po rasporedu.",
+    "metrics": "Metrike",
+    "metricsHint": "Prometheus metrike na /metrics traže ovaj token kao bearer token. Bez tokena /metrics je isključen.",
+    "metricsState": "/metrics:",
+    "on": "uključeno",
+    "off": "isključeno",
+    "token": "Token",
+    "tokenKeep": "Postavljen (ostavi prazno da ga zadržiš)",
+    "generate": "Generiraj",
+    "turnOff": "Isključi",
+    "statsHint": "Nadzorne ploče mogu čitati /api/stats s administratorovim API ključem samo za čitanje (Račun → API ključevi).",
+    "fields": {
+      "minFreeSpaceGb": "Upozori ispod slobodnog prostora (GB)",
+      "recycleBinWarnGb": "Upozori kad je koš veći od (GB)",
+      "stuckImportMinutes": "Uvoz je zapeo nakon (minuta)",
+      "backupIntervalHours": "Svakih (sati)",
+      "backupKeep": "Čuvaj",
+      "timelineDays": "Vremenska crta (dana)",
+      "searchLogDays": "Zapis pretraga (dana)",
+      "downloadEventsDays": "Koraci preuzimanja (dana)",
+      "releasesSeenDays": "Viđena RSS izdanja (dana)",
+      "vacuumIntervalDays": "Sažmi bazu svakih (dana)",
+      "imageCacheMaxMb": "Granica predmemorije slika (MB)"
+    },
+    "hints": {
+      "minFreeSpaceGb": "Za mape za medije i download klijente.",
+      "recycleBinWarnGb": "0 isključuje upozorenje.",
+      "stuckImportMinutes": "Završeno preuzimanje koje nije uvezeno nakon ovoliko vremena prijavljuje se.",
+      "backupIntervalHours": "0 isključuje zakazane kopije.",
+      "backupKeep": "Starije zakazane kopije se brišu.",
+      "timelineDays": "Zapisi povijesti po naslovu.",
+      "searchLogDays": "Svaka pretraga i što je koji indexer odgovorio.",
+      "downloadEventsDays": "Koraci završenih preuzimanja.",
+      "releasesSeenDays": "Izdanja zapamćena iz RSS feedova.",
+      "vacuumIntervalDays": "0 isključuje sažimanje.",
+      "imageCacheMaxMb": "Iznad ove granice brišu se najstariji plakati i omoti."
+    }
+  },
+  "overview": {
+    "title": "Pregled",
+    "subtitle": "Što se preuzima, što dolazi i što traži tvoju pažnju.",
+    "noFolders": "Još nema mapa za medije.",
+    "openWelcome": "Postavi ih",
+    "queue": "Preuzimanja",
+    "openQueue": "Red",
+    "queueSummary": "U redu: {{count}}, preuzima se: {{active}}, brzina {{speed}}",
+    "openBoard": "Svi razlozi",
+    "openHealth": "Detalji",
+    "upcoming": "Idućih 7 dana",
+    "openCalendar": "Kalendar",
+    "nothingUpcoming": "Ništa u idućih 7 dana.",
+    "activity": "Nedavna aktivnost",
+    "openHistory": "Povijest",
+    "disk": "Prostor na disku",
+    "manage": "Mape za medije",
+    "more": "i još {{count}}"
+  },
+  "welcome": {
+    "title": "Dobro došli u Locarr",
+    "subtitle": "Dva brza koraka i spremni ste.",
+    "steps": {
+      "folders": "Mape za medije",
+      "import": "Postojeće aplikacije"
+    },
+    "kinds": {
+      "movies": "Filmovi",
+      "series": "Serije",
+      "music": "Glazba"
+    },
+    "folderHint": "Gdje se nalazi ova vrsta medija. Mapa koja ne postoji stvara se unutar podatkovnih mapa.",
+    "use": "Koristi ovu mapu",
+    "addAnother": "Dodaj još jednu",
+    "writable": "može se pisati",
+    "notWritable": "Locarr ne može pisati u ovu mapu. Popravi vlasnika ili prava (PUID/PGID) prije uvoza.",
+    "next": "Dalje",
+    "skip": "Preskoči zasad",
+    "importTitle": "Uvoz iz postojećih aplikacija",
+    "importHint": "Već koristiš druge aplikacije za filmove, serije, glazbu, indexere ili zahtjeve? Locarr može pročitati njihove postavke bez ikakve promjene kod njih.",
+    "importLink": "Otvori čarobnjak za uvoz",
+    "importLater": "Uvoz postojećeg sustava stiže u jednoj od sljedećih verzija. Do tada sve možeš dodati ručno."
   },
   "migrate": {
     "title": "Uvoz postojećeg setupa",

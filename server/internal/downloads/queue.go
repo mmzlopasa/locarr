@@ -294,3 +294,17 @@ func (s *Service) CreateCategories(ctx context.Context, id int64) ([]string, err
 	s.mu.Unlock()
 	return created, nil
 }
+
+// TestSaved tests a saved client as it is configured (health checks use it
+// to find missing categories).
+func (s *Service) TestSaved(ctx context.Context, id int64) (TestResult, error) {
+	c, err := s.GetClient(ctx, id)
+	if err != nil {
+		return TestResult{}, err
+	}
+	return s.Test(ctx, id, ClientInput{Name: c.Name, Implementation: c.Implementation, Enabled: c.Enabled, Priority: c.Priority,
+		Host: c.Host, Port: c.Port, UseTLS: c.UseTLS, AllowSelfSigned: c.AllowSelfSigned, URLBase: c.URLBase, Username: c.Username,
+		Directory: c.Directory, CategoryMovies: c.CategoryMovies, CategorySeries: c.CategorySeries, CategoryMusic: c.CategoryMusic,
+		RecentPriority: c.RecentPriority, OlderPriority: c.OlderPriority, InitialState: c.InitialState, RemoveCompleted: c.RemoveCompleted,
+		Sequential: c.Sequential, FirstLastPiece: c.FirstLastPiece, Tags: c.Tags})
+}
