@@ -139,6 +139,7 @@ jobs:
           pnpm e2e
         env:
           E2E_SETUP_CODE: E2E-SETUP
+          E2E_DATA_DIR: ${{ runner.temp }}/locarr/data
       - name: Compose logs on failure
         if: failure()
         working-directory: deploy

@@ -1,19 +1,18 @@
+import fs from "node:fs";
+import path from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 
-// Needs the same stack as movies.spec.ts (fakes with LOCARR_FAKES_SEED_DIR and a Transmission) plus the
-// fake Streamero the fakes serve under /streamero (internal/mediaserver/streamero/fake: admin key
+// Needs the compose stack and the fakes (scripts/dev-fakes.sh) with the fake Streamero the fakes serve under /streamero (internal/mediaserver/streamero/fake: admin key
 // sk_fakeadminkey, users admin / ana / tom with password streamero-pass, library "Movies" at /media/movies).
 const setupCode = process.env.E2E_SETUP_CODE ?? "E2E-SETUP";
 const adminUser = process.env.E2E_ADMIN_USER ?? "admin";
 const adminPassword = process.env.E2E_ADMIN_PASSWORD ?? "e2e-password-123";
-const tmHost = process.env.E2E_TRANSMISSION_HOST ?? "transmission";
-const tmUser = process.env.E2E_TRANSMISSION_USER ?? "locarr";
-const tmPass = process.env.E2E_TRANSMISSION_PASS ?? "locarr-e2e";
 const tmdbKey = process.env.E2E_TMDB_KEY ?? "fake0000000000000000000000tmdb01";
-const indexerUrl = process.env.E2E_INDEXER_URL ?? "http://fake-indexer:9117/torznab";
 const moviesRoot = process.env.E2E_MOVIES_ROOT ?? "/data/media/movies";
 const streameroUrl = process.env.E2E_STREAMERO_URL ?? "http://fake-indexer:9117/streamero";
 const streameroKey = "sk_fakeadminkey";
+// The host folder mounted as /data in the Locarr container (the test writes a movie file there).
+const dataDir = process.env.E2E_DATA_DIR ?? "";
 
 async function signInAsAdmin(page: Page) {
   await page.addInitScript(() => localStorage.setItem("locarr.lang", "en"));
@@ -34,20 +33,13 @@ async function signInAsAdmin(page: Page) {
 }
 
 test("Streamero: settings, a scan of the right library after an import, titles it has, sign-in as a requester", async ({ page, browser }) => {
-  test.skip(tmHost === "none", "no Transmission instance for this run");
-  test.setTimeout(240_000);
+  test.skip(!dataDir, "E2E_DATA_DIR (the host folder mounted as /data) is not set");
+  test.setTimeout(180_000);
   await signInAsAdmin(page);
   const ok = (status: number) => [200, 201, 409].includes(status);
   expect((await page.request.put("/api/v1/settings/metadata", { data: { tmdbApiKey: tmdbKey } })).ok()).toBeTruthy();
-  for (const [path, data] of [
-    ["/api/v1/indexers", { name: "Fake Streamero-test indexer", kind: "torznab", baseUrl: indexerUrl, apiKey: "fakekey" }],
-    ["/api/v1/downloadclients", { name: "Transmission Streamero", implementation: "transmission", host: tmHost, port: 9091, username: tmUser,
-      password: tmPass, categories: { movies: "locarr-movies", series: "", music: "" } }],
-    ["/api/v1/rootfolders", { path: moviesRoot, kind: "movies" }],
-  ] as const) {
-    const r = await page.request.post(path, { data });
-    expect(ok(r.status()), await r.text()).toBeTruthy();
-  }
+  const rf = await page.request.post("/api/v1/rootfolders", { data: { path: moviesRoot, kind: "movies" } });
+  expect(ok(rf.status()), await rf.text()).toBeTruthy();
 
   // Settings → Media server: Test shows the libraries, then save with a path mapping and sign-in.
   await page.goto("/settings/mediaserver");
@@ -69,21 +61,31 @@ test("Streamero: settings, a scan of the right library after an import, titles i
   const saved = await (await page.request.get("/api/v1/mediaserver/streamero")).json();
   expect(saved.enabled && saved.apiKey.configured && saved.signIn.autoCreate).toBeTruthy();
 
-  // Import a movie: Locarr asks Streamero to scan the Movies library (and nothing else).
-  const list = await (await page.request.get("/api/v1/movies?q=Big%20Buck")).json();
-  for (const m of list.items ?? []) await page.request.delete(`/api/v1/movies/${m.id}?deleteFiles=true`);
+  // Import a movie (manual import of a file the test writes into the shared data folder): Locarr asks
+  // Streamero to scan the Movies library, and nothing else.
+  const release = "Sintel.2010.1080p.BluRay.x264-LOCARR";
+  const hostDir = path.join(dataDir, "downloads", "streamero-e2e", release);
+  fs.mkdirSync(hostDir, { recursive: true });
+  fs.writeFileSync(path.join(hostDir, `${release}.mkv`), Buffer.alloc(2 * 1024 * 1024, 7));
+  const leftovers = await (await page.request.get("/api/v1/movies?q=Sintel")).json();
+  for (const m of leftovers.items ?? []) await page.request.delete(`/api/v1/movies/${m.id}?deleteFiles=true`);
   const roots = await (await page.request.get("/api/v1/rootfolders")).json();
   const root = roots.find((r: { path: string }) => r.path === moviesRoot);
   const profiles = await (await page.request.get("/api/v1/qualityprofiles")).json();
   const profile = profiles.find((p: { name: string; kind: string }) => p.kind === "movies" && p.name === "HD-720p/1080p");
-  const added = await page.request.post("/api/v1/movies", { data: { tmdbId: 10378, rootFolderId: root.id, qualityProfileId: profile.id,
-    minimumAvailability: "released", searchOnAdd: true } });
+  const added = await page.request.post("/api/v1/movies", { data: { tmdbId: 45745, rootFolderId: root.id, qualityProfileId: profile.id,
+    minimumAvailability: "released", searchOnAdd: false } });
   expect(added.status(), await added.text()).toBe(201);
   const movie = await added.json();
+  const imported = await page.request.post("/api/v1/movies/import/manual", { data: { items: [{
+    path: `/data/downloads/streamero-e2e/${release}/${release}.mkv`, movieId: movie.id, mode: "copy" }] } });
+  expect(imported.status(), await imported.text()).toBe(200);
+  const results = await imported.json();
+  expect(results[0].error, JSON.stringify(results[0])).toBeFalsy();
   await expect.poll(async () => {
     const tl = await (await page.request.get(`/api/v1/timeline?item=movie:${movie.id}`)).json();
     return (tl.events ?? []).filter((e: { type: string }) => e.type === "notified").map((e: { message: string }) => e.message).join("|");
-  }, { timeout: 200_000, intervals: [2000] }).toContain("notified Streamero: scanning Movies");
+  }, { timeout: 90_000, intervals: [2000] }).toContain("notified Streamero: scanning Movies");
   await page.goto(`/movies/${movie.id}`);
   await page.getByTestId("tab-history").click();
   await expect(page.getByTestId("timeline")).toContainText("notified Streamero: scanning Movies");
