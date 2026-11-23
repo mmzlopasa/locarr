@@ -22,6 +22,8 @@ export function SettingsLayout() {
           { to: "/settings/rules", label: t("settings.tabs.rules") },
           { to: "/settings/tester", label: t("settings.tabs.tester") },
           { to: "/settings/requests", label: t("settings.tabs.requests") },
+          { to: "/settings/mediaserver", label: t("settings.tabs.mediaServer") },
+          { to: "/settings/notifications", label: t("settings.tabs.notifications") },
           { to: "/settings/users", label: t("settings.tabs.users") },
         ]}
       />

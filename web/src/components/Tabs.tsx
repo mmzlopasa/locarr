@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 
 export type Tab = {
   to: "/settings" | "/settings/media" | "/settings/users" | "/settings/profiles" | "/settings/quality" | "/settings/customformats"
-    | "/settings/rules" | "/settings/tester" | "/settings/mediamanagement" | "/settings/metadata" | "/settings/importlists" | "/settings/metadataprofiles" | "/settings/subtitles" | "/settings/requests" | "/system/status" | "/system/tasks" | "/activity/queue" | "/activity/blocklist";
+    | "/settings/rules" | "/settings/tester" | "/settings/mediamanagement" | "/settings/metadata" | "/settings/importlists" | "/settings/metadataprofiles" | "/settings/subtitles" | "/settings/requests" | "/settings/mediaserver" | "/settings/notifications" | "/system/status" | "/system/tasks" | "/activity/queue" | "/activity/blocklist";
   label: string;
 };
 

@@ -32,6 +32,10 @@ type Config struct {
 	// and the fake services only).
 	MusicBrainzURL string
 	CoverArtURL    string
+	// TelegramURL and PushoverURL replace the Telegram Bot API and Pushover
+	// addresses (LOCARR_TELEGRAM_URL, LOCARR_PUSHOVER_URL; tests only).
+	TelegramURL string
+	PushoverURL string
 	// SubtitleURLs replace subtitle provider addresses (LOCARR_OPENSUBTITLES_URL,
 	// LOCARR_SUBDL_URL, LOCARR_JIMAKU_URL; tests and the fake services only).
 	SubtitleURLs map[string]string
@@ -71,6 +75,8 @@ func load(env func(string) string) (Config, error) {
 		TVDBURL:        get("LOCARR_TVDB_URL", ""),
 		MusicBrainzURL: get("LOCARR_MUSICBRAINZ_URL", ""),
 		CoverArtURL:    get("LOCARR_COVERART_URL", ""),
+		TelegramURL:    get("LOCARR_TELEGRAM_URL", ""),
+		PushoverURL:    get("LOCARR_PUSHOVER_URL", ""),
 		FFmpeg:         get("LOCARR_FFMPEG", ""),
 		SubtitleURLs:   map[string]string{},
 	}

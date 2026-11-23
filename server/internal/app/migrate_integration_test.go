@@ -1,17 +1,20 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 	"github.com/mmzlopasa/locarr/server/internal/migrate/fake"
+	"github.com/mmzlopasa/locarr/server/internal/notify"
 )
 
 type migrateEnv struct {
@@ -43,11 +46,11 @@ type apiMigrateRun struct {
 		Attention  map[string]int
 		Conflicts  int
 		PathChecks []struct {
-			SourcePath  string `json:"sourcePath"`
-			LocalPath   string `json:"localPath"`
-			Files       int
-			Found       int
-			Exists      bool
+			SourcePath string `json:"sourcePath"`
+			LocalPath  string `json:"localPath"`
+			Files      int
+			Found      int
+			Exists     bool
 		} `json:"pathChecks"`
 		Suggested []struct{ From, To string }
 		Refresh   *struct{ Total, Done, Failed int }
@@ -56,8 +59,8 @@ type apiMigrateRun struct {
 
 type apiMigrateItem struct {
 	Key, Category, Name, Action, Reason, Message, Status, LocalRef, Error string
-	Attention                                                              []string
-	Conflict                                                               *struct {
+	Attention                                                             []string
+	Conflict                                                              *struct {
 		Existing string
 		Options  []string
 		Chosen   string
@@ -282,7 +285,10 @@ func TestMigrateFullSetup(t *testing.T) {
 	}
 
 	// Import: the same plan is carried out (dry run and run agree).
+	sink := &recordingSink{}
+	me.deps.Hub.Sinks = append(me.deps.Hub.Sinks, sink)
 	done := me.importRun(r.ID)
+	waitFor(t, "the end of the import on the channels", func() bool { return sink.has(notify.MigrateFinished) })
 	result := me.items(r.ID, "")
 	if a, b := plannedActions(preview), plannedActions(result); strings.Join(a, "\n") != strings.Join(b, "\n") {
 		t.Fatalf("the import differs from the preview:\n%v\n%v", a, b)
@@ -482,6 +488,31 @@ func TestMigrateFullSetup(t *testing.T) {
 	if withFiles != 4 {
 		t.Fatalf("%d episodes with files after the third run", withFiles)
 	}
+}
+
+// recordingSink keeps the events handed to the channels.
+type recordingSink struct {
+	mu     sync.Mutex
+	events []notify.Event
+}
+
+func (r *recordingSink) Name() string { return "test" }
+func (r *recordingSink) Deliver(_ context.Context, ev notify.Event) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.events = append(r.events, ev)
+	return nil
+}
+
+func (r *recordingSink) has(t notify.Type) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	for _, ev := range r.events {
+		if ev.Type == t && len(ev.Recipients) == 0 {
+			return true
+		}
+	}
+	return false
 }
 
 func contains(list []string, v string) bool {

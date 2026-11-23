@@ -754,8 +754,8 @@ func (h *Handler) SignUp(ctx context.Context, req *gen.SignUpRequest) (*gen.Sign
 }
 
 // ListAuthProviders implements GET /auth/providers.
-func (h *Handler) ListAuthProviders(_ context.Context) ([]gen.AuthProvider, error) {
-	list := h.Auth.Providers()
+func (h *Handler) ListAuthProviders(ctx context.Context) ([]gen.AuthProvider, error) {
+	list := h.Auth.Providers(ctx)
 	out := make([]gen.AuthProvider, 0, len(list))
 	for _, p := range list {
 		out = append(out, gen.AuthProvider{ID: p.ID, Kind: gen.AuthProviderKind(p.Kind), Name: p.Name})

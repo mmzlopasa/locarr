@@ -45,9 +45,50 @@ const (
 	IssueReopened Type = "issue.reopened"
 )
 
-// Types lists every event type.
+// Library and system events (P9). They have no in-app recipients and only
+// reach the shared notification channels.
+const (
+	// LibraryGrabbed: a release was sent to a download client (Message = release name).
+	LibraryGrabbed Type = "library.grabbed"
+	// LibraryImported, LibraryUpgraded: a file arrived in the library.
+	LibraryImported Type = "library.imported"
+	LibraryUpgraded Type = "library.upgraded"
+	// LibraryDownloadFailed, LibraryImportFailed: Message = the reason.
+	LibraryDownloadFailed Type = "library.download_failed"
+	LibraryImportFailed   Type = "library.import_failed"
+	// HealthWarning: an indexer, download client or Streamero stopped working.
+	HealthWarning Type = "health.warning"
+	// SubtitleDownloaded: a subtitle was found or upgraded (Message = what).
+	SubtitleDownloaded Type = "subtitles.downloaded"
+	// SubtitleMissing: a file still has no subtitle in a wanted language
+	// some days after it arrived (sent once per file).
+	SubtitleMissing Type = "subtitles.missing"
+	// MigrateFinished, MigrateFailed: an import of an existing setup (P10)
+	// ended (Message = the counts or the reason).
+	MigrateFinished Type = "migrate.finished"
+	MigrateFailed   Type = "migrate.failed"
+	// Test is only sent by a channel's Test button.
+	Test Type = "test"
+)
+
+// Types lists every request and issue event type.
 var Types = []Type{RequestCreated, RequestApproved, RequestDeclined, RequestAvailable, RequestPartial, RequestFailed,
 	RequestComment, IssueCreated, IssueComment, IssueResolved, IssueReopened}
+
+// LibraryTypes lists the library and system event types.
+var LibraryTypes = []Type{LibraryGrabbed, LibraryImported, LibraryUpgraded, LibraryDownloadFailed, LibraryImportFailed, HealthWarning,
+	SubtitleDownloaded, SubtitleMissing, MigrateFinished, MigrateFailed}
+
+// Personal reports whether t is about requests or issues (the events a
+// user's own channel can receive).
+func Personal(t Type) bool {
+	for _, x := range Types {
+		if x == t {
+			return true
+		}
+	}
+	return false
+}
 
 // User names a person in an event.
 type User struct {
@@ -73,6 +114,8 @@ type Event struct {
 	MediaKind string `json:"mediaKind,omitempty"`
 	RequestID int64  `json:"requestId,omitempty"`
 	IssueID   int64  `json:"issueId,omitempty"`
+	// ItemRef is the library item of a library event ("movie:42").
+	ItemRef string `json:"itemRef,omitempty"`
 	// Params are extra facts (seasons, is4k, code, autoApproved, …).
 	Params map[string]any `json:"params,omitempty"`
 }

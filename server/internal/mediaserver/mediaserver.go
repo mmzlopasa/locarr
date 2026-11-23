@@ -34,3 +34,16 @@ func (Noop) Name() string { return "" }
 
 // Notify implements Notifier.
 func (Noop) Notify(context.Context, Change) error { return nil }
+
+// SelfRecording is implemented by notifiers that write the timeline entry
+// themselves once the media server was really told (after batching); the
+// library then records nothing when Notify returns without an error.
+type SelfRecording interface {
+	RecordsOutcome() bool
+}
+
+// RecordsOutcome reports whether n records its own timeline entries.
+func RecordsOutcome(n Notifier) bool {
+	r, ok := n.(SelfRecording)
+	return ok && r.RecordsOutcome()
+}

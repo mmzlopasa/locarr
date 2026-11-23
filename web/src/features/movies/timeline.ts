@@ -103,6 +103,10 @@ export function describeEvent(t: TFunction, e: TimelineEvent): string {
     case "deleted":
       return t("timeline.events.deleted", { message: e.message });
     case "notified":
+      if (!d.ok && str(d.reason)) return t("timeline.events.notifyFailedReason", { server: str(d.server), reason: str(d.reason) });
+      if (d.ok && Array.isArray(d.libraries) && d.libraries.length > 0) {
+        return t("timeline.events.notifiedScan", { server: str(d.server), libraries: d.libraries.map(String).join(", ") });
+      }
       return t(d.ok ? "timeline.events.notified" : "timeline.events.notifyFailed", { server: str(d.server) });
     case "download_grabbed":
       return t("timeline.events.grabbed", { title: str(d.title), indexer: str(d.indexer) || "–", client: str(d.client) });

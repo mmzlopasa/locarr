@@ -6265,6 +6265,208 @@ func (s *Server) handleCreateMigrateSourceRequest(args [0]string, argsEscaped bo
 	}
 }
 
+// handleCreateNotificationChannelRequest handles createNotificationChannel operation.
+//
+// `personal: false` (administrators) sends the chosen events of everyone; `personal: true` sends the
+// caller's own request and issue events. Personal channels of non-administrators may not use `webhook`
+// or `apprise` and cannot reach private network addresses.
+//
+// POST /notificationchannels
+func (s *Server) handleCreateNotificationChannelRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("createNotificationChannel"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/notificationchannels"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), CreateNotificationChannelOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: CreateNotificationChannelOperation,
+			ID:   "createNotificationChannel",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, CreateNotificationChannelOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeCreateNotificationChannelRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *NotificationChannel
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    CreateNotificationChannelOperation,
+			OperationSummary: "Add a channel",
+			OperationID:      "createNotificationChannel",
+			Body:             request,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = *NotificationChannelInput
+			Params   = struct{}
+			Response = *NotificationChannel
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.CreateNotificationChannel(ctx, request)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.CreateNotificationChannel(ctx, request)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeCreateNotificationChannelResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleCreateQualityProfileRequest handles createQualityProfile operation.
 //
 // Qualities of the kind that the item list leaves out are added at the end as not allowed.
@@ -10670,6 +10872,206 @@ func (s *Server) handleDeleteMovieRequest(args [1]string, argsEscaped bool, w ht
 	}
 
 	if err := encodeDeleteMovieResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleDeleteNotificationChannelRequest handles deleteNotificationChannel operation.
+//
+// Remove a channel.
+//
+// DELETE /notificationchannels/{id}
+func (s *Server) handleDeleteNotificationChannelRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteNotificationChannel"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.HTTPRouteKey.String("/notificationchannels/{id}"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), DeleteNotificationChannelOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: DeleteNotificationChannelOperation,
+			ID:   "deleteNotificationChannel",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, DeleteNotificationChannelOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+	params, err := decodeDeleteNotificationChannelParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+
+	var response *DeleteNotificationChannelNoContent
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    DeleteNotificationChannelOperation,
+			OperationSummary: "Remove a channel",
+			OperationID:      "deleteNotificationChannel",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "id",
+					In:   "path",
+				}: params.ID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = DeleteNotificationChannelParams
+			Response = *DeleteNotificationChannelNoContent
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackDeleteNotificationChannelParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				err = s.h.DeleteNotificationChannel(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		err = s.h.DeleteNotificationChannel(ctx, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeDeleteNotificationChannelResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -20727,6 +21129,391 @@ func (s *Server) handleGetMusicSettingsRequest(args [0]string, argsEscaped bool,
 	}
 }
 
+// handleGetNotificationChannelRequest handles getNotificationChannel operation.
+//
+// One channel (its owner, or administrators for shared channels).
+//
+// GET /notificationchannels/{id}
+func (s *Server) handleGetNotificationChannelRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getNotificationChannel"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/notificationchannels/{id}"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), GetNotificationChannelOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: GetNotificationChannelOperation,
+			ID:   "getNotificationChannel",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, GetNotificationChannelOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+	params, err := decodeGetNotificationChannelParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+
+	var response *NotificationChannel
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    GetNotificationChannelOperation,
+			OperationSummary: "One channel (its owner, or administrators for shared channels)",
+			OperationID:      "getNotificationChannel",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "id",
+					In:   "path",
+				}: params.ID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = GetNotificationChannelParams
+			Response = *NotificationChannel
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackGetNotificationChannelParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.GetNotificationChannel(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.GetNotificationChannel(ctx, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeGetNotificationChannelResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleGetNotificationSettingsRequest handles getNotificationSettings operation.
+//
+// Address for links and the mail server (administrators).
+//
+// GET /settings/notifications
+func (s *Server) handleGetNotificationSettingsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getNotificationSettings"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/settings/notifications"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), GetNotificationSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: GetNotificationSettingsOperation,
+			ID:   "getNotificationSettings",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, GetNotificationSettingsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+
+	var response *NotificationSettings
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    GetNotificationSettingsOperation,
+			OperationSummary: "Address for links and the mail server (administrators)",
+			OperationID:      "getNotificationSettings",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = *NotificationSettings
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.GetNotificationSettings(ctx)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.GetNotificationSettings(ctx)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeGetNotificationSettingsResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleGetQualityProfileRequest handles getQualityProfile operation.
 //
 // One quality profile.
@@ -22446,6 +23233,191 @@ func (s *Server) handleGetSettingsRequest(args [0]string, argsEscaped bool, w ht
 	}
 
 	if err := encodeGetSettingsResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleGetStreameroSettingsRequest handles getStreameroSettings operation.
+//
+// The Streamero connection (administrators).
+//
+// GET /mediaserver/streamero
+func (s *Server) handleGetStreameroSettingsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getStreameroSettings"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/mediaserver/streamero"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), GetStreameroSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: GetStreameroSettingsOperation,
+			ID:   "getStreameroSettings",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, GetStreameroSettingsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+
+	var response *StreameroSettings
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    GetStreameroSettingsOperation,
+			OperationSummary: "The Streamero connection (administrators)",
+			OperationID:      "getStreameroSettings",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = *StreameroSettings
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.GetStreameroSettings(ctx)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.GetStreameroSettings(ctx)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeGetStreameroSettingsResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -26638,6 +27610,444 @@ func (s *Server) handleInteractiveSearchSeasonRequest(args [2]string, argsEscape
 	}
 
 	if err := encodeInteractiveSearchSeasonResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleLinkMyIdentityRequest handles linkMyIdentity operation.
+//
+// Checks the credentials at the provider like a provider sign-in, then links that account to the
+// caller. 409 `identity_taken` when it is linked to someone else. Rate-limited and counted towards the
+// sign-in ban.
+//
+// POST /auth/identities/{provider}
+func (s *Server) handleLinkMyIdentityRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("linkMyIdentity"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/auth/identities/{provider}"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), LinkMyIdentityOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: LinkMyIdentityOperation,
+			ID:   "linkMyIdentity",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, LinkMyIdentityOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+	params, err := decodeLinkMyIdentityParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeLinkMyIdentityRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *LinkedIdentity
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    LinkMyIdentityOperation,
+			OperationSummary: "Link the caller to their account at a provider (by signing in there)",
+			OperationID:      "linkMyIdentity",
+			Body:             request,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "provider",
+					In:   "path",
+				}: params.Provider,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = *ProviderCredentials
+			Params   = LinkMyIdentityParams
+			Response = *LinkedIdentity
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackLinkMyIdentityParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.LinkMyIdentity(ctx, request, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.LinkMyIdentity(ctx, request, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeLinkMyIdentityResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleLinkUserIdentityRequest handles linkUserIdentity operation.
+//
+// `subject` is the provider's id for the account (for Streamero: from
+// `GET /mediaserver/streamero/users`). The provider's administrator flag never makes the user an
+// administrator here.
+//
+// PUT /users/{id}/identities/{provider}
+func (s *Server) handleLinkUserIdentityRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("linkUserIdentity"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.HTTPRouteKey.String("/users/{id}/identities/{provider}"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), LinkUserIdentityOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: LinkUserIdentityOperation,
+			ID:   "linkUserIdentity",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, LinkUserIdentityOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+	params, err := decodeLinkUserIdentityParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeLinkUserIdentityRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *LinkedIdentity
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    LinkUserIdentityOperation,
+			OperationSummary: "Link a user to an account at a provider (administrators)",
+			OperationID:      "linkUserIdentity",
+			Body:             request,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "id",
+					In:   "path",
+				}: params.ID,
+				{
+					Name: "provider",
+					In:   "path",
+				}: params.Provider,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = *LinkIdentityRequest
+			Params   = LinkUserIdentityParams
+			Response = *LinkedIdentity
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackLinkUserIdentityParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.LinkUserIdentity(ctx, request, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.LinkUserIdentity(ctx, request, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeLinkUserIdentityResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -30873,6 +32283,392 @@ func (s *Server) handleListMoviesRequest(args [0]string, argsEscaped bool, w htt
 	}
 }
 
+// handleListMyIdentitiesRequest handles listMyIdentities operation.
+//
+// Accounts at other services linked to the caller.
+//
+// GET /auth/identities
+func (s *Server) handleListMyIdentitiesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listMyIdentities"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/auth/identities"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), ListMyIdentitiesOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: ListMyIdentitiesOperation,
+			ID:   "listMyIdentities",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, ListMyIdentitiesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+
+	var response []LinkedIdentity
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    ListMyIdentitiesOperation,
+			OperationSummary: "Accounts at other services linked to the caller",
+			OperationID:      "listMyIdentities",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = []LinkedIdentity
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.ListMyIdentities(ctx)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.ListMyIdentities(ctx)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeListMyIdentitiesResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleListNotificationChannelsRequest handles listNotificationChannels operation.
+//
+// Without `personal`: the channels for everyone (administrators). With `personal=true`: the caller's
+// own channels (any signed-in user).
+//
+// GET /notificationchannels
+func (s *Server) handleListNotificationChannelsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listNotificationChannels"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/notificationchannels"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), ListNotificationChannelsOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: ListNotificationChannelsOperation,
+			ID:   "listNotificationChannels",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, ListNotificationChannelsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+	params, err := decodeListNotificationChannelsParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+
+	var response []NotificationChannel
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    ListNotificationChannelsOperation,
+			OperationSummary: "Notification channels",
+			OperationID:      "listNotificationChannels",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "personal",
+					In:   "query",
+				}: params.Personal,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = ListNotificationChannelsParams
+			Response = []NotificationChannel
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackListNotificationChannelsParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.ListNotificationChannels(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.ListNotificationChannels(ctx, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeListNotificationChannelsResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleListNotificationsRequest handles listNotifications operation.
 //
 // Polling-friendly: pass the largest id seen as `since` to get only newer ones (oldest first then);
@@ -33638,6 +35434,376 @@ func (s *Server) handleListSessionsRequest(args [0]string, argsEscaped bool, w h
 	}
 }
 
+// handleListStreameroLibrariesRequest handles listStreameroLibraries operation.
+//
+// Streamero's libraries with the root folders that match them (administrators).
+//
+// GET /mediaserver/streamero/libraries
+func (s *Server) handleListStreameroLibrariesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listStreameroLibraries"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/mediaserver/streamero/libraries"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), ListStreameroLibrariesOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: ListStreameroLibrariesOperation,
+			ID:   "listStreameroLibraries",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, ListStreameroLibrariesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+
+	var response []StreameroLibrary
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    ListStreameroLibrariesOperation,
+			OperationSummary: "Streamero's libraries with the root folders that match them (administrators)",
+			OperationID:      "listStreameroLibraries",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = []StreameroLibrary
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.ListStreameroLibraries(ctx)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.ListStreameroLibraries(ctx)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeListStreameroLibrariesResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleListStreameroUsersRequest handles listStreameroUsers operation.
+//
+// Streamero accounts and the Locarr users they are linked to (administrators).
+//
+// GET /mediaserver/streamero/users
+func (s *Server) handleListStreameroUsersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listStreameroUsers"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/mediaserver/streamero/users"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), ListStreameroUsersOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: ListStreameroUsersOperation,
+			ID:   "listStreameroUsers",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, ListStreameroUsersOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+
+	var response []StreameroUser
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    ListStreameroUsersOperation,
+			OperationSummary: "Streamero accounts and the Locarr users they are linked to (administrators)",
+			OperationID:      "listStreameroUsers",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = []StreameroUser
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.ListStreameroUsers(ctx)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.ListStreameroUsers(ctx)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeListStreameroUsersResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleListSubtitleBlacklistRequest handles listSubtitleBlacklist operation.
 //
 // Subtitles rejected for an item (managers).
@@ -35368,6 +37534,181 @@ func (s *Server) handleLoginRequest(args [0]string, argsEscaped bool, w http.Res
 	}
 
 	if err := encodeLoginResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleLoginWithProviderRequest handles loginWithProvider operation.
+//
+// For `password` providers (Streamero): the username and password (and, when the service asks,
+// `totpCode`) are checked at the service and never stored (D-068). A linked account signs in its
+// Locarr user; an unknown one creates a requester only when the provider settings allow it, otherwise
+// 403 `identity_not_linked`. Errors: 401 `invalid_credentials`, 401 `totp_required` (the password was
+// right; send it again with `totpCode`), 401 `invalid_totp`, 404 `not_found` (unknown or disabled
+// provider), 503 `provider_unavailable`. Rate-limited and counted towards the sign-in ban like
+// `/auth/login`.
+//
+// POST /auth/providers/{id}/login
+func (s *Server) handleLoginWithProviderRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("loginWithProvider"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/auth/providers/{id}/login"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), LoginWithProviderOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: LoginWithProviderOperation,
+			ID:   "loginWithProvider",
+		}
+	)
+	params, err := decodeLoginWithProviderParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeLoginWithProviderRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *SignedInHeaders
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    LoginWithProviderOperation,
+			OperationSummary: "Sign in with another service's account",
+			OperationID:      "loginWithProvider",
+			Body:             request,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "id",
+					In:   "path",
+				}: params.ID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = *ProviderLoginRequest
+			Params   = LoginWithProviderParams
+			Response = *SignedInHeaders
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackLoginWithProviderParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.LoginWithProvider(ctx, request, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.LoginWithProvider(ctx, request, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeLoginWithProviderResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -49894,6 +52235,191 @@ func (s *Server) handleSyncIndexerSourceRequest(args [1]string, argsEscaped bool
 	}
 }
 
+// handleSyncStreameroRequest handles syncStreamero operation.
+//
+// Refresh the list of titles Streamero already has (administrators).
+//
+// POST /mediaserver/streamero/sync
+func (s *Server) handleSyncStreameroRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("syncStreamero"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/mediaserver/streamero/sync"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), SyncStreameroOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: SyncStreameroOperation,
+			ID:   "syncStreamero",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, SyncStreameroOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+
+	var response *SyncStreameroAccepted
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    SyncStreameroOperation,
+			OperationSummary: "Refresh the list of titles Streamero already has (administrators)",
+			OperationID:      "syncStreamero",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = *SyncStreameroAccepted
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				err = s.h.SyncStreamero(ctx)
+				return response, err
+			},
+		)
+	} else {
+		err = s.h.SyncStreamero(ctx)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeSyncStreameroResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleSyncSubtitleRequest handles syncSubtitle operation.
 //
 // Runs in the background; the subtitle's syncState becomes running, then done, not_confident or
@@ -50916,6 +53442,206 @@ func (s *Server) handleTestMigrateSourceRequest(args [0]string, argsEscaped bool
 	}
 }
 
+// handleTestNotificationChannelRequest handles testNotificationChannel operation.
+//
+// Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
+//
+// POST /notificationchannels/test
+func (s *Server) handleTestNotificationChannelRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("testNotificationChannel"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/notificationchannels/test"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), TestNotificationChannelOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: TestNotificationChannelOperation,
+			ID:   "testNotificationChannel",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, TestNotificationChannelOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeTestNotificationChannelRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *NotificationTestResult
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    TestNotificationChannelOperation,
+			OperationSummary: "Send a test message through a channel configuration",
+			OperationID:      "testNotificationChannel",
+			Body:             request,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = *NotificationChannelTestRequest
+			Params   = struct{}
+			Response = *NotificationTestResult
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.TestNotificationChannel(ctx, request)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.TestNotificationChannel(ctx, request)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeTestNotificationChannelResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleTestSavedMigrateSourceRequest handles testSavedMigrateSource operation.
 //
 // Test a saved source again (administrators).
@@ -51116,6 +53842,207 @@ func (s *Server) handleTestSavedMigrateSourceRequest(args [1]string, argsEscaped
 	}
 }
 
+// handleTestStreameroRequest handles testStreamero operation.
+//
+// Always 200 with the outcome. Without `apiKey` the stored key is used. `errorCode` is `unreachable`,
+// `auth_failed`, `not_admin`, `not_streamero`, `address_blocked` or `invalid`.
+//
+// POST /mediaserver/streamero/test
+func (s *Server) handleTestStreameroRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("testStreamero"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/mediaserver/streamero/test"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), TestStreameroOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: TestStreameroOperation,
+			ID:   "testStreamero",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, TestStreameroOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeTestStreameroRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *StreameroTestResult
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    TestStreameroOperation,
+			OperationSummary: "Check a Streamero address and key (administrators)",
+			OperationID:      "testStreamero",
+			Body:             request,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = *StreameroTestRequest
+			Params   = struct{}
+			Response = *StreameroTestResult
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.TestStreamero(ctx, request)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.TestStreamero(ctx, request)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeTestStreameroResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleTestSubtitleProviderRequest handles testSubtitleProvider operation.
 //
 // Check a provider's credentials and read its quota (administrators).
@@ -51308,6 +54235,410 @@ func (s *Server) handleTestSubtitleProviderRequest(args [1]string, argsEscaped b
 	}
 
 	if err := encodeTestSubtitleProviderResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleUnlinkMyIdentityRequest handles unlinkMyIdentity operation.
+//
+// Remove the caller's link to a provider.
+//
+// DELETE /auth/identities/{provider}
+func (s *Server) handleUnlinkMyIdentityRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("unlinkMyIdentity"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.HTTPRouteKey.String("/auth/identities/{provider}"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), UnlinkMyIdentityOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: UnlinkMyIdentityOperation,
+			ID:   "unlinkMyIdentity",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, UnlinkMyIdentityOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+	params, err := decodeUnlinkMyIdentityParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+
+	var response *UnlinkMyIdentityNoContent
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    UnlinkMyIdentityOperation,
+			OperationSummary: "Remove the caller's link to a provider",
+			OperationID:      "unlinkMyIdentity",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "provider",
+					In:   "path",
+				}: params.Provider,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = UnlinkMyIdentityParams
+			Response = *UnlinkMyIdentityNoContent
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackUnlinkMyIdentityParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				err = s.h.UnlinkMyIdentity(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		err = s.h.UnlinkMyIdentity(ctx, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeUnlinkMyIdentityResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleUnlinkUserIdentityRequest handles unlinkUserIdentity operation.
+//
+// Remove a user's link to a provider (administrators).
+//
+// DELETE /users/{id}/identities/{provider}
+func (s *Server) handleUnlinkUserIdentityRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("unlinkUserIdentity"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.HTTPRouteKey.String("/users/{id}/identities/{provider}"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), UnlinkUserIdentityOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: UnlinkUserIdentityOperation,
+			ID:   "unlinkUserIdentity",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, UnlinkUserIdentityOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+	params, err := decodeUnlinkUserIdentityParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+
+	var response *UnlinkUserIdentityNoContent
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    UnlinkUserIdentityOperation,
+			OperationSummary: "Remove a user's link to a provider (administrators)",
+			OperationID:      "unlinkUserIdentity",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "id",
+					In:   "path",
+				}: params.ID,
+				{
+					Name: "provider",
+					In:   "path",
+				}: params.Provider,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = UnlinkUserIdentityParams
+			Response = *UnlinkUserIdentityNoContent
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackUnlinkUserIdentityParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				err = s.h.UnlinkUserIdentity(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		err = s.h.UnlinkUserIdentity(ctx, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeUnlinkUserIdentityResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -54882,6 +58213,421 @@ func (s *Server) handleUpdateMusicSettingsRequest(args [0]string, argsEscaped bo
 	}
 }
 
+// handleUpdateNotificationChannelRequest handles updateNotificationChannel operation.
+//
+// Secrets left out are kept; "" removes one. `personal` cannot change.
+//
+// PUT /notificationchannels/{id}
+func (s *Server) handleUpdateNotificationChannelRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateNotificationChannel"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.HTTPRouteKey.String("/notificationchannels/{id}"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), UpdateNotificationChannelOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: UpdateNotificationChannelOperation,
+			ID:   "updateNotificationChannel",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, UpdateNotificationChannelOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+	params, err := decodeUpdateNotificationChannelParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeUpdateNotificationChannelRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *NotificationChannel
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    UpdateNotificationChannelOperation,
+			OperationSummary: "Change a channel",
+			OperationID:      "updateNotificationChannel",
+			Body:             request,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "id",
+					In:   "path",
+				}: params.ID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = *NotificationChannelInput
+			Params   = UpdateNotificationChannelParams
+			Response = *NotificationChannel
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackUpdateNotificationChannelParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.UpdateNotificationChannel(ctx, request, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.UpdateNotificationChannel(ctx, request, params)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeUpdateNotificationChannelResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleUpdateNotificationSettingsRequest handles updateNotificationSettings operation.
+//
+// Leave `smtp.password` out to keep it, "" to remove it.
+//
+// PUT /settings/notifications
+func (s *Server) handleUpdateNotificationSettingsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateNotificationSettings"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.HTTPRouteKey.String("/settings/notifications"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), UpdateNotificationSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: UpdateNotificationSettingsOperation,
+			ID:   "updateNotificationSettings",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, UpdateNotificationSettingsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeUpdateNotificationSettingsRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *NotificationSettings
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    UpdateNotificationSettingsOperation,
+			OperationSummary: "Change the address for links and the mail server (administrators)",
+			OperationID:      "updateNotificationSettings",
+			Body:             request,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = *NotificationSettingsInput
+			Params   = struct{}
+			Response = *NotificationSettings
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.UpdateNotificationSettings(ctx, request)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.UpdateNotificationSettings(ctx, request)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeUpdateNotificationSettingsResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleUpdateQualityDefinitionsRequest handles updateQualityDefinitions operation.
 //
 // All or nothing; returns every definition afterwards.
@@ -56769,6 +60515,206 @@ func (s *Server) handleUpdateSettingsRequest(args [0]string, argsEscaped bool, w
 	}
 
 	if err := encodeUpdateSettingsResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleUpdateStreameroSettingsRequest handles updateStreameroSettings operation.
+//
+// Leave `apiKey` out to keep it, send "" to remove it. The key is checked before it is stored.
+//
+// PUT /mediaserver/streamero
+func (s *Server) handleUpdateStreameroSettingsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateStreameroSettings"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.HTTPRouteKey.String("/mediaserver/streamero"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), UpdateStreameroSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: UpdateStreameroSettingsOperation,
+			ID:   "updateStreameroSettings",
+		}
+	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securitySessionToken(ctx, UpdateStreameroSettingsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "SessionToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:SessionToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeUpdateStreameroSettingsRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *StreameroSettings
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    UpdateStreameroSettingsOperation,
+			OperationSummary: "Change the Streamero connection (administrators)",
+			OperationID:      "updateStreameroSettings",
+			Body:             request,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = *StreameroSettingsInput
+			Params   = struct{}
+			Response = *StreameroSettings
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.UpdateStreameroSettings(ctx, request)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.UpdateStreameroSettings(ctx, request)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeUpdateStreameroSettingsResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)

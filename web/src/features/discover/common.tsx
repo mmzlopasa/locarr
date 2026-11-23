@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Disc3, Film, MicVocal, Tv, UserRound } from "lucide-react";
 import { imageUrl, type DiscoverItem, type DiscoverStatus } from "@/api/client";
 import { coverUrl } from "@/features/music/common";
+import { InStreameroBadge } from "@/features/mediaserver/streamero";
 
 type Tone = "neutral" | "success" | "danger" | "warning" | "info";
 
@@ -96,6 +97,7 @@ export function MediaCard({ item, width = "w-[132px] sm:w-[150px]" }: { item: Di
         <PosterImage item={item} className="border border-line shadow-[0_6px_24px_-12px_rgba(0,0,0,0.8)] transition-transform duration-200 group-hover:-translate-y-0.5 group-focus-visible:-translate-y-0.5" />
         <div className="absolute left-1.5 top-1.5 flex flex-col items-start gap-1">
           <AvailabilityBadge status={status} is4k={item.status === "none" && item.status4k !== "none"} testId="card-status" />
+          <InStreameroBadge url={item.streameroUrl} overlay testId="card-streamero" />
         </div>
         {item.mediaType !== "movie" && item.mediaType !== "series" ? (
           <span className="absolute bottom-1.5 right-1.5 rounded bg-black/70 px-1.5 text-[10px] uppercase tracking-wide text-muted">

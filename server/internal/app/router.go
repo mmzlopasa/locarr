@@ -50,7 +50,12 @@ func rateLimited(r *http.Request) bool {
 		"/api/v1/auth/invite", "/api/v1/auth/signup":
 		return true
 	}
-	return false
+	// Sign-in through a provider and linking one's own account carry the
+	// provider's password (D-063).
+	if strings.HasPrefix(r.URL.Path, "/api/v1/auth/providers/") && strings.HasSuffix(r.URL.Path, "/login") {
+		return true
+	}
+	return strings.HasPrefix(r.URL.Path, "/api/v1/auth/identities/")
 }
 
 // NewRouter builds the HTTP handler for a ready server.

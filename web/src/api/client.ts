@@ -182,6 +182,24 @@ export type IssueInput = Schemas["IssueInput"];
 export type NotificationType = Schemas["NotificationType"];
 export type AppNotification = Schemas["Notification"];
 export type NotificationList = Schemas["NotificationList"];
+export type LinkedIdentity = Schemas["LinkedIdentity"];
+export type PathMapping = Schemas["PathMapping"];
+export type StreameroLibraryMapping = Schemas["StreameroLibraryMapping"];
+export type StreameroSettings = Schemas["StreameroSettings"];
+export type StreameroSettingsInput = Schemas["StreameroSettingsInput"];
+export type StreameroLibrary = Schemas["StreameroLibrary"];
+export type StreameroTestResult = Schemas["StreameroTestResult"];
+export type StreameroUser = Schemas["StreameroUser"];
+export type NotificationChannelKind = Schemas["NotificationChannelKind"];
+export type NotificationEventType = Schemas["NotificationEventType"];
+export type NotificationChannel = Schemas["NotificationChannel"];
+export type NotificationChannelInput = Schemas["NotificationChannelInput"];
+export type NotificationChannelSettings = Schemas["NotificationChannelSettings"];
+export type NotificationChannelSecrets = Schemas["NotificationChannelSecrets"];
+export type NotificationTestResult = Schemas["NotificationTestResult"];
+export type NotificationSettings = Schemas["NotificationSettings"];
+export type NotificationSettingsInput = Schemas["NotificationSettingsInput"];
+export type SmtpSecurity = Schemas["SmtpSecurity"];
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -220,7 +238,8 @@ export function unwrap<T>(res: { data?: T; error?: unknown; response: Response }
 }
 
 /** Error codes that a 401 can carry without meaning "your session is gone". */
-const CREDENTIAL_CODES = new Set(["invalid_credentials", "totp_required", "invalid_totp", "bad_setup_code", "account_locked"]);
+const CREDENTIAL_CODES = new Set(["invalid_credentials", "totp_required", "invalid_totp", "bad_setup_code", "account_locked",
+  "identity_not_linked"]);
 
 /** Reports an error that means the caller is no longer signed in. */
 export function isSessionLost(err: unknown): boolean {
@@ -320,6 +339,13 @@ export const queryKeys = {
   notifications: ["notifications"] as const,
   invites: ["invites"] as const,
   userQuotas: (id: number) => ["users", id, "quotas"] as const,
+  authProviders: ["auth", "providers"] as const,
+  identities: ["auth", "identities"] as const,
+  streamero: ["mediaserver", "streamero"] as const,
+  streameroLibraries: ["mediaserver", "streamero", "libraries"] as const,
+  streameroUsers: ["mediaserver", "streamero", "users"] as const,
+  channels: (personal: boolean) => ["notificationchannels", personal ? "mine" : "shared"] as const,
+  notificationSettings: ["settings", "notifications"] as const,
 };
 
 /** URL of a cached TMDb image ("" when there is none). */

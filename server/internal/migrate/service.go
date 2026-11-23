@@ -20,6 +20,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library"
+	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 )
 
@@ -50,6 +51,8 @@ type Service struct {
 	Policy func(ctx context.Context) (httpx.Policy, error)
 	Log    *slog.Logger
 	Now    func() time.Time
+	// Hub tells the administrators' channels when an import ends (nil = nobody).
+	Hub *notify.Hub
 
 	mu    sync.Mutex
 	cache map[int64]*runCache
@@ -83,6 +86,19 @@ func (s *Service) policy(ctx context.Context) (httpx.Policy, error) {
 		return s.Policy(ctx)
 	}
 	return httpx.Policy{}, nil
+}
+
+// announce sends the end of a run to the shared notification channels (no
+// in-app recipients: only administrators configure those channels).
+func (s *Service) announce(ctx context.Context, id int64, typ notify.Type, msg string, params map[string]any) {
+	if s.Hub == nil {
+		return
+	}
+	if params == nil {
+		params = map[string]any{}
+	}
+	params["runId"] = id
+	s.Hub.Publish(context.WithoutCancel(ctx), notify.Event{Type: typ, Title: "Setup import", Message: msg, Params: params})
 }
 
 // ---- sources ----
@@ -553,6 +569,7 @@ func (s *Service) RunAnalyse(ctx context.Context, id int64) error {
 	fail := func(err error) error {
 		msg := err.Error()
 		s.setRun(ctx, id, "failed", &RunProgress{Phase: "failed", Message: msg}, nil, &msg, true)
+		s.announce(ctx, id, notify.MigrateFailed, msg, nil)
 		return jobs.Permanent(err)
 	}
 	pol, err := s.policy(ctx)
@@ -833,6 +850,7 @@ func (s *Service) RunApply(ctx context.Context, id int64) error {
 	if err != nil {
 		msg := err.Error()
 		s.setRun(ctx, id, "failed", &RunProgress{Phase: "failed", Message: msg}, nil, &msg, true)
+		s.announce(ctx, id, notify.MigrateFailed, msg, nil)
 		return jobs.Permanent(err)
 	}
 	s.setRun(ctx, id, "importing", &RunProgress{Phase: "importing", Total: len(p.plan.Items)}, nil, nil, false)
@@ -858,10 +876,14 @@ func (s *Service) RunApply(ctx context.Context, id int64) error {
 			status, msg = "cancelled", "cancelled"
 		}
 		s.setRun(ctx, id, status, &RunProgress{Phase: status, Message: msg}, &sum, &msg, true)
+		s.announce(ctx, id, notify.MigrateFailed, msg, nil)
 		return jobs.Permanent(err)
 	}
 	s.setRun(ctx, id, "done", &RunProgress{Phase: "done", Done: len(p.plan.Items), Total: len(p.plan.Items)}, &sum, nil, true)
 	s.log().Info("import finished", "run", id, "items", len(p.plan.Items), "took_ms", sum.DurationMS)
+	s.announce(ctx, id, notify.MigrateFinished, fmt.Sprintf("%d done, %d skipped, %d failed", sum.Statuses["done"], sum.Statuses["skipped"],
+		sum.Statuses["failed"]), map[string]any{"done": sum.Statuses["done"], "skipped": sum.Statuses["skipped"], "failed": sum.Statuses["failed"],
+		"attention": len(sum.Attention)})
 	if len(refs) > 0 && s.Jobs != nil {
 		if _, _, err := s.Jobs.Enqueue(context.WithoutCancel(ctx), TaskRefresh, refreshArgs{RunID: id, Refs: refs},
 			jobs.EnqueueOptions{UniqueKey: "migrate-refresh:" + strconv.FormatInt(id, 10), MaxAttempts: 1}); err != nil {
@@ -877,7 +899,7 @@ type refreshArgs struct {
 }
 
 // RunRefresh refreshes the metadata of what an import added, one item at a
-// time within the providers' rate limits (D-071).
+// time within the providers' rate limits (D-076).
 func (s *Service) RunRefresh(ctx context.Context, j *jobs.Job) error {
 	var a refreshArgs
 	if err := j.Decode(&a); err != nil {

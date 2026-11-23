@@ -1,6 +1,6 @@
 -- +goose Up
 -- P10: importing an existing setup from other applications through their
--- public APIs (D-003, D-067 … D-073). Nothing here is ever sent back to them.
+-- public APIs (D-003, D-072 … D-078). Nothing here is ever sent back to them.
 
 -- An application Locarr reads from. The API key (or the password for
 -- qBittorrent) is sealed with the secret box and never returned.

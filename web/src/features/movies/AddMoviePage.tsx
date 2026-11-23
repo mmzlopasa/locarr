@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { InStreameroBadge, WatchInStreamero } from "@/features/mediaserver/streamero";
 import { Search } from "lucide-react";
 import { api, queryKeys, unwrap, type MinimumAvailability, type MovieLookup } from "@/api/client";
 import { Alert, Button, Checkbox, ErrorAlert, PageHeader, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
@@ -141,7 +142,9 @@ export function AddMoviePage() {
                 </div>
                 {m.originalTitle && m.originalTitle !== m.title ? <p className="truncate text-[12px] text-faint">{m.originalTitle}</p> : null}
                 <p className="mt-1 line-clamp-3 text-[12px] text-muted">{m.overview}</p>
-                <div className="mt-auto pt-2">
+                <div className="mt-auto flex flex-wrap items-center gap-2 pt-2">
+                  <InStreameroBadge url={m.streameroUrl} testId={`lookup-streamero-${m.tmdbId}`} />
+                  <WatchInStreamero url={m.streameroUrl} size="sm" testId={`lookup-watch-${m.tmdbId}`} />
                   {m.movieId ? (
                     <Link to="/movies/$id" params={{ id: String(m.movieId) }} className="text-[13px] text-accent hover:underline">
                       {t("addMovie.inLibrary")}

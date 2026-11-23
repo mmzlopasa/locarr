@@ -20,7 +20,7 @@ func buildMigrate(d *Deps, cfg config.Config, log *slog.Logger) {
 	if d.Subtitles != nil {
 		l.Subtitles = migrate.SubtitlesAdapter{S: d.Subtitles}
 	}
-	d.Migrate = &migrate.Service{L: l, Jobs: d.Jobs, Log: log,
+	d.Migrate = &migrate.Service{L: l, Jobs: d.Jobs, Log: log, Hub: d.Hub,
 		// The applications live on the same network as the indexers: the
 		// administrator's outbound address policy applies to them too.
 		Policy: func(ctx context.Context) (httpx.Policy, error) { return d.Indexers.HTTPPolicy(ctx) }}

@@ -84,6 +84,9 @@ type Service struct {
 	URLs map[string]string
 	// UserAgent is "Locarr v<version>".
 	UserAgent string
+	// Notify is told about every timeline entry (P9 sends some of them to
+	// the notification channels); nil = nobody.
+	Notify func(ctx context.Context, ref, typ, msg string)
 	Now       func() time.Time
 
 	mu      sync.Mutex
@@ -114,5 +117,8 @@ func (s *Service) record(ctx context.Context, ref, typ, msg string, data any) {
 	}
 	if err := s.Timeline.Record(ctx, ref, typ, msg, data, nil); err != nil {
 		s.log().Warn("record subtitle event", "item", ref, "err", err)
+	}
+	if s.Notify != nil {
+		s.Notify(ctx, ref, typ, msg)
 	}
 }

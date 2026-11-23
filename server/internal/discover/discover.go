@@ -16,6 +16,7 @@ import (
 
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/requests"
@@ -64,6 +65,8 @@ type Item struct {
 	Status4K   Status
 	// RequestID is the caller's open request for it (0 = none).
 	RequestID int64
+	// StreameroURL links to the title in Streamero when it has it.
+	StreameroURL string
 }
 
 // Page is a page of items.
@@ -88,6 +91,13 @@ type Service struct {
 	MB       *musicbrainz.Client
 	Requests *requests.Service
 	Library  requests.Library
+	// Streamero marks titles Streamero already has (nil = none).
+	Streamero LinkSource
+}
+
+// LinkSource returns links to titles a media server has, by position.
+type LinkSource interface {
+	Links(ctx context.Context, titles []streamero.Title) (map[int]string, error)
 }
 
 // HomeLists are the provider rows of the home page, in order.
@@ -361,6 +371,21 @@ func (s *Service) Annotate(ctx context.Context, p auth.Principal, items []Item) 
 		items[i].Status = combine(lib[k], rs.status)
 		items[i].Status4K = combine(libState{}, rs.status4k)
 		items[i].RequestID = rs.mine
+	}
+	if s.Streamero != nil {
+		var titles []streamero.Title
+		var pos []int
+		for i := range items {
+			if (items[i].MediaType == Movie || items[i].MediaType == Series) && items[i].TMDbID > 0 {
+				titles = append(titles, streamero.Title{Kind: items[i].MediaType, TMDbID: items[i].TMDbID})
+				pos = append(pos, i)
+			}
+		}
+		if links, err := s.Streamero.Links(ctx, titles); err == nil {
+			for j, link := range links {
+				items[pos[j]].StreameroURL = link
+			}
+		}
 	}
 	return nil
 }

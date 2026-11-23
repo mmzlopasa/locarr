@@ -379,3 +379,7 @@ func ValidateAllowedHosts(hosts []string) error {
 	}
 	return nil
 }
+
+// Policy returns the outbound address policy from the settings (also used
+// for Streamero and the notification channels).
+func (s *Service) Policy(ctx context.Context) (httpx.Policy, error) { return s.policy(ctx) }

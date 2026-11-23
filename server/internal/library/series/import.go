@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"sort"
@@ -450,6 +451,9 @@ func (s *Service) notify(ctx context.Context, v *Series, eps []*Episode, action,
 	}
 	err := s.Notifier.Notify(ctx, mediaserver.Change{ItemRef: eps[0].Ref().String(), Kind: "episode", Action: action, Title: v.Title, Year: v.Year,
 		Paths: []string{path}, IDs: map[string]string{"tvdb": fmt.Sprint(v.TVDbID), "tmdb": fmt.Sprint(v.TMDbID), "imdb": v.IMDbID}})
+	if err == nil && mediaserver.RecordsOutcome(s.Notifier) {
+		return
+	}
 	msg := "notified " + s.Notifier.Name()
 	if err != nil {
 		msg = "could not notify " + s.Notifier.Name() + ": " + err.Error()
@@ -587,4 +591,15 @@ func firstPath(list []FileOutcome) string {
 		}
 	}
 	return ""
+}
+
+// notifyChange tells the media server about a change outside an import
+// (rename, delete); a failure is logged, never returned.
+func notifyChange(ctx context.Context, n mediaserver.Notifier, c mediaserver.Change) {
+	if n == nil || n.Name() == "" {
+		return
+	}
+	if err := n.Notify(ctx, c); err != nil {
+		slog.Default().Warn("notify media server", "item", c.ItemRef, "err", err)
+	}
 }

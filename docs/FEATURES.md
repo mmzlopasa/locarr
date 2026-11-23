@@ -76,18 +76,22 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Zahtjev za film, seriju (po sezonama, i buduće sezone), album i izvođača; 4K zahtjevi kao zasebna staza (D-054, D-055)
 - [x] Odobravanje (pojedinačno, skupno, uz izmjenu opcija), odbijanje s razlogom, automatsko odobravanje po korisniku i vrsti, kvote s iznimkama, komentari, prijave problema s traženjem zamjene (D-054, D-056)
 - [x] Lokalni korisnici i pozivnice za obitelj (rok, broj korištenja, uloga, dozvole, kvote; D-059)
-- [ ] Prijava korisnika preko Streamera (isti računi) — oblik rezerviran (D-058), izvodi se u P9
+- [x] Prijava korisnika preko Streamera (isti računi, 2FA, automatsko stvaranje tražitelja ili povezivanje; D-058, D-068)
 - [x] Obavijesti u aplikaciji: odobreno, odbijeno, dostupno, djelomično, zapelo, komentari, problemi; `GET /notifications?since=` za aplikacije (D-057)
 
 ## Media server i obavijesti (P9)
-- [ ] Streamero: osvježavanje biblioteke nakon uvoza, „već imaš" na otkrivanju, prijava korisnika
-- [ ] Obavijesti: webhook, ntfy, Gotify, Discord, Telegram, e-mail, Apprise-kompatibilno
+- [x] Streamero: veza (URL + API ključ, test, mapiranje putanja i biblioteka), skeniranje samo pogođene biblioteke nakon uvoza/nadogradnje/preimenovanja filma (skupljeno, s ponovnim pokušajima, na vremenskoj crti; D-067)
+- [x] Streamero: „U Streameru" i „Gledaj u Streameru" na Otkrivanju, stranicama naslova i u dodavanju (D-069)
+- [x] Streamero: prijava korisnika (D-068)
+- [x] Obavijesti: webhook (HMAC potpis), ntfy, Gotify, Discord, Telegram, Pushover, e-mail (SMTP), Apprise API; zajednički i osobni kanali, izbor događaja, Test, ponovni pokušaji, stanje neuspjeha (D-070)
+- [x] Obavijesti o biblioteci, titlovima i zdravlju sustava (D-071)
+- [ ] Streamero: obavijest pri brisanju i preimenovanju serija te brisanju glazbe (danas ih vidi Streamerov nadzor datoteka)
 
 ## Uvoz setupa (P10)
-- [x] Sonarr, Radarr, Lidarr: biblioteka (datoteke na mjestu, praćenje), profili kvalitete, definicije veličina, custom formati, profili izdanja i kašnjenja, root mape, oznake, imena, indexeri, download klijenti, mapiranja putanja, liste i isključenja (liste samo TMDb za filmove; Locarr nema popise za serije i glazbu), povijest i blokirana izdanja (D-067 – D-071)
-- [x] Prowlarr: indexeri (kao izvor ili pojedinačno, D-073); Bazarr: jezični profili, provideri i profil po naslovu; Seerr/Overseerr: korisnici s dozvolama, zahtjevi, problemi, kvote (korisnici i zahtjevi provjereni s lažnim Overseerrom, stvarni samo za verziju i kvote)
+- [x] Sonarr, Radarr, Lidarr: biblioteka (datoteke na mjestu, praćenje), profili kvalitete, definicije veličina, custom formati, profili izdanja i kašnjenja, root mape, oznake, imena, indexeri, download klijenti, mapiranja putanja, liste i isključenja (liste samo TMDb za filmove; Locarr nema popise za serije i glazbu), povijest i blokirana izdanja (D-072 – D-076)
+- [x] Prowlarr: indexeri (kao izvor ili pojedinačno, D-078); Bazarr: jezični profili, provideri i profil po naslovu; Seerr/Overseerr: korisnici s dozvolama, zahtjevi, problemi, kvote (korisnici i zahtjevi provjereni s lažnim Overseerrom)
 - [x] qBittorrent, SABnzbd: veza, kategorije, prijedlozi mapiranja putanja
-- [x] Pregled prije uvoza (stvori/spoji/preskoči s razlozima, sukobi), uvoz u pozadini s napretkom, izvještaj (JSON), popis za prelazak; izvori se nikad ne mijenjaju, ponovni uvoz ne duplicira (D-072)
+- [x] Pregled prije uvoza (stvori/spoji/preskoči s razlozima, sukobi), uvoz u pozadini s napretkom, izvještaj (JSON), popis za prelazak; izvori se nikad ne mijenjaju, ponovni uvoz ne duplicira (D-077)
 
 ## Vremenska crta i nadzor (P11)
 - [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)

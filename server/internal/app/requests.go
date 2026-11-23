@@ -33,6 +33,9 @@ type arrivals struct {
 
 func (a arrivals) Name() string { return a.next.Name() }
 
+// RecordsOutcome forwards the wrapped notifier's mediaserver.SelfRecording.
+func (a arrivals) RecordsOutcome() bool { return mediaserver.RecordsOutcome(a.next) }
+
 func (a arrivals) Notify(ctx context.Context, c mediaserver.Change) error {
 	err := a.next.Notify(ctx, c)
 	a.kick()
