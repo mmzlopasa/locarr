@@ -199,7 +199,7 @@ func (s *Service) ImportSeries(ctx context.Context, in Imported) ImportOutcome {
 		if err != nil {
 			return err
 		}
-		defer epStmt.Close()
+		defer func() { _ = epStmt.Close() }()
 		for _, e := range in.Episodes {
 			sid, err := ensure(e.Season)
 			if err != nil {

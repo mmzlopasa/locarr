@@ -460,7 +460,7 @@ func (s *Service) setRun(ctx context.Context, id int64, status string, prog *Run
 		sets, args = append(sets, "finished_at = ?"), append(args, db.Millis(s.now()))
 	}
 	args = append(args, id)
-	if _, err := s.L.DB.W.ExecContext(context.WithoutCancel(ctx), `UPDATE migrate_runs SET `+strings.Join(sets, ", ")+` WHERE id = ?`, args...); err != nil {
+	if _, err := s.L.DB.W.ExecContext(context.WithoutCancel(ctx), `UPDATE migrate_runs SET `+strings.Join(sets, ", ")+` WHERE id = ?`, args...); err != nil { // #nosec G202 -- constant column names
 		s.log().Warn("migrate run update", "run", id, "err", err)
 	}
 }
@@ -729,7 +729,7 @@ func (s *Service) storeItems(ctx context.Context, id int64, items []*Item) error
 		if err != nil {
 			return err
 		}
-		defer stmt.Close()
+		defer func() { _ = stmt.Close() }()
 		for _, it := range items {
 			conflict := ""
 			if it.Conflict != nil {
@@ -788,7 +788,7 @@ func (s *Service) Replan(ctx context.Context, id int64, mappings []PathMapping, 
 }
 
 // CheckPaths counts the files found with the given mappings (live check).
-func (s *Service) CheckPaths(ctx context.Context, id int64, mappings []PathMapping) ([]PathCheck, error) {
+func (s *Service) CheckPaths(_ context.Context, id int64, mappings []PathMapping) ([]PathCheck, error) {
 	c, err := s.cached(id)
 	if err != nil {
 		return nil, err
@@ -1004,7 +1004,7 @@ func (s *Service) Items(ctx context.Context, id int64, f ItemFilter) ([]Item, in
 		f.Limit = 100
 	}
 	rows, err := s.L.DB.R.QueryContext(ctx, `SELECT seq, key, source_id, category, name, action, reason, message, conflict, attention, status,
-		local_ref, error FROM migrate_items WHERE `+w+` ORDER BY seq LIMIT ? OFFSET ?`, append(args, f.Limit, max(f.Offset, 0))...)
+		local_ref, error FROM migrate_items WHERE `+w+` ORDER BY seq LIMIT ? OFFSET ?`, append(args, f.Limit, max(f.Offset, 0))...) // #nosec G202 -- constant fragments with placeholders
 	if err != nil {
 		return nil, 0, err
 	}

@@ -52,7 +52,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if s.Kind == "qbittorrent" && p == "/api/v2/auth/login" && r.Method == http.MethodPost {
 		_ = r.ParseForm()
 		if r.PostForm.Get("username") == s.Username && r.PostForm.Get("password") == s.Password {
-			http.SetCookie(w, &http.Cookie{Name: "SID", Value: "fake-session", Path: "/"})
+			http.SetCookie(w, &http.Cookie{Name: "SID", Value: "fake-session", Path: "/", HttpOnly: true, SameSite: http.SameSiteStrictMode}) // #nosec G124 -- a test fake on plain HTTP
 			_, _ = w.Write([]byte("Ok."))
 			return
 		}
@@ -296,7 +296,7 @@ func sortedKeys(m map[int64]string) []int64 {
 	return out
 }
 
-func (s *Server) bazarr(r *http.Request, p string) (any, bool) {
+func (s *Server) bazarr(_ *http.Request, p string) (any, bool) {
 	lib := s.Lib
 	switch p {
 	case "/api/system/status":

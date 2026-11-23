@@ -3,6 +3,7 @@ package migrate
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -45,7 +46,8 @@ func apiBase(k Kind) string {
 func arrDetect(ctx context.Context, c *client) (arrStatus, error) {
 	var st arrStatus
 	if err := c.get(ctx, apiBase(c.conn.Kind)+"/system/status", nil, &st); err != nil {
-		if se, ok := err.(*SourceError); ok && se.Code == "not_found" {
+		var se *SourceError
+		if errors.As(err, &se) && se.Code == "not_found" {
 			return st, &SourceError{Code: "unsupported_version", Message: fmt.Sprintf("this does not look like %s v%s or later (no %s API)",
 				c.conn.Kind.Label(), minVersion[c.conn.Kind], apiBase(c.conn.Kind))}
 		}
@@ -66,15 +68,15 @@ var minVersion = map[Kind]string{Sonarr: "3", Radarr: "3", Lidarr: "1", Prowlarr
 	QBittorrent: "4.1", SABnzbd: "3"}
 
 // versionAtLeast compares dotted versions numerically ("4.0.10" ≥ "4").
-func versionAtLeast(v, min string) bool {
-	if min == "" {
+func versionAtLeast(v, minimum string) bool {
+	if minimum == "" {
 		return true
 	}
 	v = strings.TrimPrefix(strings.TrimSpace(v), "v")
 	if v == "" {
 		return true // unknown: let it try
 	}
-	a, b := strings.Split(v, "."), strings.Split(min, ".")
+	a, b := strings.Split(v, "."), strings.Split(minimum, ".")
 	for i := range b {
 		var x, y int
 		if i < len(a) {

@@ -188,10 +188,10 @@ func (v Series) SeriesFolder() string { return v.Title }
 // (to test missing files).
 func (lib *Library) WriteFiles(movieRoot, seriesRoot, musicRoot string, skip map[string]bool) error {
 	write := func(p string) error {
-		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(p), 0o750); err != nil {
 			return err
 		}
-		return os.WriteFile(p, []byte("fake media "+filepath.Base(p)), 0o644)
+		return os.WriteFile(p, []byte("fake media "+filepath.Base(p)), 0o600)
 	}
 	for _, m := range lib.Movies {
 		if m.File == "" {

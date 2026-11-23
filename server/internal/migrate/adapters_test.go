@@ -2,6 +2,7 @@ package migrate
 
 import (
 	"context"
+	"errors"
 	"net/http/httptest"
 	"net/netip"
 	"testing"
@@ -129,23 +130,23 @@ func TestDetectRefusals(t *testing.T) {
 	_, c := startFake(t, "radarr", lib)
 	bad := c
 	bad.APIKey = "wrong"
-	if _, err := Detect(ctx, bad, loopback); err == nil || err.(*SourceError).Code != "unauthorized" {
+	if _, err := Detect(ctx, bad, loopback); err == nil || code(err) != "unauthorized" {
 		t.Fatalf("wrong key: %v", err)
 	}
 	wrong := c
 	wrong.Kind = Sonarr
 	wrong.APIKey = "key-radarr"
-	if _, err := Detect(ctx, wrong, loopback); err == nil || err.(*SourceError).Code != "wrong_app" {
+	if _, err := Detect(ctx, wrong, loopback); err == nil || code(err) != "wrong_app" {
 		t.Fatalf("wrong app: %v", err)
 	}
 	f, c3 := startFake(t, "sonarr", lib)
 	f.Version = "2.0.0.5344"
-	if _, err := Detect(ctx, c3, loopback); err == nil || err.(*SourceError).Code != "unsupported_version" {
+	if _, err := Detect(ctx, c3, loopback); err == nil || code(err) != "unsupported_version" {
 		t.Fatalf("old version: %v", err)
 	}
 	_, q := startFake(t, "qbittorrent", lib)
 	q.Password = "nope"
-	if _, err := Detect(ctx, q, loopback); err == nil || err.(*SourceError).Code != "unauthorized" {
+	if _, err := Detect(ctx, q, loopback); err == nil || code(err) != "unauthorized" {
 		t.Fatalf("qbit password: %v", err)
 	}
 	// The loopback address is refused unless allowed (the indexer policy).
@@ -170,4 +171,12 @@ func TestSonarrV3LanguageProfiles(t *testing.T) {
 	if len(conv.Profile.Languages) != 2 || conv.Profile.Languages[1] != "hr" {
 		t.Fatalf("languages %+v", conv.Profile.Languages)
 	}
+}
+
+func code(err error) string {
+	var se *SourceError
+	if errors.As(err, &se) {
+		return se.Code
+	}
+	return ""
 }

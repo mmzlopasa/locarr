@@ -46,12 +46,12 @@ func (p *planner) loadIndex(ctx context.Context) (*localIndex, error) {
 		var id, tmdb int64
 		var has bool
 		if err := rows.Scan(&id, &tmdb, &has); err != nil {
-			rows.Close()
+			_ = rows.Close()
 			return nil, err
 		}
 		ix.movies[tmdb] = localItem{id, has}
 	}
-	rows.Close()
+	_ = rows.Close()
 	rows, err = p.l.DB.R.QueryContext(ctx, `SELECT item_id, tvdb_id, tmdb_id FROM series`)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (p *planner) loadIndex(ctx context.Context) (*localIndex, error) {
 	for rows.Next() {
 		var id, tvdb, tmdb int64
 		if err := rows.Scan(&id, &tvdb, &tmdb); err != nil {
-			rows.Close()
+			_ = rows.Close()
 			return nil, err
 		}
 		if tvdb > 0 {
@@ -69,7 +69,7 @@ func (p *planner) loadIndex(ctx context.Context) (*localIndex, error) {
 			ix.seriesT[tmdb] = localItem{id: id}
 		}
 	}
-	rows.Close()
+	_ = rows.Close()
 	rows, err = p.l.DB.R.QueryContext(ctx, `SELECT item_id, mbid FROM artists`)
 	if err != nil {
 		return nil, err

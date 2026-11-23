@@ -74,7 +74,6 @@ func ints(f map[string]any, k string) []int {
 // ---- naming ----
 
 type namingSetting struct {
-	key    string
 	tokens []naming.Token
 	set    func(ctx context.Context, s *settings.Store, v string) error
 }

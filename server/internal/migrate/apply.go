@@ -2,7 +2,6 @@ package migrate
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -106,5 +105,3 @@ func (p *planner) writeLink(ctx context.Context, it *Item, runID int64) {
 // Refresh lists the library items the apply created (their metadata is
 // refreshed later, in the background).
 func (p *planner) Refresh() []string { return append([]string(nil), p.refresh...) }
-
-var errCancelled = errors.New("cancelled")

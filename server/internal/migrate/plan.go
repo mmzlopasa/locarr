@@ -221,7 +221,6 @@ type planner struct {
 	plannedRoots  map[string]string // local path → kind
 	profiles      []quality.Profile
 	formats       []customformats.Format
-	formatsByName map[string]plannedName
 	metaProfiles  []music.MetadataProfile
 	users         []auth.User
 	indexerList   []indexers.Indexer
@@ -522,7 +521,7 @@ func (p *planner) rootKind(k Kind) string {
 }
 
 func (p *planner) planRootFolders(s *Snapshot, so SourceOptions) {
-	if !isArr(s.Kind) || !(so.Settings || so.Library) {
+	if !isArr(s.Kind) || (!so.Settings && !so.Library) {
 		return
 	}
 	kind := p.rootKind(s.Kind)
@@ -1019,7 +1018,7 @@ func (p *planner) planDelayProfiles(s *Snapshot, so SourceOptions) {
 			}
 			return false
 		}
-		byName := func(n string) (int64, bool) {
+		byName := func(string) (int64, bool) {
 			for _, x := range local {
 				if isDefault && x.Default {
 					return x.ID, true
