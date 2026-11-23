@@ -77,3 +77,24 @@ func TestDiskHelpers(t *testing.T) {
 		t.Fatal("write test left a file")
 	}
 }
+
+func TestCheckWritableReasons(t *testing.T) {
+	dir := t.TempDir()
+	if p := CheckWritable(dir); p != nil {
+		t.Fatalf("writable dir: %+v", p)
+	}
+	if p := CheckWritable(filepath.Join(dir, "missing")); p == nil || p.Reason != "not_found" {
+		t.Fatalf("missing: %+v", p)
+	}
+	if os.Geteuid() == 0 {
+		t.Skip("root can write anywhere")
+	}
+	ro := filepath.Join(dir, "ro")
+	if err := os.Mkdir(ro, 0o500); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chmod(ro, 0o700) })
+	if p := CheckWritable(ro); p == nil || p.Reason != "permission_denied" || p.Detail == "" {
+		t.Fatalf("read-only folder: %+v", p)
+	}
+}

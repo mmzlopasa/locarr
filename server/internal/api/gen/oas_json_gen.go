@@ -44100,6 +44100,39 @@ func (s *OptRole) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes RootFolderNotWritableReason as json.
+func (o OptRootFolderNotWritableReason) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes RootFolderNotWritableReason from json.
+func (o *OptRootFolderNotWritableReason) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptRootFolderNotWritableReason to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptRootFolderNotWritableReason) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptRootFolderNotWritableReason) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes SearchType as json.
 func (o OptSearchType) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -55068,6 +55101,18 @@ func (s *RootFolder) encodeFields(e *jx.Encoder) {
 		e.Bool(s.Writable)
 	}
 	{
+		if s.NotWritableReason.Set {
+			e.FieldStart("notWritableReason")
+			s.NotWritableReason.Encode(e)
+		}
+	}
+	{
+		if s.NotWritableDetail.Set {
+			e.FieldStart("notWritableDetail")
+			s.NotWritableDetail.Encode(e)
+		}
+	}
+	{
 		if s.FreeSpaceBytes.Set {
 			e.FieldStart("freeSpaceBytes")
 			s.FreeSpaceBytes.Encode(e)
@@ -55085,15 +55130,17 @@ func (s *RootFolder) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfRootFolder = [8]string{
+var jsonFieldsNameOfRootFolder = [10]string{
 	0: "id",
 	1: "path",
 	2: "kind",
 	3: "accessible",
 	4: "writable",
-	5: "freeSpaceBytes",
-	6: "totalSpaceBytes",
-	7: "createdAt",
+	5: "notWritableReason",
+	6: "notWritableDetail",
+	7: "freeSpaceBytes",
+	8: "totalSpaceBytes",
+	9: "createdAt",
 }
 
 // Decode decodes RootFolder from json.
@@ -55101,7 +55148,7 @@ func (s *RootFolder) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode RootFolder to nil")
 	}
-	var requiredBitSet [1]uint8
+	var requiredBitSet [2]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -55163,6 +55210,26 @@ func (s *RootFolder) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"writable\"")
 			}
+		case "notWritableReason":
+			if err := func() error {
+				s.NotWritableReason.Reset()
+				if err := s.NotWritableReason.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"notWritableReason\"")
+			}
+		case "notWritableDetail":
+			if err := func() error {
+				s.NotWritableDetail.Reset()
+				if err := s.NotWritableDetail.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"notWritableDetail\"")
+			}
 		case "freeSpaceBytes":
 			if err := func() error {
 				s.FreeSpaceBytes.Reset()
@@ -55184,7 +55251,7 @@ func (s *RootFolder) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"totalSpaceBytes\"")
 			}
 		case "createdAt":
-			requiredBitSet[0] |= 1 << 7
+			requiredBitSet[1] |= 1 << 1
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -55204,8 +55271,9 @@ func (s *RootFolder) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b10011111,
+	for i, mask := range [2]uint8{
+		0b00011111,
+		0b00000010,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -55247,6 +55315,50 @@ func (s *RootFolder) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *RootFolder) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RootFolderNotWritableReason as json.
+func (s RootFolderNotWritableReason) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes RootFolderNotWritableReason from json.
+func (s *RootFolderNotWritableReason) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RootFolderNotWritableReason to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch RootFolderNotWritableReason(v) {
+	case RootFolderNotWritableReasonPermissionDenied:
+		*s = RootFolderNotWritableReasonPermissionDenied
+	case RootFolderNotWritableReasonReadOnlyFilesystem:
+		*s = RootFolderNotWritableReasonReadOnlyFilesystem
+	case RootFolderNotWritableReasonNotFound:
+		*s = RootFolderNotWritableReasonNotFound
+	case RootFolderNotWritableReasonOther:
+		*s = RootFolderNotWritableReasonOther
+	default:
+		*s = RootFolderNotWritableReason(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s RootFolderNotWritableReason) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RootFolderNotWritableReason) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

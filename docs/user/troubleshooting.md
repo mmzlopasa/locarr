@@ -113,11 +113,23 @@ Mapa za medije ne postoji ili se ne može čitati — najčešće disk nije mont
 `docker-compose.yml` promijenjen. Provjeri `volumes:` i pokreni ponovno. Ako još nemaš root mapa,
 dodaj ih u **Postavke → Mape za medije** (ili u čarobnjaku za prvo pokretanje).
 
+Locarr vidi mape onako kako su montirane u **njegov kontejner**, pod `/data`. Uz
+`- /mnt/media:/data` u `docker-compose.yml` mapa hosta `/mnt/media/movies` u Locarru je
+`/data/movies`. Upiši tu putanju (ili je odaberi gumbom **Pregledaj**), ne putanju na hostu;
+inače dobiješ „mapa je izvan dopuštenih podatkovnih mapa".
+
 <a id="permissions"></a>
 ### Nema prava pisanja (`rootfolder_unwritable`, „permission denied")
 Locarr radi kao korisnik `PUID:PGID` (zadano 1000:1000) i mora moći pisati u root mape i čitati
-preuzimanja. Na hostu: `sudo chown -R 1000:1000 /putanja/do/medija` ili postavi `PUID`/`PGID` na
-vlasnika mapa. Isti korisnik (ili grupa s `UMASK=002`) treba biti i u download klijentu.
+preuzimanja. Uz oznaku **Samo za čitanje** Locarr piše i razlog:
+- **nema dopuštenja** (`permission denied`): mapa pripada drugom korisniku. Na hostu
+  `sudo chown -R 1000:1000 /putanja/do/medija` ili postavi `PUID`/`PGID` na vlasnika mapa. Isti
+  korisnik (ili grupa s `UMASK=002`) treba biti i u download klijentu.
+- **disk samo za čitanje** (`read-only file system`): mount je samo za čitanje — npr. NFS dijeljenje
+  montirano s `ro` (u `/etc/fstab` promijeni u `rw`, a na NFS poslužitelju u `/etc/exports` dopusti
+  pisanje, uz `all_squash,anonuid=1000,anongid=1000` ili vlasnika koji odgovara `PUID`-u) ili
+  `:ro` na kraju retka u `volumes:` u `docker-compose.yml`.
+- **ne postoji**: mapa je nestala (disk odspojen).
 
 <a id="disk-space"></a>
 ### Malo prostora u root mapi (`rootfolder_low_space`)

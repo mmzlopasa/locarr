@@ -6383,6 +6383,13 @@ components:
           description: The folder exists and can be listed.
         writable:
           type: boolean
+        notWritableReason:
+          type: string
+          enum: [permission_denied, read_only_filesystem, not_found, other]
+          description: Why the write test failed (absent when writable).
+        notWritableDetail:
+          type: string
+          description: The error of the write test, as the system reported it.
         freeSpaceBytes:
           type: integer
           format: int64

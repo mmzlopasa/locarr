@@ -38,8 +38,10 @@ type Folder struct {
 	Kind       string
 	Accessible bool
 	Writable   bool
-	Space      *lfs.Space
-	CreatedAt  time.Time
+	// WriteProblem says why it is not writable (nil when it is).
+	WriteProblem *lfs.WriteProblem
+	Space        *lfs.Space
+	CreatedAt    time.Time
 }
 
 // Service manages root folders inside the allowed data roots.
@@ -61,7 +63,8 @@ func inspect(f *Folder) {
 	if !f.Accessible {
 		return
 	}
-	f.Writable = lfs.Writable(f.Path)
+	f.WriteProblem = lfs.CheckWritable(f.Path)
+	f.Writable = f.WriteProblem == nil
 	if sp, err := lfs.DiskSpace(f.Path); err == nil {
 		f.Space = &sp
 	}

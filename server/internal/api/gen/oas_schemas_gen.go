@@ -23603,6 +23603,52 @@ func (o OptRole) Or(d Role) Role {
 	return d
 }
 
+// NewOptRootFolderNotWritableReason returns new OptRootFolderNotWritableReason with value set to v.
+func NewOptRootFolderNotWritableReason(v RootFolderNotWritableReason) OptRootFolderNotWritableReason {
+	return OptRootFolderNotWritableReason{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRootFolderNotWritableReason is optional RootFolderNotWritableReason.
+type OptRootFolderNotWritableReason struct {
+	Value RootFolderNotWritableReason
+	Set   bool
+}
+
+// IsSet returns true if OptRootFolderNotWritableReason was set.
+func (o OptRootFolderNotWritableReason) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRootFolderNotWritableReason) Reset() {
+	var v RootFolderNotWritableReason
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRootFolderNotWritableReason) SetTo(v RootFolderNotWritableReason) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRootFolderNotWritableReason) Get() (v RootFolderNotWritableReason, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRootFolderNotWritableReason) Or(d RootFolderNotWritableReason) RootFolderNotWritableReason {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptSearchType returns new OptSearchType with value set to v.
 func NewOptSearchType(v SearchType) OptSearchType {
 	return OptSearchType{
@@ -28745,11 +28791,15 @@ type RootFolder struct {
 	Path string    `json:"path"`
 	Kind MediaKind `json:"kind"`
 	// The folder exists and can be listed.
-	Accessible      bool      `json:"accessible"`
-	Writable        bool      `json:"writable"`
-	FreeSpaceBytes  OptInt64  `json:"freeSpaceBytes"`
-	TotalSpaceBytes OptInt64  `json:"totalSpaceBytes"`
-	CreatedAt       time.Time `json:"createdAt"`
+	Accessible bool `json:"accessible"`
+	Writable   bool `json:"writable"`
+	// Why the write test failed (absent when writable).
+	NotWritableReason OptRootFolderNotWritableReason `json:"notWritableReason"`
+	// The error of the write test, as the system reported it.
+	NotWritableDetail OptString `json:"notWritableDetail"`
+	FreeSpaceBytes    OptInt64  `json:"freeSpaceBytes"`
+	TotalSpaceBytes   OptInt64  `json:"totalSpaceBytes"`
+	CreatedAt         time.Time `json:"createdAt"`
 }
 
 // GetID returns the value of ID.
@@ -28775,6 +28825,16 @@ func (s *RootFolder) GetAccessible() bool {
 // GetWritable returns the value of Writable.
 func (s *RootFolder) GetWritable() bool {
 	return s.Writable
+}
+
+// GetNotWritableReason returns the value of NotWritableReason.
+func (s *RootFolder) GetNotWritableReason() OptRootFolderNotWritableReason {
+	return s.NotWritableReason
+}
+
+// GetNotWritableDetail returns the value of NotWritableDetail.
+func (s *RootFolder) GetNotWritableDetail() OptString {
+	return s.NotWritableDetail
 }
 
 // GetFreeSpaceBytes returns the value of FreeSpaceBytes.
@@ -28817,6 +28877,16 @@ func (s *RootFolder) SetWritable(val bool) {
 	s.Writable = val
 }
 
+// SetNotWritableReason sets the value of NotWritableReason.
+func (s *RootFolder) SetNotWritableReason(val OptRootFolderNotWritableReason) {
+	s.NotWritableReason = val
+}
+
+// SetNotWritableDetail sets the value of NotWritableDetail.
+func (s *RootFolder) SetNotWritableDetail(val OptString) {
+	s.NotWritableDetail = val
+}
+
 // SetFreeSpaceBytes sets the value of FreeSpaceBytes.
 func (s *RootFolder) SetFreeSpaceBytes(val OptInt64) {
 	s.FreeSpaceBytes = val
@@ -28830,6 +28900,62 @@ func (s *RootFolder) SetTotalSpaceBytes(val OptInt64) {
 // SetCreatedAt sets the value of CreatedAt.
 func (s *RootFolder) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
+}
+
+// Why the write test failed (absent when writable).
+type RootFolderNotWritableReason string
+
+const (
+	RootFolderNotWritableReasonPermissionDenied   RootFolderNotWritableReason = "permission_denied"
+	RootFolderNotWritableReasonReadOnlyFilesystem RootFolderNotWritableReason = "read_only_filesystem"
+	RootFolderNotWritableReasonNotFound           RootFolderNotWritableReason = "not_found"
+	RootFolderNotWritableReasonOther              RootFolderNotWritableReason = "other"
+)
+
+// AllValues returns all RootFolderNotWritableReason values.
+func (RootFolderNotWritableReason) AllValues() []RootFolderNotWritableReason {
+	return []RootFolderNotWritableReason{
+		RootFolderNotWritableReasonPermissionDenied,
+		RootFolderNotWritableReasonReadOnlyFilesystem,
+		RootFolderNotWritableReasonNotFound,
+		RootFolderNotWritableReasonOther,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s RootFolderNotWritableReason) MarshalText() ([]byte, error) {
+	switch s {
+	case RootFolderNotWritableReasonPermissionDenied:
+		return []byte(s), nil
+	case RootFolderNotWritableReasonReadOnlyFilesystem:
+		return []byte(s), nil
+	case RootFolderNotWritableReasonNotFound:
+		return []byte(s), nil
+	case RootFolderNotWritableReasonOther:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *RootFolderNotWritableReason) UnmarshalText(data []byte) error {
+	switch RootFolderNotWritableReason(data) {
+	case RootFolderNotWritableReasonPermissionDenied:
+		*s = RootFolderNotWritableReasonPermissionDenied
+		return nil
+	case RootFolderNotWritableReasonReadOnlyFilesystem:
+		*s = RootFolderNotWritableReasonReadOnlyFilesystem
+		return nil
+	case RootFolderNotWritableReasonNotFound:
+		*s = RootFolderNotWritableReasonNotFound
+		return nil
+	case RootFolderNotWritableReasonOther:
+		*s = RootFolderNotWritableReasonOther
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/ScheduledTask

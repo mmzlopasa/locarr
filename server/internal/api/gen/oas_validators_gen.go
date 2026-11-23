@@ -14888,10 +14888,43 @@ func (s *RootFolder) Validate() error {
 			Error: err,
 		})
 	}
+	if err := func() error {
+		if value, ok := s.NotWritableReason.Get(); ok {
+			if err := func() error {
+				if err := value.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "notWritableReason",
+			Error: err,
+		})
+	}
 	if len(failures) > 0 {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
+}
+
+func (s RootFolderNotWritableReason) Validate() error {
+	switch s {
+	case "permission_denied":
+		return nil
+	case "read_only_filesystem":
+		return nil
+	case "not_found":
+		return nil
+	case "other":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
 }
 
 func (s *ScheduledTask) Validate() error {

@@ -256,6 +256,9 @@ func (d *Deps) checkRootFolders(ctx context.Context) ([]Issue, error) {
 			out = append(out, Issue{Key: "rootfolder:" + id, Severity: SeverityError, Code: "rootfolder_missing", Params: p,
 				Message: "root folder " + f.Path + " is missing or cannot be read", Docs: "root-folders", FixRoute: "/settings/media"})
 		case !f.Writable:
+			if f.WriteProblem != nil {
+				p["reason"], p["detail"] = f.WriteProblem.Reason, f.WriteProblem.Detail
+			}
 			out = append(out, Issue{Key: "rootfolder:" + id, Severity: SeverityError, Code: "rootfolder_unwritable", Params: p,
 				Message: "Locarr cannot write to root folder " + f.Path, Docs: "permissions", FixRoute: "/settings/media"})
 		case f.Space != nil && minFree > 0 && f.Space.Free < gb(minFree):

@@ -4719,6 +4719,13 @@ export interface components {
             /** @description The folder exists and can be listed. */
             accessible: boolean;
             writable: boolean;
+            /**
+             * @description Why the write test failed (absent when writable).
+             * @enum {string}
+             */
+            notWritableReason?: "permission_denied" | "read_only_filesystem" | "not_found" | "other";
+            /** @description The error of the write test, as the system reported it. */
+            notWritableDetail?: string;
             /** Format: int64 */
             freeSpaceBytes?: number;
             /** Format: int64 */
@@ -8176,7 +8183,7 @@ export interface components {
             name: string;
             grabs: number;
             imported: number;
-            /** @description Failed downloads and downloads removed without an import. */
+            /** @description Downloads that failed in the client or were given up as stalled. */
             failed: number;
             inProgress: number;
             /** @description imported / (imported + failed); absent when nothing finished. */
