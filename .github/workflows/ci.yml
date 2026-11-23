@@ -93,6 +93,16 @@ jobs:
           LOCARR_SOURCES_TMP: ${{ runner.temp }}
         run: ./scripts/test-sources.sh sonarr radarr qbittorrent
 
+  streamero:
+    # A real Streamero uses Locarr's Seerr/Radarr/Sonarr compatible routes
+    # for discover, requests and upcoming releases (D-079).
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Discover and requests from a real Streamero
+        run: ./scripts/test-streamero-compat.sh
+
   e2e:
     runs-on: ubuntu-latest
     needs: [server, web]

@@ -225,7 +225,7 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 
 // ServeWith is Serve with the log sinks the log viewer reads (nil = none).
 //
-// Restoring a backup restarts the services in this process (D-083): the
+// Restoring a backup restarts the services in this process (D-084): the
 // listener stays open and answers "starting" while the jobs and background
 // work stop, the database closes, the staged backup replaces it and
 // everything starts again.

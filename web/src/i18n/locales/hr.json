@@ -2544,7 +2544,18 @@
     "pending": "Promjene na čekanju",
     "indexError": "Zadnje osvježavanje nije uspjelo: {{message}}",
     "scanError": "Zadnji zahtjev za skeniranje nije uspio: {{message}}",
-    "syncQueued": "Osvježavanje je u redu čekanja."
+    "syncQueued": "Osvježavanje je u redu čekanja.",
+    "compat": {
+      "title": "Otkrivanje u Streameru",
+      "intro": "Streamero može tražiti naslove, slati zahtjeve i prikazivati nadolazeća izdanja preko Locarra: Locarr mu služi kao Seerr, Radarr i Sonarr. U Streameru otvorite Postavke → Zahtjevi i upišite ove adrese i Locarr API ključ.",
+      "seerrUrl": "Adresa Seerra",
+      "radarrUrl": "Adresa Radarra",
+      "sonarrUrl": "Adresa Sonarra",
+      "hostHint": "Adrese koriste adresu na kojoj ste otvorili Locarr. Ako je Streamero u istoj Docker mreži, upišite ime kontejnera, npr. http://locarr:8484/compat/seerr.",
+      "keyHint": "U sva tri polja za ključ upišite Locarr API ključ. Zahtjevi idu u ime vlasnika ključa, pa ih ključ administratora odobrava automatski. Ako želite sami odobravati i imati kvote, u polje za Seerr upišite ključ korisnika tražitelja (npr. „streamero”), a u polja za Radarr i Sonarr ključ administratora samo za čitanje.",
+      "createKey": "Napravi ključ za Streamero",
+      "oneUser": "Svaki zahtjev iz Streamera u Locarru je zapisan kao zahtjev vlasnika ključa, bez obzira tko ga je kliknuo u Streameru."
+    }
   },
   "notificationSettings": {
     "title": "Obavijesti",

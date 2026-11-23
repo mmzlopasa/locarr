@@ -5,18 +5,27 @@ P0–P11 gotovi.
 
 ## Gotovo u P11 (branch `phase/P11-operations`)
 - Migracija `00012_operations.sql`: `board_items` (unaprijed izračunati odgovori ploče) i indeksi za povijest, statistiku i najnoviju odluku po stavci.
-- `internal/board` (D-079): ploča „Zašto nije stiglo?" za filmove, emitirane epizode, izdane albume i titlove; potpuni izračun (`board-rebuild` pri pokretanju i svakih 15 min) i osvježavanje pojedinih stavki ~2 s nakon zapisa na vremensku crtu ili događaja preuzimanja; novi kodovi `stalled`, `path_not_visible`, `subtitle_*`; `fix` po grupi; zbrojeni razlozi odbijanja; skupne radnje (pretraži, promijeni profil, blokiraj i ponovi, ponovi uvoz, prestani pratiti).
-- `internal/history` (D-080): povijest cijele biblioteke iz vremenske crte i događaja preuzimanja (filtri, pretraga, straničenje), statistika po indexeru i klijentu.
-- `internal/health` (D-081): provjere s kodovima, sidrima u dokumentaciji i stranicom popravka; `health.warning` jednom po pojavi problema (zamjenjuje `health-notify` iz P9); provjera verzije na GitHubu i pomaka sata (isključivo); `metadata.Health` bilježi ishod zahtjeva TMDb/TVDB/MusicBrainz.
-- `internal/logging` (D-082): `/config/logs` s rotacijom (10 MB × 6), prsten od 5000 zapisa, SSE uživo, maskiranje tajni i u vrijednostima.
-- `internal/backup` (D-083): zip s `VACUUM INTO` snimkom, ključem, postavkama i manifestom; zakazano (24 h, čuva 7), ručno, učitavanje; vraćanje s provjerom, kopijom prije vraćanja, restartom u istom procesu (`app.ServeWith` petlja) i odjavom svih osim vraćača.
-- `internal/stats`, `internal/housekeeping` (D-084): `/api/stats` (+ `/api/v1/system/stats`), `/metrics` uz token, zadržavanje povijesti, tjedni `VACUUM`, ograničenje predmemorije slika.
+- `internal/board` (D-080): ploča „Zašto nije stiglo?" za filmove, emitirane epizode, izdane albume i titlove; potpuni izračun (`board-rebuild` pri pokretanju i svakih 15 min) i osvježavanje pojedinih stavki ~2 s nakon zapisa na vremensku crtu ili događaja preuzimanja; novi kodovi `stalled`, `path_not_visible`, `subtitle_*`; `fix` po grupi; zbrojeni razlozi odbijanja; skupne radnje (pretraži, promijeni profil, blokiraj i ponovi, ponovi uvoz, prestani pratiti).
+- `internal/history` (D-081): povijest cijele biblioteke iz vremenske crte i događaja preuzimanja (filtri, pretraga, straničenje), statistika po indexeru i klijentu.
+- `internal/health` (D-082): provjere s kodovima, sidrima u dokumentaciji i stranicom popravka; `health.warning` jednom po pojavi problema (zamjenjuje `health-notify` iz P9); provjera verzije na GitHubu i pomaka sata (isključivo); `metadata.Health` bilježi ishod zahtjeva TMDb/TVDB/MusicBrainz.
+- `internal/logging` (D-083): `/config/logs` s rotacijom (10 MB × 6), prsten od 5000 zapisa, SSE uživo, maskiranje tajni i u vrijednostima.
+- `internal/backup` (D-084): zip s `VACUUM INTO` snimkom, ključem, postavkama i manifestom; zakazano (24 h, čuva 7), ručno, učitavanje; vraćanje s provjerom, kopijom prije vraćanja, restartom u istom procesu (`app.ServeWith` petlja) i odjavom svih osim vraćača.
+- `internal/stats`, `internal/housekeeping` (D-085): `/api/stats` (+ `/api/v1/system/stats`), `/metrics` uz token, zadržavanje povijesti, tjedni `VACUUM`, ograničenje predmemorije slika.
 - API: `/board*`, `/history`, `/activity/stats`, `DELETE /queue/blocklist`, `/system/health*`, `/system/stats`, `/system/logs*`, `/system/backups*`, `/settings/system`, `create` za `POST /rootfolders`.
 - Web (EN + HR): pregled za administratore na `/`, Aktivnost → Zašto nije stiglo? / Povijest / Statistika, Sustav → Zdravlje / Logovi / Sigurnosne kopije, Postavke → Nadzor, čarobnjak `/welcome` (mape za medije, uvoz iz drugih aplikacija kad postoji `/migrate`).
 - Testovi: ploča (grupiranje, zbrajanje razloga, razvrstavanje neuspjelih uvoza, titlovi, 20 000 stavki), integracijski `TestBoardPathMappingFlow` (krivo mapiranje → ploča i zdravlje → popravak → ponovi uvoz → film u biblioteci → povijest i statistika), `TestBoardBulkActions`, `TestBoardRebuildPerformance` (10 000 filmova), `TestHealthChecks` (svaka provjera s lažnim servisima, jedna obavijest), `TestStatsAndMetrics` (ključ samo za čitanje, tražitelj 403, JSON greške, token), `TestHousekeepingRetention`, `TestLogViewerAPI`, `TestBackupRestoreRoundTrip` (stvarni poslužitelj: kopija → izmjene → vraćanje → podaci kao prije, druga sesija odjavljena, mediji netaknuti → vraćanje učitanog zipa), dosljednost kopije dok se piše, logovi (maskiranje, rotacija); Vitest; Playwright `e2e/operations.spec.ts`.
+- Popravci s prve stvarne instalacije: greške prikazuju i razlog sa servera (npr. odgovor qBittorrenta) ispod prevedene rečenice; Mape za medije objašnjavaju da Locarr vidi mape hosta pod `/data` (i u grešci „izvan dopuštenih mapa"), preglednik se otvara u `/data`; mapa „samo za čitanje" pokazuje razlog provjere pisanja (dopuštenja, mount samo za čitanje poput NFS-a s `ro`, nestala mapa) i poveznicu na upute.
 - Korisnička dokumentacija: `docs/user/troubleshooting.md`, `docs/user/backup.md`.
 
 
+
+## Gotovo: Otkrivanje u Streameru (branch `feat/streamero-discover`)
+- `internal/compat` (D-079): Seerr (`/compat/seerr/api/v1`: status, pretraga, trending, zahtjev), Radarr i Sonarr (`/compat/radarr|sonarr/api/v3`: status, kalendar, filmovi po TMDb ID-u, serije) izvan ogena, prijava Locarr API ključem kao vlasnik ključa; poveznice `/compat/radarr/movie/{id}` i `/compat/sonarr/series/{id}` vode na Locarrove stranice.
+- `metadata.WithLanguage`: jedan poziv TMDb-u na jeziku klijenta; `discover.SearchTMDb` (pretraga bez glazbe).
+- Web (EN + HR): kartica „Otkrivanje u Streameru" u Postavke → Media server (adrese za kopiranje, gumb za ključ).
+- Testovi: `TestCompatSeerrContract`, `TestCompatPermissions`, `TestCompatCalendarAndLibrary` (odgovori se dekodiraju u oblike koje Streamero čita), `TestRealStreameroDiscover` (`-tags streamero`, `scripts/test-streamero-compat.sh`: stvarni Streamero s PostgreSQL-om i Valkeyem, i u CI-ju).
+- Dokumentacija: `docs/user/streamero.md` §6, `docs/compat-api.md`.
+- Poznato: svi zahtjevi iz Streamera su zapisani kao vlasnik ključa (Streamero ne šalje korisnika).
 
 ## Gotovo u P10 (branch `phase/P10-import`)
 - Migracija `00011_migrate.sql`: `migrate_sources` (šifrirani ključ), `migrate_runs`, `migrate_items`, `migrate_links`.

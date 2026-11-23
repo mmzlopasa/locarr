@@ -99,3 +99,38 @@ type DiscoverProvider interface {
 	Extras(ctx context.Context, mediaType string, id int64) (TitleExtras, error)
 	Person(ctx context.Context, id int64) (Person, error)
 }
+
+type languageKey struct{}
+
+// WithLanguage asks the provider to answer one call in another language than
+// the configured one (a client that sends its own, such as the compatible
+// request API). An invalid tag is ignored.
+func WithLanguage(ctx context.Context, lang string) context.Context {
+	if !validLanguage(lang) {
+		return ctx
+	}
+	return context.WithValue(ctx, languageKey{}, lang)
+}
+
+// LanguageFrom returns the language set with WithLanguage ("" = none).
+func LanguageFrom(ctx context.Context) string {
+	l, _ := ctx.Value(languageKey{}).(string)
+	return l
+}
+
+// validLanguage accepts "hr" and "hr-HR" style tags.
+func validLanguage(l string) bool {
+	if len(l) != 2 && len(l) != 5 {
+		return false
+	}
+	for i, c := range l {
+		switch {
+		case i < 2 && c >= 'a' && c <= 'z':
+		case i == 2 && c == '-':
+		case i > 2 && c >= 'A' && c <= 'Z':
+		default:
+			return false
+		}
+	}
+	return true
+}

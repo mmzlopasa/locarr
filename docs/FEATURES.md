@@ -9,7 +9,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Zaštita prijave: ograničenje po adresi, zaključavanje računa, zabrana nakon ponovljenih neuspjeha
 - [x] Postavke na jednom mjestu, šifrirane tajne vanjskih servisa (nikad se ne vraćaju klijentu)
 - [x] Jedan Docker image (amd64 + arm64), `docker-compose.yml` s jednim servisom, healthcheck, PUID/PGID
-- [x] Backup i vraćanje (automatski i ručno, učitavanje zipa, vraćanje bez restarta kontejnera; D-083), migracije baze pri pokretanju
+- [x] Backup i vraćanje (automatski i ručno, učitavanje zipa, vraćanje bez restarta kontejnera; D-084), migracije baze pri pokretanju
 
 ## Indexeri (P1)
 - [x] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/TVmaze) i tekstu, RSS (glazba po izvođaču/albumu: Newznab nema MusicBrainz parametar)
@@ -83,6 +83,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Streamero: veza (URL + API ključ, test, mapiranje putanja i biblioteka), skeniranje samo pogođene biblioteke nakon uvoza/nadogradnje/preimenovanja filma (skupljeno, s ponovnim pokušajima, na vremenskoj crti; D-067)
 - [x] Streamero: „U Streameru" i „Gledaj u Streameru" na Otkrivanju, stranicama naslova i u dodavanju (D-069)
 - [x] Streamero: prijava korisnika (D-068)
+- [x] Streamero: Otkrivanje, zahtjevi i „Uskoro" u Streameru preko Seerr/Radarr/Sonarr kompatibilnih ruta (D-079)
 - [x] Obavijesti: webhook (HMAC potpis), ntfy, Gotify, Discord, Telegram, Pushover, e-mail (SMTP), Apprise API; zajednički i osobni kanali, izbor događaja, Test, ponovni pokušaji, stanje neuspjeha (D-070)
 - [x] Obavijesti o biblioteci, titlovima i zdravlju sustava (D-071)
 - [ ] Streamero: obavijest pri brisanju i preimenovanju serija te brisanju glazbe (danas ih vidi Streamerov nadzor datoteka)
@@ -95,10 +96,10 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Vremenska crta i nadzor (P11)
 - [x] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
-- [x] „Zašto nije stiglo?": ploča svih nedostajućih filmova, epizoda, albuma i titlova po razlogu, sa zbrojenim razlozima odbijanja, poveznicom za popravak i skupnim radnjama (D-079)
-- [x] Aktivnost (red preuzimanja), povijest cijele biblioteke, blokirana izdanja (i brisanje svih), statistika po indexeru i klijentu, nedostajuće/ispod granice (D-080)
-- [x] Zdravlje sustava (indexeri, klijenti, kategorije, putanje, root mape i prostor, koš, zapeli uvozi, metapodaci, titlovi, Streamero, sat, baza, kopije, nova verzija) s uputama (D-081), logovi s pretragom, uživo i rotiranim datotekama (D-082), zadaci
-- [x] `/api/stats` za nadzorne ploče, Prometheus metrike, održavanje baze i predmemorije (D-084)
+- [x] „Zašto nije stiglo?": ploča svih nedostajućih filmova, epizoda, albuma i titlova po razlogu, sa zbrojenim razlozima odbijanja, poveznicom za popravak i skupnim radnjama (D-080)
+- [x] Aktivnost (red preuzimanja), povijest cijele biblioteke, blokirana izdanja (i brisanje svih), statistika po indexeru i klijentu, nedostajuće/ispod granice (D-081)
+- [x] Zdravlje sustava (indexeri, klijenti, kategorije, putanje, root mape i prostor, koš, zapeli uvozi, metapodaci, titlovi, Streamero, sat, baza, kopije, nova verzija) s uputama (D-082), logovi s pretragom, uživo i rotiranim datotekama (D-083), zadaci
+- [x] `/api/stats` za nadzorne ploče, Prometheus metrike, održavanje baze i predmemorije (D-085)
 
 ## Aplikacije (P12)
 - [ ] Android i iOS: sve iz weba (biblioteka, dodavanje, pretraga, aktivnost, kalendar, zahtjevi, postavke za admina)

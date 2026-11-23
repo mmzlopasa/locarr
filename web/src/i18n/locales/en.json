@@ -2544,7 +2544,18 @@
     "pending": "Changes waiting",
     "indexError": "Last refresh failed: {{message}}",
     "scanError": "Last scan request failed: {{message}}",
-    "syncQueued": "Refresh queued."
+    "syncQueued": "Refresh queued.",
+    "compat": {
+      "title": "Discover in Streamero",
+      "intro": "Streamero can search, request and show upcoming releases through Locarr: it uses Locarr as its Seerr, Radarr and Sonarr. In Streamero open Settings → Requests and enter these addresses and a Locarr API key.",
+      "seerrUrl": "Seerr address",
+      "radarrUrl": "Radarr address",
+      "sonarrUrl": "Sonarr address",
+      "hostHint": "The addresses use the one you opened Locarr with. If Streamero runs in the same Docker network, use the container name instead, e.g. http://locarr:8484/compat/seerr.",
+      "keyHint": "Put a Locarr API key in all three key fields. Requests are made as the key's owner, so an administrator's key approves them automatically. For your own approval and quotas, use the key of a requester user (e.g. “streamero”) in the Seerr field and a read-only administrator key in the Radarr and Sonarr fields.",
+      "createKey": "Create a key for Streamero",
+      "oneUser": "Every request from Streamero appears in Locarr as made by the key's owner, whoever clicked it in Streamero."
+    }
   },
   "notificationSettings": {
     "title": "Notifications",

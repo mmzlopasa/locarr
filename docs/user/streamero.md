@@ -89,6 +89,83 @@ Važno:
 račun s popisa. Korisnik može i sam: **Račun → Povezani računi → Poveži Streamero** (upiše svoju
 Streamero lozinku). Povezivanje se može ukloniti na istim mjestima.
 
+## 6. Otkrivanje u Streameru (Discover in Streamero)
+
+Streamero ima vlastito **Otkrivanje** (pretraga i trendovi s gumbom *Zatraži*) i popis **Uskoro**.
+Obično ih pokreću Seerr, Radarr i Sonarr; Locarr može glumiti sva tri, pa ukućani traže filmove i
+serije izravno u Streameru, a zahtjevi završe u Locarru. U Streameru ne treba ništa instalirati.
+
+### Korak po korak
+
+1. **Locarr: TMDb i zadane vrijednosti zahtjeva.** U **Postavke → Metapodaci** mora biti TMDb ključ, a
+   u **Postavke → Zahtjevi** profil kvalitete i mapa za medije za filmove i serije (bez toga zahtjev
+   čeka odobrenje, vidi [Zahtjevi](requests.md)).
+2. **Locarr: adrese.** Otvorite **Postavke → Media server**, karticu **Otkrivanje u Streameru**. Tu su
+   tri adrese s gumbom **Kopiraj**:
+   - Seerr: `http://<locarr>:8484/compat/seerr`
+   - Radarr: `http://<locarr>:8484/compat/radarr`
+   - Sonarr: `http://<locarr>:8484/compat/sonarr`
+
+   `<locarr>` je adresa na kojoj Streamero vidi Locarr. Kad su u istoj Docker mreži, to je ime
+   kontejnera (npr. `http://locarr:8484/compat/seerr`); inače IP ili ime računala
+   (npr. `http://192.168.1.10:8484/compat/seerr`). Kartica pokazuje adresu na kojoj ste otvorili Locarr.
+3. **Locarr: API ključ.** Najjednostavnije: na istoj kartici kliknite **Napravi ključ za Streamero**
+   i kopirajte ga (prikazuje se **samo jednom**). Ključ pripada vama (administratoru), pa se zahtjevi
+   iz Streamera **odobravaju automatski**.
+
+   Ako želite sami odobravati i imati kvote:
+   - u **Postavke → Korisnici** napravite korisnika, npr. `streamero`, s ulogom *tražitelj* i
+     dozvolama za filmove i serije (bez automatskog odobravanja, ili s njim ako ga želite samo za
+     neke vrste) i po želji s kvotama;
+   - prijavite se kao taj korisnik i u **Račun → API ključevi** napravite ključ (ne „samo za čitanje");
+     taj ključ ide u polje **Seerr**;
+   - kao administrator napravite još jedan ključ **samo za čitanje** za polja **Radarr** i **Sonarr**
+     (kalendar i poveznice čitaju biblioteku, što tražitelj ne smije).
+4. **Streamero:** kao administrator otvorite **Postavke → Zahtjevi** i upišite:
+
+   | Polje u Streameru | Vrijednost |
+   |---|---|
+   | Adresa Seerr | `http://<locarr>:8484/compat/seerr` |
+   | API ključ Seerr | Locarr ključ (`lk_…`) |
+   | Adresa Radarr | `http://<locarr>:8484/compat/radarr` |
+   | API ključ Radarr | isti ključ (ili administratorov samo za čitanje) |
+   | Adresa Sonarr | `http://<locarr>:8484/compat/sonarr` |
+   | API ključ Sonarr | isti ključ (ili administratorov samo za čitanje) |
+
+   Uključite **Svi mogu slati zahtjeve** ako zahtjeve smiju slati i obični korisnici Streamera.
+   Bazarr, Lidarr i Prowlarr ostavite prazne.
+5. **Streamero: Provjeri veze.** Uz Seerr, Radarr i Sonarr treba pisati *povezano* s Locarrovom
+   verzijom. Česte greške:
+   - *HTTP 401*: ključ nije upisan ili ne vrijedi (opozvan, korisnik onemogućen).
+   - *HTTP 403* kod Radarra/Sonarra: vlasnik ključa nema pravo vidjeti biblioteku; koristite
+     administratorov ključ.
+   - *ne može se spojiti*: kriva adresa ili kontejneri nisu u istoj mreži.
+
+### Kako to izgleda
+
+- **Otkrivanje** u Streameru pokazuje trendove i rezultate pretrage iz TMDb-a (na jeziku korisnika
+  Streamera), s istim stanjem kao Locarrovo Otkrivanje: *zatraženo*, *obrađuje se*, *djelomično*,
+  *dostupno*.
+- **Zatraži** napravi zahtjev u Locarru. Film se traži sam; serija se traži **cijela, sa svim
+  sezonama i onima koje tek dolaze**. S administratorovim ključem naslov odmah kreće (*obrađuje se*),
+  inače čeka odobrenje u **Zahtjevi → Svi zahtjevi** (*zatraženo*). Ako je naslov već zatražen ili
+  dostupan, Streamero pokaže to stanje umjesto greške.
+- Ako je kvota potrošena, Streamero javi grešku *Seerr answered HTTP 429*; nedozvoljena vrsta
+  (npr. serije) daje *HTTP 403*.
+- **Uskoro** pokazuje filmove (kino, digitalno ili fizičko izdanje) i epizode iz Locarrova kalendara,
+  samo za naslove koji se prate.
+- Poveznice **Radarr/Sonarr** na Streamerovoj stranici naslova (za administratore) otvaraju stranicu
+  tog naslova u Locarru.
+
+### Ograničenja
+
+- Streamero ne javlja tko je kliknuo *Zatraži*, pa su **svi zahtjevi iz Streamera u Locarru zapisani
+  kao vlasnik ključa** (npr. `streamero`). Kvote vrijede za sve ukućane zajedno.
+- Streamero uvijek traži seriju cijelu; pojedinačne sezone tražite u Locarru.
+- Pretraga ima jednu stranicu rezultata; glazba se iz Streamera ne može tražiti.
+- Titlovi preko Bazarra u Streameru ne idu preko Locarra (Locarr titlove radi sam, vidi
+  [Titlovi](subtitles.md)).
+
 ## Ograničenja
 
 - Streamero ima samo skeniranje cijele biblioteke (ne jedne mape); to je brzo jer preskače

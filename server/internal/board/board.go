@@ -1,4 +1,4 @@
-// Package board keeps the "why didn't it land?" board (D-079): every
+// Package board keeps the "why didn't it land?" board (D-080): every
 // monitored item that is missing (movie, episode, album) or misses subtitles,
 // with the explainer's current answer. Answers are precomputed into
 // board_items: a full rebuild runs in the background (at start and every
