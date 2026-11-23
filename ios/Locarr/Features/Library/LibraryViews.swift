@@ -12,14 +12,8 @@ struct LibraryView: View {
             default: MoviesView()
             }
         }
-        .safeAreaInset(edge: .top) {
-            Picker(selection: $kind) {
-                ForEach([AppSection.movies, .series, .music]) { Text(verbatim: $0.title).tag($0) }
-            } label: { Text(verbatim: L("nav.library")) }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.bottom, 6)
-            .background(Theme.background)
+        .screenHeader(title: L("nav.library")) {
+            SegmentPicker(options: [AppSection.movies, .series, .music], selection: $kind, label: L("nav.library")) { $0.title }
         }
     }
 }
@@ -120,6 +114,7 @@ struct MoviesView: View {
 
     var body: some View {
         List {
+            ScreenHeaderRow()
             if let pager {
                 ForEach(pager.items) { m in
                     let st = LibraryStatus.movie(m)
@@ -149,7 +144,7 @@ struct MoviesView: View {
             pager = p
             await p.reload()
         }
-        .navigationTitle(Text(verbatim: L("mediaKinds.movies")))
+        .screenTitle(L("mediaKinds.movies"))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { SortMenu(options: ["title", "year", "added", "rating", "size", "digital"], sort: $sort, desc: $desc) }
             ToolbarItem(placement: .topBarTrailing) {
@@ -170,6 +165,7 @@ struct SeriesListView: View {
 
     var body: some View {
         List {
+            ScreenHeaderRow()
             if let pager {
                 ForEach(pager.items) { s in
                     let st = LibraryStatus.series(s)
@@ -199,7 +195,7 @@ struct SeriesListView: View {
             pager = p
             await p.reload()
         }
-        .navigationTitle(Text(verbatim: L("mediaKinds.series")))
+        .screenTitle(L("mediaKinds.series"))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { SortMenu(options: ["title", "year", "added", "nextAiring", "missing", "size"], sort: $sort, desc: $desc) }
             ToolbarItem(placement: .topBarTrailing) {
@@ -220,6 +216,7 @@ struct ArtistsView: View {
 
     var body: some View {
         List {
+            ScreenHeaderRow()
             if let pager {
                 ForEach(pager.items) { a in
                     NavigationLink(value: Route.artist(a.id)) {
@@ -247,7 +244,7 @@ struct ArtistsView: View {
             pager = p
             await p.reload()
         }
-        .navigationTitle(Text(verbatim: L("mediaKinds.music")))
+        .screenTitle(L("mediaKinds.music"))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { SortMenu(options: ["name", "added", "albums", "size"], sort: $sort, desc: $desc) }
             ToolbarItem(placement: .topBarTrailing) {

@@ -223,13 +223,8 @@ struct DiscoverSearchView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                Picker(selection: $type) {
-                    ForEach(["all", "movie", "series", "person", "music"], id: \.self) { t in
-                        Text(verbatim: L("discover.searchTab.\(t)")).tag(t)
-                    }
-                } label: { Text(verbatim: L("discover.searchTypes")) }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
+                SegmentPicker(options: ["all", "movie", "series", "person", "music"], selection: $type,
+                              label: L("discover.searchTypes")) { L("discover.searchTab.\($0)") }
 
                 if text.trimmingCharacters(in: .whitespaces).count < 2 {
                     EmptyState(text: L("discover.searchHint"), systemImage: "magnifyingglass")

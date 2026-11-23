@@ -95,15 +95,10 @@ struct IndexersView: View {
 
     var body: some View {
         List {
-            Section {
-                Picker(selection: $part) {
-                    Text(verbatim: L("system.indexersConfigured")).tag("configured")
-                    Text(verbatim: L("indexers.chooser.tabs.builtin")).tag("builtin")
-                    Text(verbatim: L("indexers.chooser.tabs.usenet")).tag("usenet")
-                } label: { Text(verbatim: L("nav.indexers")) }
-                .pickerStyle(.segmented)
+            SegmentPicker(options: ["configured", "builtin", "usenet"], selection: $part, label: L("nav.indexers")) {
+                $0 == "configured" ? L("system.indexersConfigured") : L("indexers.chooser.tabs.\($0)")
             }
-            .listRowBackground(Color.clear)
+            .segmentRow()
             switch part {
             case "builtin": builtinRows
             case "usenet": usenetRows
