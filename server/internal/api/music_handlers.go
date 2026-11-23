@@ -18,7 +18,6 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
-	"github.com/mmzlopasa/locarr/server/internal/timeline"
 	"github.com/mmzlopasa/locarr/server/internal/wanted"
 )
 
@@ -111,7 +110,7 @@ func toTrackFile(f music.TrackFile) gen.TrackFile {
 
 // ListArtists implements GET /music/artists.
 func (h *Handler) ListArtists(ctx context.Context, p gen.ListArtistsParams) (*gen.ArtistList, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	m, err := h.musicService()
@@ -159,7 +158,7 @@ func toArtistLookup(r metadata.ArtistSummary, id *int64) gen.ArtistLookup {
 
 // LookupArtists implements GET /music/artists/lookup.
 func (h *Handler) LookupArtists(ctx context.Context, p gen.LookupArtistsParams) ([]gen.ArtistLookup, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	m, err := h.musicService()
@@ -179,7 +178,7 @@ func (h *Handler) LookupArtists(ctx context.Context, p gen.LookupArtistsParams) 
 
 // GetArtist implements GET /music/artists/{id}.
 func (h *Handler) GetArtist(ctx context.Context, p gen.GetArtistParams) (*gen.Artist, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	if _, err := h.musicService(); err != nil {
@@ -234,7 +233,7 @@ func (h *Handler) DeleteArtist(ctx context.Context, p gen.DeleteArtistParams) er
 
 // ListArtistAlbums implements GET /music/artists/{id}/albums.
 func (h *Handler) ListArtistAlbums(ctx context.Context, p gen.ListArtistAlbumsParams) ([]gen.Album, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	m, err := h.musicService()
@@ -317,7 +316,7 @@ func (h *Handler) SearchArtist(ctx context.Context, p gen.SearchArtistParams) (*
 
 // ListWantedAlbums implements GET /music/albums.
 func (h *Handler) ListWantedAlbums(ctx context.Context, p gen.ListWantedAlbumsParams) (*gen.AlbumList, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	m, err := h.musicService()
@@ -413,7 +412,7 @@ func (h *Handler) albumDetail(ctx context.Context, id int64) (*gen.AlbumDetail, 
 
 // GetAlbum implements GET /music/albums/{id}.
 func (h *Handler) GetAlbum(ctx context.Context, p gen.GetAlbumParams) (*gen.AlbumDetail, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	if _, err := h.musicService(); err != nil {
@@ -710,7 +709,7 @@ func (h *Handler) profileOut(ctx context.Context, p music.MetadataProfile) gen.M
 
 // ListMetadataProfiles implements GET /music/metadataprofiles.
 func (h *Handler) ListMetadataProfiles(ctx context.Context) ([]gen.MetadataProfile, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	m, err := h.musicService()
@@ -792,7 +791,7 @@ func (h *Handler) DeleteMetadataProfile(ctx context.Context, p gen.DeleteMetadat
 
 // GetMusicCalendar implements GET /music/calendar.
 func (h *Handler) GetMusicCalendar(ctx context.Context, p gen.GetMusicCalendarParams) ([]gen.AlbumCalendarEntry, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	m, err := h.musicService()
@@ -903,10 +902,14 @@ func (h *Handler) UpdateMusicSettings(ctx context.Context, req *gen.MusicSetting
 	}
 	err := h.DB.Tx(ctx, func(tx *sql.Tx) error {
 		for _, f := range []func() error{
-			func() error { return settings.Set(ctx, h.Settings, tx, music.ArtistFolderFormat, req.ArtistFolderFormat) },
+			func() error {
+				return settings.Set(ctx, h.Settings, tx, music.ArtistFolderFormat, req.ArtistFolderFormat)
+			},
 			func() error { return settings.Set(ctx, h.Settings, tx, music.AlbumFolderFormat, req.AlbumFolderFormat) },
 			func() error { return settings.Set(ctx, h.Settings, tx, music.TrackFormat, req.TrackFormat) },
-			func() error { return settings.Set(ctx, h.Settings, tx, music.MultiDiscTrackFormat, req.MultiDiscTrackFormat) },
+			func() error {
+				return settings.Set(ctx, h.Settings, tx, music.MultiDiscTrackFormat, req.MultiDiscTrackFormat)
+			},
 			func() error { return settings.Set(ctx, h.Settings, tx, music.DiscFolderFormat, req.DiscFolderFormat) },
 			func() error { return settings.Set(ctx, h.Settings, tx, music.DiscFolders, req.DiscFolders) },
 			func() error { return settings.Set(ctx, h.Settings, tx, music.RenameTracks, req.RenameTracks) },
@@ -995,52 +998,4 @@ func (h *Handler) GetCoverArt(ctx context.Context, p gen.GetCoverArtParams) (gen
 	}
 	return &gen.GetCoverArtOKHeaders{ETag: gen.NewOptString(img.ETag), CacheControl: cache, ContentType: img.ContentType,
 		Response: gen.GetCoverArtOK{Data: f}}, nil
-}
-
-// explainMusic answers "why isn't it here?" for an album (and sums up an artist).
-func (h *Handler) explainMusic(ctx context.Context, ref library.Ref) (timeline.Explanation, string, error) {
-	if h.Music == nil {
-		return timeline.Explanation{}, "", fmt.Errorf("%w: the music library is not running", library.ErrBadRef)
-	}
-	if ref.Kind == library.RefArtist {
-		a, err := h.Music.Artist(ctx, ref.ID)
-		if err != nil {
-			return timeline.Explanation{}, "", err
-		}
-		list, err := h.Music.AlbumStates(ctx, &a)
-		if err != nil {
-			return timeline.Explanation{}, "", err
-		}
-		counts := map[string]any{"albums": len(list)}
-		for _, st := range list {
-			k := st.Status()
-			n, _ := counts[k].(int)
-			counts[k] = n + 1
-		}
-		return timeline.Explanation{Code: "artist", Tone: "info", Message: fmt.Sprintf("%d albums", len(list)), Params: counts,
-			Reasons: []timeline.ReasonCount{}}, a.Name, nil
-	}
-	al, err := h.Music.Album(ctx, ref.ID)
-	if err != nil {
-		return timeline.Explanation{}, "", err
-	}
-	st, err := h.Music.State(ctx, al, nil, nil)
-	if err != nil {
-		return timeline.Explanation{}, "", err
-	}
-	facts, err := h.Timeline.Facts(ctx, ref.String(), "music")
-	if err != nil {
-		return timeline.Explanation{}, "", err
-	}
-	is := timeline.ItemState{Ref: ref.String(), Monitored: st.Monitored && st.ArtistMonitored, Available: st.Available,
-		HasFile: st.FileCount > 0, CutoffMet: st.CutoffMet}
-	if t := music.ReleaseTime(al.ReleaseDate); !t.IsZero() {
-		is.AvailableFrom = &t
-	}
-	ex := timeline.Explain(is, facts)
-	if st.FileCount > 0 && !st.Complete() && ex.Code == timeline.ExplainUpgradeWanted {
-		ex.Params["files"], ex.Params["tracks"] = st.FileCount, st.TrackCount
-		ex.Message = fmt.Sprintf("%d of %d tracks are in the library; Locarr keeps looking for the whole album", st.FileCount, st.TrackCount)
-	}
-	return ex, st.ArtistName + " - " + al.Title, nil
 }
