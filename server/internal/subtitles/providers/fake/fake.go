@@ -119,7 +119,7 @@ func CP1250(s string) []byte {
 }
 
 // CroatianLines is the text of the fake Croatian subtitles.
-var CroatianLines = []string{"Dobro jutro, šumo!", "Čuješ li ptice? Žute su i veselé.", "Đuro, ćao! Idemo na izlet.", "Zec se probudio i protegnuo.", "Leptir mu je sletio na nos.", "Tri nevaljalca vrebaju iz grmlja."}
+var CroatianLines = []string{"Dobro jutro, šumo!", "Čuješ li ptice? Žute su i vesele.", "Đuro, ćao! Idemo na izlet.", "Zec se probudio i protegnuo.", "Leptir mu je sletio na nos.", "Tri nevaljalca vrebaju iz grmlja."}
 
 // DefaultCatalog has Croatian and English subtitles for the fake TMDb's
 // movies and series, in several encodings and with different releases.

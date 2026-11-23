@@ -2361,6 +2361,7 @@
       "empty": "Nikome ne nedostaju titlovi.",
       "setProfile": "Profil titlova za odabrane",
       "apply": "Primijeni ({{count}})"
-    }
+    },
+    "tracksOnlyMkvMp4": "Locarr čita zapise samo iz MKV/WebM i MP4/MOV datoteka."
   }
 }

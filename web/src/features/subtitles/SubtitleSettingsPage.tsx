@@ -266,7 +266,7 @@ function ProviderCard({ p }: { p: SubtitleProvider }) {
         {p.fields.includes("apiKey") ? (
           <TextInput label={t("subtitles.settings.apiKey")} type="password" autoComplete="off" value={apiKey} onChange={(e) => setApiKey(e.target.value)}
             placeholder={p.apiKey.configured ? t("subtitles.settings.keySet") : ""} data-testid={`provider-key-${p.name}`}
-            hint={p.apiKey.configured ? t("subtitles.settings.keySet") : t("subtitles.settings.keyMissing")} />
+            hint={p.apiKey.configured ? undefined : t("subtitles.settings.keyMissing")} />
         ) : null}
         {p.fields.includes("username") ? (
           <TextInput label={t("subtitles.settings.username")} autoComplete="off" value={username} onChange={(e) => setUsername(e.target.value)} hint={t("subtitles.settings.usernameHint")} />

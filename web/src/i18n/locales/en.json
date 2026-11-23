@@ -2361,6 +2361,7 @@
       "empty": "Nothing misses subtitles.",
       "setProfile": "Subtitle profile for the selected",
       "apply": "Apply ({{count}})"
-    }
+    },
+    "tracksOnlyMkvMp4": "Locarr reads the tracks of MKV/WebM and MP4/MOV files only."
   }
 }

@@ -98,7 +98,7 @@ export function SubtitlesSection({ itemRef }: { itemRef: string }) {
         )}
       </Panel>
       <Panel title={t("subtitles.tracks")} description={it.probeError ? t("subtitles.tracksUnreadable") : undefined}>
-        {it.tracks.length === 0 ? <p className="text-[13px] text-muted">{it.probeError ? it.probeError : t("subtitles.noTracks")}</p> : (
+        {it.tracks.length === 0 ? <p className="text-[13px] text-muted">{it.probeError ? t("subtitles.tracksOnlyMkvMp4") : t("subtitles.noTracks")}</p> : (
           <table className="w-full text-left text-[13px]">
             <thead className="text-[12px] text-faint">
               <tr><th className="py-1 pr-2 font-normal">{t("subtitles.track.kind")}</th><th className="py-1 pr-2 font-normal">{t("subtitles.track.language")}</th>
