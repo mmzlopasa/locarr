@@ -44,7 +44,7 @@ export function ArtistOptionsForm({ value, onChange }: { value: ArtistOptions; o
   if (roots.data && musicRoots.length === 0) {
     return (
       <Alert tone="warning">
-        {t("addArtist.noRoot")} <Link to="/settings/media" className="underline">{t("settings.tabs.media")}</Link>
+        {t("addArtist.noRoot")} <Link to="/settings/media" className="underline">{t("settings.nav.items.media")}</Link>
       </Alert>
     );
   }

@@ -33,7 +33,7 @@ export function AddOptionsForm({ value, onChange }: { value: AddDefaults; onChan
   if (roots.data && movieRoots.length === 0) {
     return (
       <Alert tone="warning">
-        {t("addMovie.noRoot")} <Link to="/settings/media" className="underline">{t("settings.tabs.media")}</Link>
+        {t("addMovie.noRoot")} <Link to="/settings/media" className="underline">{t("settings.nav.items.media")}</Link>
       </Alert>
     );
   }

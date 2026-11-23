@@ -49,7 +49,7 @@ export function SeriesOptionsForm({ value, onChange, withMonitor = true }:
   if (roots.data && tvRoots.length === 0) {
     return (
       <Alert tone="warning">
-        {t("addSeries.noRoot")} <Link to="/settings/media" className="underline">{t("settings.tabs.media")}</Link>
+        {t("addSeries.noRoot")} <Link to="/settings/media" className="underline">{t("settings.nav.items.media")}</Link>
       </Alert>
     );
   }
