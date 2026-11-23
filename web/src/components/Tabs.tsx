@@ -1,9 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 
 export type Tab = {
-  to: "/settings" | "/settings/media" | "/settings/users" | "/settings/profiles" | "/settings/quality" | "/settings/customformats"
-    | "/settings/rules" | "/settings/tester" | "/settings/mediamanagement" | "/settings/metadata" | "/settings/importlists" | "/settings/metadataprofiles" | "/settings/subtitles" | "/settings/requests" | "/settings/mediaserver" | "/settings/notifications" | "/settings/system"
-    | "/system/status" | "/system/health" | "/system/tasks" | "/system/logs" | "/system/backups"
+  to: "/system/status" | "/system/health" | "/system/tasks" | "/system/logs" | "/system/backups"
     | "/activity/queue" | "/activity/board" | "/activity/history" | "/activity/blocklist" | "/activity/stats";
   label: string;
 };

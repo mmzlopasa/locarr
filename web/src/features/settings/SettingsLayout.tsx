@@ -1,34 +1,24 @@
 import { Outlet } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
-import { Tabs } from "@/components/Tabs";
+import { useCurrentUser } from "@/features/auth/hooks";
+import { SettingsNav, SettingsNavBar } from "./SettingsNav";
 
+/**
+ * Settings: grouped sections in a sticky column beside the page on wide screens,
+ * a "Settings › Section" bar that opens them as a sheet on narrower ones.
+ */
 export function SettingsLayout() {
-  const { t } = useTranslation();
+  const me = useCurrentUser();
   return (
-    <div>
-      <Tabs
-        label={t("nav.settings")}
-        tabs={[
-          { to: "/settings", label: t("settings.tabs.general") },
-          { to: "/settings/media", label: t("settings.tabs.media") },
-          { to: "/settings/mediamanagement", label: t("settings.tabs.mediaManagement") },
-          { to: "/settings/metadata", label: t("settings.tabs.metadata") },
-          { to: "/settings/importlists", label: t("settings.tabs.importLists") },
-          { to: "/settings/metadataprofiles", label: t("settings.tabs.metadataProfiles") },
-          { to: "/settings/subtitles", label: t("settings.tabs.subtitles") },
-          { to: "/settings/profiles", label: t("settings.tabs.profiles") },
-          { to: "/settings/quality", label: t("settings.tabs.quality") },
-          { to: "/settings/customformats", label: t("settings.tabs.customFormats") },
-          { to: "/settings/rules", label: t("settings.tabs.rules") },
-          { to: "/settings/tester", label: t("settings.tabs.tester") },
-          { to: "/settings/requests", label: t("settings.tabs.requests") },
-          { to: "/settings/mediaserver", label: t("settings.tabs.mediaServer") },
-          { to: "/settings/notifications", label: t("settings.tabs.notifications") },
-          { to: "/settings/system", label: t("settings.tabs.system") },
-          { to: "/settings/users", label: t("settings.tabs.users") },
-        ]}
-      />
-      <Outlet />
+    <div className="lg:flex lg:items-start lg:gap-6 xl:gap-8">
+      <aside className="sticky top-5 hidden max-h-[calc(100vh-2.5rem)] w-52 shrink-0 overflow-y-auto overscroll-contain pr-1 lg:block xl:w-56">
+        <SettingsNav me={me} idPrefix="rail" />
+      </aside>
+      <div className="sticky top-0 z-30 -mx-4 -mt-5 mb-4 border-b border-line bg-bg/90 px-4 py-2 backdrop-blur md:-mx-6 md:px-6 lg:hidden">
+        <SettingsNavBar me={me} />
+      </div>
+      <div className="min-w-0 flex-1">
+        <Outlet />
+      </div>
     </div>
   );
 }
