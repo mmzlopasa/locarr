@@ -76,10 +76,10 @@ struct QueueView: View {
             ScreenHeaderRow()
             if let q = queue.value {
                 ForEach((q.clients ?? []).filter { $0.status?.ok == false }) { c in
-                    Callout(text: L("queue.clientError", ["name": c.name, "error": c.status?.error ?? ""]), tone: "danger").listRowBackground(Color.clear).listRowSeparator(.hidden)
+                    Callout(text: L("queue.clientError", ["name": c.name, "error": c.status?.error ?? ""]), tone: "danger").noteRow()
                 }
                 if (q.clients ?? []).isEmpty {
-                    Callout(text: L("queue.noClients"), tone: "warning").listRowBackground(Color.clear).listRowSeparator(.hidden)
+                    Callout(text: L("queue.noClients"), tone: "warning").noteRow()
                 }
                 if q.items.isEmpty { EmptyState(text: L("queue.empty"), systemImage: "arrow.down.circle").listRowBackground(Color.clear) }
                 ForEach(q.items) { item in
@@ -91,6 +91,7 @@ struct QueueView: View {
                         }
                     }
                     .listRowBackground(Theme.background)
+                    .marginRow()
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) { removing = item } label: {
                             Label { Text(verbatim: L("queue.actions.remove")) } icon: { Image(systemName: "trash") }
@@ -191,24 +192,22 @@ struct BoardView: View {
     var body: some View {
         List {
             ScreenHeaderRow()
-            Section {
-                Text(verbatim: L("board.subtitle")).font(.footnote).foregroundStyle(Theme.textMuted)
-                Picker(selection: $kind) {
-                    ForEach(["all", "movie", "episode", "album", "subtitle"], id: \.self) { Text(verbatim: L("board.kinds.\($0)")).tag($0) }
-                } label: { Text(verbatim: L("board.kind")) }
-                .pickerStyle(.menu)
+            Text(verbatim: L("board.subtitle")).font(.footnote).foregroundStyle(Theme.textMuted)
+                .noteRow()
+            FilterMenu(label: L("board.kind"), options: ["all", "movie", "episode", "album", "subtitle"], selection: $kind) {
+                L("board.kinds.\($0)")
             }
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+            .noteRow()
             if let b = board.value {
                 let groups = b.groups.filter { $0.code != "available" && $0.count > 0 }
                 if groups.isEmpty { EmptyState(text: L("board.empty"), systemImage: "checkmark.seal").listRowBackground(Color.clear) }
                 ForEach(groups) { g in
                     NavigationLink(value: Route.boardGroup(code: g.code)) { BoardGroupRow(group: g) }
-                        .listRowBackground(Theme.surface)
+                        .listRowBackground(Theme.background)
+                        .marginRow()
                 }
                 if let at = b.updatedAt {
-                    Text(verbatim: L("board.updated", ["when": Fmt.relative(at)])).font(.caption2).foregroundStyle(Theme.textFaint).listRowBackground(Color.clear)
+                    Text(verbatim: L("board.updated", ["when": Fmt.relative(at)])).font(.caption2).foregroundStyle(Theme.textFaint).noteRow()
                 }
             } else if let error = board.error {
                 ErrorState(message: error) { await load() }.listRowBackground(Color.clear)
@@ -216,6 +215,7 @@ struct BoardView: View {
                 LoadingState().listRowBackground(Color.clear)
             }
         }
+        .listStyle(.plain)
         .refreshable {
             try? await session.client.refreshBoard()
             await load()
