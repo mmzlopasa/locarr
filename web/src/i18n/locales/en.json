@@ -1508,7 +1508,9 @@
       "coverSaved": "Saved the cover ({{source}})",
       "albumAdded": "New album on MusicBrainz: {{title}}",
       "albumRemoved": "{{message}}",
-      "importSkipped": "Not imported: {{message}}"
+      "importSkipped": "Not imported: {{message}}",
+      "notifiedScan": "Told {{server}} to scan {{libraries}}.",
+      "notifyFailedReason": "Could not tell {{server}}: {{reason}}"
     },
     "coverSources": {
       "download": "the download"

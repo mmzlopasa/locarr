@@ -88,7 +88,7 @@ test("Streamero: settings, a scan of the right library after an import, titles i
   }, { timeout: 90_000, intervals: [2000] }).toContain("notified Streamero: scanning Movies");
   await page.goto(`/movies/${movie.id}`);
   await page.getByTestId("tab-history").click();
-  await expect(page.getByTestId("timeline")).toContainText("notified Streamero: scanning Movies");
+  await expect(page.getByTestId("timeline")).toContainText("Told Streamero to scan Movies.");
   const after = await (await page.request.get("/api/v1/mediaserver/streamero")).json();
   expect(after.status.lastScanAt).toBeTruthy();
   expect(after.status.pendingChanges).toBe(0);

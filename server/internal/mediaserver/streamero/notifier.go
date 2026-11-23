@@ -214,6 +214,9 @@ func (s *Service) record(ctx context.Context, ref string, ok bool, msg string, l
 	if libs != nil {
 		data["libraries"] = libs
 	}
+	if !ok {
+		data["reason"] = strings.TrimPrefix(msg, "could not notify Streamero: ")
+	}
 	if err := s.Timeline.Record(ctx, ref, timeline.TypeNotified, msg, data, nil); err != nil {
 		s.log().Warn("record media server notification", "item", ref, "err", err)
 	}

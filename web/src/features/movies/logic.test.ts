@@ -47,6 +47,9 @@ describe("timeline texts", () => {
       .toContain("Best: X.");
     expect(describeEvent(t, ev("something_new", {}, "server text"))).toBe("server text");
     expect(eventTone(ev("download_failed", {}))).toBe("danger");
+    expect(describeEvent(t, ev("notified", { server: "Streamero", ok: true, libraries: ["Movies", "4K"] }))).toBe("Told Streamero to scan Movies, 4K.");
+    expect(describeEvent(t, ev("notified", { server: "Streamero", ok: false, reason: "no Streamero library contains /x" })))
+      .toBe("Could not tell Streamero: no Streamero library contains /x");
     await i18n.changeLanguage("hr");
     expect(describeEvent(i18n.t.bind(i18n), ev("renamed", { from: "/a/old.mkv", to: "/a/new.mkv" }))).toBe("Preimenovano old.mkv → new.mkv");
     await i18n.changeLanguage("en");

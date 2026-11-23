@@ -1508,7 +1508,9 @@
       "coverSaved": "Omot spremljen ({{source}})",
       "albumAdded": "Novi album na MusicBrainzu: {{title}}",
       "albumRemoved": "{{message}}",
-      "importSkipped": "Nije uvezeno: {{message}}"
+      "importSkipped": "Nije uvezeno: {{message}}",
+      "notifiedScan": "{{server}} skenira: {{libraries}}.",
+      "notifyFailedReason": "Nije moguće obavijestiti {{server}}: {{reason}}"
     },
     "coverSources": {
       "download": "iz preuzimanja"
