@@ -4445,6 +4445,9 @@ type DeleteMetadataProfileNoContent struct{}
 // DeleteMovieNoContent is response for DeleteMovie operation.
 type DeleteMovieNoContent struct{}
 
+// DeleteNotificationChannelNoContent is response for DeleteNotificationChannel operation.
+type DeleteNotificationChannelNoContent struct{}
+
 // DeleteQualityProfileNoContent is response for DeleteQualityProfile operation.
 type DeleteQualityProfileNoContent struct{}
 
@@ -4614,6 +4617,8 @@ type DiscoverItem struct {
 	Status4k DiscoverStatus `json:"status4k"`
 	// The caller's open request for it.
 	RequestId OptInt64 `json:"requestId"`
+	// Link to the title in Streamero's web client when Streamero already has it (D-064).
+	StreameroUrl OptString `json:"streameroUrl"`
 }
 
 // GetMediaType returns the value of MediaType.
@@ -4691,6 +4696,11 @@ func (s *DiscoverItem) GetRequestId() OptInt64 {
 	return s.RequestId
 }
 
+// GetStreameroUrl returns the value of StreameroUrl.
+func (s *DiscoverItem) GetStreameroUrl() OptString {
+	return s.StreameroUrl
+}
+
 // SetMediaType sets the value of MediaType.
 func (s *DiscoverItem) SetMediaType(val DiscoverMediaType) {
 	s.MediaType = val
@@ -4764,6 +4774,11 @@ func (s *DiscoverItem) SetStatus4k(val DiscoverStatus) {
 // SetRequestId sets the value of RequestId.
 func (s *DiscoverItem) SetRequestId(val OptInt64) {
 	s.RequestId = val
+}
+
+// SetStreameroUrl sets the value of StreameroUrl.
+func (s *DiscoverItem) SetStreameroUrl(val OptString) {
+	s.StreameroUrl = val
 }
 
 // Ref: #/components/schemas/DiscoverListKey
@@ -12633,6 +12648,104 @@ func (s *LanguageInfo) SetNative(val string) {
 	s.Native = val
 }
 
+// Ref: #/components/schemas/LinkIdentityRequest
+type LinkIdentityRequest struct {
+	Subject  string    `json:"subject"`
+	Username OptString `json:"username"`
+}
+
+// GetSubject returns the value of Subject.
+func (s *LinkIdentityRequest) GetSubject() string {
+	return s.Subject
+}
+
+// GetUsername returns the value of Username.
+func (s *LinkIdentityRequest) GetUsername() OptString {
+	return s.Username
+}
+
+// SetSubject sets the value of Subject.
+func (s *LinkIdentityRequest) SetSubject(val string) {
+	s.Subject = val
+}
+
+// SetUsername sets the value of Username.
+func (s *LinkIdentityRequest) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// Ref: #/components/schemas/LinkedIdentity
+type LinkedIdentity struct {
+	Provider string `json:"provider"`
+	// The provider's id for the account.
+	Subject string `json:"subject"`
+	// The account's name at the provider (when it was last seen).
+	Username    string      `json:"username"`
+	UserId      int64       `json:"userId"`
+	LinkedAt    time.Time   `json:"linkedAt"`
+	LastLoginAt OptDateTime `json:"lastLoginAt"`
+}
+
+// GetProvider returns the value of Provider.
+func (s *LinkedIdentity) GetProvider() string {
+	return s.Provider
+}
+
+// GetSubject returns the value of Subject.
+func (s *LinkedIdentity) GetSubject() string {
+	return s.Subject
+}
+
+// GetUsername returns the value of Username.
+func (s *LinkedIdentity) GetUsername() string {
+	return s.Username
+}
+
+// GetUserId returns the value of UserId.
+func (s *LinkedIdentity) GetUserId() int64 {
+	return s.UserId
+}
+
+// GetLinkedAt returns the value of LinkedAt.
+func (s *LinkedIdentity) GetLinkedAt() time.Time {
+	return s.LinkedAt
+}
+
+// GetLastLoginAt returns the value of LastLoginAt.
+func (s *LinkedIdentity) GetLastLoginAt() OptDateTime {
+	return s.LastLoginAt
+}
+
+// SetProvider sets the value of Provider.
+func (s *LinkedIdentity) SetProvider(val string) {
+	s.Provider = val
+}
+
+// SetSubject sets the value of Subject.
+func (s *LinkedIdentity) SetSubject(val string) {
+	s.Subject = val
+}
+
+// SetUsername sets the value of Username.
+func (s *LinkedIdentity) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *LinkedIdentity) SetUserId(val int64) {
+	s.UserId = val
+}
+
+// SetLinkedAt sets the value of LinkedAt.
+func (s *LinkedIdentity) SetLinkedAt(val time.Time) {
+	s.LinkedAt = val
+}
+
+// SetLastLoginAt sets the value of LastLoginAt.
+func (s *LinkedIdentity) SetLastLoginAt(val OptDateTime) {
+	s.LastLoginAt = val
+}
+
 type ListArtistsSort string
 
 const (
@@ -15736,6 +15849,8 @@ type MovieLookup struct {
 	Rating        float64 `json:"rating"`
 	// Set when the movie is in the library.
 	MovieId OptInt64 `json:"movieId"`
+	// Link to the title in Streamero's web client when Streamero already has it (D-064).
+	StreameroUrl OptString `json:"streameroUrl"`
 }
 
 // GetTmdbId returns the value of TmdbId.
@@ -15793,6 +15908,11 @@ func (s *MovieLookup) GetMovieId() OptInt64 {
 	return s.MovieId
 }
 
+// GetStreameroUrl returns the value of StreameroUrl.
+func (s *MovieLookup) GetStreameroUrl() OptString {
+	return s.StreameroUrl
+}
+
 // SetTmdbId sets the value of TmdbId.
 func (s *MovieLookup) SetTmdbId(val int64) {
 	s.TmdbId = val
@@ -15846,6 +15966,11 @@ func (s *MovieLookup) SetRating(val float64) {
 // SetMovieId sets the value of MovieId.
 func (s *MovieLookup) SetMovieId(val OptInt64) {
 	s.MovieId = val
+}
+
+// SetStreameroUrl sets the value of StreameroUrl.
+func (s *MovieLookup) SetStreameroUrl(val OptString) {
+	s.StreameroUrl = val
 }
 
 // Ref: #/components/schemas/MovieStatus
@@ -17108,6 +17233,835 @@ func (s *Notification) SetRead(val bool) {
 	s.Read = val
 }
 
+// Ref: #/components/schemas/NotificationChannel
+type NotificationChannel struct {
+	ID       int64                   `json:"id"`
+	Name     string                  `json:"name"`
+	Kind     NotificationChannelKind `json:"kind"`
+	Enabled  bool                    `json:"enabled"`
+	Personal bool                    `json:"personal"`
+	// The owner of a personal channel.
+	OwnerId  OptInt64                    `json:"ownerId"`
+	Events   []NotificationEventType     `json:"events"`
+	Settings NotificationChannelSettings `json:"settings"`
+	// Names of the secrets that are set.
+	SecretsSet []string `json:"secretsSet"`
+	// Deliveries that failed in a row (0 = fine).
+	Failures    int         `json:"failures"`
+	LastError   OptString   `json:"lastError"`
+	LastErrorAt OptDateTime `json:"lastErrorAt"`
+	LastSentAt  OptDateTime `json:"lastSentAt"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *NotificationChannel) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *NotificationChannel) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *NotificationChannel) GetKind() NotificationChannelKind {
+	return s.Kind
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *NotificationChannel) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetPersonal returns the value of Personal.
+func (s *NotificationChannel) GetPersonal() bool {
+	return s.Personal
+}
+
+// GetOwnerId returns the value of OwnerId.
+func (s *NotificationChannel) GetOwnerId() OptInt64 {
+	return s.OwnerId
+}
+
+// GetEvents returns the value of Events.
+func (s *NotificationChannel) GetEvents() []NotificationEventType {
+	return s.Events
+}
+
+// GetSettings returns the value of Settings.
+func (s *NotificationChannel) GetSettings() NotificationChannelSettings {
+	return s.Settings
+}
+
+// GetSecretsSet returns the value of SecretsSet.
+func (s *NotificationChannel) GetSecretsSet() []string {
+	return s.SecretsSet
+}
+
+// GetFailures returns the value of Failures.
+func (s *NotificationChannel) GetFailures() int {
+	return s.Failures
+}
+
+// GetLastError returns the value of LastError.
+func (s *NotificationChannel) GetLastError() OptString {
+	return s.LastError
+}
+
+// GetLastErrorAt returns the value of LastErrorAt.
+func (s *NotificationChannel) GetLastErrorAt() OptDateTime {
+	return s.LastErrorAt
+}
+
+// GetLastSentAt returns the value of LastSentAt.
+func (s *NotificationChannel) GetLastSentAt() OptDateTime {
+	return s.LastSentAt
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *NotificationChannel) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *NotificationChannel) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *NotificationChannel) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *NotificationChannel) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *NotificationChannel) SetKind(val NotificationChannelKind) {
+	s.Kind = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *NotificationChannel) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetPersonal sets the value of Personal.
+func (s *NotificationChannel) SetPersonal(val bool) {
+	s.Personal = val
+}
+
+// SetOwnerId sets the value of OwnerId.
+func (s *NotificationChannel) SetOwnerId(val OptInt64) {
+	s.OwnerId = val
+}
+
+// SetEvents sets the value of Events.
+func (s *NotificationChannel) SetEvents(val []NotificationEventType) {
+	s.Events = val
+}
+
+// SetSettings sets the value of Settings.
+func (s *NotificationChannel) SetSettings(val NotificationChannelSettings) {
+	s.Settings = val
+}
+
+// SetSecretsSet sets the value of SecretsSet.
+func (s *NotificationChannel) SetSecretsSet(val []string) {
+	s.SecretsSet = val
+}
+
+// SetFailures sets the value of Failures.
+func (s *NotificationChannel) SetFailures(val int) {
+	s.Failures = val
+}
+
+// SetLastError sets the value of LastError.
+func (s *NotificationChannel) SetLastError(val OptString) {
+	s.LastError = val
+}
+
+// SetLastErrorAt sets the value of LastErrorAt.
+func (s *NotificationChannel) SetLastErrorAt(val OptDateTime) {
+	s.LastErrorAt = val
+}
+
+// SetLastSentAt sets the value of LastSentAt.
+func (s *NotificationChannel) SetLastSentAt(val OptDateTime) {
+	s.LastSentAt = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *NotificationChannel) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *NotificationChannel) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// Ref: #/components/schemas/NotificationChannelInput
+type NotificationChannelInput struct {
+	Name     string                         `json:"name"`
+	Kind     NotificationChannelKind        `json:"kind"`
+	Enabled  OptBool                        `json:"enabled"`
+	Personal OptBool                        `json:"personal"`
+	Events   []NotificationEventType        `json:"events"`
+	Settings OptNotificationChannelSettings `json:"settings"`
+	Secrets  OptNotificationChannelSecrets  `json:"secrets"`
+}
+
+// GetName returns the value of Name.
+func (s *NotificationChannelInput) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *NotificationChannelInput) GetKind() NotificationChannelKind {
+	return s.Kind
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *NotificationChannelInput) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetPersonal returns the value of Personal.
+func (s *NotificationChannelInput) GetPersonal() OptBool {
+	return s.Personal
+}
+
+// GetEvents returns the value of Events.
+func (s *NotificationChannelInput) GetEvents() []NotificationEventType {
+	return s.Events
+}
+
+// GetSettings returns the value of Settings.
+func (s *NotificationChannelInput) GetSettings() OptNotificationChannelSettings {
+	return s.Settings
+}
+
+// GetSecrets returns the value of Secrets.
+func (s *NotificationChannelInput) GetSecrets() OptNotificationChannelSecrets {
+	return s.Secrets
+}
+
+// SetName sets the value of Name.
+func (s *NotificationChannelInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *NotificationChannelInput) SetKind(val NotificationChannelKind) {
+	s.Kind = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *NotificationChannelInput) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetPersonal sets the value of Personal.
+func (s *NotificationChannelInput) SetPersonal(val OptBool) {
+	s.Personal = val
+}
+
+// SetEvents sets the value of Events.
+func (s *NotificationChannelInput) SetEvents(val []NotificationEventType) {
+	s.Events = val
+}
+
+// SetSettings sets the value of Settings.
+func (s *NotificationChannelInput) SetSettings(val OptNotificationChannelSettings) {
+	s.Settings = val
+}
+
+// SetSecrets sets the value of Secrets.
+func (s *NotificationChannelInput) SetSecrets(val OptNotificationChannelSecrets) {
+	s.Secrets = val
+}
+
+// Ref: #/components/schemas/NotificationChannelKind
+type NotificationChannelKind string
+
+const (
+	NotificationChannelKindWebhook  NotificationChannelKind = "webhook"
+	NotificationChannelKindNtfy     NotificationChannelKind = "ntfy"
+	NotificationChannelKindGotify   NotificationChannelKind = "gotify"
+	NotificationChannelKindDiscord  NotificationChannelKind = "discord"
+	NotificationChannelKindTelegram NotificationChannelKind = "telegram"
+	NotificationChannelKindPushover NotificationChannelKind = "pushover"
+	NotificationChannelKindEmail    NotificationChannelKind = "email"
+	NotificationChannelKindApprise  NotificationChannelKind = "apprise"
+)
+
+// AllValues returns all NotificationChannelKind values.
+func (NotificationChannelKind) AllValues() []NotificationChannelKind {
+	return []NotificationChannelKind{
+		NotificationChannelKindWebhook,
+		NotificationChannelKindNtfy,
+		NotificationChannelKindGotify,
+		NotificationChannelKindDiscord,
+		NotificationChannelKindTelegram,
+		NotificationChannelKindPushover,
+		NotificationChannelKindEmail,
+		NotificationChannelKindApprise,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s NotificationChannelKind) MarshalText() ([]byte, error) {
+	switch s {
+	case NotificationChannelKindWebhook:
+		return []byte(s), nil
+	case NotificationChannelKindNtfy:
+		return []byte(s), nil
+	case NotificationChannelKindGotify:
+		return []byte(s), nil
+	case NotificationChannelKindDiscord:
+		return []byte(s), nil
+	case NotificationChannelKindTelegram:
+		return []byte(s), nil
+	case NotificationChannelKindPushover:
+		return []byte(s), nil
+	case NotificationChannelKindEmail:
+		return []byte(s), nil
+	case NotificationChannelKindApprise:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *NotificationChannelKind) UnmarshalText(data []byte) error {
+	switch NotificationChannelKind(data) {
+	case NotificationChannelKindWebhook:
+		*s = NotificationChannelKindWebhook
+		return nil
+	case NotificationChannelKindNtfy:
+		*s = NotificationChannelKindNtfy
+		return nil
+	case NotificationChannelKindGotify:
+		*s = NotificationChannelKindGotify
+		return nil
+	case NotificationChannelKindDiscord:
+		*s = NotificationChannelKindDiscord
+		return nil
+	case NotificationChannelKindTelegram:
+		*s = NotificationChannelKindTelegram
+		return nil
+	case NotificationChannelKindPushover:
+		*s = NotificationChannelKindPushover
+		return nil
+	case NotificationChannelKindEmail:
+		*s = NotificationChannelKindEmail
+		return nil
+	case NotificationChannelKindApprise:
+		*s = NotificationChannelKindApprise
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Write-only. Omit a field to keep it, "" to remove it.
+// Ref: #/components/schemas/NotificationChannelSecrets
+type NotificationChannelSecrets struct {
+	// Ntfy access token, gotify application token, pushover application token.
+	Token OptString `json:"token"`
+	// Webhook HMAC secret.
+	Secret OptString `json:"secret"`
+	// Telegram.
+	BotToken OptString `json:"botToken"`
+	// Discord webhook URL.
+	WebhookUrl OptString `json:"webhookUrl"`
+	// Pushover user or group key.
+	UserKey OptString `json:"userKey"`
+	// Ntfy password (with username in settings).
+	Password OptString `json:"password"`
+}
+
+// GetToken returns the value of Token.
+func (s *NotificationChannelSecrets) GetToken() OptString {
+	return s.Token
+}
+
+// GetSecret returns the value of Secret.
+func (s *NotificationChannelSecrets) GetSecret() OptString {
+	return s.Secret
+}
+
+// GetBotToken returns the value of BotToken.
+func (s *NotificationChannelSecrets) GetBotToken() OptString {
+	return s.BotToken
+}
+
+// GetWebhookUrl returns the value of WebhookUrl.
+func (s *NotificationChannelSecrets) GetWebhookUrl() OptString {
+	return s.WebhookUrl
+}
+
+// GetUserKey returns the value of UserKey.
+func (s *NotificationChannelSecrets) GetUserKey() OptString {
+	return s.UserKey
+}
+
+// GetPassword returns the value of Password.
+func (s *NotificationChannelSecrets) GetPassword() OptString {
+	return s.Password
+}
+
+// SetToken sets the value of Token.
+func (s *NotificationChannelSecrets) SetToken(val OptString) {
+	s.Token = val
+}
+
+// SetSecret sets the value of Secret.
+func (s *NotificationChannelSecrets) SetSecret(val OptString) {
+	s.Secret = val
+}
+
+// SetBotToken sets the value of BotToken.
+func (s *NotificationChannelSecrets) SetBotToken(val OptString) {
+	s.BotToken = val
+}
+
+// SetWebhookUrl sets the value of WebhookUrl.
+func (s *NotificationChannelSecrets) SetWebhookUrl(val OptString) {
+	s.WebhookUrl = val
+}
+
+// SetUserKey sets the value of UserKey.
+func (s *NotificationChannelSecrets) SetUserKey(val OptString) {
+	s.UserKey = val
+}
+
+// SetPassword sets the value of Password.
+func (s *NotificationChannelSecrets) SetPassword(val OptString) {
+	s.Password = val
+}
+
+// Plain settings; each kind uses only its own fields.
+// Ref: #/components/schemas/NotificationChannelSettings
+type NotificationChannelSettings struct {
+	// Webhook: target URL; ntfy and gotify: server; apprise: notify endpoint (e.g.
+	// http://apprise:8000/notify/apprise).
+	URL OptString `json:"url"`
+	// Webhook.
+	Method OptNotificationChannelSettingsMethod `json:"method"`
+	// Ntfy.
+	Topic OptString `json:"topic"`
+	// Ntfy 1–5, gotify 0–10, pushover -2–2.
+	Priority OptInt `json:"priority"`
+	// Ntfy tags (emoji short codes or words).
+	Tags []string `json:"tags"`
+	// Apprise tag.
+	Tag OptString `json:"tag"`
+	// Telegram.
+	ChatId OptString `json:"chatId"`
+	// Pushover.
+	Sound OptString `json:"sound"`
+	// Pushover.
+	Device OptString `json:"device"`
+	// E-mail recipients.
+	To []string `json:"to"`
+	// Discord sender name.
+	Username OptString `json:"username"`
+	// Language of the messages.
+	Language OptNotificationChannelSettingsLanguage `json:"language"`
+}
+
+// GetURL returns the value of URL.
+func (s *NotificationChannelSettings) GetURL() OptString {
+	return s.URL
+}
+
+// GetMethod returns the value of Method.
+func (s *NotificationChannelSettings) GetMethod() OptNotificationChannelSettingsMethod {
+	return s.Method
+}
+
+// GetTopic returns the value of Topic.
+func (s *NotificationChannelSettings) GetTopic() OptString {
+	return s.Topic
+}
+
+// GetPriority returns the value of Priority.
+func (s *NotificationChannelSettings) GetPriority() OptInt {
+	return s.Priority
+}
+
+// GetTags returns the value of Tags.
+func (s *NotificationChannelSettings) GetTags() []string {
+	return s.Tags
+}
+
+// GetTag returns the value of Tag.
+func (s *NotificationChannelSettings) GetTag() OptString {
+	return s.Tag
+}
+
+// GetChatId returns the value of ChatId.
+func (s *NotificationChannelSettings) GetChatId() OptString {
+	return s.ChatId
+}
+
+// GetSound returns the value of Sound.
+func (s *NotificationChannelSettings) GetSound() OptString {
+	return s.Sound
+}
+
+// GetDevice returns the value of Device.
+func (s *NotificationChannelSettings) GetDevice() OptString {
+	return s.Device
+}
+
+// GetTo returns the value of To.
+func (s *NotificationChannelSettings) GetTo() []string {
+	return s.To
+}
+
+// GetUsername returns the value of Username.
+func (s *NotificationChannelSettings) GetUsername() OptString {
+	return s.Username
+}
+
+// GetLanguage returns the value of Language.
+func (s *NotificationChannelSettings) GetLanguage() OptNotificationChannelSettingsLanguage {
+	return s.Language
+}
+
+// SetURL sets the value of URL.
+func (s *NotificationChannelSettings) SetURL(val OptString) {
+	s.URL = val
+}
+
+// SetMethod sets the value of Method.
+func (s *NotificationChannelSettings) SetMethod(val OptNotificationChannelSettingsMethod) {
+	s.Method = val
+}
+
+// SetTopic sets the value of Topic.
+func (s *NotificationChannelSettings) SetTopic(val OptString) {
+	s.Topic = val
+}
+
+// SetPriority sets the value of Priority.
+func (s *NotificationChannelSettings) SetPriority(val OptInt) {
+	s.Priority = val
+}
+
+// SetTags sets the value of Tags.
+func (s *NotificationChannelSettings) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetTag sets the value of Tag.
+func (s *NotificationChannelSettings) SetTag(val OptString) {
+	s.Tag = val
+}
+
+// SetChatId sets the value of ChatId.
+func (s *NotificationChannelSettings) SetChatId(val OptString) {
+	s.ChatId = val
+}
+
+// SetSound sets the value of Sound.
+func (s *NotificationChannelSettings) SetSound(val OptString) {
+	s.Sound = val
+}
+
+// SetDevice sets the value of Device.
+func (s *NotificationChannelSettings) SetDevice(val OptString) {
+	s.Device = val
+}
+
+// SetTo sets the value of To.
+func (s *NotificationChannelSettings) SetTo(val []string) {
+	s.To = val
+}
+
+// SetUsername sets the value of Username.
+func (s *NotificationChannelSettings) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *NotificationChannelSettings) SetLanguage(val OptNotificationChannelSettingsLanguage) {
+	s.Language = val
+}
+
+// Language of the messages.
+type NotificationChannelSettingsLanguage string
+
+const (
+	NotificationChannelSettingsLanguageEn NotificationChannelSettingsLanguage = "en"
+	NotificationChannelSettingsLanguageHr NotificationChannelSettingsLanguage = "hr"
+)
+
+// AllValues returns all NotificationChannelSettingsLanguage values.
+func (NotificationChannelSettingsLanguage) AllValues() []NotificationChannelSettingsLanguage {
+	return []NotificationChannelSettingsLanguage{
+		NotificationChannelSettingsLanguageEn,
+		NotificationChannelSettingsLanguageHr,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s NotificationChannelSettingsLanguage) MarshalText() ([]byte, error) {
+	switch s {
+	case NotificationChannelSettingsLanguageEn:
+		return []byte(s), nil
+	case NotificationChannelSettingsLanguageHr:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *NotificationChannelSettingsLanguage) UnmarshalText(data []byte) error {
+	switch NotificationChannelSettingsLanguage(data) {
+	case NotificationChannelSettingsLanguageEn:
+		*s = NotificationChannelSettingsLanguageEn
+		return nil
+	case NotificationChannelSettingsLanguageHr:
+		*s = NotificationChannelSettingsLanguageHr
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Webhook.
+type NotificationChannelSettingsMethod string
+
+const (
+	NotificationChannelSettingsMethodPOST NotificationChannelSettingsMethod = "POST"
+	NotificationChannelSettingsMethodPUT  NotificationChannelSettingsMethod = "PUT"
+)
+
+// AllValues returns all NotificationChannelSettingsMethod values.
+func (NotificationChannelSettingsMethod) AllValues() []NotificationChannelSettingsMethod {
+	return []NotificationChannelSettingsMethod{
+		NotificationChannelSettingsMethodPOST,
+		NotificationChannelSettingsMethodPUT,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s NotificationChannelSettingsMethod) MarshalText() ([]byte, error) {
+	switch s {
+	case NotificationChannelSettingsMethodPOST:
+		return []byte(s), nil
+	case NotificationChannelSettingsMethodPUT:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *NotificationChannelSettingsMethod) UnmarshalText(data []byte) error {
+	switch NotificationChannelSettingsMethod(data) {
+	case NotificationChannelSettingsMethodPOST:
+		*s = NotificationChannelSettingsMethodPOST
+		return nil
+	case NotificationChannelSettingsMethodPUT:
+		*s = NotificationChannelSettingsMethodPUT
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/NotificationChannelTestRequest
+type NotificationChannelTestRequest struct {
+	// Take secrets left out from this channel.
+	ID      OptInt64                 `json:"id"`
+	Channel NotificationChannelInput `json:"channel"`
+}
+
+// GetID returns the value of ID.
+func (s *NotificationChannelTestRequest) GetID() OptInt64 {
+	return s.ID
+}
+
+// GetChannel returns the value of Channel.
+func (s *NotificationChannelTestRequest) GetChannel() NotificationChannelInput {
+	return s.Channel
+}
+
+// SetID sets the value of ID.
+func (s *NotificationChannelTestRequest) SetID(val OptInt64) {
+	s.ID = val
+}
+
+// SetChannel sets the value of Channel.
+func (s *NotificationChannelTestRequest) SetChannel(val NotificationChannelInput) {
+	s.Channel = val
+}
+
+// Ref: #/components/schemas/NotificationEventType
+type NotificationEventType string
+
+const (
+	NotificationEventTypeRequestCreated        NotificationEventType = "request.created"
+	NotificationEventTypeRequestApproved       NotificationEventType = "request.approved"
+	NotificationEventTypeRequestDeclined       NotificationEventType = "request.declined"
+	NotificationEventTypeRequestAvailable      NotificationEventType = "request.available"
+	NotificationEventTypeRequestPartial        NotificationEventType = "request.partial"
+	NotificationEventTypeRequestFailed         NotificationEventType = "request.failed"
+	NotificationEventTypeRequestComment        NotificationEventType = "request.comment"
+	NotificationEventTypeIssueCreated          NotificationEventType = "issue.created"
+	NotificationEventTypeIssueComment          NotificationEventType = "issue.comment"
+	NotificationEventTypeIssueResolved         NotificationEventType = "issue.resolved"
+	NotificationEventTypeIssueReopened         NotificationEventType = "issue.reopened"
+	NotificationEventTypeLibraryGrabbed        NotificationEventType = "library.grabbed"
+	NotificationEventTypeLibraryImported       NotificationEventType = "library.imported"
+	NotificationEventTypeLibraryUpgraded       NotificationEventType = "library.upgraded"
+	NotificationEventTypeLibraryDownloadFailed NotificationEventType = "library.download_failed"
+	NotificationEventTypeLibraryImportFailed   NotificationEventType = "library.import_failed"
+	NotificationEventTypeHealthWarning         NotificationEventType = "health.warning"
+	NotificationEventTypeTest                  NotificationEventType = "test"
+)
+
+// AllValues returns all NotificationEventType values.
+func (NotificationEventType) AllValues() []NotificationEventType {
+	return []NotificationEventType{
+		NotificationEventTypeRequestCreated,
+		NotificationEventTypeRequestApproved,
+		NotificationEventTypeRequestDeclined,
+		NotificationEventTypeRequestAvailable,
+		NotificationEventTypeRequestPartial,
+		NotificationEventTypeRequestFailed,
+		NotificationEventTypeRequestComment,
+		NotificationEventTypeIssueCreated,
+		NotificationEventTypeIssueComment,
+		NotificationEventTypeIssueResolved,
+		NotificationEventTypeIssueReopened,
+		NotificationEventTypeLibraryGrabbed,
+		NotificationEventTypeLibraryImported,
+		NotificationEventTypeLibraryUpgraded,
+		NotificationEventTypeLibraryDownloadFailed,
+		NotificationEventTypeLibraryImportFailed,
+		NotificationEventTypeHealthWarning,
+		NotificationEventTypeTest,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s NotificationEventType) MarshalText() ([]byte, error) {
+	switch s {
+	case NotificationEventTypeRequestCreated:
+		return []byte(s), nil
+	case NotificationEventTypeRequestApproved:
+		return []byte(s), nil
+	case NotificationEventTypeRequestDeclined:
+		return []byte(s), nil
+	case NotificationEventTypeRequestAvailable:
+		return []byte(s), nil
+	case NotificationEventTypeRequestPartial:
+		return []byte(s), nil
+	case NotificationEventTypeRequestFailed:
+		return []byte(s), nil
+	case NotificationEventTypeRequestComment:
+		return []byte(s), nil
+	case NotificationEventTypeIssueCreated:
+		return []byte(s), nil
+	case NotificationEventTypeIssueComment:
+		return []byte(s), nil
+	case NotificationEventTypeIssueResolved:
+		return []byte(s), nil
+	case NotificationEventTypeIssueReopened:
+		return []byte(s), nil
+	case NotificationEventTypeLibraryGrabbed:
+		return []byte(s), nil
+	case NotificationEventTypeLibraryImported:
+		return []byte(s), nil
+	case NotificationEventTypeLibraryUpgraded:
+		return []byte(s), nil
+	case NotificationEventTypeLibraryDownloadFailed:
+		return []byte(s), nil
+	case NotificationEventTypeLibraryImportFailed:
+		return []byte(s), nil
+	case NotificationEventTypeHealthWarning:
+		return []byte(s), nil
+	case NotificationEventTypeTest:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *NotificationEventType) UnmarshalText(data []byte) error {
+	switch NotificationEventType(data) {
+	case NotificationEventTypeRequestCreated:
+		*s = NotificationEventTypeRequestCreated
+		return nil
+	case NotificationEventTypeRequestApproved:
+		*s = NotificationEventTypeRequestApproved
+		return nil
+	case NotificationEventTypeRequestDeclined:
+		*s = NotificationEventTypeRequestDeclined
+		return nil
+	case NotificationEventTypeRequestAvailable:
+		*s = NotificationEventTypeRequestAvailable
+		return nil
+	case NotificationEventTypeRequestPartial:
+		*s = NotificationEventTypeRequestPartial
+		return nil
+	case NotificationEventTypeRequestFailed:
+		*s = NotificationEventTypeRequestFailed
+		return nil
+	case NotificationEventTypeRequestComment:
+		*s = NotificationEventTypeRequestComment
+		return nil
+	case NotificationEventTypeIssueCreated:
+		*s = NotificationEventTypeIssueCreated
+		return nil
+	case NotificationEventTypeIssueComment:
+		*s = NotificationEventTypeIssueComment
+		return nil
+	case NotificationEventTypeIssueResolved:
+		*s = NotificationEventTypeIssueResolved
+		return nil
+	case NotificationEventTypeIssueReopened:
+		*s = NotificationEventTypeIssueReopened
+		return nil
+	case NotificationEventTypeLibraryGrabbed:
+		*s = NotificationEventTypeLibraryGrabbed
+		return nil
+	case NotificationEventTypeLibraryImported:
+		*s = NotificationEventTypeLibraryImported
+		return nil
+	case NotificationEventTypeLibraryUpgraded:
+		*s = NotificationEventTypeLibraryUpgraded
+		return nil
+	case NotificationEventTypeLibraryDownloadFailed:
+		*s = NotificationEventTypeLibraryDownloadFailed
+		return nil
+	case NotificationEventTypeLibraryImportFailed:
+		*s = NotificationEventTypeLibraryImportFailed
+		return nil
+	case NotificationEventTypeHealthWarning:
+		*s = NotificationEventTypeHealthWarning
+		return nil
+	case NotificationEventTypeTest:
+		*s = NotificationEventTypeTest
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/NotificationList
 type NotificationList struct {
 	Items  []Notification `json:"items"`
@@ -17155,6 +18109,85 @@ func (s *NotificationParams) init() NotificationParams {
 		*s = m
 	}
 	return m
+}
+
+// Ref: #/components/schemas/NotificationSettings
+type NotificationSettings struct {
+	// Locarr's address for links in messages (e.g. https://locarr.example.com).
+	BaseUrl string       `json:"baseUrl"`
+	SMTP    SmtpSettings `json:"smtp"`
+}
+
+// GetBaseUrl returns the value of BaseUrl.
+func (s *NotificationSettings) GetBaseUrl() string {
+	return s.BaseUrl
+}
+
+// GetSMTP returns the value of SMTP.
+func (s *NotificationSettings) GetSMTP() SmtpSettings {
+	return s.SMTP
+}
+
+// SetBaseUrl sets the value of BaseUrl.
+func (s *NotificationSettings) SetBaseUrl(val string) {
+	s.BaseUrl = val
+}
+
+// SetSMTP sets the value of SMTP.
+func (s *NotificationSettings) SetSMTP(val SmtpSettings) {
+	s.SMTP = val
+}
+
+// Ref: #/components/schemas/NotificationSettingsInput
+type NotificationSettingsInput struct {
+	BaseUrl OptString            `json:"baseUrl"`
+	SMTP    OptSmtpSettingsInput `json:"smtp"`
+}
+
+// GetBaseUrl returns the value of BaseUrl.
+func (s *NotificationSettingsInput) GetBaseUrl() OptString {
+	return s.BaseUrl
+}
+
+// GetSMTP returns the value of SMTP.
+func (s *NotificationSettingsInput) GetSMTP() OptSmtpSettingsInput {
+	return s.SMTP
+}
+
+// SetBaseUrl sets the value of BaseUrl.
+func (s *NotificationSettingsInput) SetBaseUrl(val OptString) {
+	s.BaseUrl = val
+}
+
+// SetSMTP sets the value of SMTP.
+func (s *NotificationSettingsInput) SetSMTP(val OptSmtpSettingsInput) {
+	s.SMTP = val
+}
+
+// Ref: #/components/schemas/NotificationTestResult
+type NotificationTestResult struct {
+	Ok      bool      `json:"ok"`
+	Message OptString `json:"message"`
+}
+
+// GetOk returns the value of Ok.
+func (s *NotificationTestResult) GetOk() bool {
+	return s.Ok
+}
+
+// GetMessage returns the value of Message.
+func (s *NotificationTestResult) GetMessage() OptString {
+	return s.Message
+}
+
+// SetOk sets the value of Ok.
+func (s *NotificationTestResult) SetOk(val bool) {
+	s.Ok = val
+}
+
+// SetMessage sets the value of Message.
+func (s *NotificationTestResult) SetMessage(val OptString) {
+	s.Message = val
 }
 
 // Event types (D-057); P9 sends the same events to outward channels.
@@ -19425,6 +20458,190 @@ func (o OptMusicNamingPreviewErrors) Or(d MusicNamingPreviewErrors) MusicNamingP
 	return d
 }
 
+// NewOptNotificationChannelSecrets returns new OptNotificationChannelSecrets with value set to v.
+func NewOptNotificationChannelSecrets(v NotificationChannelSecrets) OptNotificationChannelSecrets {
+	return OptNotificationChannelSecrets{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNotificationChannelSecrets is optional NotificationChannelSecrets.
+type OptNotificationChannelSecrets struct {
+	Value NotificationChannelSecrets
+	Set   bool
+}
+
+// IsSet returns true if OptNotificationChannelSecrets was set.
+func (o OptNotificationChannelSecrets) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNotificationChannelSecrets) Reset() {
+	var v NotificationChannelSecrets
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptNotificationChannelSecrets) SetTo(v NotificationChannelSecrets) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNotificationChannelSecrets) Get() (v NotificationChannelSecrets, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNotificationChannelSecrets) Or(d NotificationChannelSecrets) NotificationChannelSecrets {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNotificationChannelSettings returns new OptNotificationChannelSettings with value set to v.
+func NewOptNotificationChannelSettings(v NotificationChannelSettings) OptNotificationChannelSettings {
+	return OptNotificationChannelSettings{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNotificationChannelSettings is optional NotificationChannelSettings.
+type OptNotificationChannelSettings struct {
+	Value NotificationChannelSettings
+	Set   bool
+}
+
+// IsSet returns true if OptNotificationChannelSettings was set.
+func (o OptNotificationChannelSettings) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNotificationChannelSettings) Reset() {
+	var v NotificationChannelSettings
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptNotificationChannelSettings) SetTo(v NotificationChannelSettings) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNotificationChannelSettings) Get() (v NotificationChannelSettings, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNotificationChannelSettings) Or(d NotificationChannelSettings) NotificationChannelSettings {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNotificationChannelSettingsLanguage returns new OptNotificationChannelSettingsLanguage with value set to v.
+func NewOptNotificationChannelSettingsLanguage(v NotificationChannelSettingsLanguage) OptNotificationChannelSettingsLanguage {
+	return OptNotificationChannelSettingsLanguage{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNotificationChannelSettingsLanguage is optional NotificationChannelSettingsLanguage.
+type OptNotificationChannelSettingsLanguage struct {
+	Value NotificationChannelSettingsLanguage
+	Set   bool
+}
+
+// IsSet returns true if OptNotificationChannelSettingsLanguage was set.
+func (o OptNotificationChannelSettingsLanguage) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNotificationChannelSettingsLanguage) Reset() {
+	var v NotificationChannelSettingsLanguage
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptNotificationChannelSettingsLanguage) SetTo(v NotificationChannelSettingsLanguage) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNotificationChannelSettingsLanguage) Get() (v NotificationChannelSettingsLanguage, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNotificationChannelSettingsLanguage) Or(d NotificationChannelSettingsLanguage) NotificationChannelSettingsLanguage {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNotificationChannelSettingsMethod returns new OptNotificationChannelSettingsMethod with value set to v.
+func NewOptNotificationChannelSettingsMethod(v NotificationChannelSettingsMethod) OptNotificationChannelSettingsMethod {
+	return OptNotificationChannelSettingsMethod{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNotificationChannelSettingsMethod is optional NotificationChannelSettingsMethod.
+type OptNotificationChannelSettingsMethod struct {
+	Value NotificationChannelSettingsMethod
+	Set   bool
+}
+
+// IsSet returns true if OptNotificationChannelSettingsMethod was set.
+func (o OptNotificationChannelSettingsMethod) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNotificationChannelSettingsMethod) Reset() {
+	var v NotificationChannelSettingsMethod
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptNotificationChannelSettingsMethod) SetTo(v NotificationChannelSettingsMethod) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNotificationChannelSettingsMethod) Get() (v NotificationChannelSettingsMethod, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNotificationChannelSettingsMethod) Or(d NotificationChannelSettingsMethod) NotificationChannelSettingsMethod {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptNotificationParams returns new OptNotificationParams with value set to v.
 func NewOptNotificationParams(v NotificationParams) OptNotificationParams {
 	return OptNotificationParams{
@@ -20477,6 +21694,144 @@ func (o OptSeriesType) Get() (v SeriesType, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptSeriesType) Or(d SeriesType) SeriesType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSmtpSecurity returns new OptSmtpSecurity with value set to v.
+func NewOptSmtpSecurity(v SmtpSecurity) OptSmtpSecurity {
+	return OptSmtpSecurity{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSmtpSecurity is optional SmtpSecurity.
+type OptSmtpSecurity struct {
+	Value SmtpSecurity
+	Set   bool
+}
+
+// IsSet returns true if OptSmtpSecurity was set.
+func (o OptSmtpSecurity) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSmtpSecurity) Reset() {
+	var v SmtpSecurity
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSmtpSecurity) SetTo(v SmtpSecurity) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSmtpSecurity) Get() (v SmtpSecurity, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSmtpSecurity) Or(d SmtpSecurity) SmtpSecurity {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSmtpSettingsInput returns new OptSmtpSettingsInput with value set to v.
+func NewOptSmtpSettingsInput(v SmtpSettingsInput) OptSmtpSettingsInput {
+	return OptSmtpSettingsInput{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSmtpSettingsInput is optional SmtpSettingsInput.
+type OptSmtpSettingsInput struct {
+	Value SmtpSettingsInput
+	Set   bool
+}
+
+// IsSet returns true if OptSmtpSettingsInput was set.
+func (o OptSmtpSettingsInput) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSmtpSettingsInput) Reset() {
+	var v SmtpSettingsInput
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSmtpSettingsInput) SetTo(v SmtpSettingsInput) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSmtpSettingsInput) Get() (v SmtpSettingsInput, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSmtpSettingsInput) Or(d SmtpSettingsInput) SmtpSettingsInput {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptStreameroSignIn returns new OptStreameroSignIn with value set to v.
+func NewOptStreameroSignIn(v StreameroSignIn) OptStreameroSignIn {
+	return OptStreameroSignIn{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptStreameroSignIn is optional StreameroSignIn.
+type OptStreameroSignIn struct {
+	Value StreameroSignIn
+	Set   bool
+}
+
+// IsSet returns true if OptStreameroSignIn was set.
+func (o OptStreameroSignIn) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptStreameroSignIn) Reset() {
+	var v StreameroSignIn
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptStreameroSignIn) SetTo(v StreameroSignIn) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptStreameroSignIn) Get() (v StreameroSignIn, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptStreameroSignIn) Or(d StreameroSignIn) StreameroSignIn {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -21655,6 +23010,34 @@ func (s *PasswordConfirm) SetPassword(val string) {
 	s.Password = val
 }
 
+// Ref: #/components/schemas/PathMapping
+type PathMapping struct {
+	// Folder as Locarr sees it (e.g. /data/movies).
+	LocarrPath string `json:"locarrPath"`
+	// The same folder as Streamero sees it (e.g. /media/movies).
+	StreameroPath string `json:"streameroPath"`
+}
+
+// GetLocarrPath returns the value of LocarrPath.
+func (s *PathMapping) GetLocarrPath() string {
+	return s.LocarrPath
+}
+
+// GetStreameroPath returns the value of StreameroPath.
+func (s *PathMapping) GetStreameroPath() string {
+	return s.StreameroPath
+}
+
+// SetLocarrPath sets the value of LocarrPath.
+func (s *PathMapping) SetLocarrPath(val string) {
+	s.LocarrPath = val
+}
+
+// SetStreameroPath sets the value of StreameroPath.
+func (s *PathMapping) SetStreameroPath(val string) {
+	s.StreameroPath = val
+}
+
 // PauseQueueItemNoContent is response for PauseQueueItem operation.
 type PauseQueueItemNoContent struct{}
 
@@ -21925,6 +23308,103 @@ func (s *Protocol) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/ProviderCredentials
+type ProviderCredentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	// The service's two-factor or recovery code, when it asks (totp_required).
+	TotpCode OptString `json:"totpCode"`
+}
+
+// GetUsername returns the value of Username.
+func (s *ProviderCredentials) GetUsername() string {
+	return s.Username
+}
+
+// GetPassword returns the value of Password.
+func (s *ProviderCredentials) GetPassword() string {
+	return s.Password
+}
+
+// GetTotpCode returns the value of TotpCode.
+func (s *ProviderCredentials) GetTotpCode() OptString {
+	return s.TotpCode
+}
+
+// SetUsername sets the value of Username.
+func (s *ProviderCredentials) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetPassword sets the value of Password.
+func (s *ProviderCredentials) SetPassword(val string) {
+	s.Password = val
+}
+
+// SetTotpCode sets the value of TotpCode.
+func (s *ProviderCredentials) SetTotpCode(val OptString) {
+	s.TotpCode = val
+}
+
+// Ref: #/components/schemas/ProviderLoginRequest
+type ProviderLoginRequest struct {
+	Username  string        `json:"username"`
+	Password  string        `json:"password"`
+	TotpCode  OptString     `json:"totpCode"`
+	Device    OptDeviceInfo `json:"device"`
+	UseCookie OptBool       `json:"useCookie"`
+}
+
+// GetUsername returns the value of Username.
+func (s *ProviderLoginRequest) GetUsername() string {
+	return s.Username
+}
+
+// GetPassword returns the value of Password.
+func (s *ProviderLoginRequest) GetPassword() string {
+	return s.Password
+}
+
+// GetTotpCode returns the value of TotpCode.
+func (s *ProviderLoginRequest) GetTotpCode() OptString {
+	return s.TotpCode
+}
+
+// GetDevice returns the value of Device.
+func (s *ProviderLoginRequest) GetDevice() OptDeviceInfo {
+	return s.Device
+}
+
+// GetUseCookie returns the value of UseCookie.
+func (s *ProviderLoginRequest) GetUseCookie() OptBool {
+	return s.UseCookie
+}
+
+// SetUsername sets the value of Username.
+func (s *ProviderLoginRequest) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetPassword sets the value of Password.
+func (s *ProviderLoginRequest) SetPassword(val string) {
+	s.Password = val
+}
+
+// SetTotpCode sets the value of TotpCode.
+func (s *ProviderLoginRequest) SetTotpCode(val OptString) {
+	s.TotpCode = val
+}
+
+// SetDevice sets the value of Device.
+func (s *ProviderLoginRequest) SetDevice(val OptDeviceInfo) {
+	s.Device = val
+}
+
+// SetUseCookie sets the value of UseCookie.
+func (s *ProviderLoginRequest) SetUseCookie(val OptBool) {
+	s.UseCookie = val
 }
 
 // Ref: #/components/schemas/Quality
@@ -26845,6 +28325,8 @@ type SeriesLookup struct {
 	Rating        float64            `json:"rating"`
 	// Set when the series is in the library.
 	SeriesId OptInt64 `json:"seriesId"`
+	// Link to the title in Streamero's web client when Streamero already has it (D-064).
+	StreameroUrl OptString `json:"streameroUrl"`
 }
 
 // GetTmdbId returns the value of TmdbId.
@@ -26917,6 +28399,11 @@ func (s *SeriesLookup) GetSeriesId() OptInt64 {
 	return s.SeriesId
 }
 
+// GetStreameroUrl returns the value of StreameroUrl.
+func (s *SeriesLookup) GetStreameroUrl() OptString {
+	return s.StreameroUrl
+}
+
 // SetTmdbId sets the value of TmdbId.
 func (s *SeriesLookup) SetTmdbId(val int64) {
 	s.TmdbId = val
@@ -26985,6 +28472,11 @@ func (s *SeriesLookup) SetRating(val float64) {
 // SetSeriesId sets the value of SeriesId.
 func (s *SeriesLookup) SetSeriesId(val OptInt64) {
 	s.SeriesId = val
+}
+
+// SetStreameroUrl sets the value of StreameroUrl.
+func (s *SeriesLookup) SetStreameroUrl(val OptString) {
+	s.StreameroUrl = val
 }
 
 type SeriesLookupSource string
@@ -28146,6 +29638,741 @@ func (s *SignedInHeaders) SetResponse(val AuthResult) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/SmtpSecurity
+type SmtpSecurity string
+
+const (
+	SmtpSecurityNone     SmtpSecurity = "none"
+	SmtpSecurityStarttls SmtpSecurity = "starttls"
+	SmtpSecurityTLS      SmtpSecurity = "tls"
+)
+
+// AllValues returns all SmtpSecurity values.
+func (SmtpSecurity) AllValues() []SmtpSecurity {
+	return []SmtpSecurity{
+		SmtpSecurityNone,
+		SmtpSecurityStarttls,
+		SmtpSecurityTLS,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SmtpSecurity) MarshalText() ([]byte, error) {
+	switch s {
+	case SmtpSecurityNone:
+		return []byte(s), nil
+	case SmtpSecurityStarttls:
+		return []byte(s), nil
+	case SmtpSecurityTLS:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SmtpSecurity) UnmarshalText(data []byte) error {
+	switch SmtpSecurity(data) {
+	case SmtpSecurityNone:
+		*s = SmtpSecurityNone
+		return nil
+	case SmtpSecurityStarttls:
+		*s = SmtpSecurityStarttls
+		return nil
+	case SmtpSecurityTLS:
+		*s = SmtpSecurityTLS
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SmtpSettings
+type SmtpSettings struct {
+	Host     string       `json:"host"`
+	Port     int          `json:"port"`
+	Security SmtpSecurity `json:"security"`
+	Username string       `json:"username"`
+	Password SecretState  `json:"password"`
+	From     string       `json:"from"`
+}
+
+// GetHost returns the value of Host.
+func (s *SmtpSettings) GetHost() string {
+	return s.Host
+}
+
+// GetPort returns the value of Port.
+func (s *SmtpSettings) GetPort() int {
+	return s.Port
+}
+
+// GetSecurity returns the value of Security.
+func (s *SmtpSettings) GetSecurity() SmtpSecurity {
+	return s.Security
+}
+
+// GetUsername returns the value of Username.
+func (s *SmtpSettings) GetUsername() string {
+	return s.Username
+}
+
+// GetPassword returns the value of Password.
+func (s *SmtpSettings) GetPassword() SecretState {
+	return s.Password
+}
+
+// GetFrom returns the value of From.
+func (s *SmtpSettings) GetFrom() string {
+	return s.From
+}
+
+// SetHost sets the value of Host.
+func (s *SmtpSettings) SetHost(val string) {
+	s.Host = val
+}
+
+// SetPort sets the value of Port.
+func (s *SmtpSettings) SetPort(val int) {
+	s.Port = val
+}
+
+// SetSecurity sets the value of Security.
+func (s *SmtpSettings) SetSecurity(val SmtpSecurity) {
+	s.Security = val
+}
+
+// SetUsername sets the value of Username.
+func (s *SmtpSettings) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetPassword sets the value of Password.
+func (s *SmtpSettings) SetPassword(val SecretState) {
+	s.Password = val
+}
+
+// SetFrom sets the value of From.
+func (s *SmtpSettings) SetFrom(val string) {
+	s.From = val
+}
+
+// Ref: #/components/schemas/SmtpSettingsInput
+type SmtpSettingsInput struct {
+	Host     OptString       `json:"host"`
+	Port     OptInt          `json:"port"`
+	Security OptSmtpSecurity `json:"security"`
+	Username OptString       `json:"username"`
+	// Write-only. Omit to keep, an empty string to clear.
+	Password OptString `json:"password"`
+	From     OptString `json:"from"`
+}
+
+// GetHost returns the value of Host.
+func (s *SmtpSettingsInput) GetHost() OptString {
+	return s.Host
+}
+
+// GetPort returns the value of Port.
+func (s *SmtpSettingsInput) GetPort() OptInt {
+	return s.Port
+}
+
+// GetSecurity returns the value of Security.
+func (s *SmtpSettingsInput) GetSecurity() OptSmtpSecurity {
+	return s.Security
+}
+
+// GetUsername returns the value of Username.
+func (s *SmtpSettingsInput) GetUsername() OptString {
+	return s.Username
+}
+
+// GetPassword returns the value of Password.
+func (s *SmtpSettingsInput) GetPassword() OptString {
+	return s.Password
+}
+
+// GetFrom returns the value of From.
+func (s *SmtpSettingsInput) GetFrom() OptString {
+	return s.From
+}
+
+// SetHost sets the value of Host.
+func (s *SmtpSettingsInput) SetHost(val OptString) {
+	s.Host = val
+}
+
+// SetPort sets the value of Port.
+func (s *SmtpSettingsInput) SetPort(val OptInt) {
+	s.Port = val
+}
+
+// SetSecurity sets the value of Security.
+func (s *SmtpSettingsInput) SetSecurity(val OptSmtpSecurity) {
+	s.Security = val
+}
+
+// SetUsername sets the value of Username.
+func (s *SmtpSettingsInput) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// SetPassword sets the value of Password.
+func (s *SmtpSettingsInput) SetPassword(val OptString) {
+	s.Password = val
+}
+
+// SetFrom sets the value of From.
+func (s *SmtpSettingsInput) SetFrom(val OptString) {
+	s.From = val
+}
+
+// Ref: #/components/schemas/StreameroLibrary
+type StreameroLibrary struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	// Movies, shows, music, mixed, books, audiobooks or photos.
+	Kind      string   `json:"kind"`
+	Paths     []string `json:"paths"`
+	ItemCount int      `json:"itemCount"`
+	// Root folders whose path (after the path mappings) is inside one of this library's folders, or holds
+	// one.
+	SuggestedRootFolderIds []int64 `json:"suggestedRootFolderIds"`
+}
+
+// GetID returns the value of ID.
+func (s *StreameroLibrary) GetID() string {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *StreameroLibrary) GetName() string {
+	return s.Name
+}
+
+// GetKind returns the value of Kind.
+func (s *StreameroLibrary) GetKind() string {
+	return s.Kind
+}
+
+// GetPaths returns the value of Paths.
+func (s *StreameroLibrary) GetPaths() []string {
+	return s.Paths
+}
+
+// GetItemCount returns the value of ItemCount.
+func (s *StreameroLibrary) GetItemCount() int {
+	return s.ItemCount
+}
+
+// GetSuggestedRootFolderIds returns the value of SuggestedRootFolderIds.
+func (s *StreameroLibrary) GetSuggestedRootFolderIds() []int64 {
+	return s.SuggestedRootFolderIds
+}
+
+// SetID sets the value of ID.
+func (s *StreameroLibrary) SetID(val string) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *StreameroLibrary) SetName(val string) {
+	s.Name = val
+}
+
+// SetKind sets the value of Kind.
+func (s *StreameroLibrary) SetKind(val string) {
+	s.Kind = val
+}
+
+// SetPaths sets the value of Paths.
+func (s *StreameroLibrary) SetPaths(val []string) {
+	s.Paths = val
+}
+
+// SetItemCount sets the value of ItemCount.
+func (s *StreameroLibrary) SetItemCount(val int) {
+	s.ItemCount = val
+}
+
+// SetSuggestedRootFolderIds sets the value of SuggestedRootFolderIds.
+func (s *StreameroLibrary) SetSuggestedRootFolderIds(val []int64) {
+	s.SuggestedRootFolderIds = val
+}
+
+// Ref: #/components/schemas/StreameroLibraryMapping
+type StreameroLibraryMapping struct {
+	RootFolderId int64    `json:"rootFolderId"`
+	LibraryIds   []string `json:"libraryIds"`
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *StreameroLibraryMapping) GetRootFolderId() int64 {
+	return s.RootFolderId
+}
+
+// GetLibraryIds returns the value of LibraryIds.
+func (s *StreameroLibraryMapping) GetLibraryIds() []string {
+	return s.LibraryIds
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *StreameroLibraryMapping) SetRootFolderId(val int64) {
+	s.RootFolderId = val
+}
+
+// SetLibraryIds sets the value of LibraryIds.
+func (s *StreameroLibraryMapping) SetLibraryIds(val []string) {
+	s.LibraryIds = val
+}
+
+// Ref: #/components/schemas/StreameroSettings
+type StreameroSettings struct {
+	Enabled bool `json:"enabled"`
+	// Address Locarr uses (e.g. http://streamero:8787).
+	URL string `json:"url"`
+	// Address for "Watch in Streamero" links in browsers (empty = url).
+	PublicUrl    string                    `json:"publicUrl"`
+	ApiKey       SecretState               `json:"apiKey"`
+	PathMappings []PathMapping             `json:"pathMappings"`
+	LibraryMap   []StreameroLibraryMapping `json:"libraryMap"`
+	SignIn       StreameroSignIn           `json:"signIn"`
+	Status       StreameroStatus           `json:"status"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *StreameroSettings) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetURL returns the value of URL.
+func (s *StreameroSettings) GetURL() string {
+	return s.URL
+}
+
+// GetPublicUrl returns the value of PublicUrl.
+func (s *StreameroSettings) GetPublicUrl() string {
+	return s.PublicUrl
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *StreameroSettings) GetApiKey() SecretState {
+	return s.ApiKey
+}
+
+// GetPathMappings returns the value of PathMappings.
+func (s *StreameroSettings) GetPathMappings() []PathMapping {
+	return s.PathMappings
+}
+
+// GetLibraryMap returns the value of LibraryMap.
+func (s *StreameroSettings) GetLibraryMap() []StreameroLibraryMapping {
+	return s.LibraryMap
+}
+
+// GetSignIn returns the value of SignIn.
+func (s *StreameroSettings) GetSignIn() StreameroSignIn {
+	return s.SignIn
+}
+
+// GetStatus returns the value of Status.
+func (s *StreameroSettings) GetStatus() StreameroStatus {
+	return s.Status
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *StreameroSettings) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetURL sets the value of URL.
+func (s *StreameroSettings) SetURL(val string) {
+	s.URL = val
+}
+
+// SetPublicUrl sets the value of PublicUrl.
+func (s *StreameroSettings) SetPublicUrl(val string) {
+	s.PublicUrl = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *StreameroSettings) SetApiKey(val SecretState) {
+	s.ApiKey = val
+}
+
+// SetPathMappings sets the value of PathMappings.
+func (s *StreameroSettings) SetPathMappings(val []PathMapping) {
+	s.PathMappings = val
+}
+
+// SetLibraryMap sets the value of LibraryMap.
+func (s *StreameroSettings) SetLibraryMap(val []StreameroLibraryMapping) {
+	s.LibraryMap = val
+}
+
+// SetSignIn sets the value of SignIn.
+func (s *StreameroSettings) SetSignIn(val StreameroSignIn) {
+	s.SignIn = val
+}
+
+// SetStatus sets the value of Status.
+func (s *StreameroSettings) SetStatus(val StreameroStatus) {
+	s.Status = val
+}
+
+// Ref: #/components/schemas/StreameroSettingsInput
+type StreameroSettingsInput struct {
+	Enabled   bool      `json:"enabled"`
+	URL       string    `json:"url"`
+	PublicUrl OptString `json:"publicUrl"`
+	// Write-only. Omit to keep, an empty string to clear.
+	ApiKey       OptString                 `json:"apiKey"`
+	PathMappings []PathMapping             `json:"pathMappings"`
+	LibraryMap   []StreameroLibraryMapping `json:"libraryMap"`
+	SignIn       OptStreameroSignIn        `json:"signIn"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *StreameroSettingsInput) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetURL returns the value of URL.
+func (s *StreameroSettingsInput) GetURL() string {
+	return s.URL
+}
+
+// GetPublicUrl returns the value of PublicUrl.
+func (s *StreameroSettingsInput) GetPublicUrl() OptString {
+	return s.PublicUrl
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *StreameroSettingsInput) GetApiKey() OptString {
+	return s.ApiKey
+}
+
+// GetPathMappings returns the value of PathMappings.
+func (s *StreameroSettingsInput) GetPathMappings() []PathMapping {
+	return s.PathMappings
+}
+
+// GetLibraryMap returns the value of LibraryMap.
+func (s *StreameroSettingsInput) GetLibraryMap() []StreameroLibraryMapping {
+	return s.LibraryMap
+}
+
+// GetSignIn returns the value of SignIn.
+func (s *StreameroSettingsInput) GetSignIn() OptStreameroSignIn {
+	return s.SignIn
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *StreameroSettingsInput) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetURL sets the value of URL.
+func (s *StreameroSettingsInput) SetURL(val string) {
+	s.URL = val
+}
+
+// SetPublicUrl sets the value of PublicUrl.
+func (s *StreameroSettingsInput) SetPublicUrl(val OptString) {
+	s.PublicUrl = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *StreameroSettingsInput) SetApiKey(val OptString) {
+	s.ApiKey = val
+}
+
+// SetPathMappings sets the value of PathMappings.
+func (s *StreameroSettingsInput) SetPathMappings(val []PathMapping) {
+	s.PathMappings = val
+}
+
+// SetLibraryMap sets the value of LibraryMap.
+func (s *StreameroSettingsInput) SetLibraryMap(val []StreameroLibraryMapping) {
+	s.LibraryMap = val
+}
+
+// SetSignIn sets the value of SignIn.
+func (s *StreameroSettingsInput) SetSignIn(val OptStreameroSignIn) {
+	s.SignIn = val
+}
+
+// Ref: #/components/schemas/StreameroSignIn
+type StreameroSignIn struct {
+	// Offer "Sign in with Streamero" on the sign-in page.
+	Enabled bool `json:"enabled"`
+	// An unknown Streamero account creates a requester with the default quotas.
+	AutoCreate bool `json:"autoCreate"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *StreameroSignIn) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetAutoCreate returns the value of AutoCreate.
+func (s *StreameroSignIn) GetAutoCreate() bool {
+	return s.AutoCreate
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *StreameroSignIn) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetAutoCreate sets the value of AutoCreate.
+func (s *StreameroSignIn) SetAutoCreate(val bool) {
+	s.AutoCreate = val
+}
+
+// Ref: #/components/schemas/StreameroStatus
+type StreameroStatus struct {
+	// Titles Streamero has (movies and series).
+	IndexedItems  int         `json:"indexedItems"`
+	IndexedAt     OptDateTime `json:"indexedAt"`
+	IndexError    OptString   `json:"indexError"`
+	LastScanAt    OptDateTime `json:"lastScanAt"`
+	LastScanError OptString   `json:"lastScanError"`
+	// Library changes waiting to be sent.
+	PendingChanges OptInt `json:"pendingChanges"`
+}
+
+// GetIndexedItems returns the value of IndexedItems.
+func (s *StreameroStatus) GetIndexedItems() int {
+	return s.IndexedItems
+}
+
+// GetIndexedAt returns the value of IndexedAt.
+func (s *StreameroStatus) GetIndexedAt() OptDateTime {
+	return s.IndexedAt
+}
+
+// GetIndexError returns the value of IndexError.
+func (s *StreameroStatus) GetIndexError() OptString {
+	return s.IndexError
+}
+
+// GetLastScanAt returns the value of LastScanAt.
+func (s *StreameroStatus) GetLastScanAt() OptDateTime {
+	return s.LastScanAt
+}
+
+// GetLastScanError returns the value of LastScanError.
+func (s *StreameroStatus) GetLastScanError() OptString {
+	return s.LastScanError
+}
+
+// GetPendingChanges returns the value of PendingChanges.
+func (s *StreameroStatus) GetPendingChanges() OptInt {
+	return s.PendingChanges
+}
+
+// SetIndexedItems sets the value of IndexedItems.
+func (s *StreameroStatus) SetIndexedItems(val int) {
+	s.IndexedItems = val
+}
+
+// SetIndexedAt sets the value of IndexedAt.
+func (s *StreameroStatus) SetIndexedAt(val OptDateTime) {
+	s.IndexedAt = val
+}
+
+// SetIndexError sets the value of IndexError.
+func (s *StreameroStatus) SetIndexError(val OptString) {
+	s.IndexError = val
+}
+
+// SetLastScanAt sets the value of LastScanAt.
+func (s *StreameroStatus) SetLastScanAt(val OptDateTime) {
+	s.LastScanAt = val
+}
+
+// SetLastScanError sets the value of LastScanError.
+func (s *StreameroStatus) SetLastScanError(val OptString) {
+	s.LastScanError = val
+}
+
+// SetPendingChanges sets the value of PendingChanges.
+func (s *StreameroStatus) SetPendingChanges(val OptInt) {
+	s.PendingChanges = val
+}
+
+// Ref: #/components/schemas/StreameroTestRequest
+type StreameroTestRequest struct {
+	URL    string    `json:"url"`
+	ApiKey OptString `json:"apiKey"`
+}
+
+// GetURL returns the value of URL.
+func (s *StreameroTestRequest) GetURL() string {
+	return s.URL
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *StreameroTestRequest) GetApiKey() OptString {
+	return s.ApiKey
+}
+
+// SetURL sets the value of URL.
+func (s *StreameroTestRequest) SetURL(val string) {
+	s.URL = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *StreameroTestRequest) SetApiKey(val OptString) {
+	s.ApiKey = val
+}
+
+// Ref: #/components/schemas/StreameroTestResult
+type StreameroTestResult struct {
+	Ok         bool               `json:"ok"`
+	ErrorCode  OptString          `json:"errorCode"`
+	Message    OptString          `json:"message"`
+	ServerName OptString          `json:"serverName"`
+	Version    OptString          `json:"version"`
+	Libraries  []StreameroLibrary `json:"libraries"`
+}
+
+// GetOk returns the value of Ok.
+func (s *StreameroTestResult) GetOk() bool {
+	return s.Ok
+}
+
+// GetErrorCode returns the value of ErrorCode.
+func (s *StreameroTestResult) GetErrorCode() OptString {
+	return s.ErrorCode
+}
+
+// GetMessage returns the value of Message.
+func (s *StreameroTestResult) GetMessage() OptString {
+	return s.Message
+}
+
+// GetServerName returns the value of ServerName.
+func (s *StreameroTestResult) GetServerName() OptString {
+	return s.ServerName
+}
+
+// GetVersion returns the value of Version.
+func (s *StreameroTestResult) GetVersion() OptString {
+	return s.Version
+}
+
+// GetLibraries returns the value of Libraries.
+func (s *StreameroTestResult) GetLibraries() []StreameroLibrary {
+	return s.Libraries
+}
+
+// SetOk sets the value of Ok.
+func (s *StreameroTestResult) SetOk(val bool) {
+	s.Ok = val
+}
+
+// SetErrorCode sets the value of ErrorCode.
+func (s *StreameroTestResult) SetErrorCode(val OptString) {
+	s.ErrorCode = val
+}
+
+// SetMessage sets the value of Message.
+func (s *StreameroTestResult) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetServerName sets the value of ServerName.
+func (s *StreameroTestResult) SetServerName(val OptString) {
+	s.ServerName = val
+}
+
+// SetVersion sets the value of Version.
+func (s *StreameroTestResult) SetVersion(val OptString) {
+	s.Version = val
+}
+
+// SetLibraries sets the value of Libraries.
+func (s *StreameroTestResult) SetLibraries(val []StreameroLibrary) {
+	s.Libraries = val
+}
+
+// Ref: #/components/schemas/StreameroUser
+type StreameroUser struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	// Administrator in Streamero (never makes anyone an administrator here).
+	IsAdmin        bool      `json:"isAdmin"`
+	Disabled       bool      `json:"disabled"`
+	LinkedUserId   OptInt64  `json:"linkedUserId"`
+	LinkedUsername OptString `json:"linkedUsername"`
+}
+
+// GetID returns the value of ID.
+func (s *StreameroUser) GetID() string {
+	return s.ID
+}
+
+// GetUsername returns the value of Username.
+func (s *StreameroUser) GetUsername() string {
+	return s.Username
+}
+
+// GetIsAdmin returns the value of IsAdmin.
+func (s *StreameroUser) GetIsAdmin() bool {
+	return s.IsAdmin
+}
+
+// GetDisabled returns the value of Disabled.
+func (s *StreameroUser) GetDisabled() bool {
+	return s.Disabled
+}
+
+// GetLinkedUserId returns the value of LinkedUserId.
+func (s *StreameroUser) GetLinkedUserId() OptInt64 {
+	return s.LinkedUserId
+}
+
+// GetLinkedUsername returns the value of LinkedUsername.
+func (s *StreameroUser) GetLinkedUsername() OptString {
+	return s.LinkedUsername
+}
+
+// SetID sets the value of ID.
+func (s *StreameroUser) SetID(val string) {
+	s.ID = val
+}
+
+// SetUsername sets the value of Username.
+func (s *StreameroUser) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetIsAdmin sets the value of IsAdmin.
+func (s *StreameroUser) SetIsAdmin(val bool) {
+	s.IsAdmin = val
+}
+
+// SetDisabled sets the value of Disabled.
+func (s *StreameroUser) SetDisabled(val bool) {
+	s.Disabled = val
+}
+
+// SetLinkedUserId sets the value of LinkedUserId.
+func (s *StreameroUser) SetLinkedUserId(val OptInt64) {
+	s.LinkedUserId = val
+}
+
+// SetLinkedUsername sets the value of LinkedUsername.
+func (s *StreameroUser) SetLinkedUsername(val OptString) {
+	s.LinkedUsername = val
+}
+
+// SyncStreameroAccepted is response for SyncStreamero operation.
+type SyncStreameroAccepted struct{}
+
 // Ref: #/components/schemas/SystemInfo
 type SystemInfo struct {
 	Product      string    `json:"product"`
@@ -29008,6 +31235,12 @@ func (s *TransferMode) UnmarshalText(data []byte) error {
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+// UnlinkMyIdentityNoContent is response for UnlinkMyIdentity operation.
+type UnlinkMyIdentityNoContent struct{}
+
+// UnlinkUserIdentityNoContent is response for UnlinkUserIdentity operation.
+type UnlinkUserIdentityNoContent struct{}
 
 // Ref: #/components/schemas/UnreadCount
 type UnreadCount struct {

@@ -166,6 +166,14 @@ type Handler interface {
 	//
 	// POST /music/metadataprofiles
 	CreateMetadataProfile(ctx context.Context, req *MetadataProfileInput) (*MetadataProfile, error)
+	// CreateNotificationChannel implements createNotificationChannel operation.
+	//
+	// `personal: false` (administrators) sends the chosen events of everyone; `personal: true` sends the
+	// caller's own request and issue events. Personal channels of non-administrators may not use `webhook`
+	// or `apprise` and cannot reach private network addresses.
+	//
+	// POST /notificationchannels
+	CreateNotificationChannel(ctx context.Context, req *NotificationChannelInput) (*NotificationChannel, error)
 	// CreateQualityProfile implements createQualityProfile operation.
 	//
 	// Qualities of the kind that the item list leaves out are added at the end as not allowed.
@@ -287,6 +295,12 @@ type Handler interface {
 	//
 	// DELETE /movies/{id}
 	DeleteMovie(ctx context.Context, params DeleteMovieParams) error
+	// DeleteNotificationChannel implements deleteNotificationChannel operation.
+	//
+	// Remove a channel.
+	//
+	// DELETE /notificationchannels/{id}
+	DeleteNotificationChannel(ctx context.Context, params DeleteNotificationChannelParams) error
 	// DeleteQualityProfile implements deleteQualityProfile operation.
 	//
 	// Remove a quality profile (administrators).
@@ -550,6 +564,18 @@ type Handler interface {
 	//
 	// GET /settings/music
 	GetMusicSettings(ctx context.Context) (*MusicSettings, error)
+	// GetNotificationChannel implements getNotificationChannel operation.
+	//
+	// One channel (its owner, or administrators for shared channels).
+	//
+	// GET /notificationchannels/{id}
+	GetNotificationChannel(ctx context.Context, params GetNotificationChannelParams) (*NotificationChannel, error)
+	// GetNotificationSettings implements getNotificationSettings operation.
+	//
+	// Address for links and the mail server (administrators).
+	//
+	// GET /settings/notifications
+	GetNotificationSettings(ctx context.Context) (*NotificationSettings, error)
 	// GetQualityProfile implements getQualityProfile operation.
 	//
 	// One quality profile.
@@ -606,6 +632,12 @@ type Handler interface {
 	//
 	// GET /settings
 	GetSettings(ctx context.Context) (*Settings, error)
+	// GetStreameroSettings implements getStreameroSettings operation.
+	//
+	// The Streamero connection (administrators).
+	//
+	// GET /mediaserver/streamero
+	GetStreameroSettings(ctx context.Context) (*StreameroSettings, error)
 	// GetSystemInfo implements getSystemInfo operation.
 	//
 	// Unauthenticated. Clients use it to check a server address and whether first-run setup is needed.
@@ -727,6 +759,22 @@ type Handler interface {
 	//
 	// GET /series/{id}/seasons/{number}/releases
 	InteractiveSearchSeason(ctx context.Context, params InteractiveSearchSeasonParams) (*InteractiveSearch, error)
+	// LinkMyIdentity implements linkMyIdentity operation.
+	//
+	// Checks the credentials at the provider like a provider sign-in, then links that account to the
+	// caller. 409 `identity_taken` when it is linked to someone else. Rate-limited and counted towards the
+	// sign-in ban.
+	//
+	// POST /auth/identities/{provider}
+	LinkMyIdentity(ctx context.Context, req *ProviderCredentials, params LinkMyIdentityParams) (*LinkedIdentity, error)
+	// LinkUserIdentity implements linkUserIdentity operation.
+	//
+	// `subject` is the provider's id for the account (for Streamero: from
+	// `GET /mediaserver/streamero/users`). The provider's administrator flag never makes the user an
+	// administrator here.
+	//
+	// PUT /users/{id}/identities/{provider}
+	LinkUserIdentity(ctx context.Context, req *LinkIdentityRequest, params LinkUserIdentityParams) (*LinkedIdentity, error)
 	// ListApiKeys implements listApiKeys operation.
 	//
 	// Own API keys.
@@ -843,6 +891,19 @@ type Handler interface {
 	//
 	// GET /movies
 	ListMovies(ctx context.Context, params ListMoviesParams) (*MovieList, error)
+	// ListMyIdentities implements listMyIdentities operation.
+	//
+	// Accounts at other services linked to the caller.
+	//
+	// GET /auth/identities
+	ListMyIdentities(ctx context.Context) ([]LinkedIdentity, error)
+	// ListNotificationChannels implements listNotificationChannels operation.
+	//
+	// Without `personal`: the channels for everyone (administrators). With `personal=true`: the caller's
+	// own channels (any signed-in user).
+	//
+	// GET /notificationchannels
+	ListNotificationChannels(ctx context.Context, params ListNotificationChannelsParams) ([]NotificationChannel, error)
 	// ListNotifications implements listNotifications operation.
 	//
 	// Polling-friendly: pass the largest id seen as `since` to get only newer ones (oldest first then);
@@ -929,6 +990,18 @@ type Handler interface {
 	//
 	// GET /auth/sessions
 	ListSessions(ctx context.Context) ([]Session, error)
+	// ListStreameroLibraries implements listStreameroLibraries operation.
+	//
+	// Streamero's libraries with the root folders that match them (administrators).
+	//
+	// GET /mediaserver/streamero/libraries
+	ListStreameroLibraries(ctx context.Context) ([]StreameroLibrary, error)
+	// ListStreameroUsers implements listStreameroUsers operation.
+	//
+	// Streamero accounts and the Locarr users they are linked to (administrators).
+	//
+	// GET /mediaserver/streamero/users
+	ListStreameroUsers(ctx context.Context) ([]StreameroUser, error)
 	// ListTasks implements listTasks operation.
 	//
 	// Scheduled tasks and recent job history (administrators).
@@ -960,6 +1033,18 @@ type Handler interface {
 	//
 	// POST /auth/login
 	Login(ctx context.Context, req *LoginRequest) (*SignedInHeaders, error)
+	// LoginWithProvider implements loginWithProvider operation.
+	//
+	// For `password` providers (Streamero): the username and password (and, when the service asks,
+	// `totpCode`) are checked at the service and never stored (D-063). A linked account signs in its
+	// Locarr user; an unknown one creates a requester only when the provider settings allow it, otherwise
+	// 403 `identity_not_linked`. Errors: 401 `invalid_credentials`, 401 `totp_required` (the password was
+	// right; send it again with `totpCode`), 401 `invalid_totp`, 404 `not_found` (unknown or disabled
+	// provider), 503 `provider_unavailable`. Rate-limited and counted towards the sign-in ban like
+	// `/auth/login`.
+	//
+	// POST /auth/providers/{id}/login
+	LoginWithProvider(ctx context.Context, req *ProviderLoginRequest, params LoginWithProviderParams) (*SignedInHeaders, error)
 	// Logout implements logout operation.
 	//
 	// End the current session.
@@ -1357,6 +1442,12 @@ type Handler interface {
 	//
 	// POST /indexers/sources/{id}/sync
 	SyncIndexerSource(ctx context.Context, params SyncIndexerSourceParams) (*IndexerSourceSyncResult, error)
+	// SyncStreamero implements syncStreamero operation.
+	//
+	// Refresh the list of titles Streamero already has (administrators).
+	//
+	// POST /mediaserver/streamero/sync
+	SyncStreamero(ctx context.Context) error
 	// TestDownloadClient implements testDownloadClient operation.
 	//
 	// Always answers 200 with the outcome. With `id`, password and API key left out are taken from that
@@ -1379,6 +1470,31 @@ type Handler interface {
 	//
 	// POST /indexers/test
 	TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (*IndexerTestResult, error)
+	// TestNotificationChannel implements testNotificationChannel operation.
+	//
+	// Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
+	//
+	// POST /notificationchannels/test
+	TestNotificationChannel(ctx context.Context, req *NotificationChannelTestRequest) (*NotificationTestResult, error)
+	// TestStreamero implements testStreamero operation.
+	//
+	// Always 200 with the outcome. Without `apiKey` the stored key is used. `errorCode` is `unreachable`,
+	// `auth_failed`, `not_admin`, `not_streamero`, `address_blocked` or `invalid`.
+	//
+	// POST /mediaserver/streamero/test
+	TestStreamero(ctx context.Context, req *StreameroTestRequest) (*StreameroTestResult, error)
+	// UnlinkMyIdentity implements unlinkMyIdentity operation.
+	//
+	// Remove the caller's link to a provider.
+	//
+	// DELETE /auth/identities/{provider}
+	UnlinkMyIdentity(ctx context.Context, params UnlinkMyIdentityParams) error
+	// UnlinkUserIdentity implements unlinkUserIdentity operation.
+	//
+	// Remove a user's link to a provider (administrators).
+	//
+	// DELETE /users/{id}/identities/{provider}
+	UnlinkUserIdentity(ctx context.Context, params UnlinkUserIdentityParams) error
 	// UpdateAlbum implements updateAlbum operation.
 	//
 	// `releaseId` picks an edition and keeps it; 0 lets Locarr choose again.
@@ -1476,6 +1592,18 @@ type Handler interface {
 	//
 	// PUT /settings/music
 	UpdateMusicSettings(ctx context.Context, req *MusicSettings) (*MusicSettings, error)
+	// UpdateNotificationChannel implements updateNotificationChannel operation.
+	//
+	// Secrets left out are kept; "" removes one. `personal` cannot change.
+	//
+	// PUT /notificationchannels/{id}
+	UpdateNotificationChannel(ctx context.Context, req *NotificationChannelInput, params UpdateNotificationChannelParams) (*NotificationChannel, error)
+	// UpdateNotificationSettings implements updateNotificationSettings operation.
+	//
+	// Leave `smtp.password` out to keep it, "" to remove it.
+	//
+	// PUT /settings/notifications
+	UpdateNotificationSettings(ctx context.Context, req *NotificationSettingsInput) (*NotificationSettings, error)
 	// UpdateQualityDefinitions implements updateQualityDefinitions operation.
 	//
 	// All or nothing; returns every definition afterwards.
@@ -1531,6 +1659,12 @@ type Handler interface {
 	//
 	// PATCH /settings
 	UpdateSettings(ctx context.Context, req *UpdateSettingsRequest) (*Settings, error)
+	// UpdateStreameroSettings implements updateStreameroSettings operation.
+	//
+	// Leave `apiKey` out to keep it, send "" to remove it. The key is checked before it is stored.
+	//
+	// PUT /mediaserver/streamero
+	UpdateStreameroSettings(ctx context.Context, req *StreameroSettingsInput) (*StreameroSettings, error)
 	// UpdateUser implements updateUser operation.
 	//
 	// The last enabled administrator cannot be demoted or disabled.

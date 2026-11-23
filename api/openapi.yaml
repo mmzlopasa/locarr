@@ -48,6 +48,7 @@ tags:
   - name: issues
   - name: notifications
   - name: invites
+  - name: mediaserver
 security:
   - sessionToken: []
 paths:
@@ -4549,6 +4550,348 @@ paths:
               schema: {$ref: "#/components/schemas/UnreadCount"}
         default:
           $ref: "#/components/responses/Error"
+  /auth/providers/{id}/login:
+    post:
+      operationId: loginWithProvider
+      summary: Sign in with another service's account
+      description: |
+        For `password` providers (Streamero): the username and password (and, when the
+        service asks, `totpCode`) are checked at the service and never stored (D-063).
+        A linked account signs in its Locarr user; an unknown one creates a requester
+        only when the provider settings allow it, otherwise 403 `identity_not_linked`.
+        Errors: 401 `invalid_credentials`, 401 `totp_required` (the password was right;
+        send it again with `totpCode`), 401 `invalid_totp`, 404 `not_found` (unknown or
+        disabled provider), 503 `provider_unavailable`. Rate-limited and counted towards
+        the sign-in ban like `/auth/login`.
+      tags: [auth]
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string, pattern: "^[a-z0-9-]{1,32}$"}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ProviderLoginRequest"}
+      responses:
+        "200":
+          $ref: "#/components/responses/SignedIn"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/identities:
+    get:
+      operationId: listMyIdentities
+      summary: Accounts at other services linked to the caller
+      tags: [auth]
+      responses:
+        "200":
+          description: Identities
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/LinkedIdentity"}
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/identities/{provider}:
+    parameters:
+      - $ref: "#/components/parameters/Provider"
+    post:
+      operationId: linkMyIdentity
+      summary: Link the caller to their account at a provider (by signing in there)
+      description: |
+        Checks the credentials at the provider like a provider sign-in, then links that
+        account to the caller. 409 `identity_taken` when it is linked to someone else.
+        Rate-limited and counted towards the sign-in ban.
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ProviderCredentials"}
+      responses:
+        "200":
+          description: Linked
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/LinkedIdentity"}
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: unlinkMyIdentity
+      summary: Remove the caller's link to a provider
+      tags: [auth]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /users/{id}/identities/{provider}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+      - $ref: "#/components/parameters/Provider"
+    put:
+      operationId: linkUserIdentity
+      summary: Link a user to an account at a provider (administrators)
+      description: |
+        `subject` is the provider's id for the account (for Streamero: from
+        `GET /mediaserver/streamero/users`). The provider's administrator flag never
+        makes the user an administrator here.
+      tags: [users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/LinkIdentityRequest"}
+      responses:
+        "200":
+          description: Linked
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/LinkedIdentity"}
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: unlinkUserIdentity
+      summary: Remove a user's link to a provider (administrators)
+      tags: [users]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /mediaserver/streamero:
+    get:
+      operationId: getStreameroSettings
+      summary: The Streamero connection (administrators)
+      tags: [mediaserver]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/StreameroSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateStreameroSettings
+      summary: Change the Streamero connection (administrators)
+      description: Leave `apiKey` out to keep it, send "" to remove it. The key is checked before it is stored.
+      tags: [mediaserver]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/StreameroSettingsInput"}
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/StreameroSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+  /mediaserver/streamero/test:
+    post:
+      operationId: testStreamero
+      summary: Check a Streamero address and key (administrators)
+      description: |
+        Always 200 with the outcome. Without `apiKey` the stored key is used. `errorCode`
+        is `unreachable`, `auth_failed`, `not_admin`, `not_streamero`, `address_blocked`
+        or `invalid`.
+      tags: [mediaserver]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/StreameroTestRequest"}
+      responses:
+        "200":
+          description: Outcome
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/StreameroTestResult"}
+        default:
+          $ref: "#/components/responses/Error"
+  /mediaserver/streamero/libraries:
+    get:
+      operationId: listStreameroLibraries
+      summary: Streamero's libraries with the root folders that match them (administrators)
+      tags: [mediaserver]
+      responses:
+        "200":
+          description: Libraries
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/StreameroLibrary"}
+        default:
+          $ref: "#/components/responses/Error"
+  /mediaserver/streamero/sync:
+    post:
+      operationId: syncStreamero
+      summary: Refresh the list of titles Streamero already has (administrators)
+      tags: [mediaserver]
+      responses:
+        "202":
+          description: Queued
+        default:
+          $ref: "#/components/responses/Error"
+  /mediaserver/streamero/users:
+    get:
+      operationId: listStreameroUsers
+      summary: Streamero accounts and the Locarr users they are linked to (administrators)
+      tags: [mediaserver]
+      responses:
+        "200":
+          description: Accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/StreameroUser"}
+        default:
+          $ref: "#/components/responses/Error"
+  /notificationchannels:
+    get:
+      operationId: listNotificationChannels
+      summary: Notification channels
+      description: |
+        Without `personal`: the channels for everyone (administrators). With
+        `personal=true`: the caller's own channels (any signed-in user).
+      tags: [notifications]
+      parameters:
+        - name: personal
+          in: query
+          required: false
+          schema: {type: boolean}
+      responses:
+        "200":
+          description: Channels
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/NotificationChannel"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createNotificationChannel
+      summary: Add a channel
+      description: |
+        `personal: false` (administrators) sends the chosen events of everyone;
+        `personal: true` sends the caller's own request and issue events. Personal
+        channels of non-administrators may not use `webhook` or `apprise` and cannot
+        reach private network addresses.
+      tags: [notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/NotificationChannelInput"}
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/NotificationChannel"}
+        default:
+          $ref: "#/components/responses/Error"
+  /notificationchannels/test:
+    post:
+      operationId: testNotificationChannel
+      summary: Send a test message through a channel configuration
+      description: Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
+      tags: [notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/NotificationChannelTestRequest"}
+      responses:
+        "200":
+          description: Outcome
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/NotificationTestResult"}
+        default:
+          $ref: "#/components/responses/Error"
+  /notificationchannels/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: getNotificationChannel
+      summary: One channel (its owner, or administrators for shared channels)
+      tags: [notifications]
+      responses:
+        "200":
+          description: Channel
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/NotificationChannel"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateNotificationChannel
+      summary: Change a channel
+      description: Secrets left out are kept; "" removes one. `personal` cannot change.
+      tags: [notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/NotificationChannelInput"}
+      responses:
+        "200":
+          description: Channel
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/NotificationChannel"}
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteNotificationChannel
+      summary: Remove a channel
+      tags: [notifications]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/notifications:
+    get:
+      operationId: getNotificationSettings
+      summary: Address for links and the mail server (administrators)
+      tags: [settings]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/NotificationSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateNotificationSettings
+      summary: Change the address for links and the mail server (administrators)
+      description: Leave `smtp.password` out to keep it, "" to remove it.
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/NotificationSettingsInput"}
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/NotificationSettings"}
+        default:
+          $ref: "#/components/responses/Error"
 components:
   securitySchemes:
     sessionToken:
@@ -4558,6 +4901,11 @@ components:
         A session token from /auth/login or /setup, or an API key (`lk_…`). The web client's
         HttpOnly `locarr_session` cookie and the `X-Api-Key` header are accepted too.
   parameters:
+    Provider:
+      name: provider
+      in: path
+      required: true
+      schema: {type: string, pattern: "^[a-z0-9-]{1,32}$"}
     ID:
       name: id
       in: path
@@ -7412,6 +7760,7 @@ components:
         popularity: {type: number, format: double}
         rating: {type: number, format: double}
         movieId: {type: integer, format: int64, description: Set when the movie is in the library.}
+        streameroUrl: {type: string, description: "Link to the title in Streamero's web client when Streamero already has it (D-064)."}
     AddOptions:
       type: object
       required: [rootFolderId, qualityProfileId]
@@ -8420,6 +8769,7 @@ components:
         status: {type: string}
         rating: {type: number, format: double}
         seriesId: {type: integer, format: int64, description: Set when the series is in the library.}
+        streameroUrl: {type: string, description: "Link to the title in Streamero's web client when Streamero already has it (D-064)."}
     SeriesAddOptions:
       type: object
       required: [rootFolderId, qualityProfileId]
@@ -8814,6 +9164,7 @@ components:
         status: {$ref: "#/components/schemas/DiscoverStatus"}
         status4k: {$ref: "#/components/schemas/DiscoverStatus"}
         requestId: {type: integer, format: int64, description: The caller's open request for it.}
+        streameroUrl: {type: string, description: "Link to the title in Streamero's web client when Streamero already has it (D-064)."}
     DiscoverListKey:
       type: string
       enum: [trending, trending_movies, trending_series, popular_movies, popular_series, upcoming_movies, now_playing,
@@ -9189,3 +9540,257 @@ components:
       required: [unread]
       properties:
         unread: {type: integer}
+    ProviderCredentials:
+      type: object
+      required: [username, password]
+      properties:
+        username: {type: string, minLength: 1, maxLength: 64}
+        password: {type: string, minLength: 1, maxLength: 256}
+        totpCode: {type: string, maxLength: 32, description: "The service's two-factor or recovery code, when it asks (totp_required)."}
+    ProviderLoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: {type: string, minLength: 1, maxLength: 64}
+        password: {type: string, minLength: 1, maxLength: 256}
+        totpCode: {type: string, maxLength: 32}
+        device: {$ref: "#/components/schemas/DeviceInfo"}
+        useCookie: {type: boolean}
+    LinkedIdentity:
+      type: object
+      required: [provider, subject, username, userId, linkedAt]
+      properties:
+        provider: {type: string}
+        subject: {type: string, description: "The provider's id for the account."}
+        username: {type: string, description: The account's name at the provider (when it was last seen).}
+        userId: {type: integer, format: int64}
+        linkedAt: {type: string, format: date-time}
+        lastLoginAt: {type: string, format: date-time}
+    LinkIdentityRequest:
+      type: object
+      required: [subject]
+      properties:
+        subject: {type: string, minLength: 1, maxLength: 100}
+        username: {type: string, maxLength: 64}
+    PathMapping:
+      type: object
+      required: [locarrPath, streameroPath]
+      properties:
+        locarrPath: {type: string, minLength: 1, maxLength: 4096, description: "Folder as Locarr sees it (e.g. /data/movies)."}
+        streameroPath: {type: string, minLength: 1, maxLength: 4096, description: "The same folder as Streamero sees it (e.g. /media/movies)."}
+    StreameroLibraryMapping:
+      type: object
+      required: [rootFolderId, libraryIds]
+      properties:
+        rootFolderId: {type: integer, format: int64}
+        libraryIds:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 64}
+    StreameroSignIn:
+      type: object
+      required: [enabled, autoCreate]
+      properties:
+        enabled: {type: boolean, description: Offer "Sign in with Streamero" on the sign-in page.}
+        autoCreate: {type: boolean, description: An unknown Streamero account creates a requester with the default quotas.}
+    StreameroStatus:
+      type: object
+      required: [indexedItems]
+      properties:
+        indexedItems: {type: integer, description: Titles Streamero has (movies and series).}
+        indexedAt: {type: string, format: date-time}
+        indexError: {type: string}
+        lastScanAt: {type: string, format: date-time}
+        lastScanError: {type: string}
+        pendingChanges: {type: integer, description: Library changes waiting to be sent.}
+    StreameroSettings:
+      type: object
+      required: [enabled, url, publicUrl, apiKey, pathMappings, libraryMap, signIn, status]
+      properties:
+        enabled: {type: boolean}
+        url: {type: string, description: "Address Locarr uses (e.g. http://streamero:8787)."}
+        publicUrl: {type: string, description: "Address for \"Watch in Streamero\" links in browsers (empty = url)."}
+        apiKey: {$ref: "#/components/schemas/SecretState"}
+        pathMappings: {type: array, items: {$ref: "#/components/schemas/PathMapping"}}
+        libraryMap: {type: array, items: {$ref: "#/components/schemas/StreameroLibraryMapping"}}
+        signIn: {$ref: "#/components/schemas/StreameroSignIn"}
+        status: {$ref: "#/components/schemas/StreameroStatus"}
+    StreameroSettingsInput:
+      type: object
+      required: [enabled, url]
+      properties:
+        enabled: {type: boolean}
+        url: {type: string, maxLength: 500}
+        publicUrl: {type: string, maxLength: 500}
+        apiKey: {type: string, maxLength: 500, description: "Write-only. Omit to keep, an empty string to clear."}
+        pathMappings:
+          type: array
+          maxItems: 50
+          items: {$ref: "#/components/schemas/PathMapping"}
+        libraryMap:
+          type: array
+          maxItems: 100
+          items: {$ref: "#/components/schemas/StreameroLibraryMapping"}
+        signIn: {$ref: "#/components/schemas/StreameroSignIn"}
+    StreameroTestRequest:
+      type: object
+      required: [url]
+      properties:
+        url: {type: string, minLength: 1, maxLength: 500}
+        apiKey: {type: string, maxLength: 500}
+    StreameroLibrary:
+      type: object
+      required: [id, name, kind, paths, itemCount, suggestedRootFolderIds]
+      properties:
+        id: {type: string}
+        name: {type: string}
+        kind: {type: string, description: "movies, shows, music, mixed, books, audiobooks or photos"}
+        paths: {type: array, items: {type: string}}
+        itemCount: {type: integer}
+        suggestedRootFolderIds:
+          type: array
+          description: Root folders whose path (after the path mappings) is inside one of this library's folders, or holds one.
+          items: {type: integer, format: int64}
+    StreameroTestResult:
+      type: object
+      required: [ok, libraries]
+      properties:
+        ok: {type: boolean}
+        errorCode: {type: string}
+        message: {type: string}
+        serverName: {type: string}
+        version: {type: string}
+        libraries: {type: array, items: {$ref: "#/components/schemas/StreameroLibrary"}}
+    StreameroUser:
+      type: object
+      required: [id, username, isAdmin, disabled]
+      properties:
+        id: {type: string}
+        username: {type: string}
+        isAdmin: {type: boolean, description: Administrator in Streamero (never makes anyone an administrator here).}
+        disabled: {type: boolean}
+        linkedUserId: {type: integer, format: int64}
+        linkedUsername: {type: string}
+    NotificationChannelKind:
+      type: string
+      enum: [webhook, ntfy, gotify, discord, telegram, pushover, email, apprise]
+    NotificationEventType:
+      type: string
+      enum: [request.created, request.approved, request.declined, request.available, request.partial, request.failed,
+        request.comment, issue.created, issue.comment, issue.resolved, issue.reopened, library.grabbed, library.imported,
+        library.upgraded, library.download_failed, library.import_failed, health.warning, test]
+    NotificationChannelSettings:
+      type: object
+      description: Plain settings; each kind uses only its own fields.
+      properties:
+        url: {type: string, maxLength: 2000, description: "webhook: target URL; ntfy and gotify: server; apprise: notify endpoint (e.g. http://apprise:8000/notify/apprise)."}
+        method: {type: string, enum: [POST, PUT], description: webhook}
+        topic: {type: string, maxLength: 200, description: ntfy}
+        priority: {type: integer, minimum: -2, maximum: 10, description: "ntfy 1–5, gotify 0–10, pushover -2–2"}
+        tags:
+          type: array
+          maxItems: 20
+          items: {type: string, maxLength: 50}
+          description: ntfy tags (emoji short codes or words)
+        tag: {type: string, maxLength: 200, description: apprise tag}
+        chatId: {type: string, maxLength: 100, description: telegram}
+        sound: {type: string, maxLength: 50, description: pushover}
+        device: {type: string, maxLength: 100, description: pushover}
+        to:
+          type: array
+          maxItems: 20
+          items: {type: string, maxLength: 254}
+          description: e-mail recipients
+        username: {type: string, maxLength: 80, description: discord sender name}
+        language: {type: string, enum: [en, hr], description: Language of the messages.}
+    NotificationChannelSecrets:
+      type: object
+      description: Write-only. Omit a field to keep it, "" to remove it.
+      properties:
+        token: {type: string, maxLength: 500, description: "ntfy access token, gotify application token, pushover application token"}
+        secret: {type: string, maxLength: 500, description: webhook HMAC secret}
+        botToken: {type: string, maxLength: 500, description: telegram}
+        webhookUrl: {type: string, maxLength: 2000, description: discord webhook URL}
+        userKey: {type: string, maxLength: 500, description: pushover user or group key}
+        password: {type: string, maxLength: 500, description: "ntfy password (with username in settings)"}
+    NotificationChannelInput:
+      type: object
+      required: [name, kind, events]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 100}
+        kind: {$ref: "#/components/schemas/NotificationChannelKind"}
+        enabled: {type: boolean, default: true}
+        personal: {type: boolean, default: false}
+        events:
+          type: array
+          maxItems: 30
+          items: {$ref: "#/components/schemas/NotificationEventType"}
+        settings: {$ref: "#/components/schemas/NotificationChannelSettings"}
+        secrets: {$ref: "#/components/schemas/NotificationChannelSecrets"}
+    NotificationChannel:
+      type: object
+      required: [id, name, kind, enabled, personal, events, settings, secretsSet, failures, createdAt, updatedAt]
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+        kind: {$ref: "#/components/schemas/NotificationChannelKind"}
+        enabled: {type: boolean}
+        personal: {type: boolean}
+        ownerId: {type: integer, format: int64, description: The owner of a personal channel.}
+        events: {type: array, items: {$ref: "#/components/schemas/NotificationEventType"}}
+        settings: {$ref: "#/components/schemas/NotificationChannelSettings"}
+        secretsSet:
+          type: array
+          description: Names of the secrets that are set.
+          items: {type: string}
+        failures: {type: integer, description: Deliveries that failed in a row (0 = fine).}
+        lastError: {type: string}
+        lastErrorAt: {type: string, format: date-time}
+        lastSentAt: {type: string, format: date-time}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+    NotificationChannelTestRequest:
+      type: object
+      required: [channel]
+      properties:
+        id: {type: integer, format: int64, description: Take secrets left out from this channel.}
+        channel: {$ref: "#/components/schemas/NotificationChannelInput"}
+    NotificationTestResult:
+      type: object
+      required: [ok]
+      properties:
+        ok: {type: boolean}
+        message: {type: string}
+    SmtpSecurity:
+      type: string
+      enum: [none, starttls, tls]
+    SmtpSettings:
+      type: object
+      required: [host, port, security, username, password, from]
+      properties:
+        host: {type: string}
+        port: {type: integer}
+        security: {$ref: "#/components/schemas/SmtpSecurity"}
+        username: {type: string}
+        password: {$ref: "#/components/schemas/SecretState"}
+        from: {type: string}
+    SmtpSettingsInput:
+      type: object
+      properties:
+        host: {type: string, maxLength: 253}
+        port: {type: integer, minimum: 0, maximum: 65535}
+        security: {$ref: "#/components/schemas/SmtpSecurity"}
+        username: {type: string, maxLength: 200}
+        password: {type: string, maxLength: 500, description: "Write-only. Omit to keep, an empty string to clear."}
+        from: {type: string, maxLength: 254}
+    NotificationSettings:
+      type: object
+      required: [baseUrl, smtp]
+      properties:
+        baseUrl: {type: string, description: "Locarr's address for links in messages (e.g. https://locarr.example.com)."}
+        smtp: {$ref: "#/components/schemas/SmtpSettings"}
+    NotificationSettingsInput:
+      type: object
+      properties:
+        baseUrl: {type: string, maxLength: 500}
+        smtp: {$ref: "#/components/schemas/SmtpSettingsInput"}

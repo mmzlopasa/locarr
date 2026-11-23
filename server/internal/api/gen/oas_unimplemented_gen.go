@@ -249,6 +249,17 @@ func (UnimplementedHandler) CreateMetadataProfile(ctx context.Context, req *Meta
 	return r, ht.ErrNotImplemented
 }
 
+// CreateNotificationChannel implements createNotificationChannel operation.
+//
+// `personal: false` (administrators) sends the chosen events of everyone; `personal: true` sends the
+// caller's own request and issue events. Personal channels of non-administrators may not use `webhook`
+// or `apprise` and cannot reach private network addresses.
+//
+// POST /notificationchannels
+func (UnimplementedHandler) CreateNotificationChannel(ctx context.Context, req *NotificationChannelInput) (r *NotificationChannel, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateQualityProfile implements createQualityProfile operation.
 //
 // Qualities of the kind that the item list leaves out are added at the end as not allowed.
@@ -427,6 +438,15 @@ func (UnimplementedHandler) DeleteMetadataProfile(ctx context.Context, params De
 //
 // DELETE /movies/{id}
 func (UnimplementedHandler) DeleteMovie(ctx context.Context, params DeleteMovieParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteNotificationChannel implements deleteNotificationChannel operation.
+//
+// Remove a channel.
+//
+// DELETE /notificationchannels/{id}
+func (UnimplementedHandler) DeleteNotificationChannel(ctx context.Context, params DeleteNotificationChannelParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -822,6 +842,24 @@ func (UnimplementedHandler) GetMusicSettings(ctx context.Context) (r *MusicSetti
 	return r, ht.ErrNotImplemented
 }
 
+// GetNotificationChannel implements getNotificationChannel operation.
+//
+// One channel (its owner, or administrators for shared channels).
+//
+// GET /notificationchannels/{id}
+func (UnimplementedHandler) GetNotificationChannel(ctx context.Context, params GetNotificationChannelParams) (r *NotificationChannel, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetNotificationSettings implements getNotificationSettings operation.
+//
+// Address for links and the mail server (administrators).
+//
+// GET /settings/notifications
+func (UnimplementedHandler) GetNotificationSettings(ctx context.Context) (r *NotificationSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetQualityProfile implements getQualityProfile operation.
 //
 // One quality profile.
@@ -902,6 +940,15 @@ func (UnimplementedHandler) GetSeriesNaming(ctx context.Context) (r *SeriesNamin
 //
 // GET /settings
 func (UnimplementedHandler) GetSettings(ctx context.Context) (r *Settings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetStreameroSettings implements getStreameroSettings operation.
+//
+// The Streamero connection (administrators).
+//
+// GET /mediaserver/streamero
+func (UnimplementedHandler) GetStreameroSettings(ctx context.Context) (r *StreameroSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1083,6 +1130,28 @@ func (UnimplementedHandler) InteractiveSearchSeason(ctx context.Context, params 
 	return r, ht.ErrNotImplemented
 }
 
+// LinkMyIdentity implements linkMyIdentity operation.
+//
+// Checks the credentials at the provider like a provider sign-in, then links that account to the
+// caller. 409 `identity_taken` when it is linked to someone else. Rate-limited and counted towards the
+// sign-in ban.
+//
+// POST /auth/identities/{provider}
+func (UnimplementedHandler) LinkMyIdentity(ctx context.Context, req *ProviderCredentials, params LinkMyIdentityParams) (r *LinkedIdentity, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// LinkUserIdentity implements linkUserIdentity operation.
+//
+// `subject` is the provider's id for the account (for Streamero: from
+// `GET /mediaserver/streamero/users`). The provider's administrator flag never makes the user an
+// administrator here.
+//
+// PUT /users/{id}/identities/{provider}
+func (UnimplementedHandler) LinkUserIdentity(ctx context.Context, req *LinkIdentityRequest, params LinkUserIdentityParams) (r *LinkedIdentity, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListApiKeys implements listApiKeys operation.
 //
 // Own API keys.
@@ -1256,6 +1325,25 @@ func (UnimplementedHandler) ListMovies(ctx context.Context, params ListMoviesPar
 	return r, ht.ErrNotImplemented
 }
 
+// ListMyIdentities implements listMyIdentities operation.
+//
+// Accounts at other services linked to the caller.
+//
+// GET /auth/identities
+func (UnimplementedHandler) ListMyIdentities(ctx context.Context) (r []LinkedIdentity, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListNotificationChannels implements listNotificationChannels operation.
+//
+// Without `personal`: the channels for everyone (administrators). With `personal=true`: the caller's
+// own channels (any signed-in user).
+//
+// GET /notificationchannels
+func (UnimplementedHandler) ListNotificationChannels(ctx context.Context, params ListNotificationChannelsParams) (r []NotificationChannel, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListNotifications implements listNotifications operation.
 //
 // Polling-friendly: pass the largest id seen as `since` to get only newer ones (oldest first then);
@@ -1384,6 +1472,24 @@ func (UnimplementedHandler) ListSessions(ctx context.Context) (r []Session, _ er
 	return r, ht.ErrNotImplemented
 }
 
+// ListStreameroLibraries implements listStreameroLibraries operation.
+//
+// Streamero's libraries with the root folders that match them (administrators).
+//
+// GET /mediaserver/streamero/libraries
+func (UnimplementedHandler) ListStreameroLibraries(ctx context.Context) (r []StreameroLibrary, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListStreameroUsers implements listStreameroUsers operation.
+//
+// Streamero accounts and the Locarr users they are linked to (administrators).
+//
+// GET /mediaserver/streamero/users
+func (UnimplementedHandler) ListStreameroUsers(ctx context.Context) (r []StreameroUser, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListTasks implements listTasks operation.
 //
 // Scheduled tasks and recent job history (administrators).
@@ -1427,6 +1533,21 @@ func (UnimplementedHandler) ListWantedEpisodes(ctx context.Context, params ListW
 //
 // POST /auth/login
 func (UnimplementedHandler) Login(ctx context.Context, req *LoginRequest) (r *SignedInHeaders, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// LoginWithProvider implements loginWithProvider operation.
+//
+// For `password` providers (Streamero): the username and password (and, when the service asks,
+// `totpCode`) are checked at the service and never stored (D-063). A linked account signs in its
+// Locarr user; an unknown one creates a requester only when the provider settings allow it, otherwise
+// 403 `identity_not_linked`. Errors: 401 `invalid_credentials`, 401 `totp_required` (the password was
+// right; send it again with `totpCode`), 401 `invalid_totp`, 404 `not_found` (unknown or disabled
+// provider), 503 `provider_unavailable`. Rate-limited and counted towards the sign-in ban like
+// `/auth/login`.
+//
+// POST /auth/providers/{id}/login
+func (UnimplementedHandler) LoginWithProvider(ctx context.Context, req *ProviderLoginRequest, params LoginWithProviderParams) (r *SignedInHeaders, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2016,6 +2137,15 @@ func (UnimplementedHandler) SyncIndexerSource(ctx context.Context, params SyncIn
 	return r, ht.ErrNotImplemented
 }
 
+// SyncStreamero implements syncStreamero operation.
+//
+// Refresh the list of titles Streamero already has (administrators).
+//
+// POST /mediaserver/streamero/sync
+func (UnimplementedHandler) SyncStreamero(ctx context.Context) error {
+	return ht.ErrNotImplemented
+}
+
 // TestDownloadClient implements testDownloadClient operation.
 //
 // Always answers 200 with the outcome. With `id`, password and API key left out are taken from that
@@ -2045,6 +2175,43 @@ func (UnimplementedHandler) TestIndexer(ctx context.Context, params TestIndexerP
 // POST /indexers/test
 func (UnimplementedHandler) TestIndexerConfig(ctx context.Context, req *IndexerTestRequest) (r *IndexerTestResult, _ error) {
 	return r, ht.ErrNotImplemented
+}
+
+// TestNotificationChannel implements testNotificationChannel operation.
+//
+// Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
+//
+// POST /notificationchannels/test
+func (UnimplementedHandler) TestNotificationChannel(ctx context.Context, req *NotificationChannelTestRequest) (r *NotificationTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TestStreamero implements testStreamero operation.
+//
+// Always 200 with the outcome. Without `apiKey` the stored key is used. `errorCode` is `unreachable`,
+// `auth_failed`, `not_admin`, `not_streamero`, `address_blocked` or `invalid`.
+//
+// POST /mediaserver/streamero/test
+func (UnimplementedHandler) TestStreamero(ctx context.Context, req *StreameroTestRequest) (r *StreameroTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UnlinkMyIdentity implements unlinkMyIdentity operation.
+//
+// Remove the caller's link to a provider.
+//
+// DELETE /auth/identities/{provider}
+func (UnimplementedHandler) UnlinkMyIdentity(ctx context.Context, params UnlinkMyIdentityParams) error {
+	return ht.ErrNotImplemented
+}
+
+// UnlinkUserIdentity implements unlinkUserIdentity operation.
+//
+// Remove a user's link to a provider (administrators).
+//
+// DELETE /users/{id}/identities/{provider}
+func (UnimplementedHandler) UnlinkUserIdentity(ctx context.Context, params UnlinkUserIdentityParams) error {
+	return ht.ErrNotImplemented
 }
 
 // UpdateAlbum implements updateAlbum operation.
@@ -2192,6 +2359,24 @@ func (UnimplementedHandler) UpdateMusicSettings(ctx context.Context, req *MusicS
 	return r, ht.ErrNotImplemented
 }
 
+// UpdateNotificationChannel implements updateNotificationChannel operation.
+//
+// Secrets left out are kept; "" removes one. `personal` cannot change.
+//
+// PUT /notificationchannels/{id}
+func (UnimplementedHandler) UpdateNotificationChannel(ctx context.Context, req *NotificationChannelInput, params UpdateNotificationChannelParams) (r *NotificationChannel, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateNotificationSettings implements updateNotificationSettings operation.
+//
+// Leave `smtp.password` out to keep it, "" to remove it.
+//
+// PUT /settings/notifications
+func (UnimplementedHandler) UpdateNotificationSettings(ctx context.Context, req *NotificationSettingsInput) (r *NotificationSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateQualityDefinitions implements updateQualityDefinitions operation.
 //
 // All or nothing; returns every definition afterwards.
@@ -2271,6 +2456,15 @@ func (UnimplementedHandler) UpdateSeriesNaming(ctx context.Context, req *SeriesN
 //
 // PATCH /settings
 func (UnimplementedHandler) UpdateSettings(ctx context.Context, req *UpdateSettingsRequest) (r *Settings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateStreameroSettings implements updateStreameroSettings operation.
+//
+// Leave `apiKey` out to keep it, send "" to remove it. The key is checked before it is stored.
+//
+// PUT /mediaserver/streamero
+func (UnimplementedHandler) UpdateStreameroSettings(ctx context.Context, req *StreameroSettingsInput) (r *StreameroSettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
