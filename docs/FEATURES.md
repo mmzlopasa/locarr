@@ -64,10 +64,11 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Cue slike (jedna datoteka po albumu) i pisanje tagova osim FLAC-a (D-044)
 
 ## Titlovi (P7)
-- [ ] Jezični profili po filmu/seriji, forsirani i za gluhe
-- [ ] Provideri: OpenSubtitles.com i drugi javni, ocjena podudaranja po izdanju
-- [ ] Automatska pretraga nakon uvoza, ponovna pretraga za nedostajuće, ručni izbor
-- [ ] Sinkronizacija titla po zvuku, pretvorba formata
+- [x] Jezični profili (redoslijed jezika, forsirani, za gluhe, zapisi u videu, granica), zadani po vrsti, po filmu/seriji i za cijelu biblioteku (D-057)
+- [x] Provideri: OpenSubtitles.com (hash, ID-evi, prijava, kvota), SubDL, Jimaku; zdravlje, čekanje, kvote; ocjena podudaranja po izdanju (D-055, D-056) — provjereno s lažnim providerima napravljenim iz javne dokumentacije
+- [x] Automatska pretraga nakon uvoza, ponovna pretraga za nedostajuće raspoređena kroz dan, nadogradnje, ručni izbor, odbacivanje, skeniranje postojećih titlova
+- [x] Sinkronizacija titla po zvuku (vlastita, uz mali ffmpeg u slici), prema ugrađenom ili drugom titlu, pomak, broj sličica, pretvorba u UTF-8 i SRT (D-054, D-058)
+- [ ] Provideri bez javnog API-ja (Podnapisi, Addic7ed, Titlovi.com) — nisu uključeni (D-055)
 
 ## Zahtjevi (P8)
 - [ ] Otkrivanje: trending, popularno, nadolazeće, preporuke, pretraga

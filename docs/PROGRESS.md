@@ -1,7 +1,18 @@
 # Napredak
 
 ## Trenutna faza
-P0–P6 gotovi.
+P0–P7 gotovi.
+
+## Gotovo u P7 (branch `phase/P7-subtitles`)
+- Migracija `00008_subtitles.sql`: `subtitle_profiles`, `subtitle_item_profiles`, `subtitle_providers` (šifrirani ključ i lozinka, zdravlje, kvota), `subtitles`, `media_file_tracks` + `media_file_probes`, `subtitle_history`, `subtitle_blacklist`, `subtitle_state` (što nedostaje i stanje pretrage po stavci).
+- `internal/subtitles/subfmt` (SRT, ASS/SSA, VTT: čitanje, provjera, pomak, skaliranje, pisanje, ASS → SRT), `charset` (BOM, UTF-16 bez BOM-a, UTF-8, kodne stranice po jeziku: CP1250/ISO-8859-2, CP1251/KOI8-R/ISO-8859-5, CP1252, CP1253–1257), `tracks` (zaglavlja Matroske i MP4-a u čistom Go-u, `trackstest` piše MKV s PCM zvukom i tekstualnim titlom te MP4), `sync` (govor iz energije, FFT korelacija, omjeri broja sličica, ffmpeg za zvuk i ugrađene titlove; D-058), `languages.FromContainer` (ISO 639-2 → kodovi).
+- Provideri (D-055): `providers/opensubtitles` (moviehash, prijava i `base_url`, pretraga po hashu/ID-evima pa po imenu, `/download` s kvotom, 406/429), `providers/subdl`, `providers/jimaku`, zajednički pacer i ZIP; lažni provideri `providers/fake` (i u `locarr-fakes` pod `/opensubtitles`, `/subdl`, `/jimaku`).
+- `internal/subtitles`: profili i dodjela (stavka, sve, odabrane), stanje i objašnjenje, bodovanje (D-056), automatska i ručna pretraga, preuzimanje i spremanje (dekodiranje, provjera, SRT po izboru, `Ime.hr.srt`, nadogradnja u koš), skeniranje diska i zapisa, alati (pregled, pomak, broj sličica, sinkronizacija, brisanje s odbacivanjem), poslovi `subtitles-search-item` (nakon uvoza preko `Imported` kuke filmova i serija), `subtitles-missing` (svaki sat, budžet po satu), `subtitles-scan` (dnevno), `subtitles-sync` (zaseban red).
+- Slika: statični ffmpeg 8.1.3 samo za zvuk i tekstualne titlove (~3,5 MB, D-054).
+- API: `/subtitles/profiles*`, `/subtitles/settings`, `/subtitles/providers*` (test, health/reset), `/subtitles/items/{ref}` (+ `search`, `results`, `download`, `blacklist`), `/subtitles/{id}` (+ `preview`, `shift`, `fps`, `sync`), `/subtitles/wanted*`, `/subtitles/scan`.
+- Web (EN + HR): kartica Titlovi na filmu i ladica titlova po epizodi (traženi jezici, datoteke s alatima, zapisi u videu, ručna pretraga s bodovima), redak za titlove u „Zašto nije stiglo", događaji titlova na vremenskoj crti, Postavke → Titlovi (mogućnosti, profili, provideri sa zdravljem i kvotom, biblioteka), Nedostaje → Titlovi, profil titlova u uređivanju filma i serije.
+- Testovi: jedinični (kodne stranice s fixturama uklj. CP1250 hrvatski, SRT/ASS/VTT, bodovanje, moviehash, imena, MKV/MP4 čitač s generiranim fixturama i fuzz, pronalazak pomaka i omjera, govor; ffmpeg sinkronizacija na generiranom MKV-u), integracijski kroz HTTP API s lažnim providerima (`TestSubtitlesMovieFlow`, `TestSubtitlesEpisodeAfterImport`, `TestSubtitleProviderFailures`: krivi ključ, ograničenje, nedostupan provider, potrošena kvota; `TestSubtitleAudioSync`), Vitest, Playwright `e2e/subtitles.spec.ts` (uvoz filma → titl → ručni izbor → pomak).
+- Korisnička dokumentacija: `docs/user/subtitles.md`.
 
 ## Gotovo u P5 (branch `phase/P5-series`)
 - Migracija `00007_series.sql`: `series`, `seasons`, `episodes` (scenska numeracija, uklonjene epizode s datotekom), `download_refs` s okidačima (D-045).
@@ -97,6 +108,7 @@ P0–P6 gotovi.
 4. P1 ostatak: proxyji po indexeru testirani protiv stvarnog HTTP/SOCKS5 proxyja; uvoz Prowlarr/Jackett provjeren samo prema lažnim izvorima.
 
 ## Poznati problemi / napomene
+- Titlovi: provideri su provjereni samo s lažnim servisima iz javne dokumentacije (stvarni ključevi nisu korišteni u testovima); Podnapisi, Addic7ed i Titlovi.com nisu uključeni (D-055). Zapisi se čitaju samo iz MKV/MP4. Kod nadogradnje videa pod novim imenom titlovi starog imena ostaju na disku; Locarr ih više ne veže uz film i traži nove pod novim imenom. Sinkronizacija nalazi jedan pomak za cijeli titl.
 - Serije: slike za serije dodane s TVDB-a se ne prikazuju (D-053); vrijeme emitiranja za TMDb serije je procjena (20:00 u zoni mreže, D-046); scensko mapiranje je samo ručno i za sada samo kroz API (`PATCH /episodes/{id}`), web ga prikazuje ali ne uređuje (D-047); sortiranje popisa serija po sljedećem emitiranju ili broju nedostajućih epizoda zbraja sve epizode (~130 ms na 5000 serija).
 - Glazba: cue slike (jedan FLAC po albumu) se ne uvoze, tagovi se pišu samo u FLAC (D-044); WAV/APE/DSD se ne čitaju. Uvoz postojeće biblioteke i osvježavanje velikih diskografija su spori zbog 1 zahtjeva/s prema MusicBrainzu. Izvođači nemaju vlastitu sliku (prikazuje se omot najnovijeg albuma).
 - Filmovi: podaci o zapisima iz imena (D-033); NFO i slike uz film, Trakt/IMDb popisi još nisu napravljeni. Film obrisan i ponovno dodan dok mu staro izdanje još seeda u klijentu ne grabi isto izdanje ponovno („already queued" na vremenskoj crti).
