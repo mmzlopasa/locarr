@@ -84,10 +84,10 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Obavijesti: webhook, ntfy, Gotify, Discord, Telegram, e-mail, Apprise-kompatibilno
 
 ## Uvoz setupa (P10)
-- [ ] Sonarr, Radarr, Lidarr: biblioteka, profili kvalitete, custom formati, root mape, oznake, indexeri, download klijenti, liste
-- [ ] Prowlarr: indexeri; Bazarr: jezični profili i provideri; Seerr/Overseerr: korisnici i zahtjevi
-- [ ] qBittorrent, SABnzbd: veza i kategorije
-- [ ] Pregled prije uvoza, izvori se nikad ne mijenjaju
+- [x] Sonarr, Radarr, Lidarr: biblioteka (datoteke na mjestu, praćenje), profili kvalitete, definicije veličina, custom formati, profili izdanja i kašnjenja, root mape, oznake, imena, indexeri, download klijenti, mapiranja putanja, liste i isključenja (liste samo TMDb za filmove; Locarr nema popise za serije i glazbu), povijest i blokirana izdanja (D-067 – D-071)
+- [x] Prowlarr: indexeri (kao izvor ili pojedinačno, D-073); Bazarr: jezični profili, provideri i profil po naslovu; Seerr/Overseerr: korisnici s dozvolama, zahtjevi, problemi, kvote (korisnici i zahtjevi provjereni s lažnim Overseerrom, stvarni samo za verziju i kvote)
+- [x] qBittorrent, SABnzbd: veza, kategorije, prijedlozi mapiranja putanja
+- [x] Pregled prije uvoza (stvori/spoji/preskoči s razlozima, sukobi), uvoz u pozadini s napretkom, izvještaj (JSON), popis za prelazak; izvori se nikad ne mijenjaju, ponovni uvoz ne duplicira (D-072)
 
 ## Vremenska crta i nadzor (P11)
 - [ ] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)

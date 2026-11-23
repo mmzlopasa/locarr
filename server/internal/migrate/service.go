@@ -877,7 +877,7 @@ type refreshArgs struct {
 }
 
 // RunRefresh refreshes the metadata of what an import added, one item at a
-// time within the providers' rate limits (D-064).
+// time within the providers' rate limits (D-071).
 func (s *Service) RunRefresh(ctx context.Context, j *jobs.Job) error {
 	var a refreshArgs
 	if err := j.Decode(&a); err != nil {

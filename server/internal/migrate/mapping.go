@@ -13,7 +13,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/requests"
 )
 
-// The mapping rules (D-063). Every rule is a plain table or a small function
+// The mapping rules (D-069). Every rule is a plain table or a small function
 // so the preview can say exactly why something became what it became.
 
 // qualityAliases are source quality names that differ from Locarr's ladder
