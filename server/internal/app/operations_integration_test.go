@@ -406,9 +406,13 @@ func TestHousekeepingRetention(t *testing.T) {
 		exec(`INSERT INTO timeline_events (item_ref, at, type, message) VALUES ('movie:1', ?, 'added', '')`, db.Millis(at))
 		exec(`INSERT INTO search_log (started_at, duration_ms, source, search_type, query, params, result_count, error_count)
 			VALUES (?, 1, 'automatic', 'movie', 'q', '{}', 0, 0)`, db.Millis(at))
-		exec(`INSERT INTO downloads (client_name, client_item_id, protocol, title, status, state, added_at, updated_at, finished_at)
-			VALUES ('c', ?, 'torrent', 't', 'imported', 'seeding', ?, ?, ?)`, fmt.Sprint(at.Unix()), db.Millis(at), db.Millis(at), db.Millis(at))
-		exec(`INSERT INTO download_events (download_id, at, type) VALUES (last_insert_rowid(), ?, 'grabbed')`, db.Millis(at))
+		var id int64
+		if err := d.W.QueryRow(`INSERT INTO downloads (client_name, client_item_id, protocol, title, status, state, added_at, updated_at, finished_at)
+			VALUES ('c', ?, 'torrent', 't', 'imported', 'seeding', ?, ?, ?) RETURNING id`, fmt.Sprint(at.Unix()), db.Millis(at), db.Millis(at),
+			db.Millis(at)).Scan(&id); err != nil {
+			t.Fatal(err)
+		}
+		exec(`INSERT INTO download_events (download_id, at, type) VALUES (?, ?, 'grabbed')`, id, db.Millis(at))
 	}
 	res, err := e.deps.Housekeeping.Prune(context.Background())
 	if err != nil {
