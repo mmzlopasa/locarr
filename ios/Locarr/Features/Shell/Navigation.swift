@@ -103,15 +103,16 @@ enum AppSection: String, Hashable, CaseIterable, Identifiable {
     }
 
     /// Rows of the More tab (library managers).
+    @MainActor
     static func moreRows(session: Session) -> [[AppSection]] {
-        var manage: [AppSection] = [.requests, .issues, .inbox, .search]
-        if !session.canManageRequests { manage = [.requests, .issues, .inbox, .search] }
+        let manage: [AppSection] = [.requests, .issues, .inbox, .search]
         var system: [AppSection] = [.wanted, .calendar, .history]
         if session.isAdmin { system += [.health, .indexers, .clients, .folders] }
         return [manage, system, session.isAdmin ? [.web, .settings] : [.settings]]
     }
 
     /// iPad sidebar groups.
+    @MainActor
     static func sidebar(session: Session) -> [(String, [AppSection])] {
         if !session.canManageLibrary {
             return [("", [.discover, .search, .requests, .issues, .inbox]), (L("nav.app"), [.settings])]
