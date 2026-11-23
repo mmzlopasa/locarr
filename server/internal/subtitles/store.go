@@ -111,8 +111,8 @@ func SidecarPath(video, lang string, forced, hi bool, ext string) string {
 	return name + "." + strings.TrimPrefix(ext, ".")
 }
 
-// prepared is a decoded, checked subtitle ready to be written.
-type prepared struct {
+// Prepared is a decoded, checked subtitle ready to be written.
+type Prepared struct {
 	Text     string
 	Format   string
 	Encoding string
@@ -121,30 +121,30 @@ type prepared struct {
 
 // Prepare decodes a downloaded file (any encoding, CRLF), checks that it is
 // a usable SRT/ASS/SSA/VTT and converts it to SRT when asked.
-func Prepare(data []byte, lang, preferred string) (prepared, error) {
+func Prepare(data []byte, lang, preferred string) (Prepared, error) {
 	text, enc, err := charset.Decode(data, lang)
 	if err != nil {
-		return prepared{}, err
+		return Prepared{}, err
 	}
 	text = subfmt.Normalize(text)
 	doc, err := subfmt.Parse(text)
 	if err != nil {
-		return prepared{}, err
+		return Prepared{}, err
 	}
 	if err := doc.Valid(); err != nil {
-		return prepared{}, err
+		return Prepared{}, err
 	}
 	format := doc.Format
 	if preferred == subfmt.SRT && format != subfmt.SRT {
 		format = subfmt.SRT
 		if text, err = doc.Write(subfmt.SRT); err != nil {
-			return prepared{}, err
+			return Prepared{}, err
 		}
 	} else if format == subfmt.SRT {
 		// Rewritten: numbered, sorted, LF line endings, no BOM.
 		text, _ = doc.Write(subfmt.SRT)
 	}
-	return prepared{Text: text, Format: format, Encoding: enc, Cues: len(doc.Cues)}, nil
+	return Prepared{Text: text, Format: format, Encoding: enc, Cues: len(doc.Cues)}, nil
 }
 
 // writeAtomic writes data next to dst and renames it into place; an
