@@ -43,6 +43,11 @@ tags:
   - name: calendar
   - name: images
   - name: recyclebin
+  - name: discover
+  - name: requests
+  - name: issues
+  - name: notifications
+  - name: invites
 security:
   - sessionToken: []
 paths:
@@ -3834,6 +3839,716 @@ paths:
               schema: {type: string}
         default:
           $ref: "#/components/responses/Error"
+  /auth/providers:
+    get:
+      operationId: listAuthProviders
+      summary: Ways to sign in
+      description: |
+        `local` (username and password) always; other providers (Streamero, P9) appear
+        here once configured. See D-058.
+      tags: [auth]
+      security: []
+      responses:
+        "200":
+          description: Providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/AuthProvider"}
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/invite:
+    post:
+      operationId: checkInvite
+      summary: Check an invite code before signing up
+      tags: [invites]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/InviteCodeRequest"}
+      responses:
+        "200":
+          description: The invite is valid
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/InviteCheck"}
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/signup:
+    post:
+      operationId: signUp
+      summary: Create an account with an invite code and sign in
+      tags: [invites]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SignUpRequest"}
+      responses:
+        "200":
+          $ref: "#/components/responses/SignedIn"
+        default:
+          $ref: "#/components/responses/Error"
+  /invites:
+    get:
+      operationId: listInvites
+      summary: Invite links (administrators)
+      tags: [invites]
+      responses:
+        "200":
+          description: Invites
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/Invite"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createInvite
+      summary: Create an invite link (administrators)
+      description: The code is only returned once.
+      tags: [invites]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/InviteInput"}
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/CreatedInvite"}
+        default:
+          $ref: "#/components/responses/Error"
+  /invites/{id}:
+    delete:
+      operationId: revokeInvite
+      summary: Revoke an invite (administrators)
+      tags: [invites]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "204":
+          description: Revoked
+        default:
+          $ref: "#/components/responses/Error"
+  /users/{id}/quotas:
+    get:
+      operationId: getUserQuotas
+      summary: A user's request quotas (administrators)
+      tags: [users]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Quotas
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/UserQuotas"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: setUserQuotas
+      summary: Override a user's request quotas (administrators)
+      tags: [users]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/QuotaOverrides"}
+      responses:
+        "200":
+          description: Quotas
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/UserQuotas"}
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/requests:
+    get:
+      operationId: getRequestSettings
+      summary: Request defaults and quotas (administrators)
+      tags: [requests]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/RequestSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: putRequestSettings
+      summary: Change request defaults and quotas (administrators)
+      tags: [requests]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/RequestSettings"}
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/RequestSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+  /discover:
+    get:
+      operationId: getDiscover
+      summary: The discover home (rows of titles)
+      description: Trending, popular, upcoming, now playing, top rated, recently added and the caller's requests, with library and request state.
+      tags: [discover]
+      responses:
+        "200":
+          description: Rows
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/DiscoverHome"}
+        default:
+          $ref: "#/components/responses/Error"
+  /discover/lists/{list}:
+    get:
+      operationId: getDiscoverList
+      summary: One discover list, paged
+      tags: [discover]
+      parameters:
+        - name: list
+          in: path
+          required: true
+          schema: {$ref: "#/components/schemas/DiscoverListKey"}
+        - name: page
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 50}
+        - name: id
+          in: query
+          required: false
+          description: Genre, studio (company) or network id for the by-genre, studio and network lists.
+          schema: {type: integer, format: int64, minimum: 1}
+      responses:
+        "200":
+          description: Titles
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/DiscoverPage"}
+        default:
+          $ref: "#/components/responses/Error"
+  /discover/genres:
+    get:
+      operationId: getDiscoverGenres
+      summary: Genres, studios and networks to browse by
+      tags: [discover]
+      responses:
+        "200":
+          description: Genres
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/DiscoverFacets"}
+        default:
+          $ref: "#/components/responses/Error"
+  /discover/search:
+    get:
+      operationId: discoverSearch
+      summary: Search movies, series, people and music
+      tags: [discover]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: {type: string, minLength: 1, maxLength: 200}
+        - name: type
+          in: query
+          required: false
+          description: all = movies, series, people and artists; music = artists and albums.
+          schema: {type: string, enum: [all, movie, series, person, music]}
+      responses:
+        "200":
+          description: Results
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/DiscoverPage"}
+        default:
+          $ref: "#/components/responses/Error"
+  /discover/movies/{tmdbId}:
+    get:
+      operationId: getDiscoverMovie
+      summary: A movie's title page
+      tags: [discover]
+      parameters:
+        - $ref: "#/components/parameters/TmdbID"
+      responses:
+        "200":
+          description: Title
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/TitleDetail"}
+        default:
+          $ref: "#/components/responses/Error"
+  /discover/series/{tmdbId}:
+    get:
+      operationId: getDiscoverSeries
+      summary: A series' title page with per-season availability
+      tags: [discover]
+      parameters:
+        - $ref: "#/components/parameters/TmdbID"
+      responses:
+        "200":
+          description: Title
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/TitleDetail"}
+        default:
+          $ref: "#/components/responses/Error"
+  /discover/people/{tmdbId}:
+    get:
+      operationId: getDiscoverPerson
+      summary: A person and what they are known for
+      tags: [discover]
+      parameters:
+        - $ref: "#/components/parameters/TmdbID"
+      responses:
+        "200":
+          description: Person
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/PersonDetail"}
+        default:
+          $ref: "#/components/responses/Error"
+  /discover/artists/{mbid}:
+    get:
+      operationId: getDiscoverArtist
+      summary: An artist and their albums
+      tags: [discover]
+      parameters:
+        - $ref: "#/components/parameters/MBID"
+      responses:
+        "200":
+          description: Artist
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/TitleDetail"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests:
+    get:
+      operationId: listRequests
+      summary: Requests
+      description: Requesters see their own; users who manage requests see everyone's.
+      tags: [requests]
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema: {$ref: "#/components/schemas/RequestFilter"}
+        - name: kind
+          in: query
+          required: false
+          schema: {$ref: "#/components/schemas/RequestKind"}
+        - name: mine
+          in: query
+          required: false
+          schema: {type: boolean}
+        - name: userId
+          in: query
+          required: false
+          schema: {type: integer, format: int64, minimum: 1}
+        - name: offset
+          in: query
+          required: false
+          schema: {type: integer, minimum: 0, maximum: 1000000}
+        - name: limit
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 200}
+      responses:
+        "200":
+          description: Requests, newest first
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/RequestList"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createRequest
+      summary: Request a movie, series seasons, an album or an artist
+      description: |
+        Approved at once when the user may auto-approve this kind. Refused with
+        `already_requested`, `already_available`, `quota_exceeded` or `forbidden`.
+      tags: [requests]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/CreateRequest"}
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaRequest"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/summary:
+    get:
+      operationId: getRequestSummary
+      summary: Counts for badges and the caller's remaining quota
+      tags: [requests]
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/RequestSummary"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/approve:
+    post:
+      operationId: approveRequests
+      summary: Approve several pending requests
+      tags: [requests]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/RequestIds"}
+      responses:
+        "200":
+          description: Outcome per request
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/BulkResult"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/{id}:
+    get:
+      operationId: getRequest
+      summary: One request
+      tags: [requests]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Request
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaRequest"}
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateRequest
+      summary: Change a request's options before it is approved (managers)
+      tags: [requests]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/RequestOptions"}
+      responses:
+        "200":
+          description: Request
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaRequest"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/{id}/approve:
+    post:
+      operationId: approveRequest
+      summary: Approve a request (managers), optionally changing its options
+      tags: [requests]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/RequestOptions"}
+      responses:
+        "200":
+          description: Request
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaRequest"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/{id}/decline:
+    post:
+      operationId: declineRequest
+      summary: Decline a request with a reason (managers)
+      tags: [requests]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/DeclineRequest"}
+      responses:
+        "200":
+          description: Request
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaRequest"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/{id}/cancel:
+    post:
+      operationId: cancelRequest
+      summary: Withdraw an own request while it is pending
+      tags: [requests]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Request
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaRequest"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/{id}/retry:
+    post:
+      operationId: retryRequest
+      summary: Search again for a failed request (managers)
+      tags: [requests]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Request
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MediaRequest"}
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/{id}/comments:
+    get:
+      operationId: listRequestComments
+      summary: Comments on a request
+      tags: [requests]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Comments, oldest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/Comment"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addRequestComment
+      summary: Comment on a request
+      tags: [requests]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/CommentInput"}
+      responses:
+        "201":
+          description: Comment
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Comment"}
+        default:
+          $ref: "#/components/responses/Error"
+  /issues:
+    get:
+      operationId: listIssues
+      summary: Reported problems
+      description: Requesters see their own; managers see everyone's.
+      tags: [issues]
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema: {$ref: "#/components/schemas/IssueStatus"}
+        - name: offset
+          in: query
+          required: false
+          schema: {type: integer, minimum: 0, maximum: 1000000}
+        - name: limit
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 200}
+      responses:
+        "200":
+          description: Issues, newest first
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/IssueList"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createIssue
+      summary: Report a problem with an available title
+      tags: [issues]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/IssueInput"}
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Issue"}
+        default:
+          $ref: "#/components/responses/Error"
+  /issues/{id}:
+    get:
+      operationId: getIssue
+      summary: One issue
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Issue
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Issue"}
+        default:
+          $ref: "#/components/responses/Error"
+  /issues/{id}/resolve:
+    post:
+      operationId: resolveIssue
+      summary: Resolve an issue (managers), optionally searching for a replacement
+      description: |
+        With `searchReplacement` the current file(s) go to the recycle bin, their
+        release is blocklisted and Locarr searches again.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ResolveIssueRequest"}
+      responses:
+        "200":
+          description: Issue
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Issue"}
+        default:
+          $ref: "#/components/responses/Error"
+  /issues/{id}/reopen:
+    post:
+      operationId: reopenIssue
+      summary: Reopen a resolved issue (managers and the reporter)
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Issue
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Issue"}
+        default:
+          $ref: "#/components/responses/Error"
+  /issues/{id}/comments:
+    get:
+      operationId: listIssueComments
+      summary: Comments on an issue
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Comments, oldest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/Comment"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addIssueComment
+      summary: Comment on an issue
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/CommentInput"}
+      responses:
+        "201":
+          description: Comment
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Comment"}
+        default:
+          $ref: "#/components/responses/Error"
+  /notifications:
+    get:
+      operationId: listNotifications
+      summary: The caller's notifications
+      description: |
+        Polling-friendly: pass the largest id seen as `since` to get only newer ones
+        (oldest first then); without it the newest come first.
+      tags: [notifications]
+      parameters:
+        - name: since
+          in: query
+          required: false
+          schema: {type: integer, format: int64, minimum: 0}
+        - name: unread
+          in: query
+          required: false
+          schema: {type: boolean}
+        - name: limit
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 200}
+      responses:
+        "200":
+          description: Notifications
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/NotificationList"}
+        default:
+          $ref: "#/components/responses/Error"
+  /notifications/read:
+    post:
+      operationId: markNotificationsRead
+      summary: Mark notifications read
+      tags: [notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MarkReadRequest"}
+      responses:
+        "200":
+          description: Unread count after the change
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/UnreadCount"}
+        default:
+          $ref: "#/components/responses/Error"
 components:
   securitySchemes:
     sessionToken:
@@ -3982,6 +4697,21 @@ components:
         type: integer
         minimum: 0
         maximum: 100000
+    TmdbID:
+      name: tmdbId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    MBID:
+      name: mbid
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: "^[0-9a-fA-F-]{36}$"
   responses:
     SignedIn:
       description: Signed in
@@ -4227,6 +4957,16 @@ components:
         manageRequests:
           type: boolean
           description: Approve and decline other users' requests.
+        autoApproveMovies:
+          type: boolean
+          description: Movie requests are approved at once (autoApprove covers every kind).
+        autoApproveSeries:
+          type: boolean
+        autoApproveMusic:
+          type: boolean
+        autoApprove4k:
+          type: boolean
+          description: 4K requests are approved at once.
     User:
       type: object
       required: [id, username, role, permissions, language, disabled, totpEnabled, createdAt]
@@ -7920,3 +8660,532 @@ components:
         tokens:
           type: array
           items: {$ref: "#/components/schemas/NamingToken"}
+    AuthProvider:
+      type: object
+      required: [id, kind, name]
+      properties:
+        id: {type: string, description: "local, or a provider id such as streamero"}
+        kind: {type: string, enum: [password, redirect], description: "password = username and password form; redirect = sign in at the provider (reserved, D-058)"}
+        name: {type: string}
+    InviteCodeRequest:
+      type: object
+      required: [code]
+      properties:
+        code: {type: string, minLength: 1, maxLength: 100}
+    InviteCheck:
+      type: object
+      required: [role, instanceName]
+      properties:
+        role: {$ref: "#/components/schemas/Role"}
+        label: {type: string}
+        expiresAt: {type: string, format: date-time}
+        instanceName: {type: string}
+    SignUpRequest:
+      type: object
+      required: [code, username, password]
+      properties:
+        code: {type: string, minLength: 1, maxLength: 100}
+        username: {$ref: "#/components/schemas/Username"}
+        password: {$ref: "#/components/schemas/Password"}
+        language: {$ref: "#/components/schemas/Language"}
+        device: {$ref: "#/components/schemas/DeviceInfo"}
+        useCookie: {type: boolean}
+    QuotaRule:
+      type: object
+      description: At most `limit` requests in `days` days; limit 0 = unlimited.
+      required: [limit, days]
+      properties:
+        limit: {type: integer, minimum: 0, maximum: 10000}
+        days: {type: integer, minimum: 1, maximum: 365}
+    QuotaRules:
+      type: object
+      required: [movie, series, music]
+      properties:
+        movie: {$ref: "#/components/schemas/QuotaRule"}
+        series: {$ref: "#/components/schemas/QuotaRule"}
+        music: {$ref: "#/components/schemas/QuotaRule"}
+    QuotaOverrides:
+      type: object
+      description: A user's own rules; a missing kind uses the default.
+      properties:
+        movie: {$ref: "#/components/schemas/QuotaRule"}
+        series: {$ref: "#/components/schemas/QuotaRule"}
+        music: {$ref: "#/components/schemas/QuotaRule"}
+    QuotaStatus:
+      type: object
+      required: [limit, days, used, unlimited, custom]
+      properties:
+        limit: {type: integer}
+        days: {type: integer}
+        used: {type: integer}
+        remaining: {type: integer, description: Absent when unlimited.}
+        unlimited: {type: boolean}
+        custom: {type: boolean, description: The user has an own rule (not the default).}
+        nextSlotAt: {type: string, format: date-time, description: When the oldest counted request stops counting (only when none remain).}
+    UserQuotas:
+      type: object
+      required: [overrides, movie, series, music]
+      properties:
+        overrides: {$ref: "#/components/schemas/QuotaOverrides"}
+        movie: {$ref: "#/components/schemas/QuotaStatus"}
+        series: {$ref: "#/components/schemas/QuotaStatus"}
+        music: {$ref: "#/components/schemas/QuotaStatus"}
+    Invite:
+      type: object
+      required: [id, label, role, permissions, maxUses, uses, createdAt, revoked, expired]
+      properties:
+        id: {type: integer, format: int64}
+        label: {type: string}
+        role: {$ref: "#/components/schemas/Role"}
+        permissions: {$ref: "#/components/schemas/Permissions"}
+        quotas: {$ref: "#/components/schemas/QuotaOverrides"}
+        maxUses: {type: integer, description: 0 = unlimited}
+        uses: {type: integer}
+        expiresAt: {type: string, format: date-time}
+        createdAt: {type: string, format: date-time}
+        createdBy: {type: string}
+        revoked: {type: boolean}
+        expired: {type: boolean, description: Expired or used up.}
+    InviteInput:
+      type: object
+      required: [role]
+      properties:
+        label: {type: string, maxLength: 100}
+        role: {type: string, enum: [manager, requester]}
+        permissions: {$ref: "#/components/schemas/Permissions"}
+        quotas: {$ref: "#/components/schemas/QuotaOverrides"}
+        maxUses: {type: integer, minimum: 0, maximum: 1000}
+        expiresInDays: {type: integer, minimum: 1, maximum: 365, description: Default 7.}
+    CreatedInvite:
+      type: object
+      required: [invite, code]
+      properties:
+        invite: {$ref: "#/components/schemas/Invite"}
+        code: {type: string, description: "Only shown now; the link is /join#<code>."}
+    KindDefaults:
+      type: object
+      description: Where approved requests of one kind go. 0 = not chosen yet.
+      required: [qualityProfileId, rootFolderId, qualityProfile4kId, rootFolder4kId, tags]
+      properties:
+        qualityProfileId: {type: integer, format: int64, minimum: 0}
+        rootFolderId: {type: integer, format: int64, minimum: 0}
+        qualityProfile4kId: {type: integer, format: int64, minimum: 0, description: 4K track (movies and series).}
+        rootFolder4kId: {type: integer, format: int64, minimum: 0}
+        metadataProfileId: {type: integer, format: int64, minimum: 0, description: Music only.}
+        minimumAvailability: {$ref: "#/components/schemas/MinimumAvailability"}
+        tags:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 100}
+    RequestSettings:
+      type: object
+      required: [movie, series, music, quotas]
+      properties:
+        movie: {$ref: "#/components/schemas/KindDefaults"}
+        series: {$ref: "#/components/schemas/KindDefaults"}
+        music: {$ref: "#/components/schemas/KindDefaults"}
+        quotas: {$ref: "#/components/schemas/QuotaRules"}
+    DiscoverMediaType:
+      type: string
+      enum: [movie, series, person, artist, album]
+    DiscoverStatus:
+      type: string
+      description: |
+        none; pending (requested, waiting for approval); processing (approved, on its way);
+        partial (some seasons or tracks are here); available; in_library (added but not downloaded,
+        nobody asked); declined is never shown here.
+      enum: [none, pending, processing, partial, available, in_library]
+    DiscoverItem:
+      type: object
+      required: [mediaType, title, year, status, status4k]
+      properties:
+        mediaType: {$ref: "#/components/schemas/DiscoverMediaType"}
+        tmdbId: {type: integer, format: int64}
+        mbid: {type: string}
+        artistMbid: {type: string, description: An album's artist.}
+        title: {type: string}
+        subtitle: {type: string, description: "Album artist, a person's department, an artist's disambiguation."}
+        year: {type: integer}
+        date: {type: string}
+        overview: {type: string}
+        poster: {type: string, description: "TMDb image file (movies, series, people) or Cover Art file name (albums)."}
+        backdrop: {type: string}
+        rating: {type: number}
+        status: {$ref: "#/components/schemas/DiscoverStatus"}
+        status4k: {$ref: "#/components/schemas/DiscoverStatus"}
+        requestId: {type: integer, format: int64, description: The caller's open request for it.}
+    DiscoverListKey:
+      type: string
+      enum: [trending, trending_movies, trending_series, popular_movies, popular_series, upcoming_movies, now_playing,
+        top_rated_movies, top_rated_series, airing_series, genre_movies, genre_series, studio, network, recently_added]
+    DiscoverRow:
+      type: object
+      required: [key, items]
+      properties:
+        key: {$ref: "#/components/schemas/DiscoverListKey"}
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/DiscoverItem"}
+    DiscoverHome:
+      type: object
+      required: [rows, requests, metadataReady, musicReady]
+      properties:
+        rows:
+          type: array
+          items: {$ref: "#/components/schemas/DiscoverRow"}
+        requests:
+          type: array
+          description: The caller's latest requests.
+          items: {$ref: "#/components/schemas/MediaRequest"}
+        metadataReady: {type: boolean, description: A TMDb key is set.}
+        musicReady: {type: boolean}
+    DiscoverPage:
+      type: object
+      required: [items, page, totalPages]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/DiscoverItem"}
+        page: {type: integer}
+        totalPages: {type: integer}
+    Facet:
+      type: object
+      required: [id, name]
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+    DiscoverFacets:
+      type: object
+      required: [movieGenres, seriesGenres, studios, networks]
+      properties:
+        movieGenres: {type: array, items: {$ref: "#/components/schemas/Facet"}}
+        seriesGenres: {type: array, items: {$ref: "#/components/schemas/Facet"}}
+        studios: {type: array, items: {$ref: "#/components/schemas/Facet"}}
+        networks: {type: array, items: {$ref: "#/components/schemas/Facet"}}
+    CastMember:
+      type: object
+      required: [name]
+      properties:
+        personId: {type: integer, format: int64}
+        name: {type: string}
+        character: {type: string}
+        profile: {type: string}
+    SeasonAvailability:
+      type: object
+      required: [number, title, episodeCount, status, status4k]
+      properties:
+        number: {type: integer}
+        title: {type: string}
+        episodeCount: {type: integer}
+        airDate: {type: string}
+        poster: {type: string}
+        status: {$ref: "#/components/schemas/DiscoverStatus"}
+        status4k: {$ref: "#/components/schemas/DiscoverStatus"}
+        episodesAvailable: {type: integer}
+    RequestAbility:
+      type: object
+      required: [canRequest, canRequest4k, autoApprove, autoApprove4k]
+      properties:
+        canRequest: {type: boolean}
+        canRequest4k: {type: boolean}
+        autoApprove: {type: boolean}
+        autoApprove4k: {type: boolean}
+        canSetOptions: {type: boolean, description: May pick profile, root folder and tags.}
+        canReportIssue: {type: boolean, description: Available now (issues can be reported).}
+    TitleDetail:
+      type: object
+      required: [item, genres, cast, seasons, albums, requests, ability]
+      properties:
+        item: {$ref: "#/components/schemas/DiscoverItem"}
+        originalTitle: {type: string}
+        tagline: {type: string}
+        runtime: {type: integer}
+        genres: {type: array, items: {type: string}}
+        certification: {type: string}
+        releaseDate: {type: string}
+        studio: {type: string}
+        network: {type: string}
+        seriesStatus: {type: string}
+        trailerUrl: {type: string, description: "https://www.youtube.com/watch?v=… when TMDb lists a trailer."}
+        cast: {type: array, items: {$ref: "#/components/schemas/CastMember"}}
+        seasons: {type: array, items: {$ref: "#/components/schemas/SeasonAvailability"}}
+        albums:
+          type: array
+          description: An artist's albums with their state.
+          items: {$ref: "#/components/schemas/DiscoverItem"}
+        requests:
+          type: array
+          description: Open requests for this title (own ones for requesters).
+          items: {$ref: "#/components/schemas/MediaRequest"}
+        ability: {$ref: "#/components/schemas/RequestAbility"}
+        libraryRef: {type: string, description: "The library item (only for users who manage the library)."}
+    PersonDetail:
+      type: object
+      required: [tmdbId, name, knownFor]
+      properties:
+        tmdbId: {type: integer, format: int64}
+        name: {type: string}
+        biography: {type: string}
+        profile: {type: string}
+        birthday: {type: string}
+        department: {type: string}
+        knownFor: {type: array, items: {$ref: "#/components/schemas/DiscoverItem"}}
+    RequestKind:
+      type: string
+      enum: [movie, series, album, artist]
+    RequestStatus:
+      type: string
+      description: |
+        pending → approved → processing → partial / available; or declined, cancelled
+        (by the requester while pending) or failed (with the explainer's reason; it can still arrive).
+      enum: [pending, approved, declined, cancelled, processing, partial, available, failed]
+    RequestFilter:
+      type: string
+      enum: [all, pending, approved, declined, cancelled, processing, partial, available, failed, active]
+    UserRef:
+      type: object
+      required: [id, username]
+      properties:
+        id: {type: integer, format: int64}
+        username: {type: string}
+    RequestSeason:
+      type: object
+      required: [number, status]
+      properties:
+        number: {type: integer}
+        status: {$ref: "#/components/schemas/RequestStatus"}
+    RequestProgress:
+      type: object
+      required: [percent, downloads]
+      properties:
+        percent: {type: number, description: 0..1 over the active downloads.}
+        downloads: {type: integer}
+        state: {type: string}
+        etaSeconds: {type: integer}
+    MediaRequest:
+      type: object
+      required: [id, kind, is4k, status, title, year, seasons, allSeasons, futureSeasons, requestedBy, createdAt, updatedAt, tags, commentCount, canCancel, autoApproved]
+      properties:
+        id: {type: integer, format: int64}
+        kind: {$ref: "#/components/schemas/RequestKind"}
+        is4k: {type: boolean}
+        status: {$ref: "#/components/schemas/RequestStatus"}
+        tmdbId: {type: integer, format: int64}
+        mbid: {type: string}
+        artistMbid: {type: string}
+        title: {type: string}
+        subtitle: {type: string}
+        year: {type: integer}
+        poster: {type: string}
+        seasons: {type: array, items: {$ref: "#/components/schemas/RequestSeason"}}
+        allSeasons: {type: boolean}
+        futureSeasons: {type: boolean}
+        requestedBy: {$ref: "#/components/schemas/UserRef"}
+        decidedBy: {$ref: "#/components/schemas/UserRef"}
+        autoApproved: {type: boolean}
+        decidedAt: {type: string, format: date-time}
+        declineReason: {type: string}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        availableAt: {type: string, format: date-time}
+        explanation: {$ref: "#/components/schemas/RequestExplanation"}
+        progress: {$ref: "#/components/schemas/RequestProgress"}
+        qualityProfileId: {type: integer, format: int64, description: Only for users who manage requests.}
+        rootFolderId: {type: integer, format: int64, description: Only for users who manage requests.}
+        tags: {type: array, items: {type: string}}
+        libraryRef: {type: string, description: Only for users who manage the library.}
+        commentCount: {type: integer}
+        canCancel: {type: boolean}
+    RequestExplanation:
+      type: object
+      description: The library's answer to "why isn't it here yet" (codes as in Explanation).
+      required: [code, tone, message]
+      properties:
+        code: {type: string}
+        tone: {type: string, enum: [success, info, warning, danger]}
+        message: {type: string}
+        params: {type: object, additionalProperties: true}
+    RequestList:
+      type: object
+      required: [items, total]
+      properties:
+        items: {type: array, items: {$ref: "#/components/schemas/MediaRequest"}}
+        total: {type: integer}
+    CreateRequest:
+      type: object
+      required: [kind]
+      properties:
+        kind: {$ref: "#/components/schemas/RequestKind"}
+        tmdbId: {type: integer, format: int64, minimum: 1, description: Movies and series.}
+        mbid: {type: string, pattern: "^[0-9a-fA-F-]{36}$", description: Album (release group) or artist.}
+        is4k: {type: boolean}
+        seasons:
+          type: array
+          maxItems: 200
+          items: {type: integer, minimum: 0, maximum: 1000}
+        allSeasons: {type: boolean, description: Every season there is now.}
+        futureSeasons: {type: boolean, description: Also seasons that appear later.}
+        comment: {type: string, maxLength: 2000}
+        options: {$ref: "#/components/schemas/RequestOptions"}
+    RequestOptions:
+      type: object
+      description: Library options (managers only; others get the defaults).
+      properties:
+        qualityProfileId: {type: integer, format: int64, minimum: 1}
+        rootFolderId: {type: integer, format: int64, minimum: 1}
+        tags:
+          type: array
+          maxItems: 50
+          items: {type: string, maxLength: 100}
+        seasons:
+          type: array
+          maxItems: 200
+          items: {type: integer, minimum: 0, maximum: 1000}
+    DeclineRequest:
+      type: object
+      properties:
+        reason: {type: string, maxLength: 1000}
+    RequestIds:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items: {type: integer, format: int64, minimum: 1}
+    BulkResult:
+      type: object
+      required: [done, errors]
+      properties:
+        done: {type: integer}
+        errors:
+          type: array
+          items: {$ref: "#/components/schemas/BulkError"}
+    BulkError:
+      type: object
+      required: [id, code, message]
+      properties:
+        id: {type: integer, format: int64}
+        code: {type: string}
+        message: {type: string}
+    RequestSummary:
+      type: object
+      required: [pending, processing, failed, openIssues, quotas]
+      properties:
+        pending: {type: integer, description: Waiting for approval (everyone's for managers, own otherwise).}
+        processing: {type: integer}
+        failed: {type: integer}
+        openIssues: {type: integer}
+        quotas:
+          type: object
+          required: [movie, series, music]
+          properties:
+            movie: {$ref: "#/components/schemas/QuotaStatus"}
+            series: {$ref: "#/components/schemas/QuotaStatus"}
+            music: {$ref: "#/components/schemas/QuotaStatus"}
+    Comment:
+      type: object
+      required: [id, user, body, createdAt]
+      properties:
+        id: {type: integer, format: int64}
+        user: {$ref: "#/components/schemas/UserRef"}
+        body: {type: string}
+        createdAt: {type: string, format: date-time}
+    CommentInput:
+      type: object
+      required: [body]
+      properties:
+        body: {type: string, minLength: 1, maxLength: 2000}
+    IssueType:
+      type: string
+      enum: [video, audio, subtitles, other]
+    IssueStatus:
+      type: string
+      enum: [open, resolved]
+    Issue:
+      type: object
+      required: [id, kind, type, status, title, message, reportedBy, createdAt, updatedAt, commentCount]
+      properties:
+        id: {type: integer, format: int64}
+        kind: {type: string, enum: [movie, series, album]}
+        type: {$ref: "#/components/schemas/IssueType"}
+        status: {$ref: "#/components/schemas/IssueStatus"}
+        title: {type: string}
+        tmdbId: {type: integer, format: int64}
+        mbid: {type: string}
+        poster: {type: string}
+        seasonNumber: {type: integer}
+        episodeNumber: {type: integer}
+        message: {type: string}
+        reportedBy: {$ref: "#/components/schemas/UserRef"}
+        resolvedBy: {$ref: "#/components/schemas/UserRef"}
+        resolvedAt: {type: string, format: date-time}
+        replacementSearched: {type: boolean}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        libraryRef: {type: string, description: Only for users who manage the library.}
+        commentCount: {type: integer}
+    IssueList:
+      type: object
+      required: [items, total]
+      properties:
+        items: {type: array, items: {$ref: "#/components/schemas/Issue"}}
+        total: {type: integer}
+    IssueInput:
+      type: object
+      required: [kind, type, message]
+      properties:
+        kind: {type: string, enum: [movie, series, album]}
+        tmdbId: {type: integer, format: int64, minimum: 1}
+        mbid: {type: string, pattern: "^[0-9a-fA-F-]{36}$"}
+        type: {$ref: "#/components/schemas/IssueType"}
+        seasonNumber: {type: integer, minimum: 0, maximum: 1000}
+        episodeNumber: {type: integer, minimum: 0, maximum: 100000}
+        message: {type: string, minLength: 1, maxLength: 2000}
+    ResolveIssueRequest:
+      type: object
+      properties:
+        searchReplacement: {type: boolean}
+        comment: {type: string, maxLength: 2000}
+    NotificationType:
+      type: string
+      description: Event types (D-057); P9 sends the same events to outward channels.
+      enum: [request.created, request.approved, request.declined, request.available, request.partial, request.failed,
+        request.comment, issue.created, issue.comment, issue.resolved, issue.reopened]
+    Notification:
+      type: object
+      required: [id, type, title, createdAt, read]
+      properties:
+        id: {type: integer, format: int64}
+        type: {$ref: "#/components/schemas/NotificationType"}
+        title: {type: string, description: The title the event is about.}
+        message: {type: string, description: "Decline reason, comment text, failure reason."}
+        poster: {type: string}
+        mediaKind: {type: string}
+        actor: {$ref: "#/components/schemas/UserRef"}
+        requestId: {type: integer, format: int64}
+        issueId: {type: integer, format: int64}
+        params: {type: object, additionalProperties: true}
+        createdAt: {type: string, format: date-time}
+        read: {type: boolean}
+    NotificationList:
+      type: object
+      required: [items, unread, latestId]
+      properties:
+        items: {type: array, items: {$ref: "#/components/schemas/Notification"}}
+        unread: {type: integer}
+        latestId: {type: integer, format: int64, description: Pass as since next time.}
+    MarkReadRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          maxItems: 500
+          items: {type: integer, format: int64, minimum: 1}
+        all: {type: boolean}
+    UnreadCount:
+      type: object
+      required: [unread]
+      properties:
+        unread: {type: integer}

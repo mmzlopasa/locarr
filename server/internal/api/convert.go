@@ -14,6 +14,11 @@ func toPermissions(p auth.Permissions) gen.Permissions {
 		Request4k:      p.Has(auth.PermRequest4K),
 		ManageLibrary:  p.Has(auth.PermManageLibrary),
 		ManageRequests: p.Has(auth.PermManageRequests),
+
+		AutoApproveMovies: gen.NewOptBool(p.Has(auth.PermAutoApproveMovies)),
+		AutoApproveSeries: gen.NewOptBool(p.Has(auth.PermAutoApproveSeries)),
+		AutoApproveMusic:  gen.NewOptBool(p.Has(auth.PermAutoApproveMusic)),
+		AutoApprove4k:     gen.NewOptBool(p.Has(auth.PermAutoApprove4K)),
 	}
 }
 
@@ -31,6 +36,10 @@ func fromPermissions(g gen.Permissions) auth.Permissions {
 	set(g.Request4k, auth.PermRequest4K)
 	set(g.ManageLibrary, auth.PermManageLibrary)
 	set(g.ManageRequests, auth.PermManageRequests)
+	set(g.AutoApproveMovies.Or(false), auth.PermAutoApproveMovies)
+	set(g.AutoApproveSeries.Or(false), auth.PermAutoApproveSeries)
+	set(g.AutoApproveMusic.Or(false), auth.PermAutoApproveMusic)
+	set(g.AutoApprove4k.Or(false), auth.PermAutoApprove4K)
 	return p
 }
 

@@ -21,6 +21,9 @@ function mockStream(chunks: string[]) {
   const grabs: unknown[] = [];
   vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(input instanceof Request ? input.url : String(input), "http://localhost");
+    if (url.pathname === "/api/v1/notifications") {
+      return new Response(JSON.stringify({ items: [], unread: 0, latestId: 0 }), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
     calls.push(url.pathname + url.search);
     if (url.pathname === "/api/v1/queue/grab" && input instanceof Request) {
       grabs.push(await input.json());

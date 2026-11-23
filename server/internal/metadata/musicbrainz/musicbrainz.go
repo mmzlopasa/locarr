@@ -503,3 +503,64 @@ func (c *Client) FetchCover(ctx context.Context, releaseMBID, groupMBID, size st
 	b, _, err := c.FetchImage(ctx, size, CoverName(groupMBID))
 	return b, err
 }
+
+// SearchAlbums searches release groups (albums, EPs, singles) by title or
+// "artist - title" (P8 discover).
+func (c *Client) SearchAlbums(ctx context.Context, query string) ([]metadata.AlbumSummary, error) {
+	query = strings.TrimSpace(query)
+	lucene := escapeLucene(query)
+	if artist, title, ok := strings.Cut(query, " - "); ok && strings.TrimSpace(artist) != "" && strings.TrimSpace(title) != "" {
+		lucene = `releasegroup:"` + escapeLucene(strings.TrimSpace(title)) + `" AND artist:"` + escapeLucene(strings.TrimSpace(artist)) + `"`
+	}
+	var res struct {
+		Groups []struct {
+			wireReleaseGroup
+			Score        int `json:"score"`
+			ArtistCredit []struct {
+				Name   string `json:"name"`
+				Artist struct {
+					ID   string `json:"id"`
+					Name string `json:"name"`
+				} `json:"artist"`
+			} `json:"artist-credit"`
+		} `json:"release-groups"`
+	}
+	if err := c.get(ctx, "release-group", url.Values{"query": {lucene}, "limit": {"25"}}, metadata.TTLSearch, &res); err != nil {
+		return nil, err
+	}
+	out := make([]metadata.AlbumSummary, 0, len(res.Groups))
+	for _, g := range res.Groups {
+		a := metadata.AlbumSummary{ReleaseGroup: g.group(), Score: g.Score}
+		if len(g.ArtistCredit) > 0 {
+			a.ArtistMBID, a.ArtistName = strings.ToLower(g.ArtistCredit[0].Artist.ID), g.ArtistCredit[0].Artist.Name
+		}
+		out = append(out, a)
+	}
+	return out, nil
+}
+
+// ReleaseGroup returns one release group with its (first) artist.
+func (c *Client) ReleaseGroup(ctx context.Context, mbid string) (metadata.AlbumSummary, error) {
+	mbid = strings.ToLower(strings.TrimSpace(mbid))
+	if err := checkID(mbid); err != nil {
+		return metadata.AlbumSummary{}, err
+	}
+	var res struct {
+		wireReleaseGroup
+		ArtistCredit []struct {
+			Name   string `json:"name"`
+			Artist struct {
+				ID   string `json:"id"`
+				Name string `json:"name"`
+			} `json:"artist"`
+		} `json:"artist-credit"`
+	}
+	if err := c.get(ctx, "release-group/"+mbid, url.Values{"inc": {"artist-credits"}}, metadata.TTLArtist, &res); err != nil {
+		return metadata.AlbumSummary{}, err
+	}
+	out := metadata.AlbumSummary{ReleaseGroup: res.group(), Score: 100}
+	if len(res.ArtistCredit) > 0 {
+		out.ArtistMBID, out.ArtistName = strings.ToLower(res.ArtistCredit[0].Artist.ID), res.ArtistCredit[0].Artist.Name
+	}
+	return out, nil
+}

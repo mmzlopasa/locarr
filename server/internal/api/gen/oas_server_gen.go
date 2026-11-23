@@ -21,6 +21,12 @@ type Handler interface {
 	//
 	// POST /queue/blocklist
 	AddBlocklistEntry(ctx context.Context, req *BlocklistInput) (*BlocklistEntry, error)
+	// AddIssueComment implements addIssueComment operation.
+	//
+	// Comment on an issue.
+	//
+	// POST /issues/{id}/comments
+	AddIssueComment(ctx context.Context, req *CommentInput, params AddIssueCommentParams) (*Comment, error)
 	// AddMovie implements addMovie operation.
 	//
 	// Add a movie from TMDb (library managers).
@@ -33,12 +39,30 @@ type Handler interface {
 	//
 	// POST /movies/collections/{tmdbId}
 	AddMovieCollection(ctx context.Context, req *AddOptions, params AddMovieCollectionParams) ([]Movie, error)
+	// AddRequestComment implements addRequestComment operation.
+	//
+	// Comment on a request.
+	//
+	// POST /requests/{id}/comments
+	AddRequestComment(ctx context.Context, req *CommentInput, params AddRequestCommentParams) (*Comment, error)
 	// AddSeries implements addSeries operation.
 	//
 	// Add a series from TMDb or TVDB with its seasons and episodes (library managers).
 	//
 	// POST /series
 	AddSeries(ctx context.Context, req *AddSeriesRequest) (*Series, error)
+	// ApproveRequest implements approveRequest operation.
+	//
+	// Approve a request (managers), optionally changing its options.
+	//
+	// POST /requests/{id}/approve
+	ApproveRequest(ctx context.Context, req OptRequestOptions, params ApproveRequestParams) (*MediaRequest, error)
+	// ApproveRequests implements approveRequests operation.
+	//
+	// Approve several pending requests.
+	//
+	// POST /requests/approve
+	ApproveRequests(ctx context.Context, req *RequestIds) (*BulkResult, error)
 	// BrowseFilesystem implements browseFilesystem operation.
 	//
 	// Without `path`, lists the data roots themselves.
@@ -51,12 +75,24 @@ type Handler interface {
 	//
 	// POST /system/jobs/{id}/cancel
 	CancelJob(ctx context.Context, params CancelJobParams) error
+	// CancelRequest implements cancelRequest operation.
+	//
+	// Withdraw an own request while it is pending.
+	//
+	// POST /requests/{id}/cancel
+	CancelRequest(ctx context.Context, params CancelRequestParams) (*MediaRequest, error)
 	// ChangePassword implements changePassword operation.
 	//
 	// Signs out every other session of the account; the current one stays.
 	//
 	// POST /auth/password
 	ChangePassword(ctx context.Context, req *ChangePasswordRequest) error
+	// CheckInvite implements checkInvite operation.
+	//
+	// Check an invite code before signing up.
+	//
+	// POST /auth/invite
+	CheckInvite(ctx context.Context, req *InviteCodeRequest) (*InviteCheck, error)
 	// CreateApiKey implements createApiKey operation.
 	//
 	// The key is returned once and cannot be shown again. Needs a session (not an API key).
@@ -112,6 +148,18 @@ type Handler interface {
 	//
 	// POST /indexers/sources
 	CreateIndexerSource(ctx context.Context, req *IndexerSourceInput) (*IndexerSourceSyncResult, error)
+	// CreateInvite implements createInvite operation.
+	//
+	// The code is only returned once.
+	//
+	// POST /invites
+	CreateInvite(ctx context.Context, req *InviteInput) (*CreatedInvite, error)
+	// CreateIssue implements createIssue operation.
+	//
+	// Report a problem with an available title.
+	//
+	// POST /issues
+	CreateIssue(ctx context.Context, req *IssueInput) (*Issue, error)
 	// CreateMetadataProfile implements createMetadataProfile operation.
 	//
 	// Create a metadata profile (administrators).
@@ -136,6 +184,13 @@ type Handler interface {
 	//
 	// POST /remotepathmappings
 	CreateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput) (*RemotePathMapping, error)
+	// CreateRequest implements createRequest operation.
+	//
+	// Approved at once when the user may auto-approve this kind. Refused with `already_requested`,
+	// `already_available`, `quota_exceeded` or `forbidden`.
+	//
+	// POST /requests
+	CreateRequest(ctx context.Context, req *CreateRequest) (*MediaRequest, error)
 	// CreateRootFolder implements createRootFolder operation.
 	//
 	// The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
@@ -148,6 +203,12 @@ type Handler interface {
 	//
 	// POST /users
 	CreateUser(ctx context.Context, req *CreateUserRequest) (*User, error)
+	// DeclineRequest implements declineRequest operation.
+	//
+	// Decline a request with a reason (managers).
+	//
+	// POST /requests/{id}/decline
+	DeclineRequest(ctx context.Context, req *DeclineRequest, params DeclineRequestParams) (*MediaRequest, error)
 	// DeleteApiKey implements deleteApiKey operation.
 	//
 	// Revoke an API key.
@@ -274,6 +335,12 @@ type Handler interface {
 	//
 	// POST /auth/totp/disable
 	DisableTotp(ctx context.Context, req *PasswordConfirm) error
+	// DiscoverSearch implements discoverSearch operation.
+	//
+	// Search movies, series, people and music.
+	//
+	// GET /discover/search
+	DiscoverSearch(ctx context.Context, params DiscoverSearchParams) (*DiscoverPage, error)
 	// DownloadRelease implements downloadRelease operation.
 	//
 	// `token` comes from a search result's `downloadLink`. The server fetches the .torrent or .nzb with
@@ -362,6 +429,49 @@ type Handler interface {
 	//
 	// GET /customformats/schema
 	GetCustomFormatSchema(ctx context.Context) (*CustomFormatSchema, error)
+	// GetDiscover implements getDiscover operation.
+	//
+	// Trending, popular, upcoming, now playing, top rated, recently added and the caller's requests, with
+	// library and request state.
+	//
+	// GET /discover
+	GetDiscover(ctx context.Context) (*DiscoverHome, error)
+	// GetDiscoverArtist implements getDiscoverArtist operation.
+	//
+	// An artist and their albums.
+	//
+	// GET /discover/artists/{mbid}
+	GetDiscoverArtist(ctx context.Context, params GetDiscoverArtistParams) (*TitleDetail, error)
+	// GetDiscoverGenres implements getDiscoverGenres operation.
+	//
+	// Genres, studios and networks to browse by.
+	//
+	// GET /discover/genres
+	GetDiscoverGenres(ctx context.Context) (*DiscoverFacets, error)
+	// GetDiscoverList implements getDiscoverList operation.
+	//
+	// One discover list, paged.
+	//
+	// GET /discover/lists/{list}
+	GetDiscoverList(ctx context.Context, params GetDiscoverListParams) (*DiscoverPage, error)
+	// GetDiscoverMovie implements getDiscoverMovie operation.
+	//
+	// A movie's title page.
+	//
+	// GET /discover/movies/{tmdbId}
+	GetDiscoverMovie(ctx context.Context, params GetDiscoverMovieParams) (*TitleDetail, error)
+	// GetDiscoverPerson implements getDiscoverPerson operation.
+	//
+	// A person and what they are known for.
+	//
+	// GET /discover/people/{tmdbId}
+	GetDiscoverPerson(ctx context.Context, params GetDiscoverPersonParams) (*PersonDetail, error)
+	// GetDiscoverSeries implements getDiscoverSeries operation.
+	//
+	// A series' title page with per-season availability.
+	//
+	// GET /discover/series/{tmdbId}
+	GetDiscoverSeries(ctx context.Context, params GetDiscoverSeriesParams) (*TitleDetail, error)
 	// GetDownloadClient implements getDownloadClient operation.
 	//
 	// One download client (administrators).
@@ -392,6 +502,12 @@ type Handler interface {
 	//
 	// GET /indexers/settings
 	GetIndexerSettings(ctx context.Context) (*IndexerSettings, error)
+	// GetIssue implements getIssue operation.
+	//
+	// One issue.
+	//
+	// GET /issues/{id}
+	GetIssue(ctx context.Context, params GetIssueParams) (*Issue, error)
 	// GetMe implements getMe operation.
 	//
 	// The signed-in user.
@@ -454,6 +570,24 @@ type Handler interface {
 	//
 	// GET /recyclebin
 	GetRecycleBin(ctx context.Context) (*RecycleBin, error)
+	// GetRequest implements getRequest operation.
+	//
+	// One request.
+	//
+	// GET /requests/{id}
+	GetRequest(ctx context.Context, params GetRequestParams) (*MediaRequest, error)
+	// GetRequestSettings implements getRequestSettings operation.
+	//
+	// Request defaults and quotas (administrators).
+	//
+	// GET /settings/requests
+	GetRequestSettings(ctx context.Context) (*RequestSettings, error)
+	// GetRequestSummary implements getRequestSummary operation.
+	//
+	// Counts for badges and the caller's remaining quota.
+	//
+	// GET /requests/summary
+	GetRequestSummary(ctx context.Context) (*RequestSummary, error)
 	// GetSeries implements getSeries operation.
 	//
 	// One series with its seasons.
@@ -504,6 +638,12 @@ type Handler interface {
 	//
 	// GET /users/{id}
 	GetUser(ctx context.Context, params GetUserParams) (*User, error)
+	// GetUserQuotas implements getUserQuotas operation.
+	//
+	// A user's request quotas (administrators).
+	//
+	// GET /users/{id}/quotas
+	GetUserQuotas(ctx context.Context, params GetUserQuotasParams) (*UserQuotas, error)
 	// GrabAlbumRelease implements grabAlbumRelease operation.
 	//
 	// Grab a release chosen in an interactive search (library managers).
@@ -605,6 +745,13 @@ type Handler interface {
 	//
 	// GET /music/artists
 	ListArtists(ctx context.Context, params ListArtistsParams) (*ArtistList, error)
+	// ListAuthProviders implements listAuthProviders operation.
+	//
+	// `local` (username and password) always; other providers (Streamero, P9) appear here once configured.
+	// See D-058.
+	//
+	// GET /auth/providers
+	ListAuthProviders(ctx context.Context) ([]AuthProvider, error)
 	// ListBlocklist implements listBlocklist operation.
 	//
 	// Blocked releases (library managers).
@@ -659,6 +806,24 @@ type Handler interface {
 	//
 	// GET /indexers
 	ListIndexers(ctx context.Context) ([]Indexer, error)
+	// ListInvites implements listInvites operation.
+	//
+	// Invite links (administrators).
+	//
+	// GET /invites
+	ListInvites(ctx context.Context) ([]Invite, error)
+	// ListIssueComments implements listIssueComments operation.
+	//
+	// Comments on an issue.
+	//
+	// GET /issues/{id}/comments
+	ListIssueComments(ctx context.Context, params ListIssueCommentsParams) ([]Comment, error)
+	// ListIssues implements listIssues operation.
+	//
+	// Requesters see their own; managers see everyone's.
+	//
+	// GET /issues
+	ListIssues(ctx context.Context, params ListIssuesParams) (*IssueList, error)
 	// ListLanguages implements listLanguages operation.
 	//
 	// Known languages.
@@ -678,6 +843,13 @@ type Handler interface {
 	//
 	// GET /movies
 	ListMovies(ctx context.Context, params ListMoviesParams) (*MovieList, error)
+	// ListNotifications implements listNotifications operation.
+	//
+	// Polling-friendly: pass the largest id seen as `since` to get only newer ones (oldest first then);
+	// without it the newest come first.
+	//
+	// GET /notifications
+	ListNotifications(ctx context.Context, params ListNotificationsParams) (*NotificationList, error)
 	// ListQualities implements listQualities operation.
 	//
 	// The fixed quality ladder (worst first).
@@ -714,6 +886,18 @@ type Handler interface {
 	//
 	// GET /remotepathmappings
 	ListRemotePathMappings(ctx context.Context) ([]RemotePathMapping, error)
+	// ListRequestComments implements listRequestComments operation.
+	//
+	// Comments on a request.
+	//
+	// GET /requests/{id}/comments
+	ListRequestComments(ctx context.Context, params ListRequestCommentsParams) ([]Comment, error)
+	// ListRequests implements listRequests operation.
+	//
+	// Requesters see their own; users who manage requests see everyone's.
+	//
+	// GET /requests
+	ListRequests(ctx context.Context, params ListRequestsParams) (*RequestList, error)
 	// ListRootFolders implements listRootFolders operation.
 	//
 	// Root folders with free space (administrators).
@@ -812,6 +996,12 @@ type Handler interface {
 	//
 	// POST /series/import/manual
 	ManualImportSeries(ctx context.Context, req *SeriesManualImportRequest) ([]SeriesManualImportResult, error)
+	// MarkNotificationsRead implements markNotificationsRead operation.
+	//
+	// Mark notifications read.
+	//
+	// POST /notifications/read
+	MarkNotificationsRead(ctx context.Context, req *MarkReadRequest) (*UnreadCount, error)
 	// MonitorAlbums implements monitorAlbums operation.
 	//
 	// Monitor or unmonitor several albums (library managers).
@@ -898,6 +1088,12 @@ type Handler interface {
 	//
 	// POST /settings/mediamanagement/series/preview
 	PreviewSeriesNaming(ctx context.Context, req *SeriesNamingSettings) (*SeriesNamingPreview, error)
+	// PutRequestSettings implements putRequestSettings operation.
+	//
+	// Change request defaults and quotas (administrators).
+	//
+	// PUT /settings/requests
+	PutRequestSettings(ctx context.Context, req *RequestSettings) (*RequestSettings, error)
 	// RefreshArtist implements refreshArtist operation.
 	//
 	// Albums are synced at once; editions and track lists follow in the background.
@@ -948,6 +1144,12 @@ type Handler interface {
 	//
 	// POST /series/rename
 	RenameSeries(ctx context.Context, req *SeriesIdsRequest) ([]SeriesRenameItem, error)
+	// ReopenIssue implements reopenIssue operation.
+	//
+	// Reopen a resolved issue (managers and the reporter).
+	//
+	// POST /issues/{id}/reopen
+	ReopenIssue(ctx context.Context, params ReopenIssueParams) (*Issue, error)
 	// ReorderDelayProfiles implements reorderDelayProfiles operation.
 	//
 	// Set the evaluation order of the non-default delay profiles (administrators).
@@ -972,6 +1174,13 @@ type Handler interface {
 	//
 	// POST /users/{id}/password
 	ResetUserPassword(ctx context.Context, req *ResetPasswordRequest, params ResetUserPasswordParams) error
+	// ResolveIssue implements resolveIssue operation.
+	//
+	// With `searchReplacement` the current file(s) go to the recycle bin, their release is blocklisted and
+	// Locarr searches again.
+	//
+	// POST /issues/{id}/resolve
+	ResolveIssue(ctx context.Context, req *ResolveIssueRequest, params ResolveIssueParams) (*Issue, error)
 	// RestoreRecycleEntry implements restoreRecycleEntry operation.
 	//
 	// Fails with `restore_conflict` when something else is at the original place.
@@ -984,6 +1193,18 @@ type Handler interface {
 	//
 	// POST /queue/{id}/resume
 	ResumeQueueItem(ctx context.Context, params ResumeQueueItemParams) error
+	// RetryRequest implements retryRequest operation.
+	//
+	// Search again for a failed request (managers).
+	//
+	// POST /requests/{id}/retry
+	RetryRequest(ctx context.Context, params RetryRequestParams) (*MediaRequest, error)
+	// RevokeInvite implements revokeInvite operation.
+	//
+	// Revoke an invite (administrators).
+	//
+	// DELETE /invites/{id}
+	RevokeInvite(ctx context.Context, params RevokeInviteParams) error
 	// RevokeSession implements revokeSession operation.
 	//
 	// Sign out a device.
@@ -1097,6 +1318,12 @@ type Handler interface {
 	//
 	// POST /queue/{id}/priority
 	SetQueueItemPriority(ctx context.Context, req *PriorityRequest, params SetQueueItemPriorityParams) error
+	// SetUserQuotas implements setUserQuotas operation.
+	//
+	// Override a user's request quotas (administrators).
+	//
+	// PUT /users/{id}/quotas
+	SetUserQuotas(ctx context.Context, req *QuotaOverrides, params SetUserQuotasParams) (*UserQuotas, error)
 	// Setup implements setup operation.
 	//
 	// Only works while no administrator exists. Needs the setup code the server prints to its log on
@@ -1104,6 +1331,12 @@ type Handler interface {
 	//
 	// POST /setup
 	Setup(ctx context.Context, req *SetupRequest) (*SignedInHeaders, error)
+	// SignUp implements signUp operation.
+	//
+	// Create an account with an invite code and sign in.
+	//
+	// POST /auth/signup
+	SignUp(ctx context.Context, req *SignUpRequest) (*SignedInHeaders, error)
 	// StartTotpSetup implements startTotpSetup operation.
 	//
 	// Returns a new secret to add to an authenticator app. Two-factor is on only after
@@ -1267,6 +1500,12 @@ type Handler interface {
 	//
 	// PUT /remotepathmappings/{id}
 	UpdateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput, params UpdateRemotePathMappingParams) (*RemotePathMapping, error)
+	// UpdateRequest implements updateRequest operation.
+	//
+	// Change a request's options before it is approved (managers).
+	//
+	// PATCH /requests/{id}
+	UpdateRequest(ctx context.Context, req *RequestOptions, params UpdateRequestParams) (*MediaRequest, error)
 	// UpdateSeason implements updateSeason operation.
 	//
 	// Monitor or unmonitor a season and all its episodes (library managers).

@@ -111,7 +111,7 @@ func (h *Handler) movieOut(ctx context.Context, id int64) (*gen.Movie, error) {
 
 // ListMovies implements GET /movies.
 func (h *Handler) ListMovies(ctx context.Context, p gen.ListMoviesParams) (*gen.MovieList, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	f := movies.ListFilter{Status: string(p.Status.Or("")), ProfileID: p.ProfileId.Or(0), Tag: p.Tag.Or(""), Search: p.Q.Or(""),
@@ -219,7 +219,7 @@ func (h *Handler) PreviewRenameMovies(ctx context.Context, req *gen.MovieIdsRequ
 
 // GetMovie implements GET /movies/{id}.
 func (h *Handler) GetMovie(ctx context.Context, p gen.GetMovieParams) (*gen.Movie, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	return h.movieOut(ctx, p.ID)

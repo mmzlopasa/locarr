@@ -112,6 +112,52 @@ export type SeriesNamingSettings = Schemas["SeriesNamingSettings"];
 export type SeriesNamingPreview = Schemas["SeriesNamingPreview"];
 export type ExistingSeriesFolder = Schemas["ExistingSeriesFolder"];
 export type SeriesImportCandidate = Schemas["SeriesImportCandidate"];
+export type AuthProvider = Schemas["AuthProvider"];
+export type InviteCheck = Schemas["InviteCheck"];
+export type Invite = Schemas["Invite"];
+export type InviteInput = Schemas["InviteInput"];
+export type CreatedInvite = Schemas["CreatedInvite"];
+export type QuotaRule = Schemas["QuotaRule"];
+export type QuotaRules = Schemas["QuotaRules"];
+export type QuotaOverrides = Schemas["QuotaOverrides"];
+export type QuotaStatus = Schemas["QuotaStatus"];
+export type UserQuotas = Schemas["UserQuotas"];
+export type KindDefaults = Schemas["KindDefaults"];
+export type RequestSettings = Schemas["RequestSettings"];
+export type DiscoverMediaType = Schemas["DiscoverMediaType"];
+export type DiscoverStatus = Schemas["DiscoverStatus"];
+export type DiscoverItem = Schemas["DiscoverItem"];
+export type DiscoverListKey = Schemas["DiscoverListKey"];
+export type DiscoverRow = Schemas["DiscoverRow"];
+export type DiscoverHome = Schemas["DiscoverHome"];
+export type DiscoverPage = Schemas["DiscoverPage"];
+export type DiscoverFacets = Schemas["DiscoverFacets"];
+export type Facet = Schemas["Facet"];
+export type CastMember = Schemas["CastMember"];
+export type SeasonAvailability = Schemas["SeasonAvailability"];
+export type RequestAbility = Schemas["RequestAbility"];
+export type TitleDetail = Schemas["TitleDetail"];
+export type PersonDetail = Schemas["PersonDetail"];
+export type RequestKind = Schemas["RequestKind"];
+export type RequestStatus = Schemas["RequestStatus"];
+export type RequestFilter = Schemas["RequestFilter"];
+export type UserRef = Schemas["UserRef"];
+export type MediaRequest = Schemas["MediaRequest"];
+export type RequestList = Schemas["RequestList"];
+export type CreateRequest = Schemas["CreateRequest"];
+export type RequestOptions = Schemas["RequestOptions"];
+export type RequestSummary = Schemas["RequestSummary"];
+export type RequestExplanation = Schemas["RequestExplanation"];
+export type BulkResult = Schemas["BulkResult"];
+export type Comment = Schemas["Comment"];
+export type IssueType = Schemas["IssueType"];
+export type IssueStatus = Schemas["IssueStatus"];
+export type Issue = Schemas["Issue"];
+export type IssueList = Schemas["IssueList"];
+export type IssueInput = Schemas["IssueInput"];
+export type NotificationType = Schemas["NotificationType"];
+export type AppNotification = Schemas["Notification"];
+export type NotificationList = Schemas["NotificationList"];
 type ErrorBody = Schemas["Error"];
 
 /** Typed API client generated from api/openapi.yaml (see scripts/gen-api.sh). */
@@ -221,6 +267,25 @@ export const queryKeys = {
   metadataSettings: ["settings", "metadata"] as const,
   importLists: ["importlists"] as const,
   exclusions: ["exclusions"] as const,
+  discover: ["discover"] as const,
+  discoverFacets: ["discover", "facets"] as const,
+  discoverList: (key: string, id: number | undefined, page: number) => ["discover", "list", key, id ?? 0, page] as const,
+  discoverSearch: (q: string, type: string) => ["discover", "search", q, type] as const,
+  title: (kind: string, id: string | number) => ["discover", "title", kind, String(id)] as const,
+  person: (id: number) => ["discover", "person", id] as const,
+  requests: ["requests"] as const,
+  requestList: (filter: object) => ["requests", "list", filter] as const,
+  request: (id: number) => ["requests", id] as const,
+  requestComments: (id: number) => ["requests", id, "comments"] as const,
+  requestSummary: ["requests", "summary"] as const,
+  requestSettings: ["settings", "requests"] as const,
+  issues: ["issues"] as const,
+  issueList: (status: string, offset: number) => ["issues", "list", status, offset] as const,
+  issue: (id: number) => ["issues", id] as const,
+  issueComments: (id: number) => ["issues", id, "comments"] as const,
+  notifications: ["notifications"] as const,
+  invites: ["invites"] as const,
+  userQuotas: (id: number) => ["users", id, "quotas"] as const,
 };
 
 /** URL of a cached TMDb image ("" when there is none). */

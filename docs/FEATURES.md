@@ -70,11 +70,13 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Sinkronizacija titla po zvuku, pretvorba formata
 
 ## Zahtjevi (P8)
-- [ ] Otkrivanje: trending, popularno, nadolazeće, preporuke, pretraga
-- [ ] Zahtjev za film, seriju (po sezonama) i album; 4K zahtjevi
-- [ ] Odobravanje, automatsko odobravanje po korisniku, kvote, komentari, prijave problema
-- [ ] Prijava korisnika preko Streamera (isti računi), lokalni korisnici
-- [ ] Obavijest korisniku kad je zahtjev dostupan
+- [x] Otkrivanje: u trendu, popularno, nadolazeće, u kinima, najbolje ocijenjeno, po žanru, studiju i mreži, nedavno dodano, pretraga filmova, serija, osoba i glazbe, stranice naslova s glumcima, trailerom i dostupnošću po sezoni (D-061)
+- [ ] Preporuke („slični naslovi") na stranici naslova
+- [x] Zahtjev za film, seriju (po sezonama, i buduće sezone), album i izvođača; 4K zahtjevi kao zasebna staza (D-054, D-055)
+- [x] Odobravanje (pojedinačno, skupno, uz izmjenu opcija), odbijanje s razlogom, automatsko odobravanje po korisniku i vrsti, kvote s iznimkama, komentari, prijave problema s traženjem zamjene (D-054, D-056)
+- [x] Lokalni korisnici i pozivnice za obitelj (rok, broj korištenja, uloga, dozvole, kvote; D-059)
+- [ ] Prijava korisnika preko Streamera (isti računi) — oblik rezerviran (D-058), izvodi se u P9
+- [x] Obavijesti u aplikaciji: odobreno, odbijeno, dostupno, djelomično, zapelo, komentari, problemi; `GET /notifications?since=` za aplikacije (D-057)
 
 ## Media server i obavijesti (P9)
 - [ ] Streamero: osvježavanje biblioteke nakon uvoza, „već imaš" na otkrivanju, prijava korisnika

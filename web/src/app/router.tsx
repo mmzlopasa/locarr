@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-router";
 import { fetchMe, fetchSystemInfo, queryKeys } from "@/api/client";
 import { AppShell } from "@/features/shell/AppShell";
-import { ComingSoonPage } from "@/routes/ComingSoonPage";
 import { LoginPage } from "@/routes/LoginPage";
 import { SetupPage } from "@/routes/SetupPage";
 import { NotFoundPage } from "@/routes/NotFoundPage";
@@ -52,6 +51,17 @@ import { ArtistDetailPage } from "@/features/music/ArtistDetailPage";
 import { AlbumDetailPage } from "@/features/music/AlbumDetailPage";
 import { MusicImportPage } from "@/features/music/MusicImportPage";
 import { MetadataProfilesPage } from "@/features/music/MetadataProfilesPage";
+import { JoinPage } from "@/routes/JoinPage";
+import { DiscoverPage } from "@/features/discover/DiscoverPage";
+import { DiscoverListPage, validateListSearch } from "@/features/discover/DiscoverListPage";
+import { DiscoverSearchPage, validateDiscoverSearch } from "@/features/discover/DiscoverSearchPage";
+import { ArtistTitlePage, MovieTitlePage, PersonPage, SeriesTitlePage } from "@/features/discover/TitlePage";
+import { RequestsPage, validateRequestsSearch } from "@/features/requests/RequestsPage";
+import { RequestDetailPage } from "@/features/requests/RequestDetailPage";
+import { IssueDetailPage, IssuesPage, validateIssuesSearch } from "@/features/issues/IssuesPage";
+import { RequestSettingsPage } from "@/features/settings/RequestSettingsPage";
+import { canManageLibrary } from "@/features/users/permissions";
+import type { User } from "@/api/client";
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -97,42 +107,58 @@ const appRoute = createRoute({
 const indexRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "/",
-  beforeLoad: () => {
-    throw redirect({ to: "/movies" });
+  beforeLoad: ({ context }) => {
+    throw redirect({ to: canManageLibrary(context.me) ? "/movies" : "/discover" });
   },
 });
 
-/** Sections that later phases fill in; each says honestly when it arrives. */
-export const UPCOMING = [
-  { path: "/requests", key: "requests", phase: "P8" },
-] as const;
+/** Library pages (titles, paths, downloads) are for people who manage the library. */
+const libraryOnly = ({ context }: { context: { me: User } }) => {
+  if (!canManageLibrary(context.me)) throw redirect({ to: "/discover" });
+};
 
-const upcomingRoutes = UPCOMING.map((s) =>
-  createRoute({
-    getParentRoute: () => appRoute,
-    path: s.path,
-    component: () => <ComingSoonPage section={s.key} phase={s.phase} />,
-  }),
-);
+const joinRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/join",
+  beforeLoad: async ({ context }) => {
+    const me = await context.queryClient.ensureQueryData({ queryKey: queryKeys.me, queryFn: fetchMe });
+    if (me) throw redirect({ to: "/" });
+  },
+  component: JoinPage,
+});
 
-const moviesRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies", component: MoviesPage });
-const addMovieRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/add", component: AddMoviePage });
-const importMoviesRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/import", component: ImportPage });
-const movieRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/$id", component: MovieDetailPage });
-const collectionRoute = createRoute({ getParentRoute: () => appRoute, path: "/movies/collections/$id", component: CollectionPage });
-const seriesRoute = createRoute({ getParentRoute: () => appRoute, path: "/series", component: SeriesPage });
-const addSeriesRoute = createRoute({ getParentRoute: () => appRoute, path: "/series/add", component: AddSeriesPage });
-const importSeriesRoute = createRoute({ getParentRoute: () => appRoute, path: "/series/import", component: SeriesImportPage });
-const seriesDetailRoute = createRoute({ getParentRoute: () => appRoute, path: "/series/$id", component: SeriesDetailPage });
-const musicRoute = createRoute({ getParentRoute: () => appRoute, path: "/music", component: ArtistsPage });
-const addArtistRoute = createRoute({ getParentRoute: () => appRoute, path: "/music/add", component: AddArtistPage });
-const importMusicRoute = createRoute({ getParentRoute: () => appRoute, path: "/music/import", component: MusicImportPage });
-const artistRoute = createRoute({ getParentRoute: () => appRoute, path: "/music/artists/$id", component: ArtistDetailPage });
-const albumRoute = createRoute({ getParentRoute: () => appRoute, path: "/music/albums/$id", component: AlbumDetailPage });
-const wantedRoute = createRoute({ getParentRoute: () => appRoute, path: "/wanted", component: WantedPage });
-const calendarRoute = createRoute({ getParentRoute: () => appRoute, path: "/calendar", component: CalendarPage });
+const discoverRoute = createRoute({ getParentRoute: () => appRoute, path: "/discover", component: DiscoverPage });
+const discoverSearchRoute = createRoute({ getParentRoute: () => appRoute, path: "/discover/search", validateSearch: validateDiscoverSearch,
+  component: DiscoverSearchPage });
+const discoverListRoute = createRoute({ getParentRoute: () => appRoute, path: "/discover/list/$key", validateSearch: validateListSearch,
+  component: DiscoverListPage });
+const discoverMovieRoute = createRoute({ getParentRoute: () => appRoute, path: "/discover/movie/$tmdbId", component: MovieTitlePage });
+const discoverSeriesRoute = createRoute({ getParentRoute: () => appRoute, path: "/discover/series/$tmdbId", component: SeriesTitlePage });
+const discoverPersonRoute = createRoute({ getParentRoute: () => appRoute, path: "/discover/person/$tmdbId", component: PersonPage });
+const discoverArtistRoute = createRoute({ getParentRoute: () => appRoute, path: "/discover/artist/$mbid", component: ArtistTitlePage });
+const requestsRoute = createRoute({ getParentRoute: () => appRoute, path: "/requests", validateSearch: validateRequestsSearch, component: RequestsPage });
+const requestRoute = createRoute({ getParentRoute: () => appRoute, path: "/requests/$id", component: RequestDetailPage });
+const issuesRoute = createRoute({ getParentRoute: () => appRoute, path: "/issues", validateSearch: validateIssuesSearch, component: IssuesPage });
+const issueRoute = createRoute({ getParentRoute: () => appRoute, path: "/issues/$id", component: IssueDetailPage });
 
-const activityRoute = createRoute({ getParentRoute: () => appRoute, path: "/activity", component: ActivityLayout });
+const moviesRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/movies", component: MoviesPage });
+const addMovieRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/movies/add", component: AddMoviePage });
+const importMoviesRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/movies/import", component: ImportPage });
+const movieRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/movies/$id", component: MovieDetailPage });
+const collectionRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/movies/collections/$id", component: CollectionPage });
+const seriesRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/series", component: SeriesPage });
+const addSeriesRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/series/add", component: AddSeriesPage });
+const importSeriesRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/series/import", component: SeriesImportPage });
+const seriesDetailRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/series/$id", component: SeriesDetailPage });
+const musicRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music", component: ArtistsPage });
+const addArtistRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music/add", component: AddArtistPage });
+const importMusicRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music/import", component: MusicImportPage });
+const artistRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music/artists/$id", component: ArtistDetailPage });
+const albumRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music/albums/$id", component: AlbumDetailPage });
+const wantedRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/wanted", component: WantedPage });
+const calendarRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/calendar", component: CalendarPage });
+
+const activityRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/activity", component: ActivityLayout });
 const activityIndexRoute = createRoute({
   getParentRoute: () => activityRoute,
   path: "/",
@@ -142,7 +168,7 @@ const activityIndexRoute = createRoute({
 });
 const queueRoute = createRoute({ getParentRoute: () => activityRoute, path: "/queue", component: QueuePage });
 const blocklistRoute = createRoute({ getParentRoute: () => activityRoute, path: "/blocklist", component: BlocklistPage });
-const searchRoute = createRoute({ getParentRoute: () => appRoute, path: "/search", component: SearchPage });
+const searchRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/search", component: SearchPage });
 
 const accountRoute = createRoute({ getParentRoute: () => appRoute, path: "/account", component: AccountPage });
 
@@ -151,7 +177,7 @@ const adminRoute = createRoute({
   getParentRoute: () => appRoute,
   id: "admin",
   beforeLoad: ({ context }) => {
-    if (context.me.role !== "admin") throw redirect({ to: "/" });
+    if (context.me.role !== "admin") throw redirect({ to: canManageLibrary(context.me) ? "/movies" : "/discover" });
   },
   component: Outlet,
 });
@@ -170,6 +196,7 @@ const rulesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/ru
 const testerRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/tester", component: ReleaseTesterPage });
 const mediaManagementRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/mediamanagement", component: MediaManagementPage });
 const metadataRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadata", component: MetadataPage });
+const requestSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/requests", component: RequestSettingsPage });
 const metadataProfilesRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/metadataprofiles", component: MetadataProfilesPage });
 const importListsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/importlists", component: ImportListsPage });
 
@@ -187,9 +214,20 @@ const tasksRoute = createRoute({ getParentRoute: () => systemRoute, path: "/task
 export const routeTree = rootRoute.addChildren([
   setupRoute,
   loginRoute,
+  joinRoute,
   appRoute.addChildren([
     indexRoute,
-    ...upcomingRoutes,
+    discoverRoute,
+    discoverSearchRoute,
+    discoverListRoute,
+    discoverMovieRoute,
+    discoverSeriesRoute,
+    discoverPersonRoute,
+    discoverArtistRoute,
+    requestsRoute,
+    requestRoute,
+    issuesRoute,
+    issueRoute,
     moviesRoute,
     addMovieRoute,
     importMoviesRoute,
@@ -213,7 +251,7 @@ export const routeTree = rootRoute.addChildren([
       downloadersRoute,
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
-        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute]),
+        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, requestSettingsRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
   ]),

@@ -25,8 +25,10 @@ describe("route guards", () => {
 
   it("keeps non-administrators out of administrator pages", async () => {
     mockApi(() => undefined);
-    const { router } = renderApp("/system/tasks", { me: testUser({ role: "requester" }) });
-    await waitFor(() => expect(router.state.location.pathname).toBe("/movies"));
+    const { router } = renderApp("/system/tasks", {
+      me: testUser({ role: "requester", permissions: { ...testUser().permissions, manageLibrary: false, manageRequests: false } }),
+    });
+    await waitFor(() => expect(router.state.location.pathname).toBe("/discover"));
     expect(screen.queryByRole("link", { name: "System" })).not.toBeInTheDocument();
   });
 
@@ -40,11 +42,5 @@ describe("route guards", () => {
     await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
     expect(router.state.location.search).toEqual({ redirect: "/account" });
     expect(queryClient.getQueryData(["auth", "me"])).toBeNull();
-  });
-
-  it("shows honest placeholders for sections of later phases", async () => {
-    mockApi(() => undefined);
-    renderApp("/requests", { me: testUser() });
-    expect(await screen.findByTestId("coming-soon")).toHaveTextContent("arrives in phase P8");
   });
 });

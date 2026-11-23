@@ -116,7 +116,7 @@ func (h *Handler) seriesOut(ctx context.Context, id int64) (*gen.Series, error) 
 
 // ListSeries implements GET /series.
 func (h *Handler) ListSeries(ctx context.Context, p gen.ListSeriesParams) (*gen.SeriesList, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	f := series.ListFilter{Status: string(p.Status.Or("")), Missing: p.Missing.Or(false), ProfileID: p.ProfileId.Or(0), Tag: p.Tag.Or(""),
@@ -357,7 +357,7 @@ func (h *Handler) ManualImportSeries(ctx context.Context, req *gen.SeriesManualI
 
 // GetSeries implements GET /series/{id}.
 func (h *Handler) GetSeries(ctx context.Context, p gen.GetSeriesParams) (*gen.SeriesDetail, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	s, err := h.seriesOut(ctx, p.ID)
@@ -462,7 +462,7 @@ func (h *Handler) DeleteSeries(ctx context.Context, p gen.DeleteSeriesParams) er
 
 // ListSeriesEpisodes implements GET /series/{id}/episodes.
 func (h *Handler) ListSeriesEpisodes(ctx context.Context, p gen.ListSeriesEpisodesParams) ([]gen.Episode, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	list, err := h.Series.EpisodeViews(ctx, p.ID)
@@ -622,7 +622,7 @@ func (h *Handler) GrabSeasonRelease(ctx context.Context, req *gen.ManualGrabRequ
 
 // ListWantedEpisodes implements GET /episodes/wanted.
 func (h *Handler) ListWantedEpisodes(ctx context.Context, p gen.ListWantedEpisodesParams) (*gen.WantedEpisodeList, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	list, total, err := h.Series.WantedEpisodes(ctx, string(p.Kind.Or(gen.ListWantedEpisodesKindMissing)), p.Offset.Or(0), p.Limit.Or(100))
@@ -691,7 +691,7 @@ func (h *Handler) episodeOut(ctx context.Context, id int64) (*gen.Episode, error
 
 // GetEpisode implements GET /episodes/{id}.
 func (h *Handler) GetEpisode(ctx context.Context, p gen.GetEpisodeParams) (*gen.Episode, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	return h.episodeOut(ctx, p.ID)
