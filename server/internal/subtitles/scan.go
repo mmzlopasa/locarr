@@ -120,8 +120,10 @@ func (s *Service) ScanDisk(ctx context.Context, t *Target) ([]Subtitle, error) {
 		return nil, err
 	}
 	byPath := map[string]bool{}
+	base := strings.TrimSuffix(t.Path, filepath.Ext(t.Path)) + "."
 	for _, k := range known {
-		if _, err := os.Stat(k.Path); errors.Is(err, os.ErrNotExist) {
+		// Gone, or named after a previous file (the video was upgraded and renamed): forget it.
+		if _, err := os.Stat(k.Path); errors.Is(err, os.ErrNotExist) || !strings.HasPrefix(strings.ToLower(k.Path), strings.ToLower(base)) {
 			if _, err := s.DB.W.ExecContext(ctx, `DELETE FROM subtitles WHERE id = ?`, k.ID); err != nil {
 				return nil, err
 			}
