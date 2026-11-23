@@ -466,7 +466,15 @@ func (d *Definition) SupportsRSS() bool {
 	if d.Impl != "" {
 		return impls[d.Impl].rss
 	}
-	return d.RSS != nil
+	if d.RSS != nil {
+		return true
+	}
+	// A search request that needs no search words lists the latest releases.
+	if d.compiled != nil && d.compiled.search != nil {
+		_, ok := pickRequest(d.compiled.search, Query{Mode: "rss"})
+		return ok
+	}
+	return false
 }
 
 // DefaultURL is the site's main address.

@@ -26,7 +26,8 @@ categories:
   - {id: music, cat: 3000, desc: Music}
 search:
   requests:
-    - path: '/search/{{ first .Categories "all" }}/{{ .Keywords | dashed | pathescape }}/seeds/1/'
+    - if: [keywords]
+      path: '/search/{{ first .Categories "all" }}/{{ .Keywords | dashed | pathescape }}/seeds/1/'
   response: html
   rows: 'table.table2 tr:has(a.csprite_dl14)'
   empty: 'h2:contains("No results")'

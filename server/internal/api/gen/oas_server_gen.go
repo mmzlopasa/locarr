@@ -161,8 +161,10 @@ type Handler interface {
 	CreateImportList(ctx context.Context, req *ImportListInput) (*ImportList, error)
 	// CreateIndexer implements createIndexer operation.
 	//
-	// Categories left empty are filled from the indexer's capabilities when they can be fetched. The API
-	// key is write-only.
+	// Categories left empty are filled from the indexer's capabilities when they can be fetched (for a
+	// built-in site, from its definition). The API key is write-only. For a built-in site (`kind: native`,
+	// `definition`), unset fields take the site's defaults: its address, request limit, timeout and RSS
+	// (off when the site has no list of latest releases).
 	//
 	// POST /indexers
 	CreateIndexer(ctx context.Context, req *IndexerInput) (*Indexer, error)
@@ -948,6 +950,12 @@ type Handler interface {
 	//
 	// GET /movies/importlists
 	ListImportLists(ctx context.Context) ([]ImportList, error)
+	// ListIndexerDefinitions implements listIndexerDefinitions operation.
+	//
+	// Built-in and custom site definitions, usenet presets and definition load errors (administrators).
+	//
+	// GET /indexers/definitions
+	ListIndexerDefinitions(ctx context.Context) (*IndexerCatalog, error)
 	// ListIndexerSources implements listIndexerSources operation.
 	//
 	// Prowlarr and Jackett instances indexers are imported from (administrators).
@@ -1375,6 +1383,12 @@ type Handler interface {
 	//
 	// POST /auth/totp/recovery-codes
 	RegenerateRecoveryCodes(ctx context.Context, req *PasswordConfirm) (*RecoveryCodes, error)
+	// ReloadIndexerDefinitions implements reloadIndexerDefinitions operation.
+	//
+	// Invalid files are skipped and listed in `errors`; indexers pick up changed definitions immediately.
+	//
+	// POST /indexers/definitions/reload
+	ReloadIndexerDefinitions(ctx context.Context) (*IndexerCatalog, error)
 	// RemoveQueueItem implements removeQueueItem operation.
 	//
 	// `deleteData` also deletes the downloaded files (by the client, or by Locarr inside the data roots

@@ -31,7 +31,18 @@ type Kind string
 const (
 	Torznab Kind = "torznab"
 	Newznab Kind = "newznab"
+	// Native is a built-in (or custom) site definition searched directly.
+	Native Kind = "native"
 )
+
+// stored is the kind written to the database: a native site is stored as a
+// torrent (Torznab-like) indexer with its definition next to it.
+func (k Kind) stored() Kind {
+	if k == Native {
+		return Torznab
+	}
+	return k
+}
 
 // Protocol returns the protocol of an indexer kind.
 func (k Kind) Protocol() Protocol {

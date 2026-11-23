@@ -27,6 +27,15 @@ func registerIndexerTasks(ctx context.Context, d *Deps, log *slog.Logger) error 
 		return nil
 	}, jobs.KindOptions{MaxAttempts: 2, Timeout: 10 * time.Minute})
 	d.Jobs.Schedule(indexers.TaskRSSSync, indexers.TaskRSSSync, time.Duration(max(every, 10))*time.Minute)
+	d.Jobs.Register(indexers.TaskSelfTest, func(ctx context.Context, _ *jobs.Job) error {
+		res, err := d.Indexers.SelfTest(ctx)
+		if err != nil {
+			return err
+		}
+		log.Info("built-in indexer self-test done", "tested", res.Tested, "failed", res.Failed)
+		return nil
+	}, jobs.KindOptions{MaxAttempts: 1, Timeout: 30 * time.Minute})
+	d.Jobs.Schedule(indexers.TaskSelfTest, indexers.TaskSelfTest, 7*24*time.Hour)
 	return nil
 }
 

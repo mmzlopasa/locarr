@@ -27,9 +27,10 @@ categories:
   - {id: Music, cat: 3000, desc: Music}
 search:
   requests:
-    - if: [categories]
+    - if: [keywords, categories]
       path: '/category-search/{{ .Keywords | pathescape }}/{{ first .Categories "Movies" }}/1/'
-    - path: '/search/{{ .Keywords | pathescape }}/1/'
+    - if: [keywords]
+      path: '/search/{{ .Keywords | pathescape }}/1/'
   response: html
   rows: 'table.table-list tbody tr'
   empty: 'p:contains("No results were returned")'

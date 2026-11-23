@@ -80,6 +80,11 @@ type Health struct {
 	LastErrorCode string
 	LastErrorAt   *time.Time
 	LastSuccessAt *time.Time
+	// ParseFailures counts result rows a built-in site returned that could
+	// not be read since the last reset.
+	ParseFailures int
+	SelfTestAt    *time.Time
+	SelfTestOK    *bool
 }
 
 // HealthStatus values.
@@ -116,6 +121,8 @@ type Indexer struct {
 	ProxyUsername     string
 	HasProxyPassword  bool
 	FlareSolverrURL   string
+	Definition        string            // site definition (Native)
+	Options           map[string]string // per-site settings (Native)
 	SourceID          *int64
 	SourceName        string
 	SourceRef         string
@@ -173,6 +180,8 @@ type Input struct {
 	ProxyUsername     string
 	ProxyPassword     *string
 	FlareSolverrURL   string
+	Definition        string
+	Options           map[string]string
 }
 
 // DefaultInput returns an Input with the defaults the API documents.
@@ -186,10 +195,33 @@ func (s *Service) normalize(ctx context.Context, in *Input) error {
 	if in.Name == "" || len(in.Name) > 100 {
 		return invalid("name", "must be 1 to 100 characters")
 	}
-	if in.Kind != Torznab && in.Kind != Newznab {
-		return invalid("kind", "must be torznab or newznab")
+	if in.Kind != Torznab && in.Kind != Newznab && in.Kind != Native {
+		return invalid("kind", "must be torznab, newznab or native")
 	}
 	in.BaseURL = strings.TrimRight(strings.TrimSpace(in.BaseURL), "/")
+	if in.Kind == Native {
+		def, ok := s.Definition(in.Definition)
+		if !ok {
+			return invalid("definition", "unknown site definition")
+		}
+		if in.BaseURL == "" {
+			in.BaseURL = def.DefaultURL()
+		}
+		in.APIPath = "/"
+		if in.Options == nil {
+			in.Options = map[string]string{}
+		}
+		if err := def.CheckOptions(in.Options); err != nil {
+			return invalid("options", err.Error())
+		}
+		if in.APIKey != nil && *in.APIKey != "" {
+			return invalid("apiKey", "built-in sites take no API key")
+		}
+		// A site without a list of latest releases has nothing for RSS sync.
+		in.EnableRSS = in.EnableRSS && def.SupportsRSS()
+	} else {
+		in.Definition, in.Options = "", nil
+	}
 	pol, err := s.policy(ctx)
 	if err != nil {
 		return err
@@ -201,7 +233,7 @@ func (s *Service) normalize(ctx context.Context, in *Input) error {
 		return invalid("baseUrl", "must not contain query parameters (the API key has its own field)")
 	}
 	in.APIPath = strings.TrimSpace(in.APIPath)
-	if in.APIPath == "" {
+	if in.APIPath == "" && in.Kind != Native {
 		in.APIPath = "/api"
 	}
 	if !strings.HasPrefix(in.APIPath, "/") {
@@ -275,7 +307,7 @@ const indexerColumns = `i.id, i.name, i.kind, i.base_url, i.api_path, i.api_key 
 	i.seed_time_minutes, i.request_limit, i.request_period_seconds, i.grab_limit_per_day, i.timeout_seconds,
 	i.proxy_url, i.proxy_username, i.proxy_password IS NOT NULL, i.flaresolverr_url, i.source_id, s.name, i.source_ref,
 	i.caps, i.caps_updated_at, i.failures, i.retry_at, i.last_error, i.last_error_code, i.last_error_at,
-	i.last_success_at, i.created_at, i.updated_at`
+	i.last_success_at, i.created_at, i.updated_at, i.definition, i.options, i.parse_failures, i.self_test_at, i.self_test_ok`
 
 const indexerFrom = ` FROM indexers i LEFT JOIN indexer_sources s ON s.id = i.source_id`
 
@@ -290,18 +322,33 @@ func scanIndexer(row interface{ Scan(...any) error }) (Indexer, error) {
 		caps, lastErr, lastErrCode            sql.NullString
 		capsAt, retry, errAt, okAt            sql.NullInt64
 		created, updated                      int64
+		definition                            sql.NullString
+		options                               string
+		selfAt, selfOK                        sql.NullInt64
 	)
 	if err := row.Scan(&i.ID, &i.Name, &kind, &i.BaseURL, &i.APIPath, &i.HasAPIKey, &i.Enabled, &i.EnableRSS,
 		&i.EnableAutomatic, &i.EnableInteractive, &i.Priority, &tags, &cats, &i.MinimumSeeders, &seedRatio,
 		&seedTime, &reqLimit, &reqPeriod, &grabs, &i.TimeoutSeconds, &proxyURL, &proxyUser, &i.HasProxyPassword, &fs,
 		&srcID, &srcName, &ref, &caps, &capsAt, &i.Health.Failures, &retry, &lastErr, &lastErrCode, &errAt, &okAt,
-		&created, &updated); err != nil {
+		&created, &updated, &definition, &options, &i.Health.ParseFailures, &selfAt, &selfOK); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return i, ErrNotFound
 		}
 		return i, err
 	}
 	i.Kind = Kind(kind)
+	if definition.Valid {
+		i.Kind, i.Definition = Native, definition.String
+		_ = json.Unmarshal([]byte(options), &i.Options)
+		if i.Options == nil {
+			i.Options = map[string]string{}
+		}
+	}
+	i.Health.SelfTestAt = db.NullTime(selfAt)
+	if selfOK.Valid {
+		ok := selfOK.Int64 == 1
+		i.Health.SelfTestOK = &ok
+	}
 	_ = json.Unmarshal([]byte(tags), &i.Tags)
 	if i.Tags == nil {
 		i.Tags = []string{}
@@ -435,12 +482,15 @@ func (s *Service) insert(ctx context.Context, in Input, caps *znab.Caps, sourceI
 			seed_time_minutes, request_limit, request_period_seconds, grab_limit_per_day, timeout_seconds, proxy_url,
 			proxy_username, flaresolverr_url, source_id, source_ref, caps, caps_updated_at, created_at, updated_at)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`,
-			in.Name, strings.ToLower(in.Name), string(in.Kind), string(in.Kind.Protocol()), in.BaseURL, in.APIPath, in.Enabled,
+			in.Name, strings.ToLower(in.Name), string(in.Kind.stored()), string(in.Kind.Protocol()), in.BaseURL, in.APIPath, in.Enabled,
 			in.EnableRSS, in.EnableAutomatic, in.EnableInteractive, in.Priority, string(tags), string(cats), in.MinimumSeeders,
 			floatArg(in.SeedRatio), intArg(in.SeedTimeMinutes), intArg(in.RequestLimit), intArg(in.RequestPeriodSec),
 			intArg(in.GrabLimitPerDay), in.TimeoutSeconds, strArg(in.ProxyURL), strArg(in.ProxyUsername),
 			strArg(in.FlareSolverrURL), src, strArg(sourceRef), capsJSON, capsAt, db.Millis(now), db.Millis(now)).Scan(&id)
 		if err != nil {
+			return err
+		}
+		if err := s.writeNative(ctx, tx, id, in); err != nil {
 			return err
 		}
 		return s.writeSecrets(ctx, tx, id, in)
@@ -450,6 +500,17 @@ func (s *Service) insert(ctx context.Context, in Input, caps *znab.Caps, sourceI
 	}
 	s.forget(id)
 	return s.Get(ctx, id)
+}
+
+// writeNative stores a built-in site's definition and settings.
+func (s *Service) writeNative(ctx context.Context, q db.Querier, id int64, in Input) error {
+	if in.Kind != Native {
+		_, err := q.ExecContext(ctx, `UPDATE indexers SET definition = NULL, options = '{}' WHERE id = ?`, id)
+		return err
+	}
+	opts, _ := json.Marshal(in.Options)
+	_, err := q.ExecContext(ctx, `UPDATE indexers SET definition = ?, options = ? WHERE id = ?`, in.Definition, string(opts), id)
+	return err
 }
 
 func (s *Service) writeSecrets(ctx context.Context, q db.Querier, id int64, in Input) error {
@@ -489,7 +550,8 @@ func (s *Service) Update(ctx context.Context, id int64, in Input) (Indexer, erro
 	tags, _ := json.Marshal(in.Tags)
 	cats, _ := json.Marshal(normCats(*in.Categories))
 	// A changed address or key makes the stored capabilities and health stale.
-	endpointChanged := in.BaseURL != cur.BaseURL || in.APIPath != cur.APIPath || in.Kind != cur.Kind || in.APIKey != nil
+	endpointChanged := in.BaseURL != cur.BaseURL || in.APIPath != cur.APIPath || in.Kind != cur.Kind || in.APIKey != nil ||
+		in.Definition != cur.Definition
 	err = s.DB.Tx(ctx, func(tx *sql.Tx) error {
 		var n int
 		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM indexers WHERE name_key = ? AND id <> ?`,
@@ -504,7 +566,7 @@ func (s *Service) Update(ctx context.Context, id int64, in Input) (Indexer, erro
 			categories = ?, minimum_seeders = ?, seed_ratio = ?, seed_time_minutes = ?, request_limit = ?,
 			request_period_seconds = ?, grab_limit_per_day = ?, timeout_seconds = ?, proxy_url = ?, proxy_username = ?,
 			flaresolverr_url = ?, updated_at = ? WHERE id = ?`,
-			in.Name, strings.ToLower(in.Name), string(in.Kind), string(in.Kind.Protocol()), in.BaseURL, in.APIPath, in.Enabled,
+			in.Name, strings.ToLower(in.Name), string(in.Kind.stored()), string(in.Kind.Protocol()), in.BaseURL, in.APIPath, in.Enabled,
 			in.EnableRSS, in.EnableAutomatic, in.EnableInteractive, in.Priority, string(tags), string(cats), in.MinimumSeeders,
 			floatArg(in.SeedRatio), intArg(in.SeedTimeMinutes), intArg(in.RequestLimit), intArg(in.RequestPeriodSec),
 			intArg(in.GrabLimitPerDay), in.TimeoutSeconds, strArg(in.ProxyURL), strArg(in.ProxyUsername),
@@ -516,6 +578,9 @@ func (s *Service) Update(ctx context.Context, id int64, in Input) (Indexer, erro
 			if _, err := tx.ExecContext(ctx, `UPDATE indexers SET failures = 0, retry_at = NULL WHERE id = ?`, id); err != nil {
 				return err
 			}
+		}
+		if err := s.writeNative(ctx, tx, id, in); err != nil {
+			return err
 		}
 		return s.writeSecrets(ctx, tx, id, in)
 	})
@@ -570,7 +635,7 @@ func inputOf(i Indexer) Input {
 		Priority: i.Priority, Tags: i.Tags, Categories: &cats, MinimumSeeders: i.MinimumSeeders, SeedRatio: i.SeedRatio,
 		SeedTimeMinutes: i.SeedTimeMinutes, RequestLimit: i.RequestLimit, RequestPeriodSec: i.RequestPeriodSec,
 		GrabLimitPerDay: i.GrabLimitPerDay, TimeoutSeconds: i.TimeoutSeconds, ProxyURL: i.ProxyURL,
-		ProxyUsername: i.ProxyUsername, FlareSolverrURL: i.FlareSolverrURL}
+		ProxyUsername: i.ProxyUsername, FlareSolverrURL: i.FlareSolverrURL, Definition: i.Definition, Options: i.Options}
 }
 
 func normCats(c Categories) Categories {

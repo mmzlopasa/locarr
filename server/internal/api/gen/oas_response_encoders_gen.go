@@ -2079,6 +2079,19 @@ func encodeListImportListsResponse(response []ImportList, w http.ResponseWriter,
 	return nil
 }
 
+func encodeListIndexerDefinitionsResponse(response *IndexerCatalog, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
 func encodeListIndexerSourcesResponse(response []IndexerSource, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
@@ -3147,6 +3160,19 @@ func encodeRefreshSeriesResponse(response *Series, w http.ResponseWriter, span t
 }
 
 func encodeRegenerateRecoveryCodesResponse(response *RecoveryCodes, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeReloadIndexerDefinitionsResponse(response *IndexerCatalog, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 

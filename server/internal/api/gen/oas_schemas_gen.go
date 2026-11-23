@@ -9729,16 +9729,18 @@ type Indexer struct {
 	GrabLimitPerDay      OptInt `json:"grabLimitPerDay"`
 	TimeoutSeconds       int    `json:"timeoutSeconds"`
 	// Http://, https:// or socks5:// proxy, without credentials.
-	ProxyUrl        OptString           `json:"proxyUrl"`
-	ProxyUsername   OptString           `json:"proxyUsername"`
-	ProxyPassword   SecretState         `json:"proxyPassword"`
-	FlaresolverrUrl OptString           `json:"flaresolverrUrl"`
-	Source          OptIndexerSourceRef `json:"source"`
-	Caps            OptIndexerCaps      `json:"caps"`
-	CapsUpdatedAt   OptDateTime         `json:"capsUpdatedAt"`
-	Health          IndexerHealth       `json:"health"`
-	CreatedAt       time.Time           `json:"createdAt"`
-	UpdatedAt       time.Time           `json:"updatedAt"`
+	ProxyUrl        OptString               `json:"proxyUrl"`
+	ProxyUsername   OptString               `json:"proxyUsername"`
+	ProxyPassword   SecretState             `json:"proxyPassword"`
+	FlaresolverrUrl OptString               `json:"flaresolverrUrl"`
+	Definition      OptIndexerDefinitionRef `json:"definition"`
+	Options         OptIndexerOptions       `json:"options"`
+	Source          OptIndexerSourceRef     `json:"source"`
+	Caps            OptIndexerCaps          `json:"caps"`
+	CapsUpdatedAt   OptDateTime             `json:"capsUpdatedAt"`
+	Health          IndexerHealth           `json:"health"`
+	CreatedAt       time.Time               `json:"createdAt"`
+	UpdatedAt       time.Time               `json:"updatedAt"`
 }
 
 // GetID returns the value of ID.
@@ -9864,6 +9866,16 @@ func (s *Indexer) GetProxyPassword() SecretState {
 // GetFlaresolverrUrl returns the value of FlaresolverrUrl.
 func (s *Indexer) GetFlaresolverrUrl() OptString {
 	return s.FlaresolverrUrl
+}
+
+// GetDefinition returns the value of Definition.
+func (s *Indexer) GetDefinition() OptIndexerDefinitionRef {
+	return s.Definition
+}
+
+// GetOptions returns the value of Options.
+func (s *Indexer) GetOptions() OptIndexerOptions {
+	return s.Options
 }
 
 // GetSource returns the value of Source.
@@ -10021,6 +10033,16 @@ func (s *Indexer) SetFlaresolverrUrl(val OptString) {
 	s.FlaresolverrUrl = val
 }
 
+// SetDefinition sets the value of Definition.
+func (s *Indexer) SetDefinition(val OptIndexerDefinitionRef) {
+	s.Definition = val
+}
+
+// SetOptions sets the value of Options.
+func (s *Indexer) SetOptions(val OptIndexerOptions) {
+	s.Options = val
+}
+
 // SetSource sets the value of Source.
 func (s *Indexer) SetSource(val OptIndexerSourceRef) {
 	s.Source = val
@@ -10110,6 +10132,56 @@ func (s *IndexerCaps) SetCategories(val []IndexerCategory) {
 	s.Categories = val
 }
 
+// Ref: #/components/schemas/IndexerCatalog
+type IndexerCatalog struct {
+	Definitions []IndexerDefinition `json:"definitions"`
+	Presets     []UsenetPreset      `json:"presets"`
+	// Custom definition files that could not be loaded.
+	Errors []IndexerDefinitionError `json:"errors"`
+	// The folder custom definitions are read from.
+	CustomDir string `json:"customDir"`
+}
+
+// GetDefinitions returns the value of Definitions.
+func (s *IndexerCatalog) GetDefinitions() []IndexerDefinition {
+	return s.Definitions
+}
+
+// GetPresets returns the value of Presets.
+func (s *IndexerCatalog) GetPresets() []UsenetPreset {
+	return s.Presets
+}
+
+// GetErrors returns the value of Errors.
+func (s *IndexerCatalog) GetErrors() []IndexerDefinitionError {
+	return s.Errors
+}
+
+// GetCustomDir returns the value of CustomDir.
+func (s *IndexerCatalog) GetCustomDir() string {
+	return s.CustomDir
+}
+
+// SetDefinitions sets the value of Definitions.
+func (s *IndexerCatalog) SetDefinitions(val []IndexerDefinition) {
+	s.Definitions = val
+}
+
+// SetPresets sets the value of Presets.
+func (s *IndexerCatalog) SetPresets(val []UsenetPreset) {
+	s.Presets = val
+}
+
+// SetErrors sets the value of Errors.
+func (s *IndexerCatalog) SetErrors(val []IndexerDefinitionError) {
+	s.Errors = val
+}
+
+// SetCustomDir sets the value of CustomDir.
+func (s *IndexerCatalog) SetCustomDir(val string) {
+	s.CustomDir = val
+}
+
 // Newznab category ids used for each kind of media.
 // Ref: #/components/schemas/IndexerCategories
 type IndexerCategories struct {
@@ -10196,6 +10268,480 @@ func (s *IndexerCategory) SetSubcategories(val []IndexerCategory) {
 	s.Subcategories = val
 }
 
+// Ref: #/components/schemas/IndexerDefinition
+type IndexerDefinition struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Version     int    `json:"version"`
+	Builtin     bool   `json:"builtin"`
+	Overrides   bool   `json:"overrides"`
+	// For a custom definition: its file name in the custom folder.
+	File     OptString `json:"file"`
+	Protocol Protocol  `json:"protocol"`
+	Language OptString `json:"language"`
+	// The site's addresses; the first is the default, the others known mirrors.
+	Links []string `json:"links"`
+	// How the definition was written and checked.
+	Verified string `json:"verified"`
+	// Whether the site shows a Cloudflare challenge (FlareSolverr needed).
+	Flaresolverr IndexerDefinitionFlaresolverr `json:"flaresolverr"`
+	RateLimit    OptIndexerRateLimit           `json:"rateLimit"`
+	// The site lists its latest releases (RSS sync).
+	Rss       bool               `json:"rss"`
+	Searching []IndexerSearchCap `json:"searching"`
+	// Newznab categories the site's categories map onto.
+	Categories []IndexerCategory          `json:"categories"`
+	Settings   []IndexerDefinitionSetting `json:"settings"`
+	Aliases    []string                   `json:"aliases"`
+	// Indexers that use this definition.
+	IndexerIds []int64 `json:"indexerIds"`
+}
+
+// GetID returns the value of ID.
+func (s *IndexerDefinition) GetID() string {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *IndexerDefinition) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *IndexerDefinition) GetDescription() string {
+	return s.Description
+}
+
+// GetVersion returns the value of Version.
+func (s *IndexerDefinition) GetVersion() int {
+	return s.Version
+}
+
+// GetBuiltin returns the value of Builtin.
+func (s *IndexerDefinition) GetBuiltin() bool {
+	return s.Builtin
+}
+
+// GetOverrides returns the value of Overrides.
+func (s *IndexerDefinition) GetOverrides() bool {
+	return s.Overrides
+}
+
+// GetFile returns the value of File.
+func (s *IndexerDefinition) GetFile() OptString {
+	return s.File
+}
+
+// GetProtocol returns the value of Protocol.
+func (s *IndexerDefinition) GetProtocol() Protocol {
+	return s.Protocol
+}
+
+// GetLanguage returns the value of Language.
+func (s *IndexerDefinition) GetLanguage() OptString {
+	return s.Language
+}
+
+// GetLinks returns the value of Links.
+func (s *IndexerDefinition) GetLinks() []string {
+	return s.Links
+}
+
+// GetVerified returns the value of Verified.
+func (s *IndexerDefinition) GetVerified() string {
+	return s.Verified
+}
+
+// GetFlaresolverr returns the value of Flaresolverr.
+func (s *IndexerDefinition) GetFlaresolverr() IndexerDefinitionFlaresolverr {
+	return s.Flaresolverr
+}
+
+// GetRateLimit returns the value of RateLimit.
+func (s *IndexerDefinition) GetRateLimit() OptIndexerRateLimit {
+	return s.RateLimit
+}
+
+// GetRss returns the value of Rss.
+func (s *IndexerDefinition) GetRss() bool {
+	return s.Rss
+}
+
+// GetSearching returns the value of Searching.
+func (s *IndexerDefinition) GetSearching() []IndexerSearchCap {
+	return s.Searching
+}
+
+// GetCategories returns the value of Categories.
+func (s *IndexerDefinition) GetCategories() []IndexerCategory {
+	return s.Categories
+}
+
+// GetSettings returns the value of Settings.
+func (s *IndexerDefinition) GetSettings() []IndexerDefinitionSetting {
+	return s.Settings
+}
+
+// GetAliases returns the value of Aliases.
+func (s *IndexerDefinition) GetAliases() []string {
+	return s.Aliases
+}
+
+// GetIndexerIds returns the value of IndexerIds.
+func (s *IndexerDefinition) GetIndexerIds() []int64 {
+	return s.IndexerIds
+}
+
+// SetID sets the value of ID.
+func (s *IndexerDefinition) SetID(val string) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *IndexerDefinition) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *IndexerDefinition) SetDescription(val string) {
+	s.Description = val
+}
+
+// SetVersion sets the value of Version.
+func (s *IndexerDefinition) SetVersion(val int) {
+	s.Version = val
+}
+
+// SetBuiltin sets the value of Builtin.
+func (s *IndexerDefinition) SetBuiltin(val bool) {
+	s.Builtin = val
+}
+
+// SetOverrides sets the value of Overrides.
+func (s *IndexerDefinition) SetOverrides(val bool) {
+	s.Overrides = val
+}
+
+// SetFile sets the value of File.
+func (s *IndexerDefinition) SetFile(val OptString) {
+	s.File = val
+}
+
+// SetProtocol sets the value of Protocol.
+func (s *IndexerDefinition) SetProtocol(val Protocol) {
+	s.Protocol = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *IndexerDefinition) SetLanguage(val OptString) {
+	s.Language = val
+}
+
+// SetLinks sets the value of Links.
+func (s *IndexerDefinition) SetLinks(val []string) {
+	s.Links = val
+}
+
+// SetVerified sets the value of Verified.
+func (s *IndexerDefinition) SetVerified(val string) {
+	s.Verified = val
+}
+
+// SetFlaresolverr sets the value of Flaresolverr.
+func (s *IndexerDefinition) SetFlaresolverr(val IndexerDefinitionFlaresolverr) {
+	s.Flaresolverr = val
+}
+
+// SetRateLimit sets the value of RateLimit.
+func (s *IndexerDefinition) SetRateLimit(val OptIndexerRateLimit) {
+	s.RateLimit = val
+}
+
+// SetRss sets the value of Rss.
+func (s *IndexerDefinition) SetRss(val bool) {
+	s.Rss = val
+}
+
+// SetSearching sets the value of Searching.
+func (s *IndexerDefinition) SetSearching(val []IndexerSearchCap) {
+	s.Searching = val
+}
+
+// SetCategories sets the value of Categories.
+func (s *IndexerDefinition) SetCategories(val []IndexerCategory) {
+	s.Categories = val
+}
+
+// SetSettings sets the value of Settings.
+func (s *IndexerDefinition) SetSettings(val []IndexerDefinitionSetting) {
+	s.Settings = val
+}
+
+// SetAliases sets the value of Aliases.
+func (s *IndexerDefinition) SetAliases(val []string) {
+	s.Aliases = val
+}
+
+// SetIndexerIds sets the value of IndexerIds.
+func (s *IndexerDefinition) SetIndexerIds(val []int64) {
+	s.IndexerIds = val
+}
+
+// Ref: #/components/schemas/IndexerDefinitionError
+type IndexerDefinitionError struct {
+	File    string `json:"file"`
+	Message string `json:"message"`
+}
+
+// GetFile returns the value of File.
+func (s *IndexerDefinitionError) GetFile() string {
+	return s.File
+}
+
+// GetMessage returns the value of Message.
+func (s *IndexerDefinitionError) GetMessage() string {
+	return s.Message
+}
+
+// SetFile sets the value of File.
+func (s *IndexerDefinitionError) SetFile(val string) {
+	s.File = val
+}
+
+// SetMessage sets the value of Message.
+func (s *IndexerDefinitionError) SetMessage(val string) {
+	s.Message = val
+}
+
+// Whether the site shows a Cloudflare challenge (FlareSolverr needed).
+type IndexerDefinitionFlaresolverr string
+
+const (
+	IndexerDefinitionFlaresolverrNever     IndexerDefinitionFlaresolverr = "never"
+	IndexerDefinitionFlaresolverrSometimes IndexerDefinitionFlaresolverr = "sometimes"
+	IndexerDefinitionFlaresolverrAlways    IndexerDefinitionFlaresolverr = "always"
+)
+
+// AllValues returns all IndexerDefinitionFlaresolverr values.
+func (IndexerDefinitionFlaresolverr) AllValues() []IndexerDefinitionFlaresolverr {
+	return []IndexerDefinitionFlaresolverr{
+		IndexerDefinitionFlaresolverrNever,
+		IndexerDefinitionFlaresolverrSometimes,
+		IndexerDefinitionFlaresolverrAlways,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IndexerDefinitionFlaresolverr) MarshalText() ([]byte, error) {
+	switch s {
+	case IndexerDefinitionFlaresolverrNever:
+		return []byte(s), nil
+	case IndexerDefinitionFlaresolverrSometimes:
+		return []byte(s), nil
+	case IndexerDefinitionFlaresolverrAlways:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IndexerDefinitionFlaresolverr) UnmarshalText(data []byte) error {
+	switch IndexerDefinitionFlaresolverr(data) {
+	case IndexerDefinitionFlaresolverrNever:
+		*s = IndexerDefinitionFlaresolverrNever
+		return nil
+	case IndexerDefinitionFlaresolverrSometimes:
+		*s = IndexerDefinitionFlaresolverrSometimes
+		return nil
+	case IndexerDefinitionFlaresolverrAlways:
+		*s = IndexerDefinitionFlaresolverrAlways
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/IndexerDefinitionRef
+type IndexerDefinitionRef struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Version int    `json:"version"`
+	Builtin bool   `json:"builtin"`
+	// A custom file replaces the built-in definition.
+	Overrides bool `json:"overrides"`
+	// The definition is no longer available (a custom file was removed); the indexer cannot search.
+	Missing bool `json:"missing"`
+}
+
+// GetID returns the value of ID.
+func (s *IndexerDefinitionRef) GetID() string {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *IndexerDefinitionRef) GetName() string {
+	return s.Name
+}
+
+// GetVersion returns the value of Version.
+func (s *IndexerDefinitionRef) GetVersion() int {
+	return s.Version
+}
+
+// GetBuiltin returns the value of Builtin.
+func (s *IndexerDefinitionRef) GetBuiltin() bool {
+	return s.Builtin
+}
+
+// GetOverrides returns the value of Overrides.
+func (s *IndexerDefinitionRef) GetOverrides() bool {
+	return s.Overrides
+}
+
+// GetMissing returns the value of Missing.
+func (s *IndexerDefinitionRef) GetMissing() bool {
+	return s.Missing
+}
+
+// SetID sets the value of ID.
+func (s *IndexerDefinitionRef) SetID(val string) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *IndexerDefinitionRef) SetName(val string) {
+	s.Name = val
+}
+
+// SetVersion sets the value of Version.
+func (s *IndexerDefinitionRef) SetVersion(val int) {
+	s.Version = val
+}
+
+// SetBuiltin sets the value of Builtin.
+func (s *IndexerDefinitionRef) SetBuiltin(val bool) {
+	s.Builtin = val
+}
+
+// SetOverrides sets the value of Overrides.
+func (s *IndexerDefinitionRef) SetOverrides(val bool) {
+	s.Overrides = val
+}
+
+// SetMissing sets the value of Missing.
+func (s *IndexerDefinitionRef) SetMissing(val bool) {
+	s.Missing = val
+}
+
+// Ref: #/components/schemas/IndexerDefinitionSetting
+type IndexerDefinitionSetting struct {
+	Name    string                       `json:"name"`
+	Type    IndexerDefinitionSettingType `json:"type"`
+	Label   string                       `json:"label"`
+	Default string                       `json:"default"`
+	Options []IndexerSettingOption       `json:"options"`
+}
+
+// GetName returns the value of Name.
+func (s *IndexerDefinitionSetting) GetName() string {
+	return s.Name
+}
+
+// GetType returns the value of Type.
+func (s *IndexerDefinitionSetting) GetType() IndexerDefinitionSettingType {
+	return s.Type
+}
+
+// GetLabel returns the value of Label.
+func (s *IndexerDefinitionSetting) GetLabel() string {
+	return s.Label
+}
+
+// GetDefault returns the value of Default.
+func (s *IndexerDefinitionSetting) GetDefault() string {
+	return s.Default
+}
+
+// GetOptions returns the value of Options.
+func (s *IndexerDefinitionSetting) GetOptions() []IndexerSettingOption {
+	return s.Options
+}
+
+// SetName sets the value of Name.
+func (s *IndexerDefinitionSetting) SetName(val string) {
+	s.Name = val
+}
+
+// SetType sets the value of Type.
+func (s *IndexerDefinitionSetting) SetType(val IndexerDefinitionSettingType) {
+	s.Type = val
+}
+
+// SetLabel sets the value of Label.
+func (s *IndexerDefinitionSetting) SetLabel(val string) {
+	s.Label = val
+}
+
+// SetDefault sets the value of Default.
+func (s *IndexerDefinitionSetting) SetDefault(val string) {
+	s.Default = val
+}
+
+// SetOptions sets the value of Options.
+func (s *IndexerDefinitionSetting) SetOptions(val []IndexerSettingOption) {
+	s.Options = val
+}
+
+type IndexerDefinitionSettingType string
+
+const (
+	IndexerDefinitionSettingTypeText   IndexerDefinitionSettingType = "text"
+	IndexerDefinitionSettingTypeBool   IndexerDefinitionSettingType = "bool"
+	IndexerDefinitionSettingTypeSelect IndexerDefinitionSettingType = "select"
+)
+
+// AllValues returns all IndexerDefinitionSettingType values.
+func (IndexerDefinitionSettingType) AllValues() []IndexerDefinitionSettingType {
+	return []IndexerDefinitionSettingType{
+		IndexerDefinitionSettingTypeText,
+		IndexerDefinitionSettingTypeBool,
+		IndexerDefinitionSettingTypeSelect,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IndexerDefinitionSettingType) MarshalText() ([]byte, error) {
+	switch s {
+	case IndexerDefinitionSettingTypeText:
+		return []byte(s), nil
+	case IndexerDefinitionSettingTypeBool:
+		return []byte(s), nil
+	case IndexerDefinitionSettingTypeSelect:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IndexerDefinitionSettingType) UnmarshalText(data []byte) error {
+	switch IndexerDefinitionSettingType(data) {
+	case IndexerDefinitionSettingTypeText:
+		*s = IndexerDefinitionSettingTypeText
+		return nil
+	case IndexerDefinitionSettingTypeBool:
+		*s = IndexerDefinitionSettingTypeBool
+		return nil
+	case IndexerDefinitionSettingTypeSelect:
+		*s = IndexerDefinitionSettingTypeSelect
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/IndexerHealth
 type IndexerHealth struct {
 	Status        IndexerHealthStatus `json:"status"`
@@ -10205,6 +10751,12 @@ type IndexerHealth struct {
 	LastErrorAt   OptDateTime         `json:"lastErrorAt"`
 	LastSuccessAt OptDateTime         `json:"lastSuccessAt"`
 	RetryAt       OptDateTime         `json:"retryAt"`
+	// For built-in sites: result rows that could not be read since the last reset (the site layout may
+	// have changed).
+	ParseFailures OptInt `json:"parseFailures"`
+	// For built-in sites: when the weekly self-test last ran.
+	SelfTestAt OptDateTime `json:"selfTestAt"`
+	SelfTestOk OptBool     `json:"selfTestOk"`
 }
 
 // GetStatus returns the value of Status.
@@ -10242,6 +10794,21 @@ func (s *IndexerHealth) GetRetryAt() OptDateTime {
 	return s.RetryAt
 }
 
+// GetParseFailures returns the value of ParseFailures.
+func (s *IndexerHealth) GetParseFailures() OptInt {
+	return s.ParseFailures
+}
+
+// GetSelfTestAt returns the value of SelfTestAt.
+func (s *IndexerHealth) GetSelfTestAt() OptDateTime {
+	return s.SelfTestAt
+}
+
+// GetSelfTestOk returns the value of SelfTestOk.
+func (s *IndexerHealth) GetSelfTestOk() OptBool {
+	return s.SelfTestOk
+}
+
 // SetStatus sets the value of Status.
 func (s *IndexerHealth) SetStatus(val IndexerHealthStatus) {
 	s.Status = val
@@ -10275,6 +10842,21 @@ func (s *IndexerHealth) SetLastSuccessAt(val OptDateTime) {
 // SetRetryAt sets the value of RetryAt.
 func (s *IndexerHealth) SetRetryAt(val OptDateTime) {
 	s.RetryAt = val
+}
+
+// SetParseFailures sets the value of ParseFailures.
+func (s *IndexerHealth) SetParseFailures(val OptInt) {
+	s.ParseFailures = val
+}
+
+// SetSelfTestAt sets the value of SelfTestAt.
+func (s *IndexerHealth) SetSelfTestAt(val OptDateTime) {
+	s.SelfTestAt = val
+}
+
+// SetSelfTestOk sets the value of SelfTestOk.
+func (s *IndexerHealth) SetSelfTestOk(val OptBool) {
+	s.SelfTestOk = val
 }
 
 // `failing`: recent requests failed; the indexer is skipped until `retryAt` and then tried again
@@ -10338,9 +10920,11 @@ func (s *IndexerHealthStatus) UnmarshalText(data []byte) error {
 
 // Ref: #/components/schemas/IndexerInput
 type IndexerInput struct {
-	Name    string      `json:"name"`
-	Kind    IndexerKind `json:"kind"`
-	BaseUrl string      `json:"baseUrl"`
+	Name string      `json:"name"`
+	Kind IndexerKind `json:"kind"`
+	// Required for Torznab/Newznab. For a built-in site, the address to use (a mirror); empty uses its
+	// default.
+	BaseUrl OptString `json:"baseUrl"`
 	// Default `/api`.
 	ApiPath OptString `json:"apiPath"`
 	// Write-only.
@@ -10364,6 +10948,9 @@ type IndexerInput struct {
 	// Write-only.
 	ProxyPassword   OptString `json:"proxyPassword"`
 	FlaresolverrUrl OptString `json:"flaresolverrUrl"`
+	// The site definition id (kind `native`).
+	Definition OptString         `json:"definition"`
+	Options    OptIndexerOptions `json:"options"`
 }
 
 // GetName returns the value of Name.
@@ -10377,7 +10964,7 @@ func (s *IndexerInput) GetKind() IndexerKind {
 }
 
 // GetBaseUrl returns the value of BaseUrl.
-func (s *IndexerInput) GetBaseUrl() string {
+func (s *IndexerInput) GetBaseUrl() OptString {
 	return s.BaseUrl
 }
 
@@ -10481,6 +11068,16 @@ func (s *IndexerInput) GetFlaresolverrUrl() OptString {
 	return s.FlaresolverrUrl
 }
 
+// GetDefinition returns the value of Definition.
+func (s *IndexerInput) GetDefinition() OptString {
+	return s.Definition
+}
+
+// GetOptions returns the value of Options.
+func (s *IndexerInput) GetOptions() OptIndexerOptions {
+	return s.Options
+}
+
 // SetName sets the value of Name.
 func (s *IndexerInput) SetName(val string) {
 	s.Name = val
@@ -10492,7 +11089,7 @@ func (s *IndexerInput) SetKind(val IndexerKind) {
 }
 
 // SetBaseUrl sets the value of BaseUrl.
-func (s *IndexerInput) SetBaseUrl(val string) {
+func (s *IndexerInput) SetBaseUrl(val OptString) {
 	s.BaseUrl = val
 }
 
@@ -10596,13 +11193,25 @@ func (s *IndexerInput) SetFlaresolverrUrl(val OptString) {
 	s.FlaresolverrUrl = val
 }
 
-// `torznab` indexers are torrent indexers, `newznab` ones usenet.
+// SetDefinition sets the value of Definition.
+func (s *IndexerInput) SetDefinition(val OptString) {
+	s.Definition = val
+}
+
+// SetOptions sets the value of Options.
+func (s *IndexerInput) SetOptions(val OptIndexerOptions) {
+	s.Options = val
+}
+
+// `torznab` indexers are torrent indexers, `newznab` ones usenet. `native` indexers are public sites
+// Locarr searches itself through a built-in or custom site definition (`definition`).
 // Ref: #/components/schemas/IndexerKind
 type IndexerKind string
 
 const (
 	IndexerKindTorznab IndexerKind = "torznab"
 	IndexerKindNewznab IndexerKind = "newznab"
+	IndexerKindNative  IndexerKind = "native"
 )
 
 // AllValues returns all IndexerKind values.
@@ -10610,6 +11219,7 @@ func (IndexerKind) AllValues() []IndexerKind {
 	return []IndexerKind{
 		IndexerKindTorznab,
 		IndexerKindNewznab,
+		IndexerKindNative,
 	}
 }
 
@@ -10619,6 +11229,8 @@ func (s IndexerKind) MarshalText() ([]byte, error) {
 	case IndexerKindTorznab:
 		return []byte(s), nil
 	case IndexerKindNewznab:
+		return []byte(s), nil
+	case IndexerKindNative:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -10634,9 +11246,51 @@ func (s *IndexerKind) UnmarshalText(data []byte) error {
 	case IndexerKindNewznab:
 		*s = IndexerKindNewznab
 		return nil
+	case IndexerKindNative:
+		*s = IndexerKindNative
+		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Settings of a built-in site (names from its definition's `settings`).
+// Ref: #/components/schemas/IndexerOptions
+type IndexerOptions map[string]string
+
+func (s *IndexerOptions) init() IndexerOptions {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/IndexerRateLimit
+type IndexerRateLimit struct {
+	Requests      int `json:"requests"`
+	PeriodSeconds int `json:"periodSeconds"`
+}
+
+// GetRequests returns the value of Requests.
+func (s *IndexerRateLimit) GetRequests() int {
+	return s.Requests
+}
+
+// GetPeriodSeconds returns the value of PeriodSeconds.
+func (s *IndexerRateLimit) GetPeriodSeconds() int {
+	return s.PeriodSeconds
+}
+
+// SetRequests sets the value of Requests.
+func (s *IndexerRateLimit) SetRequests(val int) {
+	s.Requests = val
+}
+
+// SetPeriodSeconds sets the value of PeriodSeconds.
+func (s *IndexerRateLimit) SetPeriodSeconds(val int) {
+	s.PeriodSeconds = val
 }
 
 // Ref: #/components/schemas/IndexerSearchCap
@@ -10676,6 +11330,32 @@ func (s *IndexerSearchCap) SetParams(val []string) {
 	s.Params = val
 }
 
+// Ref: #/components/schemas/IndexerSettingOption
+type IndexerSettingOption struct {
+	Value string `json:"value"`
+	Label string `json:"label"`
+}
+
+// GetValue returns the value of Value.
+func (s *IndexerSettingOption) GetValue() string {
+	return s.Value
+}
+
+// GetLabel returns the value of Label.
+func (s *IndexerSettingOption) GetLabel() string {
+	return s.Label
+}
+
+// SetValue sets the value of Value.
+func (s *IndexerSettingOption) SetValue(val string) {
+	s.Value = val
+}
+
+// SetLabel sets the value of Label.
+func (s *IndexerSettingOption) SetLabel(val string) {
+	s.Label = val
+}
+
 // Ref: #/components/schemas/IndexerSettings
 type IndexerSettings struct {
 	// How often RSS feeds are fetched (RSS can be turned off per indexer).
@@ -10687,9 +11367,13 @@ type IndexerSettings struct {
 	// Addresses, networks or host names indexers may reach even though they are blocked by default
 	// (loopback, link-local).
 	AllowedHosts []string `json:"allowedHosts"`
-	// Also refuse private (RFC 1918) addresses. Off by default because Prowlarr and Jackett usually share
-	// the Docker network.
+	// Also refuse private (RFC 1918) addresses. Off by default because download tools and FlareSolverr
+	// usually share the Docker network.
 	BlockPrivateNetworks bool `json:"blockPrivateNetworks"`
+	// Trackers added to magnets Locarr builds from a built-in site's bare info hash.
+	PublicTrackers []string `json:"publicTrackers"`
+	// User-Agent sent to indexers and sites; empty sends "Locarr".
+	UserAgent string `json:"userAgent"`
 }
 
 // GetRssSyncIntervalMinutes returns the value of RssSyncIntervalMinutes.
@@ -10722,6 +11406,16 @@ func (s *IndexerSettings) GetBlockPrivateNetworks() bool {
 	return s.BlockPrivateNetworks
 }
 
+// GetPublicTrackers returns the value of PublicTrackers.
+func (s *IndexerSettings) GetPublicTrackers() []string {
+	return s.PublicTrackers
+}
+
+// GetUserAgent returns the value of UserAgent.
+func (s *IndexerSettings) GetUserAgent() string {
+	return s.UserAgent
+}
+
 // SetRssSyncIntervalMinutes sets the value of RssSyncIntervalMinutes.
 func (s *IndexerSettings) SetRssSyncIntervalMinutes(val int) {
 	s.RssSyncIntervalMinutes = val
@@ -10750,6 +11444,16 @@ func (s *IndexerSettings) SetAllowedHosts(val []string) {
 // SetBlockPrivateNetworks sets the value of BlockPrivateNetworks.
 func (s *IndexerSettings) SetBlockPrivateNetworks(val bool) {
 	s.BlockPrivateNetworks = val
+}
+
+// SetPublicTrackers sets the value of PublicTrackers.
+func (s *IndexerSettings) SetPublicTrackers(val []string) {
+	s.PublicTrackers = val
+}
+
+// SetUserAgent sets the value of UserAgent.
+func (s *IndexerSettings) SetUserAgent(val string) {
+	s.UserAgent = val
 }
 
 // Ref: #/components/schemas/IndexerSource
@@ -11318,7 +12022,8 @@ type IndexerTestResult struct {
 	DefaultCategories OptIndexerCategories `json:"defaultCategories"`
 	// Results of the probe search.
 	ProbeResults OptInt `json:"probeResults"`
-	// Auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked or unknown.
+	// Auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked, challenge (a
+	// Cloudflare challenge: set FlareSolverr), layout (a built-in site's pages changed) or unknown.
 	ErrorCode OptString `json:"errorCode"`
 	Error     OptString `json:"error"`
 }
@@ -21601,6 +22306,144 @@ func (o OptIndexerCategories) Get() (v IndexerCategories, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptIndexerCategories) Or(d IndexerCategories) IndexerCategories {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptIndexerDefinitionRef returns new OptIndexerDefinitionRef with value set to v.
+func NewOptIndexerDefinitionRef(v IndexerDefinitionRef) OptIndexerDefinitionRef {
+	return OptIndexerDefinitionRef{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptIndexerDefinitionRef is optional IndexerDefinitionRef.
+type OptIndexerDefinitionRef struct {
+	Value IndexerDefinitionRef
+	Set   bool
+}
+
+// IsSet returns true if OptIndexerDefinitionRef was set.
+func (o OptIndexerDefinitionRef) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptIndexerDefinitionRef) Reset() {
+	var v IndexerDefinitionRef
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptIndexerDefinitionRef) SetTo(v IndexerDefinitionRef) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptIndexerDefinitionRef) Get() (v IndexerDefinitionRef, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptIndexerDefinitionRef) Or(d IndexerDefinitionRef) IndexerDefinitionRef {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptIndexerOptions returns new OptIndexerOptions with value set to v.
+func NewOptIndexerOptions(v IndexerOptions) OptIndexerOptions {
+	return OptIndexerOptions{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptIndexerOptions is optional IndexerOptions.
+type OptIndexerOptions struct {
+	Value IndexerOptions
+	Set   bool
+}
+
+// IsSet returns true if OptIndexerOptions was set.
+func (o OptIndexerOptions) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptIndexerOptions) Reset() {
+	var v IndexerOptions
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptIndexerOptions) SetTo(v IndexerOptions) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptIndexerOptions) Get() (v IndexerOptions, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptIndexerOptions) Or(d IndexerOptions) IndexerOptions {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptIndexerRateLimit returns new OptIndexerRateLimit with value set to v.
+func NewOptIndexerRateLimit(v IndexerRateLimit) OptIndexerRateLimit {
+	return OptIndexerRateLimit{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptIndexerRateLimit is optional IndexerRateLimit.
+type OptIndexerRateLimit struct {
+	Value IndexerRateLimit
+	Set   bool
+}
+
+// IsSet returns true if OptIndexerRateLimit was set.
+func (o OptIndexerRateLimit) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptIndexerRateLimit) Reset() {
+	var v IndexerRateLimit
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptIndexerRateLimit) SetTo(v IndexerRateLimit) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptIndexerRateLimit) Get() (v IndexerRateLimit, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptIndexerRateLimit) Or(d IndexerRateLimit) IndexerRateLimit {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -36475,12 +37318,14 @@ func (s *UpdateDownloadSettings) SetStalledHours(val OptInt) {
 
 // Ref: #/components/schemas/UpdateIndexerSettingsRequest
 type UpdateIndexerSettingsRequest struct {
-	RssSyncIntervalMinutes OptInt   `json:"rssSyncIntervalMinutes"`
-	ReleaseRetentionDays   OptInt   `json:"releaseRetentionDays"`
-	SearchTimeoutSeconds   OptInt   `json:"searchTimeoutSeconds"`
-	SearchCacheSeconds     OptInt   `json:"searchCacheSeconds"`
-	AllowedHosts           []string `json:"allowedHosts"`
-	BlockPrivateNetworks   OptBool  `json:"blockPrivateNetworks"`
+	RssSyncIntervalMinutes OptInt    `json:"rssSyncIntervalMinutes"`
+	ReleaseRetentionDays   OptInt    `json:"releaseRetentionDays"`
+	SearchTimeoutSeconds   OptInt    `json:"searchTimeoutSeconds"`
+	SearchCacheSeconds     OptInt    `json:"searchCacheSeconds"`
+	AllowedHosts           []string  `json:"allowedHosts"`
+	BlockPrivateNetworks   OptBool   `json:"blockPrivateNetworks"`
+	PublicTrackers         []string  `json:"publicTrackers"`
+	UserAgent              OptString `json:"userAgent"`
 }
 
 // GetRssSyncIntervalMinutes returns the value of RssSyncIntervalMinutes.
@@ -36513,6 +37358,16 @@ func (s *UpdateIndexerSettingsRequest) GetBlockPrivateNetworks() OptBool {
 	return s.BlockPrivateNetworks
 }
 
+// GetPublicTrackers returns the value of PublicTrackers.
+func (s *UpdateIndexerSettingsRequest) GetPublicTrackers() []string {
+	return s.PublicTrackers
+}
+
+// GetUserAgent returns the value of UserAgent.
+func (s *UpdateIndexerSettingsRequest) GetUserAgent() OptString {
+	return s.UserAgent
+}
+
 // SetRssSyncIntervalMinutes sets the value of RssSyncIntervalMinutes.
 func (s *UpdateIndexerSettingsRequest) SetRssSyncIntervalMinutes(val OptInt) {
 	s.RssSyncIntervalMinutes = val
@@ -36541,6 +37396,16 @@ func (s *UpdateIndexerSettingsRequest) SetAllowedHosts(val []string) {
 // SetBlockPrivateNetworks sets the value of BlockPrivateNetworks.
 func (s *UpdateIndexerSettingsRequest) SetBlockPrivateNetworks(val OptBool) {
 	s.BlockPrivateNetworks = val
+}
+
+// SetPublicTrackers sets the value of PublicTrackers.
+func (s *UpdateIndexerSettingsRequest) SetPublicTrackers(val []string) {
+	s.PublicTrackers = val
+}
+
+// SetUserAgent sets the value of UserAgent.
+func (s *UpdateIndexerSettingsRequest) SetUserAgent(val OptString) {
+	s.UserAgent = val
 }
 
 // Ref: #/components/schemas/UpdateMeRequest
@@ -36635,6 +37500,66 @@ func (s *UpdateUserRequest) SetPermissions(val OptPermissions) {
 // SetDisabled sets the value of Disabled.
 func (s *UpdateUserRequest) SetDisabled(val OptBool) {
 	s.Disabled = val
+}
+
+// Ref: #/components/schemas/UsenetPreset
+type UsenetPreset struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	BaseUrl string `json:"baseUrl"`
+	ApiPath string `json:"apiPath"`
+	// Where to find the API key (the indexer's profile page).
+	SiteUrl string `json:"siteUrl"`
+}
+
+// GetID returns the value of ID.
+func (s *UsenetPreset) GetID() string {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *UsenetPreset) GetName() string {
+	return s.Name
+}
+
+// GetBaseUrl returns the value of BaseUrl.
+func (s *UsenetPreset) GetBaseUrl() string {
+	return s.BaseUrl
+}
+
+// GetApiPath returns the value of ApiPath.
+func (s *UsenetPreset) GetApiPath() string {
+	return s.ApiPath
+}
+
+// GetSiteUrl returns the value of SiteUrl.
+func (s *UsenetPreset) GetSiteUrl() string {
+	return s.SiteUrl
+}
+
+// SetID sets the value of ID.
+func (s *UsenetPreset) SetID(val string) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *UsenetPreset) SetName(val string) {
+	s.Name = val
+}
+
+// SetBaseUrl sets the value of BaseUrl.
+func (s *UsenetPreset) SetBaseUrl(val string) {
+	s.BaseUrl = val
+}
+
+// SetApiPath sets the value of ApiPath.
+func (s *UsenetPreset) SetApiPath(val string) {
+	s.ApiPath = val
+}
+
+// SetSiteUrl sets the value of SiteUrl.
+func (s *UsenetPreset) SetSiteUrl(val string) {
+	s.SiteUrl = val
 }
 
 // Ref: #/components/schemas/User

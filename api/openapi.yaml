@@ -626,10 +626,13 @@ paths:
           $ref: "#/components/responses/Error"
     post:
       operationId: createIndexer
-      summary: Add a Torznab or Newznab indexer (administrators)
+      summary: Add a Torznab/Newznab indexer or a built-in site (administrators)
       description: |
         Categories left empty are filled from the indexer's capabilities when they
-        can be fetched. The API key is write-only.
+        can be fetched (for a built-in site, from its definition). The API key is write-only.
+        For a built-in site (`kind: native`, `definition`), unset fields take the site's
+        defaults: its address, request limit, timeout and RSS (off when the site has no
+        list of latest releases).
       tags: [indexers]
       requestBody:
         required: true
@@ -811,6 +814,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/IndexerSettings"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/definitions:
+    get:
+      operationId: listIndexerDefinitions
+      summary: Built-in and custom site definitions, usenet presets and definition load errors (administrators)
+      tags: [indexers]
+      responses:
+        "200":
+          description: Catalog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerCatalog"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/definitions/reload:
+    post:
+      operationId: reloadIndexerDefinitions
+      summary: Re-read the custom definitions folder (administrators)
+      description: Invalid files are skipped and listed in `errors`; indexers pick up changed definitions immediately.
+      tags: [indexers]
+      responses:
+        "200":
+          description: Catalog after the reload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerCatalog"
         default:
           $ref: "#/components/responses/Error"
   /indexers/sources:
@@ -6331,8 +6363,10 @@ components:
             $ref: "#/components/schemas/FolderEntry"
     IndexerKind:
       type: string
-      enum: [torznab, newznab]
-      description: "`torznab` indexers are torrent indexers, `newznab` ones usenet."
+      enum: [torznab, newznab, native]
+      description: |
+        `torznab` indexers are torrent indexers, `newznab` ones usenet. `native` indexers are public
+        sites Locarr searches itself through a built-in or custom site definition (`definition`).
     Protocol:
       type: string
       enum: [torrent, usenet]
@@ -6430,6 +6464,15 @@ components:
         retryAt:
           type: string
           format: date-time
+        parseFailures:
+          type: integer
+          description: "For built-in sites: result rows that could not be read since the last reset (the site layout may have changed)."
+        selfTestAt:
+          type: string
+          format: date-time
+          description: "For built-in sites: when the weekly self-test last ran."
+        selfTestOk:
+          type: boolean
     IndexerSourceRef:
       type: object
       required: [id, name, ref]
@@ -6505,6 +6548,10 @@ components:
           $ref: "#/components/schemas/SecretState"
         flaresolverrUrl:
           type: string
+        definition:
+          $ref: "#/components/schemas/IndexerDefinitionRef"
+        options:
+          $ref: "#/components/schemas/IndexerOptions"
         source:
           $ref: "#/components/schemas/IndexerSourceRef"
         caps:
@@ -6520,9 +6567,33 @@ components:
         updatedAt:
           type: string
           format: date-time
+    IndexerOptions:
+      type: object
+      description: Settings of a built-in site (names from its definition's `settings`).
+      additionalProperties:
+        type: string
+        maxLength: 200
+    IndexerDefinitionRef:
+      type: object
+      required: [id, name, version, builtin, overrides, missing]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        version:
+          type: integer
+        builtin:
+          type: boolean
+        overrides:
+          type: boolean
+          description: A custom file replaces the built-in definition.
+        missing:
+          type: boolean
+          description: The definition is no longer available (a custom file was removed); the indexer cannot search.
     IndexerInput:
       type: object
-      required: [name, kind, baseUrl]
+      required: [name, kind]
       properties:
         name:
           type: string
@@ -6532,8 +6603,8 @@ components:
           $ref: "#/components/schemas/IndexerKind"
         baseUrl:
           type: string
-          minLength: 1
           maxLength: 2048
+          description: Required for Torznab/Newznab. For a built-in site, the address to use (a mirror); empty uses its default.
         apiPath:
           type: string
           maxLength: 512
@@ -6611,6 +6682,12 @@ components:
         flaresolverrUrl:
           type: string
           maxLength: 2048
+        definition:
+          type: string
+          maxLength: 40
+          description: The site definition id (kind `native`).
+        options:
+          $ref: "#/components/schemas/IndexerOptions"
     IndexerTestRequest:
       type: object
       required: [indexer]
@@ -6639,12 +6716,15 @@ components:
           description: Results of the probe search.
         errorCode:
           type: string
-          description: auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked or unknown.
+          description: |
+            auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked, challenge
+            (a Cloudflare challenge: set FlareSolverr), layout (a built-in site's pages changed) or unknown.
         error:
           type: string
     IndexerSettings:
       type: object
-      required: [rssSyncIntervalMinutes, releaseRetentionDays, searchTimeoutSeconds, searchCacheSeconds, allowedHosts, blockPrivateNetworks]
+      required: [rssSyncIntervalMinutes, releaseRetentionDays, searchTimeoutSeconds, searchCacheSeconds, allowedHosts, blockPrivateNetworks,
+        publicTrackers, userAgent]
       properties:
         rssSyncIntervalMinutes:
           type: integer
@@ -6663,7 +6743,15 @@ components:
             type: string
         blockPrivateNetworks:
           type: boolean
-          description: Also refuse private (RFC 1918) addresses. Off by default because Prowlarr and Jackett usually share the Docker network.
+          description: Also refuse private (RFC 1918) addresses. Off by default because download tools and FlareSolverr usually share the Docker network.
+        publicTrackers:
+          type: array
+          description: Trackers added to magnets Locarr builds from a built-in site's bare info hash.
+          items:
+            type: string
+        userAgent:
+          type: string
+          description: User-Agent sent to indexers and sites; empty sends "Locarr".
     UpdateIndexerSettingsRequest:
       type: object
       properties:
@@ -6691,6 +6779,155 @@ components:
             maxLength: 255
         blockPrivateNetworks:
           type: boolean
+        publicTrackers:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            maxLength: 300
+        userAgent:
+          type: string
+          maxLength: 300
+    IndexerCatalog:
+      type: object
+      required: [definitions, presets, errors, customDir]
+      properties:
+        definitions:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndexerDefinition"
+        presets:
+          type: array
+          items:
+            $ref: "#/components/schemas/UsenetPreset"
+        errors:
+          type: array
+          description: Custom definition files that could not be loaded.
+          items:
+            $ref: "#/components/schemas/IndexerDefinitionError"
+        customDir:
+          type: string
+          description: The folder custom definitions are read from.
+    IndexerDefinitionError:
+      type: object
+      required: [file, message]
+      properties:
+        file:
+          type: string
+        message:
+          type: string
+    IndexerDefinition:
+      type: object
+      required: [id, name, description, version, builtin, overrides, protocol, links, verified, flaresolverr, rss,
+        searching, categories, settings, indexerIds, aliases]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        version:
+          type: integer
+        builtin:
+          type: boolean
+        overrides:
+          type: boolean
+        file:
+          type: string
+          description: "For a custom definition: its file name in the custom folder."
+        protocol:
+          $ref: "#/components/schemas/Protocol"
+        language:
+          type: string
+        links:
+          type: array
+          description: The site's addresses; the first is the default, the others known mirrors.
+          items:
+            type: string
+        verified:
+          type: string
+          description: How the definition was written and checked.
+        flaresolverr:
+          type: string
+          enum: [never, sometimes, always]
+          description: Whether the site shows a Cloudflare challenge (FlareSolverr needed).
+        rateLimit:
+          $ref: "#/components/schemas/IndexerRateLimit"
+        rss:
+          type: boolean
+          description: The site lists its latest releases (RSS sync).
+        searching:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndexerSearchCap"
+        categories:
+          type: array
+          description: Newznab categories the site's categories map onto.
+          items:
+            $ref: "#/components/schemas/IndexerCategory"
+        settings:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndexerDefinitionSetting"
+        aliases:
+          type: array
+          items:
+            type: string
+        indexerIds:
+          type: array
+          description: Indexers that use this definition.
+          items:
+            type: integer
+            format: int64
+    IndexerRateLimit:
+      type: object
+      required: [requests, periodSeconds]
+      properties:
+        requests:
+          type: integer
+        periodSeconds:
+          type: integer
+    IndexerDefinitionSetting:
+      type: object
+      required: [name, type, label, default, options]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [text, bool, select]
+        label:
+          type: string
+        default:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/IndexerSettingOption"
+    IndexerSettingOption:
+      type: object
+      required: [value, label]
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+    UsenetPreset:
+      type: object
+      required: [id, name, baseUrl, apiPath, siteUrl]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        baseUrl:
+          type: string
+        apiPath:
+          type: string
+        siteUrl:
+          type: string
+          description: Where to find the API key (the indexer's profile page).
     IndexerSourceKind:
       type: string
       enum: [prowlarr, jackett]

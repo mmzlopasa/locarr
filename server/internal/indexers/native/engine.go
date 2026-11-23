@@ -282,6 +282,8 @@ func (c *Client) declarative(ctx context.Context, q Query) ([]znab.Item, int, er
 	if q.Mode == "rss" {
 		if c.Def.compiled.rss != nil {
 			cb = c.Def.compiled.rss
+		} else if !c.Def.SupportsRSS() {
+			return nil, 0, nil
 		}
 	}
 	req, ok := pickRequest(cb, q)

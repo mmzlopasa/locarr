@@ -26,7 +26,8 @@ categories:
   - {id: "9", cat: 7000, desc: Ebook}
 search:
   requests:
-    - path: '/search?q={{ .Keywords | urlquery }}&category={{ first .Categories "" }}&sort=seeders'
+    - if: [keywords]
+      path: '/search?q={{ .Keywords | urlquery }}&category={{ first .Categories "" }}&sort=seeders'
   response: html
   rows: div.torrent-result-card
   empty: "div.torrent-results[data-impression-ids='[]']"

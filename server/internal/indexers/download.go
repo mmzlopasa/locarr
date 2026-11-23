@@ -93,13 +93,18 @@ func (s *Service) Fetch(ctx context.Context, r Release) (File, error) {
 	if err := s.ReserveGrab(ctx, ind); err != nil {
 		return File{}, err
 	}
-	full := strings.ReplaceAll(r.DownloadURL, keyPlaceholder, c.APIKey)
+	full := strings.ReplaceAll(r.DownloadURL, keyPlaceholder, c.secret())
 	res, err := c.Fetch(ctx, full)
 	if err != nil {
 		if countsAsFailure(ctx, err) {
 			s.recordFailure(ctx, ind, err)
 		}
 		return File{}, err
+	}
+	if t := strings.TrimSpace(string(res.Body[:min(len(res.Body), 8)])); strings.EqualFold(t, "magnet:?") {
+		// A built-in site that finds the magnet on the details page at grab time.
+		return File{Name: safeFileName(r.Title, strconv.FormatInt(r.IndexerID, 10)) + ".magnet", ContentType: "text/plain",
+			Data: []byte(strings.TrimSpace(string(res.Body)))}, nil
 	}
 	f := File{Data: res.Body, ContentType: "application/octet-stream"}
 	if _, params, err := mime.ParseMediaType(res.Header.Get("Content-Disposition")); err == nil && params["filename"] != "" {
