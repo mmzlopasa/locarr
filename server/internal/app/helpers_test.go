@@ -16,6 +16,7 @@ import (
 	"testing/fstest"
 	"time"
 
+	"github.com/mmzlopasa/locarr/server/internal/api"
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/webui"
 )
@@ -23,12 +24,13 @@ import (
 const testSetupCode = "TEST-CODE"
 
 type env struct {
-	t     *testing.T
-	srv   *httptest.Server
-	deps  *Deps
-	tmdb  *tmdbfake.Server
-	data  string
-	token string // bearer token used by do (empty = none)
+	t       *testing.T
+	srv     *httptest.Server
+	deps    *Deps
+	handler *api.Handler
+	tmdb    *tmdbfake.Server
+	data    string
+	token   string // bearer token used by do (empty = none)
 }
 
 func quietLog() *slog.Logger { return slog.New(slog.NewTextHandler(io.Discard, nil)) }
@@ -53,7 +55,9 @@ func newEnvWith(t *testing.T, cfgMod func(*config.Config), mod func(*RouterOptio
 	mbSrv := httptest.NewServer(mbfake.New())
 	t.Cleanup(mbSrv.Close)
 	cfg := config.Config{ConfigDir: filepath.Join(base, "config"), DataRoots: []string{data}, LogLevel: "info", TMDbURL: tmdbSrv.URL,
-		MusicBrainzURL: mbSrv.URL + "/mb", CoverArtURL: mbSrv.URL + "/mb/coverart"}
+		MusicBrainzURL: mbSrv.URL + "/mb", CoverArtURL: mbSrv.URL + "/mb/coverart",
+		// No test asks GitHub for releases.
+		ReleasesURL: "http://127.0.0.1:1/releases"}
 	if cfgMod != nil {
 		cfgMod(&cfg)
 	}
@@ -81,7 +85,7 @@ func newEnvWith(t *testing.T, cfgMod func(*config.Config), mod func(*RouterOptio
 	}
 	srv := httptest.NewServer(router)
 	t.Cleanup(srv.Close)
-	return &env{t: t, srv: srv, deps: deps, data: data, tmdb: tm}
+	return &env{t: t, srv: srv, deps: deps, handler: h, data: data, tmdb: tm}
 }
 
 type resp struct {

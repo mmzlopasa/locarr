@@ -31,7 +31,7 @@ func registerIndexerTasks(ctx context.Context, d *Deps, log *slog.Logger) error 
 }
 
 // streamPaths are API endpoints that stream (Server-Sent Events).
-var streamPaths = map[string]bool{"/api/v1/search/stream": true}
+var streamPaths = map[string]bool{"/api/v1/search/stream": true, "/api/v1/system/logs/stream": true}
 
 // flushStream flushes every write of a streaming endpoint so that events
 // reach the client as they happen, and tells proxies not to buffer it.

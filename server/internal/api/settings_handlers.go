@@ -83,7 +83,11 @@ func (h *Handler) CreateRootFolder(ctx context.Context, req *gen.CreateRootFolde
 	if _, err := admin(ctx); err != nil {
 		return nil, err
 	}
-	f, err := h.RootFolders.Add(ctx, req.Path, string(req.Kind))
+	add := h.RootFolders.Add
+	if req.Create.Or(false) {
+		add = h.RootFolders.Create
+	}
+	f, err := add(ctx, req.Path, string(req.Kind))
 	if err != nil {
 		return nil, err
 	}

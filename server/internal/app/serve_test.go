@@ -20,7 +20,8 @@ func TestServeLifecycle(t *testing.T) {
 	}
 	addr := ln.Addr().String()
 	_ = ln.Close()
-	cfg := config.Config{HTTPAddr: addr, ConfigDir: filepath.Join(t.TempDir(), "config"), DataRoots: []string{t.TempDir()}, LogLevel: "info"}
+	cfg := config.Config{HTTPAddr: addr, ConfigDir: filepath.Join(t.TempDir(), "config"), DataRoots: []string{t.TempDir()}, LogLevel: "info",
+		ReleasesURL: "http://127.0.0.1:1/releases"}
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan error, 1)
 	start := time.Now()

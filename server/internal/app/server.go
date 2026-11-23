@@ -8,27 +8,34 @@ import (
 	"net"
 	"net/http"
 	"net/netip"
+	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/auth"
+	"github.com/mmzlopasa/locarr/server/internal/backup"
+	"github.com/mmzlopasa/locarr/server/internal/board"
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/discover"
 	_ "github.com/mmzlopasa/locarr/server/internal/downloaders/all" // registers the download clients
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
+	"github.com/mmzlopasa/locarr/server/internal/health"
+	"github.com/mmzlopasa/locarr/server/internal/history"
+	"github.com/mmzlopasa/locarr/server/internal/housekeeping"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
 	"github.com/mmzlopasa/locarr/server/internal/library/music"
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
 	"github.com/mmzlopasa/locarr/server/internal/library/series"
+	"github.com/mmzlopasa/locarr/server/internal/logging"
+	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/tvdb"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
-	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/notify/delivery"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
@@ -36,6 +43,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/secrets"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
+	"github.com/mmzlopasa/locarr/server/internal/stats"
 	"github.com/mmzlopasa/locarr/server/internal/subtitles"
 	"github.com/mmzlopasa/locarr/server/internal/timeline"
 	"github.com/mmzlopasa/locarr/server/internal/version"
@@ -87,6 +95,17 @@ type Deps struct {
 	// Media server and outward notifications (P9).
 	Streamero *streamero.Service
 	Channels  *delivery.Service
+	// Operations (P11).
+	MetaHealth   *metadata.Health
+	Board        *board.Service
+	History      *history.Store
+	Health       *health.Service
+	Version      *health.VersionChecker
+	Backups      *backup.Service
+	Housekeeping *housekeeping.Service
+	Stats        *stats.Service
+	// Logs is where the log goes (the log viewer reads it; nil in tests).
+	Logs *logging.Sinks
 }
 
 // Close stops the jobs and closes the database.
@@ -129,7 +148,8 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 		return nil, err
 	}
 	deps := &Deps{DB: d, Box: box, Auth: auth.NewService(d, box, setupCode), Settings: settings.New(d, box),
-		Roots: &rootfolders.Service{DB: d, Roots: cfg.DataRoots}, Quality: quality.NewStore(d), Formats: customformats.NewStore(d)}
+		Roots: &rootfolders.Service{DB: d, Roots: cfg.DataRoots}, Quality: quality.NewStore(d), Formats: customformats.NewStore(d),
+		MetaHealth: &metadata.Health{}}
 	if err := deps.Quality.Seed(ctx); err != nil {
 		_ = d.Close()
 		return nil, fmt.Errorf("seed quality profiles: %w", err)
@@ -157,6 +177,7 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 	buildRequests(ctx, deps, log)
 	deps.Hub.Sinks = append(deps.Hub.Sinks, deps.Channels)
 	deps.Discover.Streamero = deps.Streamero
+	buildOperations(ctx, deps, cfg, log)
 	return deps, nil
 }
 
@@ -179,6 +200,9 @@ func registerTasks(d *Deps, log *slog.Logger) {
 		if err != nil {
 			return err
 		}
+		if err := housekeepingExtra(ctx, d, log); err != nil {
+			return err
+		}
 		if _, err := d.DB.W.ExecContext(ctx, `PRAGMA optimize`); err != nil {
 			return err
 		}
@@ -192,6 +216,16 @@ func registerTasks(d *Deps, log *slog.Logger) {
 // Serve runs the server until ctx is cancelled. It listens at once (so health
 // checks answer while storage opens), then becomes ready.
 func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
+	return ServeWith(ctx, cfg, log, nil)
+}
+
+// ServeWith is Serve with the log sinks the log viewer reads (nil = none).
+//
+// Restoring a backup restarts the services in this process (D-076): the
+// listener stays open and answers "starting" while the jobs and background
+// work stop, the database closes, the staged backup replaces it and
+// everything starts again.
+func ServeWith(ctx context.Context, cfg config.Config, log *slog.Logger, logs *logging.Sinks) error {
 	started := time.Now().UTC()
 	ln, err := (&net.ListenConfig{}).Listen(ctx, "tcp", cfg.HTTPAddr)
 	if err != nil {
@@ -229,33 +263,6 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 			return err
 		}
 	}
-	deps, err := Bootstrap(ctx, cfg, log, setupCode)
-	if err != nil {
-		shutdown()
-		return err
-	}
-	defer func() {
-		if err := deps.Close(); err != nil {
-			log.Error("close", "err", err)
-		}
-	}()
-	if err := deps.Jobs.Start(ctx); err != nil {
-		shutdown()
-		return err
-	}
-	// Download tracking stops before the database closes (defers run last-in, first-out).
-	trackCtx, stopTracking := context.WithCancel(ctx)
-	tracking := make(chan struct{})
-	go func() {
-		defer close(tracking)
-		deps.Downloads.Run(trackCtx)
-	}()
-	waitBackground := runBackground(trackCtx, deps)
-	defer func() {
-		stopTracking()
-		<-tracking
-		waitBackground()
-	}()
 	proxies, err := netx.ParsePrefixes(cfg.TrustedProxies)
 	if err != nil {
 		shutdown()
@@ -270,24 +277,130 @@ func Serve(ctx context.Context, cfg config.Config, log *slog.Logger) error {
 			log.Warn("client banned from sign-in after repeated failures", "ip", ip.String(), "until", until.UTC().Format(time.RFC3339))
 		}
 	}
+	restart := make(chan struct{}, 1)
+	for {
+		in, err := startInstance(ctx, cfg, log, logs, setupCode, started, opts, restart)
+		if err != nil {
+			shutdown()
+			return err
+		}
+		current.Store(&in.handler)
+		log.Info("ready", "took_ms", time.Since(started).Milliseconds())
+		if required, err := in.deps.Auth.SetupRequired(ctx); err == nil && required {
+			// Printed in the message so it is easy to find with `docker compose logs locarr`.
+			log.Warn("first-run setup: open the web interface and enter setup code " + setupCode)
+		}
+		select {
+		case <-ctx.Done():
+			log.Info("shutting down")
+			shutdown()
+			in.stop(log)
+			return nil
+		case err = <-errc:
+			shutdown()
+			in.stop(log)
+			return err
+		case <-restart:
+			log.Warn("restarting to apply a restored backup")
+			current.Store(&starting)
+			in.drain(10 * time.Second)
+			in.stop(log)
+			started = time.Now().UTC()
+		}
+	}
+}
+
+// instance is one run of the services behind the listener.
+type instance struct {
+	deps     *Deps
+	handler  http.Handler
+	inflight sync.WaitGroup
+	stopBg   func()
+}
+
+// startInstance applies a staged restore (if any), opens storage, starts
+// the jobs and background work and builds the router.
+func startInstance(ctx context.Context, cfg config.Config, log *slog.Logger, logs *logging.Sinks, setupCode string,
+	started time.Time, opts RouterOptions, restart chan<- struct{}) (*instance, error) {
+	if applied, err := backup.ApplyPending(cfg.ConfigDir, cfg.DatabasePath()); err != nil {
+		log.Error("could not apply the restored backup", "err", err)
+	} else if applied {
+		log.Warn("restored a backup: the database and the secret key were replaced")
+	}
+	deps, err := Bootstrap(ctx, cfg, log, setupCode)
+	if err != nil {
+		return nil, err
+	}
+	deps.Logs = logs
+	if done, err := backup.FinishRestore(ctx, deps.DB, cfg.ConfigDir); err != nil {
+		log.Error("finish restore", "err", err)
+	} else if done {
+		log.Warn("restore finished: every other session was signed out")
+	}
+	if err := deps.Jobs.Start(ctx); err != nil {
+		_ = deps.Close()
+		return nil, err
+	}
+	in := &instance{deps: deps}
+	bgCtx, stopBg := context.WithCancel(ctx)
+	tracking := make(chan struct{})
+	go func() {
+		defer close(tracking)
+		deps.Downloads.Run(bgCtx)
+	}()
+	waitBackground := runBackground(bgCtx, deps)
+	in.stopBg = func() {
+		stopBg()
+		<-tracking
+		waitBackground()
+	}
+	// The board is filled once at start (in the background).
+	if _, _, err := deps.Jobs.Enqueue(ctx, TaskBoardRebuild, nil, jobs.EnqueueOptions{UniqueKey: TaskBoardRebuild}); err != nil {
+		log.Warn("queue board rebuild", "err", err)
+	}
+	if _, _, err := deps.Jobs.Enqueue(ctx, TaskHealthCheck, nil, jobs.EnqueueOptions{UniqueKey: TaskHealthCheck,
+		RunAt: time.Now().Add(20 * time.Second)}); err != nil {
+		log.Warn("queue health check", "err", err)
+	}
 	h := NewHandler(deps, cfg, started, log)
+	h.Restart = func() {
+		select {
+		case restart <- struct{}{}:
+		default:
+		}
+	}
 	router, err := NewRouter(h, opts)
 	if err != nil {
-		shutdown()
-		return err
+		in.stop(log)
+		return nil, err
 	}
-	current.Store(&router)
-	log.Info("ready", "took_ms", time.Since(started).Milliseconds())
-	if required, err := deps.Auth.SetupRequired(ctx); err == nil && required {
-		// Printed in the message so it is easy to find with `docker compose logs locarr`.
-		log.Warn("first-run setup: open the web interface and enter setup code " + setupCode)
-	}
+	in.handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		in.inflight.Add(1)
+		defer in.inflight.Done()
+		router.ServeHTTP(w, r)
+	})
+	return in, nil
+}
 
+// drain waits (at most d) for requests still running in this instance.
+func (in *instance) drain(d time.Duration) {
+	done := make(chan struct{})
+	go func() {
+		in.inflight.Wait()
+		close(done)
+	}()
 	select {
-	case <-ctx.Done():
-		log.Info("shutting down")
-	case err = <-errc:
+	case <-done:
+	case <-time.After(d):
 	}
-	shutdown()
-	return err
+}
+
+// stop stops the background work and the jobs and closes the database.
+func (in *instance) stop(log *slog.Logger) {
+	if in.stopBg != nil {
+		in.stopBg()
+	}
+	if err := in.deps.Close(); err != nil {
+		log.Error("close", "err", err)
+	}
 }

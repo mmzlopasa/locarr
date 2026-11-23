@@ -16,6 +16,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/api"
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
+	"github.com/mmzlopasa/locarr/server/internal/backup"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
 	"github.com/mmzlopasa/locarr/server/internal/webui"
 )
@@ -73,7 +74,7 @@ func NewRouter(h *api.Handler, o RouterOptions) (http.Handler, error) {
 	r := chi.NewRouter()
 	// chi's RealIP trusts spoofable headers; the client address comes from netx
 	// with an explicit list of trusted proxies instead.
-	r.Use(middleware.Recoverer, accessLog(log), middleware.Timeout(requestTimeout), securityHeaders,
+	r.Use(middleware.Recoverer, accessLog(log), timeout, securityHeaders,
 		netx.Middleware(o.TrustedProxies), requestContext, sameOrigin)
 	if o.AuthLimiter != nil {
 		r.Use(netx.Limit(o.AuthLimiter, rateLimited))
@@ -81,10 +82,16 @@ func NewRouter(h *api.Handler, o RouterOptions) (http.Handler, error) {
 	if o.AuthBans != nil {
 		r.Use(netx.Guard(o.AuthBans, rateLimited))
 	}
-	r.Get("/healthz", health)
+	r.Get("/healthz", healthz)
 	r.Get("/readyz", ready)
 	compress := compressor()
 	r.Mount("/api/v1", compress(limitBody(flushStream(apiServer))))
+	// Dashboards read /api/stats (the same JSON as /api/v1/system/stats).
+	r.Get("/api/stats", func(w http.ResponseWriter, req *http.Request) {
+		req.URL.Path, req.URL.RawPath = "/api/v1/system/stats", ""
+		compress(apiServer).ServeHTTP(w, req)
+	})
+	r.Get("/metrics", h.Metrics)
 	r.Handle("/api/*", http.HandlerFunc(api.NotFound))
 	web := o.Web
 	if web == nil {
@@ -94,7 +101,7 @@ func NewRouter(h *api.Handler, o RouterOptions) (http.Handler, error) {
 	return r, nil
 }
 
-func health(w http.ResponseWriter, _ *http.Request) {
+func healthz(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 }
 
@@ -107,7 +114,7 @@ func ready(w http.ResponseWriter, _ *http.Request) {
 func startingHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/healthz" {
-			health(w, r)
+			healthz(w, r)
 			return
 		}
 		w.Header().Set("Retry-After", "2")
@@ -220,9 +227,39 @@ func webClientHeaders(next http.Handler) http.Handler {
 	})
 }
 
-// limitBody caps request bodies; a larger body gets 413.
+// longRequests may run (and upload or download) for a long time: uploading or
+// downloading a backup, downloading a log file and the live log tail.
+func longRequest(r *http.Request) bool {
+	p := r.URL.Path
+	return p == "/api/v1/system/backups/restore" || p == "/api/v1/system/logs/stream" ||
+		(r.Method == http.MethodGet && (strings.HasPrefix(p, "/api/v1/system/backups/") || strings.HasPrefix(p, "/api/v1/system/logs/files/")))
+}
+
+// timeout bounds every request except the long ones, which get generous
+// connection deadlines instead.
+func timeout(next http.Handler) http.Handler {
+	bounded := middleware.Timeout(requestTimeout)(next)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !longRequest(r) {
+			bounded.ServeHTTP(w, r)
+			return
+		}
+		rc := http.NewResponseController(w)
+		_ = rc.SetReadDeadline(time.Now().Add(time.Hour))
+		_ = rc.SetWriteDeadline(time.Now().Add(12 * time.Hour))
+		next.ServeHTTP(w, r)
+	})
+}
+
+// limitBody caps request bodies; a larger body gets 413. An uploaded backup
+// may be up to backup.MaxUpload.
 func limitBody(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/api/v1/system/backups/restore" {
+			r.Body = http.MaxBytesReader(w, r.Body, backup.MaxUpload)
+			next.ServeHTTP(w, r)
+			return
+		}
 		if r.ContentLength > maxJSONBody {
 			api.WriteError(w, http.StatusRequestEntityTooLarge, "request_too_large", "request body too large")
 			return

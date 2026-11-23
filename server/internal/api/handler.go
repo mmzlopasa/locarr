@@ -14,17 +14,22 @@ import (
 
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
+	"github.com/mmzlopasa/locarr/server/internal/backup"
+	"github.com/mmzlopasa/locarr/server/internal/board"
 	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/discover"
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
+	"github.com/mmzlopasa/locarr/server/internal/health"
+	"github.com/mmzlopasa/locarr/server/internal/history"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
 	"github.com/mmzlopasa/locarr/server/internal/library/music"
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
 	"github.com/mmzlopasa/locarr/server/internal/library/series"
+	"github.com/mmzlopasa/locarr/server/internal/logging"
 	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
@@ -33,6 +38,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/requests"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
+	"github.com/mmzlopasa/locarr/server/internal/stats"
 	"github.com/mmzlopasa/locarr/server/internal/subtitles"
 	"github.com/mmzlopasa/locarr/server/internal/timeline"
 	"github.com/mmzlopasa/locarr/server/internal/wanted"
@@ -76,6 +82,18 @@ type Handler struct {
 	// TVDB validates a TVDB key before it is stored (nil = TVDB not available).
 	TVDB      TVDBValidator
 	MetaCache *metadata.Cache
+	// Operations (P11).
+	Board        *board.Service
+	BoardActions board.Actions
+	History      *history.Store
+	Health       *health.Service
+	Backups      *backup.Service
+	Stats        *stats.Service
+	Logs         *logging.Sinks
+	// MaxSchema is the newest schema version this build knows (restores refuse newer ones).
+	MaxSchema int64
+	// Restart restarts the services in-process (set by the app; nil = restore unavailable).
+	Restart   func()
 	ConfigDir string
 	DataRoots []string
 	StartedAt time.Time
@@ -124,6 +142,9 @@ func mapError(err error) *StatusError {
 		return &StatusError{Status: http.StatusBadRequest, Code: "validation", Message: err.Error()}
 	case errors.As(err, &locked):
 		return &StatusError{Status: http.StatusLocked, Code: "account_locked", Message: err.Error()}
+	}
+	if se := mapOperationsError(err); se != nil {
+		return se
 	}
 	if se := mapProfileError(err); se != nil {
 		return se
