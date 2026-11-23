@@ -126,9 +126,13 @@ type Service struct {
 	Log       *slog.Logger
 	Now       func() time.Time
 
-	mu      sync.Mutex
-	sources map[string]Source
-	locks   map[string]*sync.Mutex
+	// GrabGap is the least time between two grabs from one indexer (default 2 s).
+	GrabGap time.Duration
+
+	mu       sync.Mutex
+	sources  map[string]Source
+	locks    map[string]*sync.Mutex
+	lastGrab map[int64]time.Time
 }
 
 // Errors.
@@ -369,6 +373,20 @@ func (s *Service) ResetBackoff(ctx context.Context, ref library.Ref) {
 	_, _ = s.DB.W.ExecContext(ctx, `UPDATE search_state SET next_search_at = ? WHERE item_ref = ?`, db.Millis(s.now()), ref.String())
 }
 
+// RetryNow clears an item's search backoff and queues an automatic search at
+// once ("retry now" on the item's page). Indexer limits and grab pacing still
+// apply to the search and its grabs.
+func (s *Service) RetryNow(ctx context.Context, ref library.Ref) error {
+	if _, _, err := s.item(ctx, ref); err != nil {
+		return err
+	}
+	if _, err := s.DB.W.ExecContext(ctx, `UPDATE search_state SET searches = 0, next_search_at = ? WHERE item_ref = ?`,
+		db.Millis(s.now()), ref.String()); err != nil {
+		return err
+	}
+	return s.Enqueue(ctx, ref, "manual")
+}
+
 // act grabs the best accepted release (trying the next on failure) and keeps
 // pending ones for later. For a Multi source it keeps going until everything
 // the item wants is covered: a season pack, or the season's episodes one by
@@ -428,7 +446,18 @@ func (s *Service) act(ctx context.Context, it Item, ev *Evaluation) (*downloads.
 	covered := map[library.Ref]bool{}
 	var first *downloads.Download
 	grabs := 0
+	attempts, _ := settings.Get(ctx, s.Settings, GrabAttempts)
+	attempts = max(attempts, 1)
+	failures := 0
+	// skip holds indexers whose releases are left alone for the rest of this
+	// cycle (limited, disabled or failing).
+	skip := map[int64]bool{}
 	for _, o := range opts {
+		if failures >= attempts {
+			s.record(ctx, ref, timeline.TypeGrabFailed, fmt.Sprintf("stopped after %d failed grabs; the next search tries again", failures),
+				map[string]any{"code": "attempts_exhausted", "attempts": failures})
+			break
+		}
 		overlap := false
 		for _, c := range o.covers {
 			overlap = overlap || covered[c]
@@ -440,15 +469,40 @@ func (s *Service) act(ctx context.Context, it Item, ev *Evaluation) (*downloads.
 		if !ok {
 			continue
 		}
+		if skip[r.IndexerID] {
+			continue
+		}
+		if resting, until := s.indexerResting(ctx, r.IndexerID); resting {
+			skip[r.IndexerID] = true
+			s.record(ctx, ref, timeline.TypeGrabFailed, fmt.Sprintf("skipped releases from %s: the indexer is limited until %s", r.IndexerName, until.UTC().Format(time.RFC3339)),
+				map[string]any{"title": r.Title, "indexer": r.IndexerName, "code": GrabIndexerLimited, "until": until.UTC(), "skipped": true})
+			continue
+		}
+		if err := s.pace(ctx, r.IndexerID); err != nil {
+			return first, grabs, err
+		}
 		dl, err := s.grab(ctx, it, o.ref, o.covers, &r)
 		if err != nil {
-			if errors.Is(err, downloads.ErrNoClient) {
-				s.record(ctx, ref, timeline.TypeGrabFailed, "no download client takes this release: "+err.Error(),
-					map[string]any{"title": r.Title, "indexer": r.IndexerName, "error": err.Error()})
+			f := classifyGrab(err, s.now())
+			data := map[string]any{"title": r.Title, "indexer": r.IndexerName, "error": shortError(err), "code": f.Code}
+			if f.Until != nil {
+				data["until"] = f.Until.UTC()
+			}
+			if f.Code == GrabNoClient {
+				s.record(ctx, ref, timeline.TypeGrabFailed, "no download client takes this release: "+err.Error(), data)
 				return first, grabs, nil
 			}
-			s.record(ctx, ref, timeline.TypeGrabFailed, fmt.Sprintf("could not grab %s: %v; trying the next release", r.Title, err),
-				map[string]any{"title": r.Title, "indexer": r.IndexerName, "error": err.Error()})
+			if f.IndexerProblem {
+				skip[r.IndexerID] = true
+			}
+			if f.Content {
+				s.blockBadRelease(ctx, &r, o.ref, o.covers, err)
+				data["blocklisted"] = true
+			}
+			if f.Code != GrabAlreadyQueued {
+				failures++
+			}
+			s.record(ctx, ref, timeline.TypeGrabFailed, fmt.Sprintf("could not grab %s: %s", r.Title, shortError(err)), data)
 			continue
 		}
 		grabs++

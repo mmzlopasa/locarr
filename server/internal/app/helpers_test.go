@@ -62,6 +62,9 @@ func newEnvWith(t *testing.T, cfgMod func(*config.Config), mod func(*RouterOptio
 	if err != nil {
 		t.Fatal(err)
 	}
+	if deps.Wanted != nil {
+		deps.Wanted.GrabGap = time.Millisecond // grab pacing has its own test
+	}
 	if err := deps.Jobs.Start(ctx); err != nil {
 		t.Fatal(err)
 	}
