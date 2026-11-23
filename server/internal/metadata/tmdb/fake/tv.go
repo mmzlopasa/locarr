@@ -194,7 +194,9 @@ func (s *Server) serveTV(w http.ResponseWriter, r *http.Request, path string, pa
 			notFound(w)
 			return true
 		}
-		writeJSON(w, http.StatusOK, t.details())
+		out := t.details()
+		extras(out, "series", t.ID, s.castOf("tv", t.ID))
+		writeJSON(w, http.StatusOK, out)
 	case len(parts) == 5 && parts[0] == "3" && parts[1] == "tv" && parts[3] == "season":
 		id, _ := strconv.ParseInt(parts[2], 10, 64)
 		n, _ := strconv.Atoi(parts[4])

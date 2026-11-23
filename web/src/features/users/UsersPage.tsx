@@ -17,6 +17,7 @@ import {
   TextInput,
 } from "@/components/ui";
 import { useCurrentUser } from "@/features/auth/hooks";
+import { InvitesPanel, QuotaEditor } from "./InvitesPanel";
 import { PERMISSION_KEYS, ROLES, defaultPermissions } from "./permissions";
 
 export function UsersPage() {
@@ -42,6 +43,7 @@ export function UsersPage() {
       <div className="flex flex-col gap-2" data-testid="user-list">
         {users.data?.map((u) => <UserRow key={u.id} user={u} />)}
       </div>
+      <InvitesPanel />
     </div>
   );
 }
@@ -203,6 +205,7 @@ function UserRow({ user }: { user: User }) {
               </Button>
             ) : null}
           </div>
+          {user.role !== "admin" ? <QuotaEditor userId={user.id} /> : null}
           <form
             className="flex flex-wrap items-end gap-2 border-t border-line pt-3"
             onSubmit={(e) => {

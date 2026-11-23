@@ -1,5 +1,5 @@
 // Package providers defines the subtitle provider interface and the shared
-// pieces of the provider clients (OpenSubtitles.com, SubDL, Jimaku; D-055):
+// pieces of the provider clients (OpenSubtitles.com, SubDL, Jimaku; D-063):
 // queries, results, typed errors for authentication, quota and rate limits,
 // a request pacer and archive unpacking. Each client is written from its
 // provider's public API documentation only.

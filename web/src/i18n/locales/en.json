@@ -92,6 +92,14 @@
     "has_files": "The series has files; move or delete them first.",
     "no_matching_episode": "No episode matches the file name.",
     "no_matching_series": "No series in the library matches the name.",
+    "already_requested": "Someone has already asked for this. It is on the list.",
+    "already_available": "It's already in the library.",
+    "quota_exceeded": "You have used up your requests for now. Try again later or ask an administrator.",
+    "not_pending": "Only requests that are still waiting can be changed.",
+    "invite_invalid": "This invite link is not valid any more (expired, used up or revoked).",
+    "defaults_missing": "An administrator first has to choose where requests go (Settings → Requests).",
+    "not_available": "Problems can only be reported for titles that are in the library.",
+    "nothing_to_request": "Everything you picked is already here or already requested.",
     "no_file": "The item has no file yet.",
     "subtitle_profile_in_use": "This profile is a default; choose another default first.",
     "subtitle_result_expired": "The search result has expired; search again.",
@@ -145,7 +153,9 @@
     "downloaders": "Downloaders",
     "settings": "Settings",
     "system": "System",
-    "search": "Search"
+    "search": "Search",
+    "discover": "Discover",
+    "issues": "Issues"
   },
   "roles": {
     "admin": "Administrator",
@@ -280,8 +290,8 @@
       "hint": "Ask for artists and albums."
     },
     "autoApprove": {
-      "label": "Auto-approve",
-      "hint": "Requests go through without an administrator."
+      "label": "Auto-approve everything",
+      "hint": "Every request goes through without an administrator."
     },
     "request4k": {
       "label": "Request 4K",
@@ -294,6 +304,22 @@
     "manageRequests": {
       "label": "Manage requests",
       "hint": "Approve and decline other users' requests."
+    },
+    "autoApproveMovies": {
+      "label": "Auto-approve movies",
+      "hint": "Movie requests go through at once."
+    },
+    "autoApproveSeries": {
+      "label": "Auto-approve series",
+      "hint": "Series requests go through at once."
+    },
+    "autoApproveMusic": {
+      "label": "Auto-approve music",
+      "hint": "Album and artist requests go through at once."
+    },
+    "autoApprove4k": {
+      "label": "Auto-approve 4K",
+      "hint": "4K requests go through at once."
     }
   },
   "settings": {
@@ -310,6 +336,7 @@
       "metadata": "Metadata",
       "importLists": "Import lists",
       "metadataProfiles": "Metadata profiles",
+      "requests": "Requests",
       "subtitles": "Subtitles"
     },
     "general": {
@@ -2075,6 +2102,321 @@
       "anime": "Anime",
       "specials": "Specials"
     }
+  },
+  "discover": {
+    "title": "Discover",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Search movies, series, people and music",
+    "searchTypes": "What to search",
+    "searchHint": "Type a title, a name or an artist.",
+    "noResults": "Nothing found for “{{q}}”.",
+    "noMetadata": "Discover needs a TMDb API key. An administrator can add it under Settings → Metadata.",
+    "emptyRow": "Nothing here yet.",
+    "seeAll": "See all",
+    "back": "Back to Discover",
+    "open": "Open",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}",
+    "scrollBack": "Scroll back",
+    "scrollForward": "Scroll forward",
+    "movieGenres": "Movie genres",
+    "seriesGenres": "Series genres",
+    "studios": "Studios",
+    "networks": "Networks",
+    "searchTab": {
+      "all": "All",
+      "movie": "Movies",
+      "series": "Series",
+      "person": "People",
+      "music": "Music"
+    },
+    "types": {
+      "movie": "Movie",
+      "series": "Series",
+      "person": "Person",
+      "artist": "Artist",
+      "album": "Album"
+    },
+    "status": {
+      "none": "Not requested",
+      "pending": "Requested",
+      "processing": "On its way",
+      "partial": "Partly here",
+      "available": "Available",
+      "in_library": "In the library"
+    },
+    "rows": {
+      "trending": "Trending",
+      "trending_movies": "Trending movies",
+      "trending_series": "Trending series",
+      "popular_movies": "Popular movies",
+      "popular_series": "Popular series",
+      "upcoming_movies": "Coming soon",
+      "now_playing": "In cinemas now",
+      "top_rated_movies": "Top rated movies",
+      "top_rated_series": "Top rated series",
+      "airing_series": "On the air",
+      "genre_movies": "Movies",
+      "genre_series": "Series",
+      "studio": "Studio",
+      "network": "Network",
+      "recently_added": "Recently added",
+      "my_requests": "Your requests"
+    }
+  },
+  "title": {
+    "minutes": "{{n}} min",
+    "request": "Request",
+    "requestMore": "Request more",
+    "requestArtist": "Request every album",
+    "trailer": "Trailer",
+    "reportIssue": "Report a problem",
+    "requests": "Requests",
+    "requestedBy": "Asked by {{user}} on {{when}}",
+    "seasons": "Seasons",
+    "episodesHere": "{{n}} here",
+    "albums": "Albums",
+    "noAlbums": "No albums found.",
+    "cast": "Cast",
+    "knownFor": "Known for"
+  },
+  "request": {
+    "title": "Request {{title}}",
+    "send": "Send request",
+    "sent": "Requested. You'll get a notification when it is approved and when it arrives.",
+    "autoApproved": "Approved automatically. You'll get a notification when it arrives.",
+    "fourK": "4K",
+    "fourKHint": "Ask for the 4K version (a separate request).",
+    "seasons": "Seasons",
+    "allSeasons": "All seasons",
+    "allSeasonsHint": "Every season there is now.",
+    "futureSeasons": "Also future seasons",
+    "futureSeasonsHint": "New seasons are fetched when they air.",
+    "season": "Season {{n}}",
+    "specials": "Specials",
+    "episodes": "{{count}} ep.",
+    "options": "Library options",
+    "profile": "Quality profile",
+    "rootFolder": "Root folder",
+    "useDefault": "Default",
+    "tags": "Tags",
+    "tagsHint": "Comma-separated.",
+    "comment": "Comment (optional)",
+    "commentHint": "Anything the administrator should know."
+  },
+  "requests": {
+    "title": "Requests",
+    "subtitleMine": "What you asked for and how far it got.",
+    "subtitleAll": "Everyone's requests: approve, decline and follow them.",
+    "discoverMore": "Discover more",
+    "views": "Which requests",
+    "viewAll": "All requests",
+    "viewMine": "My requests",
+    "filterStatus": "Status",
+    "filterKind": "Kind",
+    "allKinds": "All kinds",
+    "music": "Music",
+    "none": "No requests here.",
+    "selectPending": "Select all waiting",
+    "selectNone": "Clear selection",
+    "select": "Select {{title}}",
+    "approveSelected": "Approve selected ({{n}})",
+    "approve": "Approve",
+    "editApprove": "Edit…",
+    "editTitle": "Approve {{title}}",
+    "decline": "Decline",
+    "declineReason": "Reason (shown to the requester)",
+    "declineConfirm": "Decline request",
+    "declinedBecause": "Declined: {{reason}}",
+    "retry": "Search again",
+    "cancel": "Withdraw",
+    "byWhen": "{{user}}, {{when}}",
+    "approvedBy": "approved by {{user}}",
+    "declinedBy": "declined by {{user}}",
+    "auto": "approved automatically",
+    "progress": "Download progress",
+    "range": "{{from}}–{{to}} of {{total}}",
+    "detailSubtitle": "Request #{{id}} from {{when}}",
+    "openTitle": "Open the title",
+    "backToList": "All requests",
+    "seasonsField": "Seasons",
+    "seasonsHint": "Season numbers, comma-separated.",
+    "allSeasons": "all seasons",
+    "allAndFuture": "all seasons and future ones",
+    "futureToo": "and future seasons",
+    "seasonList": "seasons {{list}}",
+    "kinds": {
+      "movie": "Movie",
+      "series": "Series",
+      "album": "Album",
+      "artist": "Artist"
+    },
+    "status": {
+      "pending": "Waiting for approval",
+      "approved": "Approved",
+      "declined": "Declined",
+      "cancelled": "Withdrawn",
+      "processing": "On its way",
+      "partial": "Partly available",
+      "available": "Available",
+      "failed": "Stuck"
+    },
+    "filters": {
+      "all": "All",
+      "active": "Open",
+      "pending": "Waiting for approval",
+      "approved": "Approved",
+      "declined": "Declined",
+      "cancelled": "Withdrawn",
+      "processing": "On its way",
+      "partial": "Partly available",
+      "available": "Available",
+      "failed": "Stuck"
+    },
+    "quota": {
+      "unlimited": "No limit on requests.",
+      "remaining": "{{remaining}} of {{limit}} requests left (per {{days}} days).",
+      "nextSlot": "Next one {{when}}."
+    }
+  },
+  "comments": {
+    "title": "Comments",
+    "none": "No comments yet.",
+    "add": "Add a comment",
+    "send": "Send"
+  },
+  "issues": {
+    "title": "Issues",
+    "subtitleMine": "Problems you reported.",
+    "subtitleAll": "Problems people reported with titles in the library.",
+    "filter": "Which issues",
+    "filters": {
+      "open": "Open",
+      "resolved": "Resolved",
+      "all": "All"
+    },
+    "status": {
+      "open": "Open",
+      "resolved": "Resolved"
+    },
+    "none": "No issues here.",
+    "reportTitle": "Report a problem with {{title}}",
+    "type": "What's wrong",
+    "types": {
+      "video": "Video",
+      "audio": "Audio",
+      "subtitles": "Subtitles",
+      "other": "Something else"
+    },
+    "season": "Season",
+    "episode": "Episode",
+    "optional": "Optional",
+    "message": "Describe it",
+    "messageHint": "For example: the sound is out of sync from minute 20.",
+    "send": "Report",
+    "sent": "Thanks. An administrator will look at it; you'll be notified.",
+    "seasonEpisode": "S{{s}}E{{e}}",
+    "back": "All issues",
+    "resolvedBy": "Resolved by {{user}} on {{when}}",
+    "replacementSearched": "a replacement was searched for",
+    "searchReplacement": "Search for a replacement",
+    "searchReplacementHint": "The current file goes to the recycle bin, its release is blocklisted and Locarr searches again.",
+    "resolveNote": "Note to the reporter (optional)",
+    "resolve": "Resolve",
+    "reopen": "Reopen"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "label": "Notifications",
+    "labelUnread": "Notifications ({{n}} unread)",
+    "markAll": "Mark all read",
+    "none": "Nothing new.",
+    "detail": "({{message}})",
+    "types": {
+      "request_created": "{{actor}} requested {{title}}.",
+      "request_approved": "Your request for {{title}} was approved.",
+      "request_declined": "Your request for {{title}} was declined.",
+      "request_available": "{{title}} is available.",
+      "request_partial": "Part of {{title}} is available.",
+      "request_failed": "{{title}} is stuck on its way.",
+      "request_comment": "{{actor}} commented on {{title}}: {{message}}",
+      "issue_created": "{{actor}} reported a problem with {{title}}.",
+      "issue_comment": "{{actor}} commented on the problem with {{title}}: {{message}}",
+      "issue_resolved": "The problem with {{title}} was resolved.",
+      "issue_reopened": "The problem with {{title}} was reopened."
+    }
+  },
+  "join": {
+    "title": "Join",
+    "codeHint": "Enter the invite code you were given, or open the invite link.",
+    "code": "Invite code",
+    "continue": "Continue",
+    "welcome": "Join {{name}}",
+    "as": "You'll get an account as {{role}}.",
+    "username": "Username",
+    "password": "Password",
+    "repeat": "Repeat password",
+    "mismatch": "The passwords don't match.",
+    "create": "Create account"
+  },
+  "requestSettings": {
+    "title": "Requests",
+    "subtitle": "Where approved requests go and how many each user may make.",
+    "kinds": {
+      "movie": "Movies",
+      "series": "Series",
+      "music": "Music"
+    },
+    "kindHints": {
+      "movie": "Requested movies are added with these settings and searched at once.",
+      "series": "Requested seasons are monitored with these settings and searched at once.",
+      "music": "Requested albums and artists are added with these settings."
+    },
+    "profile": "Quality profile",
+    "rootFolder": "Root folder",
+    "profile4k": "4K quality profile",
+    "rootFolder4k": "4K root folder",
+    "no4k": "No 4K track",
+    "sameFolder": "Same as above",
+    "metadataProfile": "Metadata profile",
+    "notChosen": "Not chosen",
+    "quotas": "Default quotas",
+    "quotasHint": "Per user and kind; 0 means no limit. Users can have their own rules (Settings → Users).",
+    "limit": "Requests",
+    "days": "Per days",
+    "rule": "{{limit}} per {{days}} days"
+  },
+  "invites": {
+    "title": "Invite links",
+    "subtitle": "Let family and friends create their own accounts.",
+    "new": "New invite",
+    "label": "Name",
+    "labelHint": "e.g. Family",
+    "maxUses": "Uses",
+    "maxUsesHint": "0 = unlimited",
+    "days": "Valid for days",
+    "customQuotas": "Own request quotas",
+    "customQuotasHint": "Otherwise the defaults apply.",
+    "create": "Create invite",
+    "created": "Invite created. Send this link:",
+    "onlyOnce": "The link is shown only now.",
+    "none": "No invites yet.",
+    "unnamed": "Invite",
+    "active": "Active",
+    "expired": "Expired",
+    "revoked": "Revoked",
+    "uses": "Used {{uses}} of {{max}}",
+    "expires": "valid until {{when}}",
+    "by": "by {{user}}",
+    "revoke": "Revoke",
+    "revokeConfirm": "Revoke invite",
+    "quotasTitle": "Request quotas",
+    "used": "{{used}} of {{limit}} used (per {{days}} days)",
+    "usedUnlimited": "{{used}} used, no limit",
+    "ownRule": "Own rule",
+    "rule": "Rule",
+    "saveQuotas": "Save quotas"
   },
   "subtitles": {
     "explainTitle": "Subtitles",

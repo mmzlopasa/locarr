@@ -8,7 +8,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/subtitles/providers"
 )
 
-// Points of the score (D-056). A hash match means the subtitle was made for
+// Points of the score (D-064). A hash match means the subtitle was made for
 // this very file; everything else adds up evidence from the release name.
 const (
 	PointsHash       = 100

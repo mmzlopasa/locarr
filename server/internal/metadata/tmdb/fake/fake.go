@@ -5,6 +5,7 @@
 //	/3/configuration  /3/search/movie  /3/movie/{id}  /3/find/{imdb}
 //	/3/collection/{id}  /3/list/{id}  /t/p/{size}/{file}
 //	/3/search/tv  /3/tv/{id}  /3/tv/{id}/season/{n}
+//	and the discover endpoints (discover.go)
 //
 // The catalog matches the fake indexer's movies (internal/indexers/fake).
 package fake
@@ -186,6 +187,7 @@ func (s *Server) details(m Movie) map[string]any {
 		alts = append(alts, map[string]any{"iso_3166_1": "US", "title": a})
 	}
 	out["alternative_titles"] = map[string]any{"titles": alts}
+	extras(out, "movie", m.ID, s.castOf("movie", m.ID))
 	return out
 }
 
@@ -204,7 +206,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	parts := strings.Split(strings.Trim(path, "/"), "/")
-	if s.serveTV(w, r, path, parts) {
+	if s.serveDiscover(w, r, path, parts) || s.serveTV(w, r, path, parts) {
 		return
 	}
 	switch {

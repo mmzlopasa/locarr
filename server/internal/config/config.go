@@ -36,7 +36,7 @@ type Config struct {
 	// LOCARR_SUBDL_URL, LOCARR_JIMAKU_URL; tests and the fake services only).
 	SubtitleURLs map[string]string
 	// FFmpeg is the ffmpeg binary used for subtitle sync (LOCARR_FFMPEG,
-	// default "ffmpeg" in PATH; the image ships a small build, D-054).
+	// default "ffmpeg" in PATH; the image ships a small build, D-062).
 	FFmpeg string
 	// TrustedProxies are CIDRs whose X-Forwarded-For is believed (LOCARR_TRUSTED_PROXIES).
 	TrustedProxies string

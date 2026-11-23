@@ -1,5 +1,5 @@
 // Package sync re-times a subtitle against a reference: the speech in the
-// video's audio (decoded by ffmpeg, D-054) or another subtitle of the same
+// video's audio (decoded by ffmpeg, D-062) or another subtitle of the same
 // video (an embedded text track or a file in another language). Both are
 // turned into on/off signals at 20 ms steps; cross-correlation (FFT) finds
 // the constant offset, and a handful of frame-rate ratios (23.976↔25,

@@ -34,10 +34,10 @@ test("first-run setup, sign-in, creating a user and signing out", async ({ page,
   }
 
   await signIn(page, adminUser, adminPassword);
-  // Sign-in lands on the movie library; sections of later phases say so instead of pretending.
+  // Sign-in lands on the movie library for administrators.
   await expect(page.getByTestId("movie-library")).toBeVisible();
-  await page.getByRole("link", { name: "Requests" }).click();
-  await expect(page.getByTestId("coming-soon")).toBeVisible();
+  await page.getByRole("link", { name: "Requests" }).first().click();
+  await expect(page.getByRole("heading", { name: "Requests" })).toBeVisible();
 
   const username = `e2e-${Date.now().toString(36)}`;
   await page.getByRole("link", { name: "Settings" }).click();
@@ -55,7 +55,10 @@ test("first-run setup, sign-in, creating a user and signing out", async ({ page,
   await expect(page).toHaveURL(/\/login/);
 
   await signIn(page, username, "e2e-user-password");
+  // A requester lands on Discover and sees no administrator or library pages.
+  await expect(page).toHaveURL(/\/discover/);
   await expect(page.getByRole("link", { name: "Settings" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Movies" })).toHaveCount(0);
   await signOut(page);
 });
 

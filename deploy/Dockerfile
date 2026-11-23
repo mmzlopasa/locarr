@@ -26,7 +26,7 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath \
     -ldflags "-s -w -X github.com/mmzlopasa/locarr/server/internal/version.Version=${VERSION} -X github.com/mmzlopasa/locarr/server/internal/version.Commit=${COMMIT}" \
     -o /out/locarr ./cmd/locarr
 
-# A small static ffmpeg for subtitle sync (D-054): audio decoders and the
+# A small static ffmpeg for subtitle sync (D-062): audio decoders and the
 # container demuxers only, about 3.5 MB instead of the ~100 MB of the Debian
 # package. Cross-compiled on the build platform.
 FROM --platform=$BUILDPLATFORM debian:trixie-slim AS ffmpeg

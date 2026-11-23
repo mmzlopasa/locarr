@@ -32,6 +32,15 @@ func (UnimplementedHandler) AddBlocklistEntry(ctx context.Context, req *Blocklis
 	return r, ht.ErrNotImplemented
 }
 
+// AddIssueComment implements addIssueComment operation.
+//
+// Comment on an issue.
+//
+// POST /issues/{id}/comments
+func (UnimplementedHandler) AddIssueComment(ctx context.Context, req *CommentInput, params AddIssueCommentParams) (r *Comment, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AddMovie implements addMovie operation.
 //
 // Add a movie from TMDb (library managers).
@@ -50,12 +59,39 @@ func (UnimplementedHandler) AddMovieCollection(ctx context.Context, req *AddOpti
 	return r, ht.ErrNotImplemented
 }
 
+// AddRequestComment implements addRequestComment operation.
+//
+// Comment on a request.
+//
+// POST /requests/{id}/comments
+func (UnimplementedHandler) AddRequestComment(ctx context.Context, req *CommentInput, params AddRequestCommentParams) (r *Comment, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AddSeries implements addSeries operation.
 //
 // Add a series from TMDb or TVDB with its seasons and episodes (library managers).
 //
 // POST /series
 func (UnimplementedHandler) AddSeries(ctx context.Context, req *AddSeriesRequest) (r *Series, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ApproveRequest implements approveRequest operation.
+//
+// Approve a request (managers), optionally changing its options.
+//
+// POST /requests/{id}/approve
+func (UnimplementedHandler) ApproveRequest(ctx context.Context, req OptRequestOptions, params ApproveRequestParams) (r *MediaRequest, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ApproveRequests implements approveRequests operation.
+//
+// Approve several pending requests.
+//
+// POST /requests/approve
+func (UnimplementedHandler) ApproveRequests(ctx context.Context, req *RequestIds) (r *BulkResult, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -86,6 +122,15 @@ func (UnimplementedHandler) CancelJob(ctx context.Context, params CancelJobParam
 	return ht.ErrNotImplemented
 }
 
+// CancelRequest implements cancelRequest operation.
+//
+// Withdraw an own request while it is pending.
+//
+// POST /requests/{id}/cancel
+func (UnimplementedHandler) CancelRequest(ctx context.Context, params CancelRequestParams) (r *MediaRequest, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ChangePassword implements changePassword operation.
 //
 // Signs out every other session of the account; the current one stays.
@@ -93,6 +138,15 @@ func (UnimplementedHandler) CancelJob(ctx context.Context, params CancelJobParam
 // POST /auth/password
 func (UnimplementedHandler) ChangePassword(ctx context.Context, req *ChangePasswordRequest) error {
 	return ht.ErrNotImplemented
+}
+
+// CheckInvite implements checkInvite operation.
+//
+// Check an invite code before signing up.
+//
+// POST /auth/invite
+func (UnimplementedHandler) CheckInvite(ctx context.Context, req *InviteCodeRequest) (r *InviteCheck, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // ConvertSubtitleFps implements convertSubtitleFps operation.
@@ -186,6 +240,24 @@ func (UnimplementedHandler) CreateIndexerSource(ctx context.Context, req *Indexe
 	return r, ht.ErrNotImplemented
 }
 
+// CreateInvite implements createInvite operation.
+//
+// The code is only returned once.
+//
+// POST /invites
+func (UnimplementedHandler) CreateInvite(ctx context.Context, req *InviteInput) (r *CreatedInvite, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// CreateIssue implements createIssue operation.
+//
+// Report a problem with an available title.
+//
+// POST /issues
+func (UnimplementedHandler) CreateIssue(ctx context.Context, req *IssueInput) (r *Issue, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateMetadataProfile implements createMetadataProfile operation.
 //
 // Create a metadata profile (administrators).
@@ -222,6 +294,16 @@ func (UnimplementedHandler) CreateRemotePathMapping(ctx context.Context, req *Re
 	return r, ht.ErrNotImplemented
 }
 
+// CreateRequest implements createRequest operation.
+//
+// Approved at once when the user may auto-approve this kind. Refused with `already_requested`,
+// `already_available`, `quota_exceeded` or `forbidden`.
+//
+// POST /requests
+func (UnimplementedHandler) CreateRequest(ctx context.Context, req *CreateRequest) (r *MediaRequest, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CreateRootFolder implements createRootFolder operation.
 //
 // The folder must exist inside one of the allowed data roots (`LOCARR_DATA_ROOTS`).
@@ -246,6 +328,15 @@ func (UnimplementedHandler) CreateSubtitleProfile(ctx context.Context, req *Subt
 //
 // POST /users
 func (UnimplementedHandler) CreateUser(ctx context.Context, req *CreateUserRequest) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// DeclineRequest implements declineRequest operation.
+//
+// Decline a request with a reason (managers).
+//
+// POST /requests/{id}/decline
+func (UnimplementedHandler) DeclineRequest(ctx context.Context, req *DeclineRequest, params DeclineRequestParams) (r *MediaRequest, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -466,6 +557,15 @@ func (UnimplementedHandler) DisableTotp(ctx context.Context, req *PasswordConfir
 	return ht.ErrNotImplemented
 }
 
+// DiscoverSearch implements discoverSearch operation.
+//
+// Search movies, series, people and music.
+//
+// GET /discover/search
+func (UnimplementedHandler) DiscoverSearch(ctx context.Context, params DiscoverSearchParams) (r *DiscoverPage, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DownloadItemSubtitle implements downloadItemSubtitle operation.
 //
 // Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
@@ -606,6 +706,70 @@ func (UnimplementedHandler) GetCustomFormatSchema(ctx context.Context) (r *Custo
 	return r, ht.ErrNotImplemented
 }
 
+// GetDiscover implements getDiscover operation.
+//
+// Trending, popular, upcoming, now playing, top rated, recently added and the caller's requests, with
+// library and request state.
+//
+// GET /discover
+func (UnimplementedHandler) GetDiscover(ctx context.Context) (r *DiscoverHome, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetDiscoverArtist implements getDiscoverArtist operation.
+//
+// An artist and their albums.
+//
+// GET /discover/artists/{mbid}
+func (UnimplementedHandler) GetDiscoverArtist(ctx context.Context, params GetDiscoverArtistParams) (r *TitleDetail, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetDiscoverGenres implements getDiscoverGenres operation.
+//
+// Genres, studios and networks to browse by.
+//
+// GET /discover/genres
+func (UnimplementedHandler) GetDiscoverGenres(ctx context.Context) (r *DiscoverFacets, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetDiscoverList implements getDiscoverList operation.
+//
+// One discover list, paged.
+//
+// GET /discover/lists/{list}
+func (UnimplementedHandler) GetDiscoverList(ctx context.Context, params GetDiscoverListParams) (r *DiscoverPage, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetDiscoverMovie implements getDiscoverMovie operation.
+//
+// A movie's title page.
+//
+// GET /discover/movies/{tmdbId}
+func (UnimplementedHandler) GetDiscoverMovie(ctx context.Context, params GetDiscoverMovieParams) (r *TitleDetail, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetDiscoverPerson implements getDiscoverPerson operation.
+//
+// A person and what they are known for.
+//
+// GET /discover/people/{tmdbId}
+func (UnimplementedHandler) GetDiscoverPerson(ctx context.Context, params GetDiscoverPersonParams) (r *PersonDetail, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetDiscoverSeries implements getDiscoverSeries operation.
+//
+// A series' title page with per-season availability.
+//
+// GET /discover/series/{tmdbId}
+func (UnimplementedHandler) GetDiscoverSeries(ctx context.Context, params GetDiscoverSeriesParams) (r *TitleDetail, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetDownloadClient implements getDownloadClient operation.
 //
 // One download client (administrators).
@@ -648,6 +812,15 @@ func (UnimplementedHandler) GetIndexer(ctx context.Context, params GetIndexerPar
 //
 // GET /indexers/settings
 func (UnimplementedHandler) GetIndexerSettings(ctx context.Context) (r *IndexerSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetIssue implements getIssue operation.
+//
+// One issue.
+//
+// GET /issues/{id}
+func (UnimplementedHandler) GetIssue(ctx context.Context, params GetIssueParams) (r *Issue, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -753,6 +926,33 @@ func (UnimplementedHandler) GetRecycleBin(ctx context.Context) (r *RecycleBin, _
 	return r, ht.ErrNotImplemented
 }
 
+// GetRequest implements getRequest operation.
+//
+// One request.
+//
+// GET /requests/{id}
+func (UnimplementedHandler) GetRequest(ctx context.Context, params GetRequestParams) (r *MediaRequest, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetRequestSettings implements getRequestSettings operation.
+//
+// Request defaults and quotas (administrators).
+//
+// GET /settings/requests
+func (UnimplementedHandler) GetRequestSettings(ctx context.Context) (r *RequestSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetRequestSummary implements getRequestSummary operation.
+//
+// Counts for badges and the caller's remaining quota.
+//
+// GET /requests/summary
+func (UnimplementedHandler) GetRequestSummary(ctx context.Context) (r *RequestSummary, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetSeries implements getSeries operation.
 //
 // One series with its seasons.
@@ -833,6 +1033,15 @@ func (UnimplementedHandler) GetTmdbImage(ctx context.Context, params GetTmdbImag
 //
 // GET /users/{id}
 func (UnimplementedHandler) GetUser(ctx context.Context, params GetUserParams) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetUserQuotas implements getUserQuotas operation.
+//
+// A user's request quotas (administrators).
+//
+// GET /users/{id}/quotas
+func (UnimplementedHandler) GetUserQuotas(ctx context.Context, params GetUserQuotasParams) (r *UserQuotas, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -985,6 +1194,16 @@ func (UnimplementedHandler) ListArtists(ctx context.Context, params ListArtistsP
 	return r, ht.ErrNotImplemented
 }
 
+// ListAuthProviders implements listAuthProviders operation.
+//
+// `local` (username and password) always; other providers (Streamero, P9) appear here once configured.
+// See D-058.
+//
+// GET /auth/providers
+func (UnimplementedHandler) ListAuthProviders(ctx context.Context) (r []AuthProvider, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListBlocklist implements listBlocklist operation.
 //
 // Blocked releases (library managers).
@@ -1066,6 +1285,33 @@ func (UnimplementedHandler) ListIndexers(ctx context.Context) (r []Indexer, _ er
 	return r, ht.ErrNotImplemented
 }
 
+// ListInvites implements listInvites operation.
+//
+// Invite links (administrators).
+//
+// GET /invites
+func (UnimplementedHandler) ListInvites(ctx context.Context) (r []Invite, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListIssueComments implements listIssueComments operation.
+//
+// Comments on an issue.
+//
+// GET /issues/{id}/comments
+func (UnimplementedHandler) ListIssueComments(ctx context.Context, params ListIssueCommentsParams) (r []Comment, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListIssues implements listIssues operation.
+//
+// Requesters see their own; managers see everyone's.
+//
+// GET /issues
+func (UnimplementedHandler) ListIssues(ctx context.Context, params ListIssuesParams) (r *IssueList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListLanguages implements listLanguages operation.
 //
 // Known languages.
@@ -1091,6 +1337,16 @@ func (UnimplementedHandler) ListMetadataProfiles(ctx context.Context) (r []Metad
 //
 // GET /movies
 func (UnimplementedHandler) ListMovies(ctx context.Context, params ListMoviesParams) (r *MovieList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListNotifications implements listNotifications operation.
+//
+// Polling-friendly: pass the largest id seen as `since` to get only newer ones (oldest first then);
+// without it the newest come first.
+//
+// GET /notifications
+func (UnimplementedHandler) ListNotifications(ctx context.Context, params ListNotificationsParams) (r *NotificationList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1145,6 +1401,24 @@ func (UnimplementedHandler) ListReleaseProfiles(ctx context.Context) (r []Releas
 //
 // GET /remotepathmappings
 func (UnimplementedHandler) ListRemotePathMappings(ctx context.Context) (r []RemotePathMapping, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListRequestComments implements listRequestComments operation.
+//
+// Comments on a request.
+//
+// GET /requests/{id}/comments
+func (UnimplementedHandler) ListRequestComments(ctx context.Context, params ListRequestCommentsParams) (r []Comment, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListRequests implements listRequests operation.
+//
+// Requesters see their own; users who manage requests see everyone's.
+//
+// GET /requests
+func (UnimplementedHandler) ListRequests(ctx context.Context, params ListRequestsParams) (r *RequestList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1339,6 +1613,15 @@ func (UnimplementedHandler) ManualSubtitleSearch(ctx context.Context, params Man
 	return r, ht.ErrNotImplemented
 }
 
+// MarkNotificationsRead implements markNotificationsRead operation.
+//
+// Mark notifications read.
+//
+// POST /notifications/read
+func (UnimplementedHandler) MarkNotificationsRead(ctx context.Context, req *MarkReadRequest) (r *UnreadCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // MonitorAlbums implements monitorAlbums operation.
 //
 // Monitor or unmonitor several albums (library managers).
@@ -1476,6 +1759,15 @@ func (UnimplementedHandler) PreviewSubtitle(ctx context.Context, params PreviewS
 	return r, ht.ErrNotImplemented
 }
 
+// PutRequestSettings implements putRequestSettings operation.
+//
+// Change request defaults and quotas (administrators).
+//
+// PUT /settings/requests
+func (UnimplementedHandler) PutRequestSettings(ctx context.Context, req *RequestSettings) (r *RequestSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RefreshArtist implements refreshArtist operation.
 //
 // Albums are synced at once; editions and track lists follow in the background.
@@ -1550,6 +1842,15 @@ func (UnimplementedHandler) RenameSeries(ctx context.Context, req *SeriesIdsRequ
 	return r, ht.ErrNotImplemented
 }
 
+// ReopenIssue implements reopenIssue operation.
+//
+// Reopen a resolved issue (managers and the reporter).
+//
+// POST /issues/{id}/reopen
+func (UnimplementedHandler) ReopenIssue(ctx context.Context, params ReopenIssueParams) (r *Issue, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ReorderDelayProfiles implements reorderDelayProfiles operation.
 //
 // Set the evaluation order of the non-default delay profiles (administrators).
@@ -1595,6 +1896,16 @@ func (UnimplementedHandler) ResetUserPassword(ctx context.Context, req *ResetPas
 	return ht.ErrNotImplemented
 }
 
+// ResolveIssue implements resolveIssue operation.
+//
+// With `searchReplacement` the current file(s) go to the recycle bin, their release is blocklisted and
+// Locarr searches again.
+//
+// POST /issues/{id}/resolve
+func (UnimplementedHandler) ResolveIssue(ctx context.Context, req *ResolveIssueRequest, params ResolveIssueParams) (r *Issue, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RestoreRecycleEntry implements restoreRecycleEntry operation.
 //
 // Fails with `restore_conflict` when something else is at the original place.
@@ -1610,6 +1921,24 @@ func (UnimplementedHandler) RestoreRecycleEntry(ctx context.Context, params Rest
 //
 // POST /queue/{id}/resume
 func (UnimplementedHandler) ResumeQueueItem(ctx context.Context, params ResumeQueueItemParams) error {
+	return ht.ErrNotImplemented
+}
+
+// RetryRequest implements retryRequest operation.
+//
+// Search again for a failed request (managers).
+//
+// POST /requests/{id}/retry
+func (UnimplementedHandler) RetryRequest(ctx context.Context, params RetryRequestParams) (r *MediaRequest, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RevokeInvite implements revokeInvite operation.
+//
+// Revoke an invite (administrators).
+//
+// DELETE /invites/{id}
+func (UnimplementedHandler) RevokeInvite(ctx context.Context, params RevokeInviteParams) error {
 	return ht.ErrNotImplemented
 }
 
@@ -1804,6 +2133,15 @@ func (UnimplementedHandler) SetQueueItemPriority(ctx context.Context, req *Prior
 	return ht.ErrNotImplemented
 }
 
+// SetUserQuotas implements setUserQuotas operation.
+//
+// Override a user's request quotas (administrators).
+//
+// PUT /users/{id}/quotas
+func (UnimplementedHandler) SetUserQuotas(ctx context.Context, req *QuotaOverrides, params SetUserQuotasParams) (r *UserQuotas, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // Setup implements setup operation.
 //
 // Only works while no administrator exists. Needs the setup code the server prints to its log on
@@ -1820,6 +2158,15 @@ func (UnimplementedHandler) Setup(ctx context.Context, req *SetupRequest) (r *Si
 //
 // POST /subtitles/{id}/shift
 func (UnimplementedHandler) ShiftSubtitle(ctx context.Context, req *ShiftSubtitleReq, params ShiftSubtitleParams) (r *Subtitle, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SignUp implements signUp operation.
+//
+// Create an account with an invite code and sign in.
+//
+// POST /auth/signup
+func (UnimplementedHandler) SignUp(ctx context.Context, req *SignUpRequest) (r *SignedInHeaders, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2082,6 +2429,15 @@ func (UnimplementedHandler) UpdateReleaseProfile(ctx context.Context, req *Relea
 //
 // PUT /remotepathmappings/{id}
 func (UnimplementedHandler) UpdateRemotePathMapping(ctx context.Context, req *RemotePathMappingInput, params UpdateRemotePathMappingParams) (r *RemotePathMapping, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateRequest implements updateRequest operation.
+//
+// Change a request's options before it is approved (managers).
+//
+// PATCH /requests/{id}
+func (UnimplementedHandler) UpdateRequest(ctx context.Context, req *RequestOptions, params UpdateRequestParams) (r *MediaRequest, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

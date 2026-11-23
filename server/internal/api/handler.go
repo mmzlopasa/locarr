@@ -16,6 +16,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/discover"
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
@@ -25,7 +26,9 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/library/recycle"
 	"github.com/mmzlopasa/locarr/server/internal/library/series"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
+	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
+	"github.com/mmzlopasa/locarr/server/internal/requests"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 	"github.com/mmzlopasa/locarr/server/internal/subtitles"
@@ -56,9 +59,13 @@ type Handler struct {
 	CoverArt     *metadata.ImageCache
 	LinkExisting func(ctx context.Context, artistID int64)
 	Wanted       *wanted.Service
-	Timeline     *timeline.Store
-	Recycle      *recycle.Bin
-	Images       *metadata.ImageCache
+	// Requests (P8): requests and issues, discover pages, notifications.
+	Requests *requests.Service
+	Discover *discover.Service
+	Hub      *notify.Hub
+	Timeline *timeline.Store
+	Recycle  *recycle.Bin
+	Images   *metadata.ImageCache
 	// TMDb validates keys before they are stored; MetaCache is cleared when the language changes.
 	TMDb metadata.MovieProvider
 	// TVDB validates a TVDB key before it is stored (nil = TVDB not available).
@@ -126,6 +133,9 @@ func mapError(err error) *StatusError {
 		return se
 	}
 	if se := mapSubtitlesError(err); se != nil {
+		return se
+	}
+	if se := mapRequestsError(err); se != nil {
 		return se
 	}
 	if se := mapDownloadsError(err); se != nil {

@@ -21,6 +21,7 @@ export function SettingsLayout() {
           { to: "/settings/customformats", label: t("settings.tabs.customFormats") },
           { to: "/settings/rules", label: t("settings.tabs.rules") },
           { to: "/settings/tester", label: t("settings.tabs.tester") },
+          { to: "/settings/requests", label: t("settings.tabs.requests") },
           { to: "/settings/users", label: t("settings.tabs.users") },
         ]}
       />

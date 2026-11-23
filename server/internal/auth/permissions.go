@@ -26,9 +26,15 @@ const (
 	PermRequest4K
 	PermManageLibrary
 	PermManageRequests
+	// Per-kind auto-approval (P8); PermAutoApprove still covers every kind.
+	PermAutoApproveMovies
+	PermAutoApproveSeries
+	PermAutoApproveMusic
+	PermAutoApprove4K
 
 	permAll = PermRequestMovies | PermRequestSeries | PermRequestMusic | PermAutoApprove |
-		PermRequest4K | PermManageLibrary | PermManageRequests
+		PermRequest4K | PermManageLibrary | PermManageRequests | PermAutoApproveMovies | PermAutoApproveSeries |
+		PermAutoApproveMusic | PermAutoApprove4K
 )
 
 // Has reports whether every bit of want is set.
@@ -43,7 +49,8 @@ func DefaultPermissions(r Role) Permissions {
 	case RoleAdmin:
 		return permAll
 	case RoleManager:
-		return PermRequestMovies | PermRequestSeries | PermRequestMusic | PermAutoApprove | PermManageLibrary | PermManageRequests
+		return PermRequestMovies | PermRequestSeries | PermRequestMusic | PermAutoApprove | PermManageLibrary | PermManageRequests |
+			PermAutoApproveMovies | PermAutoApproveSeries | PermAutoApproveMusic
 	default:
 		return PermRequestMovies | PermRequestSeries | PermRequestMusic
 	}

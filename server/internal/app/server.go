@@ -15,6 +15,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/customformats"
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/discover"
 	_ "github.com/mmzlopasa/locarr/server/internal/downloaders/all" // registers the download clients
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
@@ -27,7 +28,9 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/tvdb"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
+	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
+	"github.com/mmzlopasa/locarr/server/internal/requests"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/secrets"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
@@ -75,6 +78,10 @@ type Deps struct {
 	CoverArt    *metadata.ImageCache
 	// Subtitles (P7).
 	Subtitles *subtitles.Service
+	// Requests (P8).
+	Hub      *notify.Hub
+	Requests *requests.Service
+	Discover *discover.Service
 }
 
 // Close stops the jobs and closes the database.
@@ -140,6 +147,7 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 		return nil, err
 	}
 	buildSubtitles(deps, cfg, log)
+	buildRequests(ctx, deps, log)
 	return deps, nil
 }
 

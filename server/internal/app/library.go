@@ -180,15 +180,22 @@ func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger)
 		ConfigDir: cfg.ConfigDir, DataRoots: cfg.DataRoots, StartedAt: started, Log: log}
 	attachMusic(h, d, log)
 	attachSubtitles(h, d)
+	attachRequests(h, d)
 	return h
 }
 
-// runBackground starts the RSS consumer; the returned function waits for it.
+// runBackground starts the RSS consumer and the request sync; the returned
+// function waits for them.
 func runBackground(ctx context.Context, d *Deps) func() {
 	done := make(chan struct{})
+	reqs := make(chan struct{})
 	go func() {
 		defer close(done)
 		d.Wanted.RunRSS(ctx)
 	}()
-	return func() { <-done }
+	go func() {
+		defer close(reqs)
+		d.Requests.Run(ctx)
+	}()
+	return func() { <-done; <-reqs }
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
 	"github.com/mmzlopasa/locarr/server/internal/library"
+	"github.com/mmzlopasa/locarr/server/internal/library/explain"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
 	"github.com/mmzlopasa/locarr/server/internal/library/naming"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
@@ -38,7 +39,7 @@ func errBody(err error) gen.Error {
 
 // GetMovieCollection implements GET /movies/collections/{tmdbId}.
 func (h *Handler) GetMovieCollection(ctx context.Context, p gen.GetMovieCollectionParams) (*gen.MovieCollection, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	c, err := h.Movies.Collection(ctx, p.TmdbId)
@@ -290,37 +291,8 @@ func (h *Handler) DeleteImportExclusion(ctx context.Context, p gen.DeleteImportE
 // explain derives the explanation for a ref; refs are the refs whose
 // history belongs to it (an episode with its season).
 func (h *Handler) explain(ctx context.Context, ref library.Ref) (timeline.Explanation, string, []string, error) {
-	switch ref.Kind {
-	case library.RefAlbum, library.RefArtist:
-		ex, title, err := h.explainMusic(ctx, ref)
-		return ex, title, []string{ref.String()}, err
-	case library.RefMovie:
-		it, err := h.Movies.Item(ctx, ref.ID)
-		if err != nil {
-			return timeline.Explanation{}, "", nil, err
-		}
-		facts, err := h.Timeline.Facts(ctx, ref.String(), "movies")
-		if err != nil {
-			return timeline.Explanation{}, "", nil, err
-		}
-		st := timeline.ItemState{Ref: ref.String(), Monitored: it.Monitored, Available: it.Available, AvailableFrom: it.AvailableFrom,
-			HasFile: it.File != nil, CutoffMet: it.CutoffMet}
-		return timeline.Explain(st, facts), it.Title, []string{ref.String()}, nil
-	case library.RefEpisode, library.RefSeason, library.RefSeries:
-		if h.Series == nil {
-			break
-		}
-		es, err := h.Series.Explain(ctx, ref)
-		if err != nil {
-			return timeline.Explanation{}, "", nil, err
-		}
-		facts, err := h.Timeline.FactsRefs(ctx, es.Refs, "tv")
-		if err != nil {
-			return timeline.Explanation{}, "", nil, err
-		}
-		return timeline.Explain(es.State, facts), es.Title, es.Refs, nil
-	}
-	return timeline.Explanation{}, "", nil, fmt.Errorf("%w: this kind has no timeline yet", library.ErrBadRef)
+	x := explain.Explainer{Movies: h.Movies, Series: h.Series, Music: h.Music, Timeline: h.Timeline}
+	return x.Explain(ctx, ref)
 }
 
 func toExplanation(e timeline.Explanation) (gen.Explanation, error) {
@@ -377,7 +349,7 @@ func day(t time.Time) string { return t.Format("2006-01-02") }
 
 // GetCalendar implements GET /calendar.
 func (h *Handler) GetCalendar(ctx context.Context, p gen.GetCalendarParams) ([]gen.CalendarEntry, error) {
-	if err := requireUser(ctx); err != nil {
+	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
 	if p.End.Before(p.Start) || p.End.Sub(p.Start) > 400*24*time.Hour {

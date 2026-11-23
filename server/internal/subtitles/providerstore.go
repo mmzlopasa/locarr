@@ -31,7 +31,7 @@ type ProviderInfo struct {
 	NeedsKey bool `json:"needsKey"`
 }
 
-// Implementations are the supported providers (D-055).
+// Implementations are the supported providers (D-063).
 var Implementations = []ProviderInfo{
 	{Name: opensubtitles.Name, Fields: []string{"apiKey", "username", "password"}, Website: "https://www.opensubtitles.com/consumers", NeedsKey: true},
 	{Name: subdl.Name, Fields: []string{"apiKey"}, Website: "https://subdl.com/panel/api", NeedsKey: true},

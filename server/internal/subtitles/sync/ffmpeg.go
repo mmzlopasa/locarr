@@ -18,7 +18,7 @@ import (
 // ErrNoFFmpeg is returned when no ffmpeg binary is available.
 var ErrNoFFmpeg = errors.New("ffmpeg is not available, so the audio cannot be read")
 
-// FFmpeg runs the ffmpeg binary at Path (D-054: the image carries a small
+// FFmpeg runs the ffmpeg binary at Path (D-062: the image carries a small
 // audio-only build).
 type FFmpeg struct {
 	Path string
