@@ -1,7 +1,18 @@
 # Napredak
 
 ## Trenutna faza
-P0–P11 gotovi. P12: iOS aplikacija gotova (Android u zasebnom branchu).
+P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
+
+## Gotovo u P12 — Android (branch `phase/P12-android`)
+- `android/` (D-095): Kotlin 2.1, Jetpack Compose (Material 3), OkHttp, kotlinx.serialization, Coil (memorija + 200 MB diska), WorkManager; `net.scyde.locarr`, Android 8+; telefon (donja traka) i tablet (bočna traka, ograničena širina). Tokeni dizajna iz `web/src/styles.css` u `ui/Theme.kt`.
+- Ručno pisani tolerantni modeli (`api/Models.kt`), `Api` s Bearer tokenom i `onUnauthorized`; prijevodi serverskih kodova generira `android/tools/gen-codes.py` iz web locala (`values{,-hr}/codes.xml`, `ui/Codes.kt`); ostali tekstovi u `values{,-hr}/strings.xml`.
+- Prijava i poslužitelji (D-097): provjera da adresa odgovara kao Locarr i da je postavljen, lozinka → TOTP/kod za oporavak, Streamero provider, više poslužitelja, AES-GCM ključ u Keystoreu, bez backupa; 401 sesije vraća na prijavu tog poslužitelja.
+- Ekrani: Otkrivanje (istaknuti naslov, redovi, „Sve" sa straničenjem), pretraga, naslov (zahtjev sa sezonama i budućim sezonama, 4K, albumi, Streamero, trailer, prijava problema), osoba, zahtjevi (filtri, odobri/odbij, odobri sve, povuci, ponovi, komentari), problemi, obavijesti; upravitelji: pregled, biblioteke (filmovi, serije, glazba) s detaljima, sezone i epizode, albumi i pjesme, „Zašto nije ovdje?" + Pokušaj sada + vremenska crta, ručna pretraga s odlukama i grab, dodavanje, red uživo s radnjama, ploča s radnjama, traženo, kalendar, povijest; administratori: zdravlje (popravi na webu), indexeri (vaši, ugrađene stranice, usenet; Test), download klijenti (Test), mape za medije, popis postavki koje otvaraju web (D-098).
+- Obavijesti (D-096): `NotificationWorker` svakih 15 min i pri otvaranju, `PollLogic` (prva provjera tiha, pročitane preskače, najviše 4 + sažetak), kanali „Moji zahtjevi", „Novi zahtjevi", „Problemi", `locarr://open?server=&to=` s popisom dopuštenih ruta, dozvola na Androidu 13+.
+- CI: `.github/workflows/android.yml` (jedinični testovi, lint, release `.apk`; na `v*` oznaci `Locarr-vX.Y.Z.apk` na GitHub izdanje, isto ponašanje kao iOS: čeka izdanje do 2 min, inače ga stvori, `--clobber`). Potpis: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`; bez njih debug potpis.
+- Testovi: čitanje s nepoznatim poljima/vrijednostima i nullovima, prijava (TOTP korak, provider, Bearer, istek sesije), adrese, poslužitelji (šifrirani token, više poslužitelja, odjava, izgubljen ključ), poller, poveznice, tekstovi. Release `.apk` (R8) ručno provjeren u emulatoru (API 30) protiv stvarnog Locarra: spajanje, 2FA prijava, tražitelj i upravitelj, prazna stanja.
+- Korisnička dokumentacija: `docs/user/android.md`.
+- Poznato / sljedeće: provjeriti na mobitelu Otkrivanje i zahtjeve s TMDb ključem, ručnu pretragu i grab, isporuku obavijesti (i uz štednju baterije), dozvolu za obavijesti na Androidu 13+, tablet raspored; događaji vremenske crte prikazuju serverovu englesku poruku.
 
 ## Gotovo u P12 — iOS (branch `phase/P12-ios`)
 - `ios/` (D-091): SwiftUI, Swift 6, XcodeGen (`ios/project.yml`), `net.scyde.locarr`, iOS 17+, iPhone i iPad. Ručno pisan `APIClient` s tolerantnim modelima (`OpenEnum`, `JSONValue`), Keychain token (`AfterFirstUnlockThisDeviceOnly`), više poslužitelja, 401 → prijava. Dizajn iz web tokena (`DesignSystem/Theme.swift`), ikona iz web oznake (`scripts/ios-icon.py`).

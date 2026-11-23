@@ -107,6 +107,9 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Android i iOS: sve iz weba (biblioteka, dodavanje, pretraga, aktivnost, kalendar, zahtjevi, postavke za admina)
 - [ ] iOS: povezivanje (LAN HTTP, više poslužitelja, prijava s 2FA ili preko Streamera), otkrivanje i zahtjevi, moji zahtjevi i prijava problema, centar obavijesti; za upravitelje pregled, biblioteke s detaljima i „Zašto nije stiglo?", dodavanje, ručna pretraga s odlukama i grab, red, ploča, traženo, kalendar, povijest, odobravanje, problemi, zdravlje, indexeri i klijenti s testom, mape za medije; duboke postavke otvaraju web (D-091–D-094)
 - [ ] Obavijesti bez APNs-a/FCM-a (provjera u pozadini)
+- [x] Android: povezivanje (LAN HTTP uz `network_security_config`, više poslužitelja, token šifriran Android Keystoreom, prijava s 2FA ili kodom za oporavak, prijava preko Streamera), navigacija po ulozi (tražitelj / upravitelj / administrator), tablet raspored; provjereno release `.apk`-om u emulatoru protiv stvarnog poslužitelja (D-095, D-097)
+- [ ] Android: Otkrivanje, naslov, zahtjev (sezone, 4K, album), moji zahtjevi, prijava problema, centar obavijesti; za upravitelje pregled, biblioteke s detaljima, „Zašto nije ovdje?" i Pokušaj sada, dodavanje, ručna pretraga s odlukama i grab, red, ploča, traženo, kalendar, povijest, odobravanje, problemi, zdravlje, indexeri (i ugrađene stranice, usenet) i klijenti s testom, mape za medije; duboke postavke otvaraju web (D-098) — ugrađeno, čitanje odgovora jedinično testirano, prazna stanja provjerena u emulatoru; tokovi s pravim podacima (TMDb) još nisu provjereni na uređaju
+- [ ] Android: obavijesti bez FCM-a (WorkManager svakih 15 min i pri otvaranju, kanali, poveznice; D-096) — logika jedinično testirana, isporuka na uređaju još nije provjerena
 
 ## Kvaliteta (P13)
 - [ ] Sigurnosni pregled, ciljevi performansi testirani, korisnička dokumentacija, v1.0.0
