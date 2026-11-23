@@ -8814,7 +8814,7 @@ func (s *ExistingSeriesFolder) SetError(val OptString) {
 type Explanation struct {
 	// Available, downloading, importing, import_failed, not_monitored, not_available_yet, no_indexers,
 	// no_download_client, waiting_delay, download_failed, not_searched_yet, all_rejected, nothing_found,
-	// upgrade_wanted.
+	// grab_failed, upgrade_wanted.
 	Code    string            `json:"code"`
 	Tone    ExplanationTone   `json:"tone"`
 	Message string            `json:"message"`

@@ -1,4 +1,4 @@
-// Package backup makes and restores backups of Locarr's own state (D-084): a
+// Package backup makes and restores backups of Locarr's own state (D-085): a
 // zip in /config/backups with a consistent copy of the SQLite database
 // (VACUUM INTO, safe while Locarr keeps writing), the secret key that
 // decrypts the stored credentials, the plain settings as JSON for reading and

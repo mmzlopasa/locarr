@@ -1575,6 +1575,14 @@ type Handler interface {
 	//
 	// POST /queue/{id}/resume
 	ResumeQueueItem(ctx context.Context, params ResumeQueueItemParams) error
+	// RetryItem implements retryItem operation.
+	//
+	// For a movie, episode, season or album (`movie:42`). The item's search backoff is cleared and an
+	// automatic search is queued at once; the decision and any grab appear on the timeline. Indexer limits
+	// and grab pacing still apply.
+	//
+	// POST /timeline/retry
+	RetryItem(ctx context.Context, params RetryItemParams) (*QueuedCount, error)
 	// RetryRequest implements retryRequest operation.
 	//
 	// Search again for a failed request (managers).

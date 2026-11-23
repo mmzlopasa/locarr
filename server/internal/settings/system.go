@@ -1,6 +1,6 @@
 package settings
 
-// System, health, backup and housekeeping settings (P11, D-082 … D-085).
+// System, health, backup and housekeeping settings (P11, D-083 … D-086).
 var (
 	// UpdateCheck asks GitHub once a day whether a newer Locarr exists.
 	UpdateCheck = Key[bool]{Name: "system.updateCheck", Default: true}

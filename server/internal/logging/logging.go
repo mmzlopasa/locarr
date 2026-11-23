@@ -2,7 +2,7 @@
 // attributes whose key names a secret are replaced, and secret-looking parts of
 // every text value (API keys in URLs, bearer tokens, passwords in URLs) are
 // masked. Records go to stdout, to rotating files in the config folder and to
-// an in-memory ring that the log viewer reads and tails (D-083).
+// an in-memory ring that the log viewer reads and tails (D-084).
 package logging
 
 import (

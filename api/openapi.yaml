@@ -3040,6 +3040,26 @@ paths:
                 $ref: "#/components/schemas/Explanation"
         default:
           $ref: "#/components/responses/Error"
+  /timeline/retry:
+    post:
+      operationId: retryItem
+      summary: Retry now - clear an item's search backoff and search and grab immediately (library managers)
+      description: |
+        For a movie, episode, season or album (`movie:42`). The item's search backoff is cleared and an
+        automatic search is queued at once; the decision and any grab appear on the timeline. Indexer
+        limits and grab pacing still apply.
+      tags: [timeline]
+      parameters:
+        - {name: item, in: query, required: true, schema: {type: string, maxLength: 64}}
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueuedCount"
+        default:
+          $ref: "#/components/responses/Error"
   /calendar:
     get:
       operationId: getCalendar
@@ -9199,7 +9219,7 @@ components:
           description: |
             available, downloading, importing, import_failed, not_monitored, not_available_yet,
             no_indexers, no_download_client, waiting_delay, download_failed, not_searched_yet,
-            all_rejected, nothing_found, upgrade_wanted.
+            all_rejected, nothing_found, grab_failed, upgrade_wanted.
         tone: {type: string, enum: [success, info, warning, danger]}
         message: {type: string}
         params: {type: object, additionalProperties: true}

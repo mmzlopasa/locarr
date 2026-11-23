@@ -679,7 +679,8 @@
       "manual": "Ručno blokirano",
       "download_failed": "Preuzimanje nije uspjelo",
       "stalled": "Zapelo",
-      "import_failed": "Uvoz nije uspio"
+      "import_failed": "Uvoz nije uspio",
+      "bad_release": "Neispravna ili nestala datoteka"
     },
     "clear": "Obriši sve",
     "clearConfirm": "Odblokiraj svih {{count}}"
@@ -1438,9 +1439,15 @@
       "not_searched_yet": "Još nije traženo. Sljedeća automatska pretraga je {{next}}.",
       "all_rejected": "Dosadašnjih pretraga: {{searches}}. Zadnja je našla izdanja: {{candidates}} i sva su odbijena. Najčešći razlog: {{reason}}.",
       "nothing_found": "Dosadašnjih pretraga: {{searches}}, a nijedan indexer nije imao izdanje. Sljedeća pretraga: {{next}}.",
-      "upgrade_wanted": "U biblioteci je, ali ispod granice profila kvalitete; Locarr i dalje traži bolje izdanje."
+      "upgrade_wanted": "U biblioteci je, ali ispod granice profila kvalitete; Locarr i dalje traži bolje izdanje.",
+      "grab_failed": "Prihvaćenih izdanja: {{accepted}}, ali preuzimanje nije uspjelo: {{detail}}",
+      "grab_failed_unknown": "Zadnja pretraga prihvatila je {{accepted}} od {{candidates}} izdanja, ali još ništa nije poslano na preuzimanje."
     },
-    "titleOk": "U biblioteci"
+    "titleOk": "U biblioteci",
+    "retryNow": "Pokušaj odmah",
+    "retrying": "Traženje…",
+    "retryQueued": "Ponovno se traži. Ograničenja indexera i dalje vrijede.",
+    "retryHint": "Poništava čekanje između automatskih pretraga i odmah traži."
   },
   "rejectionCodes": {
     "parse_failed": "ime nečitljivo",
@@ -1539,7 +1546,8 @@
       "albumRemoved": "{{message}}",
       "importSkipped": "Nije uvezeno: {{message}}",
       "notifiedScan": "{{server}} skenira: {{libraries}}.",
-      "notifyFailedReason": "Nije moguće obavijestiti {{server}}: {{reason}}"
+      "notifyFailedReason": "Nije moguće obavijestiti {{server}}: {{reason}}",
+      "grabSkipped": "Izdanja preskočena: {{reason}}"
     },
     "coverSources": {
       "download": "iz preuzimanja"
@@ -1548,6 +1556,24 @@
       "no_matching_episode": "Iz {{download}} nije uvezeno: {{path}} ne odgovara ni jednoj epizodi serije",
       "not_an_upgrade": "{{path}} nije uvezen: nije bolji od postojećeg",
       "already_imported": "{{path}} je već u biblioteci"
+    },
+    "grabErrors": {
+      "theIndexer": "indexer",
+      "indexer_disabled_until": "Indexer {{indexer}} je privremeno isključen u Prowlarru do {{until}} (previše nedavnih grešaka).",
+      "indexer_disabled": "Indexer {{indexer}} je isključen (u upravitelju indexera ili na samoj stranici).",
+      "indexer_limited_until": "{{indexer}} ograničava zahtjeve; Locarr ga ne dira do {{until}}.",
+      "indexer_limited": "{{indexer}} ograničava zahtjeve; Locarr će pokušati kasnije.",
+      "indexer_error": "{{indexer}} nije uspio poslati datoteku ({{error}}). Njegova ostala izdanja čekaju sljedeću pretragu.",
+      "indexer_unreachable": "{{indexer}} se ne javlja. Njegova ostala izdanja čekaju sljedeću pretragu.",
+      "indexer_auth": "{{indexer}} je odbio API ključ. Provjeri postavke indexera.",
+      "grab_limit": "{{indexer}} je dosegao dnevno ograničenje preuzimanja.",
+      "release_gone": "Izdanja više nema na {{indexer}} (404), pa je blokirano.",
+      "bad_file": "{{indexer}} je poslao nešto što nije .torrent ni .nzb (web stranicu?), pa je izdanje blokirano.",
+      "blocked_address": "Preuzimanje vodi na adresu do koje Locarr ne ide (lokalna ili adresa metapodataka u oblaku). Dopusti je u Indexeri → Postavke ako je tvoja.",
+      "bad_redirect": "Preuzimanje se preusmjerava u krug ili na neupotrebljivu adresu.",
+      "already_queued": "Već je u redu preuzimanja.",
+      "no_client": "Nijedan download klijent ne prima ovo izdanje.",
+      "attempts_exhausted": "Zaustavljeno nakon {{attempts}} neuspjela pokušaja; sljedeća pretraga pokušava ponovno."
     }
   },
   "interactive": {
@@ -3116,6 +3142,10 @@
       "subtitle_quota": {
         "title": "Titlovi: potrošena kvota providera",
         "hint": "Dnevna kvota preuzimanja kod providera je potrošena; pretraga se nastavlja kad se obnovi."
+      },
+      "grab_failed": {
+        "title": "Prihvaćeno, ali grab nije uspio",
+        "hint": "Izdanje je prihvaćeno, ali nije poslano download klijentu (preuzimanje s indexera, klijent ili limit). Uz svaku stavku piše razlog."
       }
     },
     "itemCodes": {

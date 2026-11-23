@@ -5,12 +5,12 @@ P0–P11 gotovi.
 
 ## Gotovo u P11 (branch `phase/P11-operations`)
 - Migracija `00012_operations.sql`: `board_items` (unaprijed izračunati odgovori ploče) i indeksi za povijest, statistiku i najnoviju odluku po stavci.
-- `internal/board` (D-080): ploča „Zašto nije stiglo?" za filmove, emitirane epizode, izdane albume i titlove; potpuni izračun (`board-rebuild` pri pokretanju i svakih 15 min) i osvježavanje pojedinih stavki ~2 s nakon zapisa na vremensku crtu ili događaja preuzimanja; novi kodovi `stalled`, `path_not_visible`, `subtitle_*`; `fix` po grupi; zbrojeni razlozi odbijanja; skupne radnje (pretraži, promijeni profil, blokiraj i ponovi, ponovi uvoz, prestani pratiti).
-- `internal/history` (D-081): povijest cijele biblioteke iz vremenske crte i događaja preuzimanja (filtri, pretraga, straničenje), statistika po indexeru i klijentu.
-- `internal/health` (D-082): provjere s kodovima, sidrima u dokumentaciji i stranicom popravka; `health.warning` jednom po pojavi problema (zamjenjuje `health-notify` iz P9); provjera verzije na GitHubu i pomaka sata (isključivo); `metadata.Health` bilježi ishod zahtjeva TMDb/TVDB/MusicBrainz.
-- `internal/logging` (D-083): `/config/logs` s rotacijom (10 MB × 6), prsten od 5000 zapisa, SSE uživo, maskiranje tajni i u vrijednostima.
-- `internal/backup` (D-084): zip s `VACUUM INTO` snimkom, ključem, postavkama i manifestom; zakazano (24 h, čuva 7), ručno, učitavanje; vraćanje s provjerom, kopijom prije vraćanja, restartom u istom procesu (`app.ServeWith` petlja) i odjavom svih osim vraćača.
-- `internal/stats`, `internal/housekeeping` (D-085): `/api/stats` (+ `/api/v1/system/stats`), `/metrics` uz token, zadržavanje povijesti, tjedni `VACUUM`, ograničenje predmemorije slika.
+- `internal/board` (D-081): ploča „Zašto nije stiglo?" za filmove, emitirane epizode, izdane albume i titlove; potpuni izračun (`board-rebuild` pri pokretanju i svakih 15 min) i osvježavanje pojedinih stavki ~2 s nakon zapisa na vremensku crtu ili događaja preuzimanja; novi kodovi `stalled`, `path_not_visible`, `subtitle_*`; `fix` po grupi; zbrojeni razlozi odbijanja; skupne radnje (pretraži, promijeni profil, blokiraj i ponovi, ponovi uvoz, prestani pratiti).
+- `internal/history` (D-082): povijest cijele biblioteke iz vremenske crte i događaja preuzimanja (filtri, pretraga, straničenje), statistika po indexeru i klijentu.
+- `internal/health` (D-083): provjere s kodovima, sidrima u dokumentaciji i stranicom popravka; `health.warning` jednom po pojavi problema (zamjenjuje `health-notify` iz P9); provjera verzije na GitHubu i pomaka sata (isključivo); `metadata.Health` bilježi ishod zahtjeva TMDb/TVDB/MusicBrainz.
+- `internal/logging` (D-084): `/config/logs` s rotacijom (10 MB × 6), prsten od 5000 zapisa, SSE uživo, maskiranje tajni i u vrijednostima.
+- `internal/backup` (D-085): zip s `VACUUM INTO` snimkom, ključem, postavkama i manifestom; zakazano (24 h, čuva 7), ručno, učitavanje; vraćanje s provjerom, kopijom prije vraćanja, restartom u istom procesu (`app.ServeWith` petlja) i odjavom svih osim vraćača.
+- `internal/stats`, `internal/housekeeping` (D-086): `/api/stats` (+ `/api/v1/system/stats`), `/metrics` uz token, zadržavanje povijesti, tjedni `VACUUM`, ograničenje predmemorije slika.
 - API: `/board*`, `/history`, `/activity/stats`, `DELETE /queue/blocklist`, `/system/health*`, `/system/stats`, `/system/logs*`, `/system/backups*`, `/settings/system`, `create` za `POST /rootfolders`.
 - Web (EN + HR): pregled za administratore na `/`, Aktivnost → Zašto nije stiglo? / Povijest / Statistika, Sustav → Zdravlje / Logovi / Sigurnosne kopije, Postavke → Nadzor, čarobnjak `/welcome` (mape za medije, uvoz iz drugih aplikacija kad postoji `/migrate`).
 - Testovi: ploča (grupiranje, zbrajanje razloga, razvrstavanje neuspjelih uvoza, titlovi, 20 000 stavki), integracijski `TestBoardPathMappingFlow` (krivo mapiranje → ploča i zdravlje → popravak → ponovi uvoz → film u biblioteci → povijest i statistika), `TestBoardBulkActions`, `TestBoardRebuildPerformance` (10 000 filmova), `TestHealthChecks` (svaka provjera s lažnim servisima, jedna obavijest), `TestStatsAndMetrics` (ključ samo za čitanje, tražitelj 403, JSON greške, token), `TestHousekeepingRetention`, `TestLogViewerAPI`, `TestBackupRestoreRoundTrip` (stvarni poslužitelj: kopija → izmjene → vraćanje → podaci kao prije, druga sesija odjavljena, mediji netaknuti → vraćanje učitanog zipa), dosljednost kopije dok se piše, logovi (maskiranje, rotacija); Vitest; Playwright `e2e/operations.spec.ts`.
@@ -18,6 +18,9 @@ P0–P11 gotovi.
 - Korisnička dokumentacija: `docs/user/troubleshooting.md`, `docs/user/backup.md`.
 
 
+
+## Popravak: grab kroz Prowlarr (branch `fix/grab-redirects`)
+- Dohvat datoteke izdanja prati preusmjerenja na drugi host i na magnet bez ključa indexera (D-080); grab u pretrazi: najviše 3 neuspjela pokušaja po ciklusu, indexer s ograničenjem/„disabled till" preskočen i u backoffu, 2 s između grabova s istog indexera, blokada samo za loše datoteke; greške bez upita u URL-u i ljudskim tekstom (EN + HR); „Zašto nije stiglo?" kaže „prihvaćeno N, ali grab nije uspio: …"; „Pokušaj odmah" (`POST /timeline/retry`).
 
 ## Gotovo: Otkrivanje u Streameru (branch `feat/streamero-discover`)
 - `internal/compat` (D-079): Seerr (`/compat/seerr/api/v1`: status, pretraga, trending, zahtjev), Radarr i Sonarr (`/compat/radarr|sonarr/api/v3`: status, kalendar, filmovi po TMDb ID-u, serije) izvan ogena, prijava Locarr API ključem kao vlasnik ključa; poveznice `/compat/radarr/movie/{id}` i `/compat/sonarr/series/{id}` vode na Locarrove stranice.

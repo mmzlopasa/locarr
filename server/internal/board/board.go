@@ -1,4 +1,4 @@
-// Package board keeps the "why didn't it land?" board (D-080): every
+// Package board keeps the "why didn't it land?" board (D-081): every
 // monitored item that is missing (movie, episode, album) or misses subtitles,
 // with the explainer's current answer. Answers are precomputed into
 // board_items: a full rebuild runs in the background (at start and every
@@ -443,7 +443,7 @@ func (s *Service) explain(ctx context.Context, e *env, c candidate) (*Item, erro
 		it.Fix = FixClients
 	case timeline.ExplainAllRejected:
 		it.Fix = FixProfile
-	case timeline.ExplainNothingFound:
+	case timeline.ExplainNothingFound, timeline.ExplainGrabFailed:
 		it.Fix = FixIndexers
 	}
 	return it, nil

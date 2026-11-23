@@ -258,6 +258,7 @@ const (
 	RestoreRecycleEntryOperation               OperationName = "RestoreRecycleEntry"
 	RestoreUploadedBackupOperation             OperationName = "RestoreUploadedBackup"
 	ResumeQueueItemOperation                   OperationName = "ResumeQueueItem"
+	RetryItemOperation                         OperationName = "RetryItem"
 	RetryRequestOperation                      OperationName = "RetryRequest"
 	RevokeInviteOperation                      OperationName = "RevokeInvite"
 	RevokeSessionOperation                     OperationName = "RevokeSession"

@@ -112,6 +112,15 @@ type PendingFact struct {
 	RetryAt time.Time
 }
 
+// GrabFailureFact is a failed grab (timeline data of a grab_failed event).
+type GrabFailureFact struct {
+	Title   string     `json:"title"`
+	Indexer string     `json:"indexer"`
+	Code    string     `json:"code"`
+	Error   string     `json:"error"`
+	Until   *time.Time `json:"until,omitempty"`
+}
+
 // Facts are what the database says about an item's way to the library.
 type Facts struct {
 	Download     *DownloadFact
@@ -121,6 +130,10 @@ type Facts struct {
 	LastSearch   *time.Time
 	NextSearch   *time.Time
 	LastDecision *DecisionSummary
+	// GrabFailure is the latest failed grab since the last decision.
+	GrabFailure *GrabFailureFact
+	// GrabbedSince: a release was sent to a client after the last decision.
+	GrabbedSince bool
 	// Indexers usable for automatic search; Clients enabled download clients.
 	Indexers int
 	Clients  int
@@ -152,6 +165,7 @@ const (
 	ExplainNotSearched    = "not_searched_yet"
 	ExplainUpgradeWanted  = "upgrade_wanted"
 	ExplainDownloadFailed = "download_failed"
+	ExplainGrabFailed     = "grab_failed"
 )
 
 func fmtTime(t *time.Time) string {
@@ -228,6 +242,19 @@ func Explain(st ItemState, f Facts) Explanation {
 			return set(ExplainUpgradeWanted, "info", "in the library below the cutoff; "+msg)
 		}
 		return set(ExplainAllRejected, "warning", msg)
+	case f.LastDecision != nil && f.LastDecision.Accepted > 0 && !f.GrabbedSince && (f.GrabFailure != nil || !st.HasFile):
+		e.Params["candidates"], e.Params["accepted"] = f.LastDecision.Candidates, f.LastDecision.Accepted
+		msg := fmt.Sprintf("the last search found %d releases and accepted %d, but nothing was grabbed", f.LastDecision.Candidates, f.LastDecision.Accepted)
+		if g := f.GrabFailure; g != nil {
+			e.Params["failCode"], e.Params["detail"], e.Params["indexer"], e.Params["title"] = g.Code, g.Error, g.Indexer, g.Title
+			if g.Until != nil {
+				e.Params["until"] = g.Until.UTC()
+			}
+			if g.Error != "" {
+				msg = fmt.Sprintf("%d releases accepted, but grabbing failed: %s", f.LastDecision.Accepted, g.Error)
+			}
+		}
+		return set(ExplainGrabFailed, "danger", msg)
 	case st.HasFile:
 		return set(ExplainUpgradeWanted, "info", "in the library below the quality profile's cutoff; Locarr keeps looking for an upgrade")
 	default:
@@ -329,9 +356,12 @@ func (s *Store) FactsCounted(ctx context.Context, refs []string, kindCategory st
 		}
 	}
 	_ = rows.Close()
-	var data string
-	err = s.DB.R.QueryRowContext(ctx, `SELECT data FROM timeline_events WHERE item_ref IN (`+marks+`) AND type = ? ORDER BY at DESC, id DESC LIMIT 1`, // #nosec G202 -- placeholders only
-		append(args, TypeDecision)...).Scan(&data)
+	var (
+		data       string
+		decisionAt int64
+	)
+	err = s.DB.R.QueryRowContext(ctx, `SELECT data, at FROM timeline_events WHERE item_ref IN (`+marks+`) AND type = ? ORDER BY at DESC, id DESC LIMIT 1`, // #nosec G202 -- placeholders only
+		append(args, TypeDecision)...).Scan(&data, &decisionAt)
 	if err == nil {
 		var wrap struct {
 			Summary DecisionSummary `json:"summary"`
@@ -341,6 +371,50 @@ func (s *Store) FactsCounted(ctx context.Context, refs []string, kindCategory st
 		}
 	} else if !errors.Is(err, sql.ErrNoRows) {
 		return f, err
+	}
+	if f.LastDecision != nil && f.LastDecision.Accepted > 0 {
+		var n int
+		if err := s.DB.R.QueryRowContext(ctx, `SELECT COUNT(*) FROM downloads WHERE added_at >= ?
+			AND id IN (SELECT download_id FROM download_refs WHERE item_ref IN (`+marks+`))`, append([]any{decisionAt}, args...)...).Scan(&n); err != nil { // #nosec G202 -- placeholders only
+			return f, err
+		}
+		f.GrabbedSince = n > 0
+	}
+	if f.LastDecision != nil && f.LastDecision.Accepted > 0 && !f.GrabbedSince {
+		// The failure that matters is a real attempt; "skipped" notes and the
+		// "stopped after N" line only say what happened around it.
+		rows, err := s.DB.R.QueryContext(ctx, `SELECT data FROM timeline_events WHERE item_ref IN (`+marks+`) AND type = ? AND at >= ?
+			ORDER BY at DESC, id DESC LIMIT 20`, append(args, TypeGrabFailed, decisionAt)...) // #nosec G202 -- placeholders only
+		if err != nil {
+			return f, err
+		}
+		var skipped *GrabFailureFact
+		for rows.Next() {
+			var raw string
+			if err := rows.Scan(&raw); err != nil {
+				_ = rows.Close()
+				return f, err
+			}
+			var g struct {
+				GrabFailureFact
+				Skipped bool `json:"skipped"`
+			}
+			if json.Unmarshal([]byte(raw), &g) != nil || g.Code == "attempts_exhausted" {
+				continue
+			}
+			if g.Skipped {
+				if skipped == nil {
+					skipped = &g.GrabFailureFact
+				}
+				continue
+			}
+			f.GrabFailure = &g.GrabFailureFact
+			break
+		}
+		_ = rows.Close()
+		if f.GrabFailure == nil {
+			f.GrabFailure = skipped
+		}
 	}
 	if counts == nil {
 		c, err := s.Counts(ctx, kindCategory)
