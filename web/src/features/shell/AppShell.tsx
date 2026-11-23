@@ -10,6 +10,8 @@ import {
   Download,
   Film,
   Inbox,
+  LayoutDashboard,
+  LifeBuoy,
   LogOut,
   Menu,
   Radar,
@@ -32,6 +34,9 @@ type NavItem = { to: string; key: string; icon: ComponentType<{ className?: stri
 
 const NAV: NavItem[][] = [
   [
+    { to: "/", key: "overview", icon: LayoutDashboard, admin: true },
+  ],
+  [
     { to: "/discover", key: "discover", icon: Compass },
     { to: "/requests", key: "requests", icon: Inbox },
     { to: "/issues", key: "issues", icon: AlertTriangle },
@@ -43,6 +48,7 @@ const NAV: NavItem[][] = [
   ],
   [
     { to: "/activity", key: "activity", icon: Activity, library: true },
+    { to: "/activity/board", key: "board", icon: LifeBuoy, library: true },
     { to: "/calendar", key: "calendar", icon: CalendarDays, library: true },
     { to: "/wanted", key: "wanted", icon: SearchX, library: true },
   ],
@@ -92,7 +98,9 @@ function Shell({ me }: { me: User }) {
           <ul key={i} className="mb-2 border-b border-line pb-2 last:border-b-0">
             {group
               .map((item) => {
-                const active = pathname === item.to || pathname.startsWith(item.to + "/");
+                const active = item.to === "/" ? pathname === "/"
+                  : item.to === "/activity" ? pathname.startsWith("/activity") && !pathname.startsWith("/activity/board")
+                  : pathname === item.to || pathname.startsWith(item.to + "/");
                 const Icon = item.icon;
                 return (
                   <li key={item.to}>

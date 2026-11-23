@@ -100,7 +100,7 @@ export function RootFoldersPage() {
 }
 
 /** Lets an administrator click through the folders inside the allowed data roots. */
-function FolderBrowser({ start, onPick }: { start: string; onPick: (p: string) => void }) {
+export function FolderBrowser({ start, onPick }: { start: string; onPick: (p: string) => void }) {
   const { t } = useTranslation();
   const [current, setCurrent] = useState(start);
   const listing = useQuery({

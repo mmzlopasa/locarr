@@ -64,6 +64,15 @@ import { RequestSettingsPage } from "@/features/settings/RequestSettingsPage";
 import { MediaServerPage } from "@/features/settings/MediaServerPage";
 import { NotificationSettingsPage } from "@/features/settings/NotificationSettingsPage";
 import { canManageLibrary } from "@/features/users/permissions";
+import { BoardPage } from "@/features/board/BoardPage";
+import { HistoryPage } from "@/features/activity/HistoryPage";
+import { StatsPage } from "@/features/activity/StatsPage";
+import { HealthPage } from "@/features/system/HealthPage";
+import { LogsPage } from "@/features/system/LogsPage";
+import { BackupsPage } from "@/features/system/BackupsPage";
+import { MonitoringSettingsPage } from "@/features/settings/MonitoringSettingsPage";
+import { OverviewPage } from "@/features/overview/OverviewPage";
+import { WelcomePage } from "@/features/welcome/WelcomePage";
 import type { User } from "@/api/client";
 
 export interface RouterContext {
@@ -107,12 +116,15 @@ const appRoute = createRoute({
   component: AppShell,
 });
 
+/** Administrators get the overview; library managers their movies; requesters Discover. */
 const indexRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "/",
   beforeLoad: ({ context }) => {
+    if (context.me.role === "admin") return;
     throw redirect({ to: canManageLibrary(context.me) ? "/movies" : "/discover" });
   },
+  component: OverviewPage,
 });
 
 /** Library pages (titles, paths, downloads) are for people who manage the library. */
@@ -171,6 +183,9 @@ const activityIndexRoute = createRoute({
 });
 const queueRoute = createRoute({ getParentRoute: () => activityRoute, path: "/queue", component: QueuePage });
 const blocklistRoute = createRoute({ getParentRoute: () => activityRoute, path: "/blocklist", component: BlocklistPage });
+const boardRoute = createRoute({ getParentRoute: () => activityRoute, path: "/board", component: BoardPage });
+const historyRoute = createRoute({ getParentRoute: () => activityRoute, path: "/history", component: HistoryPage });
+const activityStatsRoute = createRoute({ getParentRoute: () => activityRoute, path: "/stats", component: StatsPage });
 const searchRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/search", component: SearchPage });
 
 const accountRoute = createRoute({ getParentRoute: () => appRoute, path: "/account", component: AccountPage });
@@ -205,6 +220,8 @@ const importListsRoute = createRoute({ getParentRoute: () => settingsRoute, path
 const mediaServerRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/mediaserver", component: MediaServerPage });
 const notificationSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/notifications", component: NotificationSettingsPage });
 const subtitleSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/subtitles", component: SubtitleSettingsPage });
+const monitoringSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/system", component: MonitoringSettingsPage });
+const welcomeRoute = createRoute({ getParentRoute: () => adminRoute, path: "/welcome", component: WelcomePage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
 const systemIndexRoute = createRoute({
@@ -216,6 +233,9 @@ const systemIndexRoute = createRoute({
 });
 const statusRoute = createRoute({ getParentRoute: () => systemRoute, path: "/status", component: StatusPage });
 const tasksRoute = createRoute({ getParentRoute: () => systemRoute, path: "/tasks", component: TasksPage });
+const healthRoute = createRoute({ getParentRoute: () => systemRoute, path: "/health", component: HealthPage });
+const logsRoute = createRoute({ getParentRoute: () => systemRoute, path: "/logs", component: LogsPage });
+const backupsRoute = createRoute({ getParentRoute: () => systemRoute, path: "/backups", component: () => <BackupsPage /> });
 
 export const routeTree = rootRoute.addChildren([
   setupRoute,
@@ -250,7 +270,7 @@ export const routeTree = rootRoute.addChildren([
     albumRoute,
     wantedRoute,
     calendarRoute,
-    activityRoute.addChildren([activityIndexRoute, queueRoute, blocklistRoute]),
+    activityRoute.addChildren([activityIndexRoute, queueRoute, boardRoute, historyRoute, blocklistRoute, activityStatsRoute]),
     searchRoute,
     accountRoute,
     adminRoute.addChildren([
@@ -258,8 +278,9 @@ export const routeTree = rootRoute.addChildren([
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
         rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, subtitleSettingsRoute,
-        requestSettingsRoute, mediaServerRoute, notificationSettingsRoute]),
-      systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
+        requestSettingsRoute, mediaServerRoute, notificationSettingsRoute, monitoringSettingsRoute]),
+      systemRoute.addChildren([systemIndexRoute, statusRoute, healthRoute, tasksRoute, logsRoute, backupsRoute]),
+      welcomeRoute,
     ]),
   ]),
 ]);

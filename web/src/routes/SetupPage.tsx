@@ -38,7 +38,7 @@ export function SetupPage() {
       qc.setQueryData<SystemInfo>(queryKeys.info, (old) => (old ? { ...old, setupRequired: false } : old));
       qc.setQueryData(queryKeys.me, res.user);
       setLanguage(res.user.language);
-      await navigate({ to: "/" });
+      await navigate({ to: "/welcome" });
     },
   });
 
