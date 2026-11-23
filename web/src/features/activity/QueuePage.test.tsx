@@ -56,9 +56,10 @@ describe("queue page", () => {
     const { unmount } = renderApp("/activity/queue", { me: testUser() });
     expect(await screen.findByText("Nothing is downloading right now.")).toBeInTheDocument();
     unmount();
-    renderApp("/activity/queue", {
+    // Without library permission the activity pages are not reachable at all.
+    const { router } = renderApp("/activity/queue", {
       me: testUser({ role: "requester", permissions: { ...testUser().permissions, manageLibrary: false } }),
     });
-    expect(await screen.findByTestId("activity-forbidden")).toBeInTheDocument();
+    await waitFor(() => expect(router.state.location.pathname).toBe("/discover"));
   });
 });

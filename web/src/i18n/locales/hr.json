@@ -91,7 +91,15 @@
     "already_imported": "Ovo je već datoteka tog filma.",
     "has_files": "Serija ima datoteke; najprije ih premjestite ili obrišite.",
     "no_matching_episode": "Ni jedna epizoda ne odgovara imenu datoteke.",
-    "no_matching_series": "Ni jedna serija u biblioteci ne odgovara imenu."
+    "no_matching_series": "Ni jedna serija u biblioteci ne odgovara imenu.",
+    "already_requested": "Netko je ovo već zatražio. Na popisu je.",
+    "already_available": "Već je u biblioteci.",
+    "quota_exceeded": "Za sada si potrošio svoje zahtjeve. Pokušaj kasnije ili pitaj administratora.",
+    "not_pending": "Mijenjati se mogu samo zahtjevi koji još čekaju.",
+    "invite_invalid": "Ova pozivnica više ne vrijedi (istekla je, potrošena je ili opozvana).",
+    "defaults_missing": "Administrator prvo mora odabrati kamo idu zahtjevi (Postavke → Zahtjevi).",
+    "not_available": "Problem se može prijaviti samo za naslove koji su u biblioteci.",
+    "nothing_to_request": "Sve što si odabrao već je tu ili je već zatraženo."
   },
   "errorPage": {
     "title": "Ova stranica se ne može prikazati",
@@ -134,7 +142,9 @@
     "downloaders": "Klijenti za preuzimanje",
     "settings": "Postavke",
     "system": "Sustav",
-    "search": "Pretraga"
+    "search": "Pretraga",
+    "discover": "Otkrivanje",
+    "issues": "Problemi"
   },
   "roles": {
     "admin": "Administrator",
@@ -269,8 +279,8 @@
       "hint": "Traženje izvođača i albuma."
     },
     "autoApprove": {
-      "label": "Automatsko odobravanje",
-      "hint": "Zahtjevi prolaze bez administratora."
+      "label": "Automatski odobri sve",
+      "hint": "Svi zahtjevi prolaze bez administratora."
     },
     "request4k": {
       "label": "Zahtjevi za 4K",
@@ -283,6 +293,22 @@
     "manageRequests": {
       "label": "Upravljanje zahtjevima",
       "hint": "Odobravanje i odbijanje zahtjeva drugih korisnika."
+    },
+    "autoApproveMovies": {
+      "label": "Automatski odobri filmove",
+      "hint": "Zahtjevi za filmove prolaze odmah."
+    },
+    "autoApproveSeries": {
+      "label": "Automatski odobri serije",
+      "hint": "Zahtjevi za serije prolaze odmah."
+    },
+    "autoApproveMusic": {
+      "label": "Automatski odobri glazbu",
+      "hint": "Zahtjevi za albume i izvođače prolaze odmah."
+    },
+    "autoApprove4k": {
+      "label": "Automatski odobri 4K",
+      "hint": "Zahtjevi za 4K prolaze odmah."
     }
   },
   "settings": {
@@ -298,7 +324,8 @@
       "mediaManagement": "Upravljanje medijima",
       "metadata": "Metapodaci",
       "importLists": "Popisi za uvoz",
-      "metadataProfiles": "Profili metapodataka"
+      "metadataProfiles": "Profili metapodataka",
+      "requests": "Zahtjevi"
     },
     "general": {
       "title": "Općenito",
@@ -2061,5 +2088,320 @@
       "anime": "Anime",
       "specials": "Specijali"
     }
+  },
+  "discover": {
+    "title": "Otkrivanje",
+    "searchLabel": "Pretraga",
+    "searchPlaceholder": "Traži filmove, serije, osobe i glazbu",
+    "searchTypes": "Što tražiš",
+    "searchHint": "Upiši naslov, ime ili izvođača.",
+    "noResults": "Ništa nije pronađeno za „{{q}}”.",
+    "noMetadata": "Za otkrivanje treba TMDb API ključ. Administrator ga može dodati u Postavke → Metapodaci.",
+    "emptyRow": "Ovdje još nema ničega.",
+    "seeAll": "Prikaži sve",
+    "back": "Natrag na otkrivanje",
+    "open": "Otvori",
+    "previous": "Prethodna",
+    "next": "Sljedeća",
+    "pageOf": "Stranica {{page}} od {{total}}",
+    "scrollBack": "Pomakni natrag",
+    "scrollForward": "Pomakni naprijed",
+    "movieGenres": "Žanrovi filmova",
+    "seriesGenres": "Žanrovi serija",
+    "studios": "Studiji",
+    "networks": "Mreže",
+    "searchTab": {
+      "all": "Sve",
+      "movie": "Filmovi",
+      "series": "Serije",
+      "person": "Osobe",
+      "music": "Glazba"
+    },
+    "types": {
+      "movie": "Film",
+      "series": "Serija",
+      "person": "Osoba",
+      "artist": "Izvođač",
+      "album": "Album"
+    },
+    "status": {
+      "none": "Nije zatraženo",
+      "pending": "Zatraženo",
+      "processing": "Na putu",
+      "partial": "Djelomično tu",
+      "available": "Dostupno",
+      "in_library": "U biblioteci"
+    },
+    "rows": {
+      "trending": "U trendu",
+      "trending_movies": "Filmovi u trendu",
+      "trending_series": "Serije u trendu",
+      "popular_movies": "Popularni filmovi",
+      "popular_series": "Popularne serije",
+      "upcoming_movies": "Uskoro",
+      "now_playing": "Sada u kinima",
+      "top_rated_movies": "Najbolje ocijenjeni filmovi",
+      "top_rated_series": "Najbolje ocijenjene serije",
+      "airing_series": "Trenutno se emitira",
+      "genre_movies": "Filmovi",
+      "genre_series": "Serije",
+      "studio": "Studio",
+      "network": "Mreža",
+      "recently_added": "Nedavno dodano",
+      "my_requests": "Tvoji zahtjevi"
+    }
+  },
+  "title": {
+    "minutes": "{{n}} min",
+    "request": "Zatraži",
+    "requestMore": "Zatraži još",
+    "requestArtist": "Zatraži sve albume",
+    "trailer": "Najava",
+    "reportIssue": "Prijavi problem",
+    "requests": "Zahtjevi",
+    "requestedBy": "Zatražio {{user}}, {{when}}",
+    "seasons": "Sezone",
+    "episodesHere": "{{n}} tu",
+    "albums": "Albumi",
+    "noAlbums": "Nema pronađenih albuma.",
+    "cast": "Glumci",
+    "knownFor": "Poznat po"
+  },
+  "request": {
+    "title": "Zatraži {{title}}",
+    "send": "Pošalji zahtjev",
+    "sent": "Zatraženo. Dobit ćeš obavijest kad bude odobreno i kad stigne.",
+    "autoApproved": "Automatski odobreno. Dobit ćeš obavijest kad stigne.",
+    "fourK": "4K",
+    "fourKHint": "Traži 4K inačicu (zaseban zahtjev).",
+    "seasons": "Sezone",
+    "allSeasons": "Sve sezone",
+    "allSeasonsHint": "Sve sezone koje sada postoje.",
+    "futureSeasons": "I buduće sezone",
+    "futureSeasonsHint": "Nove sezone stižu kad se počnu emitirati.",
+    "season": "{{n}}. sezona",
+    "specials": "Specijali",
+    "episodes": "{{count}} ep.",
+    "options": "Postavke biblioteke",
+    "profile": "Profil kvalitete",
+    "rootFolder": "Mapa za medije",
+    "useDefault": "Zadano",
+    "tags": "Oznake",
+    "tagsHint": "Odvojene zarezom.",
+    "comment": "Komentar (nije obavezno)",
+    "commentHint": "Što administrator treba znati."
+  },
+  "requests": {
+    "title": "Zahtjevi",
+    "subtitleMine": "Što si zatražio i dokle je stiglo.",
+    "subtitleAll": "Zahtjevi svih korisnika: odobri, odbij i prati ih.",
+    "discoverMore": "Otkrij još",
+    "views": "Koji zahtjevi",
+    "viewAll": "Svi zahtjevi",
+    "viewMine": "Moji zahtjevi",
+    "filterStatus": "Stanje",
+    "filterKind": "Vrsta",
+    "allKinds": "Sve vrste",
+    "music": "Glazba",
+    "none": "Ovdje nema zahtjeva.",
+    "selectPending": "Označi sve koji čekaju",
+    "selectNone": "Poništi odabir",
+    "select": "Označi {{title}}",
+    "approveSelected": "Odobri označene ({{n}})",
+    "approve": "Odobri",
+    "editApprove": "Uredi…",
+    "editTitle": "Odobri {{title}}",
+    "decline": "Odbij",
+    "declineReason": "Razlog (vidi ga podnositelj)",
+    "declineConfirm": "Odbij zahtjev",
+    "declinedBecause": "Odbijeno: {{reason}}",
+    "retry": "Traži ponovno",
+    "cancel": "Povuci",
+    "byWhen": "{{user}}, {{when}}",
+    "approvedBy": "odobrio {{user}}",
+    "declinedBy": "odbio {{user}}",
+    "auto": "automatski odobreno",
+    "progress": "Napredak preuzimanja",
+    "range": "{{from}}–{{to}} od {{total}}",
+    "detailSubtitle": "Zahtjev br. {{id}} od {{when}}",
+    "openTitle": "Otvori naslov",
+    "backToList": "Svi zahtjevi",
+    "seasonsField": "Sezone",
+    "seasonsHint": "Brojevi sezona odvojeni zarezom.",
+    "allSeasons": "sve sezone",
+    "allAndFuture": "sve sezone i buduće",
+    "futureToo": "i buduće sezone",
+    "seasonList": "sezone {{list}}",
+    "kinds": {
+      "movie": "Film",
+      "series": "Serija",
+      "album": "Album",
+      "artist": "Izvođač"
+    },
+    "status": {
+      "pending": "Čeka odobrenje",
+      "approved": "Odobreno",
+      "declined": "Odbijeno",
+      "cancelled": "Povučeno",
+      "processing": "Na putu",
+      "partial": "Djelomično dostupno",
+      "available": "Dostupno",
+      "failed": "Zapelo"
+    },
+    "filters": {
+      "all": "Svi",
+      "active": "Otvoreni",
+      "pending": "Čeka odobrenje",
+      "approved": "Odobreno",
+      "declined": "Odbijeno",
+      "cancelled": "Povučeno",
+      "processing": "Na putu",
+      "partial": "Djelomično dostupno",
+      "available": "Dostupno",
+      "failed": "Zapelo"
+    },
+    "quota": {
+      "unlimited": "Bez ograničenja zahtjeva.",
+      "remaining": "Preostalo zahtjeva: {{remaining}} od {{limit}} (u {{days}} dana).",
+      "nextSlot": "Sljedeći {{when}}."
+    }
+  },
+  "comments": {
+    "title": "Komentari",
+    "none": "Još nema komentara.",
+    "add": "Dodaj komentar",
+    "send": "Pošalji"
+  },
+  "issues": {
+    "title": "Problemi",
+    "subtitleMine": "Problemi koje si prijavio.",
+    "subtitleAll": "Problemi koje su korisnici prijavili za naslove u biblioteci.",
+    "filter": "Koji problemi",
+    "filters": {
+      "open": "Otvoreni",
+      "resolved": "Riješeni",
+      "all": "Svi"
+    },
+    "status": {
+      "open": "Otvoren",
+      "resolved": "Riješen"
+    },
+    "none": "Ovdje nema problema.",
+    "reportTitle": "Prijavi problem s naslovom {{title}}",
+    "type": "Što ne valja",
+    "types": {
+      "video": "Slika",
+      "audio": "Zvuk",
+      "subtitles": "Titlovi",
+      "other": "Nešto drugo"
+    },
+    "season": "Sezona",
+    "episode": "Epizoda",
+    "optional": "Nije obavezno",
+    "message": "Opiši problem",
+    "messageHint": "Na primjer: zvuk kasni od 20. minute.",
+    "send": "Prijavi",
+    "sent": "Hvala. Administrator će pogledati; dobit ćeš obavijest.",
+    "seasonEpisode": "S{{s}}E{{e}}",
+    "back": "Svi problemi",
+    "resolvedBy": "Riješio {{user}}, {{when}}",
+    "replacementSearched": "potražena je zamjena",
+    "searchReplacement": "Potraži zamjenu",
+    "searchReplacementHint": "Trenutna datoteka ide u koš za smeće, njezino izdanje se blokira i Locarr traži ponovno.",
+    "resolveNote": "Poruka podnositelju (nije obavezno)",
+    "resolve": "Riješi",
+    "reopen": "Ponovno otvori"
+  },
+  "notifications": {
+    "title": "Obavijesti",
+    "label": "Obavijesti",
+    "labelUnread": "Obavijesti ({{n}} nepročitanih)",
+    "markAll": "Označi sve pročitanim",
+    "none": "Ništa novo.",
+    "detail": "({{message}})",
+    "types": {
+      "request_created": "{{actor}} je zatražio {{title}}.",
+      "request_approved": "Tvoj zahtjev za {{title}} je odobren.",
+      "request_declined": "Tvoj zahtjev za {{title}} je odbijen.",
+      "request_available": "{{title}} je dostupan.",
+      "request_partial": "Dio naslova {{title}} je dostupan.",
+      "request_failed": "{{title}} je zapeo na putu.",
+      "request_comment": "{{actor}} je komentirao {{title}}: {{message}}",
+      "issue_created": "{{actor}} je prijavio problem s naslovom {{title}}.",
+      "issue_comment": "{{actor}} je komentirao problem s naslovom {{title}}: {{message}}",
+      "issue_resolved": "Problem s naslovom {{title}} je riješen.",
+      "issue_reopened": "Problem s naslovom {{title}} je ponovno otvoren."
+    }
+  },
+  "join": {
+    "title": "Pridruži se",
+    "codeHint": "Upiši kod pozivnice koji si dobio ili otvori poveznicu pozivnice.",
+    "code": "Kod pozivnice",
+    "continue": "Nastavi",
+    "welcome": "Pridruži se: {{name}}",
+    "as": "Dobit ćeš račun s ulogom: {{role}}.",
+    "username": "Korisničko ime",
+    "password": "Lozinka",
+    "repeat": "Ponovi lozinku",
+    "mismatch": "Lozinke se ne podudaraju.",
+    "create": "Napravi račun"
+  },
+  "requestSettings": {
+    "title": "Zahtjevi",
+    "subtitle": "Kamo idu odobreni zahtjevi i koliko ih svaki korisnik smije poslati.",
+    "kinds": {
+      "movie": "Filmovi",
+      "series": "Serije",
+      "music": "Glazba"
+    },
+    "kindHints": {
+      "movie": "Zatraženi filmovi dodaju se s ovim postavkama i odmah se traže.",
+      "series": "Zatražene sezone prate se s ovim postavkama i odmah se traže.",
+      "music": "Zatraženi albumi i izvođači dodaju se s ovim postavkama."
+    },
+    "profile": "Profil kvalitete",
+    "rootFolder": "Mapa za medije",
+    "profile4k": "Profil kvalitete za 4K",
+    "rootFolder4k": "Mapa za 4K",
+    "no4k": "Bez 4K zahtjeva",
+    "sameFolder": "Ista kao gore",
+    "metadataProfile": "Profil metapodataka",
+    "notChosen": "Nije odabrano",
+    "quotas": "Zadane kvote",
+    "quotasHint": "Po korisniku i vrsti; 0 znači bez ograničenja. Korisnici mogu imati vlastita pravila (Postavke → Korisnici).",
+    "limit": "Zahtjeva",
+    "days": "U danima",
+    "rule": "{{limit}} u {{days}} dana"
+  },
+  "invites": {
+    "title": "Pozivnice",
+    "subtitle": "Neka obitelj i prijatelji sami naprave svoje račune.",
+    "new": "Nova pozivnica",
+    "label": "Naziv",
+    "labelHint": "npr. Obitelj",
+    "maxUses": "Korištenja",
+    "maxUsesHint": "0 = bez ograničenja",
+    "days": "Vrijedi dana",
+    "customQuotas": "Vlastite kvote zahtjeva",
+    "customQuotasHint": "Inače vrijede zadane.",
+    "create": "Napravi pozivnicu",
+    "created": "Pozivnica je napravljena. Pošalji ovu poveznicu:",
+    "onlyOnce": "Poveznica se prikazuje samo sada.",
+    "none": "Još nema pozivnica.",
+    "unnamed": "Pozivnica",
+    "active": "Aktivna",
+    "expired": "Istekla",
+    "revoked": "Opozvana",
+    "uses": "Iskorišteno {{uses}} od {{max}}",
+    "expires": "vrijedi do {{when}}",
+    "by": "napravio {{user}}",
+    "revoke": "Opozovi",
+    "revokeConfirm": "Opozovi pozivnicu",
+    "quotasTitle": "Kvote zahtjeva",
+    "used": "Iskorišteno {{used}} od {{limit}} (u {{days}} dana)",
+    "usedUnlimited": "Iskorišteno {{used}}, bez ograničenja",
+    "ownRule": "Vlastito pravilo",
+    "rule": "Pravilo",
+    "saveQuotas": "Spremi kvote"
   }
 }

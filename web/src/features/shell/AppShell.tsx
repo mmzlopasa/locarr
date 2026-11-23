@@ -3,7 +3,9 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { useTranslation } from "react-i18next";
 import {
   Activity,
+  AlertTriangle,
   CalendarDays,
+  Compass,
   Disc3,
   Download,
   Film,
@@ -23,23 +25,29 @@ import { LanguagePicker } from "@/components/LanguagePicker";
 import { Logo } from "@/components/Logo";
 import type { User } from "@/api/client";
 import { isAdmin, useChangeLanguage, useMe, useSignOut, useSystemInfo } from "@/features/auth/hooks";
+import { NotificationBell } from "@/features/notifications/NotificationBell";
+import { canManageLibrary } from "@/features/users/permissions";
 
-type NavItem = { to: string; key: string; icon: ComponentType<{ className?: string }>; admin?: boolean };
+type NavItem = { to: string; key: string; icon: ComponentType<{ className?: string }>; admin?: boolean; library?: boolean };
 
 const NAV: NavItem[][] = [
   [
-    { to: "/movies", key: "movies", icon: Film },
-    { to: "/series", key: "series", icon: Tv },
-    { to: "/music", key: "music", icon: Disc3 },
+    { to: "/discover", key: "discover", icon: Compass },
     { to: "/requests", key: "requests", icon: Inbox },
+    { to: "/issues", key: "issues", icon: AlertTriangle },
   ],
   [
-    { to: "/activity", key: "activity", icon: Activity },
-    { to: "/calendar", key: "calendar", icon: CalendarDays },
-    { to: "/wanted", key: "wanted", icon: SearchX },
+    { to: "/movies", key: "movies", icon: Film, library: true },
+    { to: "/series", key: "series", icon: Tv, library: true },
+    { to: "/music", key: "music", icon: Disc3, library: true },
   ],
   [
-    { to: "/search", key: "search", icon: Search },
+    { to: "/activity", key: "activity", icon: Activity, library: true },
+    { to: "/calendar", key: "calendar", icon: CalendarDays, library: true },
+    { to: "/wanted", key: "wanted", icon: SearchX, library: true },
+  ],
+  [
+    { to: "/search", key: "search", icon: Search, library: true },
     { to: "/indexers", key: "indexers", icon: Radar, admin: true },
     { to: "/downloaders", key: "downloaders", icon: Download, admin: true },
     { to: "/settings", key: "settings", icon: Settings, admin: true },
@@ -79,10 +87,10 @@ function Shell({ me }: { me: User }) {
         </button>
       </div>
       <div className="flex-1 overflow-y-auto px-2 py-2">
-        {NAV.map((group, i) => (
+        {NAV.map((group) => group.filter((item) => (!item.admin || isAdmin(me)) && (!item.library || canManageLibrary(me))))
+          .filter((group) => group.length > 0).map((group, i) => (
           <ul key={i} className="mb-2 border-b border-line pb-2 last:border-b-0">
             {group
-              .filter((item) => !item.admin || isAdmin(me))
               .map((item) => {
                 const active = pathname === item.to || pathname.startsWith(item.to + "/");
                 const Icon = item.icon;
@@ -119,7 +127,10 @@ function Shell({ me }: { me: User }) {
           </span>
         </Link>
         <div className="mt-1 flex items-center justify-between gap-2 px-1">
-          <LanguagePicker onChange={changeLanguage} />
+          <span className="flex items-center gap-1">
+            <span className="hidden md:inline-flex"><NotificationBell align="left" /></span>
+            <LanguagePicker onChange={changeLanguage} />
+          </span>
           <button
             type="button"
             onClick={doSignOut}
@@ -147,7 +158,8 @@ function Shell({ me }: { me: User }) {
           <button type="button" onClick={() => setOpen(true)} aria-label={t("nav.open")} className="text-muted hover:text-fg">
             <Menu className="size-5" />
           </button>
-          <span className="truncate text-[14px] font-semibold">{info?.instanceName ?? "Locarr"}</span>
+          <span className="flex-1 truncate text-[14px] font-semibold">{info?.instanceName ?? "Locarr"}</span>
+          <NotificationBell align="right" testId="notif-bell-mobile" />
         </header>
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5 md:px-6">
           <Outlet />
