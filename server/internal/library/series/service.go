@@ -51,6 +51,8 @@ type Service struct {
 	// search. Both are set by the app (nil = nothing happens).
 	SearchRequested func(ctx context.Context, ref library.Ref, reason string)
 	MakeDue         func(ctx context.Context, ref library.Ref)
+	// Imported is told about every imported episode file (subtitles, P7).
+	Imported func(ctx context.Context, refs []library.Ref)
 }
 
 func (s *Service) now() time.Time {
@@ -686,6 +688,8 @@ func (s *Service) Delete(ctx context.Context, id int64, o DeleteOptions) error {
 				return fmt.Errorf("move %s to the recycle bin: %w", v.Path, err)
 			}
 			msg = "removed from the library; folder moved to the recycle bin (" + e.RecycledPath + ")"
+			defer notifyChange(ctx, s.Notifier, mediaserver.Change{ItemRef: v.Ref().String(), Kind: "series", Action: "deleted", Title: v.Title,
+				Year: v.Year, Paths: []string{v.Path}})
 		} else {
 			msg = "removed from the library; the folder did not exist"
 		}

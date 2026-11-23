@@ -26,7 +26,7 @@ func (s *Service) QueueIndex(ctx context.Context, delay time.Duration) {
 	}
 }
 
-// Refresh brings the index of titles Streamero has up to date (D-064).
+// Refresh brings the index of titles Streamero has up to date (D-069).
 // Streamero's listing has no provider ids, so each new item's details are
 // read once; known items are only re-read while they still have no ids (its
 // metadata may arrive later). Items no longer listed are removed.

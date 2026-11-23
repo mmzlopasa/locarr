@@ -25,6 +25,9 @@
 # API key fake0000000000000000000000tmdb01).
 # Fake MusicBrainz: http://fake-indexer:9117/musicbrainz (LOCARR_MUSICBRAINZ_URL), covers at
 # http://fake-indexer:9117/musicbrainz/coverart (LOCARR_COVERART_URL); it refuses more than one request per second.
+# Fake subtitle providers: http://fake-indexer:9117/opensubtitles/api/v1 (LOCARR_OPENSUBTITLES_URL, API key
+# fakeoskey, user locarr / fakepass), http://fake-indexer:9117/subdl/api/v1 (LOCARR_SUBDL_URL, key fakesubdlkey),
+# http://fake-indexer:9117/jimaku/api (LOCARR_JIMAKU_URL, key fakejimakukey).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 NETWORK="${LOCARR_FAKES_NETWORK:-locarr-net}"

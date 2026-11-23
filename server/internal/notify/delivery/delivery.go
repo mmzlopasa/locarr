@@ -1,6 +1,6 @@
 // Package delivery keeps the outward notification channels (shared ones
 // chosen by administrators and users' own ones), picks the channels for each
-// event and sends through them with retries (D-065). It is the notify.Sink
+// event and sends through them with retries (D-070). It is the notify.Sink
 // that the hub calls; sending happens in jobs, never on the caller's path.
 package delivery
 
@@ -29,6 +29,8 @@ var (
 	BaseURLKey   = settings.Key[string]{Name: "notifications.baseUrl", Default: ""}
 	SMTPKey      = settings.Key[channels.SMTP]{Name: "notifications.smtp", Default: channels.SMTP{Security: "starttls", Port: 587}}
 	SMTPPassword = settings.SecretKey{Name: "notifications.smtpPassword"}
+	// SubtitleMissingDays: when subtitles.missing is sent for a file.
+	SubtitleMissingDays = settings.Key[int]{Name: "notifications.subtitleMissingDays", Default: 7}
 )
 
 // TaskDeliver sends one event through one channel.

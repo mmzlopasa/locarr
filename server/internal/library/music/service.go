@@ -843,6 +843,14 @@ func (s *Service) DeleteArtist(ctx context.Context, id int64, deleteFiles bool) 
 				return fmt.Errorf("move %s to the recycle bin: %w", a.Path, err)
 			}
 			msg = "removed from the library; folder moved to the recycle bin (" + e.RecycledPath + ")"
+			if s.Notifier != nil && s.Notifier.Name() != "" {
+				defer func() {
+					if err := s.Notifier.Notify(ctx, mediaserver.Change{ItemRef: a.Ref().String(), Kind: "artist", Action: "deleted", Title: a.Name,
+						Paths: []string{a.Path}}); err != nil {
+						s.log().Warn("notify media server", "artist", a.ID, "err", err)
+					}
+				}()
+			}
 		} else {
 			msg = "removed from the library; the folder did not exist"
 		}

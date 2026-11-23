@@ -46,6 +46,8 @@ type Service struct {
 	// SearchRequested asks the wanted orchestration to search a movie (set by
 	// the app; nil = nothing happens).
 	SearchRequested func(ctx context.Context, ref library.Ref, reason string)
+	// Imported is told about every imported movie file (subtitles, P7).
+	Imported func(ctx context.Context, refs []library.Ref)
 }
 
 func (s *Service) now() time.Time {
@@ -413,6 +415,7 @@ func (s *Service) Delete(ctx context.Context, id int64, o DeleteOptions) error {
 				return fmt.Errorf("move %s to the recycle bin: %w", m.Path, err)
 			}
 			msg = "removed from the library; folder moved to the recycle bin (" + e.RecycledPath + ")"
+			defer s.notify(ctx, &m, "deleted", m.Path)
 		} else {
 			msg = "removed from the library; the folder did not exist"
 		}

@@ -28,6 +28,7 @@ export const EVENT_GROUPS: { key: string; personal: boolean; events: Notificatio
   { key: "issues", personal: true, events: ["issue.created", "issue.comment", "issue.resolved", "issue.reopened"] },
   { key: "library", personal: false, events: ["library.grabbed", "library.imported", "library.upgraded", "library.download_failed",
     "library.import_failed"] },
+  { key: "subtitles", personal: false, events: ["subtitles.downloaded", "subtitles.missing"] },
   { key: "system", personal: false, events: ["health.warning"] },
 ];
 

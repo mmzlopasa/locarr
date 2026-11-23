@@ -3,15 +3,18 @@ package app
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/api"
 	"github.com/mmzlopasa/locarr/server/internal/config"
+	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
@@ -21,6 +24,8 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/notify/delivery"
+	"github.com/mmzlopasa/locarr/server/internal/settings"
+	"github.com/mmzlopasa/locarr/server/internal/subtitles"
 )
 
 // TaskHealthNotify looks for indexers and download clients that stopped working.
@@ -244,4 +249,53 @@ func (w *healthWatch) check(ctx context.Context, d *Deps) error {
 		w.report(ctx, "client:"+strconv.FormatInt(c.ID, 10), c.Name, sn.OK, sn.Error)
 	}
 	return nil
+}
+
+// wireSubtitleEvents sends subtitle downloads to the channels, and a file's
+// still-missing subtitles once, when it arrived more than
+// notifications.subtitleMissingDays ago.
+func wireSubtitleEvents(d *Deps, log *slog.Logger) {
+	d.Subtitles.Notify = func(ctx context.Context, ref, typ, msg string) {
+		r, err := library.ParseRef(ref)
+		if err != nil || d.Hub == nil {
+			return
+		}
+		switch typ {
+		case subtitles.TypeDownloaded, subtitles.TypeUpgraded:
+			info := describeRef(ctx, d, r)
+			d.Hub.Publish(ctx, notify.Event{Type: notify.SubtitleDownloaded, Title: info.title, Message: msg, Poster: info.poster,
+				MediaKind: info.kind, ItemRef: info.ref})
+		case subtitles.TypeNotFound:
+			days, err := settings.Get(ctx, d.Settings, delivery.SubtitleMissingDays)
+			if err != nil || days <= 0 {
+				return
+			}
+			var (
+				fileID int64
+				added  int64
+				miss   string
+			)
+			if err := d.DB.R.QueryRowContext(ctx, `SELECT media_file_id, file_added_at, missing FROM subtitle_state WHERE item_ref = ?`, ref).
+				Scan(&fileID, &added, &miss); err != nil {
+				return
+			}
+			if time.Since(db.Time(added)) < time.Duration(days)*24*time.Hour {
+				return
+			}
+			res, err := d.DB.W.ExecContext(ctx, `INSERT INTO subtitle_missing_notified (media_file_id, notified_at) VALUES (?, ?)
+				ON CONFLICT (media_file_id) DO NOTHING`, fileID, db.Millis(time.Now()))
+			if err != nil {
+				log.Warn("remember subtitle notification", "item", ref, "err", err)
+				return
+			}
+			if n, _ := res.RowsAffected(); n == 0 {
+				return
+			}
+			var keys []string
+			_ = json.Unmarshal([]byte(miss), &keys)
+			info := describeRef(ctx, d, r)
+			d.Hub.Publish(ctx, notify.Event{Type: notify.SubtitleMissing, Title: info.title, Message: strings.Join(keys, ", "),
+				Poster: info.poster, MediaKind: info.kind, ItemRef: info.ref, Params: map[string]any{"days": days, "languages": keys}})
+		}
+	}
 }

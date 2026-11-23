@@ -292,6 +292,9 @@ func (s *Service) ImportFile(ctx context.Context, req ImportRequest) (ImportResu
 		s.record(ctx, &m, timeline.TypeRecycled, "moved the replaced file to the recycle bin: "+r, map[string]any{"path": r}, req.DownloadID)
 	}
 	s.notify(ctx, &m, map[bool]string{true: "upgraded", false: "imported"}[old != nil], main.Path)
+	if s.Imported != nil {
+		s.Imported(ctx, []library.Ref{m.Ref()})
+	}
 	return res, nil
 }
 

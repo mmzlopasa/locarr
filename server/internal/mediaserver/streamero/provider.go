@@ -13,7 +13,7 @@ import (
 // ProviderID is the sign-in provider id.
 const ProviderID = "streamero"
 
-// Provider is "Sign in with Streamero" (D-063). Credentials are checked with
+// Provider is "Sign in with Streamero" (D-068). Credentials are checked with
 // Streamero's own sign-in; the session Streamero creates for the check is
 // ended at once, and neither the password nor the token is kept.
 type Provider struct{ S *Service }

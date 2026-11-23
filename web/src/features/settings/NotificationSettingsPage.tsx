@@ -5,7 +5,7 @@ import { api, queryKeys, unwrap, type NotificationSettingsInput, type SmtpSecuri
 import { Alert, Button, ErrorAlert, PageHeader, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 import { ChannelList, SecretField } from "@/features/notifications/channels";
 
-type Form = { baseUrl: string; host: string; port: number; security: SmtpSecurity; username: string; from: string; password?: string };
+type Form = { baseUrl: string; subtitleMissingDays: number; host: string; port: number; security: SmtpSecurity; username: string; from: string; password?: string };
 
 export function NotificationSettingsPage() {
   const { t } = useTranslation();
@@ -28,13 +28,14 @@ function DeliverySettings() {
   useEffect(() => {
     if (q.data) {
       const s = q.data.smtp;
-      setF({ baseUrl: q.data.baseUrl, host: s.host, port: s.port, security: s.security, username: s.username, from: s.from });
+      setF({ baseUrl: q.data.baseUrl, subtitleMissingDays: q.data.subtitleMissingDays, host: s.host, port: s.port, security: s.security, username: s.username, from: s.from });
     }
   }, [q.data]);
   const save = useMutation({
     mutationFn: async (form: Form) => {
       const body: NotificationSettingsInput = {
         baseUrl: form.baseUrl.trim(),
+        subtitleMissingDays: Math.min(90, Math.max(1, form.subtitleMissingDays || 7)),
         smtp: { host: form.host.trim(), port: form.port, security: form.security, username: form.username, from: form.from.trim(),
           ...(form.password !== undefined ? { password: form.password } : {}) },
       };
@@ -52,6 +53,9 @@ function DeliverySettings() {
       <form className="flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); save.mutate(f); }}>
         <TextInput label={t("notificationSettings.baseUrl")} hint={t("notificationSettings.baseUrlHint")} type="url"
           placeholder="https://locarr.example.com" value={f.baseUrl} onChange={(e) => set({ baseUrl: e.target.value })} data-testid="base-url" />
+        <TextInput label={t("notificationSettings.subtitleMissingDays")} hint={t("notificationSettings.subtitleMissingDaysHint")} type="number"
+          min={1} max={90} value={f.subtitleMissingDays || ""} onChange={(e) => set({ subtitleMissingDays: Number(e.target.value) || 0 })}
+          data-testid="subtitle-missing-days" />
         <h3 className="text-[13px] font-semibold text-fg">{t("notificationSettings.mailServer")}</h3>
         <div className="grid gap-3 sm:grid-cols-3">
           <TextInput label={t("notificationSettings.host")} value={f.host} onChange={(e) => set({ host: e.target.value })} data-testid="smtp-host" />

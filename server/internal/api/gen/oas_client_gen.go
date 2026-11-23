@@ -84,6 +84,12 @@ type Invoker interface {
 	//
 	// POST /requests/approve
 	ApproveRequests(ctx context.Context, request *RequestIds) (*BulkResult, error)
+	// AssignSubtitleProfile invokes assignSubtitleProfile operation.
+	//
+	// ProfileId 0 = the kind's default, -1 = no subtitles, else a profile. Episodes follow their series.
+	//
+	// POST /subtitles/profiles/assign
+	AssignSubtitleProfile(ctx context.Context, request *SubtitleProfileAssign) (*SubtitleCount, error)
 	// BrowseFilesystem invokes browseFilesystem operation.
 	//
 	// Without `path`, lists the data roots themselves.
@@ -114,6 +120,12 @@ type Invoker interface {
 	//
 	// POST /auth/invite
 	CheckInvite(ctx context.Context, request *InviteCodeRequest) (*InviteCheck, error)
+	// ConvertSubtitleFps invokes convertSubtitleFps operation.
+	//
+	// Convert a subtitle made for one frame rate to another (managers).
+	//
+	// POST /subtitles/{id}/fps
+	ConvertSubtitleFps(ctx context.Context, request *ConvertSubtitleFpsReq, params ConvertSubtitleFpsParams) (*Subtitle, error)
 	// CreateApiKey invokes createApiKey operation.
 	//
 	// The key is returned once and cannot be shown again. Needs a session (not an API key).
@@ -226,6 +238,12 @@ type Invoker interface {
 	//
 	// POST /rootfolders
 	CreateRootFolder(ctx context.Context, request *CreateRootFolderRequest) (*RootFolder, error)
+	// CreateSubtitleProfile invokes createSubtitleProfile operation.
+	//
+	// Add a subtitle language profile (administrators).
+	//
+	// POST /subtitles/profiles
+	CreateSubtitleProfile(ctx context.Context, request *SubtitleProfileInput) (*SubtitleProfile, error)
 	// CreateUser invokes createUser operation.
 	//
 	// Create a user (administrators).
@@ -358,6 +376,25 @@ type Invoker interface {
 	//
 	// DELETE /series/{id}
 	DeleteSeries(ctx context.Context, params DeleteSeriesParams) error
+	// DeleteSubtitle invokes deleteSubtitle operation.
+	//
+	// Move a subtitle file to the recycle bin (managers).
+	//
+	// DELETE /subtitles/{id}
+	DeleteSubtitle(ctx context.Context, params DeleteSubtitleParams) error
+	// DeleteSubtitleBlacklistEntry invokes deleteSubtitleBlacklistEntry operation.
+	//
+	// Allow a rejected subtitle again (managers).
+	//
+	// DELETE /subtitles/blacklist/{id}
+	DeleteSubtitleBlacklistEntry(ctx context.Context, params DeleteSubtitleBlacklistEntryParams) error
+	// DeleteSubtitleProfile invokes deleteSubtitleProfile operation.
+	//
+	// A profile that is a default cannot be deleted (`subtitle_profile_in_use`); items that used it fall
+	// back to the default.
+	//
+	// DELETE /subtitles/profiles/{id}
+	DeleteSubtitleProfile(ctx context.Context, params DeleteSubtitleProfileParams) error
 	// DeleteUser invokes deleteUser operation.
 	//
 	// Not the caller's own account and not the last enabled administrator.
@@ -376,6 +413,13 @@ type Invoker interface {
 	//
 	// GET /discover/search
 	DiscoverSearch(ctx context.Context, params DiscoverSearchParams) (*DiscoverPage, error)
+	// DownloadItemSubtitle invokes downloadItemSubtitle operation.
+	//
+	// Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
+	// `subtitle_result_expired`.
+	//
+	// POST /subtitles/items/{ref}/download
+	DownloadItemSubtitle(ctx context.Context, request *DownloadItemSubtitleReq, params DownloadItemSubtitleParams) (*Subtitle, error)
 	// DownloadRelease invokes downloadRelease operation.
 	//
 	// `token` comes from a search result's `downloadLink`. The server fetches the .torrent or .nzb with
@@ -543,6 +587,13 @@ type Invoker interface {
 	//
 	// GET /issues/{id}
 	GetIssue(ctx context.Context, params GetIssueParams) (*Issue, error)
+	// GetItemSubtitles invokes getItemSubtitles operation.
+	//
+	// Present and missing languages of its profile, subtitle files, embedded tracks, search state and the
+	// explanation.
+	//
+	// GET /subtitles/items/{ref}
+	GetItemSubtitles(ctx context.Context, params GetItemSubtitlesParams) (*SubtitleItem, error)
 	// GetMe invokes getMe operation.
 	//
 	// The signed-in user.
@@ -659,6 +710,12 @@ type Invoker interface {
 	//
 	// GET /mediaserver/streamero
 	GetStreameroSettings(ctx context.Context) (*StreameroSettings, error)
+	// GetSubtitleSettings invokes getSubtitleSettings operation.
+	//
+	// Subtitle options (administrators).
+	//
+	// GET /subtitles/settings
+	GetSubtitleSettings(ctx context.Context) (*SubtitleSettings, error)
 	// GetSystemInfo invokes getSystemInfo operation.
 	//
 	// Unauthenticated. Clients use it to check a server address and whether first-run setup is needed.
@@ -1023,6 +1080,24 @@ type Invoker interface {
 	//
 	// GET /mediaserver/streamero/users
 	ListStreameroUsers(ctx context.Context) ([]StreameroUser, error)
+	// ListSubtitleBlacklist invokes listSubtitleBlacklist operation.
+	//
+	// Subtitles rejected for an item (managers).
+	//
+	// GET /subtitles/items/{ref}/blacklist
+	ListSubtitleBlacklist(ctx context.Context, params ListSubtitleBlacklistParams) ([]SubtitleBlacklistEntry, error)
+	// ListSubtitleProfiles invokes listSubtitleProfiles operation.
+	//
+	// Subtitle language profiles (managers).
+	//
+	// GET /subtitles/profiles
+	ListSubtitleProfiles(ctx context.Context) ([]SubtitleProfile, error)
+	// ListSubtitleProviders invokes listSubtitleProviders operation.
+	//
+	// Subtitle providers with health and quota (managers).
+	//
+	// GET /subtitles/providers
+	ListSubtitleProviders(ctx context.Context) ([]SubtitleProvider, error)
 	// ListTasks invokes listTasks operation.
 	//
 	// Scheduled tasks and recent job history (administrators).
@@ -1047,6 +1122,12 @@ type Invoker interface {
 	//
 	// GET /episodes/wanted
 	ListWantedEpisodes(ctx context.Context, params ListWantedEpisodesParams) (*WantedEpisodeList, error)
+	// ListWantedSubtitles invokes listWantedSubtitles operation.
+	//
+	// Movies and episodes missing subtitles of their profile (managers).
+	//
+	// GET /subtitles/wanted
+	ListWantedSubtitles(ctx context.Context, params ListWantedSubtitlesParams) (*WantedSubtitles, error)
 	// Login invokes login operation.
 	//
 	// When the account has two-factor authentication on and neither `totpCode` nor `recoveryCode` is
@@ -1057,7 +1138,7 @@ type Invoker interface {
 	// LoginWithProvider invokes loginWithProvider operation.
 	//
 	// For `password` providers (Streamero): the username and password (and, when the service asks,
-	// `totpCode`) are checked at the service and never stored (D-063). A linked account signs in its
+	// `totpCode`) are checked at the service and never stored (D-068). A linked account signs in its
 	// Locarr user; an unknown one creates a requester only when the provider settings allow it, otherwise
 	// 403 `identity_not_linked`. Errors: 401 `invalid_credentials`, 401 `totp_required` (the password was
 	// right; send it again with `totpCode`), 401 `invalid_totp`, 404 `not_found` (unknown or disabled
@@ -1102,6 +1183,12 @@ type Invoker interface {
 	//
 	// POST /series/import/manual
 	ManualImportSeries(ctx context.Context, request *SeriesManualImportRequest) ([]SeriesManualImportResult, error)
+	// ManualSubtitleSearch invokes manualSubtitleSearch operation.
+	//
+	// Manual search: every provider's results with scores (managers).
+	//
+	// GET /subtitles/items/{ref}/results
+	ManualSubtitleSearch(ctx context.Context, params ManualSubtitleSearchParams) (*SubtitleManualSearch, error)
 	// MarkNotificationsRead invokes markNotificationsRead operation.
 	//
 	// Mark notifications read.
@@ -1194,6 +1281,12 @@ type Invoker interface {
 	//
 	// POST /settings/mediamanagement/series/preview
 	PreviewSeriesNaming(ctx context.Context, request *SeriesNamingSettings) (*SeriesNamingPreview, error)
+	// PreviewSubtitle invokes previewSubtitle operation.
+	//
+	// The first lines of a subtitle (managers).
+	//
+	// GET /subtitles/{id}/preview
+	PreviewSubtitle(ctx context.Context, params PreviewSubtitleParams) (*SubtitlePreview, error)
 	// PutRequestSettings invokes putRequestSettings operation.
 	//
 	// Change request defaults and quotas (administrators).
@@ -1274,6 +1367,12 @@ type Invoker interface {
 	//
 	// POST /qualitydefinitions/reset
 	ResetQualityDefinitions(ctx context.Context, request *ResetQualityDefinitionsRequest) ([]QualityDefinition, error)
+	// ResetSubtitleProviderHealth invokes resetSubtitleProviderHealth operation.
+	//
+	// Clear a provider's failures and backoff (managers).
+	//
+	// POST /subtitles/providers/{name}/health/reset
+	ResetSubtitleProviderHealth(ctx context.Context, params ResetSubtitleProviderHealthParams) (*SubtitleProvider, error)
 	// ResetUserPassword invokes resetUserPassword operation.
 	//
 	// Signs the user out everywhere and clears an account lockout.
@@ -1343,6 +1442,12 @@ type Invoker interface {
 	//
 	// GET /series/import/scan
 	ScanExistingSeries(ctx context.Context, params ScanExistingSeriesParams) ([]ExistingSeriesFolder, error)
+	// ScanSubtitles invokes scanSubtitles operation.
+	//
+	// Scan the library for subtitles on disk and embedded tracks (managers).
+	//
+	// POST /subtitles/scan
+	ScanSubtitles(ctx context.Context) (*SubtitleCount, error)
 	// Search invokes search operation.
 	//
 	// Indexers are asked in parallel, each with its own timeout and request limit. Results are
@@ -1375,6 +1480,12 @@ type Invoker interface {
 	//
 	// POST /episodes/search
 	SearchEpisodes(ctx context.Context, request *EpisodeIdsRequest) (*QueuedCount, error)
+	// SearchItemSubtitles invokes searchItemSubtitles operation.
+	//
+	// Search now and download the best subtitles above the minimum score (managers).
+	//
+	// POST /subtitles/items/{ref}/search
+	SearchItemSubtitles(ctx context.Context, params SearchItemSubtitlesParams) (*SubtitleSearchOutcome, error)
 	// SearchMovie invokes searchMovie operation.
 	//
 	// The search, the decision and any grab appear on the movie's timeline.
@@ -1418,6 +1529,12 @@ type Invoker interface {
 	//
 	// GET /search/stream
 	SearchStream(ctx context.Context, params SearchStreamParams) (SearchStreamOK, error)
+	// SearchWantedSubtitles invokes searchWantedSubtitles operation.
+	//
+	// Queue subtitle searches for items, or for every item missing subtitles (managers).
+	//
+	// POST /subtitles/wanted/search
+	SearchWantedSubtitles(ctx context.Context, request *SearchWantedSubtitlesReq) (*SubtitleCount, error)
 	// SetQueueItemPriority invokes setQueueItemPriority operation.
 	//
 	// Move a download in its client's queue (library managers).
@@ -1437,6 +1554,12 @@ type Invoker interface {
 	//
 	// POST /setup
 	Setup(ctx context.Context, request *SetupRequest) (*SignedInHeaders, error)
+	// ShiftSubtitle invokes shiftSubtitle operation.
+	//
+	// The previous version goes to the recycle bin.
+	//
+	// POST /subtitles/{id}/shift
+	ShiftSubtitle(ctx context.Context, request *ShiftSubtitleReq, params ShiftSubtitleParams) (*Subtitle, error)
 	// SignUp invokes signUp operation.
 	//
 	// Create an account with an invite code and sign in.
@@ -1469,6 +1592,15 @@ type Invoker interface {
 	//
 	// POST /mediaserver/streamero/sync
 	SyncStreamero(ctx context.Context) error
+	// SyncSubtitle invokes syncSubtitle operation.
+	//
+	// Runs in the background; the subtitle's syncState becomes running, then done, not_confident or
+	// failed. reference: `audio` (the default audio track), `audio:N`, `track:N` (embedded text subtitle
+	// track N) or `subtitle:ID` (another subtitle of the same file). Audio and tracks need ffmpeg
+	// (`subtitle_sync_unavailable`).
+	//
+	// POST /subtitles/{id}/sync
+	SyncSubtitle(ctx context.Context, request *SyncSubtitleReq, params SyncSubtitleParams) (*Subtitle, error)
 	// TestDownloadClient invokes testDownloadClient operation.
 	//
 	// Always answers 200 with the outcome. With `id`, password and API key left out are taken from that
@@ -1504,6 +1636,12 @@ type Invoker interface {
 	//
 	// POST /mediaserver/streamero/test
 	TestStreamero(ctx context.Context, request *StreameroTestRequest) (*StreameroTestResult, error)
+	// TestSubtitleProvider invokes testSubtitleProvider operation.
+	//
+	// Check a provider's credentials and read its quota (administrators).
+	//
+	// POST /subtitles/providers/{name}/test
+	TestSubtitleProvider(ctx context.Context, params TestSubtitleProviderParams) (*SubtitleProvider, error)
 	// UnlinkMyIdentity invokes unlinkMyIdentity operation.
 	//
 	// Remove the caller's link to a provider.
@@ -1686,6 +1824,25 @@ type Invoker interface {
 	//
 	// PUT /mediaserver/streamero
 	UpdateStreameroSettings(ctx context.Context, request *StreameroSettingsInput) (*StreameroSettings, error)
+	// UpdateSubtitleProfile invokes updateSubtitleProfile operation.
+	//
+	// Change a subtitle language profile (administrators).
+	//
+	// PUT /subtitles/profiles/{id}
+	UpdateSubtitleProfile(ctx context.Context, request *SubtitleProfileInput, params UpdateSubtitleProfileParams) (*SubtitleProfile, error)
+	// UpdateSubtitleProvider invokes updateSubtitleProvider operation.
+	//
+	// Credentials are write-only and stored encrypted; an empty string removes one. A provider that needs
+	// a key cannot be enabled without it.
+	//
+	// PUT /subtitles/providers/{name}
+	UpdateSubtitleProvider(ctx context.Context, request *SubtitleProviderInput, params UpdateSubtitleProviderParams) (*SubtitleProvider, error)
+	// UpdateSubtitleSettings invokes updateSubtitleSettings operation.
+	//
+	// Change subtitle options (administrators).
+	//
+	// PUT /subtitles/settings
+	UpdateSubtitleSettings(ctx context.Context, request *SubtitleSettingsInput) (*SubtitleSettings, error)
 	// UpdateUser invokes updateUser operation.
 	//
 	// The last enabled administrator cannot be demoted or disabled.
@@ -2855,6 +3012,122 @@ func (c *Client) sendApproveRequests(ctx context.Context, request *RequestIds) (
 	return result, nil
 }
 
+// AssignSubtitleProfile invokes assignSubtitleProfile operation.
+//
+// ProfileId 0 = the kind's default, -1 = no subtitles, else a profile. Episodes follow their series.
+//
+// POST /subtitles/profiles/assign
+func (c *Client) AssignSubtitleProfile(ctx context.Context, request *SubtitleProfileAssign) (*SubtitleCount, error) {
+	res, err := c.sendAssignSubtitleProfile(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendAssignSubtitleProfile(ctx context.Context, request *SubtitleProfileAssign) (res *SubtitleCount, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("assignSubtitleProfile"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/profiles/assign"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AssignSubtitleProfileOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/profiles/assign"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeAssignSubtitleProfileRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, AssignSubtitleProfileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAssignSubtitleProfileResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // BrowseFilesystem invokes browseFilesystem operation.
 //
 // Without `path`, lists the data roots themselves.
@@ -3445,6 +3718,141 @@ func (c *Client) sendCheckInvite(ctx context.Context, request *InviteCodeRequest
 
 	stage = "DecodeResponse"
 	result, err := decodeCheckInviteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ConvertSubtitleFps invokes convertSubtitleFps operation.
+//
+// Convert a subtitle made for one frame rate to another (managers).
+//
+// POST /subtitles/{id}/fps
+func (c *Client) ConvertSubtitleFps(ctx context.Context, request *ConvertSubtitleFpsReq, params ConvertSubtitleFpsParams) (*Subtitle, error) {
+	res, err := c.sendConvertSubtitleFps(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendConvertSubtitleFps(ctx context.Context, request *ConvertSubtitleFpsReq, params ConvertSubtitleFpsParams) (res *Subtitle, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("convertSubtitleFps"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/{id}/fps"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ConvertSubtitleFpsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/fps"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeConvertSubtitleFpsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ConvertSubtitleFpsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeConvertSubtitleFpsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -5550,6 +5958,122 @@ func (c *Client) sendCreateRootFolder(ctx context.Context, request *CreateRootFo
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateRootFolderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateSubtitleProfile invokes createSubtitleProfile operation.
+//
+// Add a subtitle language profile (administrators).
+//
+// POST /subtitles/profiles
+func (c *Client) CreateSubtitleProfile(ctx context.Context, request *SubtitleProfileInput) (*SubtitleProfile, error) {
+	res, err := c.sendCreateSubtitleProfile(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateSubtitleProfile(ctx context.Context, request *SubtitleProfileInput) (res *SubtitleProfile, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("createSubtitleProfile"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/profiles"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, CreateSubtitleProfileOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/profiles"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateSubtitleProfileRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, CreateSubtitleProfileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeCreateSubtitleProfileResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -8490,6 +9014,421 @@ func (c *Client) sendDeleteSeries(ctx context.Context, params DeleteSeriesParams
 	return result, nil
 }
 
+// DeleteSubtitle invokes deleteSubtitle operation.
+//
+// Move a subtitle file to the recycle bin (managers).
+//
+// DELETE /subtitles/{id}
+func (c *Client) DeleteSubtitle(ctx context.Context, params DeleteSubtitleParams) error {
+	_, err := c.sendDeleteSubtitle(ctx, params)
+	return err
+}
+
+func (c *Client) sendDeleteSubtitle(ctx context.Context, params DeleteSubtitleParams) (res *DeleteSubtitleNoContent, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteSubtitle"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/subtitles/{id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteSubtitleOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/subtitles/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "blacklist" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "blacklist",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Blacklist.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DeleteSubtitleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteSubtitleResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteSubtitleBlacklistEntry invokes deleteSubtitleBlacklistEntry operation.
+//
+// Allow a rejected subtitle again (managers).
+//
+// DELETE /subtitles/blacklist/{id}
+func (c *Client) DeleteSubtitleBlacklistEntry(ctx context.Context, params DeleteSubtitleBlacklistEntryParams) error {
+	_, err := c.sendDeleteSubtitleBlacklistEntry(ctx, params)
+	return err
+}
+
+func (c *Client) sendDeleteSubtitleBlacklistEntry(ctx context.Context, params DeleteSubtitleBlacklistEntryParams) (res *DeleteSubtitleBlacklistEntryNoContent, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteSubtitleBlacklistEntry"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/subtitles/blacklist/{id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteSubtitleBlacklistEntryOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/subtitles/blacklist/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DeleteSubtitleBlacklistEntryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteSubtitleBlacklistEntryResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteSubtitleProfile invokes deleteSubtitleProfile operation.
+//
+// A profile that is a default cannot be deleted (`subtitle_profile_in_use`); items that used it fall
+// back to the default.
+//
+// DELETE /subtitles/profiles/{id}
+func (c *Client) DeleteSubtitleProfile(ctx context.Context, params DeleteSubtitleProfileParams) error {
+	_, err := c.sendDeleteSubtitleProfile(ctx, params)
+	return err
+}
+
+func (c *Client) sendDeleteSubtitleProfile(ctx context.Context, params DeleteSubtitleProfileParams) (res *DeleteSubtitleProfileNoContent, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteSubtitleProfile"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/subtitles/profiles/{id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteSubtitleProfileOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/subtitles/profiles/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DeleteSubtitleProfileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteSubtitleProfileResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DeleteUser invokes deleteUser operation.
 //
 // Not the caller's own account and not the last enabled administrator.
@@ -8878,6 +9817,142 @@ func (c *Client) sendDiscoverSearch(ctx context.Context, params DiscoverSearchPa
 
 	stage = "DecodeResponse"
 	result, err := decodeDiscoverSearchResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DownloadItemSubtitle invokes downloadItemSubtitle operation.
+//
+// Replaces the subtitle of that language (the old file goes to the recycle bin). An old search answers
+// `subtitle_result_expired`.
+//
+// POST /subtitles/items/{ref}/download
+func (c *Client) DownloadItemSubtitle(ctx context.Context, request *DownloadItemSubtitleReq, params DownloadItemSubtitleParams) (*Subtitle, error) {
+	res, err := c.sendDownloadItemSubtitle(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendDownloadItemSubtitle(ctx context.Context, request *DownloadItemSubtitleReq, params DownloadItemSubtitleParams) (res *Subtitle, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("downloadItemSubtitle"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/items/{ref}/download"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DownloadItemSubtitleOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/items/"
+	{
+		// Encode "ref" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "ref",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Ref))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/download"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDownloadItemSubtitleRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DownloadItemSubtitleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDownloadItemSubtitleResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -12401,6 +13476,138 @@ func (c *Client) sendGetIssue(ctx context.Context, params GetIssueParams) (res *
 	return result, nil
 }
 
+// GetItemSubtitles invokes getItemSubtitles operation.
+//
+// Present and missing languages of its profile, subtitle files, embedded tracks, search state and the
+// explanation.
+//
+// GET /subtitles/items/{ref}
+func (c *Client) GetItemSubtitles(ctx context.Context, params GetItemSubtitlesParams) (*SubtitleItem, error) {
+	res, err := c.sendGetItemSubtitles(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetItemSubtitles(ctx context.Context, params GetItemSubtitlesParams) (res *SubtitleItem, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getItemSubtitles"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/items/{ref}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetItemSubtitlesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/subtitles/items/"
+	{
+		// Encode "ref" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "ref",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Ref))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetItemSubtitlesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetItemSubtitlesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetMe invokes getMe operation.
 //
 // The signed-in user.
@@ -14704,6 +15911,119 @@ func (c *Client) sendGetStreameroSettings(ctx context.Context) (res *StreameroSe
 
 	stage = "DecodeResponse"
 	result, err := decodeGetStreameroSettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetSubtitleSettings invokes getSubtitleSettings operation.
+//
+// Subtitle options (administrators).
+//
+// GET /subtitles/settings
+func (c *Client) GetSubtitleSettings(ctx context.Context) (*SubtitleSettings, error) {
+	res, err := c.sendGetSubtitleSettings(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetSubtitleSettings(ctx context.Context) (res *SubtitleSettings, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getSubtitleSettings"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/settings"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSubtitleSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/settings"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetSubtitleSettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetSubtitleSettingsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -22464,6 +23784,364 @@ func (c *Client) sendListStreameroUsers(ctx context.Context) (res []StreameroUse
 	return result, nil
 }
 
+// ListSubtitleBlacklist invokes listSubtitleBlacklist operation.
+//
+// Subtitles rejected for an item (managers).
+//
+// GET /subtitles/items/{ref}/blacklist
+func (c *Client) ListSubtitleBlacklist(ctx context.Context, params ListSubtitleBlacklistParams) ([]SubtitleBlacklistEntry, error) {
+	res, err := c.sendListSubtitleBlacklist(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListSubtitleBlacklist(ctx context.Context, params ListSubtitleBlacklistParams) (res []SubtitleBlacklistEntry, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listSubtitleBlacklist"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/items/{ref}/blacklist"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListSubtitleBlacklistOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/items/"
+	{
+		// Encode "ref" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "ref",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Ref))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/blacklist"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListSubtitleBlacklistOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListSubtitleBlacklistResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListSubtitleProfiles invokes listSubtitleProfiles operation.
+//
+// Subtitle language profiles (managers).
+//
+// GET /subtitles/profiles
+func (c *Client) ListSubtitleProfiles(ctx context.Context) ([]SubtitleProfile, error) {
+	res, err := c.sendListSubtitleProfiles(ctx)
+	return res, err
+}
+
+func (c *Client) sendListSubtitleProfiles(ctx context.Context) (res []SubtitleProfile, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listSubtitleProfiles"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/profiles"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListSubtitleProfilesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/profiles"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListSubtitleProfilesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListSubtitleProfilesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListSubtitleProviders invokes listSubtitleProviders operation.
+//
+// Subtitle providers with health and quota (managers).
+//
+// GET /subtitles/providers
+func (c *Client) ListSubtitleProviders(ctx context.Context) ([]SubtitleProvider, error) {
+	res, err := c.sendListSubtitleProviders(ctx)
+	return res, err
+}
+
+func (c *Client) sendListSubtitleProviders(ctx context.Context) (res []SubtitleProvider, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listSubtitleProviders"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/providers"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListSubtitleProvidersOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/providers"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListSubtitleProvidersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListSubtitleProvidersResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ListTasks invokes listTasks operation.
 //
 // Scheduled tasks and recent job history (administrators).
@@ -23064,6 +24742,174 @@ func (c *Client) sendListWantedEpisodes(ctx context.Context, params ListWantedEp
 	return result, nil
 }
 
+// ListWantedSubtitles invokes listWantedSubtitles operation.
+//
+// Movies and episodes missing subtitles of their profile (managers).
+//
+// GET /subtitles/wanted
+func (c *Client) ListWantedSubtitles(ctx context.Context, params ListWantedSubtitlesParams) (*WantedSubtitles, error) {
+	res, err := c.sendListWantedSubtitles(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListWantedSubtitles(ctx context.Context, params ListWantedSubtitlesParams) (res *WantedSubtitles, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listWantedSubtitles"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/wanted"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListWantedSubtitlesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/wanted"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "kind" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "kind",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Kind.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "offset" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Offset.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListWantedSubtitlesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListWantedSubtitlesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // Login invokes login operation.
 //
 // When the account has two-factor authentication on and neither `totpCode` nor `recoveryCode` is
@@ -23151,7 +24997,7 @@ func (c *Client) sendLogin(ctx context.Context, request *LoginRequest) (res *Sig
 // LoginWithProvider invokes loginWithProvider operation.
 //
 // For `password` providers (Streamero): the username and password (and, when the service asks,
-// `totpCode`) are checked at the service and never stored (D-063). A linked account signs in its
+// `totpCode`) are checked at the service and never stored (D-068). A linked account signs in its
 // Locarr user; an unknown one creates a requester only when the provider settings allow it, otherwise
 // 403 `identity_not_linked`. Errors: 401 `invalid_credentials`, 401 `totp_required` (the password was
 // right; send it again with `totpCode`), 401 `invalid_totp`, 404 `not_found` (unknown or disabled
@@ -23987,6 +25833,159 @@ func (c *Client) sendManualImportSeries(ctx context.Context, request *SeriesManu
 
 	stage = "DecodeResponse"
 	result, err := decodeManualImportSeriesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ManualSubtitleSearch invokes manualSubtitleSearch operation.
+//
+// Manual search: every provider's results with scores (managers).
+//
+// GET /subtitles/items/{ref}/results
+func (c *Client) ManualSubtitleSearch(ctx context.Context, params ManualSubtitleSearchParams) (*SubtitleManualSearch, error) {
+	res, err := c.sendManualSubtitleSearch(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendManualSubtitleSearch(ctx context.Context, params ManualSubtitleSearchParams) (res *SubtitleManualSearch, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("manualSubtitleSearch"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/items/{ref}/results"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ManualSubtitleSearchOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/items/"
+	{
+		// Encode "ref" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "ref",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Ref))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/results"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "language" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Language.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ManualSubtitleSearchOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeManualSubtitleSearchResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -25862,6 +27861,159 @@ func (c *Client) sendPreviewSeriesNaming(ctx context.Context, request *SeriesNam
 	return result, nil
 }
 
+// PreviewSubtitle invokes previewSubtitle operation.
+//
+// The first lines of a subtitle (managers).
+//
+// GET /subtitles/{id}/preview
+func (c *Client) PreviewSubtitle(ctx context.Context, params PreviewSubtitleParams) (*SubtitlePreview, error) {
+	res, err := c.sendPreviewSubtitle(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendPreviewSubtitle(ctx context.Context, params PreviewSubtitleParams) (res *SubtitlePreview, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("previewSubtitle"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/{id}/preview"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PreviewSubtitleOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/preview"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "lines" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "lines",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Lines.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, PreviewSubtitleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodePreviewSubtitleResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // PutRequestSettings invokes putRequestSettings operation.
 //
 // Change request defaults and quotas (administrators).
@@ -27519,6 +29671,138 @@ func (c *Client) sendResetQualityDefinitions(ctx context.Context, request *Reset
 	return result, nil
 }
 
+// ResetSubtitleProviderHealth invokes resetSubtitleProviderHealth operation.
+//
+// Clear a provider's failures and backoff (managers).
+//
+// POST /subtitles/providers/{name}/health/reset
+func (c *Client) ResetSubtitleProviderHealth(ctx context.Context, params ResetSubtitleProviderHealthParams) (*SubtitleProvider, error) {
+	res, err := c.sendResetSubtitleProviderHealth(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendResetSubtitleProviderHealth(ctx context.Context, params ResetSubtitleProviderHealthParams) (res *SubtitleProvider, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("resetSubtitleProviderHealth"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/providers/{name}/health/reset"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ResetSubtitleProviderHealthOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/providers/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(string(params.Name)))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/health/reset"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ResetSubtitleProviderHealthOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeResetSubtitleProviderHealthResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ResetUserPassword invokes resetUserPassword operation.
 //
 // Signs the user out everywhere and clears an account lockout.
@@ -28975,6 +31259,119 @@ func (c *Client) sendScanExistingSeries(ctx context.Context, params ScanExisting
 	return result, nil
 }
 
+// ScanSubtitles invokes scanSubtitles operation.
+//
+// Scan the library for subtitles on disk and embedded tracks (managers).
+//
+// POST /subtitles/scan
+func (c *Client) ScanSubtitles(ctx context.Context) (*SubtitleCount, error) {
+	res, err := c.sendScanSubtitles(ctx)
+	return res, err
+}
+
+func (c *Client) sendScanSubtitles(ctx context.Context) (res *SubtitleCount, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("scanSubtitles"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/scan"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ScanSubtitlesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/scan"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ScanSubtitlesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeScanSubtitlesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // Search invokes search operation.
 //
 // Indexers are asked in parallel, each with its own timeout and request limit. Results are
@@ -29873,6 +32270,138 @@ func (c *Client) sendSearchEpisodes(ctx context.Context, request *EpisodeIdsRequ
 
 	stage = "DecodeResponse"
 	result, err := decodeSearchEpisodesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SearchItemSubtitles invokes searchItemSubtitles operation.
+//
+// Search now and download the best subtitles above the minimum score (managers).
+//
+// POST /subtitles/items/{ref}/search
+func (c *Client) SearchItemSubtitles(ctx context.Context, params SearchItemSubtitlesParams) (*SubtitleSearchOutcome, error) {
+	res, err := c.sendSearchItemSubtitles(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendSearchItemSubtitles(ctx context.Context, params SearchItemSubtitlesParams) (res *SubtitleSearchOutcome, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("searchItemSubtitles"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/items/{ref}/search"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SearchItemSubtitlesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/items/"
+	{
+		// Encode "ref" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "ref",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Ref))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/search"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, SearchItemSubtitlesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeSearchItemSubtitlesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -30941,6 +33470,122 @@ func (c *Client) sendSearchStream(ctx context.Context, params SearchStreamParams
 	return result, nil
 }
 
+// SearchWantedSubtitles invokes searchWantedSubtitles operation.
+//
+// Queue subtitle searches for items, or for every item missing subtitles (managers).
+//
+// POST /subtitles/wanted/search
+func (c *Client) SearchWantedSubtitles(ctx context.Context, request *SearchWantedSubtitlesReq) (*SubtitleCount, error) {
+	res, err := c.sendSearchWantedSubtitles(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendSearchWantedSubtitles(ctx context.Context, request *SearchWantedSubtitlesReq) (res *SubtitleCount, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("searchWantedSubtitles"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/wanted/search"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SearchWantedSubtitlesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/wanted/search"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeSearchWantedSubtitlesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, SearchWantedSubtitlesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeSearchWantedSubtitlesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // SetQueueItemPriority invokes setQueueItemPriority operation.
 //
 // Move a download in its client's queue (library managers).
@@ -31288,6 +33933,141 @@ func (c *Client) sendSetup(ctx context.Context, request *SetupRequest) (res *Sig
 
 	stage = "DecodeResponse"
 	result, err := decodeSetupResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ShiftSubtitle invokes shiftSubtitle operation.
+//
+// The previous version goes to the recycle bin.
+//
+// POST /subtitles/{id}/shift
+func (c *Client) ShiftSubtitle(ctx context.Context, request *ShiftSubtitleReq, params ShiftSubtitleParams) (*Subtitle, error) {
+	res, err := c.sendShiftSubtitle(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendShiftSubtitle(ctx context.Context, request *ShiftSubtitleReq, params ShiftSubtitleParams) (res *Subtitle, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("shiftSubtitle"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/{id}/shift"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ShiftSubtitleOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/shift"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeShiftSubtitleRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ShiftSubtitleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeShiftSubtitleResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -31863,6 +34643,144 @@ func (c *Client) sendSyncStreamero(ctx context.Context) (res *SyncStreameroAccep
 
 	stage = "DecodeResponse"
 	result, err := decodeSyncStreameroResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SyncSubtitle invokes syncSubtitle operation.
+//
+// Runs in the background; the subtitle's syncState becomes running, then done, not_confident or
+// failed. reference: `audio` (the default audio track), `audio:N`, `track:N` (embedded text subtitle
+// track N) or `subtitle:ID` (another subtitle of the same file). Audio and tracks need ffmpeg
+// (`subtitle_sync_unavailable`).
+//
+// POST /subtitles/{id}/sync
+func (c *Client) SyncSubtitle(ctx context.Context, request *SyncSubtitleReq, params SyncSubtitleParams) (*Subtitle, error) {
+	res, err := c.sendSyncSubtitle(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendSyncSubtitle(ctx context.Context, request *SyncSubtitleReq, params SyncSubtitleParams) (res *Subtitle, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("syncSubtitle"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/{id}/sync"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SyncSubtitleOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/sync"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeSyncSubtitleRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, SyncSubtitleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeSyncSubtitleResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -32464,6 +35382,138 @@ func (c *Client) sendTestStreamero(ctx context.Context, request *StreameroTestRe
 
 	stage = "DecodeResponse"
 	result, err := decodeTestStreameroResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// TestSubtitleProvider invokes testSubtitleProvider operation.
+//
+// Check a provider's credentials and read its quota (administrators).
+//
+// POST /subtitles/providers/{name}/test
+func (c *Client) TestSubtitleProvider(ctx context.Context, params TestSubtitleProviderParams) (*SubtitleProvider, error) {
+	res, err := c.sendTestSubtitleProvider(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendTestSubtitleProvider(ctx context.Context, params TestSubtitleProviderParams) (res *SubtitleProvider, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("testSubtitleProvider"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/providers/{name}/test"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, TestSubtitleProviderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/providers/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(string(params.Name)))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/test"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, TestSubtitleProviderOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeTestSubtitleProviderResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -36320,6 +39370,391 @@ func (c *Client) sendUpdateStreameroSettings(ctx context.Context, request *Strea
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateStreameroSettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateSubtitleProfile invokes updateSubtitleProfile operation.
+//
+// Change a subtitle language profile (administrators).
+//
+// PUT /subtitles/profiles/{id}
+func (c *Client) UpdateSubtitleProfile(ctx context.Context, request *SubtitleProfileInput, params UpdateSubtitleProfileParams) (*SubtitleProfile, error) {
+	res, err := c.sendUpdateSubtitleProfile(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateSubtitleProfile(ctx context.Context, request *SubtitleProfileInput, params UpdateSubtitleProfileParams) (res *SubtitleProfile, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateSubtitleProfile"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.URLTemplateKey.String("/subtitles/profiles/{id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateSubtitleProfileOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/subtitles/profiles/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateSubtitleProfileRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, UpdateSubtitleProfileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateSubtitleProfileResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateSubtitleProvider invokes updateSubtitleProvider operation.
+//
+// Credentials are write-only and stored encrypted; an empty string removes one. A provider that needs
+// a key cannot be enabled without it.
+//
+// PUT /subtitles/providers/{name}
+func (c *Client) UpdateSubtitleProvider(ctx context.Context, request *SubtitleProviderInput, params UpdateSubtitleProviderParams) (*SubtitleProvider, error) {
+	res, err := c.sendUpdateSubtitleProvider(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateSubtitleProvider(ctx context.Context, request *SubtitleProviderInput, params UpdateSubtitleProviderParams) (res *SubtitleProvider, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateSubtitleProvider"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.URLTemplateKey.String("/subtitles/providers/{name}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateSubtitleProviderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/subtitles/providers/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(string(params.Name)))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateSubtitleProviderRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, UpdateSubtitleProviderOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateSubtitleProviderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateSubtitleSettings invokes updateSubtitleSettings operation.
+//
+// Change subtitle options (administrators).
+//
+// PUT /subtitles/settings
+func (c *Client) UpdateSubtitleSettings(ctx context.Context, request *SubtitleSettingsInput) (*SubtitleSettings, error) {
+	res, err := c.sendUpdateSubtitleSettings(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendUpdateSubtitleSettings(ctx context.Context, request *SubtitleSettingsInput) (res *SubtitleSettings, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateSubtitleSettings"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.URLTemplateKey.String("/subtitles/settings"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateSubtitleSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/settings"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateSubtitleSettingsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, UpdateSubtitleSettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateSubtitleSettingsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

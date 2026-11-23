@@ -64,10 +64,11 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Cue slike (jedna datoteka po albumu) i pisanje tagova osim FLAC-a (D-044)
 
 ## Titlovi (P7)
-- [ ] Jezični profili po filmu/seriji, forsirani i za gluhe
-- [ ] Provideri: OpenSubtitles.com i drugi javni, ocjena podudaranja po izdanju
-- [ ] Automatska pretraga nakon uvoza, ponovna pretraga za nedostajuće, ručni izbor
-- [ ] Sinkronizacija titla po zvuku, pretvorba formata
+- [x] Jezični profili (redoslijed jezika, forsirani, za gluhe, zapisi u videu, granica), zadani po vrsti, po filmu/seriji i za cijelu biblioteku (D-065)
+- [x] Provideri: OpenSubtitles.com (hash, ID-evi, prijava, kvota), SubDL, Jimaku; zdravlje, čekanje, kvote; ocjena podudaranja po izdanju (D-063, D-064) — provjereno s lažnim providerima napravljenim iz javne dokumentacije
+- [x] Automatska pretraga nakon uvoza, ponovna pretraga za nedostajuće raspoređena kroz dan, nadogradnje, ručni izbor, odbacivanje, skeniranje postojećih titlova
+- [x] Sinkronizacija titla po zvuku (vlastita, uz mali ffmpeg u slici), prema ugrađenom ili drugom titlu, pomak, broj sličica, pretvorba u UTF-8 i SRT (D-062, D-066)
+- [ ] Provideri bez javnog API-ja (Podnapisi, Addic7ed, Titlovi.com) — nisu uključeni (D-063)
 
 ## Zahtjevi (P8)
 - [x] Otkrivanje: u trendu, popularno, nadolazeće, u kinima, najbolje ocijenjeno, po žanru, studiju i mreži, nedavno dodano, pretraga filmova, serija, osoba i glazbe, stranice naslova s glumcima, trailerom i dostupnošću po sezoni (D-061)
@@ -75,12 +76,16 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Zahtjev za film, seriju (po sezonama, i buduće sezone), album i izvođača; 4K zahtjevi kao zasebna staza (D-054, D-055)
 - [x] Odobravanje (pojedinačno, skupno, uz izmjenu opcija), odbijanje s razlogom, automatsko odobravanje po korisniku i vrsti, kvote s iznimkama, komentari, prijave problema s traženjem zamjene (D-054, D-056)
 - [x] Lokalni korisnici i pozivnice za obitelj (rok, broj korištenja, uloga, dozvole, kvote; D-059)
-- [ ] Prijava korisnika preko Streamera (isti računi) — oblik rezerviran (D-058), izvodi se u P9
+- [x] Prijava korisnika preko Streamera (isti računi, 2FA, automatsko stvaranje tražitelja ili povezivanje; D-058, D-068)
 - [x] Obavijesti u aplikaciji: odobreno, odbijeno, dostupno, djelomično, zapelo, komentari, problemi; `GET /notifications?since=` za aplikacije (D-057)
 
 ## Media server i obavijesti (P9)
-- [ ] Streamero: osvježavanje biblioteke nakon uvoza, „već imaš" na otkrivanju, prijava korisnika
-- [ ] Obavijesti: webhook, ntfy, Gotify, Discord, Telegram, e-mail, Apprise-kompatibilno
+- [x] Streamero: veza (URL + API ključ, test, mapiranje putanja i biblioteka), skeniranje samo pogođene biblioteke nakon uvoza/nadogradnje/preimenovanja filma (skupljeno, s ponovnim pokušajima, na vremenskoj crti; D-067)
+- [x] Streamero: „U Streameru" i „Gledaj u Streameru" na Otkrivanju, stranicama naslova i u dodavanju (D-069)
+- [x] Streamero: prijava korisnika (D-068)
+- [x] Obavijesti: webhook (HMAC potpis), ntfy, Gotify, Discord, Telegram, Pushover, e-mail (SMTP), Apprise API; zajednički i osobni kanali, izbor događaja, Test, ponovni pokušaji, stanje neuspjeha (D-070)
+- [x] Obavijesti o biblioteci, titlovima i zdravlju sustava (D-071)
+- [ ] Streamero: obavijest pri brisanju i preimenovanju serija te brisanju glazbe (danas ih vidi Streamerov nadzor datoteka)
 
 ## Uvoz setupa (P10)
 - [ ] Sonarr, Radarr, Lidarr: biblioteka, profili kvalitete, custom formati, root mape, oznake, indexeri, download klijenti, liste

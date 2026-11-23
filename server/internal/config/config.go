@@ -36,6 +36,12 @@ type Config struct {
 	// addresses (LOCARR_TELEGRAM_URL, LOCARR_PUSHOVER_URL; tests only).
 	TelegramURL string
 	PushoverURL string
+	// SubtitleURLs replace subtitle provider addresses (LOCARR_OPENSUBTITLES_URL,
+	// LOCARR_SUBDL_URL, LOCARR_JIMAKU_URL; tests and the fake services only).
+	SubtitleURLs map[string]string
+	// FFmpeg is the ffmpeg binary used for subtitle sync (LOCARR_FFMPEG,
+	// default "ffmpeg" in PATH; the image ships a small build, D-062).
+	FFmpeg string
 	// TrustedProxies are CIDRs whose X-Forwarded-For is believed (LOCARR_TRUSTED_PROXIES).
 	TrustedProxies string
 	// SetupCode fixes the first-run setup code instead of a random one (LOCARR_SETUP_CODE).
@@ -71,6 +77,13 @@ func load(env func(string) string) (Config, error) {
 		CoverArtURL:    get("LOCARR_COVERART_URL", ""),
 		TelegramURL:    get("LOCARR_TELEGRAM_URL", ""),
 		PushoverURL:    get("LOCARR_PUSHOVER_URL", ""),
+		FFmpeg:         get("LOCARR_FFMPEG", ""),
+		SubtitleURLs:   map[string]string{},
+	}
+	for name, k := range map[string]string{"opensubtitles": "LOCARR_OPENSUBTITLES_URL", "subdl": "LOCARR_SUBDL_URL", "jimaku": "LOCARR_JIMAKU_URL"} {
+		if v := get(k, ""); v != "" {
+			c.SubtitleURLs[name] = v
+		}
 	}
 	switch c.LogLevel {
 	case "debug", "info", "warn", "error":

@@ -1,6 +1,6 @@
 -- +goose Up
 -- P9: Streamero (library updates, titles it already has) and outward
--- notification channels (D-062 … D-066).
+-- notification channels (D-067 … D-071).
 
 -- Library changes waiting to be sent to Streamero as library scans. Rows are
 -- removed once the scan was asked for (or finally failed).
@@ -51,7 +51,14 @@ CREATE TABLE notification_channels (
 );
 CREATE INDEX notification_channels_user ON notification_channels (user_id);
 
+-- Files whose still-missing subtitles were already announced (once per file).
+CREATE TABLE subtitle_missing_notified (
+    media_file_id  INTEGER PRIMARY KEY REFERENCES media_files (id) ON DELETE CASCADE,
+    notified_at    INTEGER NOT NULL
+);
+
 -- +goose Down
+DROP TABLE subtitle_missing_notified;
 DROP TABLE notification_channels;
 DROP TABLE streamero_items;
 DROP TABLE mediaserver_pending;

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/mmzlopasa/locarr/server/internal/mediaserver"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -567,6 +568,10 @@ func (s *Service) Rename(ctx context.Context, ids []int64) ([]RenameItem, error)
 				map[string]any{"from": r.From, "to": to}, nil)
 		}
 		done = append(done, RenameItem{SeriesID: r.SeriesID, Title: r.Title, From: r.From, To: to})
+		if len(epIDs) > 0 {
+			notifyChange(ctx, s.Notifier, mediaserver.Change{ItemRef: library.EpisodeRef(epIDs[0]).String(), Kind: "episode", Action: "renamed",
+				Title: v.Title, Year: v.Year, Paths: []string{to}})
+		}
 	}
 	return done, nil
 }

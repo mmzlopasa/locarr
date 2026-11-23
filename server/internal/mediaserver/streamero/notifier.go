@@ -26,7 +26,7 @@ const DefaultDebounce = 30 * time.Second
 // scanAttempts is how often a batch is tried (with the queue's backoff) before it is given up.
 const scanAttempts = 6
 
-// Notifier is the mediaserver.Notifier for Streamero (D-062). Notify only
+// Notifier is the mediaserver.Notifier for Streamero (D-067). Notify only
 // stores the change and schedules a scan job, so it never blocks an import;
 // the job collects the changes of ~30 s, asks Streamero to scan each affected
 // library once and records the outcome on every item's timeline.

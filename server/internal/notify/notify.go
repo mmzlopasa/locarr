@@ -58,6 +58,11 @@ const (
 	LibraryImportFailed   Type = "library.import_failed"
 	// HealthWarning: an indexer, download client or Streamero stopped working.
 	HealthWarning Type = "health.warning"
+	// SubtitleDownloaded: a subtitle was found or upgraded (Message = what).
+	SubtitleDownloaded Type = "subtitles.downloaded"
+	// SubtitleMissing: a file still has no subtitle in a wanted language
+	// some days after it arrived (sent once per file).
+	SubtitleMissing Type = "subtitles.missing"
 	// Test is only sent by a channel's Test button.
 	Test Type = "test"
 )
@@ -67,7 +72,8 @@ var Types = []Type{RequestCreated, RequestApproved, RequestDeclined, RequestAvai
 	RequestComment, IssueCreated, IssueComment, IssueResolved, IssueReopened}
 
 // LibraryTypes lists the library and system event types.
-var LibraryTypes = []Type{LibraryGrabbed, LibraryImported, LibraryUpgraded, LibraryDownloadFailed, LibraryImportFailed, HealthWarning}
+var LibraryTypes = []Type{LibraryGrabbed, LibraryImported, LibraryUpgraded, LibraryDownloadFailed, LibraryImportFailed, HealthWarning,
+	SubtitleDownloaded, SubtitleMissing}
 
 // Personal reports whether t is about requests or issues (the events a
 // user's own channel can receive).

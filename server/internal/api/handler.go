@@ -33,6 +33,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/requests"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
+	"github.com/mmzlopasa/locarr/server/internal/subtitles"
 	"github.com/mmzlopasa/locarr/server/internal/timeline"
 	"github.com/mmzlopasa/locarr/server/internal/wanted"
 )
@@ -54,6 +55,7 @@ type Handler struct {
 	Movies      *movies.Service
 	Series      *series.Service
 	Music       *music.Service
+	Subtitles   *subtitles.Service
 	// CoverArt caches Cover Art Archive images; LinkExisting queues linking
 	// an existing artist folder's files (both set by the app).
 	CoverArt     *metadata.ImageCache
@@ -136,6 +138,9 @@ func mapError(err error) *StatusError {
 		return se
 	}
 	if se := mapMediaServerError(err); se != nil {
+		return se
+	}
+	if se := mapSubtitlesError(err); se != nil {
 		return se
 	}
 	if se := mapRequestsError(err); se != nil {

@@ -51,6 +51,7 @@ import { ArtistDetailPage } from "@/features/music/ArtistDetailPage";
 import { AlbumDetailPage } from "@/features/music/AlbumDetailPage";
 import { MusicImportPage } from "@/features/music/MusicImportPage";
 import { MetadataProfilesPage } from "@/features/music/MetadataProfilesPage";
+import { SubtitleSettingsPage } from "@/features/subtitles/SubtitleSettingsPage";
 import { JoinPage } from "@/routes/JoinPage";
 import { DiscoverPage } from "@/features/discover/DiscoverPage";
 import { DiscoverListPage, validateListSearch } from "@/features/discover/DiscoverListPage";
@@ -203,6 +204,7 @@ const metadataProfilesRoute = createRoute({ getParentRoute: () => settingsRoute,
 const importListsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/importlists", component: ImportListsPage });
 const mediaServerRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/mediaserver", component: MediaServerPage });
 const notificationSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/notifications", component: NotificationSettingsPage });
+const subtitleSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/subtitles", component: SubtitleSettingsPage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
 const systemIndexRoute = createRoute({
@@ -255,8 +257,8 @@ export const routeTree = rootRoute.addChildren([
       downloadersRoute,
       indexersRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
-        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, requestSettingsRoute,
-        mediaServerRoute, notificationSettingsRoute]),
+        rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, subtitleSettingsRoute,
+        requestSettingsRoute, mediaServerRoute, notificationSettingsRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, tasksRoute]),
     ]),
   ]),

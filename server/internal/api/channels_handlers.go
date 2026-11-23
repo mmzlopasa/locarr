@@ -10,6 +10,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/notify/channels"
 	"github.com/mmzlopasa/locarr/server/internal/notify/delivery"
+	"github.com/mmzlopasa/locarr/server/internal/settings"
 )
 
 func mapChannelError(err error) *StatusError {
@@ -221,7 +222,11 @@ func (h *Handler) notificationSettings(ctx context.Context) (*gen.NotificationSe
 	if err != nil {
 		return nil, err
 	}
-	return &gen.NotificationSettings{BaseUrl: base, SMTP: gen.SmtpSettings{Host: smtp.Host, Port: smtp.Port,
+	days, err := settings.Get(ctx, h.Settings, delivery.SubtitleMissingDays)
+	if err != nil {
+		return nil, err
+	}
+	return &gen.NotificationSettings{BaseUrl: base, SubtitleMissingDays: days, SMTP: gen.SmtpSettings{Host: smtp.Host, Port: smtp.Port,
 		Security: gen.SmtpSecurity(smtp.Security), Username: smtp.Username, Password: gen.SecretState{Configured: pwSet}, From: smtp.From}}, nil
 }
 
@@ -257,6 +262,11 @@ func (h *Handler) UpdateNotificationSettings(ctx context.Context, req *gen.Notif
 	}
 	if err := h.Channels.SaveSettings(ctx, base, mail); err != nil {
 		return nil, err
+	}
+	if d, ok := req.SubtitleMissingDays.Get(); ok {
+		if err := settings.Set(ctx, h.Settings, nil, delivery.SubtitleMissingDays, d); err != nil {
+			return nil, err
+		}
 	}
 	return h.notificationSettings(ctx)
 }

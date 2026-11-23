@@ -1,7 +1,7 @@
 // Package streamero talks to Streamero, the media server (its native API under
 // /api/v1, from its public OpenAPI description): it asks for library scans
 // after imports, keeps an index of the titles Streamero already has and checks
-// Streamero accounts for "Sign in with Streamero" (D-062 … D-064).
+// Streamero accounts for "Sign in with Streamero" (D-067 … D-069).
 package streamero
 
 import (

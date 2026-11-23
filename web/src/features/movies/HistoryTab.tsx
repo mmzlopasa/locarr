@@ -7,6 +7,7 @@ import { formatDateTime, formatRelative } from "@/components/format";
 import { EmptyState, ErrorAlert, Spinner } from "@/components/ui";
 import { describeRejection } from "@/features/profiles/rejections";
 import { describeEvent, describeExplanation, eventTone } from "./timeline";
+import { SubtitleWhyForItem } from "@/features/subtitles/SubtitlesSection";
 
 const toneClass = {
   success: "border-success/40 bg-success-bg text-success",
@@ -114,6 +115,7 @@ export function HistoryTab({ itemRef }: { itemRef: string }) {
   return (
     <div>
       <WhyBox ex={tl.data.explanation} />
+      {/^(movie|episode):/.test(itemRef) ? <SubtitleWhyForItem itemRef={itemRef} /> : null}
       {tl.data.events.length === 0 ? (
         <EmptyState>{t("timeline.empty")}</EmptyState>
       ) : (

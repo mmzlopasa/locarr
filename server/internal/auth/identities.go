@@ -43,7 +43,7 @@ func (s *Service) provider(ctx context.Context, id string) (Provider, error) {
 }
 
 // LoginWithProvider checks credentials at a provider and signs the linked
-// user in (D-058, D-063). An unknown account creates a local user only when
+// user in (D-058, D-068). An unknown account creates a local user only when
 // the provider allows it, never as an administrator.
 func (s *Service) LoginWithProvider(ctx context.Context, providerID string, c Credentials, dev Device) (Principal, string, bool, error) {
 	p, err := s.provider(ctx, providerID)
