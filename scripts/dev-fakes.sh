@@ -13,6 +13,7 @@
 #   http://fake-indexer:9117/broken    always fails      /slow  answers after 3 s
 #   http://fake-indexer:9117/prowlarr  Prowlarr-style source, API key "sourcekey"
 #   http://fake-indexer:9117/jackett   Jackett-style source, API key "sourcekey"
+#   http://fake-indexer:9117/sites/<id>  recorded answers of a built-in site (nyaa, yts, 1337x, …)
 #
 #   LOCARR_FAKES_NETWORK   Docker network (default locarr-net)
 #   LOCARR_FAKES_NAME      container name (default locarr-fakes)

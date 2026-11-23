@@ -145,7 +145,7 @@ func searchEZTV(ctx context.Context, c *Client, q Query) ([]znab.Item, int, erro
 	v := url.Values{"limit": {"100"}, "page": {"1"}}
 	switch {
 	case q.IMDBNum != "":
-		v.Set("imdb_id", strings.TrimLeft(q.IMDBNum, "0"))
+		v.Set("imdb_id", q.IMDBNum) // the API wants the zero-padded 7 digits
 	case q.Mode == "rss":
 	default:
 		return nil, 0, &znab.Error{Kind: znab.KindUnsupported, Message: "EZTV searches only by IMDb id"}
