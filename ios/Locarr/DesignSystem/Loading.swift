@@ -110,7 +110,7 @@ struct PagerFooter<Item: Sendable & Identifiable>: View {
                 EmptyState(text: emptyText)
             }
         } else if pager.hasMore {
-            ProgressView().tint(Theme.accent).frame(maxWidth: .infinity).padding()
+            ProgressView().tint(Theme.accent).frame(maxWidth: .infinity).padding().stateRow()
         }
     }
 }

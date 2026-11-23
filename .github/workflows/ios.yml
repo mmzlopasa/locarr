@@ -35,10 +35,42 @@ jobs:
           # Runner images change which simulators they ship; use whichever iPhone is available.
           UDID=$(xcrun simctl list devices available -j | jq -r '[.devices[][] | select(.name | startswith("iPhone"))][0].udid // empty')
           if [ -z "$UDID" ]; then echo "No iPhone simulator on this runner"; xcrun simctl list runtimes; exit 1; fi
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
           set -o pipefail
-          xcodebuild test -project Locarr.xcodeproj -scheme Locarr \
+          xcodebuild test -project Locarr.xcodeproj -scheme Locarr -only-testing:LocarrTests \
             -destination "platform=iOS Simulator,id=$UDID" \
             CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- | xcpretty
+      - name: Screenshots of the main screens (simulator, stub server)
+        if: github.ref_type != 'tag'
+        run: |
+          set -o pipefail
+          xcodebuild test -project Locarr.xcodeproj -scheme Locarr -only-testing:LocarrUITests \
+            -destination "platform=iOS Simulator,id=$UDID" -resultBundlePath screenshots.xcresult \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- | xcpretty
+      - name: Export the screenshots
+        if: always() && github.ref_type != 'tag'
+        run: |
+          mkdir -p screenshots
+          [ -d screenshots.xcresult ] || exit 0
+          xcrun xcresulttool export attachments --path screenshots.xcresult --output-path screenshots
+          # Name the files after the attachment names given in the test.
+          python3 - <<'PY' || true
+          import json, os
+          manifest = json.load(open("screenshots/manifest.json"))
+          for test in manifest:
+              for a in test.get("attachments", []):
+                  src = os.path.join("screenshots", a["exportedFileName"])
+                  name = a.get("suggestedHumanReadableName") or a["exportedFileName"]
+                  name = name.split("_0_")[0] if "_0_" in name else os.path.splitext(name)[0]
+                  os.rename(src, os.path.join("screenshots", name + os.path.splitext(src)[1]))
+          PY
+          ls screenshots
+      - uses: actions/upload-artifact@v4
+        if: always() && github.ref_type != 'tag'
+        with:
+          name: ios-screenshots
+          path: ios/screenshots/
+          if-no-files-found: ignore
       - name: Build the unsigned .ipa
         run: |
           # On a tag "v1.2.3": version 1.2.3, build 1*10000 + 2*100 + 3 (the same number

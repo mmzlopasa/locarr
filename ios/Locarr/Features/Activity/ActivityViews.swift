@@ -14,17 +14,9 @@ struct ActivityView: View {
             default: QueueView()
             }
         }
-        .safeAreaInset(edge: .top) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach([AppSection.queue, .board, .wanted, .calendar, .history]) { s in
-                        Chip(text: s.title, selected: part == s) { part = s }
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 6)
-            }
-            .background(Theme.background)
+        .screenHeader(title: L("nav.activity")) {
+            SegmentPicker(options: [AppSection.queue, .board, .wanted, .calendar, .history], selection: $part,
+                          label: L("nav.activity")) { $0.title }
         }
     }
 }
@@ -81,12 +73,13 @@ struct QueueView: View {
 
     var body: some View {
         List {
+            ScreenHeaderRow()
             if let q = queue.value {
                 ForEach((q.clients ?? []).filter { $0.status?.ok == false }) { c in
-                    Callout(text: L("queue.clientError", ["name": c.name, "error": c.status?.error ?? ""]), tone: "danger").listRowBackground(Color.clear)
+                    Callout(text: L("queue.clientError", ["name": c.name, "error": c.status?.error ?? ""]), tone: "danger").listRowBackground(Color.clear).listRowSeparator(.hidden)
                 }
                 if (q.clients ?? []).isEmpty {
-                    Callout(text: L("queue.noClients"), tone: "warning").listRowBackground(Color.clear)
+                    Callout(text: L("queue.noClients"), tone: "warning").listRowBackground(Color.clear).listRowSeparator(.hidden)
                 }
                 if q.items.isEmpty { EmptyState(text: L("queue.empty"), systemImage: "arrow.down.circle").listRowBackground(Color.clear) }
                 ForEach(q.items) { item in
@@ -138,7 +131,7 @@ struct QueueView: View {
                 try? await Task.sleep(for: .seconds(5))
             }
         }
-        .navigationTitle(Text(verbatim: L("nav.queue")))
+        .screenTitle(L("nav.queue"))
         .screenStyle()
         .confirmationDialog(Text(verbatim: removing?.title ?? ""), isPresented: Binding(get: { removing != nil }, set: { if !$0 { removing = nil } }),
                             titleVisibility: .visible, presenting: removing) { item in
@@ -197,6 +190,7 @@ struct BoardView: View {
 
     var body: some View {
         List {
+            ScreenHeaderRow()
             Section {
                 Text(verbatim: L("board.subtitle")).font(.footnote).foregroundStyle(Theme.textMuted)
                 Picker(selection: $kind) {
@@ -205,6 +199,7 @@ struct BoardView: View {
                 .pickerStyle(.menu)
             }
             .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
             if let b = board.value {
                 let groups = b.groups.filter { $0.code != "available" && $0.count > 0 }
                 if groups.isEmpty { EmptyState(text: L("board.empty"), systemImage: "checkmark.seal").listRowBackground(Color.clear) }
@@ -226,7 +221,7 @@ struct BoardView: View {
             await load()
         }
         .task(id: kind) { await load() }
-        .navigationTitle(Text(verbatim: L("board.title")))
+        .screenTitle(L("board.title"))
         .screenStyle()
     }
 
