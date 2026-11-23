@@ -1,0 +1,84 @@
+name: Locarr
+options:
+  bundleIdPrefix: net.scyde
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    TARGETED_DEVICE_FAMILY: "1,2"
+    # Strings come from the catalog by key (Loc.string); Xcode must not rewrite it.
+    SWIFT_EMIT_LOC_STRINGS: "NO"
+targets:
+  Locarr:
+    type: application
+    platform: iOS
+    sources:
+      - path: Locarr
+    info:
+      path: Locarr/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Locarr
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, hr]
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UIUserInterfaceStyle: Dark
+        # Background App Refresh polls /notifications (D-087). Needs no entitlement, so it
+        # survives Feather re-signing; there is no APNs.
+        UIBackgroundModes: [fetch]
+        BGTaskSchedulerPermittedIdentifiers: [net.scyde.locarr.refresh]
+        NSLocalNetworkUsageDescription: Locarr connects to your Locarr server on the local network.
+        # Plain HTTP only where a home server lives (D-088): local names, private address
+        # ranges and the usual home-network suffixes. Everything else must use HTTPS.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+          NSExceptionDomains:
+            "10.0.0.0/8": {NSExceptionAllowsInsecureHTTPLoads: true}
+            "172.16.0.0/12": {NSExceptionAllowsInsecureHTTPLoads: true}
+            "192.168.0.0/16": {NSExceptionAllowsInsecureHTTPLoads: true}
+            "100.64.0.0/10": {NSExceptionAllowsInsecureHTTPLoads: true}
+            "169.254.0.0/16": {NSExceptionAllowsInsecureHTTPLoads: true}
+            "fc00::/7": {NSExceptionAllowsInsecureHTTPLoads: true}
+            "fe80::/10": {NSExceptionAllowsInsecureHTTPLoads: true}
+            local: {NSIncludesSubdomains: true, NSExceptionAllowsInsecureHTTPLoads: true}
+            lan: {NSIncludesSubdomains: true, NSExceptionAllowsInsecureHTTPLoads: true}
+            home: {NSIncludesSubdomains: true, NSExceptionAllowsInsecureHTTPLoads: true}
+            home.arpa: {NSIncludesSubdomains: true, NSExceptionAllowsInsecureHTTPLoads: true}
+            internal: {NSIncludesSubdomains: true, NSExceptionAllowsInsecureHTTPLoads: true}
+            localdomain: {NSIncludesSubdomains: true, NSExceptionAllowsInsecureHTTPLoads: true}
+            ts.net: {NSIncludesSubdomains: true, NSExceptionAllowsInsecureHTTPLoads: true}
+        # Notification taps and links open screens through locarr:// (no entitlement needed).
+        CFBundleURLTypes:
+          - CFBundleURLName: net.scyde.locarr.links
+            CFBundleURLSchemes: [locarr]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: net.scyde.locarr
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGNING_ALLOWED: "NO"
+  LocarrTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [LocarrTests]
+    dependencies:
+      - target: Locarr
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: "YES"
+        CODE_SIGNING_ALLOWED: "NO"
+schemes:
+  Locarr:
+    build:
+      targets:
+        Locarr: all
+    test:
+      targets: [LocarrTests]

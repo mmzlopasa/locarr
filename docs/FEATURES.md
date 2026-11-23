@@ -105,6 +105,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Aplikacije (P12)
 - [ ] Android i iOS: sve iz weba (biblioteka, dodavanje, pretraga, aktivnost, kalendar, zahtjevi, postavke za admina)
+- [ ] iOS: povezivanje (LAN HTTP, više poslužitelja, prijava s 2FA ili preko Streamera), otkrivanje i zahtjevi, moji zahtjevi i prijava problema, centar obavijesti; za upravitelje pregled, biblioteke s detaljima i „Zašto nije stiglo?", dodavanje, ručna pretraga s odlukama i grab, red, ploča, traženo, kalendar, povijest, odobravanje, problemi, zdravlje, indexeri i klijenti s testom, mape za medije; duboke postavke otvaraju web (D-091–D-094)
 - [ ] Obavijesti bez APNs-a/FCM-a (provjera u pozadini)
 
 ## Kvaliteta (P13)
