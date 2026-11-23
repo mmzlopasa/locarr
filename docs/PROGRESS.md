@@ -1,7 +1,19 @@
 # Napredak
 
 ## Trenutna faza
-P0–P9 gotovi.
+P0–P10 gotovi.
+
+
+
+## Gotovo u P10 (branch `phase/P10-import`)
+- Migracija `00011_migrate.sql`: `migrate_sources` (šifrirani ključ), `migrate_runs`, `migrate_items`, `migrate_links`.
+- `internal/migrate` (D-072 – D-078): adapteri za Sonarr (v3, v4), Radarr, Lidarr, Prowlarr, Bazarr, Overseerr/Seerr, qBittorrent (prijava v4 i v5) i SABnzbd iz njihove javne API dokumentacije, samo GET (uz prijavu qBittorrenta); prepoznavanje aplikacije i verzije; strujano čitanje velikih lista; pravila mapiranja (kvalitete, profili, jezici, oznake, imena, dozvole → uloge, stanja zahtjeva); mapiranja putanja s prijedlozima i provjerom uživo (`fs.PathCache`); plan s radnjama, razlozima, sukobima i oznakama pažnje; primjena kroz servise; oznake uvoza za idempotentnost; izvještaj; popis za prelazak; kraj uvoza (`migrate.finished` / `migrate.failed`) na zajedničkim kanalima obavijesti.
+- Servisi: `movies.ImportMovies` (serije po 250), `series.ImportSeries`/`RefreshImported`, `music.ImportArtist`, `requests.ImportRequest`/`ImportIssue`/`SetDefaultQuotas`, `movies.AddExclusion`, `timeline.RecordAt`, `rootfolders.Records`, `indexers.HTTPPolicy`, `httpx.Client.Stream`; metapodaci uvezenih naslova osvježavaju se u pozadini (`migrate-refresh`).
+- API: `/migrate/sources*` (Test s verzijom), `/migrate/runs*` (čitanje → mape → pregled → ponovno planiranje → uvoz → otkazivanje, stavke s filtrima, izvještaj), `/migrate/checklist`; sve samo za administratora.
+- Web (EN + HR): Uvoz setupa (aplikacije, što uvesti, mape s provjerom uživo, pregled sa sukobima i filtrima, uvoz s napretkom, izvještaj i JSON), Popis za prelazak.
+- Lažne aplikacije: `internal/migrate/fake` (i u `locarr-fakes` pod `/arr/<vrsta>`, ključ `migratekey`, datoteke u `<seed>/migrate`); broje svaki zahtjev koji nije GET.
+- Testovi: adapteri i pravila (jedinični), `TestMigrateFullSetup` (svih 8 lažnih aplikacija: pregled = uvoz, datoteke na mjestu, skrivene tajne, drugi uvoz samo preskače, kasnije nađena datoteka povezana trećim uvozom, događaj na kanalima), `TestMigratePermissions`, `TestMigrateLargeLibrary` (10 000 filmova, 2 000 serija s 40 000 epizoda, 1 000 izvođača: čitanje ~10 s, uvoz ~65 s), stvarne aplikacije (`scripts/test-sources.sh`, oznaka `sources`): Sonarr 4.0.20, Radarr 7.0.3, Lidarr 3.1.6, Prowlarr 3.0.2, Bazarr 1.6.2, qBittorrent 5.3.0, SABnzbd 5.1.3; CI posao `sources` (Sonarr, Radarr, qBittorrent); Vitest; Playwright `e2e/migrate.spec.ts`.
+- Korisnička dokumentacija: `docs/user/migration.md`.
 
 ## Gotovo u P9 (branch `phase/P9-mediaserver`)
 - Migracija `00010_mediaserver.sql`: `mediaserver_pending` (promjene koje čekaju skeniranje), `streamero_items` (indeks naslova koje Streamero ima, po TMDb/IMDb/TVDB ID-u), `notification_channels` (zajednički i osobni kanali, šifrirane tajne, stanje neuspjeha), `subtitle_missing_notified`.
@@ -138,6 +150,7 @@ P0–P9 gotovi.
 
 ## Poznati problemi / napomene
 - Streamero (P9): nema krajnje točke za samu provjeru lozinke (Locarr se prijavi i odmah odjavi), popis stavki nema ID-jeve providera (indeks čita detalje svake nove stavke) i skenira se cijela biblioteka; vidi D-067–D-069. Brisanje epizoda pri osvježavanju serije ne zove notifier.
+- Uvoz: stvarni Overseerr se ne može postaviti bez Plexa, pa su korisnici, zahtjevi i problemi provjereni samo s lažnim Overseerrom (stvarni Overseerr 1.35 bez administratora odbija i API ključ). Stvarni Sonarr/Radarr/Prowlarr skrivaju ključeve indexera i lozinke klijenata, pa ih treba ponovno upisati. Popisi za serije i glazbu i preferirani izrazi Sonarra v3 se ne uvoze. Snimka pročitanih aplikacija je samo u memoriji (restart → pročitati ponovno).
 - Titlovi: provideri su provjereni samo s lažnim servisima iz javne dokumentacije (stvarni ključevi nisu korišteni u testovima); Podnapisi, Addic7ed i Titlovi.com nisu uključeni (D-063). Zapisi se čitaju samo iz MKV/MP4. Kod nadogradnje videa pod novim imenom titlovi starog imena ostaju na disku; Locarr ih više ne veže uz film i traži nove pod novim imenom. Sinkronizacija nalazi jedan pomak za cijeli titl.
 - Zahtjevi: preporuke („slični naslovi") još nisu; 4K staza dijeli jednu stavku biblioteke s običnom (D-055); kvote broje zahtjeve, ne sezone; glazbeni zahtjevi bez profila metapodataka koriste „Everything".
 - Serije: slike za serije dodane s TVDB-a se ne prikazuju (D-053); vrijeme emitiranja za TMDb serije je procjena (20:00 u zoni mreže, D-046); scensko mapiranje je samo ručno i za sada samo kroz API (`PATCH /episodes/{id}`), web ga prikazuje ali ne uređuje (D-047); sortiranje popisa serija po sljedećem emitiranju ili broju nedostajućih epizoda zbraja sve epizode (~130 ms na 5000 serija).

@@ -182,6 +182,7 @@ func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger)
 	attachSubtitles(h, d)
 	attachRequests(h, d)
 	attachMediaServer(h, d)
+	attachMigrate(h, d)
 	return h
 }
 

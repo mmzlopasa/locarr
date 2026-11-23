@@ -2897,6 +2897,20 @@ func (s *ChangePasswordRequest) SetNewPassword(val Password) {
 	s.NewPassword = val
 }
 
+type CheckMigratePathsReq struct {
+	PathMappings []MigratePathMapping `json:"pathMappings"`
+}
+
+// GetPathMappings returns the value of PathMappings.
+func (s *CheckMigratePathsReq) GetPathMappings() []MigratePathMapping {
+	return s.PathMappings
+}
+
+// SetPathMappings sets the value of PathMappings.
+func (s *CheckMigratePathsReq) SetPathMappings(val []MigratePathMapping) {
+	s.PathMappings = val
+}
+
 // Ref: #/components/schemas/ColonReplacement
 type ColonReplacement string
 
@@ -4468,6 +4482,9 @@ type DeleteIndexerSourceNoContent struct{}
 
 // DeleteMetadataProfileNoContent is response for DeleteMetadataProfile operation.
 type DeleteMetadataProfileNoContent struct{}
+
+// DeleteMigrateSourceNoContent is response for DeleteMigrateSource operation.
+type DeleteMigrateSourceNoContent struct{}
 
 // DeleteMovieNoContent is response for DeleteMovie operation.
 type DeleteMovieNoContent struct{}
@@ -15049,6 +15066,1948 @@ func (s *MetadataSettingsSeriesProvider) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/MigrateAction
+type MigrateAction string
+
+const (
+	MigrateActionCreate MigrateAction = "create"
+	MigrateActionUpdate MigrateAction = "update"
+	MigrateActionSkip   MigrateAction = "skip"
+)
+
+// AllValues returns all MigrateAction values.
+func (MigrateAction) AllValues() []MigrateAction {
+	return []MigrateAction{
+		MigrateActionCreate,
+		MigrateActionUpdate,
+		MigrateActionSkip,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigrateAction) MarshalText() ([]byte, error) {
+	switch s {
+	case MigrateActionCreate:
+		return []byte(s), nil
+	case MigrateActionUpdate:
+		return []byte(s), nil
+	case MigrateActionSkip:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigrateAction) UnmarshalText(data []byte) error {
+	switch MigrateAction(data) {
+	case MigrateActionCreate:
+		*s = MigrateActionCreate
+		return nil
+	case MigrateActionUpdate:
+		*s = MigrateActionUpdate
+		return nil
+	case MigrateActionSkip:
+		*s = MigrateActionSkip
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MigrateCheckItem
+type MigrateCheckItem struct {
+	Key  string `json:"key"`
+	Done bool   `json:"done"`
+	// A step on another application that Locarr cannot check.
+	Manual bool                   `json:"manual"`
+	Params MigrateCheckItemParams `json:"params"`
+}
+
+// GetKey returns the value of Key.
+func (s *MigrateCheckItem) GetKey() string {
+	return s.Key
+}
+
+// GetDone returns the value of Done.
+func (s *MigrateCheckItem) GetDone() bool {
+	return s.Done
+}
+
+// GetManual returns the value of Manual.
+func (s *MigrateCheckItem) GetManual() bool {
+	return s.Manual
+}
+
+// GetParams returns the value of Params.
+func (s *MigrateCheckItem) GetParams() MigrateCheckItemParams {
+	return s.Params
+}
+
+// SetKey sets the value of Key.
+func (s *MigrateCheckItem) SetKey(val string) {
+	s.Key = val
+}
+
+// SetDone sets the value of Done.
+func (s *MigrateCheckItem) SetDone(val bool) {
+	s.Done = val
+}
+
+// SetManual sets the value of Manual.
+func (s *MigrateCheckItem) SetManual(val bool) {
+	s.Manual = val
+}
+
+// SetParams sets the value of Params.
+func (s *MigrateCheckItem) SetParams(val MigrateCheckItemParams) {
+	s.Params = val
+}
+
+type MigrateCheckItemParams map[string]string
+
+func (s *MigrateCheckItemParams) init() MigrateCheckItemParams {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/MigrateConflict
+type MigrateConflict struct {
+	Existing string                       `json:"existing"`
+	Options  []MigrateConflictOptionsItem `json:"options"`
+	Chosen   MigrateConflictChosen        `json:"chosen"`
+}
+
+// GetExisting returns the value of Existing.
+func (s *MigrateConflict) GetExisting() string {
+	return s.Existing
+}
+
+// GetOptions returns the value of Options.
+func (s *MigrateConflict) GetOptions() []MigrateConflictOptionsItem {
+	return s.Options
+}
+
+// GetChosen returns the value of Chosen.
+func (s *MigrateConflict) GetChosen() MigrateConflictChosen {
+	return s.Chosen
+}
+
+// SetExisting sets the value of Existing.
+func (s *MigrateConflict) SetExisting(val string) {
+	s.Existing = val
+}
+
+// SetOptions sets the value of Options.
+func (s *MigrateConflict) SetOptions(val []MigrateConflictOptionsItem) {
+	s.Options = val
+}
+
+// SetChosen sets the value of Chosen.
+func (s *MigrateConflict) SetChosen(val MigrateConflictChosen) {
+	s.Chosen = val
+}
+
+type MigrateConflictChosen string
+
+const (
+	MigrateConflictChosenMerge  MigrateConflictChosen = "merge"
+	MigrateConflictChosenRename MigrateConflictChosen = "rename"
+	MigrateConflictChosenSkip   MigrateConflictChosen = "skip"
+)
+
+// AllValues returns all MigrateConflictChosen values.
+func (MigrateConflictChosen) AllValues() []MigrateConflictChosen {
+	return []MigrateConflictChosen{
+		MigrateConflictChosenMerge,
+		MigrateConflictChosenRename,
+		MigrateConflictChosenSkip,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigrateConflictChosen) MarshalText() ([]byte, error) {
+	switch s {
+	case MigrateConflictChosenMerge:
+		return []byte(s), nil
+	case MigrateConflictChosenRename:
+		return []byte(s), nil
+	case MigrateConflictChosenSkip:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigrateConflictChosen) UnmarshalText(data []byte) error {
+	switch MigrateConflictChosen(data) {
+	case MigrateConflictChosenMerge:
+		*s = MigrateConflictChosenMerge
+		return nil
+	case MigrateConflictChosenRename:
+		*s = MigrateConflictChosenRename
+		return nil
+	case MigrateConflictChosenSkip:
+		*s = MigrateConflictChosenSkip
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type MigrateConflictOptionsItem string
+
+const (
+	MigrateConflictOptionsItemMerge  MigrateConflictOptionsItem = "merge"
+	MigrateConflictOptionsItemRename MigrateConflictOptionsItem = "rename"
+	MigrateConflictOptionsItemSkip   MigrateConflictOptionsItem = "skip"
+)
+
+// AllValues returns all MigrateConflictOptionsItem values.
+func (MigrateConflictOptionsItem) AllValues() []MigrateConflictOptionsItem {
+	return []MigrateConflictOptionsItem{
+		MigrateConflictOptionsItemMerge,
+		MigrateConflictOptionsItemRename,
+		MigrateConflictOptionsItemSkip,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigrateConflictOptionsItem) MarshalText() ([]byte, error) {
+	switch s {
+	case MigrateConflictOptionsItemMerge:
+		return []byte(s), nil
+	case MigrateConflictOptionsItemRename:
+		return []byte(s), nil
+	case MigrateConflictOptionsItemSkip:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigrateConflictOptionsItem) UnmarshalText(data []byte) error {
+	switch MigrateConflictOptionsItem(data) {
+	case MigrateConflictOptionsItemMerge:
+		*s = MigrateConflictOptionsItemMerge
+		return nil
+	case MigrateConflictOptionsItemRename:
+		*s = MigrateConflictOptionsItemRename
+		return nil
+	case MigrateConflictOptionsItemSkip:
+		*s = MigrateConflictOptionsItemSkip
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MigrateItem
+type MigrateItem struct {
+	Seq       int                `json:"seq"`
+	Key       string             `json:"key"`
+	SourceId  int64              `json:"sourceId"`
+	Category  string             `json:"category"`
+	Name      string             `json:"name"`
+	Action    MigrateAction      `json:"action"`
+	Reason    string             `json:"reason"`
+	Message   string             `json:"message"`
+	Conflict  OptMigrateConflict `json:"conflict"`
+	Attention []string           `json:"attention"`
+	Status    MigrateItemStatus  `json:"status"`
+	LocalRef  string             `json:"localRef"`
+	Error     string             `json:"error"`
+}
+
+// GetSeq returns the value of Seq.
+func (s *MigrateItem) GetSeq() int {
+	return s.Seq
+}
+
+// GetKey returns the value of Key.
+func (s *MigrateItem) GetKey() string {
+	return s.Key
+}
+
+// GetSourceId returns the value of SourceId.
+func (s *MigrateItem) GetSourceId() int64 {
+	return s.SourceId
+}
+
+// GetCategory returns the value of Category.
+func (s *MigrateItem) GetCategory() string {
+	return s.Category
+}
+
+// GetName returns the value of Name.
+func (s *MigrateItem) GetName() string {
+	return s.Name
+}
+
+// GetAction returns the value of Action.
+func (s *MigrateItem) GetAction() MigrateAction {
+	return s.Action
+}
+
+// GetReason returns the value of Reason.
+func (s *MigrateItem) GetReason() string {
+	return s.Reason
+}
+
+// GetMessage returns the value of Message.
+func (s *MigrateItem) GetMessage() string {
+	return s.Message
+}
+
+// GetConflict returns the value of Conflict.
+func (s *MigrateItem) GetConflict() OptMigrateConflict {
+	return s.Conflict
+}
+
+// GetAttention returns the value of Attention.
+func (s *MigrateItem) GetAttention() []string {
+	return s.Attention
+}
+
+// GetStatus returns the value of Status.
+func (s *MigrateItem) GetStatus() MigrateItemStatus {
+	return s.Status
+}
+
+// GetLocalRef returns the value of LocalRef.
+func (s *MigrateItem) GetLocalRef() string {
+	return s.LocalRef
+}
+
+// GetError returns the value of Error.
+func (s *MigrateItem) GetError() string {
+	return s.Error
+}
+
+// SetSeq sets the value of Seq.
+func (s *MigrateItem) SetSeq(val int) {
+	s.Seq = val
+}
+
+// SetKey sets the value of Key.
+func (s *MigrateItem) SetKey(val string) {
+	s.Key = val
+}
+
+// SetSourceId sets the value of SourceId.
+func (s *MigrateItem) SetSourceId(val int64) {
+	s.SourceId = val
+}
+
+// SetCategory sets the value of Category.
+func (s *MigrateItem) SetCategory(val string) {
+	s.Category = val
+}
+
+// SetName sets the value of Name.
+func (s *MigrateItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetAction sets the value of Action.
+func (s *MigrateItem) SetAction(val MigrateAction) {
+	s.Action = val
+}
+
+// SetReason sets the value of Reason.
+func (s *MigrateItem) SetReason(val string) {
+	s.Reason = val
+}
+
+// SetMessage sets the value of Message.
+func (s *MigrateItem) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetConflict sets the value of Conflict.
+func (s *MigrateItem) SetConflict(val OptMigrateConflict) {
+	s.Conflict = val
+}
+
+// SetAttention sets the value of Attention.
+func (s *MigrateItem) SetAttention(val []string) {
+	s.Attention = val
+}
+
+// SetStatus sets the value of Status.
+func (s *MigrateItem) SetStatus(val MigrateItemStatus) {
+	s.Status = val
+}
+
+// SetLocalRef sets the value of LocalRef.
+func (s *MigrateItem) SetLocalRef(val string) {
+	s.LocalRef = val
+}
+
+// SetError sets the value of Error.
+func (s *MigrateItem) SetError(val string) {
+	s.Error = val
+}
+
+// Ref: #/components/schemas/MigrateItemList
+type MigrateItemList struct {
+	Items []MigrateItem `json:"items"`
+	Total int           `json:"total"`
+}
+
+// GetItems returns the value of Items.
+func (s *MigrateItemList) GetItems() []MigrateItem {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *MigrateItemList) GetTotal() int {
+	return s.Total
+}
+
+// SetItems sets the value of Items.
+func (s *MigrateItemList) SetItems(val []MigrateItem) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *MigrateItemList) SetTotal(val int) {
+	s.Total = val
+}
+
+// Ref: #/components/schemas/MigrateItemStatus
+type MigrateItemStatus string
+
+const (
+	MigrateItemStatusPlanned MigrateItemStatus = "planned"
+	MigrateItemStatusDone    MigrateItemStatus = "done"
+	MigrateItemStatusFailed  MigrateItemStatus = "failed"
+	MigrateItemStatusSkipped MigrateItemStatus = "skipped"
+)
+
+// AllValues returns all MigrateItemStatus values.
+func (MigrateItemStatus) AllValues() []MigrateItemStatus {
+	return []MigrateItemStatus{
+		MigrateItemStatusPlanned,
+		MigrateItemStatusDone,
+		MigrateItemStatusFailed,
+		MigrateItemStatusSkipped,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigrateItemStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case MigrateItemStatusPlanned:
+		return []byte(s), nil
+	case MigrateItemStatusDone:
+		return []byte(s), nil
+	case MigrateItemStatusFailed:
+		return []byte(s), nil
+	case MigrateItemStatusSkipped:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigrateItemStatus) UnmarshalText(data []byte) error {
+	switch MigrateItemStatus(data) {
+	case MigrateItemStatusPlanned:
+		*s = MigrateItemStatusPlanned
+		return nil
+	case MigrateItemStatusDone:
+		*s = MigrateItemStatusDone
+		return nil
+	case MigrateItemStatusFailed:
+		*s = MigrateItemStatusFailed
+		return nil
+	case MigrateItemStatusSkipped:
+		*s = MigrateItemStatusSkipped
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MigrateKind
+type MigrateKind string
+
+const (
+	MigrateKindSonarr      MigrateKind = "sonarr"
+	MigrateKindRadarr      MigrateKind = "radarr"
+	MigrateKindLidarr      MigrateKind = "lidarr"
+	MigrateKindProwlarr    MigrateKind = "prowlarr"
+	MigrateKindBazarr      MigrateKind = "bazarr"
+	MigrateKindOverseerr   MigrateKind = "overseerr"
+	MigrateKindSeerr       MigrateKind = "seerr"
+	MigrateKindQbittorrent MigrateKind = "qbittorrent"
+	MigrateKindSabnzbd     MigrateKind = "sabnzbd"
+)
+
+// AllValues returns all MigrateKind values.
+func (MigrateKind) AllValues() []MigrateKind {
+	return []MigrateKind{
+		MigrateKindSonarr,
+		MigrateKindRadarr,
+		MigrateKindLidarr,
+		MigrateKindProwlarr,
+		MigrateKindBazarr,
+		MigrateKindOverseerr,
+		MigrateKindSeerr,
+		MigrateKindQbittorrent,
+		MigrateKindSabnzbd,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigrateKind) MarshalText() ([]byte, error) {
+	switch s {
+	case MigrateKindSonarr:
+		return []byte(s), nil
+	case MigrateKindRadarr:
+		return []byte(s), nil
+	case MigrateKindLidarr:
+		return []byte(s), nil
+	case MigrateKindProwlarr:
+		return []byte(s), nil
+	case MigrateKindBazarr:
+		return []byte(s), nil
+	case MigrateKindOverseerr:
+		return []byte(s), nil
+	case MigrateKindSeerr:
+		return []byte(s), nil
+	case MigrateKindQbittorrent:
+		return []byte(s), nil
+	case MigrateKindSabnzbd:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigrateKind) UnmarshalText(data []byte) error {
+	switch MigrateKind(data) {
+	case MigrateKindSonarr:
+		*s = MigrateKindSonarr
+		return nil
+	case MigrateKindRadarr:
+		*s = MigrateKindRadarr
+		return nil
+	case MigrateKindLidarr:
+		*s = MigrateKindLidarr
+		return nil
+	case MigrateKindProwlarr:
+		*s = MigrateKindProwlarr
+		return nil
+	case MigrateKindBazarr:
+		*s = MigrateKindBazarr
+		return nil
+	case MigrateKindOverseerr:
+		*s = MigrateKindOverseerr
+		return nil
+	case MigrateKindSeerr:
+		*s = MigrateKindSeerr
+		return nil
+	case MigrateKindQbittorrent:
+		*s = MigrateKindQbittorrent
+		return nil
+	case MigrateKindSabnzbd:
+		*s = MigrateKindSabnzbd
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MigrateOptions
+type MigrateOptions struct {
+	Sources      []MigrateSourceOptions `json:"sources"`
+	PathMappings []MigratePathMapping   `json:"pathMappings"`
+	HistoryDays  OptInt                 `json:"historyDays"`
+}
+
+// GetSources returns the value of Sources.
+func (s *MigrateOptions) GetSources() []MigrateSourceOptions {
+	return s.Sources
+}
+
+// GetPathMappings returns the value of PathMappings.
+func (s *MigrateOptions) GetPathMappings() []MigratePathMapping {
+	return s.PathMappings
+}
+
+// GetHistoryDays returns the value of HistoryDays.
+func (s *MigrateOptions) GetHistoryDays() OptInt {
+	return s.HistoryDays
+}
+
+// SetSources sets the value of Sources.
+func (s *MigrateOptions) SetSources(val []MigrateSourceOptions) {
+	s.Sources = val
+}
+
+// SetPathMappings sets the value of PathMappings.
+func (s *MigrateOptions) SetPathMappings(val []MigratePathMapping) {
+	s.PathMappings = val
+}
+
+// SetHistoryDays sets the value of HistoryDays.
+func (s *MigrateOptions) SetHistoryDays(val OptInt) {
+	s.HistoryDays = val
+}
+
+// Ref: #/components/schemas/MigratePathCheck
+type MigratePathCheck struct {
+	SourceId   int64  `json:"sourceId"`
+	SourcePath string `json:"sourcePath"`
+	LocalPath  string `json:"localPath"`
+	// Inside the folders Locarr may use.
+	Inside bool `json:"inside"`
+	Exists bool `json:"exists"`
+	Files  int  `json:"files"`
+	Found  int  `json:"found"`
+	// A few examples of files not found.
+	Missing []string `json:"missing"`
+}
+
+// GetSourceId returns the value of SourceId.
+func (s *MigratePathCheck) GetSourceId() int64 {
+	return s.SourceId
+}
+
+// GetSourcePath returns the value of SourcePath.
+func (s *MigratePathCheck) GetSourcePath() string {
+	return s.SourcePath
+}
+
+// GetLocalPath returns the value of LocalPath.
+func (s *MigratePathCheck) GetLocalPath() string {
+	return s.LocalPath
+}
+
+// GetInside returns the value of Inside.
+func (s *MigratePathCheck) GetInside() bool {
+	return s.Inside
+}
+
+// GetExists returns the value of Exists.
+func (s *MigratePathCheck) GetExists() bool {
+	return s.Exists
+}
+
+// GetFiles returns the value of Files.
+func (s *MigratePathCheck) GetFiles() int {
+	return s.Files
+}
+
+// GetFound returns the value of Found.
+func (s *MigratePathCheck) GetFound() int {
+	return s.Found
+}
+
+// GetMissing returns the value of Missing.
+func (s *MigratePathCheck) GetMissing() []string {
+	return s.Missing
+}
+
+// SetSourceId sets the value of SourceId.
+func (s *MigratePathCheck) SetSourceId(val int64) {
+	s.SourceId = val
+}
+
+// SetSourcePath sets the value of SourcePath.
+func (s *MigratePathCheck) SetSourcePath(val string) {
+	s.SourcePath = val
+}
+
+// SetLocalPath sets the value of LocalPath.
+func (s *MigratePathCheck) SetLocalPath(val string) {
+	s.LocalPath = val
+}
+
+// SetInside sets the value of Inside.
+func (s *MigratePathCheck) SetInside(val bool) {
+	s.Inside = val
+}
+
+// SetExists sets the value of Exists.
+func (s *MigratePathCheck) SetExists(val bool) {
+	s.Exists = val
+}
+
+// SetFiles sets the value of Files.
+func (s *MigratePathCheck) SetFiles(val int) {
+	s.Files = val
+}
+
+// SetFound sets the value of Found.
+func (s *MigratePathCheck) SetFound(val int) {
+	s.Found = val
+}
+
+// SetMissing sets the value of Missing.
+func (s *MigratePathCheck) SetMissing(val []string) {
+	s.Missing = val
+}
+
+// Ref: #/components/schemas/MigratePathMapping
+type MigratePathMapping struct {
+	// 0 applies to every source.
+	SourceId int64 `json:"sourceId"`
+	// The folder as the source sees it.
+	From string `json:"from"`
+	// The same folder as Locarr sees it.
+	To string `json:"to"`
+}
+
+// GetSourceId returns the value of SourceId.
+func (s *MigratePathMapping) GetSourceId() int64 {
+	return s.SourceId
+}
+
+// GetFrom returns the value of From.
+func (s *MigratePathMapping) GetFrom() string {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *MigratePathMapping) GetTo() string {
+	return s.To
+}
+
+// SetSourceId sets the value of SourceId.
+func (s *MigratePathMapping) SetSourceId(val int64) {
+	s.SourceId = val
+}
+
+// SetFrom sets the value of From.
+func (s *MigratePathMapping) SetFrom(val string) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *MigratePathMapping) SetTo(val string) {
+	s.To = val
+}
+
+// Ref: #/components/schemas/MigratePlanRequest
+type MigratePlanRequest struct {
+	PathMappings []MigratePathMapping `json:"pathMappings"`
+	// Plan item key → merge, rename or skip.
+	Resolutions   OptMigratePlanRequestResolutions `json:"resolutions"`
+	ProwlarrModes []MigrateProwlarrMode            `json:"prowlarrModes"`
+}
+
+// GetPathMappings returns the value of PathMappings.
+func (s *MigratePlanRequest) GetPathMappings() []MigratePathMapping {
+	return s.PathMappings
+}
+
+// GetResolutions returns the value of Resolutions.
+func (s *MigratePlanRequest) GetResolutions() OptMigratePlanRequestResolutions {
+	return s.Resolutions
+}
+
+// GetProwlarrModes returns the value of ProwlarrModes.
+func (s *MigratePlanRequest) GetProwlarrModes() []MigrateProwlarrMode {
+	return s.ProwlarrModes
+}
+
+// SetPathMappings sets the value of PathMappings.
+func (s *MigratePlanRequest) SetPathMappings(val []MigratePathMapping) {
+	s.PathMappings = val
+}
+
+// SetResolutions sets the value of Resolutions.
+func (s *MigratePlanRequest) SetResolutions(val OptMigratePlanRequestResolutions) {
+	s.Resolutions = val
+}
+
+// SetProwlarrModes sets the value of ProwlarrModes.
+func (s *MigratePlanRequest) SetProwlarrModes(val []MigrateProwlarrMode) {
+	s.ProwlarrModes = val
+}
+
+// Plan item key → merge, rename or skip.
+type MigratePlanRequestResolutions map[string]MigratePlanRequestResolutionsItem
+
+func (s *MigratePlanRequestResolutions) init() MigratePlanRequestResolutions {
+	m := *s
+	if m == nil {
+		m = map[string]MigratePlanRequestResolutionsItem{}
+		*s = m
+	}
+	return m
+}
+
+type MigratePlanRequestResolutionsItem string
+
+const (
+	MigratePlanRequestResolutionsItemMerge  MigratePlanRequestResolutionsItem = "merge"
+	MigratePlanRequestResolutionsItemRename MigratePlanRequestResolutionsItem = "rename"
+	MigratePlanRequestResolutionsItemSkip   MigratePlanRequestResolutionsItem = "skip"
+)
+
+// AllValues returns all MigratePlanRequestResolutionsItem values.
+func (MigratePlanRequestResolutionsItem) AllValues() []MigratePlanRequestResolutionsItem {
+	return []MigratePlanRequestResolutionsItem{
+		MigratePlanRequestResolutionsItemMerge,
+		MigratePlanRequestResolutionsItemRename,
+		MigratePlanRequestResolutionsItemSkip,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigratePlanRequestResolutionsItem) MarshalText() ([]byte, error) {
+	switch s {
+	case MigratePlanRequestResolutionsItemMerge:
+		return []byte(s), nil
+	case MigratePlanRequestResolutionsItemRename:
+		return []byte(s), nil
+	case MigratePlanRequestResolutionsItemSkip:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigratePlanRequestResolutionsItem) UnmarshalText(data []byte) error {
+	switch MigratePlanRequestResolutionsItem(data) {
+	case MigratePlanRequestResolutionsItemMerge:
+		*s = MigratePlanRequestResolutionsItemMerge
+		return nil
+	case MigratePlanRequestResolutionsItemRename:
+		*s = MigratePlanRequestResolutionsItemRename
+		return nil
+	case MigratePlanRequestResolutionsItemSkip:
+		*s = MigratePlanRequestResolutionsItemSkip
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MigrateProgress
+type MigrateProgress struct {
+	Phase   string `json:"phase"`
+	Done    int    `json:"done"`
+	Total   int    `json:"total"`
+	Message string `json:"message"`
+}
+
+// GetPhase returns the value of Phase.
+func (s *MigrateProgress) GetPhase() string {
+	return s.Phase
+}
+
+// GetDone returns the value of Done.
+func (s *MigrateProgress) GetDone() int {
+	return s.Done
+}
+
+// GetTotal returns the value of Total.
+func (s *MigrateProgress) GetTotal() int {
+	return s.Total
+}
+
+// GetMessage returns the value of Message.
+func (s *MigrateProgress) GetMessage() string {
+	return s.Message
+}
+
+// SetPhase sets the value of Phase.
+func (s *MigrateProgress) SetPhase(val string) {
+	s.Phase = val
+}
+
+// SetDone sets the value of Done.
+func (s *MigrateProgress) SetDone(val int) {
+	s.Done = val
+}
+
+// SetTotal sets the value of Total.
+func (s *MigrateProgress) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetMessage sets the value of Message.
+func (s *MigrateProgress) SetMessage(val string) {
+	s.Message = val
+}
+
+// Ref: #/components/schemas/MigrateProwlarrMode
+type MigrateProwlarrMode struct {
+	SourceId int64                   `json:"sourceId"`
+	Mode     MigrateProwlarrModeMode `json:"mode"`
+}
+
+// GetSourceId returns the value of SourceId.
+func (s *MigrateProwlarrMode) GetSourceId() int64 {
+	return s.SourceId
+}
+
+// GetMode returns the value of Mode.
+func (s *MigrateProwlarrMode) GetMode() MigrateProwlarrModeMode {
+	return s.Mode
+}
+
+// SetSourceId sets the value of SourceId.
+func (s *MigrateProwlarrMode) SetSourceId(val int64) {
+	s.SourceId = val
+}
+
+// SetMode sets the value of Mode.
+func (s *MigrateProwlarrMode) SetMode(val MigrateProwlarrModeMode) {
+	s.Mode = val
+}
+
+type MigrateProwlarrModeMode string
+
+const (
+	MigrateProwlarrModeModeSource MigrateProwlarrModeMode = "source"
+	MigrateProwlarrModeModeDirect MigrateProwlarrModeMode = "direct"
+)
+
+// AllValues returns all MigrateProwlarrModeMode values.
+func (MigrateProwlarrModeMode) AllValues() []MigrateProwlarrModeMode {
+	return []MigrateProwlarrModeMode{
+		MigrateProwlarrModeModeSource,
+		MigrateProwlarrModeModeDirect,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigrateProwlarrModeMode) MarshalText() ([]byte, error) {
+	switch s {
+	case MigrateProwlarrModeModeSource:
+		return []byte(s), nil
+	case MigrateProwlarrModeModeDirect:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigrateProwlarrModeMode) UnmarshalText(data []byte) error {
+	switch MigrateProwlarrModeMode(data) {
+	case MigrateProwlarrModeModeSource:
+		*s = MigrateProwlarrModeModeSource
+		return nil
+	case MigrateProwlarrModeModeDirect:
+		*s = MigrateProwlarrModeModeDirect
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MigrateRefresh
+type MigrateRefresh struct {
+	Total  int       `json:"total"`
+	Done   int       `json:"done"`
+	Failed int       `json:"failed"`
+	Error  OptString `json:"error"`
+}
+
+// GetTotal returns the value of Total.
+func (s *MigrateRefresh) GetTotal() int {
+	return s.Total
+}
+
+// GetDone returns the value of Done.
+func (s *MigrateRefresh) GetDone() int {
+	return s.Done
+}
+
+// GetFailed returns the value of Failed.
+func (s *MigrateRefresh) GetFailed() int {
+	return s.Failed
+}
+
+// GetError returns the value of Error.
+func (s *MigrateRefresh) GetError() OptString {
+	return s.Error
+}
+
+// SetTotal sets the value of Total.
+func (s *MigrateRefresh) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetDone sets the value of Done.
+func (s *MigrateRefresh) SetDone(val int) {
+	s.Done = val
+}
+
+// SetFailed sets the value of Failed.
+func (s *MigrateRefresh) SetFailed(val int) {
+	s.Failed = val
+}
+
+// SetError sets the value of Error.
+func (s *MigrateRefresh) SetError(val OptString) {
+	s.Error = val
+}
+
+// Ref: #/components/schemas/MigrateReport
+type MigrateReport struct {
+	Run       MigrateRun      `json:"run"`
+	Sources   []MigrateSource `json:"sources"`
+	Items     []MigrateItem   `json:"items"`
+	Generated time.Time       `json:"generated"`
+}
+
+// GetRun returns the value of Run.
+func (s *MigrateReport) GetRun() MigrateRun {
+	return s.Run
+}
+
+// GetSources returns the value of Sources.
+func (s *MigrateReport) GetSources() []MigrateSource {
+	return s.Sources
+}
+
+// GetItems returns the value of Items.
+func (s *MigrateReport) GetItems() []MigrateItem {
+	return s.Items
+}
+
+// GetGenerated returns the value of Generated.
+func (s *MigrateReport) GetGenerated() time.Time {
+	return s.Generated
+}
+
+// SetRun sets the value of Run.
+func (s *MigrateReport) SetRun(val MigrateRun) {
+	s.Run = val
+}
+
+// SetSources sets the value of Sources.
+func (s *MigrateReport) SetSources(val []MigrateSource) {
+	s.Sources = val
+}
+
+// SetItems sets the value of Items.
+func (s *MigrateReport) SetItems(val []MigrateItem) {
+	s.Items = val
+}
+
+// SetGenerated sets the value of Generated.
+func (s *MigrateReport) SetGenerated(val time.Time) {
+	s.Generated = val
+}
+
+// Ref: #/components/schemas/MigrateRun
+type MigrateRun struct {
+	ID         int64             `json:"id"`
+	Status     MigrateRunStatus  `json:"status"`
+	Options    MigrateRunOptions `json:"options"`
+	Progress   MigrateProgress   `json:"progress"`
+	Summary    MigrateSummary    `json:"summary"`
+	Error      string            `json:"error"`
+	CreatedAt  time.Time         `json:"createdAt"`
+	UpdatedAt  time.Time         `json:"updatedAt"`
+	FinishedAt OptDateTime       `json:"finishedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *MigrateRun) GetID() int64 {
+	return s.ID
+}
+
+// GetStatus returns the value of Status.
+func (s *MigrateRun) GetStatus() MigrateRunStatus {
+	return s.Status
+}
+
+// GetOptions returns the value of Options.
+func (s *MigrateRun) GetOptions() MigrateRunOptions {
+	return s.Options
+}
+
+// GetProgress returns the value of Progress.
+func (s *MigrateRun) GetProgress() MigrateProgress {
+	return s.Progress
+}
+
+// GetSummary returns the value of Summary.
+func (s *MigrateRun) GetSummary() MigrateSummary {
+	return s.Summary
+}
+
+// GetError returns the value of Error.
+func (s *MigrateRun) GetError() string {
+	return s.Error
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MigrateRun) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *MigrateRun) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetFinishedAt returns the value of FinishedAt.
+func (s *MigrateRun) GetFinishedAt() OptDateTime {
+	return s.FinishedAt
+}
+
+// SetID sets the value of ID.
+func (s *MigrateRun) SetID(val int64) {
+	s.ID = val
+}
+
+// SetStatus sets the value of Status.
+func (s *MigrateRun) SetStatus(val MigrateRunStatus) {
+	s.Status = val
+}
+
+// SetOptions sets the value of Options.
+func (s *MigrateRun) SetOptions(val MigrateRunOptions) {
+	s.Options = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *MigrateRun) SetProgress(val MigrateProgress) {
+	s.Progress = val
+}
+
+// SetSummary sets the value of Summary.
+func (s *MigrateRun) SetSummary(val MigrateSummary) {
+	s.Summary = val
+}
+
+// SetError sets the value of Error.
+func (s *MigrateRun) SetError(val string) {
+	s.Error = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MigrateRun) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *MigrateRun) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetFinishedAt sets the value of FinishedAt.
+func (s *MigrateRun) SetFinishedAt(val OptDateTime) {
+	s.FinishedAt = val
+}
+
+// Ref: #/components/schemas/MigrateRunOptions
+type MigrateRunOptions struct {
+	Sources      []MigrateSourceOptions       `json:"sources"`
+	PathMappings []MigratePathMapping         `json:"pathMappings"`
+	Resolutions  MigrateRunOptionsResolutions `json:"resolutions"`
+	HistoryDays  int                          `json:"historyDays"`
+}
+
+// GetSources returns the value of Sources.
+func (s *MigrateRunOptions) GetSources() []MigrateSourceOptions {
+	return s.Sources
+}
+
+// GetPathMappings returns the value of PathMappings.
+func (s *MigrateRunOptions) GetPathMappings() []MigratePathMapping {
+	return s.PathMappings
+}
+
+// GetResolutions returns the value of Resolutions.
+func (s *MigrateRunOptions) GetResolutions() MigrateRunOptionsResolutions {
+	return s.Resolutions
+}
+
+// GetHistoryDays returns the value of HistoryDays.
+func (s *MigrateRunOptions) GetHistoryDays() int {
+	return s.HistoryDays
+}
+
+// SetSources sets the value of Sources.
+func (s *MigrateRunOptions) SetSources(val []MigrateSourceOptions) {
+	s.Sources = val
+}
+
+// SetPathMappings sets the value of PathMappings.
+func (s *MigrateRunOptions) SetPathMappings(val []MigratePathMapping) {
+	s.PathMappings = val
+}
+
+// SetResolutions sets the value of Resolutions.
+func (s *MigrateRunOptions) SetResolutions(val MigrateRunOptionsResolutions) {
+	s.Resolutions = val
+}
+
+// SetHistoryDays sets the value of HistoryDays.
+func (s *MigrateRunOptions) SetHistoryDays(val int) {
+	s.HistoryDays = val
+}
+
+type MigrateRunOptionsResolutions map[string]string
+
+func (s *MigrateRunOptionsResolutions) init() MigrateRunOptionsResolutions {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/MigrateRunStatus
+type MigrateRunStatus string
+
+const (
+	MigrateRunStatusAnalysing MigrateRunStatus = "analysing"
+	MigrateRunStatusAnalysed  MigrateRunStatus = "analysed"
+	MigrateRunStatusPlanned   MigrateRunStatus = "planned"
+	MigrateRunStatusImporting MigrateRunStatus = "importing"
+	MigrateRunStatusDone      MigrateRunStatus = "done"
+	MigrateRunStatusFailed    MigrateRunStatus = "failed"
+	MigrateRunStatusCancelled MigrateRunStatus = "cancelled"
+)
+
+// AllValues returns all MigrateRunStatus values.
+func (MigrateRunStatus) AllValues() []MigrateRunStatus {
+	return []MigrateRunStatus{
+		MigrateRunStatusAnalysing,
+		MigrateRunStatusAnalysed,
+		MigrateRunStatusPlanned,
+		MigrateRunStatusImporting,
+		MigrateRunStatusDone,
+		MigrateRunStatusFailed,
+		MigrateRunStatusCancelled,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigrateRunStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case MigrateRunStatusAnalysing:
+		return []byte(s), nil
+	case MigrateRunStatusAnalysed:
+		return []byte(s), nil
+	case MigrateRunStatusPlanned:
+		return []byte(s), nil
+	case MigrateRunStatusImporting:
+		return []byte(s), nil
+	case MigrateRunStatusDone:
+		return []byte(s), nil
+	case MigrateRunStatusFailed:
+		return []byte(s), nil
+	case MigrateRunStatusCancelled:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigrateRunStatus) UnmarshalText(data []byte) error {
+	switch MigrateRunStatus(data) {
+	case MigrateRunStatusAnalysing:
+		*s = MigrateRunStatusAnalysing
+		return nil
+	case MigrateRunStatusAnalysed:
+		*s = MigrateRunStatusAnalysed
+		return nil
+	case MigrateRunStatusPlanned:
+		*s = MigrateRunStatusPlanned
+		return nil
+	case MigrateRunStatusImporting:
+		*s = MigrateRunStatusImporting
+		return nil
+	case MigrateRunStatusDone:
+		*s = MigrateRunStatusDone
+		return nil
+	case MigrateRunStatusFailed:
+		*s = MigrateRunStatusFailed
+		return nil
+	case MigrateRunStatusCancelled:
+		*s = MigrateRunStatusCancelled
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MigrateScopes
+type MigrateScopes struct {
+	Settings bool `json:"settings"`
+	Library  bool `json:"library"`
+	Users    bool `json:"users"`
+	History  bool `json:"history"`
+}
+
+// GetSettings returns the value of Settings.
+func (s *MigrateScopes) GetSettings() bool {
+	return s.Settings
+}
+
+// GetLibrary returns the value of Library.
+func (s *MigrateScopes) GetLibrary() bool {
+	return s.Library
+}
+
+// GetUsers returns the value of Users.
+func (s *MigrateScopes) GetUsers() bool {
+	return s.Users
+}
+
+// GetHistory returns the value of History.
+func (s *MigrateScopes) GetHistory() bool {
+	return s.History
+}
+
+// SetSettings sets the value of Settings.
+func (s *MigrateScopes) SetSettings(val bool) {
+	s.Settings = val
+}
+
+// SetLibrary sets the value of Library.
+func (s *MigrateScopes) SetLibrary(val bool) {
+	s.Library = val
+}
+
+// SetUsers sets the value of Users.
+func (s *MigrateScopes) SetUsers(val bool) {
+	s.Users = val
+}
+
+// SetHistory sets the value of History.
+func (s *MigrateScopes) SetHistory(val bool) {
+	s.History = val
+}
+
+// Ref: #/components/schemas/MigrateSource
+type MigrateSource struct {
+	ID       int64       `json:"id"`
+	Kind     MigrateKind `json:"kind"`
+	Name     string      `json:"name"`
+	URL      string      `json:"url"`
+	Username string      `json:"username"`
+	// The API key (or password) is stored; it is never returned.
+	SecretSet  bool          `json:"secretSet"`
+	AppName    string        `json:"appName"`
+	Version    string        `json:"version"`
+	LastTestAt OptDateTime   `json:"lastTestAt"`
+	LastError  string        `json:"lastError"`
+	CreatedAt  time.Time     `json:"createdAt"`
+	Supports   MigrateScopes `json:"supports"`
+}
+
+// GetID returns the value of ID.
+func (s *MigrateSource) GetID() int64 {
+	return s.ID
+}
+
+// GetKind returns the value of Kind.
+func (s *MigrateSource) GetKind() MigrateKind {
+	return s.Kind
+}
+
+// GetName returns the value of Name.
+func (s *MigrateSource) GetName() string {
+	return s.Name
+}
+
+// GetURL returns the value of URL.
+func (s *MigrateSource) GetURL() string {
+	return s.URL
+}
+
+// GetUsername returns the value of Username.
+func (s *MigrateSource) GetUsername() string {
+	return s.Username
+}
+
+// GetSecretSet returns the value of SecretSet.
+func (s *MigrateSource) GetSecretSet() bool {
+	return s.SecretSet
+}
+
+// GetAppName returns the value of AppName.
+func (s *MigrateSource) GetAppName() string {
+	return s.AppName
+}
+
+// GetVersion returns the value of Version.
+func (s *MigrateSource) GetVersion() string {
+	return s.Version
+}
+
+// GetLastTestAt returns the value of LastTestAt.
+func (s *MigrateSource) GetLastTestAt() OptDateTime {
+	return s.LastTestAt
+}
+
+// GetLastError returns the value of LastError.
+func (s *MigrateSource) GetLastError() string {
+	return s.LastError
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MigrateSource) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetSupports returns the value of Supports.
+func (s *MigrateSource) GetSupports() MigrateScopes {
+	return s.Supports
+}
+
+// SetID sets the value of ID.
+func (s *MigrateSource) SetID(val int64) {
+	s.ID = val
+}
+
+// SetKind sets the value of Kind.
+func (s *MigrateSource) SetKind(val MigrateKind) {
+	s.Kind = val
+}
+
+// SetName sets the value of Name.
+func (s *MigrateSource) SetName(val string) {
+	s.Name = val
+}
+
+// SetURL sets the value of URL.
+func (s *MigrateSource) SetURL(val string) {
+	s.URL = val
+}
+
+// SetUsername sets the value of Username.
+func (s *MigrateSource) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetSecretSet sets the value of SecretSet.
+func (s *MigrateSource) SetSecretSet(val bool) {
+	s.SecretSet = val
+}
+
+// SetAppName sets the value of AppName.
+func (s *MigrateSource) SetAppName(val string) {
+	s.AppName = val
+}
+
+// SetVersion sets the value of Version.
+func (s *MigrateSource) SetVersion(val string) {
+	s.Version = val
+}
+
+// SetLastTestAt sets the value of LastTestAt.
+func (s *MigrateSource) SetLastTestAt(val OptDateTime) {
+	s.LastTestAt = val
+}
+
+// SetLastError sets the value of LastError.
+func (s *MigrateSource) SetLastError(val string) {
+	s.LastError = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MigrateSource) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetSupports sets the value of Supports.
+func (s *MigrateSource) SetSupports(val MigrateScopes) {
+	s.Supports = val
+}
+
+// Ref: #/components/schemas/MigrateSourceInput
+type MigrateSourceInput struct {
+	Kind MigrateKind `json:"kind"`
+	Name OptString   `json:"name"`
+	// Http(s)://host:port with the URL base, if any.
+	URL string `json:"url"`
+	// QBittorrent only.
+	Username OptString `json:"username"`
+	// The API key (qBittorrent: the password). Write-only.
+	Secret OptString `json:"secret"`
+}
+
+// GetKind returns the value of Kind.
+func (s *MigrateSourceInput) GetKind() MigrateKind {
+	return s.Kind
+}
+
+// GetName returns the value of Name.
+func (s *MigrateSourceInput) GetName() OptString {
+	return s.Name
+}
+
+// GetURL returns the value of URL.
+func (s *MigrateSourceInput) GetURL() string {
+	return s.URL
+}
+
+// GetUsername returns the value of Username.
+func (s *MigrateSourceInput) GetUsername() OptString {
+	return s.Username
+}
+
+// GetSecret returns the value of Secret.
+func (s *MigrateSourceInput) GetSecret() OptString {
+	return s.Secret
+}
+
+// SetKind sets the value of Kind.
+func (s *MigrateSourceInput) SetKind(val MigrateKind) {
+	s.Kind = val
+}
+
+// SetName sets the value of Name.
+func (s *MigrateSourceInput) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetURL sets the value of URL.
+func (s *MigrateSourceInput) SetURL(val string) {
+	s.URL = val
+}
+
+// SetUsername sets the value of Username.
+func (s *MigrateSourceInput) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// SetSecret sets the value of Secret.
+func (s *MigrateSourceInput) SetSecret(val OptString) {
+	s.Secret = val
+}
+
+// Ref: #/components/schemas/MigrateSourceOptions
+type MigrateSourceOptions struct {
+	ID       int64   `json:"id"`
+	Settings OptBool `json:"settings"`
+	Library  OptBool `json:"library"`
+	Users    OptBool `json:"users"`
+	History  OptBool `json:"history"`
+	// Prowlarr only - keep it as a synced indexer source, or add each indexer on its own.
+	ProwlarrMode OptMigrateSourceOptionsProwlarrMode `json:"prowlarrMode"`
+}
+
+// GetID returns the value of ID.
+func (s *MigrateSourceOptions) GetID() int64 {
+	return s.ID
+}
+
+// GetSettings returns the value of Settings.
+func (s *MigrateSourceOptions) GetSettings() OptBool {
+	return s.Settings
+}
+
+// GetLibrary returns the value of Library.
+func (s *MigrateSourceOptions) GetLibrary() OptBool {
+	return s.Library
+}
+
+// GetUsers returns the value of Users.
+func (s *MigrateSourceOptions) GetUsers() OptBool {
+	return s.Users
+}
+
+// GetHistory returns the value of History.
+func (s *MigrateSourceOptions) GetHistory() OptBool {
+	return s.History
+}
+
+// GetProwlarrMode returns the value of ProwlarrMode.
+func (s *MigrateSourceOptions) GetProwlarrMode() OptMigrateSourceOptionsProwlarrMode {
+	return s.ProwlarrMode
+}
+
+// SetID sets the value of ID.
+func (s *MigrateSourceOptions) SetID(val int64) {
+	s.ID = val
+}
+
+// SetSettings sets the value of Settings.
+func (s *MigrateSourceOptions) SetSettings(val OptBool) {
+	s.Settings = val
+}
+
+// SetLibrary sets the value of Library.
+func (s *MigrateSourceOptions) SetLibrary(val OptBool) {
+	s.Library = val
+}
+
+// SetUsers sets the value of Users.
+func (s *MigrateSourceOptions) SetUsers(val OptBool) {
+	s.Users = val
+}
+
+// SetHistory sets the value of History.
+func (s *MigrateSourceOptions) SetHistory(val OptBool) {
+	s.History = val
+}
+
+// SetProwlarrMode sets the value of ProwlarrMode.
+func (s *MigrateSourceOptions) SetProwlarrMode(val OptMigrateSourceOptionsProwlarrMode) {
+	s.ProwlarrMode = val
+}
+
+// Prowlarr only - keep it as a synced indexer source, or add each indexer on its own.
+type MigrateSourceOptionsProwlarrMode string
+
+const (
+	MigrateSourceOptionsProwlarrModeSource MigrateSourceOptionsProwlarrMode = "source"
+	MigrateSourceOptionsProwlarrModeDirect MigrateSourceOptionsProwlarrMode = "direct"
+)
+
+// AllValues returns all MigrateSourceOptionsProwlarrMode values.
+func (MigrateSourceOptionsProwlarrMode) AllValues() []MigrateSourceOptionsProwlarrMode {
+	return []MigrateSourceOptionsProwlarrMode{
+		MigrateSourceOptionsProwlarrModeSource,
+		MigrateSourceOptionsProwlarrModeDirect,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MigrateSourceOptionsProwlarrMode) MarshalText() ([]byte, error) {
+	switch s {
+	case MigrateSourceOptionsProwlarrModeSource:
+		return []byte(s), nil
+	case MigrateSourceOptionsProwlarrModeDirect:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MigrateSourceOptionsProwlarrMode) UnmarshalText(data []byte) error {
+	switch MigrateSourceOptionsProwlarrMode(data) {
+	case MigrateSourceOptionsProwlarrModeSource:
+		*s = MigrateSourceOptionsProwlarrModeSource
+		return nil
+	case MigrateSourceOptionsProwlarrModeDirect:
+		*s = MigrateSourceOptionsProwlarrModeDirect
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MigrateSourceSummary
+type MigrateSourceSummary struct {
+	ID      int64                    `json:"id"`
+	Kind    MigrateKind              `json:"kind"`
+	Name    string                   `json:"name"`
+	Version string                   `json:"version"`
+	Read    MigrateSourceSummaryRead `json:"read"`
+	Roots   []string                 `json:"roots"`
+}
+
+// GetID returns the value of ID.
+func (s *MigrateSourceSummary) GetID() int64 {
+	return s.ID
+}
+
+// GetKind returns the value of Kind.
+func (s *MigrateSourceSummary) GetKind() MigrateKind {
+	return s.Kind
+}
+
+// GetName returns the value of Name.
+func (s *MigrateSourceSummary) GetName() string {
+	return s.Name
+}
+
+// GetVersion returns the value of Version.
+func (s *MigrateSourceSummary) GetVersion() string {
+	return s.Version
+}
+
+// GetRead returns the value of Read.
+func (s *MigrateSourceSummary) GetRead() MigrateSourceSummaryRead {
+	return s.Read
+}
+
+// GetRoots returns the value of Roots.
+func (s *MigrateSourceSummary) GetRoots() []string {
+	return s.Roots
+}
+
+// SetID sets the value of ID.
+func (s *MigrateSourceSummary) SetID(val int64) {
+	s.ID = val
+}
+
+// SetKind sets the value of Kind.
+func (s *MigrateSourceSummary) SetKind(val MigrateKind) {
+	s.Kind = val
+}
+
+// SetName sets the value of Name.
+func (s *MigrateSourceSummary) SetName(val string) {
+	s.Name = val
+}
+
+// SetVersion sets the value of Version.
+func (s *MigrateSourceSummary) SetVersion(val string) {
+	s.Version = val
+}
+
+// SetRead sets the value of Read.
+func (s *MigrateSourceSummary) SetRead(val MigrateSourceSummaryRead) {
+	s.Read = val
+}
+
+// SetRoots sets the value of Roots.
+func (s *MigrateSourceSummary) SetRoots(val []string) {
+	s.Roots = val
+}
+
+type MigrateSourceSummaryRead map[string]int
+
+func (s *MigrateSourceSummaryRead) init() MigrateSourceSummaryRead {
+	m := *s
+	if m == nil {
+		m = map[string]int{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/MigrateSummary
+type MigrateSummary struct {
+	Sources    []MigrateSourceSummary `json:"sources"`
+	PathChecks []MigratePathCheck     `json:"pathChecks"`
+	Suggested  []MigratePathMapping   `json:"suggested"`
+	// Category → action → count.
+	Counts     MigrateSummaryCounts    `json:"counts"`
+	Statuses   MigrateSummaryStatuses  `json:"statuses"`
+	Attention  MigrateSummaryAttention `json:"attention"`
+	Conflicts  int                     `json:"conflicts"`
+	Warnings   []string                `json:"warnings"`
+	Refresh    OptMigrateRefresh       `json:"refresh"`
+	DurationMs OptInt64                `json:"durationMs"`
+}
+
+// GetSources returns the value of Sources.
+func (s *MigrateSummary) GetSources() []MigrateSourceSummary {
+	return s.Sources
+}
+
+// GetPathChecks returns the value of PathChecks.
+func (s *MigrateSummary) GetPathChecks() []MigratePathCheck {
+	return s.PathChecks
+}
+
+// GetSuggested returns the value of Suggested.
+func (s *MigrateSummary) GetSuggested() []MigratePathMapping {
+	return s.Suggested
+}
+
+// GetCounts returns the value of Counts.
+func (s *MigrateSummary) GetCounts() MigrateSummaryCounts {
+	return s.Counts
+}
+
+// GetStatuses returns the value of Statuses.
+func (s *MigrateSummary) GetStatuses() MigrateSummaryStatuses {
+	return s.Statuses
+}
+
+// GetAttention returns the value of Attention.
+func (s *MigrateSummary) GetAttention() MigrateSummaryAttention {
+	return s.Attention
+}
+
+// GetConflicts returns the value of Conflicts.
+func (s *MigrateSummary) GetConflicts() int {
+	return s.Conflicts
+}
+
+// GetWarnings returns the value of Warnings.
+func (s *MigrateSummary) GetWarnings() []string {
+	return s.Warnings
+}
+
+// GetRefresh returns the value of Refresh.
+func (s *MigrateSummary) GetRefresh() OptMigrateRefresh {
+	return s.Refresh
+}
+
+// GetDurationMs returns the value of DurationMs.
+func (s *MigrateSummary) GetDurationMs() OptInt64 {
+	return s.DurationMs
+}
+
+// SetSources sets the value of Sources.
+func (s *MigrateSummary) SetSources(val []MigrateSourceSummary) {
+	s.Sources = val
+}
+
+// SetPathChecks sets the value of PathChecks.
+func (s *MigrateSummary) SetPathChecks(val []MigratePathCheck) {
+	s.PathChecks = val
+}
+
+// SetSuggested sets the value of Suggested.
+func (s *MigrateSummary) SetSuggested(val []MigratePathMapping) {
+	s.Suggested = val
+}
+
+// SetCounts sets the value of Counts.
+func (s *MigrateSummary) SetCounts(val MigrateSummaryCounts) {
+	s.Counts = val
+}
+
+// SetStatuses sets the value of Statuses.
+func (s *MigrateSummary) SetStatuses(val MigrateSummaryStatuses) {
+	s.Statuses = val
+}
+
+// SetAttention sets the value of Attention.
+func (s *MigrateSummary) SetAttention(val MigrateSummaryAttention) {
+	s.Attention = val
+}
+
+// SetConflicts sets the value of Conflicts.
+func (s *MigrateSummary) SetConflicts(val int) {
+	s.Conflicts = val
+}
+
+// SetWarnings sets the value of Warnings.
+func (s *MigrateSummary) SetWarnings(val []string) {
+	s.Warnings = val
+}
+
+// SetRefresh sets the value of Refresh.
+func (s *MigrateSummary) SetRefresh(val OptMigrateRefresh) {
+	s.Refresh = val
+}
+
+// SetDurationMs sets the value of DurationMs.
+func (s *MigrateSummary) SetDurationMs(val OptInt64) {
+	s.DurationMs = val
+}
+
+type MigrateSummaryAttention map[string]int
+
+func (s *MigrateSummaryAttention) init() MigrateSummaryAttention {
+	m := *s
+	if m == nil {
+		m = map[string]int{}
+		*s = m
+	}
+	return m
+}
+
+// Category → action → count.
+type MigrateSummaryCounts map[string]MigrateSummaryCountsItem
+
+func (s *MigrateSummaryCounts) init() MigrateSummaryCounts {
+	m := *s
+	if m == nil {
+		m = map[string]MigrateSummaryCountsItem{}
+		*s = m
+	}
+	return m
+}
+
+type MigrateSummaryCountsItem map[string]int
+
+func (s *MigrateSummaryCountsItem) init() MigrateSummaryCountsItem {
+	m := *s
+	if m == nil {
+		m = map[string]int{}
+		*s = m
+	}
+	return m
+}
+
+type MigrateSummaryStatuses map[string]int
+
+func (s *MigrateSummaryStatuses) init() MigrateSummaryStatuses {
+	m := *s
+	if m == nil {
+		m = map[string]int{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/MigrateTestResult
+type MigrateTestResult struct {
+	Ok      bool      `json:"ok"`
+	AppName OptString `json:"appName"`
+	Version OptString `json:"version"`
+	// Unreachable, unauthorized, wrong_app, unsupported_version, bad_response, not_found.
+	Code    OptString `json:"code"`
+	Message OptString `json:"message"`
+}
+
+// GetOk returns the value of Ok.
+func (s *MigrateTestResult) GetOk() bool {
+	return s.Ok
+}
+
+// GetAppName returns the value of AppName.
+func (s *MigrateTestResult) GetAppName() OptString {
+	return s.AppName
+}
+
+// GetVersion returns the value of Version.
+func (s *MigrateTestResult) GetVersion() OptString {
+	return s.Version
+}
+
+// GetCode returns the value of Code.
+func (s *MigrateTestResult) GetCode() OptString {
+	return s.Code
+}
+
+// GetMessage returns the value of Message.
+func (s *MigrateTestResult) GetMessage() OptString {
+	return s.Message
+}
+
+// SetOk sets the value of Ok.
+func (s *MigrateTestResult) SetOk(val bool) {
+	s.Ok = val
+}
+
+// SetAppName sets the value of AppName.
+func (s *MigrateTestResult) SetAppName(val OptString) {
+	s.AppName = val
+}
+
+// SetVersion sets the value of Version.
+func (s *MigrateTestResult) SetVersion(val OptString) {
+	s.Version = val
+}
+
+// SetCode sets the value of Code.
+func (s *MigrateTestResult) SetCode(val OptString) {
+	s.Code = val
+}
+
+// SetMessage sets the value of Message.
+func (s *MigrateTestResult) SetMessage(val OptString) {
+	s.Message = val
+}
+
 // Ref: #/components/schemas/MinimumAvailability
 type MinimumAvailability string
 
@@ -18174,6 +20133,8 @@ const (
 	NotificationEventTypeHealthWarning         NotificationEventType = "health.warning"
 	NotificationEventTypeSubtitlesDownloaded   NotificationEventType = "subtitles.downloaded"
 	NotificationEventTypeSubtitlesMissing      NotificationEventType = "subtitles.missing"
+	NotificationEventTypeMigrateFinished       NotificationEventType = "migrate.finished"
+	NotificationEventTypeMigrateFailed         NotificationEventType = "migrate.failed"
 	NotificationEventTypeTest                  NotificationEventType = "test"
 )
 
@@ -18199,6 +20160,8 @@ func (NotificationEventType) AllValues() []NotificationEventType {
 		NotificationEventTypeHealthWarning,
 		NotificationEventTypeSubtitlesDownloaded,
 		NotificationEventTypeSubtitlesMissing,
+		NotificationEventTypeMigrateFinished,
+		NotificationEventTypeMigrateFailed,
 		NotificationEventTypeTest,
 	}
 }
@@ -18243,6 +20206,10 @@ func (s NotificationEventType) MarshalText() ([]byte, error) {
 	case NotificationEventTypeSubtitlesDownloaded:
 		return []byte(s), nil
 	case NotificationEventTypeSubtitlesMissing:
+		return []byte(s), nil
+	case NotificationEventTypeMigrateFinished:
+		return []byte(s), nil
+	case NotificationEventTypeMigrateFailed:
 		return []byte(s), nil
 	case NotificationEventTypeTest:
 		return []byte(s), nil
@@ -18310,6 +20277,12 @@ func (s *NotificationEventType) UnmarshalText(data []byte) error {
 		return nil
 	case NotificationEventTypeSubtitlesMissing:
 		*s = NotificationEventTypeSubtitlesMissing
+		return nil
+	case NotificationEventTypeMigrateFinished:
+		*s = NotificationEventTypeMigrateFinished
+		return nil
+	case NotificationEventTypeMigrateFailed:
+		*s = NotificationEventTypeMigrateFailed
 		return nil
 	case NotificationEventTypeTest:
 		*s = NotificationEventTypeTest
@@ -20318,6 +22291,282 @@ func (o OptMetadataSettingsInputSeriesProvider) Get() (v MetadataSettingsInputSe
 
 // Or returns value if set, or given parameter if does not.
 func (o OptMetadataSettingsInputSeriesProvider) Or(d MetadataSettingsInputSeriesProvider) MetadataSettingsInputSeriesProvider {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMigrateAction returns new OptMigrateAction with value set to v.
+func NewOptMigrateAction(v MigrateAction) OptMigrateAction {
+	return OptMigrateAction{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMigrateAction is optional MigrateAction.
+type OptMigrateAction struct {
+	Value MigrateAction
+	Set   bool
+}
+
+// IsSet returns true if OptMigrateAction was set.
+func (o OptMigrateAction) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMigrateAction) Reset() {
+	var v MigrateAction
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMigrateAction) SetTo(v MigrateAction) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMigrateAction) Get() (v MigrateAction, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMigrateAction) Or(d MigrateAction) MigrateAction {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMigrateConflict returns new OptMigrateConflict with value set to v.
+func NewOptMigrateConflict(v MigrateConflict) OptMigrateConflict {
+	return OptMigrateConflict{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMigrateConflict is optional MigrateConflict.
+type OptMigrateConflict struct {
+	Value MigrateConflict
+	Set   bool
+}
+
+// IsSet returns true if OptMigrateConflict was set.
+func (o OptMigrateConflict) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMigrateConflict) Reset() {
+	var v MigrateConflict
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMigrateConflict) SetTo(v MigrateConflict) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMigrateConflict) Get() (v MigrateConflict, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMigrateConflict) Or(d MigrateConflict) MigrateConflict {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMigrateItemStatus returns new OptMigrateItemStatus with value set to v.
+func NewOptMigrateItemStatus(v MigrateItemStatus) OptMigrateItemStatus {
+	return OptMigrateItemStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMigrateItemStatus is optional MigrateItemStatus.
+type OptMigrateItemStatus struct {
+	Value MigrateItemStatus
+	Set   bool
+}
+
+// IsSet returns true if OptMigrateItemStatus was set.
+func (o OptMigrateItemStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMigrateItemStatus) Reset() {
+	var v MigrateItemStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMigrateItemStatus) SetTo(v MigrateItemStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMigrateItemStatus) Get() (v MigrateItemStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMigrateItemStatus) Or(d MigrateItemStatus) MigrateItemStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMigratePlanRequestResolutions returns new OptMigratePlanRequestResolutions with value set to v.
+func NewOptMigratePlanRequestResolutions(v MigratePlanRequestResolutions) OptMigratePlanRequestResolutions {
+	return OptMigratePlanRequestResolutions{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMigratePlanRequestResolutions is optional MigratePlanRequestResolutions.
+type OptMigratePlanRequestResolutions struct {
+	Value MigratePlanRequestResolutions
+	Set   bool
+}
+
+// IsSet returns true if OptMigratePlanRequestResolutions was set.
+func (o OptMigratePlanRequestResolutions) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMigratePlanRequestResolutions) Reset() {
+	var v MigratePlanRequestResolutions
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMigratePlanRequestResolutions) SetTo(v MigratePlanRequestResolutions) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMigratePlanRequestResolutions) Get() (v MigratePlanRequestResolutions, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMigratePlanRequestResolutions) Or(d MigratePlanRequestResolutions) MigratePlanRequestResolutions {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMigrateRefresh returns new OptMigrateRefresh with value set to v.
+func NewOptMigrateRefresh(v MigrateRefresh) OptMigrateRefresh {
+	return OptMigrateRefresh{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMigrateRefresh is optional MigrateRefresh.
+type OptMigrateRefresh struct {
+	Value MigrateRefresh
+	Set   bool
+}
+
+// IsSet returns true if OptMigrateRefresh was set.
+func (o OptMigrateRefresh) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMigrateRefresh) Reset() {
+	var v MigrateRefresh
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMigrateRefresh) SetTo(v MigrateRefresh) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMigrateRefresh) Get() (v MigrateRefresh, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMigrateRefresh) Or(d MigrateRefresh) MigrateRefresh {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMigrateSourceOptionsProwlarrMode returns new OptMigrateSourceOptionsProwlarrMode with value set to v.
+func NewOptMigrateSourceOptionsProwlarrMode(v MigrateSourceOptionsProwlarrMode) OptMigrateSourceOptionsProwlarrMode {
+	return OptMigrateSourceOptionsProwlarrMode{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMigrateSourceOptionsProwlarrMode is optional MigrateSourceOptionsProwlarrMode.
+type OptMigrateSourceOptionsProwlarrMode struct {
+	Value MigrateSourceOptionsProwlarrMode
+	Set   bool
+}
+
+// IsSet returns true if OptMigrateSourceOptionsProwlarrMode was set.
+func (o OptMigrateSourceOptionsProwlarrMode) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMigrateSourceOptionsProwlarrMode) Reset() {
+	var v MigrateSourceOptionsProwlarrMode
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMigrateSourceOptionsProwlarrMode) SetTo(v MigrateSourceOptionsProwlarrMode) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMigrateSourceOptionsProwlarrMode) Get() (v MigrateSourceOptionsProwlarrMode, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMigrateSourceOptionsProwlarrMode) Or(d MigrateSourceOptionsProwlarrMode) MigrateSourceOptionsProwlarrMode {
 	if v, ok := o.Get(); ok {
 		return v
 	}

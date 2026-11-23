@@ -29,7 +29,7 @@ export const EVENT_GROUPS: { key: string; personal: boolean; events: Notificatio
   { key: "library", personal: false, events: ["library.grabbed", "library.imported", "library.upgraded", "library.download_failed",
     "library.import_failed"] },
   { key: "subtitles", personal: false, events: ["subtitles.downloaded", "subtitles.missing"] },
-  { key: "system", personal: false, events: ["health.warning"] },
+  { key: "system", personal: false, events: ["health.warning", "migrate.finished", "migrate.failed"] },
 ];
 
 type SettingKey = "url" | "method" | "topic" | "priority" | "tags" | "tag" | "chatId" | "sound" | "device" | "to" | "username";

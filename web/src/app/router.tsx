@@ -52,6 +52,8 @@ import { AlbumDetailPage } from "@/features/music/AlbumDetailPage";
 import { MusicImportPage } from "@/features/music/MusicImportPage";
 import { MetadataProfilesPage } from "@/features/music/MetadataProfilesPage";
 import { SubtitleSettingsPage } from "@/features/subtitles/SubtitleSettingsPage";
+import { MigratePage } from "@/features/migrate/MigratePage";
+import { ChecklistPage } from "@/features/migrate/ChecklistPage";
 import { JoinPage } from "@/routes/JoinPage";
 import { DiscoverPage } from "@/features/discover/DiscoverPage";
 import { DiscoverListPage, validateListSearch } from "@/features/discover/DiscoverListPage";
@@ -188,6 +190,8 @@ const adminRoute = createRoute({
 const downloadersRoute = createRoute({ getParentRoute: () => adminRoute, path: "/downloaders", component: DownloadersPage });
 
 const indexersRoute = createRoute({ getParentRoute: () => adminRoute, path: "/indexers", component: IndexersPage });
+const migrateRoute = createRoute({ getParentRoute: () => adminRoute, path: "/migrate", component: MigratePage });
+const migrateChecklistRoute = createRoute({ getParentRoute: () => adminRoute, path: "/migrate/checklist", component: ChecklistPage });
 const settingsRoute = createRoute({ getParentRoute: () => adminRoute, path: "/settings", component: SettingsLayout });
 const settingsIndexRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/", component: GeneralSettingsPage });
 const rootFoldersRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/media", component: RootFoldersPage });
@@ -256,6 +260,8 @@ export const routeTree = rootRoute.addChildren([
     adminRoute.addChildren([
       downloadersRoute,
       indexersRoute,
+      migrateRoute,
+      migrateChecklistRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
         rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, subtitleSettingsRoute,
         requestSettingsRoute, mediaServerRoute, notificationSettingsRoute]),

@@ -68,6 +68,10 @@ func New(d *db.DB, box *secrets.Box, st *settings.Store, log *slog.Logger) *Serv
 
 func (s *Service) now() time.Time { return s.Now().UTC() }
 
+// HTTPPolicy is the outbound address policy administrators set for indexers;
+// other features talking to applications on the same network reuse it.
+func (s *Service) HTTPPolicy(ctx context.Context) (httpx.Policy, error) { return s.policy(ctx) }
+
 // policy returns the outbound address policy from the settings.
 func (s *Service) policy(ctx context.Context) (httpx.Policy, error) {
 	if s.PolicyOverride != nil {

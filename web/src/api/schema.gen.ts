@@ -4128,6 +4128,250 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/migrate/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Applications to import from (administrators) */
+        get: operations["listMigrateSources"];
+        put?: never;
+        /**
+         * Add an application to import from (administrators)
+         * @description The application is tested first (its public API, GET requests only; qBittorrent's
+         *     sign-in). The API key (or qBittorrent password) is stored encrypted and never returned.
+         */
+        post: operations["createMigrateSource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/sources/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test an application without saving it (administrators) */
+        post: operations["testMigrateSource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/sources/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Change a source (administrators)
+         * @description An absent `secret` keeps the stored one.
+         */
+        put: operations["updateMigrateSource"];
+        post?: never;
+        /**
+         * Forget a source (administrators)
+         * @description What was imported stays, and so do the import marks.
+         */
+        delete: operations["deleteMigrateSource"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/sources/{id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test a saved source again (administrators) */
+        post: operations["testSavedMigrateSource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recent imports (administrators) */
+        get: operations["listMigrateRuns"];
+        put?: never;
+        /**
+         * Read the chosen sources and plan the import (administrators)
+         * @description A background job reads the sources (nothing is changed on them) and builds the
+         *     preview; poll the run until its status is `planned`.
+         */
+        post: operations["startMigrateRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/runs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One import with its progress and summary (administrators) */
+        get: operations["getMigrateRun"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/runs/{id}/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Plan again with other path mappings or conflict choices (administrators) */
+        post: operations["planMigrateRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/runs/{id}/paths": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Count the files Locarr finds with these path mappings (administrators) */
+        post: operations["checkMigratePaths"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/runs/{id}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import what the preview shows (administrators)
+         * @description Runs in the background; poll the run for progress.
+         */
+        post: operations["importMigrateRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/runs/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop reading or importing (administrators) */
+        post: operations["cancelMigrateRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/runs/{id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The plan (or result) of a run, item by item (administrators) */
+        get: operations["listMigrateItems"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/runs/{id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Everything about a run as one JSON document (administrators) */
+        get: operations["getMigrateReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migrate/checklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The switch-over checklist after an import (administrators)
+         * @description Steps on the old applications are instructions only; Locarr never changes them.
+         */
+        get: operations["getMigrateChecklist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -7586,7 +7830,7 @@ export interface components {
         /** @enum {string} */
         NotificationChannelKind: "webhook" | "ntfy" | "gotify" | "discord" | "telegram" | "pushover" | "email" | "apprise";
         /** @enum {string} */
-        NotificationEventType: "request.created" | "request.approved" | "request.declined" | "request.available" | "request.partial" | "request.failed" | "request.comment" | "issue.created" | "issue.comment" | "issue.resolved" | "issue.reopened" | "library.grabbed" | "library.imported" | "library.upgraded" | "library.download_failed" | "library.import_failed" | "health.warning" | "subtitles.downloaded" | "subtitles.missing" | "test";
+        NotificationEventType: "request.created" | "request.approved" | "request.declined" | "request.available" | "request.partial" | "request.failed" | "request.comment" | "issue.created" | "issue.comment" | "issue.resolved" | "issue.reopened" | "library.grabbed" | "library.imported" | "library.upgraded" | "library.download_failed" | "library.import_failed" | "health.warning" | "subtitles.downloaded" | "subtitles.missing" | "migrate.finished" | "migrate.failed" | "test";
         /** @description Plain settings; each kind uses only its own fields. */
         NotificationChannelSettings: {
             /** @description webhook: target URL; ntfy and gotify: server; apprise: notify endpoint (e.g. http://apprise:8000/notify/apprise). */
@@ -7716,6 +7960,222 @@ export interface components {
             subtitleMissingDays?: number;
             baseUrl?: string;
             smtp?: components["schemas"]["SmtpSettingsInput"];
+        };
+        /** @enum {string} */
+        MigrateKind: "sonarr" | "radarr" | "lidarr" | "prowlarr" | "bazarr" | "overseerr" | "seerr" | "qbittorrent" | "sabnzbd";
+        MigrateScopes: {
+            settings: boolean;
+            library: boolean;
+            users: boolean;
+            history: boolean;
+        };
+        MigrateSource: {
+            /** Format: int64 */
+            id: number;
+            kind: components["schemas"]["MigrateKind"];
+            name: string;
+            url: string;
+            username: string;
+            /** @description The API key (or password) is stored; it is never returned. */
+            secretSet: boolean;
+            appName: string;
+            version: string;
+            /** Format: date-time */
+            lastTestAt?: string;
+            lastError: string;
+            /** Format: date-time */
+            createdAt: string;
+            supports: components["schemas"]["MigrateScopes"];
+        };
+        MigrateSourceInput: {
+            kind: components["schemas"]["MigrateKind"];
+            name?: string;
+            /** @description http(s)://host:port with the URL base, if any */
+            url: string;
+            /** @description qBittorrent only */
+            username?: string;
+            /** @description The API key (qBittorrent: the password). Write-only. */
+            secret?: string;
+        };
+        MigrateTestResult: {
+            ok: boolean;
+            appName?: string;
+            version?: string;
+            /** @description unreachable, unauthorized, wrong_app, unsupported_version, bad_response, not_found */
+            code?: string;
+            message?: string;
+        };
+        MigrateSourceOptions: {
+            /** Format: int64 */
+            id: number;
+            settings?: boolean;
+            library?: boolean;
+            users?: boolean;
+            history?: boolean;
+            /**
+             * @description Prowlarr only - keep it as a synced indexer source, or add each indexer on its own.
+             * @enum {string}
+             */
+            prowlarrMode?: "source" | "direct";
+        };
+        MigratePathMapping: {
+            /**
+             * Format: int64
+             * @description 0 applies to every source
+             */
+            sourceId: number;
+            /** @description The folder as the source sees it */
+            from: string;
+            /** @description The same folder as Locarr sees it */
+            to: string;
+        };
+        MigrateOptions: {
+            sources: components["schemas"]["MigrateSourceOptions"][];
+            pathMappings?: components["schemas"]["MigratePathMapping"][];
+            historyDays?: number;
+        };
+        MigrateRunOptions: {
+            sources: components["schemas"]["MigrateSourceOptions"][];
+            pathMappings: components["schemas"]["MigratePathMapping"][];
+            resolutions: {
+                [key: string]: string;
+            };
+            historyDays: number;
+        };
+        MigrateProwlarrMode: {
+            /** Format: int64 */
+            sourceId: number;
+            /** @enum {string} */
+            mode: "source" | "direct";
+        };
+        MigratePlanRequest: {
+            pathMappings?: components["schemas"]["MigratePathMapping"][];
+            /** @description Plan item key → merge, rename or skip. */
+            resolutions?: {
+                [key: string]: "merge" | "rename" | "skip";
+            };
+            prowlarrModes?: components["schemas"]["MigrateProwlarrMode"][];
+        };
+        MigratePathCheck: {
+            /** Format: int64 */
+            sourceId: number;
+            sourcePath: string;
+            localPath: string;
+            /** @description Inside the folders Locarr may use */
+            inside: boolean;
+            exists: boolean;
+            files: number;
+            found: number;
+            /** @description A few examples of files not found */
+            missing: string[];
+        };
+        MigrateProgress: {
+            phase: string;
+            done: number;
+            total: number;
+            message: string;
+        };
+        MigrateSourceSummary: {
+            /** Format: int64 */
+            id: number;
+            kind: components["schemas"]["MigrateKind"];
+            name: string;
+            version: string;
+            read: {
+                [key: string]: number;
+            };
+            roots: string[];
+        };
+        MigrateRefresh: {
+            total: number;
+            done: number;
+            failed: number;
+            error?: string;
+        };
+        MigrateSummary: {
+            sources: components["schemas"]["MigrateSourceSummary"][];
+            pathChecks: components["schemas"]["MigratePathCheck"][];
+            suggested: components["schemas"]["MigratePathMapping"][];
+            /** @description Category → action → count */
+            counts: {
+                [key: string]: {
+                    [key: string]: number;
+                };
+            };
+            statuses: {
+                [key: string]: number;
+            };
+            attention: {
+                [key: string]: number;
+            };
+            conflicts: number;
+            warnings: string[];
+            refresh?: components["schemas"]["MigrateRefresh"];
+            /** Format: int64 */
+            durationMs?: number;
+        };
+        /** @enum {string} */
+        MigrateRunStatus: "analysing" | "analysed" | "planned" | "importing" | "done" | "failed" | "cancelled";
+        MigrateRun: {
+            /** Format: int64 */
+            id: number;
+            status: components["schemas"]["MigrateRunStatus"];
+            options: components["schemas"]["MigrateRunOptions"];
+            progress: components["schemas"]["MigrateProgress"];
+            summary: components["schemas"]["MigrateSummary"];
+            error: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            finishedAt?: string;
+        };
+        /** @enum {string} */
+        MigrateAction: "create" | "update" | "skip";
+        /** @enum {string} */
+        MigrateItemStatus: "planned" | "done" | "failed" | "skipped";
+        MigrateConflict: {
+            existing: string;
+            options: ("merge" | "rename" | "skip")[];
+            /** @enum {string} */
+            chosen: "merge" | "rename" | "skip";
+        };
+        MigrateItem: {
+            seq: number;
+            key: string;
+            /** Format: int64 */
+            sourceId: number;
+            category: string;
+            name: string;
+            action: components["schemas"]["MigrateAction"];
+            reason: string;
+            message: string;
+            conflict?: components["schemas"]["MigrateConflict"];
+            attention: string[];
+            status: components["schemas"]["MigrateItemStatus"];
+            localRef: string;
+            error: string;
+        };
+        MigrateItemList: {
+            items: components["schemas"]["MigrateItem"][];
+            total: number;
+        };
+        MigrateReport: {
+            run: components["schemas"]["MigrateRun"];
+            sources: components["schemas"]["MigrateSource"][];
+            items: components["schemas"]["MigrateItem"][];
+            /** Format: date-time */
+            generated: string;
+        };
+        MigrateCheckItem: {
+            key: string;
+            done: boolean;
+            /** @description A step on another application that Locarr cannot check */
+            manual: boolean;
+            params: {
+                [key: string]: string;
+            };
         };
     };
     responses: {
@@ -14757,6 +15217,396 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listMigrateSources: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sources */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateSource"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    createMigrateSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MigrateSourceInput"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateSource"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testMigrateSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MigrateSourceInput"];
+            };
+        };
+        responses: {
+            /** @description Result (ok false with a code and message when it failed) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateTestResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateMigrateSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MigrateSourceInput"];
+            };
+        };
+        responses: {
+            /** @description Changed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateSource"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteMigrateSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testSavedMigrateSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateTestResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listMigrateRuns: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Runs, newest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateRun"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    startMigrateRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MigrateOptions"];
+            };
+        };
+        responses: {
+            /** @description Started */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateRun"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMigrateRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Run */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateRun"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    planMigrateRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MigratePlanRequest"];
+            };
+        };
+        responses: {
+            /** @description The run with the new plan */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateRun"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    checkMigratePaths: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    pathMappings: components["schemas"]["MigratePathMapping"][];
+                };
+            };
+        };
+        responses: {
+            /** @description One check per source folder */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigratePathCheck"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    importMigrateRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Started */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateRun"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    cancelMigrateRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cancelled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateRun"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listMigrateItems: {
+        parameters: {
+            query?: {
+                category?: string;
+                action?: components["schemas"]["MigrateAction"];
+                status?: components["schemas"]["MigrateItemStatus"];
+                attention?: boolean;
+                conflicts?: boolean;
+                sourceId?: number;
+                q?: string;
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Items */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateItemList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMigrateReport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Report (no secrets) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateReport"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMigrateChecklist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Steps */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrateCheckItem"][];
                 };
             };
             default: components["responses"]["Error"];

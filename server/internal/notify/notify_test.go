@@ -1,8 +1,8 @@
 package notify
 
 import (
-	"errors"
 	"context"
+	"errors"
 	"testing"
 	"time"
 

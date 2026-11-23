@@ -27,6 +27,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/tvdb"
+	"github.com/mmzlopasa/locarr/server/internal/migrate"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
 	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
@@ -80,6 +81,8 @@ type Deps struct {
 	CoverArt    *metadata.ImageCache
 	// Subtitles (P7).
 	Subtitles *subtitles.Service
+	// Migrate imports an existing setup (P10).
+	Migrate *migrate.Service
 	// Requests (P8).
 	Hub      *notify.Hub
 	Requests *requests.Service
@@ -157,6 +160,7 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 	buildRequests(ctx, deps, log)
 	deps.Hub.Sinks = append(deps.Hub.Sinks, deps.Channels)
 	deps.Discover.Streamero = deps.Streamero
+	buildMigrate(deps, cfg, log)
 	return deps, nil
 }
 

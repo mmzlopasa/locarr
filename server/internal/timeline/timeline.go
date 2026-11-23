@@ -32,6 +32,10 @@ const (
 	TypeNotified     = "notified"
 	TypeRetry        = "retry"
 	TypeFileFound    = "file_found"
+	// TypeMigrated marks an item brought in from another application (P10);
+	// TypeHistory is an event from that application's own history.
+	TypeMigrated = "migrated"
+	TypeHistory  = "history"
 	// TypeImportSkipped: a file of a download that was not imported (no
 	// matching episode, not an upgrade) while others were.
 	TypeImportSkipped = "import_skipped"
@@ -80,6 +84,21 @@ func (s *Store) Record(ctx context.Context, ref, typ, message string, data any, 
 	}
 	_, err := s.DB.W.ExecContext(ctx, `INSERT INTO timeline_events (item_ref, at, type, message, data, download_id) VALUES (?, ?, ?, ?, ?, ?)`,
 		ref, db.Millis(s.now()), typ, message, string(raw), downloadID)
+	return err
+}
+
+// RecordAt adds an event that happened at a given time (history brought in
+// from another application) through q, so callers can batch it in a transaction.
+func RecordAt(ctx context.Context, q db.Querier, ref, typ, message string, data any, at time.Time) error {
+	raw := []byte("{}")
+	if data != nil {
+		var err error
+		if raw, err = json.Marshal(data); err != nil {
+			return err
+		}
+	}
+	_, err := q.ExecContext(ctx, `INSERT INTO timeline_events (item_ref, at, type, message, data) VALUES (?, ?, ?, ?, ?)`,
+		ref, db.Millis(at), typ, message, string(raw))
 	return err
 }
 

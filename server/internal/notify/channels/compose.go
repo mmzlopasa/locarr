@@ -30,6 +30,8 @@ var headlines = map[string]map[notify.Type]string{
 		notify.HealthWarning:         "Health warning",
 		notify.SubtitleDownloaded:    "Subtitle downloaded",
 		notify.SubtitleMissing:       "Subtitle still missing",
+		notify.MigrateFinished:       "Setup import finished",
+		notify.MigrateFailed:         "Setup import failed",
 		notify.Test:                  "Test message from Locarr",
 	},
 	"hr": {
@@ -52,6 +54,8 @@ var headlines = map[string]map[notify.Type]string{
 		notify.HealthWarning:         "Upozorenje o stanju sustava",
 		notify.SubtitleDownloaded:    "Titl preuzet",
 		notify.SubtitleMissing:       "Titl još nedostaje",
+		notify.MigrateFinished:       "Uvoz setupa je gotov",
+		notify.MigrateFailed:         "Uvoz setupa nije uspio",
 		notify.Test:                  "Probna poruka iz Locarra",
 	},
 }
