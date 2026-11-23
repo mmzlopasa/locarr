@@ -29,6 +29,7 @@ struct WantedView: View {
                                    tone: kind == "missing" ? "danger" : "warning", square: media == "albums")
                     }
                     .listRowBackground(Theme.background)
+                    .marginRow()
                     .swipeActions {
                         Button { Task { await search([row.value]) } } label: {
                             Label { Text(verbatim: L("library.search")) } icon: { Image(systemName: "magnifyingglass") }
@@ -197,8 +198,12 @@ struct CalendarAgendaView: View {
                         .accessibilityLabel(Text(verbatim: L("calendar.next")))
                 }
                 .buttonStyle(.borderless)
+                .padding(.vertical, 6)
+                .padding(.horizontal, 10)
+                .background(Theme.surface, in: RoundedRectangle(cornerRadius: Theme.radius, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).stroke(Theme.border))
             }
-            .listRowBackground(Theme.surface)
+            .noteRow()
             if let error { ErrorState(message: error) { await load() }.listRowBackground(Color.clear) }
             let days = groupedDays
             if days.isEmpty && !loading && error == nil {
@@ -207,10 +212,10 @@ struct CalendarAgendaView: View {
             ForEach(days, id: \.self) { day in
                 Section {
                     ForEach(Array(entries.filter { $0.date.prefix(10) == day }.enumerated()), id: \.offset) { _, e in
-                        CalendarRow(entry: e).listRowBackground(Theme.background)
+                        CalendarRow(entry: e).listRowBackground(Theme.background).marginRow()
                     }
                     ForEach(Array(albums.filter { $0.date.prefix(10) == day }.enumerated()), id: \.offset) { _, a in
-                        AlbumCalendarRow(entry: a).listRowBackground(Theme.background)
+                        AlbumCalendarRow(entry: a).listRowBackground(Theme.background).marginRow()
                     }
                 } header: {
                     Text(verbatim: Fmt.day(day).map(Fmt.weekday) ?? day)
@@ -262,8 +267,10 @@ struct HistoryView: View {
     var body: some View {
         List {
             ScreenHeaderRow()
-            ChipRow(options: categories, selection: $category) { $0 == "all" ? L("history.all") : L("history.categories.\($0)") }
-                .segmentRow()
+            FilterMenu(label: L("history.category"), options: categories, selection: $category) {
+                $0 == "all" ? L("history.all") : L("history.categories.\($0)")
+            }
+            .noteRow()
             if let pager {
                 ForEach(pager.items) { h in
                     Group {
@@ -272,6 +279,7 @@ struct HistoryView: View {
                         } else { row(h) }
                     }
                     .listRowBackground(Theme.background)
+                    .marginRow()
                     .task { await pager.loadMore(after: h) }
                 }
                 PagerFooter(pager: pager, emptyText: L("history.none")).listRowBackground(Color.clear)

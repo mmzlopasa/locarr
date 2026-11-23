@@ -125,6 +125,7 @@ struct MoviesView: View {
                                    status: st.0, tone: st.1, progress: m.download?.progress, monitored: m.monitored ?? true)
                     }
                     .listRowBackground(Theme.background)
+                    .marginRow()
                     .task { await pager.loadMore(after: m) }
                 }
                 PagerFooter(pager: pager, emptyText: L("library.noMovies")).listRowBackground(Theme.background)
@@ -176,6 +177,7 @@ struct SeriesListView: View {
                                    status: st.0, tone: st.1, monitored: s.monitored ?? true)
                     }
                     .listRowBackground(Theme.background)
+                    .marginRow()
                     .task { await pager.loadMore(after: s) }
                 }
                 PagerFooter(pager: pager, emptyText: L("library.noSeries")).listRowBackground(Theme.background)
@@ -225,6 +227,7 @@ struct ArtistsView: View {
                                    status: Fmt.bytes(a.sizeBytes), tone: "neutral", square: true, monitored: a.monitored ?? true)
                     }
                     .listRowBackground(Theme.background)
+                    .marginRow()
                     .task { await pager.loadMore(after: a) }
                 }
                 PagerFooter(pager: pager, emptyText: L("library.noArtists")).listRowBackground(Theme.background)

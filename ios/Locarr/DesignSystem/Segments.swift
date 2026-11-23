@@ -23,7 +23,8 @@ struct SegmentPicker<Value: Hashable>: View {
     }
 }
 
-/// Compact chips for picking one value; keeps the selected chip in view.
+/// Compact chips for picking one value. A newly selected chip is scrolled into view only as
+/// far as needed, so while the chips fit the row stays on the 16 pt margin.
 struct ChipRow<Value: Hashable>: View {
     let options: [Value]
     @Binding var selection: Value
@@ -38,39 +39,68 @@ struct ChipRow<Value: Hashable>: View {
                 }
             }
             .onChange(of: selection) { _, value in
-                withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo(value, anchor: .center) }
+                withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo(value) }
             }
-            .onAppear { proxy.scrollTo(selection, anchor: .center) }
+            .onAppear { if selection != options.first { proxy.scrollTo(selection) } }
         }
     }
 }
 
 /// A sideways-scrolling row of chips: 16 pt leading margin like the list, sized to its
 /// content (a horizontal scroll view otherwise grows to fill the height it is offered),
-/// and fading out at the trailing edge so the next chip peeks and the row reads as scrollable.
+/// with soft fades at the edges where more chips are hidden, so the row reads as scrollable.
 struct ChipScroller<Content: View>: View {
     @ViewBuilder let content: Content
-    private let fade: CGFloat = 28
+    private let fade: CGFloat = 24
+    @State private var hiddenLeading = false
+    @State private var hiddenTrailing = true
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) { content }
-                .padding(.leading, Theme.spacing)
-                .padding(.trailing, fade)
+        let row = ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) { content }
+                .padding(.horizontal, Theme.spacing)
                 .padding(.vertical, 2)
         }
         .fixedSize(horizontal: false, vertical: true)
         .mask {
             HStack(spacing: 0) {
+                edge(.trailing, active: hiddenLeading)
                 Color.black
-                LinearGradient(colors: [.black, .black.opacity(0)], startPoint: .leading, endPoint: .trailing)
-                    .frame(width: fade)
+                edge(.leading, active: hiddenTrailing)
             }
+            .animation(.easeOut(duration: 0.15), value: hiddenLeading)
+            .animation(.easeOut(duration: 0.15), value: hiddenTrailing)
         }
+        if #available(iOS 18.0, *) {
+            row.onScrollGeometryChange(for: [Bool].self) { geo in
+                [geo.contentOffset.x > 1, geo.contentOffset.x + geo.containerSize.width < geo.contentSize.width - 1]
+            } action: { _, edges in
+                hiddenLeading = edges[0]
+                hiddenTrailing = edges[1]
+            }
+        } else {
+            row
+        }
+    }
+
+    /// A soft fade from opaque (towards `opaque`) to clear, eased so there is no visible cut;
+    /// fully opaque while nothing is hidden on that side.
+    private func edge(_ opaque: UnitPoint, active: Bool) -> some View {
+        let start: UnitPoint = opaque == .leading ? .leading : .trailing
+        let end: UnitPoint = opaque == .leading ? .trailing : .leading
+        return LinearGradient(stops: [
+            .init(color: .black, location: 0),
+            .init(color: .black.opacity(0.75), location: 0.35),
+            .init(color: .black.opacity(0.3), location: 0.7),
+            .init(color: .black.opacity(0), location: 1),
+        ], startPoint: start, endPoint: end)
+        .overlay(Color.black.opacity(active ? 0 : 1))
+        .frame(width: fade)
     }
 }
 
-/// A selectable filter chip.
+/// A selectable filter chip: compact (footnote, about 28 pt tall at the default size);
+/// the selected one is filled with the accent and uses its dark ink for contrast.
 struct Chip: View {
     let text: String
     var selected = false
@@ -79,12 +109,12 @@ struct Chip: View {
     var body: some View {
         Button(action: action) {
             Text(verbatim: text)
-                .font(.subheadline.weight(.medium))
+                .font(.footnote.weight(.semibold))
                 .lineLimit(1)
                 .fixedSize()
                 .foregroundStyle(selected ? Theme.accentInk : Theme.text)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
                 .background(selected ? Theme.accent : Theme.surface2, in: Capsule())
                 .overlay(Capsule().stroke(selected ? Color.clear : Theme.border))
                 .contentShape(Capsule())
@@ -92,6 +122,36 @@ struct Chip: View {
         .buttonStyle(.plain)
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+}
+
+/// A secondary filter under the segment control ("Show: Everything"): a label and a menu,
+/// on the content margins, so a second row of chips is not needed.
+struct FilterMenu<Value: Hashable>: View {
+    let label: String
+    let options: [Value]
+    @Binding var selection: Value
+    let title: (Value) -> String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(verbatim: label).foregroundStyle(Theme.textMuted)
+            Spacer(minLength: 8)
+            Menu {
+                Picker(selection: $selection) {
+                    ForEach(options, id: \.self) { Text(verbatim: title($0)).tag($0) }
+                } label: { Text(verbatim: label) }
+                .pickerStyle(.inline)
+            } label: {
+                HStack(spacing: 4) {
+                    Text(verbatim: title(selection)).lineLimit(1)
+                    Image(systemName: "chevron.up.chevron.down").font(.caption2.weight(.semibold))
+                }
+                .foregroundStyle(Theme.accent)
+            }
+        }
+        .font(.subheadline)
+        .accessibilityElement(children: .contain)
     }
 }
 
@@ -141,7 +201,19 @@ extension View {
     /// A list row for a segment or chip control: no insets (the control has its own 16 pt
     /// margin), no background, no separator.
     func segmentRow() -> some View {
-        self.listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 10, trailing: 0))
+        self.listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 8, trailing: 0))
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+    }
+
+    /// A list row on the same 16 pt margins as the title and the segment control.
+    func marginRow(vertical: CGFloat = 8) -> some View {
+        self.listRowInsets(EdgeInsets(top: vertical, leading: Theme.spacing, bottom: vertical, trailing: Theme.spacing))
+    }
+
+    /// Explanatory text or a filter under the segment control: margins, no background or separator.
+    func noteRow() -> some View {
+        self.marginRow(vertical: 4)
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
     }
