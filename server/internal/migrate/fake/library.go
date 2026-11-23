@@ -139,6 +139,35 @@ func Default() *Library {
 	return lib
 }
 
+// Separate is Default with titles and ids no other end-to-end test uses, so
+// an import does not collide with what they add on the same server.
+func Separate() *Library {
+	lib := Default()
+	for i := range lib.Movies {
+		m := &lib.Movies[i]
+		m.TMDb, m.IMDb = 7770000+int64(i), fmt.Sprintf("tt7770%03d", i)
+		m.Title = []string{"Harbour Lights", "Quiet Orbit", "Paper Rivers"}[i]
+		m.File = strings.ReplaceAll(m.File, map[int]string{0: "Big.Buck.Bunny", 1: "Sintel", 2: "Tears.of.Steel"}[i], strings.ReplaceAll(m.Title, " ", "."))
+	}
+	for i := range lib.Series {
+		v := &lib.Series[i]
+		v.TVDB, v.TMDb = 7780000+int64(i), 7790000+int64(i)
+		old := strings.ReplaceAll(v.Title, " ", ".")
+		v.Title = []string{"Lantern Street", "Northern Tide"}[i]
+		for j := range v.Episodes {
+			v.Episodes[j].File = strings.ReplaceAll(v.Episodes[j].File, old, strings.ReplaceAll(v.Title, " ", "."))
+		}
+	}
+	for i := range lib.Artists {
+		lib.Artists[i].MBID = "00000000-0000-4000-a000-00000000e2e1"
+		lib.Artists[i].Name = "Separate Artist"
+		for j := range lib.Artists[i].Albums {
+			lib.Artists[i].Albums[j].MBID = fmt.Sprintf("00000000-0000-4000-a000-0000000e2e1%d", j)
+		}
+	}
+	return lib
+}
+
 // Big generates a large library (performance tests): movies, series with
 // episodes and artists, every item with a file.
 func Big(movies, series, artists int) *Library {

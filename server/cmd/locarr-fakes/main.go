@@ -59,7 +59,7 @@ func main() {
 	// The applications an existing setup is imported from (P10), each under
 	// /arr/<kind> with API key "migratekey" (qBittorrent: admin / migratepass).
 	// With a seed folder their library's files are written to <seed>/migrate.
-	lib := migratefake.Default()
+	lib := migratefake.Separate()
 	if seed := os.Getenv("LOCARR_FAKES_SEED_DIR"); seed != "" {
 		root := filepath.Join(seed, "migrate")
 		if err := lib.WriteFiles(filepath.Join(root, "movies"), filepath.Join(root, "tv"), filepath.Join(root, "music"), nil); err != nil {

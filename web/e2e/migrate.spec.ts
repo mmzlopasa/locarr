@@ -55,6 +55,11 @@ test("import a setup from fake applications: preview, folders, import, report, c
 
   await page.getByRole("button", { name: "Next" }).click();
   await expect(page.getByTestId("choose-radarr")).toBeVisible();
+  // Settings would change naming, indexers and clients the other tests on this
+  // server rely on: the library only (settings are covered by the server tests).
+  for (const kind of ["radarr", "sonarr", "qbittorrent"]) {
+    await page.getByTestId(`choose-${kind}`).getByLabel("Settings").uncheck();
+  }
   await page.getByTestId("migrate-read").click();
 
   // Folders: the applications see /movies and /tv; Locarr sees the seed folder.
@@ -94,7 +99,7 @@ test("import a setup from fake applications: preview, folders, import, report, c
   // The movies are in the library with their files in place.
   await page.getByRole("link", { name: "Movies" }).click();
   await page.getByRole("button", { name: "Table" }).click();
-  await expect(page.getByText("Sintel").first()).toBeVisible();
+  await expect(page.getByText("Quiet Orbit").first()).toBeVisible();
 
   await page.goto("/migrate/checklist");
   const list = page.getByTestId("migrate-checklist");
