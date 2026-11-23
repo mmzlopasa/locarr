@@ -138,8 +138,17 @@ func TestBoardReadPerformance(t *testing.T) {
 		t.Fatal(err, sum.Total)
 	}
 	t.Logf("summary of 20000 items in %s", took)
-	if took > 300*time.Millisecond {
+	// The first summary after a change adds up every item's reasons; later
+	// ones come from the cache until the board changes again.
+	if took > time.Second {
 		t.Errorf("summary took %s", took)
+	}
+	start = time.Now()
+	if _, err := s.Summarize(context.Background(), ""); err != nil {
+		t.Fatal(err)
+	}
+	if took := time.Since(start); took > 20*time.Millisecond {
+		t.Errorf("cached summary took %s", took)
 	}
 	start = time.Now()
 	list, total, err := s.List(context.Background(), ListFilter{Code: "all_rejected", Offset: 2000, Limit: 100})
