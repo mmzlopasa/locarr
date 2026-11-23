@@ -601,6 +601,10 @@ function ImportStep({ run, onAgain }: { run: MigrateRun; onAgain: () => void }) 
       URL.revokeObjectURL(url);
     },
   });
+  // What the import created is new everywhere else (library, settings, users).
+  useEffect(() => {
+    if (run.status === "done") void qc.invalidateQueries({ predicate: (q) => q.queryKey[0] !== "migrate" });
+  }, [run.status, qc]);
   const st = run.summary.statuses;
   const rf = run.summary.refresh;
   return (

@@ -58,7 +58,10 @@ test("import a setup from fake applications: preview, folders, import, report, c
   await page.getByTestId("migrate-read").click();
 
   // Folders: the applications see /movies and /tv; Locarr sees the seed folder.
-  await expect(page.getByRole("heading", { name: "Folders" })).toBeVisible({ timeout: 60_000 });
+  // Reading ends on the folders step (or shows why it failed).
+  await expect(page.getByRole("heading", { name: "Folders" }).or(page.getByRole("alert"))).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Folders" })).toBeVisible();
   const rows = page.getByTestId("migrate-mapping");
   while (await rows.count()) await rows.first().getByRole("button", { name: "Remove" }).click();
   const mappings: [string, string][] = [["/movies", `${seed}/movies`], ["/tv", `${seed}/tv`]];
