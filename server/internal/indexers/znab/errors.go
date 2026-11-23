@@ -20,6 +20,8 @@ const (
 	KindNotFound    Kind = "not_found"    // no such item
 	KindBadResponse Kind = "bad_response" // not a Newznab/Torznab answer
 	KindUnreachable Kind = "unreachable"  // network error, timeout, 5xx
+	KindChallenge   Kind = "challenge"    // a Cloudflare challenge (FlareSolverr helps)
+	KindLayout      Kind = "layout"       // a built-in site's pages no longer match its definition
 	KindUnknown     Kind = "unknown"
 )
 

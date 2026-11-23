@@ -1,0 +1,26 @@
+id: yts
+name: YTS
+description: Movies in small encodes, searched through the site's official JSON API (by IMDb id or title).
+version: 1
+language: en
+links:
+  - https://movies-api.accel.li
+  - https://yts.pw
+  - https://yts.mx
+verified: >-
+  Written from the official API documentation (list_movies.json) and checked against
+  movies-api.accel.li on 2026-11-23 (the API itself names this host as its new address).
+  Magnets are built from the info hash: robots.txt forbids /torrent/download/.
+flaresolverr: never
+rateLimit: {requests: 20, periodSeconds: 60}
+delayMillis: 1000
+aliases: [yts, yify, "yts.mx", "yts.am", "yts.lt"]
+impl: yts
+modes:
+  search: [q, imdbid]
+  movie: [q, imdbid]
+categories:
+  - {id: movies, cat: 2000, desc: Movies}
+test:
+  mode: movie
+  imdbid: tt0111161

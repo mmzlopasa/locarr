@@ -179,6 +179,8 @@ type Options struct {
 	FlareSolverr string
 	// Secrets are values that must never appear in errors (API keys, passwords).
 	Secrets []string
+	// UserAgent replaces the default "Locarr" User-Agent header.
+	UserAgent string
 }
 
 // Client is a safe outbound HTTP client. It is cheap; build one per indexer.
@@ -204,6 +206,9 @@ func New(o Options) (*Client, error) {
 	}
 	if o.MaxBytes <= 0 {
 		o.MaxBytes = DefaultMaxBytes
+	}
+	if strings.TrimSpace(o.UserAgent) == "" {
+		o.UserAgent = userAgent
 	}
 	tr := &http.Transport{
 		DialContext:           o.Policy.dialer(10 * time.Second),
@@ -317,7 +322,7 @@ func (c *Client) do(ctx context.Context, method, rawURL string, hdr http.Header,
 	if err != nil {
 		return nil, c.wrap(err, rawURL)
 	}
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", c.o.UserAgent)
 	for k, v := range hdr {
 		req.Header[k] = v
 	}
@@ -356,7 +361,7 @@ func (c *Client) Stream(ctx context.Context, rawURL string, hdr http.Header, rea
 	if err != nil {
 		return 0, nil, c.wrap(err, rawURL)
 	}
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", c.o.UserAgent)
 	for k, v := range hdr {
 		req.Header[k] = v
 	}

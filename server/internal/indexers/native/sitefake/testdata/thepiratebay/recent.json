@@ -1,0 +1,62 @@
+[
+ {
+  "id": 85133493,
+  "info_hash": "C382772C6A86960314ACB939AF60B9539A0D0240",
+  "category": 208,
+  "name": "The.Simpsons.S38E08.1080p.x265-ELiTE",
+  "status": "vip",
+  "num_files": 6,
+  "size": 517022589,
+  "seeders": 0,
+  "leechers": 0,
+  "username": "Saturn5",
+  "added": 1795431722,
+  "anon": 0,
+  "imdb": "tt0096697"
+ },
+ {
+  "id": 85133492,
+  "info_hash": "2F6B31633C6AA7317B6628673B3343A0C90E768B",
+  "category": 208,
+  "name": "Grimsburg.S03E08.720p.x264-FENiX",
+  "status": "vip",
+  "num_files": 6,
+  "size": 147132557,
+  "seeders": 0,
+  "leechers": 0,
+  "username": "Saturn5",
+  "added": 1795431695,
+  "anon": 0,
+  "imdb": "tt15791752"
+ },
+ {
+  "id": 85133413,
+  "info_hash": "1C6DDEB0EDB72B6C16E0166B65A971C7B941A813",
+  "category": 208,
+  "name": "DIG 2026 S01E01 720p HEVC x265-MeGusta",
+  "status": "vip",
+  "num_files": 0,
+  "size": 319619012,
+  "seeders": 126,
+  "leechers": 250,
+  "username": "jajaja",
+  "added": 1795431302,
+  "anon": 0,
+  "imdb": "tt36843594"
+ },
+ {
+  "id": 85133414,
+  "info_hash": "51CB6BE3235D87ACC7C1CC83FBD9D62DEF3CDDFA",
+  "category": 208,
+  "name": "DIG 2026 S01E06 1080p HEVC x265-MeGusta",
+  "status": "vip",
+  "num_files": 0,
+  "size": 410929519,
+  "seeders": 54,
+  "leechers": 65,
+  "username": "jajaja",
+  "added": 1795431302,
+  "anon": 0,
+  "imdb": "tt36843594"
+ }
+]

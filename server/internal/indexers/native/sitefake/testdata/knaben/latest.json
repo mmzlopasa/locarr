@@ -1,0 +1,89 @@
+{
+ "hits": [
+  {
+   "bytes": 745852108,
+   "cachedOrigin": "Nyaa.si python scraper",
+   "category": "Anime / Subbed",
+   "categoryId": [
+    6001000,
+    6000000
+   ],
+   "date": "2026-11-23T12:56:03+00:00",
+   "description": null,
+   "details": "https://nyaa.si/view/2189621",
+   "grabs": null,
+   "hash": "25F0AD1441183BC05626B1DACEB4070EF75D20CC",
+   "id": "53c98f98b835d18dc348f344966870a464abd9ac",
+   "lastSeen": "2026-11-23T12:59:44+00:00",
+   "link": null,
+   "livePeers": null,
+   "liveSeeders": null,
+   "magnetUrl": "magnet:?xt=urn:btih:25f0ad1441183bc05626b1daceb4070ef75d20cc&dn=%5BDoomdos%5D%20-%20Cheng%20Ye%20Xiao%20He%20-%20S01E16%20%5B2160p%20IQ%20WEB-DL%5D%20%5BTo%20Be%20Winner%5D&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce",
+   "peers": 2,
+   "score": null,
+   "seeders": 1,
+   "title": "[Doomdos] - Cheng Ye Xiao He - S01E16 [2160p IQ WEB-DL] [To Be Winner]",
+   "tracker": "Nyaa.si",
+   "trackerId": "nyaasi",
+   "virusDetection": 0.0
+  },
+  {
+   "bytes": 536032051,
+   "cachedOrigin": "Nyaa.si python scraper",
+   "category": "Anime / Subbed",
+   "categoryId": [
+    6001000,
+    6000000
+   ],
+   "date": "2026-11-23T12:52:02+00:00",
+   "description": null,
+   "details": "https://nyaa.si/view/2189620",
+   "grabs": null,
+   "hash": "F1F20824271000DEC3AF2BEFEC2336C378563AEF",
+   "id": "e12ee37c6baa13f0b9410a6d12abefeb498bce1f",
+   "lastSeen": "2026-11-23T12:59:44+00:00",
+   "link": null,
+   "livePeers": null,
+   "liveSeeders": null,
+   "magnetUrl": "magnet:?xt=urn:btih:f1f20824271000dec3af2befec2336c378563aef&dn=%5BDoomdos%5D%20-%20Da%20Zhuzai%20-%20S01E100%20%5B2160p%20IQ%20WEB-DL%5D%20%5BThe%20Great%20Ruler%5D&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce",
+   "peers": 4,
+   "score": null,
+   "seeders": 0,
+   "title": "[Doomdos] - Da Zhuzai - S01E100 [2160p IQ WEB-DL] [The Great Ruler]",
+   "tracker": "Nyaa.si",
+   "trackerId": "nyaasi",
+   "virusDetection": 0.0
+  },
+  {
+   "bytes": 596534886,
+   "cachedOrigin": "Nyaa.si python scraper",
+   "category": "Anime",
+   "categoryId": [
+    6000000
+   ],
+   "date": "2026-11-23T12:49:17+00:00",
+   "description": null,
+   "details": "https://nyaa.si/view/2189619",
+   "grabs": null,
+   "hash": "47769B4EBA3C424C52BE95C727FA3E864DFE9D22",
+   "id": "e7b9fa308a870f6529979240a9c9f7d8df0be600",
+   "lastSeen": "2026-11-23T12:59:44+00:00",
+   "link": null,
+   "livePeers": null,
+   "liveSeeders": null,
+   "magnetUrl": "magnet:?xt=urn:btih:47769b4eba3c424c52be95c727fa3e864dfe9d22&dn=%5B%E2%9D%80%E6%8B%A8%E9%9B%AA%E5%AF%BB%E6%98%A5%E2%9D%80%5D%20%E9%9D%92%E4%B9%8B%E7%AE%B1%20%E7%AC%AC%E4%BA%8C%E5%AD%A3%20%2F%20%E3%82%A2%E3%82%AA%E3%81%AE%E3%83%8F%E3%82%B3%20Season%202%20%2F%20Ao%20no%20Hako%20%282026%29%20-%2004%20%5BWebRip%5D%5BHEVC-10bit%201080p%5D%5B%E7%AE%80%E7%B9%81%E6%97%A5%E5%86%85%E5%B0%81%5D&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce",
+   "peers": 21,
+   "score": null,
+   "seeders": 2,
+   "title": "[❀拨雪寻春❀] 青之箱 第二季 / アオのハコ Season 2 / Ao no Hako (2026) - 04 [WebRip][HEVC-10bit 1080p][简繁日内封]",
+   "tracker": "Nyaa.si",
+   "trackerId": "nyaasi",
+   "virusDetection": 0.0
+  }
+ ],
+ "max_score": null,
+ "total": {
+  "relation": "gte",
+  "value": 10000
+ }
+}

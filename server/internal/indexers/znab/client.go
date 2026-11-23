@@ -176,7 +176,7 @@ func transportError(err error) error {
 	case errors.Is(err, httpx.ErrTooLarge), errors.Is(err, httpx.ErrCrossHostRedirect):
 		kind = KindBadResponse
 	case errors.Is(err, httpx.ErrChallenge):
-		kind = KindAuth
+		kind = KindChallenge
 	}
 	return &Error{Kind: kind, Message: err.Error()}
 }

@@ -1,0 +1,57 @@
+id: limetorrents
+name: LimeTorrents
+description: A general torrent index, read from its search pages and its latest-torrents RSS feed.
+version: 1
+language: en
+links:
+  - https://www.limetorrents.fun
+  - https://www.limetorrents.lol
+verified: >-
+  Written by observing the search pages (/search/<category>/<words>/seeds/1/) and /rss/ on
+  2026-11-23. The search RSS (/searchrss/) is not used: robots.txt forbids it. The site is slow.
+flaresolverr: sometimes
+rateLimit: {requests: 10, periodSeconds: 60}
+delayMillis: 2000
+timeoutSeconds: 90
+aliases: [limetorrents, "lime torrents", "limetorrents.lol", "limetorrents.info"]
+modes:
+  search: [q]
+  tv: [q, season, ep]
+  movie: [q]
+  music: [q]
+categories:
+  - {id: movies, cat: 2000, desc: Movies}
+  - {id: tv, cat: 5000, desc: TV shows}
+  - {id: anime, cat: 5070, desc: Anime}
+  - {id: music, cat: 3000, desc: Music}
+search:
+  requests:
+    - path: '/search/{{ first .Categories "all" }}/{{ .Keywords | dashed | pathescape }}/seeds/1/'
+  response: html
+  rows: 'table.table2 tr:has(a.csprite_dl14)'
+  empty: 'h2:contains("No results")'
+  fields:
+    title: {select: 'div.tt-name a:nth-of-type(2)'}
+    details: {select: 'div.tt-name a:nth-of-type(2)', attr: href}
+    infohash: {select: a.csprite_dl14, attr: href, regex: '([0-9A-Fa-f]{40})'}
+    date: {select: 'td:nth-child(2)', regex: '^(.*?)\s+-\s+in'}
+    category: {select: 'td:nth-child(2)', regex: 'in\s+(.+)$'}
+    size: {select: 'td:nth-child(3)'}
+    seeders: {select: td.tdseed}
+    leechers: {select: td.tdleech}
+rss:
+  requests:
+    - path: /rss/
+  response: xml
+  rows: item
+  fields:
+    title: {select: title}
+    details: {select: guid}
+    infohash: {select: enclosure, attr: url, regex: '([0-9A-Fa-f]{40})'}
+    size: {select: size}
+    date: {select: pubdate}
+    category: {select: category}
+    seeders: {select: description, regex: 'Seeds:\s*(\d+)'}
+    leechers: {select: description, regex: 'Leechers:?\s*(\d+)'}
+test:
+  query: ubuntu

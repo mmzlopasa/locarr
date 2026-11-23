@@ -1,0 +1,27 @@
+id: subsplease
+name: SubsPlease
+description: Simulcast anime episodes and batches, from the JSON API the site's own pages use.
+version: 1
+language: en
+links:
+  - https://subsplease.org
+verified: Written by observing subsplease.org's /api/?f=search and f=latest answers on 2026-11-23.
+flaresolverr: never
+rateLimit: {requests: 20, periodSeconds: 60}
+delayMillis: 1000
+aliases: [subsplease]
+impl: subsplease
+modes:
+  search: [q]
+  tv: [q, ep]
+categories:
+  - {id: anime, cat: 5070, desc: Anime}
+settings:
+  - name: resolution
+    type: select
+    label: Resolution
+    default: all
+    options: {all: All, "1080": 1080p, "720": 720p, "480": 480p}
+test:
+  mode: tv
+  query: frieren
