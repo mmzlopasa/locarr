@@ -148,6 +148,12 @@ func (h *Handler) AddArtist(ctx context.Context, req *gen.AddArtistRequest) (*ge
 	if err != nil {
 		return nil, err
 	}
+	if h.MusicDiscovery != nil {
+		// The new artist's similar artists are looked up in the background.
+		if err := h.MusicDiscovery.RequestRefresh(ctx, nil); err != nil && h.Log != nil {
+			h.Log.Warn("queue music discovery refresh", "err", err)
+		}
+	}
 	return h.artistOut(ctx, a.ID)
 }
 

@@ -34,6 +34,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/migrate"
+	"github.com/mmzlopasa/locarr/server/internal/musicdiscovery"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/notify/delivery"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
@@ -74,7 +75,9 @@ type Handler struct {
 	// Requests (P8): requests and issues, discover pages, notifications.
 	Requests *requests.Service
 	Discover *discover.Service
-	Hub      *notify.Hub
+	// MusicDiscovery suggests artists similar to the library's.
+	MusicDiscovery *musicdiscovery.Service
+	Hub            *notify.Hub
 	// Streamero (P9) and the outward notification channels.
 	Streamero *streamero.Service
 	Channels  *delivery.Service

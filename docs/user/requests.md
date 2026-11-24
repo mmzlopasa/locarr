@@ -133,3 +133,6 @@ njega) i kad je zapeo. **Označi sve pročitanim** čisti brojač.
 Na stranici dostupnog naslova kliknite **Prijavi problem**, odaberite što ne valja (slika, zvuk,
 titlovi, nešto drugo), za seriju sezonu i epizodu, i opišite problem. Dobit ćete obavijest kad je
 riješen.
+
+Ako smijete tražiti glazbu, Otkrivanje prikazuje i **Izvođače koji bi ti se mogli svidjeti** — izvođače slične
+onima u biblioteci. „Zatraži" traži cijelog izvođača; stanje zahtjeva piše na kartici.

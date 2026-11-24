@@ -11,6 +11,7 @@ import { splitTags } from "@/features/movies/AddMoviePage";
 import { useQualityProfiles } from "@/features/movies/common";
 import { AlbumStatusBadge, Cover, GROUP_ORDER, MONITOR_NEW, albumGroup, musicKeys, typeKey, useMetadataProfiles, type Album, type Artist,
   type MonitorNewAlbums } from "./common";
+import { SimilarArtists } from "./discovery";
 
 export function useArtist(id: number) {
   return useQuery({ queryKey: musicKeys.artist(id), queryFn: async () => unwrap(await api.GET("/music/artists/{id}", { params: { path: { id } } })) });
@@ -91,6 +92,7 @@ export function ArtistDetailPage() {
       {GROUP_ORDER.filter((g) => groups.has(g)).map((g) => (
         <AlbumGroup key={g} group={g} albums={groups.get(g) ?? []} canManage={canManage} />
       ))}
+      <SimilarArtists artistId={a.id} mbid={a.mbid} />
     </div>
   );
 }

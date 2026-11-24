@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import type { components } from "@/api/schema.gen";
 import { api, queryKeys, unwrap, type ImportList, type ImportListInput, type MinimumAvailability } from "@/api/client";
 import { formatDateTime } from "@/components/format";
 import { Badge, Button, Checkbox, ConfirmButton, EmptyState, ErrorAlert, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
@@ -58,6 +59,7 @@ export function MetadataPage() {
         <p className="mt-3 text-[12px] text-faint">{t("metadata.attribution")}</p>
       </Panel>
       <TvdbPanel />
+      <MusicDiscoveryPanel />
     </div>
   );
 }
@@ -211,5 +213,127 @@ export function ImportListsPage() {
         </ul>
       </Panel>
     </div>
+  );
+}
+
+type DiscoveryInput = components["schemas"]["MusicDiscoverySettingsInput"];
+type DiscoveryProvider = components["schemas"]["MusicDiscoveryProviderId"];
+const REFRESH_DAYS = [1, 3, 7, 14, 30, 60, 90];
+
+/** Music discovery: providers of similar artists, their keys and how often they are asked again. */
+function MusicDiscoveryPanel() {
+  const { t, i18n } = useTranslation();
+  const qc = useQueryClient();
+  const key = ["settings", "musicdiscovery"] as const;
+  const st = useQuery({ queryKey: key, queryFn: async () => unwrap(await api.GET("/settings/musicdiscovery")) });
+  const [lastfm, setLastfm] = useState("");
+  const [spId, setSpId] = useState("");
+  const [spSecret, setSpSecret] = useState("");
+  const [tests, setTests] = useState<Partial<Record<DiscoveryProvider, { ok: boolean; message: string; code?: string }>>>({});
+  const save = useMutation({
+    mutationFn: async (body: DiscoveryInput) => unwrap(await api.PUT("/settings/musicdiscovery", { body })),
+    onSuccess: (v) => {
+      qc.setQueryData(key, v);
+      void qc.invalidateQueries({ queryKey: ["music", "discovery"] });
+      setLastfm("");
+      setSpId("");
+      setSpSecret("");
+    },
+  });
+  const test = useMutation({
+    mutationFn: async (provider: DiscoveryProvider) => ({ provider,
+      res: unwrap(await api.POST("/settings/musicdiscovery/test", { body: { provider } })) }),
+    onSuccess: ({ provider, res }) => {
+      setTests((cur) => ({ ...cur, [provider]: res }));
+      void qc.invalidateQueries({ queryKey: key });
+    },
+  });
+  if (!st.data) return st.error ? <ErrorAlert error={st.error} /> : <Spinner />;
+  const d = st.data;
+  const status = (p: DiscoveryProvider) => d.providers.find((x) => x.id === p);
+  const enabled: Record<DiscoveryProvider, boolean> = { lastfm: d.lastfm, listenbrainz: d.listenbrainz, musicbrainz: d.musicbrainz, spotify: d.spotify };
+  const line = (p: DiscoveryProvider) => {
+    const s = status(p);
+    if (!s) return null;
+    const res = tests[p];
+    return (
+      <div className="mt-1 flex flex-wrap items-center gap-2 text-[12px] text-faint" data-testid={`discovery-status-${p}`}>
+        {s.configured ? null : <Badge tone="warning">{t("metadata.notConfigured")}</Badge>}
+        <span>{t("discoverySettings.artists", { count: s.artists })}</span>
+        {s.lastAt ? <span>· {t("discoverySettings.lastAt", { when: formatDateTime(s.lastAt, i18n.language) })}</span> : null}
+        {s.failed ? <span className="text-warning">· {t("discoverySettings.failed", { count: s.failed })}</span> : null}
+        {s.configured ? (
+          <Button variant="ghost" onClick={() => test.mutate(p)} busy={test.isPending && test.variables === p} data-testid={`discovery-test-${p}`}>
+            {t("discoverySettings.test")}
+          </Button>
+        ) : null}
+        {res ? (
+          <span role="status" className={res.ok ? "text-success" : "text-danger"}>
+            {res.ok ? t("discoverySettings.testOk") : t(`discoverySettings.errors.${res.code ?? "metadata_unavailable"}`)}
+          </span>
+        ) : null}
+      </div>
+    );
+  };
+  return (
+    <Panel title={t("discoverySettings.title")} description={t("discoverySettings.description")}>
+      <div className="flex flex-col gap-4" data-testid="music-discovery-settings">
+        <div>
+          <Checkbox label={t("discovery.providers.lastfm")} description={t("discoverySettings.lastfmHint")} checked={enabled.lastfm}
+            onChange={(e) => save.mutate({ lastfm: e.target.checked })} />
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <TextInput label={t("discoverySettings.lastfmKey")} type="password" autoComplete="off" value={lastfm} onChange={(e) => setLastfm(e.target.value)}
+              placeholder={d.lastfmApiKey.configured ? t("metadata.keySet") : t("metadata.keyMissing")} data-testid="lastfm-key"
+              hint={<a href="https://www.last.fm/api/account/create" target="_blank" rel="noreferrer noopener" className="underline">{t("discoverySettings.lastfmWhere")}</a>} />
+          </div>
+          {line("lastfm")}
+        </div>
+        <div>
+          <Checkbox label={t("discovery.providers.listenbrainz")} description={t("discoverySettings.listenbrainzHint")} checked={enabled.listenbrainz}
+            onChange={(e) => save.mutate({ listenbrainz: e.target.checked })} />
+          {line("listenbrainz")}
+        </div>
+        <div>
+          <Checkbox label={t("discovery.providers.musicbrainz")} description={t("discoverySettings.musicbrainzHint")} checked={enabled.musicbrainz}
+            onChange={(e) => save.mutate({ musicbrainz: e.target.checked })} />
+          {line("musicbrainz")}
+        </div>
+        <div>
+          <Checkbox label={t("discovery.providers.spotify")} description={t("discoverySettings.spotifyHint")} checked={enabled.spotify}
+            onChange={(e) => save.mutate({ spotify: e.target.checked })} />
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <TextInput label={t("discoverySettings.spotifyId")} type="password" autoComplete="off" value={spId} onChange={(e) => setSpId(e.target.value)}
+              placeholder={d.spotifyClientId.configured ? t("metadata.keySet") : t("metadata.keyMissing")} data-testid="spotify-id"
+              hint={<a href="https://developer.spotify.com/dashboard" target="_blank" rel="noreferrer noopener" className="underline">{t("discoverySettings.spotifyWhere")}</a>} />
+            <TextInput label={t("discoverySettings.spotifySecret")} type="password" autoComplete="off" value={spSecret}
+              onChange={(e) => setSpSecret(e.target.value)} data-testid="spotify-secret"
+              placeholder={d.spotifyClientSecret.configured ? t("metadata.keySet") : t("metadata.keyMissing")} />
+          </div>
+          {status("spotify")?.relatedArtists === "restricted" ? (
+            <p className="mt-1 text-[12px] text-warning" data-testid="spotify-restricted">{t("discovery.spotifyRestricted")}</p>
+          ) : null}
+          {line("spotify")}
+        </div>
+        <SelectInput label={t("discoverySettings.refreshDays")} value={d.refreshDays} className="max-w-xs"
+          onChange={(e) => save.mutate({ refreshDays: Number(e.target.value) })}>
+          {REFRESH_DAYS.map((n) => <option key={n} value={n}>{t("discoverySettings.everyDays", { count: n })}</option>)}
+        </SelectInput>
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <Button variant="primary" busy={save.isPending} data-testid="save-discovery" disabled={!lastfm && !spId && !spSecret}
+          onClick={() => save.mutate({ ...(lastfm ? { lastfmApiKey: lastfm } : {}), ...(spId || spSecret ? { spotifyClientId: spId, spotifyClientSecret: spSecret } : {}) })}>
+          {t("discoverySettings.saveKeys")}
+        </Button>
+        {d.lastfmApiKey.configured ? (
+          <ConfirmButton label={t("discoverySettings.removeLastfm")} confirmLabel={t("metadata.removeKeyConfirm")} onConfirm={() => save.mutate({ lastfmApiKey: "" })} />
+        ) : null}
+        {d.spotifyClientId.configured ? (
+          <ConfirmButton label={t("discoverySettings.removeSpotify")} confirmLabel={t("metadata.removeKeyConfirm")} onConfirm={() => save.mutate({ spotifyClientId: "" })} />
+        ) : null}
+        {save.isSuccess ? <span role="status" className="text-[13px] text-success">{t("common.saved")}</span> : null}
+        <ErrorAlert error={save.error ?? test.error} />
+      </div>
+      <p className="mt-3 text-[12px] text-faint">{t("discoverySettings.attribution")}</p>
+    </Panel>
   );
 }

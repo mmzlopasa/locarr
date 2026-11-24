@@ -567,3 +567,70 @@ func (c *Client) ReleaseGroup(ctx context.Context, mbid string) (metadata.AlbumS
 	}
 	return out, nil
 }
+
+// RelatedArtist is an artist linked to another by a MusicBrainz relationship
+// ("member of band", "collaboration", "supporting musician", …).
+type RelatedArtist struct {
+	MBID           string
+	Name           string
+	Disambiguation string
+	// Relation is the relationship type as MusicBrainz names it (lower case).
+	Relation string
+}
+
+type wireRelation struct {
+	Type   string `json:"type"`
+	Artist *struct {
+		ID             string `json:"id"`
+		Name           string `json:"name"`
+		Disambiguation string `json:"disambiguation"`
+	} `json:"artist"`
+}
+
+func related(rels []wireRelation, self string) []RelatedArtist {
+	out := []RelatedArtist{}
+	seen := map[string]bool{}
+	for _, r := range rels {
+		if r.Artist == nil || !MBID.MatchString(r.Artist.ID) {
+			continue
+		}
+		id := strings.ToLower(r.Artist.ID)
+		if id == self || seen[id+"|"+r.Type] {
+			continue
+		}
+		seen[id+"|"+r.Type] = true
+		out = append(out, RelatedArtist{MBID: id, Name: r.Artist.Name, Disambiguation: r.Artist.Disambiguation, Relation: strings.ToLower(r.Type)})
+	}
+	return out
+}
+
+// ArtistRelations lists the artists an artist is related to (artist-rels).
+func (c *Client) ArtistRelations(ctx context.Context, mbid string) ([]RelatedArtist, error) {
+	if err := checkID(mbid); err != nil {
+		return nil, err
+	}
+	mbid = strings.ToLower(mbid)
+	var res struct {
+		Relations []wireRelation `json:"relations"`
+	}
+	if err := c.get(ctx, "artist/"+mbid, url.Values{"inc": {"artist-rels"}}, metadata.TTLArtist, &res); err != nil {
+		return nil, err
+	}
+	return related(res.Relations, mbid), nil
+}
+
+// ArtistByURL returns the artist a URL (an artist page at a streaming service)
+// is linked to in MusicBrainz; ErrNotFound when no artist is.
+func (c *Client) ArtistByURL(ctx context.Context, resource string) (RelatedArtist, error) {
+	var res struct {
+		Relations []wireRelation `json:"relations"`
+	}
+	if err := c.get(ctx, "url", url.Values{"resource": {resource}, "inc": {"artist-rels"}}, 30*24*time.Hour, &res); err != nil {
+		return RelatedArtist{}, err
+	}
+	list := related(res.Relations, "")
+	if len(list) == 0 {
+		return RelatedArtist{}, metadata.ErrNotFound
+	}
+	return list[0], nil
+}

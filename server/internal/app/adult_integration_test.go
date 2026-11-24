@@ -75,7 +75,9 @@ func newAdultEnv(t *testing.T) *adultEnv {
 	_, base := startFakes(t)
 	le := &libraryEnv{env: e, movies: filepath.Join(e.data, "media", "movies"), downloads: filepath.Join(e.data, "downloads")}
 	le.client = newFlowClient(le.downloads)
-	e.deps.Downloads.NewClient = func(downloaders.Implementation, downloaders.Config) (downloaders.Client, error) { return le.client, nil }
+	e.deps.Downloads.NewClient = func(downloaders.Implementation, downloaders.Config) (downloaders.Client, error) {
+		return le.client, nil
+	}
 	e.expect(e.do("PATCH", "/api/v1/indexers/settings", map[string]any{"allowedHosts": []string{"127.0.0.1", "localhost"}}), 200)
 	e.expect(e.do("POST", "/api/v1/indexers", map[string]any{"name": "Fake Torznab", "kind": "torznab", "baseUrl": base + "/torznab",
 		"apiKey": "fakekey"}), 201)

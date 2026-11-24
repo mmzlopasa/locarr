@@ -128,6 +128,12 @@ jobs:
             # The fake MusicBrainz and Cover Art Archive (one request per second, like the real one).
             echo "LOCARR_MUSICBRAINZ_URL=http://fake-indexer:9117/musicbrainz"
             echo "LOCARR_COVERART_URL=http://fake-indexer:9117/musicbrainz/coverart"
+            # The fake music discovery providers (Last.fm, ListenBrainz, Spotify).
+            echo "LOCARR_LASTFM_URL=http://fake-indexer:9117/lastfm/"
+            echo "LOCARR_LISTENBRAINZ_URL=http://fake-indexer:9117/listenbrainz"
+            echo "LOCARR_LISTENBRAINZ_LABS_URL=http://fake-indexer:9117/listenbrainz"
+            echo "LOCARR_SPOTIFY_URL=http://fake-indexer:9117/spotify/v1"
+            echo "LOCARR_SPOTIFY_ACCOUNTS_URL=http://fake-indexer:9117/spotify"
             # The fake subtitle providers (OpenSubtitles.com, SubDL, Jimaku).
             echo "LOCARR_OPENSUBTITLES_URL=http://fake-indexer:9117/opensubtitles/api/v1"
             echo "LOCARR_SUBDL_URL=http://fake-indexer:9117/subdl/api/v1"

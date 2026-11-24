@@ -822,6 +822,15 @@ func (UnimplementedHandler) EvaluateReleases(ctx context.Context, req *EvaluateR
 	return r, ht.ErrNotImplemented
 }
 
+// ExcludeArtist implements excludeArtist operation.
+//
+// Mark an artist not interested; it is no longer suggested (library managers).
+//
+// POST /music/discover/exclusions
+func (UnimplementedHandler) ExcludeArtist(ctx context.Context, req *ExcludeArtistReq) (r *ArtistExclusion, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ExplainItem implements explainItem operation.
 //
 // Why an item is not in the library (yet).
@@ -1225,6 +1234,15 @@ func (UnimplementedHandler) GetMusicCalendar(ctx context.Context, params GetMusi
 	return r, ht.ErrNotImplemented
 }
 
+// GetMusicDiscoverySettings implements getMusicDiscoverySettings operation.
+//
+// Music discovery providers, keys state and refresh schedule (administrators).
+//
+// GET /settings/musicdiscovery
+func (UnimplementedHandler) GetMusicDiscoverySettings(ctx context.Context) (r *MusicDiscoverySettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetMusicSettings implements getMusicSettings operation.
 //
 // Music naming, import options and the MusicBrainz contact (administrators).
@@ -1332,6 +1350,15 @@ func (UnimplementedHandler) GetSeriesNaming(ctx context.Context) (r *SeriesNamin
 //
 // GET /settings
 func (UnimplementedHandler) GetSettings(ctx context.Context) (r *Settings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetSimilarArtists implements getSimilarArtists operation.
+//
+// Artists similar to one library artist, including ones in the library (library managers).
+//
+// GET /music/artists/{id}/similar
+func (UnimplementedHandler) GetSimilarArtists(ctx context.Context, params GetSimilarArtistsParams) (r *ArtistSuggestionList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1668,6 +1695,27 @@ func (UnimplementedHandler) ListApiKeys(ctx context.Context) (r []ApiKey, _ erro
 //
 // GET /music/artists/{id}/albums
 func (UnimplementedHandler) ListArtistAlbums(ctx context.Context, params ListArtistAlbumsParams) (r []Album, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListArtistExclusions implements listArtistExclusions operation.
+//
+// Artists marked not interested (library managers).
+//
+// GET /music/discover/exclusions
+func (UnimplementedHandler) ListArtistExclusions(ctx context.Context) (r []ArtistExclusion, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListArtistSuggestions implements listArtistSuggestions operation.
+//
+// Suggestions combine the stored answers of every active provider (Last.fm, ListenBrainz, MusicBrainz
+// relationships, Spotify where Spotify allows it) and leave out artists in the library and those
+// marked not interested. People who only request see the same list with their request state and
+// without library ids.
+//
+// GET /music/discover/artists
+func (UnimplementedHandler) ListArtistSuggestions(ctx context.Context, params ListArtistSuggestionsParams) (r *ArtistSuggestionList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2433,6 +2481,16 @@ func (UnimplementedHandler) RefreshArtist(ctx context.Context, params RefreshArt
 	return r, ht.ErrNotImplemented
 }
 
+// RefreshArtistSuggestions implements refreshArtistSuggestions operation.
+//
+// Without artists, asks about the artists whose answers are missing or old; with artists, about those,
+// even when fresh.
+//
+// POST /music/discover/refresh
+func (UnimplementedHandler) RefreshArtistSuggestions(ctx context.Context, req OptRefreshArtistSuggestionsReq) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RefreshBoard implements refreshBoard operation.
 //
 // Recompute every board item now (library managers).
@@ -2485,6 +2543,15 @@ func (UnimplementedHandler) RegenerateRecoveryCodes(ctx context.Context, req *Pa
 // POST /indexers/definitions/reload
 func (UnimplementedHandler) ReloadIndexerDefinitions(ctx context.Context) (r *IndexerCatalog, _ error) {
 	return r, ht.ErrNotImplemented
+}
+
+// RemoveArtistExclusion implements removeArtistExclusion operation.
+//
+// Suggest an artist again (library managers).
+//
+// DELETE /music/discover/exclusions/{mbid}
+func (UnimplementedHandler) RemoveArtistExclusion(ctx context.Context, params RemoveArtistExclusionParams) error {
+	return ht.ErrNotImplemented
 }
 
 // RemoveQueueItem implements removeQueueItem operation.
@@ -3021,6 +3088,15 @@ func (UnimplementedHandler) TestMigrateSource(ctx context.Context, req *MigrateS
 	return r, ht.ErrNotImplemented
 }
 
+// TestMusicDiscoveryProvider implements testMusicDiscoveryProvider operation.
+//
+// Check a provider with the stored keys (administrators).
+//
+// POST /settings/musicdiscovery/test
+func (UnimplementedHandler) TestMusicDiscoveryProvider(ctx context.Context, req *TestMusicDiscoveryProviderReq) (r *MusicDiscoveryTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // TestNotificationChannel implements testNotificationChannel operation.
 //
 // Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
@@ -3293,6 +3369,15 @@ func (UnimplementedHandler) UpdateMigrateSource(ctx context.Context, req *Migrat
 //
 // PATCH /movies/{id}
 func (UnimplementedHandler) UpdateMovie(ctx context.Context, req *MovieUpdate, params UpdateMovieParams) (r *Movie, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateMusicDiscoverySettings implements updateMusicDiscoverySettings operation.
+//
+// Keys are checked with the provider first; a refused key is not stored (`metadata_key_invalid`).
+//
+// PUT /settings/musicdiscovery
+func (UnimplementedHandler) UpdateMusicDiscoverySettings(ctx context.Context, req *MusicDiscoverySettingsInput) (r *MusicDiscoverySettings, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
