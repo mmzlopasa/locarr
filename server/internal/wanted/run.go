@@ -257,15 +257,10 @@ func (s *Service) Interactive(ctx context.Context, ref library.Ref, userID int64
 	}
 	q := it.Query
 	q.Source, q.ItemRef, q.UserID = indexers.SourceInteractive, ref.String(), userID
-	res, err := s.Indexers.Search(ctx, q)
-	if err != nil {
-		return Evaluation{}, err
-	}
-	ev, err := s.evaluate(ctx, it, decision.ModeInteractive, res.Releases)
+	ev, err := s.searchTerms(ctx, it, q, decision.ModeInteractive)
 	if err != nil {
 		return ev, err
 	}
-	ev.Search = res
 	sum := timeline.Summarize(ev.Report)
 	s.record(ctx, ref.String(), timeline.TypeDecision, decisionMessage(sum, "interactive"), map[string]any{"summary": sum, "reason": "interactive"})
 	return ev, nil

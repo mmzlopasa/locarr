@@ -2,6 +2,7 @@ package adult
 
 import (
 	"context"
+	"slices"
 	"strings"
 
 	"github.com/mmzlopasa/locarr/server/internal/decision"
@@ -93,16 +94,85 @@ func (w Source) toItem(ctx context.Context, it *Item, p *quality.Profile) wanted
 	if it.File != nil {
 		out.Wanted.Current = &decision.Current{Quality: it.File.Quality, Revision: it.File.Revision, Score: it.File.Score}
 	}
-	term := naming.CleanTitle(it.Title)
-	if it.Kind == KindScene {
-		if d := sceneDate(it.ReleaseDate); d != "" && it.Studio != "" {
-			term = naming.CleanTitle(it.Studio) + " " + d
-		}
-	} else if it.Year > 0 {
-		term += " " + yearStr(it.Year)
-	}
-	out.Query = indexers.Query{Type: indexers.SearchAdult, Term: term}
+	terms := searchTerms(it.Kind == KindScene, it.Studio, it.ReleaseDate, it.Title, it.Year, perfs)
+	out.Query = indexers.Query{Type: indexers.SearchAdult, Term: terms[0]}
+	out.AltTerms = terms[1:]
 	return out
+}
+
+// maxTitleWords keeps "performer + title" searches short: sites match every
+// word, and long titles are often cut in release names.
+const maxTitleWords = 6
+
+// searchTerms lists the texts to search for, best first (D-108). Public sites
+// name a scene in several ways: "Studio.20.08.19.Performer.Title",
+// "[Studio] Performer - Title (2020)", "Performer - Title - Studio". So a
+// scene is searched as studio + date ("Studio Name 20 08 19"), the studio
+// written together + dotted date ("StudioName 20.08.19"), the first
+// performer + the title words, and the title alone. Movies are searched by
+// title + year, then title. Repeats are dropped by the caller.
+func searchTerms(scene bool, studio, date, title string, year int, performers []string) []string {
+	clean := naming.CleanTitle(title)
+	if !scene {
+		if year > 0 {
+			return []string{clean + " " + yearStr(year), clean}
+		}
+		return []string{clean}
+	}
+	var out []string
+	if d := sceneDate(date); d != "" && studio != "" {
+		st := naming.CleanTitle(studio)
+		out = append(out, st+" "+d, strings.ReplaceAll(st, " ", "")+" "+strings.ReplaceAll(d, " ", "."))
+	}
+	if core := titleWords(title, performers); len(performers) > 0 && core != "" {
+		out = append(out, naming.CleanTitle(performers[0])+" "+core)
+	}
+	if clean != "" {
+		out = append(out, clean)
+	}
+	if len(out) == 0 {
+		out = append(out, naming.CleanTitle(studio))
+	}
+	return out
+}
+
+// titleWords is the title without performer names and joining words, cut to
+// maxTitleWords words.
+func titleWords(title string, performers []string) string {
+	words := strings.Fields(naming.CleanTitle(title))
+	for _, p := range performers {
+		name := strings.Fields(naming.CleanTitle(p))
+		if len(name) == 0 {
+			continue
+		}
+		for i := 0; i+len(name) <= len(words); {
+			if wordsEqual(words[i:i+len(name)], name) {
+				words = slices.Delete(words, i, i+len(name))
+				continue
+			}
+			i++
+		}
+	}
+	words = slices.DeleteFunc(words, func(w string) bool {
+		switch strings.ToLower(w) {
+		case "with", "and", "feat", "ft", "featuring", "starring", "vs":
+			return true
+		}
+		return false
+	})
+	if len(words) > maxTitleWords {
+		words = words[:maxTitleWords]
+	}
+	return strings.Join(words, " ")
+}
+
+func wordsEqual(a, b []string) bool {
+	for i := range a {
+		if !strings.EqualFold(a[i], b[i]) {
+			return false
+		}
+	}
+	return true
 }
 
 // Item implements wanted.Source.

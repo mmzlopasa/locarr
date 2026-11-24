@@ -10,5 +10,11 @@
   {"name": "Some.Movie.2024.1080p.BluRay.x264-GRP", "ok": false},
   {"name": "Show.Name.S01E02.720p.HDTV.x264-GRP", "ok": false},
   {"name": "", "ok": false},
-  {"name": "StudioG.XXX.24.05.20.Performer.Six.1080p.MP4-GRP.mp4", "ok": true, "studio": "StudioG", "date": "2024-05-20", "rest": "Performer Six", "resolution": 1080}
+  {"name": "StudioG.XXX.24.05.20.Performer.Six.1080p.MP4-GRP.mp4", "ok": true, "studio": "StudioG", "date": "2024-05-20", "rest": "Performer Six", "resolution": 1080},
+  {"name": "StudioH.20.08.19.Performer.Seven.Outdoor.Picnic.Scene.XXX.1080p.MP4-GRP", "ok": true, "studio": "StudioH", "date": "2020-08-19", "rest": "Performer Seven Outdoor Picnic Scene", "resolution": 1080},
+  {"name": "[StudioH] Performer Seven - Outdoor Picnic Scene (19.08.2020)", "ok": true, "studio": "StudioH", "date": "2020-08-19", "rest": "Performer Seven Outdoor Picnic Scene"},
+  {"name": "Studio H - Outdoor Picnic Scene [19.08.2020] 720p", "ok": true, "studio": "Studio H", "date": "2020-08-19", "rest": "Outdoor Picnic Scene", "resolution": 720},
+  {"name": "[StudioH] Performer Seven - Outdoor Picnic Scene (2020)", "ok": false},
+  {"name": "Performer Seven - Studio H", "ok": false},
+  {"name": "[StudioH] Performer Seven - Outdoor Picnic Scene (31.13.2020)", "ok": false}
 ]

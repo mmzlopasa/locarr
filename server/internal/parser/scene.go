@@ -24,6 +24,9 @@ var (
 	sceneDotted = regexp.MustCompile(`^(?P<studio>.+?)[ ._-]+(?P<y>(?:19|20)?\d{2})[ ._-](?P<m>\d{2})[ ._-](?P<d>\d{2})(?:[ ._-]+(?P<rest>.*))?$`)
 	// [Studio] Rest (2024-01-15) or Studio - Rest - 2024-01-15
 	sceneTrailing = regexp.MustCompile(`^(?:\[(?P<studio>[^\]]+)\]|(?P<studio2>[^-]+?)\s+-)\s*(?P<rest>.+?)\s*[\[(]?(?P<y>(?:19|20)\d{2})-(?P<m>\d{2})-(?P<d>\d{2})[\])]?(?:[ ._-]+.*)?$`)
+	// [Studio] Rest (15.01.2024) or Studio - Rest [15.01.2024]: a day-first
+	// date in brackets, as uploaders of general sites write it.
+	sceneTrailingDMY = regexp.MustCompile(`^(?:\[(?P<studio>[^\]]+)\]|(?P<studio2>[^-\[(]+?)\s+-)\s*(?P<rest>.+?)\s*[\[(](?P<d>\d{2})\.(?P<m>\d{2})\.(?P<y>(?:19|20)\d{2})[\])](?:[ ._-]+.*)?$`)
 	sceneTail     = regexp.MustCompile(`(?i)^(?:xxx|\d{3,4}p|4k|uhd|mp4|wmv|mkv|avi|web(?:-?dl|-?rip)?|hdtv|x26[45]|h\.?26[45]|hevc|avc|aac|prt|ktr|imageset|split[_ ]?scenes)$`)
 )
 
@@ -40,6 +43,10 @@ func ParseScene(name string) (Scene, bool) {
 		studio = g[sceneTrailing.SubexpIndex("studio")] + g[sceneTrailing.SubexpIndex("studio2")]
 		y, m, d = g[sceneTrailing.SubexpIndex("y")], g[sceneTrailing.SubexpIndex("m")], g[sceneTrailing.SubexpIndex("d")]
 		rest = g[sceneTrailing.SubexpIndex("rest")]
+	} else if g := sceneTrailingDMY.FindStringSubmatch(name); g != nil {
+		studio = g[sceneTrailingDMY.SubexpIndex("studio")] + g[sceneTrailingDMY.SubexpIndex("studio2")]
+		y, m, d = g[sceneTrailingDMY.SubexpIndex("y")], g[sceneTrailingDMY.SubexpIndex("m")], g[sceneTrailingDMY.SubexpIndex("d")]
+		rest = g[sceneTrailingDMY.SubexpIndex("rest")]
 	} else if g := sceneDotted.FindStringSubmatch(name); g != nil {
 		studio = g[sceneDotted.SubexpIndex("studio")]
 		y, m, d = g[sceneDotted.SubexpIndex("y")], g[sceneDotted.SubexpIndex("m")], g[sceneDotted.SubexpIndex("d")]

@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"slices"
 	"sort"
 	"strings"
 	"sync"
@@ -78,6 +79,10 @@ type Item struct {
 	ProfileID int64
 	Wanted    decision.Wanted
 	Query     indexers.Query
+	// AltTerms are further search texts tried in order, after Query.Term,
+	// while nothing acceptable has been found (adult scenes are named in
+	// several ways on public sites, D-108).
+	AltTerms []string
 	// MediaKind is the download clients' category kind (movies, series, music).
 	MediaKind string
 	// Covers lists what the item wants when one item stands for several (a
@@ -330,15 +335,11 @@ func (s *Service) Search(ctx context.Context, ref library.Ref, reason string) (O
 	}
 	q := it.Query
 	q.Source, q.ItemRef = indexers.SourceAutomatic, ref.String()
-	res, err := s.Indexers.Search(ctx, q)
+	ev, err := s.searchTerms(ctx, it, q, decision.ModeSearch)
 	if err != nil {
 		return Outcome{}, err
 	}
-	ev, err := s.evaluate(ctx, it, decision.ModeSearch, res.Releases)
-	if err != nil {
-		return Outcome{}, err
-	}
-	ev.Search = res
+	res := ev.Search
 	sum := timeline.Summarize(ev.Report)
 	s.record(ctx, ref.String(), timeline.TypeDecision, decisionMessage(sum, reason), map[string]any{"summary": sum, "reason": reason})
 	out := Outcome{Searched: true, Found: len(res.Releases), Accepted: ev.Report.Accepted, Pending: ev.Report.Pending}
@@ -695,4 +696,86 @@ func fromCandidate(c decision.Candidate) indexers.Release {
 		r.Flags = append(r.Flags, strings.ReplaceAll(f, "_", ""))
 	}
 	return r
+}
+
+// searchTerms searches for an item with its query and then, while nothing
+// is accepted or pending, with each of its alternative terms in order. The
+// releases of every search made are evaluated together.
+func (s *Service) searchTerms(ctx context.Context, it Item, q indexers.Query, mode decision.Mode) (Evaluation, error) {
+	terms := searchTermList(q.Term, it.AltTerms)
+	var merged indexers.Result
+	for i, term := range terms {
+		qq := q
+		qq.Term = term
+		res, err := s.Indexers.Search(ctx, qq)
+		if err != nil {
+			if i == 0 {
+				return Evaluation{}, err
+			}
+			break
+		}
+		merged = mergeResults(merged, res)
+		ev, err := s.evaluate(ctx, it, mode, merged.Releases)
+		if err != nil {
+			return ev, err
+		}
+		if ev.Report.Accepted+ev.Report.Pending > 0 || i == len(terms)-1 || ctx.Err() != nil {
+			ev.Search = merged
+			return ev, nil
+		}
+	}
+	ev, err := s.evaluate(ctx, it, mode, merged.Releases)
+	ev.Search = merged
+	return ev, err
+}
+
+// searchTermList is the query term and the alternatives, without blanks or
+// repeats (compared as words).
+func searchTermList(first string, alt []string) []string {
+	out := []string{first}
+	seen := map[string]bool{decision.NormWords(first): true}
+	for _, t := range alt {
+		t = strings.TrimSpace(t)
+		k := decision.NormWords(t)
+		if k == "" || seen[k] {
+			continue
+		}
+		seen[k] = true
+		out = append(out, t)
+	}
+	return out
+}
+
+// mergeResults adds a later search to the earlier ones: new releases only,
+// and one line per indexer (its counts added, success wins over failure).
+func mergeResults(a, b indexers.Result) indexers.Result {
+	if a.Releases == nil && a.Indexers == nil {
+		return b
+	}
+	seen := make(map[string]bool, len(a.Releases))
+	for _, r := range a.Releases {
+		seen[r.Key()] = true
+	}
+	for _, r := range b.Releases {
+		if !seen[r.Key()] {
+			seen[r.Key()] = true
+			a.Releases = append(a.Releases, r)
+		}
+	}
+	for _, ib := range b.Indexers {
+		i := slices.IndexFunc(a.Indexers, func(x indexers.IndexerResult) bool { return x.IndexerID == ib.IndexerID })
+		if i < 0 {
+			a.Indexers = append(a.Indexers, ib)
+			continue
+		}
+		ia := &a.Indexers[i]
+		count := ia.Count + ib.Count
+		dur := ia.Duration + ib.Duration
+		if ia.Status != indexers.StatusOK && ib.Status == indexers.StatusOK {
+			*ia = ib
+		}
+		ia.Count, ia.Duration = count, dur
+	}
+	a.Duration += b.Duration
+	return a
 }
