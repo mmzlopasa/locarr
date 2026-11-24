@@ -4,32 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 )
-
-// ErrChallenge is returned when a Cloudflare challenge could not be solved.
-var ErrChallenge = errors.New("blocked by a Cloudflare challenge")
-
-// IsChallenge reports whether r is a Cloudflare browser challenge page.
-func IsChallenge(r *Response) bool { return isChallenge(r) }
-
-// isChallenge recognises a Cloudflare browser challenge page.
-func isChallenge(r *Response) bool {
-	if r.Status != http.StatusForbidden && r.Status != http.StatusServiceUnavailable {
-		return false
-	}
-	if !strings.Contains(strings.ToLower(r.Header.Get("Server")), "cloudflare") && r.Header.Get("Cf-Mitigated") == "" {
-		return false
-	}
-	b := strings.ToLower(string(r.Body[:min(len(r.Body), 64<<10)]))
-	return r.Header.Get("Cf-Mitigated") == "challenge" || strings.Contains(b, "challenge-platform") ||
-		strings.Contains(b, "cf-chl") || strings.Contains(b, "just a moment")
-}
 
 // solve asks FlareSolverr (its documented `request.get` command) to pass the
 // challenge and keeps the clearance cookies and user agent for later requests

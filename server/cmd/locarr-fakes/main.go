@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/indexers/fake"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/challengefake"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/native/sitefake"
 	stfake "github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero/fake"
 	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
@@ -79,6 +80,13 @@ func main() {
 	// Recorded answers of the built-in public sites, one per /sites/<id>
 	// (point a built-in indexer's address at http://fake-indexer:9117/sites/<id>).
 	mux.Handle("/sites/", http.StripPrefix("/sites", sitefake.New()))
+	// Sites behind a fake browser check (the built-in browser's tests):
+	//   /protected/sites/<id>/…  a built-in site's recordings behind a JavaScript check
+	//   /protected/test          a test page behind the check
+	//   /protected/human/…       a check that wants a person (a CAPTCHA)
+	mux.Handle("/protected/sites/", challengefake.New(http.StripPrefix("/protected/sites", sitefake.New())))
+	mux.Handle("/protected/test", challengefake.New(challengefake.TestPage()))
+	mux.Handle("/protected/human/", challengefake.Human())
 	mux.Handle("/", ix)
 	srv := &http.Server{Addr: addr, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
 	log.Printf("fake indexers listening on %s", addr)

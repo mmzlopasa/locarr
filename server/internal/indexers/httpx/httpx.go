@@ -175,8 +175,15 @@ type Options struct {
 	// Proxy is an optional http://, https:// or socks5:// proxy URL (with credentials).
 	Proxy string
 	// FlareSolverr is an optional FlareSolverr base URL used to get past a
-	// Cloudflare challenge.
+	// Cloudflare challenge when the built-in browser is not running.
 	FlareSolverr string
+	// Browser is the companion browser that passes automatic browser checks
+	// (nil: none).
+	Browser *Browser
+	// Challenge says whether the site shows a browser check: never,
+	// sometimes or always ("always" goes to the browser first while no
+	// cookies were earned).
+	Challenge string
 	// Secrets are values that must never appear in errors (API keys, passwords).
 	Secrets []string
 	// UserAgent replaces the default "Locarr" User-Agent header.
@@ -296,11 +303,33 @@ func (c *Client) Get(ctx context.Context, rawURL string, hdr http.Header) (*Resp
 
 // Do sends a request and reads the whole (size-capped) response.
 func (c *Client) Do(ctx context.Context, method, rawURL string, hdr http.Header, body []byte) (*Response, error) {
+	b := c.o.Browser
+	host := hostOf(rawURL)
+	if b != nil && method == http.MethodGet && host != "" &&
+		(b.direct(host, c.o.Proxy) || c.o.Challenge == "always" && b.clearance(host, c.o.Proxy) == nil) {
+		res, err := c.viaBrowser(ctx, rawURL)
+		if !c.fallBack(err) {
+			return res, err
+		}
+	}
 	res, err := c.do(ctx, method, rawURL, hdr, body)
 	if err != nil {
 		return nil, err
 	}
-	if c.fsHC != nil && method == http.MethodGet && isChallenge(res) {
+	if method != http.MethodGet || !isChallenge(res) {
+		return res, nil
+	}
+	if b != nil {
+		if b.clearance(host, c.o.Proxy) != nil {
+			// Fresh cookies and still the check: the site ties them to the browser.
+			b.cookiesRejected(host, c.o.Proxy)
+		}
+		r, err := c.viaBrowser(ctx, rawURL)
+		if !c.fallBack(err) {
+			return r, err
+		}
+	}
+	if c.fsHC != nil {
 		if err := c.solve(ctx, rawURL); err != nil {
 			return nil, err
 		}
@@ -308,6 +337,41 @@ func (c *Client) Do(ctx context.Context, method, rawURL string, hdr http.Header,
 	}
 	return res, nil
 }
+
+// viaBrowser opens rawURL in the companion browser.
+func (c *Client) viaBrowser(ctx context.Context, rawURL string) (*Response, error) {
+	res, err := c.o.Browser.solve(ctx, solveInput{url: rawURL, proxy: c.o.Proxy, policy: c.o.Policy, secrets: c.o.Secrets})
+	if err != nil {
+		var ce *ChallengeError
+		if errors.As(err, &ce) {
+			return nil, err
+		}
+		return nil, c.wrap(err, rawURL)
+	}
+	if int64(len(res.Body)) > c.o.MaxBytes {
+		return nil, c.wrap(ErrTooLarge, rawURL)
+	}
+	return res, nil
+}
+
+// fallBack reports whether a failed browser solve should leave the request to
+// FlareSolverr: only when the built-in browser is not there and the indexer
+// has a FlareSolverr address.
+func (c *Client) fallBack(err error) bool {
+	var ce *ChallengeError
+	return err != nil && c.fsHC != nil && errors.As(err, &ce) && ce.Reason == ReasonMissing
+}
+
+func hostOf(rawURL string) string {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return ""
+	}
+	return u.Host
+}
+
+// SetChallenge sets how the site uses browser checks (never, sometimes, always).
+func (c *Client) SetChallenge(mode string) { c.o.Challenge = mode }
 
 func (c *Client) do(ctx context.Context, method, rawURL string, hdr http.Header, body []byte) (*Response, error) {
 	u, err := url.Parse(rawURL)
