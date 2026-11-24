@@ -995,7 +995,8 @@
       "options": "Postavke stranice",
       "flaresolverrHint": "Samo rezerva: Locarrov ugrađeni preglednik prolazi provjere preglednika. Upiši ako već imaš FlareSolverr, a ne koristiš ugrađeni preglednik.",
       "rateLimit": "Zahtjevi",
-      "rateLimitHint": "Najviše toliko zahtjeva po razdoblju, da se stranica ne zatrpa."
+      "rateLimitHint": "Najviše toliko zahtjeva po razdoblju, da se stranica ne zatrpa.",
+      "adultOnly": "Samo za odrasle"
     },
     "usenet": {
       "preset": "Indexer",
@@ -4113,7 +4114,9 @@
     },
     "indexers": {
       "title": "Indexeri s kategorijama za odrasle",
-      "hint": "Za svaki indexer zadano isključeno. Pitaju se samo odabrani indexeri, u kategorijama 6000 (XXX)."
+      "hint": "Za svaki indexer zadano isključeno. Pitaju se samo označeni indexeri, u svojim kategorijama za odrasle (6000, XXX). Stranice samo za odrasle (Sukebei, XXXClub) označene su čim se dodaju.",
+      "noAdult": "Ne može tražiti sadržaj za odrasle",
+      "noAdultHint": "Ovi indexeri nemaju kategorije za odrasle, pa ih pretraga za odrasle preskače i kad su označeni."
     },
     "blocklist": {
       "title": "Blokirani pojmovi",

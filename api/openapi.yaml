@@ -8238,6 +8238,11 @@ components:
         capsUpdatedAt:
           type: string
           format: date-time
+        adultCapable:
+          type: boolean
+          description: >-
+            The indexer can answer adult searches (a built-in site with adult categories, or a Torznab/Newznab
+            indexer whose capabilities list 6xxx or are not known yet). Others are left out of adult searches.
         health:
           $ref: "#/components/schemas/IndexerHealth"
         createdAt:
@@ -8619,6 +8624,11 @@ components:
           type: boolean
         overrides:
           type: boolean
+        adult:
+          type: boolean
+          description: >-
+            The site carries only adult content: it answers adult searches and RSS only. Such definitions are
+            listed only while the adult library is on.
         file:
           type: string
           description: "For a custom definition: its file name in the custom folder."

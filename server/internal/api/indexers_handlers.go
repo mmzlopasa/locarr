@@ -131,7 +131,9 @@ func toIndexer(i indexers.Indexer, now time.Time, defs func(string) (*native.Def
 
 // toIndexer converts with the handler's site definitions.
 func (h *Handler) toIndexer(i indexers.Indexer, now time.Time) gen.Indexer {
-	return toIndexer(i, now, h.Indexers.Definition)
+	out := toIndexer(i, now, h.Indexers.Definition)
+	out.AdultCapable = gen.NewOptBool(h.Indexers.AdultCapable(i))
+	return out
 }
 
 func (h *Handler) fromInput(g *gen.IndexerInput) indexers.Input {

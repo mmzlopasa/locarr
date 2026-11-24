@@ -27,7 +27,14 @@ func DefaultCategories(c *znab.Caps) Categories {
 	if c == nil {
 		return out
 	}
-	for _, id := range c.CategoryIDs() {
+	ids := c.CategoryIDs()
+	// A site that carries nothing but adult content is opted in to adult
+	// searches when it is added: there is nothing else it could answer.
+	if len(ids) > 0 && !slices.ContainsFunc(ids, func(id int) bool { return !inRange(id, catAdult) }) {
+		out.Adult = slices.Clone(ids)
+		return normCats(out)
+	}
+	for _, id := range ids {
 		switch {
 		case inRange(id, catMovies):
 			out.Movies = append(out.Movies, id)
@@ -89,6 +96,31 @@ func AdultCategories(c *znab.Caps) []int {
 		out = append(out, catAdult)
 	}
 	return out
+}
+
+// AdultCapable reports whether an indexer can answer adult searches: a
+// built-in site whose definition maps adult categories, or a Torznab/Newznab
+// indexer whose capabilities list 6xxx (or are not known yet). Indexers that
+// cannot are left out of adult searches even when opted in (D-108).
+func (s *Service) AdultCapable(ind Indexer) bool {
+	if ind.Kind == Native {
+		d, ok := s.Definition(ind.Definition)
+		return ok && d.HasAdult()
+	}
+	if ind.Caps == nil {
+		return true
+	}
+	return slices.ContainsFunc(ind.Caps.CategoryIDs(), func(id int) bool { return inRange(id, catAdult) })
+}
+
+// adultOnly reports a built-in site that carries nothing but adult content:
+// it answers adult searches and RSS only.
+func (s *Service) adultOnly(ind Indexer) bool {
+	if ind.Kind != Native {
+		return false
+	}
+	d, ok := s.Definition(ind.Definition)
+	return ok && d.Adult
 }
 
 // AnswersQuery reports whether a release belongs in the answer to a search

@@ -45,7 +45,13 @@ func (h *Handler) indexerCatalog(ctx context.Context) (*gen.IndexerCatalog, erro
 	if h.Indexers.Natives != nil && h.Indexers.Natives.Dir != "" {
 		out.CustomDir = filepath.Clean(h.Indexers.Natives.Dir)
 	}
+	adultOn := h.Adult != nil && h.Adult.On(ctx)
 	for _, d := range h.Indexers.Definitions() {
+		// Adult-only sites are offered only while the adult library is on
+		// (an indexer already using one keeps it listed).
+		if d.Adult && !adultOn && len(using[d.ID]) == 0 {
+			continue
+		}
 		out.Definitions = append(out.Definitions, toDefinition(d, using[d.ID]))
 	}
 	for _, p := range indexers.UsenetPresets {
@@ -62,7 +68,7 @@ func toDefinition(d *native.Definition, ids []int64) gen.IndexerDefinition {
 	caps, _ := c.Caps(context.Background())
 	gc := toCaps(caps)
 	g := gen.IndexerDefinition{ID: d.ID, Name: d.Name, Description: d.Description, Version: d.Version, Builtin: d.Builtin,
-		Overrides: d.Overrides, File: optStr(d.File), Protocol: gen.Protocol(d.Protocol), Language: optStr(d.Language),
+		Overrides: d.Overrides, Adult: gen.NewOptBool(d.Adult), File: optStr(d.File), Protocol: gen.Protocol(d.Protocol), Language: optStr(d.Language),
 		Links: slices.Clone(d.Links), Verified: d.Verified, Challenge: gen.IndexerDefinitionChallenge(d.Challenge), Flaresolverr: gen.IndexerDefinitionFlaresolverr(d.Challenge), //nolint:staticcheck // the old name stays for older apps
 		Rss: d.SupportsRSS(), Searching: gc.Searching, Categories: gc.Categories, Settings: []gen.IndexerDefinitionSetting{},
 		Aliases: slices.Clone(d.Aliases), IndexerIds: ids}

@@ -171,15 +171,35 @@ function IndexersPanel() {
       body: inputFromIndexer(i, { categories: { ...i.categories, adult: on ? [6000] : [] } }) })),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["indexers"] }),
   });
+  const on = (i: Indexer) => (i.categories.adult ?? []).length > 0;
+  // Indexers without adult categories are never asked; one still ticked from
+  // before can only be unticked.
+  const capable = list.data?.filter((i) => i.adultCapable !== false) ?? [];
+  const other = list.data?.filter((i) => i.adultCapable === false) ?? [];
   return (
     <Panel title={t("adultSettings.indexers.title")} description={t("adultSettings.indexers.hint")}>
-      <ul className="space-y-1.5">
-        {list.data?.map((i) => (
+      <ul className="space-y-1.5" data-testid="adult-indexers">
+        {capable.map((i) => (
           <li key={i.id}>
-            <Checkbox label={i.name} checked={(i.categories.adult ?? []).length > 0} onChange={(e) => toggle.mutate({ i, on: e.target.checked })} />
+            <Checkbox label={i.name} checked={on(i)} onChange={(e) => toggle.mutate({ i, on: e.target.checked })} />
           </li>
         ))}
       </ul>
+      {other.length ? (
+        <div className="mt-3" data-testid="adult-indexers-unsupported">
+          <p className="text-[12px] font-medium text-muted">{t("adultSettings.indexers.noAdult")}</p>
+          <p className="mb-1.5 text-[12px] text-faint">{t("adultSettings.indexers.noAdultHint")}</p>
+          <ul className="space-y-1.5">
+            {other.map((i) => (
+              <li key={i.id}>
+                {on(i)
+                  ? <Checkbox label={i.name} checked onChange={() => toggle.mutate({ i, on: false })} />
+                  : <span className="text-[13px] text-faint">{i.name}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <ErrorAlert error={toggle.error} />
     </Panel>
   );
