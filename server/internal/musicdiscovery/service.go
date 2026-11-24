@@ -4,7 +4,7 @@
 // it, Spotify's related artists), maps every answer to a MusicBrainz artist
 // id, stores the answers and combines them into one ranked list that leaves
 // out what is already in the library and what someone marked "not
-// interested" (D-100).
+// interested" (D-101).
 package musicdiscovery
 
 import (
