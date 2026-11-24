@@ -25637,6 +25637,251 @@ func (s *HistoryCategory) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *HistoryClearRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *HistoryClearRequest) encodeFields(e *jx.Encoder) {
+	{
+		if s.Category.Set {
+			e.FieldStart("category")
+			s.Category.Encode(e)
+		}
+	}
+	{
+		if s.Kind.Set {
+			e.FieldStart("kind")
+			s.Kind.Encode(e)
+		}
+	}
+	{
+		if s.Q.Set {
+			e.FieldStart("q")
+			s.Q.Encode(e)
+		}
+	}
+	{
+		if s.OlderThanDays.Set {
+			e.FieldStart("olderThanDays")
+			s.OlderThanDays.Encode(e)
+		}
+	}
+	{
+		if s.DryRun.Set {
+			e.FieldStart("dryRun")
+			s.DryRun.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfHistoryClearRequest = [5]string{
+	0: "category",
+	1: "kind",
+	2: "q",
+	3: "olderThanDays",
+	4: "dryRun",
+}
+
+// Decode decodes HistoryClearRequest from json.
+func (s *HistoryClearRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode HistoryClearRequest to nil")
+	}
+	s.setDefaults()
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "category":
+			if err := func() error {
+				s.Category.Reset()
+				if err := s.Category.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"category\"")
+			}
+		case "kind":
+			if err := func() error {
+				s.Kind.Reset()
+				if err := s.Kind.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"kind\"")
+			}
+		case "q":
+			if err := func() error {
+				s.Q.Reset()
+				if err := s.Q.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"q\"")
+			}
+		case "olderThanDays":
+			if err := func() error {
+				s.OlderThanDays.Reset()
+				if err := s.OlderThanDays.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"olderThanDays\"")
+			}
+		case "dryRun":
+			if err := func() error {
+				s.DryRun.Reset()
+				if err := s.DryRun.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"dryRun\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode HistoryClearRequest")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *HistoryClearRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *HistoryClearRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *HistoryClearResult) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *HistoryClearResult) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("count")
+		e.Int64(s.Count)
+	}
+	{
+		e.FieldStart("deleted")
+		e.Bool(s.Deleted)
+	}
+}
+
+var jsonFieldsNameOfHistoryClearResult = [2]string{
+	0: "count",
+	1: "deleted",
+}
+
+// Decode decodes HistoryClearResult from json.
+func (s *HistoryClearResult) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode HistoryClearResult to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "count":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int64()
+				s.Count = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"count\"")
+			}
+		case "deleted":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Bool()
+				s.Deleted = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"deleted\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode HistoryClearResult")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfHistoryClearResult) {
+					name = jsonFieldsNameOfHistoryClearResult[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *HistoryClearResult) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *HistoryClearResult) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *HistoryEntry) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -25703,9 +25948,27 @@ func (s *HistoryEntry) encodeFields(e *jx.Encoder) {
 			s.DownloadId.Encode(e)
 		}
 	}
+	{
+		if s.ItemTitle.Set {
+			e.FieldStart("itemTitle")
+			s.ItemTitle.Encode(e)
+		}
+	}
+	{
+		if s.ItemGone.Set {
+			e.FieldStart("itemGone")
+			s.ItemGone.Encode(e)
+		}
+	}
+	{
+		if len(s.Data) != 0 {
+			e.FieldStart("data")
+			e.Raw(s.Data)
+		}
+	}
 }
 
-var jsonFieldsNameOfHistoryEntry = [12]string{
+var jsonFieldsNameOfHistoryEntry = [15]string{
 	0:  "id",
 	1:  "at",
 	2:  "category",
@@ -25718,6 +25981,9 @@ var jsonFieldsNameOfHistoryEntry = [12]string{
 	9:  "client",
 	10: "message",
 	11: "downloadId",
+	12: "itemTitle",
+	13: "itemGone",
+	14: "data",
 }
 
 // Decode decodes HistoryEntry from json.
@@ -25861,6 +26127,37 @@ func (s *HistoryEntry) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"downloadId\"")
 			}
+		case "itemTitle":
+			if err := func() error {
+				s.ItemTitle.Reset()
+				if err := s.ItemTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"itemTitle\"")
+			}
+		case "itemGone":
+			if err := func() error {
+				s.ItemGone.Reset()
+				if err := s.ItemGone.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"itemGone\"")
+			}
+		case "data":
+			if err := func() error {
+				v, err := d.RawAppend(nil)
+				s.Data = jx.Raw(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"data\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -25981,11 +26278,18 @@ func (s *HistoryPage) encodeFields(e *jx.Encoder) {
 		e.FieldStart("hasMore")
 		e.Bool(s.HasMore)
 	}
+	{
+		if s.RetentionDays.Set {
+			e.FieldStart("retentionDays")
+			s.RetentionDays.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfHistoryPage = [2]string{
+var jsonFieldsNameOfHistoryPage = [3]string{
 	0: "items",
 	1: "hasMore",
+	2: "retentionDays",
 }
 
 // Decode decodes HistoryPage from json.
@@ -26026,6 +26330,16 @@ func (s *HistoryPage) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"hasMore\"")
+			}
+		case "retentionDays":
+			if err := func() error {
+				s.RetentionDays.Reset()
+				if err := s.RetentionDays.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"retentionDays\"")
 			}
 		default:
 			return d.Skip()
@@ -55800,6 +56114,39 @@ func (s OptFloat64) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptFloat64) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes HistoryCategory as json.
+func (o OptHistoryCategory) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes HistoryCategory from json.
+func (o *OptHistoryCategory) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptHistoryCategory to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptHistoryCategory) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptHistoryCategory) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -86237,6 +86584,10 @@ func (s *SystemSettings) encodeFields(e *jx.Encoder) {
 		e.Int(s.BackupKeep)
 	}
 	{
+		e.FieldStart("historyDays")
+		e.Int(s.HistoryDays)
+	}
+	{
 		e.FieldStart("timelineDays")
 		e.Int(s.TimelineDays)
 	}
@@ -86266,20 +86617,21 @@ func (s *SystemSettings) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfSystemSettings = [13]string{
+var jsonFieldsNameOfSystemSettings = [14]string{
 	0:  "updateCheck",
 	1:  "minFreeSpaceGb",
 	2:  "recycleBinWarnGb",
 	3:  "stuckImportMinutes",
 	4:  "backupIntervalHours",
 	5:  "backupKeep",
-	6:  "timelineDays",
-	7:  "searchLogDays",
-	8:  "downloadEventsDays",
-	9:  "releasesSeenDays",
-	10: "vacuumIntervalDays",
-	11: "imageCacheMaxMb",
-	12: "metricsTokenSet",
+	6:  "historyDays",
+	7:  "timelineDays",
+	8:  "searchLogDays",
+	9:  "downloadEventsDays",
+	10: "releasesSeenDays",
+	11: "vacuumIntervalDays",
+	12: "imageCacheMaxMb",
+	13: "metricsTokenSet",
 }
 
 // Decode decodes SystemSettings from json.
@@ -86363,8 +86715,20 @@ func (s *SystemSettings) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"backupKeep\"")
 			}
-		case "timelineDays":
+		case "historyDays":
 			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int()
+				s.HistoryDays = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"historyDays\"")
+			}
+		case "timelineDays":
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
 				v, err := d.Int()
 				s.TimelineDays = int(v)
@@ -86376,7 +86740,7 @@ func (s *SystemSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"timelineDays\"")
 			}
 		case "searchLogDays":
-			requiredBitSet[0] |= 1 << 7
+			requiredBitSet[1] |= 1 << 0
 			if err := func() error {
 				v, err := d.Int()
 				s.SearchLogDays = int(v)
@@ -86388,7 +86752,7 @@ func (s *SystemSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"searchLogDays\"")
 			}
 		case "downloadEventsDays":
-			requiredBitSet[1] |= 1 << 0
+			requiredBitSet[1] |= 1 << 1
 			if err := func() error {
 				v, err := d.Int()
 				s.DownloadEventsDays = int(v)
@@ -86400,7 +86764,7 @@ func (s *SystemSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"downloadEventsDays\"")
 			}
 		case "releasesSeenDays":
-			requiredBitSet[1] |= 1 << 1
+			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
 				v, err := d.Int()
 				s.ReleasesSeenDays = int(v)
@@ -86412,7 +86776,7 @@ func (s *SystemSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"releasesSeenDays\"")
 			}
 		case "vacuumIntervalDays":
-			requiredBitSet[1] |= 1 << 2
+			requiredBitSet[1] |= 1 << 3
 			if err := func() error {
 				v, err := d.Int()
 				s.VacuumIntervalDays = int(v)
@@ -86424,7 +86788,7 @@ func (s *SystemSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"vacuumIntervalDays\"")
 			}
 		case "imageCacheMaxMb":
-			requiredBitSet[1] |= 1 << 3
+			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				v, err := d.Int()
 				s.ImageCacheMaxMb = int(v)
@@ -86436,7 +86800,7 @@ func (s *SystemSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"imageCacheMaxMb\"")
 			}
 		case "metricsTokenSet":
-			requiredBitSet[1] |= 1 << 4
+			requiredBitSet[1] |= 1 << 5
 			if err := func() error {
 				v, err := d.Bool()
 				s.MetricsTokenSet = bool(v)
@@ -86458,7 +86822,7 @@ func (s *SystemSettings) Decode(d *jx.Decoder) error {
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
 		0b11111111,
-		0b00011111,
+		0b00111111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -86550,6 +86914,12 @@ func (s *SystemSettingsInput) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.HistoryDays.Set {
+			e.FieldStart("historyDays")
+			s.HistoryDays.Encode(e)
+		}
+	}
+	{
 		if s.TimelineDays.Set {
 			e.FieldStart("timelineDays")
 			s.TimelineDays.Encode(e)
@@ -86593,20 +86963,21 @@ func (s *SystemSettingsInput) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfSystemSettingsInput = [13]string{
+var jsonFieldsNameOfSystemSettingsInput = [14]string{
 	0:  "updateCheck",
 	1:  "minFreeSpaceGb",
 	2:  "recycleBinWarnGb",
 	3:  "stuckImportMinutes",
 	4:  "backupIntervalHours",
 	5:  "backupKeep",
-	6:  "timelineDays",
-	7:  "searchLogDays",
-	8:  "downloadEventsDays",
-	9:  "releasesSeenDays",
-	10: "vacuumIntervalDays",
-	11: "imageCacheMaxMb",
-	12: "metricsToken",
+	6:  "historyDays",
+	7:  "timelineDays",
+	8:  "searchLogDays",
+	9:  "downloadEventsDays",
+	10: "releasesSeenDays",
+	11: "vacuumIntervalDays",
+	12: "imageCacheMaxMb",
+	13: "metricsToken",
 }
 
 // Decode decodes SystemSettingsInput from json.
@@ -86676,6 +87047,16 @@ func (s *SystemSettingsInput) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"backupKeep\"")
+			}
+		case "historyDays":
+			if err := func() error {
+				s.HistoryDays.Reset()
+				if err := s.HistoryDays.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"historyDays\"")
 			}
 		case "timelineDays":
 			if err := func() error {

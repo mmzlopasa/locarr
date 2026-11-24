@@ -282,6 +282,20 @@ func encodeCheckMigratePathsRequest(
 	return nil
 }
 
+func encodeClearHistoryRequest(
+	req *HistoryClearRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeConvertSubtitleFpsRequest(
 	req *ConvertSubtitleFpsReq,
 	r *http.Request,

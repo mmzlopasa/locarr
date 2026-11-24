@@ -304,7 +304,12 @@ func (s *Service) Grab(ctx context.Context, ref library.Ref, g ManualGrab) (down
 	}
 	d, err := s.Downloads.Grab(ctx, req)
 	if err != nil {
-		s.record(ctx, ref.String(), timeline.TypeGrabFailed, fmt.Sprintf("could not grab %s: %v", g.Title, err), map[string]any{"title": g.Title, "error": err.Error(), "manual": true})
+		f := classifyGrab(err, s.now())
+		data := map[string]any{"title": g.Title, "error": shortError(err), "manual": true, "code": f.Code}
+		if f.Until != nil {
+			data["until"] = f.Until.UTC()
+		}
+		s.record(ctx, ref.String(), timeline.TypeGrabFailed, fmt.Sprintf("could not grab %s: %s", g.Title, shortError(err)), data)
 		return d, err
 	}
 	_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM pending_releases WHERE item_ref = ?`, ref.String())

@@ -78,19 +78,64 @@ describe("history", () => {
     mockApi((req) => {
       if (req.path === "/history") {
         seen.push(req.query);
-        return { status: 200, body: { hasMore: false, items: [
-          { id: "d:1", at: now, category: "grabbed", type: "grabbed", itemRef: "movie:1", title: "Dune (2021)", release: "Dune.2021.2160p", indexer: "Fake", message: "" },
+        return { status: 200, body: { hasMore: false, retentionDays: 365, items: [
+          { id: "d:1", at: now, category: "grabbed", type: "download_grabbed", itemRef: "movie:1", title: "Dune (2021)", itemTitle: "Dune (2021)",
+            release: "Dune.2021.2160p", indexer: "Fake", message: "sent to qBittorrent" },
         ] } };
       }
     });
     renderApp("/activity/history", { me: testUser() });
-    expect(await screen.findByText("Dune (2021)")).toBeInTheDocument();
-    expect(screen.getByText("indexer: Fake")).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Dune (2021)" })).toHaveAttribute("href", "/movies/1");
+    expect(screen.getByTestId("history-retention")).toHaveTextContent("older than 365 days");
+    await userEvent.click(screen.getByTestId("history-toggle"));
+    expect(screen.getByTestId("history-detail")).toHaveTextContent("Fake");
     await userEvent.selectOptions(screen.getByTestId("history-category"), "failed");
     await userEvent.selectOptions(screen.getByTestId("history-kind"), "series");
     await waitFor(() => expect(seen.at(-1)?.get("kind")).toBe("series"));
     expect(seen.at(-1)?.get("category")).toBe("failed");
     expect(seen.at(-1)?.get("offset")).toBe("0");
+  });
+
+  it("groups repeated failures, shows the old title, shortens URLs and clears with a confirmation", async () => {
+    const long = "Q".repeat(400);
+    const fail = (id: string, n: number) => ({
+      id, at: new Date(Date.now() - n * 1000).toISOString(), category: "failed", type: "grab_failed", itemRef: "movie:2", title: "Iron Man (2008)",
+      itemTitle: "Iron Man (2008)", itemGone: true, release: `Iron.Man.2008.720p-G${n}`, indexer: "X", message: `could not grab: request https://pro.example.net/8/download?link=${long}: refused`,
+      data: { code: "indexer_limited", indexer: "X", title: `Iron.Man.2008.720p-G${n}` },
+    });
+    const clears: unknown[] = [];
+    mockApi((req) => {
+      if (req.path === "/history") {
+        return { status: 200, body: { hasMore: false, retentionDays: 0, items: [fail("t:3", 1), fail("t:2", 2), fail("t:1", 3),
+          { id: "t:0", at: now, category: "failed", type: "grab_failed", itemRef: "movie:9#removed", title: "Iron.Man.2008.1080p", itemTitle: "",
+            itemGone: true, release: "Iron.Man.2008.1080p", message: "could not grab: request https://h.test/a?apikey=[redacted]: refused", data: {} }] } };
+      }
+      if (req.method === "POST" && req.path === "/history/clear") {
+        clears.push(req.body);
+        return { status: 200, body: { count: 4, deleted: !(req.body as { dryRun?: boolean }).dryRun } };
+      }
+    });
+    renderApp("/activity/history", { me: testUser() });
+    const group = await screen.findByTestId("history-group");
+    expect(within(group).getByText("Iron Man (2008)")).toBeInTheDocument();
+    expect(within(group).queryByRole("link")).toBeNull();
+    expect(within(group).getByTestId("history-reason")).toHaveTextContent("Could not grab 3 releases");
+    const single = screen.getByTestId("history-row");
+    expect(single).toHaveTextContent("(removed item)");
+    expect(within(single).getByTestId("history-reason")).toHaveTextContent("h.test/a?…");
+    expect(within(single).getByTestId("history-reason").textContent).not.toContain("apikey");
+    await userEvent.click(within(group).getByTestId("history-toggle"));
+    expect(within(group).getByTestId("history-group-list").querySelectorAll("li")).toHaveLength(3);
+    expect(screen.getByTestId("history-retention")).toHaveTextContent("kept until you delete them");
+
+    await userEvent.click(screen.getByTestId("history-clear"));
+    const dialog = await screen.findByTestId("history-clear-dialog");
+    await userEvent.click(within(dialog).getByTestId("history-clear-failed"));
+    await waitFor(() => expect(within(dialog).getByTestId("history-clear-count")).toHaveTextContent("Entries to delete: 4"));
+    expect(dialog).toHaveTextContent("timeline");
+    await userEvent.click(within(dialog).getByTestId("history-clear-confirm"));
+    await waitFor(() => expect(clears.at(-1)).toEqual({ dryRun: false, category: "failed" }));
+    expect(clears).toContainEqual({ dryRun: true, category: "failed" });
   });
 });
 

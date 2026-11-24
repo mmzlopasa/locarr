@@ -321,6 +321,19 @@ func encodeClearBlocklistResponse(response *BlocklistCleared, w http.ResponseWri
 	return nil
 }
 
+func encodeClearHistoryResponse(response *HistoryClearResult, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
 func encodeConvertSubtitleFpsResponse(response *Subtitle, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
@@ -706,6 +719,12 @@ func encodeDeleteDelayProfileResponse(response *DeleteDelayProfileNoContent, w h
 }
 
 func encodeDeleteDownloadClientResponse(response *DeleteDownloadClientNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
+
+	return nil
+}
+
+func encodeDeleteHistoryEntryResponse(response *DeleteHistoryEntryNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 
 	return nil

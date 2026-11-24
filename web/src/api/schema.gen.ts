@@ -4838,6 +4838,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/history/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete one history entry (library managers)
+         * @description The entry is the same row the item's timeline shows, so it disappears there too. Files, the
+         *     blocklist, searches and release decisions are not touched.
+         */
+        delete: operations["deleteHistoryEntry"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/history/clear": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Delete the history entries that match a filter, or count them first (library managers)
+         * @description The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
+         *     `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+         */
+        post: operations["clearHistory"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/activity/stats": {
         parameters: {
             query?: never;
@@ -10031,13 +10073,40 @@ export interface components {
             release?: string;
             indexer?: string;
             client?: string;
+            /** @description English summary; URLs carry no credentials or download tokens. */
             message: string;
             /** Format: int64 */
             downloadId?: number;
+            /**
+             * @description The item's title when the event happened ("" for older entries of an item that is gone).
+             *     `title` is this or, when empty, the release.
+             */
+            itemTitle?: string;
+            /** @description The item is no longer in the library (no page to link to). */
+            itemGone?: boolean;
+            /** @description Event details as on the item's timeline (shape depends on the type): code, indexer, until, error, title… */
+            data?: unknown;
         };
         HistoryPage: {
             items: components["schemas"]["HistoryEntry"][];
             hasMore: boolean;
+            /** @description Entries older than this are deleted automatically; 0 = kept forever. */
+            retentionDays?: number;
+        };
+        HistoryClearRequest: {
+            category?: components["schemas"]["HistoryCategory"];
+            kind?: components["schemas"]["MediaKind"];
+            q?: string;
+            /** @description Only entries older than this many days. */
+            olderThanDays?: number;
+            /** @default false */
+            dryRun: boolean;
+        };
+        HistoryClearResult: {
+            /** Format: int64 */
+            count: number;
+            /** @description false for a dry run. */
+            deleted: boolean;
         };
         SourceStats: {
             /** Format: int64 */
@@ -10194,6 +10263,8 @@ export interface components {
             /** @description 0 turns scheduled backups off. */
             backupIntervalHours: number;
             backupKeep: number;
+            /** @description Activity history retention; 0 keeps it forever. */
+            historyDays: number;
             timelineDays: number;
             searchLogDays: number;
             downloadEventsDays: number;
@@ -10210,6 +10281,7 @@ export interface components {
             stuckImportMinutes?: number;
             backupIntervalHours?: number;
             backupKeep?: number;
+            historyDays?: number;
             timelineDays?: number;
             searchLogDays?: number;
             downloadEventsDays?: number;
@@ -18338,6 +18410,52 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HistoryPage"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteHistoryEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    clearHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HistoryClearRequest"];
+            };
+        };
+        responses: {
+            /** @description How many entries match (dry run) or were deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HistoryClearResult"];
                 };
             };
             default: components["responses"]["Error"];

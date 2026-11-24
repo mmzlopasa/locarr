@@ -145,11 +145,17 @@ func (h *Handler) ListHistory(ctx context.Context, p gen.ListHistoryParams) (*ge
 	if err != nil {
 		return nil, err
 	}
-	out := &gen.HistoryPage{HasMore: more, Items: make([]gen.HistoryEntry, 0, len(list))}
+	keep, err := settings.Get(ctx, h.Settings, settings.HistoryDays)
+	if err != nil {
+		return nil, err
+	}
+	out := &gen.HistoryPage{HasMore: more, Items: make([]gen.HistoryEntry, 0, len(list)), RetentionDays: gen.NewOptInt(keep)}
 	for _, e := range list {
 		g := gen.HistoryEntry{ID: e.ID, At: e.At, Category: gen.HistoryCategory(e.Category), Type: e.Type, ItemRef: e.ItemRef, Title: e.Title,
-			Message: e.Message, Release: optStr(e.Release), Indexer: optStr(e.Indexer), Client: optStr(e.Client)}
-		if e.Kind != "" {
+			Message: e.Message, Release: optStr(e.Release), Indexer: optStr(e.Indexer), Client: optStr(e.Client),
+			ItemTitle: gen.NewOptString(e.ItemTitle), ItemGone: gen.NewOptBool(e.ItemGone), Data: jx.Raw(e.Data)}
+		switch e.Kind {
+		case "movie", "series", "music":
 			g.Kind = gen.NewOptHistoryEntryKind(gen.HistoryEntryKind(e.Kind))
 		}
 		if e.DownloadID != nil {
@@ -158,6 +164,34 @@ func (h *Handler) ListHistory(ctx context.Context, p gen.ListHistoryParams) (*ge
 		out.Items = append(out.Items, g)
 	}
 	return out, nil
+}
+
+// DeleteHistoryEntry implements DELETE /history/{id}.
+func (h *Handler) DeleteHistoryEntry(ctx context.Context, p gen.DeleteHistoryEntryParams) error {
+	if _, err := manager(ctx); err != nil {
+		return err
+	}
+	return h.History.Delete(ctx, p.ID)
+}
+
+// ClearHistory implements POST /history/clear.
+func (h *Handler) ClearHistory(ctx context.Context, req *gen.HistoryClearRequest) (*gen.HistoryClearResult, error) {
+	if _, err := manager(ctx); err != nil {
+		return nil, err
+	}
+	f := history.Filter{Category: string(req.Category.Or("")), Kind: string(req.Kind.Or("")), Query: req.Q.Or("")}
+	if d, ok := req.OlderThanDays.Get(); ok {
+		f.Before = time.Now().Add(-time.Duration(d) * 24 * time.Hour)
+	}
+	if req.DryRun.Or(false) {
+		n, err := h.History.Count(ctx, f)
+		return &gen.HistoryClearResult{Count: n}, err
+	}
+	n, err := h.History.Clear(ctx, f)
+	if err != nil {
+		return nil, err
+	}
+	return &gen.HistoryClearResult{Count: n, Deleted: true}, nil
 }
 
 func sourceStats(list []history.SourceStats) []gen.SourceStats {
@@ -559,6 +593,7 @@ func (h *Handler) systemSettings(ctx context.Context) (*gen.SystemSettings, erro
 	get(settings.StuckImportMinutes, &out.StuckImportMinutes)
 	get(settings.BackupIntervalHours, &out.BackupIntervalHours)
 	get(settings.BackupKeep, &out.BackupKeep)
+	get(settings.HistoryDays, &out.HistoryDays)
 	get(settings.TimelineDays, &out.TimelineDays)
 	get(settings.SearchLogDays, &out.SearchLogDays)
 	get(settings.DownloadEventsDays, &out.DownloadEventsDays)
@@ -597,7 +632,7 @@ func (h *Handler) UpdateSystemSettings(ctx context.Context, req *gen.SystemSetti
 		}{
 			{req.MinFreeSpaceGb, settings.MinFreeSpaceGB}, {req.RecycleBinWarnGb, settings.RecycleBinWarnGB},
 			{req.StuckImportMinutes, settings.StuckImportMinutes}, {req.BackupIntervalHours, settings.BackupIntervalHours},
-			{req.BackupKeep, settings.BackupKeep}, {req.TimelineDays, settings.TimelineDays}, {req.SearchLogDays, settings.SearchLogDays},
+			{req.BackupKeep, settings.BackupKeep}, {req.HistoryDays, settings.HistoryDays}, {req.TimelineDays, settings.TimelineDays}, {req.SearchLogDays, settings.SearchLogDays},
 			{req.DownloadEventsDays, settings.DownloadEventsDays}, {req.ReleasesSeenDays, indexers.ReleaseRetentionDays},
 			{req.VacuumIntervalDays, settings.VacuumIntervalDays}, {req.ImageCacheMaxMb, settings.ImageCacheMaxMB},
 		} {

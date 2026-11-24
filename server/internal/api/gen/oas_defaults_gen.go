@@ -103,6 +103,14 @@ func (s *DownloadClientInput) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *HistoryClearRequest) setDefaults() {
+	{
+		val := bool(false)
+		s.DryRun.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *ImportExistingArtistsRequest) setDefaults() {
 	{
 		val := bool(true)

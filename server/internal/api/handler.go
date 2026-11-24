@@ -217,6 +217,7 @@ func mapError(err error) *StatusError {
 		{auth.ErrTOTPNotStarted, http.StatusConflict, "totp_not_started"},
 		{auth.ErrTOTPNotOn, http.StatusConflict, "totp_not_on"},
 		{jobs.ErrNotFound, http.StatusNotFound, "not_found"},
+		{history.ErrNotFound, http.StatusNotFound, "not_found"},
 		{jobs.ErrUnknownTask, http.StatusNotFound, "unknown_task"},
 		{jobs.ErrNotCancelable, http.StatusConflict, "conflict"},
 		{lfs.ErrNotAllowed, http.StatusBadRequest, "path_not_allowed"},
