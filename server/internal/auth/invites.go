@@ -65,7 +65,7 @@ func scanInvite(row interface{ Scan(...any) error }) (Invite, error) {
 	if err := row.Scan(&in.ID, &in.Label, &role, &perms, &quotas, &in.MaxUses, &in.Uses, &expires, &in.CreatedBy, &created, &in.Revoked); err != nil {
 		return in, err
 	}
-	in.Role, in.Permissions, in.Quotas = Role(role), Permissions(perms).Clean(), json.RawMessage(quotas) // #nosec G115
+	in.Role, in.Permissions, in.Quotas = Role(role), Permissions(perms).WithoutAdult(), json.RawMessage(quotas) // #nosec G115
 	in.CreatedAt = db.Time(created)
 	if expires.Valid {
 		t := db.Time(expires.Int64)
@@ -84,7 +84,7 @@ func (s *Service) CreateInvite(ctx context.Context, createdBy int64, in NewInvit
 	}
 	perms := DefaultPermissions(in.Role)
 	if in.Permissions != nil {
-		perms = in.Permissions.Clean()
+		perms = in.Permissions.WithoutAdult()
 	}
 	if len(in.Quotas) == 0 {
 		in.Quotas = json.RawMessage("{}")

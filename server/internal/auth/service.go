@@ -79,6 +79,8 @@ type Principal struct {
 	SessionID int64 // zero for API keys
 	APIKeyID  int64 // zero for sessions
 	ReadOnly  bool  // a read-only API key
+	// IncludeAdult: the API key was created with "include adult" (D-100).
+	IncludeAdult bool
 }
 
 // Device describes the client creating a session.
@@ -231,7 +233,7 @@ func (s *Service) insertUser(ctx context.Context, q db.Querier, username, hash s
 	var id int64
 	err := q.QueryRowContext(ctx, `INSERT INTO users (username, username_key, password_hash, role, permissions, language,
 			created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (username_key) DO NOTHING RETURNING id`,
-		username, usernameKey(username), hash, string(role), int64(perms.Clean()), lang, now, now).Scan(&id) // #nosec G115
+		username, usernameKey(username), hash, string(role), int64(perms.ForRole(role)), lang, now, now).Scan(&id) // #nosec G115
 	if errors.Is(err, sql.ErrNoRows) {
 		return User{}, ErrUsernameTaken
 	}
@@ -408,9 +410,10 @@ func (s *Service) Authenticate(ctx context.Context, token string) (Principal, er
 			keyID    int64
 			readOnly bool
 			lastUsed sql.NullInt64
+			includeAdult bool
 		)
-		u, err := scanUser(s.db.R.QueryRowContext(ctx, `SELECT `+userColumns+`, k.id, k.read_only, k.last_used_at
-			FROM api_keys k JOIN users u ON u.id = k.user_id WHERE k.key_hash = ?`, h), &keyID, &readOnly, &lastUsed)
+		u, err := scanUser(s.db.R.QueryRowContext(ctx, `SELECT `+userColumns+`, k.id, k.read_only, k.last_used_at, k.include_adult
+			FROM api_keys k JOIN users u ON u.id = k.user_id WHERE k.key_hash = ?`, h), &keyID, &readOnly, &lastUsed, &includeAdult)
 		if errors.Is(err, sql.ErrNoRows) || (err == nil && u.Disabled) {
 			return Principal{}, ErrUnauthenticated
 		}
@@ -420,7 +423,7 @@ func (s *Service) Authenticate(ctx context.Context, token string) (Principal, er
 		if !lastUsed.Valid || now.Sub(db.Time(lastUsed.Int64)) > touchInterval {
 			_, _ = s.db.W.ExecContext(ctx, `UPDATE api_keys SET last_used_at = ? WHERE id = ?`, db.Millis(now), keyID)
 		}
-		return Principal{User: u, APIKeyID: keyID, ReadOnly: readOnly}, nil
+		return Principal{User: u, APIKeyID: keyID, ReadOnly: readOnly, IncludeAdult: includeAdult}, nil
 	}
 	var (
 		sessionID int64
