@@ -154,7 +154,8 @@ func (s *Service) ImportFile(ctx context.Context, it *Item, path, release string
 	if old != nil {
 		newPos, _ := p.Position(q.ID)
 		oldPos, _ := p.Position(old.Quality)
-		if newPos < 0 || (oldPos >= 0 && newPos >= oldPos && !(newPos == oldPos && rel.Revision.Version > old.Revision.Version)) {
+		better := newPos < oldPos || (newPos == oldPos && rel.Revision.Version > old.Revision.Version)
+		if newPos < 0 || (oldPos >= 0 && !better) {
 			return "", refuse(decision.CodeNotAnUpgrade, "not imported: %s is not better than the current %s", q.Name, old.Quality)
 		}
 	}

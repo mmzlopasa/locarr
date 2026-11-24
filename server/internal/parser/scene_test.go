@@ -49,5 +49,5 @@ func TestSceneGolden(t *testing.T) {
 func FuzzParseScene(f *testing.F) {
 	f.Add("StudioA.24.01.15.Performer.One.Scene.Title.1080p.MP4-GRP")
 	f.Add("[S] x (2024-01-01)")
-	f.Fuzz(func(t *testing.T, s string) { _, _ = ParseScene(s) })
+	f.Fuzz(func(_ *testing.T, s string) { _, _ = ParseScene(s) })
 }

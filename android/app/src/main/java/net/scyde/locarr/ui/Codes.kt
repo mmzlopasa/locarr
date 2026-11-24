@@ -150,6 +150,8 @@ val CODE_STRINGS: Map<String, Int> = mapOf(
     "rejectionCodes.delayed" to R.string.c_rejectioncodes_delayed,
     "rejectionCodes.season_pack_not_wanted" to R.string.c_rejectioncodes_season_pack_not_wanted,
     "rejectionCodes.episode_not_wanted" to R.string.c_rejectioncodes_episode_not_wanted,
+    "rejectionCodes.blocked_tag" to R.string.c_rejectioncodes_blocked_tag,
+    "rejectionCodes.wrong_scene" to R.string.c_rejectioncodes_wrong_scene,
     "downloadStates.queued" to R.string.c_downloadstates_queued,
     "downloadStates.downloading" to R.string.c_downloadstates_downloading,
     "downloadStates.paused" to R.string.c_downloadstates_paused,

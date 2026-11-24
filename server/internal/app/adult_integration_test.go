@@ -16,6 +16,7 @@ import (
 	afake "github.com/mmzlopasa/locarr/server/internal/adult/meta/fake"
 	"github.com/mmzlopasa/locarr/server/internal/config"
 	"github.com/mmzlopasa/locarr/server/internal/downloaders"
+	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	ifake "github.com/mmzlopasa/locarr/server/internal/indexers/fake"
 	"github.com/mmzlopasa/locarr/server/internal/library"
 )
@@ -31,7 +32,7 @@ type bodyHook struct {
 	bodies map[string][]string
 }
 
-func (h *bodyHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *bodyHook) ServeHTTP(_ http.ResponseWriter, r *http.Request) {
 	b, _ := io.ReadAll(r.Body)
 	h.mu.Lock()
 	if h.bodies == nil {
@@ -428,7 +429,7 @@ func (ae *adultEnv) checkLeaks(t *testing.T, mgrTok, rqTok string, scene apiAdul
 			}
 		}
 		for _, w := range adultWrites(scene.ID, studioID) {
-			if r := ae.as(tok, w[0], w[1], map[string]any{"source": "stashdb", "id": "sc-1", "path": "/data/x"}); r.StatusCode != 404 && !(tok == noFlag.Key && r.StatusCode == 403) {
+			if r := ae.as(tok, w[0], w[1], map[string]any{"source": "stashdb", "id": "sc-1", "path": "/data/x"}); r.StatusCode != 404 && (tok != noFlag.Key || r.StatusCode != 403) {
 				t.Fatalf("%s %s for %.8s: %d", w[0], w[1], tok, r.StatusCode)
 			}
 		}
@@ -476,5 +477,60 @@ func (ae *adultEnv) checkLeaks(t *testing.T, mgrTok, rqTok string, scene apiAdul
 	_ = ae.deps.DB.R.QueryRow(`SELECT COUNT(*) FROM downloads WHERE status IN ('active', 'completed') AND json_extract(item_ref, '$.ref') NOT LIKE 'scene:%'`).Scan(&n)
 	if st.QueueSize != n {
 		t.Fatalf("queue size %d counts adult downloads (want %d)", st.QueueSize, n)
+	}
+}
+
+// TestAdultRSSBlocklist: RSS releases in the adult categories only reach
+// adult items (never a movie), the blocklist rejects matching names, and
+// nothing is grabbed while the feature is off.
+func TestAdultRSSBlocklist(t *testing.T) {
+	ae := newAdultEnv(t)
+	me := ae.me()
+	ae.expect(ae.do("PUT", "/api/v1/adult/settings", map[string]any{"enabled": true, "confirmAdults": true, "stashdbKey": afake.StashKey,
+		"defaultProfileId": ae.profileID}), 200)
+	ae.grant(me.ID, "admin", true)
+	ae.expect(ae.do("POST", "/api/v1/adult/rootfolders", map[string]any{"path": ae.adultRoot}), 201)
+	ae.expect(ae.do("POST", "/api/v1/adult/blocklist", map[string]any{"term": "blockedtagexample"}), 201)
+	var it apiAdultItem
+	ae.expect(ae.do("POST", "/api/v1/adult/items", map[string]any{"source": "stashdb", "id": "sc-2", "search": false}), 201).json(&it)
+	if !it.Monitored {
+		t.Fatal("not monitored")
+	}
+	var indexerID int64
+	_ = ae.deps.DB.R.QueryRow(`SELECT id FROM indexers LIMIT 1`).Scan(&indexerID)
+	seeds := 50
+	mk := func(title, hash string, cat int) indexers.Release {
+		return indexers.Release{GUID: hash, Title: title, IndexerID: indexerID, IndexerName: "Fake Torznab", Protocol: "torrent",
+			Size: 900 << 20, Seeders: &seeds, PublishDate: time.Now().Add(-5 * time.Hour), Categories: []int{cat},
+			MagnetURL: "magnet:?xt=urn:btih:" + hash + "&dn=" + strings.ReplaceAll(title, " ", "."), InfoHash: hash}
+	}
+	blockedRel := mk("StudioA.24.02.01.Blockedtagexample.Second.Scene.1080p.WEB-DL.x264-GRP", "1111111111111111111111111111111111111111", 6010)
+	goodRel := mk("StudioA.24.02.01.Performer.Two.Second.Scene.1080p.WEB-DL.x264-GRP", "2222222222222222222222222222222222222222", 6010)
+
+	// Off: nothing.
+	ae.expect(ae.do("PUT", "/api/v1/adult/settings", map[string]any{"enabled": false}), 200)
+	if n, err := ae.deps.Wanted.ProcessRSS(t.Context(), []indexers.Release{goodRel}); err != nil || n != 0 {
+		t.Fatalf("grabbed while disabled: %d %v", n, err)
+	}
+	ae.expect(ae.do("PUT", "/api/v1/adult/settings", map[string]any{"enabled": true, "confirmAdults": true}), 200)
+
+	// Blocked name: rejected.
+	if n, err := ae.deps.Wanted.ProcessRSS(t.Context(), []indexers.Release{blockedRel}); err != nil || n != 0 {
+		t.Fatalf("blocked release grabbed: %d %v", n, err)
+	}
+	// The same release in a movie category never reaches the adult item.
+	movieCat := goodRel
+	movieCat.Categories = []int{2040}
+	if n, _ := ae.deps.Wanted.ProcessRSS(t.Context(), []indexers.Release{movieCat}); n != 0 {
+		t.Fatal("a movie-category release reached an adult item")
+	}
+	// The good one is grabbed for the scene.
+	if n, err := ae.deps.Wanted.ProcessRSS(t.Context(), []indexers.Release{goodRel}); err != nil || n != 1 {
+		t.Fatalf("grab: %d %v", n, err)
+	}
+	var title string
+	_ = ae.deps.DB.R.QueryRow(`SELECT title FROM downloads WHERE json_extract(item_ref, '$.ref') = ?`, it.Ref).Scan(&title)
+	if title != goodRel.Title {
+		t.Fatalf("grabbed %q", title)
 	}
 }

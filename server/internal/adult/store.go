@@ -196,6 +196,7 @@ func (s *Service) Items(ctx context.Context, f ItemFilter) ([]Item, int, error) 
 	}
 	cond := " WHERE " + strings.Join(where, " AND ")
 	var total int
+	// #nosec G202 -- fixed fragments, values bound
 	if err := s.DB.R.QueryRowContext(ctx, `SELECT count(*)`+itemFrom+cond, args...).Scan(&total); err != nil {
 		return nil, 0, err
 	}
@@ -208,7 +209,7 @@ func (s *Service) Items(ctx context.Context, f ItemFilter) ([]Item, int, error) 
 	if f.Kind == KindMovie {
 		order = " ORDER BY i.sort_title, i.id"
 	}
-	rows, err := s.DB.R.QueryContext(ctx, `SELECT `+itemColumns+itemFrom+cond+order+` LIMIT ? OFFSET ?`, append(args, f.Limit, f.Offset)...)
+	rows, err := s.DB.R.QueryContext(ctx, `SELECT `+itemColumns+itemFrom+cond+order+` LIMIT ? OFFSET ?`, append(args, f.Limit, f.Offset)...) // #nosec G202 -- fixed fragments, values bound
 	if err != nil {
 		return nil, 0, err
 	}
