@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:nyaa="https://sukebei.nyaa.si/xmlns/nyaa" version="2.0">
+	<channel>
+		<title>Sukebei - "studioa" - Torrent File RSS</title>
+		<description>RSS Feed for "studioa"</description>
+		<link>https://sukebei.nyaa.si/</link>
+		<atom:link href="https://sukebei.nyaa.si/?page=rss" rel="self" type="application/rss+xml" />
+		<item>
+			<title>StudioA.24.01.15.Performer.One.Scene.Title.1080p.MP4-GRP</title>
+			<link>https://sukebei.nyaa.si/download/4100000.torrent</link>
+			<guid isPermaLink="true">https://sukebei.nyaa.si/view/4100000</guid>
+			<pubDate>Mon, 15 Jan 2024 10:00:00 -0000</pubDate>
+			<nyaa:seeders>9</nyaa:seeders>
+			<nyaa:leechers>1</nyaa:leechers>
+			<nyaa:downloads>40</nyaa:downloads>
+			<nyaa:infoHash>49386576e8658013e468e25286f9763f8b83a388</nyaa:infoHash>
+			<nyaa:categoryId>2_2</nyaa:categoryId>
+			<nyaa:category>Real Life - Videos</nyaa:category>
+			<nyaa:size>1.0 GiB</nyaa:size>
+			<nyaa:comments>0</nyaa:comments>
+			<nyaa:trusted>No</nyaa:trusted>
+			<nyaa:remake>No</nyaa:remake>
+			<description><![CDATA[<a href="https://sukebei.nyaa.si/view/4100000">#4100000 | StudioA.24.01.15.Performer.One.Scene.Title.1080p.MP4-GRP</a> | 1.0 GiB | Real Life - Videos | 49386576E8658013E468E25286F9763F8B83A388]]></description>
+		</item>
+		<item>
+			<title>[Circle B] Synthetic Art Collection Vol 2</title>
+			<link>https://sukebei.nyaa.si/download/4100001.torrent</link>
+			<guid isPermaLink="true">https://sukebei.nyaa.si/view/4100001</guid>
+			<pubDate>Mon, 15 Jan 2024 10:00:00 -0000</pubDate>
+			<nyaa:seeders>8</nyaa:seeders>
+			<nyaa:leechers>1</nyaa:leechers>
+			<nyaa:downloads>40</nyaa:downloads>
+			<nyaa:infoHash>21f9566004b9b27a27a3996b7e12ec3b71ecc56d</nyaa:infoHash>
+			<nyaa:categoryId>1_5</nyaa:categoryId>
+			<nyaa:category>Art - Pictures</nyaa:category>
+			<nyaa:size>1.0 GiB</nyaa:size>
+			<nyaa:comments>0</nyaa:comments>
+			<nyaa:trusted>No</nyaa:trusted>
+			<nyaa:remake>No</nyaa:remake>
+			<description><![CDATA[<a href="https://sukebei.nyaa.si/view/4100001">#4100001 | [Circle B] Synthetic Art Collection Vol 2</a> | 1.0 GiB | Art - Pictures | 21F9566004B9B27A27A3996B7E12EC3B71ECC56D]]></description>
+		</item>
+		<item>
+			<title>StudioA.24.01.15.Performer.One.Scene.Title.480p.MP4-GRP</title>
+			<guid isPermaLink="true">https://sukebei.nyaa.si/view/4100009</guid>
+			<pubDate>Mon, 15 Jan 2024 11:00:00 -0000</pubDate>
+			<nyaa:seeders>3</nyaa:seeders>
+			<nyaa:leechers>0</nyaa:leechers>
+			<nyaa:infoHash>0123456789abcdef0123456789abcdef01234567</nyaa:infoHash>
+			<nyaa:size>300.0 MiB</nyaa:size>
+		</item>
+	</channel>
+</rss>

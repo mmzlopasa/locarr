@@ -1,11 +1,14 @@
 id: knaben
 name: Knaben
 description: A search engine over many public trackers, through its documented public API.
-version: 1
+version: 2
 language: en
 links:
   - https://api.knaben.org
-verified: Written from knaben.org/api/v1 (POST /v1 with a JSON body) and checked on 2026-11-23; category ids observed in answers.
+verified: >-
+  Written from knaben.org/api/v1 (POST /v1 with a JSON body) and checked on 2026-11-23; category ids observed in answers.
+  The XXX group (5000000 and its children) read from the category picker on knaben.org on 2026-11-24;
+  it is asked for (hide_xxx false) only by adult searches and RSS of indexers opted in to adult.
 challenge: never
 rateLimit: {requests: 20, periodSeconds: 60}
 delayMillis: 1000
@@ -22,6 +25,12 @@ categories:
   - {id: "2000000", cat: 5000, desc: TV}
   - {id: "3000000", cat: 2000, desc: Movies}
   - {id: "3001000", cat: 2040, desc: Movies / HD}
+  - {id: "5000000", cat: 6000, desc: XXX}
+  - {id: "5001000", cat: 6000, desc: XXX / Video}
+  - {id: "5002000", cat: 6060, desc: XXX / ImageSet}
+  - {id: "5003000", cat: 6070, desc: XXX / Games}
+  - {id: "5004000", cat: 6070, desc: XXX / Hentai}
+  - {id: "5005000", cat: 6070, desc: XXX / Other}
   - {id: "6000000", cat: 5070, desc: Anime}
   - {id: "6001000", cat: 5070, desc: Anime / Subbed}
   - {id: "6004000", cat: 5070, desc: Anime / Raw}

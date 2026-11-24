@@ -9,6 +9,7 @@ import (
 	"net/netip"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -100,11 +101,18 @@ func TestBuiltinsLoad(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"1337x", "bitsearch", "eztv", "knaben", "limetorrents", "nyaa", "subsplease", "thepiratebay", "tokyotosho", "yts"}
+	want := []string{"1337x", "bitsearch", "eztv", "knaben", "limetorrents", "nyaa", "subsplease", "sukebei", "thepiratebay",
+		"tokyotosho", "xxxclub", "yts"}
 	if len(defs) != len(want) {
 		t.Fatalf("%d built-ins", len(defs))
 	}
+	// Which sites carry adult content, and which carry nothing else (D-108).
+	adult := map[string]bool{"1337x": true, "bitsearch": true, "knaben": true, "sukebei": true, "thepiratebay": true, "xxxclub": true}
+	adultOnly := map[string]bool{"sukebei": true, "xxxclub": true}
 	for _, d := range defs {
+		if d.HasAdult() != adult[d.ID] || d.Adult != adultOnly[d.ID] {
+			t.Errorf("%s: carries adult %v (want %v), adult only %v (want %v)", d.ID, d.HasAdult(), adult[d.ID], d.Adult, adultOnly[d.ID])
+		}
 		if d.Verified == "" || d.RateLimit.Requests == 0 || d.Description == "" {
 			t.Errorf("%s: verified, rate limit and description are required for built-ins", d.ID)
 		}
@@ -437,5 +445,152 @@ func TestChallengeFieldNames(t *testing.T) {
 		if d.ID == "1337x" && d.Challenge != "always" {
 			t.Fatal("1337x is always behind a check")
 		}
+	}
+}
+
+// adultCats reports whether every item is in an adult (6xxx) category.
+func adultCats(items []znab.Item) bool {
+	for _, it := range items {
+		if !slices.ContainsFunc(it.Categories, native.IsAdultCategory) {
+			return false
+		}
+	}
+	return true
+}
+
+func titles(items []znab.Item) []string {
+	out := make([]string, 0, len(items))
+	for _, it := range items {
+		out = append(out, it.Title)
+	}
+	return out
+}
+
+// TestAdultCategories checks the adult categories of the general sites: an
+// adult search (6000) gets the site's adult rows labelled 6xxx, and a movie
+// search for the same words never gets them.
+func TestAdultCategories(t *testing.T) {
+	adultQ := znab.Request{Type: znab.SearchGeneric, Query: "StudioA 24 01 15", Categories: []int{6000}}
+	movieQ := znab.Request{Type: znab.SearchMovie, Query: "Scene Title", Categories: []int{2000}}
+	for _, tc := range []struct {
+		site       string
+		adult      int // adult rows an adult search keeps
+		movie      int // rows a movie search keeps
+		uncategory int // rows without a category an adult search keeps (1337x: the site's own XXX search)
+	}{
+		{"thepiratebay", 3, 1, 0},
+		{"knaben", 2, 0, 0},
+		{"bitsearch", 1, 1, 0},
+		{"1337x", 2, 1, 1},
+	} {
+		t.Run(tc.site, func(t *testing.T) {
+			c, _ := siteClient(t, tc.site)
+			items := search(t, c, adultQ)
+			var adult, plain int
+			for _, it := range items {
+				switch {
+				case slices.ContainsFunc(it.Categories, native.IsAdultCategory):
+					adult++
+				case len(it.Categories) == 0:
+					plain++
+				default:
+					t.Errorf("adult search kept %q in %v", it.Title, it.Categories)
+				}
+			}
+			if adult != tc.adult || plain != tc.uncategory {
+				t.Fatalf("adult search: %d adult, %d uncategorised: %v", adult, plain, titles(items))
+			}
+			for _, it := range search(t, c, movieQ) {
+				if slices.ContainsFunc(it.Categories, native.IsAdultCategory) {
+					t.Errorf("movie search returned adult %q", it.Title)
+				}
+			}
+			if n := len(search(t, c, movieQ)); n != tc.movie {
+				t.Errorf("movie search: %d rows", n)
+			}
+		})
+	}
+}
+
+func TestPirateBayAdultCategoryParam(t *testing.T) {
+	var got string
+	fake := sitefake.New()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = r.URL.Query().Get("cat")
+		http.StripPrefix("/sites", fake).ServeHTTP(w, r)
+	}))
+	t.Cleanup(srv.Close)
+	def, _ := registry(t).Get("thepiratebay")
+	d := *def
+	d.DelayMillis = 0
+	c := &native.Client{Def: &d, HTTP: localHTTP(t), BaseURL: srv.URL + "/sites/thepiratebay", Now: func() time.Time { return testNow }}
+	search(t, c, znab.Request{Query: "StudioA", Categories: []int{6000}})
+	if !strings.HasPrefix(got, "500,") || strings.Contains(got, "201") {
+		t.Fatalf("cat = %q", got)
+	}
+}
+
+func TestSukebei(t *testing.T) {
+	c, _ := siteClient(t, "sukebei")
+	items := search(t, c, znab.Request{Query: "StudioA", Categories: []int{6000}})
+	checkItems(t, items, 3)
+	if !adultCats(items) {
+		t.Fatalf("an adult-only site returned a non-adult item: %+v", items)
+	}
+	if items[0].Title != "StudioA.24.01.15.Performer.One.Scene.Title.1080p.MP4-GRP" || items[0].Categories[0] != 6000 ||
+		items[1].Categories[0] != 6060 || items[2].Categories[0] != 6000 || !strings.Contains(items[0].MagnetURL, items[0].InfoHash) {
+		t.Fatalf("%+v", items)
+	}
+	checkItems(t, search(t, c, znab.Request{}), 1) // RSS
+	if items := search(t, c, znab.Request{Query: "nothing here"}); len(items) != 0 {
+		t.Fatalf("%d", len(items))
+	}
+}
+
+func TestXXXClub(t *testing.T) {
+	c, _ := siteClient(t, "xxxclub")
+	items := search(t, c, znab.Request{Query: "StudioA 24 01 15", Categories: []int{6000}})
+	checkItems(t, items, 3)
+	if !adultCats(items) {
+		t.Fatal("an adult-only site returned a non-adult item")
+	}
+	it := items[0]
+	if it.Title != "StudioA 24 01 15 Performer One Scene Title XXX 1080p MP4-GRP [XC]" || it.Categories[0] != 6040 ||
+		*it.Seeders != 17 || it.Size == 0 || !strings.Contains(it.InfoURL, "/torrents/details/") || it.Link != "" {
+		t.Fatalf("%+v", it)
+	}
+	for _, it := range items {
+		if strings.Contains(it.Title, "Decoy") || strings.HasPrefix(it.InfoHash, "e8a6") {
+			t.Fatalf("the hidden decoy link was read: %+v", it)
+		}
+	}
+	rss := search(t, c, znab.Request{})
+	checkItems(t, rss, 2)
+	if !adultCats(rss) {
+		t.Fatal("RSS item without an adult category")
+	}
+	if items := search(t, c, znab.Request{Query: "nothing here"}); len(items) != 0 {
+		t.Fatalf("%d", len(items))
+	}
+}
+
+func TestAdultDefinitionRules(t *testing.T) {
+	bad := `id: mixed
+name: Mixed
+version: 1
+adult: true
+links: [https://example.invalid]
+modes: {search: [q]}
+categories:
+  - {id: "1", cat: 2000, desc: Movies}
+search:
+  requests: [{path: "/?q={{ .Keywords | urlquery }}"}]
+  response: xml
+  rows: item
+  fields: {title: {select: title}, infohash: {select: hash}}
+test: {query: x}
+`
+	if _, err := native.Parse([]byte(bad)); err == nil || !strings.Contains(err.Error(), "6xxx") {
+		t.Fatalf("err = %v", err)
 	}
 }

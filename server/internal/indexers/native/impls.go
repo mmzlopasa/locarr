@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -323,7 +324,9 @@ func subsPleaseTerms(q Query) string {
 // ---- Knaben: the documented public search API (POST /v1). ----
 
 func searchKnaben(ctx context.Context, c *Client, q Query) ([]znab.Item, int, error) {
-	body := map[string]any{"size": 100, "hide_unsafe": true, "hide_xxx": true}
+	// Adult (XXX) results are only asked for when the search wants adult
+	// categories: an adult search, or the RSS of an indexer opted in to adult.
+	body := map[string]any{"size": 100, "hide_unsafe": true, "hide_xxx": !slices.ContainsFunc(q.Newznab, IsAdultCategory)}
 	if q.Mode == "rss" {
 		body["order_by"] = "date"
 		body["order_direction"] = "desc"
@@ -391,8 +394,15 @@ func searchKnaben(ctx context.Context, c *Client, q Query) ([]znab.Item, int, er
 	return out, dropped, nil
 }
 
-// knabenCategory picks the first listed category the definition maps.
+// knabenCategory picks the first listed category the definition maps; an
+// adult category wins over any other, so an adult hit is always labelled so.
 func knabenCategory(c *Client, first string, all []any) string {
+	for _, x := range all {
+		s := jsonString(x)
+		if slices.ContainsFunc(c.newznabFor(s), IsAdultCategory) {
+			return s
+		}
+	}
 	if c.newznabFor(first) != nil {
 		return first
 	}

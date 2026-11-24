@@ -1,7 +1,7 @@
 id: 1337x
 name: 1337x
 description: A general torrent index, read from its search pages; the magnet comes from the details page at grab time.
-version: 1
+version: 2
 language: en
 links:
   - https://1337x.to
@@ -9,7 +9,10 @@ links:
   - https://x1337x.cc
 verified: >-
   Written by observing the search (/search/, /category-search/) and details pages on 2026-11-23,
-  through a browser: the site shows a Cloudflare check to plain requests.
+  through a browser: the site shows a Cloudflare check to plain requests. The XXX category and its
+  subcategories (/sub/48 Video, 49 Picture, 50 Magazine, 51 Hentai, 67 Games) read from the site's
+  /cat/XXX/1/ page on 2026-11-24 (an archived copy: this server gets a human check); the row's
+  category is read from its /sub/ icon link, only for those ids.
 challenge: always
 rateLimit: {requests: 10, periodSeconds: 60}
 delayMillis: 2000
@@ -25,6 +28,12 @@ categories:
   - {id: TV, cat: 5000, desc: TV}
   - {id: Anime, cat: 5070, desc: Anime}
   - {id: Music, cat: 3000, desc: Music}
+  - {id: XXX, cat: 6000, desc: XXX}
+  - {id: "48", cat: 6000, desc: XXX - Video}
+  - {id: "49", cat: 6060, desc: XXX - Picture}
+  - {id: "50", cat: 6070, desc: XXX - Magazine}
+  - {id: "51", cat: 6070, desc: XXX - Hentai}
+  - {id: "67", cat: 6070, desc: XXX - Games}
 search:
   requests:
     - if: [keywords, categories]
@@ -42,6 +51,7 @@ search:
     date: {select: td.coll-date}
     size: {select: td.coll-4, regex: '^([\d.,]+\s*[KMGT]?i?B)'}
     uploader: {select: td.coll-5}
+    category: {select: 'td.coll-1 a.icon', attr: href, regex: '^/sub/(48|49|50|51|67)/'}
 download:
   select: 'a[href^="magnet:"]'
   attr: href

@@ -37,6 +37,14 @@ func File(site, name string) []byte {
 	return b
 }
 
+// adultTerm reports a search for the synthetic adult fixtures (studio
+// "StudioA", performer "Performer One", scene "Scene Title").
+func adultTerm(s string) bool {
+	s = strings.ToLower(strings.NewReplacer(".", " ", "-", " ", "+", " ", "%20", " ").Replace(s))
+	return strings.Contains(s, "studioa") || strings.Contains(s, "studio a") || strings.Contains(s, "performer one") ||
+		strings.Contains(s, "scene title")
+}
+
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.Requests.Add(1)
 	site, rest, _ := strings.Cut(strings.TrimPrefix(r.URL.Path, "/"), "/")
@@ -70,6 +78,8 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			name = "imdb.json"
 		case strings.Contains(strings.ToLower(q.Get("q")), "ubuntu"):
 			name = "search.json"
+		case adultTerm(q.Get("q")):
+			name = "adult.json"
 		default:
 			name = "none.json"
 		}
@@ -84,7 +94,8 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	case "knaben":
 		var body struct {
-			Query string `json:"query"`
+			Query   string `json:"query"`
+			HideXXX bool   `json:"hide_xxx"`
 		}
 		raw, _ := io.ReadAll(io.LimitReader(r.Body, 1<<16))
 		_ = json.Unmarshal(raw, &body)
@@ -93,6 +104,8 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			name = "latest.json"
 		case strings.Contains(strings.ToLower(body.Query), "ubuntu"):
 			name = "search.json"
+		case adultTerm(body.Query) && !body.HideXXX:
+			name = "adult.json" // the site leaves XXX out when hide_xxx is set
 		default:
 			name = "none.json"
 		}
@@ -101,6 +114,21 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			name = "search.xml"
 		} else {
 			name = "empty.xml"
+		}
+	case "sukebei":
+		if t := q.Get("q"); t == "" || adultTerm(t) {
+			name = "search.xml"
+		} else {
+			name = "empty.xml"
+		}
+	case "xxxclub":
+		switch {
+		case rest == "/feed/All.xml":
+			name = "rss.xml"
+		case adultTerm(rest):
+			name = "search.html"
+		default:
+			name = "empty.html"
 		}
 	case "tokyotosho":
 		name = "rss.xml"
@@ -119,13 +147,18 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			name = "details.html"
 		case strings.Contains(strings.ToLower(rest), "ubuntu"):
 			name = "search.html"
+		case adultTerm(rest):
+			name = "adult.html"
 		default:
 			name = "empty.html"
 		}
 	case "bitsearch":
-		if strings.Contains(strings.ToLower(q.Get("q")), "ubuntu") {
+		switch {
+		case strings.Contains(strings.ToLower(q.Get("q")), "ubuntu"):
 			name = "search.html"
-		} else {
+		case adultTerm(q.Get("q")):
+			name = "adult.html"
+		default:
 			name = "empty.html"
 		}
 	default:
