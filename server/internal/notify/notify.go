@@ -69,7 +69,7 @@ const (
 	// ended (Message = the counts or the reason).
 	MigrateFinished Type = "migrate.finished"
 	MigrateFailed   Type = "migrate.failed"
-	// Adult library events (D-101): only shared channels that chose them
+	// Adult library events (D-102): only shared channels that chose them
 	// explicitly receive them, and only while the adult library is enabled.
 	AdultGrabbed        Type = "adult.grabbed"
 	AdultImported       Type = "adult.imported"

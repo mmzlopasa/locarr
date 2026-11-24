@@ -61,7 +61,7 @@ type Handler struct {
 	Downloads   *downloads.Service
 	Indexers    *indexers.Service
 	Movies      *movies.Service
-	// Adult is the optional adult library (D-101); nil-safe when off.
+	// Adult is the optional adult library (D-102); nil-safe when off.
 	Adult     *adult.Service
 	Series    *series.Service
 	Music     *music.Service

@@ -131,7 +131,7 @@ func (s *Store) List(ctx context.Context, f Filter) ([]Entry, bool, error) {
 		}
 		return " AND (" + strings.Join(parts, " OR ") + ")", args
 	}
-	// Adult items never appear in the shared history (D-101); they have
+	// Adult items never appear in the shared history (D-102); they have
 	// their own timelines in the adult section.
 	refFilter := func(col string) (string, []any) {
 		f, a := kindFilter(col)

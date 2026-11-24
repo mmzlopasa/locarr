@@ -19,7 +19,7 @@ type LookupResult struct {
 }
 
 // Lookup searches a source. Removed or disputed entries and entries with a
-// blocked tag are left out (D-101).
+// blocked tag are left out (D-102).
 func (s *Service) Lookup(ctx context.Context, source, typ, term string) ([]LookupResult, error) {
 	p, err := s.Provider(source)
 	if err != nil {

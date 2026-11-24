@@ -113,12 +113,12 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Android: obavijesti bez FCM-a (WorkManager svakih 15 min i pri otvaranju, kanali, poveznice; D-096) — logika jedinično testirana, isporuka na uređaju još nije provjerena
 
 ## Sadržaj za odrasle (izborno, zadano isključeno)
-- [x] Uključivanje samo uz potvrdu administratora; zasebna dozvola `view_adult` (nikad zadana, ni administratorima; tražitelji nikad; API ključ samo uz „uključi sadržaj za odrasle”); isključeno = svaka adresa 404 (D-101)
-- [x] Nigdje ne curi: popisi, povijest, statistika, kalendar i iCal, ploča, opća vremenska crta, red i koš za one bez dozvole, `/api/stats` (samo izborni ukupan broj), Otkrivanje i zahtjevi, Streamero rute, obavijesti samo kanalima koji izričito odaberu `adult.*` (D-101)
-- [x] StashDB (GraphQL) i ThePornDB (REST) s vlastitim ključem, predmemorijom i ograničenjem; obrisani/sporni unosi se ne uvoze (D-102)
+- [x] Uključivanje samo uz potvrdu administratora; zasebna dozvola `view_adult` (nikad zadana, ni administratorima; tražitelji nikad; API ključ samo uz „uključi sadržaj za odrasle”); isključeno = svaka adresa 404 (D-102)
+- [x] Nigdje ne curi: popisi, povijest, statistika, kalendar i iCal, ploča, opća vremenska crta, red i koš za one bez dozvole, `/api/stats` (samo izborni ukupan broj), Otkrivanje i zahtjevi, Streamero rute, obavijesti samo kanalima koji izričito odaberu `adult.*` (D-102)
+- [x] StashDB (GraphQL) i ThePornDB (REST) s vlastitim ključem, predmemorijom i ograničenjem; obrisani/sporni unosi se ne uvoze (D-103)
 - [x] Popis blokiranih pojmova (zadani konzervativni pojmovi, uređuje administrator) u metapodacima, pretrazi, RSS-u, ručnom grabu i uvozu (`blocked_tag`)
-- [x] Studiji/stranice sa scenama po datumu, filmovi, izvođači (praćeni izvođač → nove scene tražene), zasebne mape, predlošci imena (D-104)
-- [x] Indexeri s kategorijama 6xxx samo uz izričit izbor po indexeru; parser imena scena s golden testovima (D-103)
+- [x] Studiji/stranice sa scenama po datumu, filmovi, izvođači (praćeni izvođač → nove scene tražene), zasebne mape, predlošci imena (D-105)
+- [x] Indexeri s kategorijama 6xxx samo uz izričit izbor po indexeru; parser imena scena s golden testovima (D-104)
 - [x] Traženo, automatska i ručna pretraga, grab, uvoz, preimenovanje, vremenska crta i „Zašto nije ovdje?” preko zajedničke jezgre
 - [ ] Web: odjeljak „Odrasli” (scene, filmovi, studiji, izvođači, traženo, kalendar, dodavanje), zamućene slike, Postavke → Sadržaj za odrasle — napravljeno, Playwright test u CI-ju
 - [ ] Mobilne aplikacije (API je spreman; aplikacije ga zasad ne prikazuju)

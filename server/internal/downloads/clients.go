@@ -42,7 +42,7 @@ const (
 	KindMovies = "movies"
 	KindSeries = "series"
 	KindMusic  = "music"
-	// KindAdult downloads use the movies category (D-103).
+	// KindAdult downloads use the movies category (D-104).
 	KindAdult = "adult"
 )
 

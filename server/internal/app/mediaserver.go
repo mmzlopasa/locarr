@@ -69,7 +69,7 @@ func buildMediaServer(_ context.Context, d *Deps, cfg config.Config, log *slog.L
 		}
 		ref := library.RefFromJSON(ev.Download.ItemRef)
 		if library.IsAdult(ref.Kind) {
-			// Adult downloads never reach the library events (D-101); only
+			// Adult downloads never reach the library events (D-102); only
 			// channels that chose adult events hear about them.
 			if d.Adult != nil {
 				d.Adult.Events(ctx, "adult."+strings.TrimPrefix(string(typ), "library."), ev.Download.Title, msg, ref.String())
@@ -206,7 +206,7 @@ func wireSubtitleEvents(d *Deps, log *slog.Logger) {
 	d.Subtitles.Notify = func(ctx context.Context, ref, typ, msg string) {
 		r, err := library.ParseRef(ref)
 		// Subtitle events (downloaded, translated, missing) never name adult
-		// items; the adult library has no subtitle features (D-101).
+		// items; the adult library has no subtitle features (D-102).
 		if err != nil || d.Hub == nil || library.IsAdult(r.Kind) {
 			return
 		}

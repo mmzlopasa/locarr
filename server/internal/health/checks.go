@@ -216,7 +216,7 @@ func (d *Deps) checkClients(ctx context.Context, cats *categoryCache) ([]Issue, 
 	return out, nil
 }
 
-// Adult downloads appear only as "download <id>" (health warnings reach shared channels; D-101).
+// Adult downloads appear only as "download <id>" (health warnings reach shared channels; D-102).
 func (d *Deps) checkPaths(ctx context.Context) ([]Issue, error) {
 	var out []Issue
 	rows, err := d.DB.R.QueryContext(ctx, `SELECT id, CASE WHEN COALESCE(json_extract(item_ref, '$.ref'), '') LIKE 'scene:%' OR COALESCE(json_extract(item_ref, '$.ref'), '') LIKE 'adult_movie:%' THEN 'download ' || id ELSE title END, client_name, content_path, save_path, message FROM downloads

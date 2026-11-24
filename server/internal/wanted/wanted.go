@@ -93,7 +93,7 @@ type Item struct {
 }
 
 // AdultSource marks the adult kinds: only they see adult (6xxx) RSS
-// releases, and they see nothing else categorised (D-103).
+// releases, and they see nothing else categorised (D-104).
 type AdultSource interface{ Adult() bool }
 
 func isAdultSource(src Source) bool {

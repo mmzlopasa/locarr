@@ -43,7 +43,7 @@ type Categories struct {
 	Music  []int `json:"music"`
 	Books  []int `json:"books"`
 	// Adult (6xxx) is empty unless an administrator opts the indexer in
-	// (D-103); adult searches only go to indexers that have it.
+	// (D-104); adult searches only go to indexers that have it.
 	Adult []int `json:"adult,omitempty"`
 }
 

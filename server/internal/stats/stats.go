@@ -66,7 +66,7 @@ type Stats struct {
 	LastRSSSyncAt      *time.Time   `json:"lastRssSyncAt,omitempty"`
 	RootFolders        []RootFolder `json:"rootFolders"`
 	// AdultItems is one total, present only when the administrator opted in
-	// (adult.statsAggregate); adult content is never broken down (D-101).
+	// (adult.statsAggregate); adult content is never broken down (D-102).
 	AdultItems *int `json:"adultItems,omitempty"`
 }
 

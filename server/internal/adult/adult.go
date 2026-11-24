@@ -1,4 +1,4 @@
-// Package adult is the optional adult library (D-101 .. D-104): studios
+// Package adult is the optional adult library (D-102 .. D-105): studios
 // (sites) with date-keyed scenes, adult movies and performers, on top of the
 // shared core (decision engine, wanted orchestration, importer, naming,
 // timeline, recycle bin). It is off by default; an administrator enables it
@@ -39,7 +39,7 @@ var (
 	// DefaultProfile and DefaultRoot preselect Add.
 	DefaultProfile = settings.Key[int64]{Name: "adult.defaultProfileId", Default: 0}
 	DefaultRoot    = settings.Key[int64]{Name: "adult.defaultRootFolderId", Default: 0}
-	// Naming templates (D-104).
+	// Naming templates (D-105).
 	SceneFolder = settings.Key[string]{Name: "adult.sceneFolder", Default: "{Studio}"}
 	SceneFile   = settings.Key[string]{Name: "adult.sceneFile", Default: "{Studio} - {Date} - {Title}{ [Performers]} {Quality}"}
 	MovieFolder = settings.Key[string]{Name: "adult.movieFolder", Default: "{Title} ({Year})"}

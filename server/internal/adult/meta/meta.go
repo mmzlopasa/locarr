@@ -1,4 +1,4 @@
-// Package meta is the adult metadata interface (D-102): StashDB (GraphQL)
+// Package meta is the adult metadata interface (D-103): StashDB (GraphQL)
 // and ThePornDB (REST), both written from their public API documentation,
 // both needing the owner's own API key. No other source is used: no
 // scraping of tube or other sites.
@@ -30,7 +30,7 @@ var (
 	ErrBadKey   = errors.New("the metadata source refused the API key")
 	ErrNotFound = errors.New("not found at the metadata source")
 	// ErrRemoved: the source flags the entry as deleted or disputed; it is
-	// never imported (D-102).
+	// never imported (D-103).
 	ErrRemoved = errors.New("the metadata source flags this entry as removed")
 )
 

@@ -37,7 +37,7 @@ func refuse(code, format string, args ...any) error {
 	return &ImportError{Code: code, Msg: fmt.Sprintf(format, args...)}
 }
 
-// Tokens of the adult naming templates (D-104).
+// Tokens of the adult naming templates (D-105).
 var Tokens = []naming.Token{{Name: "Studio", Example: "Studio A"}, {Name: "Date", Example: "2024-01-15"}, {Name: "Title", Example: "Scene Title"},
 	{Name: "Year", Example: "2024"}, {Name: "Performers", Example: "Performer One, Performer Two"}, {Name: "Quality", Example: "WEBDL-1080p"},
 	{Name: "ReleaseGroup", Example: "GRP"}}
