@@ -10,9 +10,11 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/history"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 )
@@ -23,6 +25,7 @@ const batch = 5000
 // Result says what one run removed.
 type Result struct {
 	Timeline       int64
+	History        int64 // download events of the history (grabs, failures)
 	SearchLog      int64
 	DownloadEvents int64
 	ReleasesSeen   int64
@@ -70,23 +73,44 @@ func (s *Service) days(ctx context.Context, k settings.Key[int]) time.Time {
 	return s.now().Add(-time.Duration(d) * 24 * time.Hour)
 }
 
-// Prune removes rows older than their retention.
+// Prune removes rows older than their retention. The activity history
+// (history.TimelineTypes and history.DownloadTypes) has its own retention,
+// HistoryDays, where 0 keeps it forever (D-107).
 func (s *Service) Prune(ctx context.Context) (Result, error) {
 	var r Result
 	var err error
+	hTypes, dTypes := history.TimelineTypes(), history.DownloadTypes()
+	hMarks, hArgs := inList(hTypes)
+	dMarks, dArgs := inList(dTypes)
 	if r.Timeline, err = s.deleteBatches(ctx, `DELETE FROM timeline_events WHERE id IN
-		(SELECT id FROM timeline_events WHERE at < ? LIMIT ?)`, db.Millis(s.days(ctx, settings.TimelineDays))); err != nil {
+		(SELECT id FROM timeline_events WHERE at < ? AND type NOT IN (`+hMarks+`) LIMIT ?)`, // #nosec G202 -- placeholders only
+		append([]any{db.Millis(s.days(ctx, settings.TimelineDays))}, hArgs...)...); err != nil {
 		return r, err
+	}
+	keep, _ := settings.Get(ctx, s.Settings, settings.HistoryDays)
+	if keep > 0 {
+		cut := db.Millis(s.now().Add(-time.Duration(keep) * 24 * time.Hour))
+		n, err := s.deleteBatches(ctx, `DELETE FROM timeline_events WHERE id IN
+			(SELECT id FROM timeline_events WHERE at < ? AND type IN (`+hMarks+`) LIMIT ?)`, append([]any{cut}, hArgs...)...) // #nosec G202 -- placeholders only
+		r.Timeline += n
+		if err != nil {
+			return r, err
+		}
+		if r.History, err = s.deleteBatches(ctx, `DELETE FROM download_events WHERE id IN
+			(SELECT id FROM download_events WHERE at < ? AND type IN (`+dMarks+`) LIMIT ?)`, append([]any{cut}, dArgs...)...); err != nil { // #nosec G202 -- placeholders only
+			return r, err
+		}
 	}
 	if r.SearchLog, err = s.deleteBatches(ctx, `DELETE FROM search_log WHERE id IN
 		(SELECT id FROM search_log WHERE started_at < ? LIMIT ?)`, db.Millis(s.days(ctx, settings.SearchLogDays))); err != nil {
 		return r, err
 	}
 	// Events of downloads that ended long ago; the downloads themselves stay
-	// for the statistics.
+	// for the statistics, and the history's own events follow HistoryDays.
+	cut := db.Millis(s.days(ctx, settings.DownloadEventsDays))
 	if r.DownloadEvents, err = s.deleteBatches(ctx, `DELETE FROM download_events WHERE id IN (SELECT e.id FROM download_events e
-		JOIN downloads d ON d.id = e.download_id WHERE d.finished_at IS NOT NULL AND d.finished_at < ? AND e.at < ? LIMIT ?)`,
-		db.Millis(s.days(ctx, settings.DownloadEventsDays)), db.Millis(s.days(ctx, settings.DownloadEventsDays))); err != nil {
+		JOIN downloads d ON d.id = e.download_id WHERE d.finished_at IS NOT NULL AND d.finished_at < ? AND e.at < ?
+		AND e.type NOT IN (`+dMarks+`) LIMIT ?)`, append([]any{cut, cut}, dArgs...)...); err != nil { // #nosec G202 -- placeholders only
 		return r, err
 	}
 	if r.ReleasesSeen, err = s.deleteBatches(ctx, `DELETE FROM releases_seen WHERE id IN
@@ -184,4 +208,13 @@ func (s *Service) Run(ctx context.Context) (Result, error) {
 	}
 	r.Vacuumed, err = s.VacuumIfDue(ctx)
 	return r, err
+}
+
+func inList(values []string) (string, []any) {
+	args := make([]any, len(values))
+	marks := make([]string, len(values))
+	for i, v := range values {
+		args[i], marks[i] = v, "?"
+	}
+	return strings.Join(marks, ", "), args
 }

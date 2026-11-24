@@ -413,15 +413,27 @@ func TestHousekeepingRetention(t *testing.T) {
 			t.Fatal(err)
 		}
 		exec(`INSERT INTO download_events (download_id, at, type) VALUES (?, ?, 'grabbed')`, id, db.Millis(at))
+		exec(`INSERT INTO download_events (download_id, at, type) VALUES (?, ?, 'completed')`, id, db.Millis(at))
+		exec(`INSERT INTO timeline_events (item_ref, at, type, message) VALUES ('movie:1', ?, 'grab_failed', '')`, db.Millis(at))
 	}
+	// History retention 0 keeps the history forever; the rest is pruned.
+	e.expect(e.do("PUT", "/api/v1/settings/system", map[string]any{"historyDays": 0}), 200)
 	res, err := e.deps.Housekeeping.Prune(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
-	if res.Timeline != 1 || res.SearchLog != 1 || res.DownloadEvents != 1 {
+	if res.Timeline != 1 || res.SearchLog != 1 || res.DownloadEvents != 1 || res.History != 0 {
 		t.Fatalf("pruned: %+v", res)
 	}
-	for table, want := range map[string]int{"timeline_events": 1, "search_log": 1, "download_events": 1, "downloads": 2} {
+	// The default (365 days) prunes the old history entries.
+	e.expect(e.do("PUT", "/api/v1/settings/system", map[string]any{"historyDays": 365}), 200)
+	if res, err = e.deps.Housekeeping.Prune(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if res.Timeline != 1 || res.History != 1 {
+		t.Fatalf("pruned history: %+v", res)
+	}
+	for table, want := range map[string]int{"timeline_events": 2, "search_log": 1, "download_events": 2, "downloads": 2} {
 		var n int
 		_ = d.R.QueryRow(`SELECT COUNT(*) FROM ` + table).Scan(&n)
 		if n != want {

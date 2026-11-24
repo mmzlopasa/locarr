@@ -233,6 +233,16 @@ func (UnimplementedHandler) ClearBlocklist(ctx context.Context) (r *BlocklistCle
 	return r, ht.ErrNotImplemented
 }
 
+// ClearHistory implements clearHistory operation.
+//
+// The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
+// `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+//
+// POST /history/clear
+func (UnimplementedHandler) ClearHistory(ctx context.Context, req *HistoryClearRequest) (r *HistoryClearResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ConvertSubtitleFps implements convertSubtitleFps operation.
 //
 // Convert a subtitle made for one frame rate to another (managers).
@@ -571,6 +581,16 @@ func (UnimplementedHandler) DeleteDelayProfile(ctx context.Context, params Delet
 //
 // DELETE /downloadclients/{id}
 func (UnimplementedHandler) DeleteDownloadClient(ctx context.Context, params DeleteDownloadClientParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteHistoryEntry implements deleteHistoryEntry operation.
+//
+// The entry is the same row the item's timeline shows, so it disappears there too. Files, the
+// blocklist, searches and release decisions are not touched.
+//
+// DELETE /history/{id}
+func (UnimplementedHandler) DeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) error {
 	return ht.ErrNotImplemented
 }
 
