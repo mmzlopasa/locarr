@@ -71,7 +71,9 @@ func (s *Service) ValidateBrowserURL(ctx context.Context, raw string) error {
 }
 
 // BrowserStatus asks the companion browser how it is.
-func (s *Service) BrowserStatus(ctx context.Context) httpx.BrowserStatus { return s.Browser.Status(ctx) }
+func (s *Service) BrowserStatus(ctx context.Context) httpx.BrowserStatus {
+	return s.Browser.Status(ctx)
+}
 
 // BrowserTest has the browser pass its built-in check page, or (with rawURL)
 // open that page with the indexers' address policy.

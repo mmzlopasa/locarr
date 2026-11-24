@@ -37,7 +37,9 @@ type ChallengeError struct {
 	Message string
 }
 
-func (e *ChallengeError) Error() string   { return e.Message }
+func (e *ChallengeError) Error() string { return e.Message }
+
+// Is makes errors.Is(err, ErrChallenge) true.
 func (e *ChallengeError) Is(t error) bool { return t == ErrChallenge }
 
 // BrowserConfig says where the companion browser is and what Locarr may ask
@@ -143,13 +145,6 @@ func (b *Browser) clearance(host, proxy string) *browserClearance {
 		return nil
 	}
 	return cl
-}
-
-// forget drops the cookies of host: the check came back.
-func (b *Browser) forget(host, proxy string) {
-	b.mu.Lock()
-	defer b.mu.Unlock()
-	delete(b.jar, jarKey(host, proxy))
 }
 
 // cookiesRejected notes that the site showed its check again although the
@@ -387,7 +382,6 @@ type solveInput struct {
 	url     string
 	proxy   string
 	policy  Policy
-	timeout time.Duration
 	secrets []string
 }
 

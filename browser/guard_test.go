@@ -72,7 +72,7 @@ func TestGuardRefusesLoopback(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer c.Close()
+	defer func() { _ = c.Close() }()
 	_, _ = fmt.Fprintf(c, "CONNECT %s HTTP/1.1\r\nHost: %s\r\n\r\n", site.Listener.Addr(), site.Listener.Addr())
 	r, err := http.ReadResponse(bufio.NewReader(c), nil)
 	if err != nil {

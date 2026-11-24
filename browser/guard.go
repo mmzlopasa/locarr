@@ -157,7 +157,7 @@ func newGuard(p Policy, upstream string, maxBytes int64) (*guard, error) {
 		}
 		g.upstream = u
 	}
-	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	ln, err := (&net.ListenConfig{}).Listen(context.Background(), "tcp", "127.0.0.1:0")
 	if err != nil {
 		return nil, err
 	}
@@ -410,7 +410,7 @@ func (g *guard) forward(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "unreachable", http.StatusBadGateway)
 		return
 	}
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 	res.Header.Del(guardHeader)
 	for _, h := range hopHeaders {
 		res.Header.Del(h)

@@ -262,6 +262,6 @@ func memoryTight() bool {
 		return v, err == nil
 	}
 	cur, ok1 := read("memory.current")
-	max, ok2 := read("memory.max") // "max" (no limit) does not parse
-	return ok1 && ok2 && max > 0 && cur*5 > max*4
+	limit, ok2 := read("memory.max") // "max" (no limit) does not parse
+	return ok1 && ok2 && limit > 0 && cur*5 > limit*4
 }
