@@ -31,7 +31,7 @@ const (
 	PermAutoApproveSeries
 	PermAutoApproveMusic
 	PermAutoApprove4K
-	// PermViewAdult sees the optional adult library (D-100). It is never part
+	// PermViewAdult sees the optional adult library (D-101). It is never part
 	// of a default, an invite or a role: an administrator grants it per user,
 	// requesters can never hold it, and administrators need it too.
 	PermViewAdult

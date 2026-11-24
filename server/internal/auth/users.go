@@ -112,7 +112,7 @@ func (s *Service) UpdateUser(ctx context.Context, actor Principal, id int64, ch 
 				return err
 			}
 		}
-		// Requesters can never hold view_adult (D-100), whatever was sent.
+		// Requesters can never hold view_adult (D-101), whatever was sent.
 		if _, err := tx.ExecContext(ctx, `UPDATE users SET permissions = permissions & ? WHERE id = ? AND role = 'requester'`,
 			^int64(PermViewAdult), id); err != nil { // #nosec G115 -- bitset fits
 			return err

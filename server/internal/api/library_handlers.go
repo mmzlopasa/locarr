@@ -309,7 +309,7 @@ func (h *Handler) GetTimeline(ctx context.Context, p gen.GetTimelineParams) (*ge
 		return nil, err
 	}
 	if library.IsAdult(ref.Kind) {
-		return nil, errAdultHidden // adult items only through /adult (D-100)
+		return nil, errAdultHidden // adult items only through /adult (D-101)
 	}
 	ex, title, refs, err := h.explain(ctx, ref)
 	if err != nil {
@@ -341,7 +341,7 @@ func (h *Handler) ExplainItem(ctx context.Context, p gen.ExplainItemParams) (*ge
 		return nil, err
 	}
 	if library.IsAdult(ref.Kind) {
-		return nil, errAdultHidden // adult items only through /adult (D-100)
+		return nil, errAdultHidden // adult items only through /adult (D-101)
 	}
 	ex, _, _, err := h.explain(ctx, ref)
 	if err != nil {
@@ -361,7 +361,7 @@ func (h *Handler) RetryItem(ctx context.Context, p gen.RetryItemParams) (*gen.Qu
 		return nil, err
 	}
 	if library.IsAdult(ref.Kind) {
-		return nil, errAdultHidden // adult items only through /adult (D-100)
+		return nil, errAdultHidden // adult items only through /adult (D-101)
 	}
 	if err := h.Wanted.RetryNow(ctx, ref); err != nil {
 		return nil, err

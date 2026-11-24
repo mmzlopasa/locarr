@@ -23,7 +23,7 @@ const (
 	TaskRefreshAdult = "adult-refresh"
 )
 
-// buildAdult wires the optional adult library (D-100). It is always built
+// buildAdult wires the optional adult library (D-101). It is always built
 // (so enabling needs no restart) but does nothing while the setting is off.
 func buildAdult(_ context.Context, d *Deps, cfg config.Config, log *slog.Logger) {
 	stashKey := func(ctx context.Context) (string, error) {

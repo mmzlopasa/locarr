@@ -123,7 +123,7 @@ func (s *Service) defaults(ctx context.Context, o *AddOptions) error {
 	return nil
 }
 
-// checkEntry refuses removed/disputed entries and blocked tags (D-100).
+// checkEntry refuses removed/disputed entries and blocked tags (D-101).
 func (s *Service) checkEntry(ctx context.Context, sc *meta.Scene) error {
 	if sc.Removed {
 		return ErrRemoved

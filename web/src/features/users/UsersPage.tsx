@@ -53,7 +53,7 @@ export function UsersPage() {
 function PermissionFields({ value, onChange, disabled, role }: { value: Permissions; onChange: (p: Permissions) => void; disabled?: boolean; role: Role }) {
   const { t } = useTranslation();
   // The adult permission is only offered while the adult library is enabled,
-  // never to requesters, and administrators need it too (D-100).
+  // never to requesters, and administrators need it too (D-101).
   const adult = useAdultSettings();
   return (
     <>

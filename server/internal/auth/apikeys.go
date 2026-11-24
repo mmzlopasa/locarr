@@ -31,7 +31,7 @@ func (s *Service) CreateAPIKey(ctx context.Context, p Principal, name string, re
 type KeyOptions struct {
 	ReadOnly bool
 	// IncludeAdult lets the key see the adult library; it is dropped unless
-	// the owner holds view_adult (D-100).
+	// the owner holds view_adult (D-101).
 	IncludeAdult bool
 }
 

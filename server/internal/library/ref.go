@@ -22,7 +22,7 @@ const (
 	RefEpisode = "episode"
 	RefArtist  = "artist"
 	RefAlbum   = "album"
-	// Adult kinds (D-100): only visible when the adult library is enabled
+	// Adult kinds (D-101): only visible when the adult library is enabled
 	// and the caller holds view_adult.
 	RefScene      = "scene"
 	RefAdultMovie = "adult_movie"

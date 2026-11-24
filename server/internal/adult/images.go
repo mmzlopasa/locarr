@@ -16,7 +16,7 @@ var imageKey = regexp.MustCompile(`^[0-9a-f]{32}$`)
 // cacheImage downloads a source image once into the private image folder
 // and returns its key ("" when there is none or it failed). Images are only
 // served through the adult endpoints to permitted users, never by a public
-// URL (D-100).
+// URL (D-101).
 func (s *Service) cacheImage(ctx context.Context, url string) string {
 	if url == "" || s.ImageDir == "" {
 		return ""
