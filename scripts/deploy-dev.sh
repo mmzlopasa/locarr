@@ -4,6 +4,8 @@
 #
 #   LOCARR_DEV_DATA   host folder for config and data (default ~/locarr-data)
 #   LOCARR_DEV_PORT   host address to publish on (default 127.0.0.1:8484)
+#   LOCARR_DEV_BROWSER=1  also build and start the built-in browser (profile "browser");
+#                     its token is kept in <data>/browser-token
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DATA="${LOCARR_DEV_DATA:-$HOME/locarr-data}"
@@ -19,6 +21,14 @@ mkdir -p "$DATA/config" "$DATA/data/media/movies" "$DATA/data/media/tv" "$DATA/d
 export CONFIG_DIR="$DATA/config" DATA_DIR="$DATA/data" HTTP_PORT="$PORT" \
     PUID="$(id -u)" PGID="$(id -g)" LOCARR_BUILD_COMMIT="$COMMIT" LOCARR_BUILD_VERSION="dev"
 compose=(docker compose -p locarr -f "$ROOT/deploy/docker-compose.yml" -f "$ROOT/deploy/compose.dev.yml")
+if [ -n "${LOCARR_DEV_BROWSER:-}" ]; then
+    if [ ! -s "$DATA/browser-token" ]; then
+        (umask 077; od -An -N24 -tx1 /dev/urandom | tr -d ' \n' > "$DATA/browser-token")
+    fi
+    LOCARR_BROWSER_TOKEN="$(cat "$DATA/browser-token")"
+    export LOCARR_BROWSER_TOKEN
+    compose+=(--profile browser)
+fi
 "${compose[@]}" up -d --build --wait
 
 url="http://${PORT}/api/v1/system/info"

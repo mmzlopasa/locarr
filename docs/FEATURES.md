@@ -13,11 +13,12 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Indexeri (P1)
 - [x] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/TVmaze) i tekstu, RSS (glazba po izvođaču/albumu: Newznab nema MusicBrainz parametar)
-- [x] Ugrađeni javni indexeri bez Prowlarra/Jacketta (D-087 – D-089): YTS, EZTV, The Pirate Bay, SubsPlease, Knaben, Nyaa, Tokyo Toshokan, LimeTorrents, 1337x (uz FlareSolverr), BitSearch; vlastite definicije u `/config/definitions`; zdravlje s razlozima (stranica pala, promijenjen izgled, Cloudflare, ograničenje), tjedni samotest
+- [x] Ugrađeni javni indexeri bez Prowlarra/Jacketta (D-087 – D-089): YTS, EZTV, The Pirate Bay, SubsPlease, Knaben, Nyaa, Tokyo Toshokan, LimeTorrents, 1337x (iza provjere preglednika), BitSearch; vlastite definicije u `/config/definitions`; zdravlje s razlozima (stranica pala, promijenjen izgled, Cloudflare, ograničenje), tjedni samotest
 - [x] Usenet indexeri izravno (popis poznatih Newznab indexera: odaberi i upiši ključ)
 - [x] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab) — pod „Napredno"; više nisu potrebni
 - [x] Prioriteti, oznake (tagovi), ograničenja zahtjeva (rate limit), dnevni limiti, backoff i zdravlje
 - [x] Paralelna pretraga svih indexera, rezultati čim stignu, ručna (interaktivna) pretraga
+- [x] Vlastiti preglednik za stranice iza provjere preglednika (D-102): neobavezni kontejner `locarr-browser` (compose profil `browser`), automatske provjere (JavaScript, čekaonica, managed) bez FlareSolverra, kolačići se ponovno koriste, CAPTCHA koja traži čovjeka se jasno prijavi; ploča stanja i test u Indexeri; FlareSolverr ostaje kao rezerva
 - [ ] Proxyji po indexeru (HTTP/SOCKS5), FlareSolverr po izboru (ugrađeno; FlareSolverr testiran s lažnim servisom, proxyji još nisu testirani end-to-end)
 
 ## Parser i odluke (P2)

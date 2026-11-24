@@ -10,7 +10,7 @@ Indexere dodaješ u **Indexeri → Dodaj indexer**. Prozor ima tri kartice.
 
 Javne stranice koje Locarr zna pretraživati bez ikakvog posrednika:
 
-| Stranica | Što ima | Kako je Locarr pretražuje | FlareSolverr |
+| Stranica | Što ima | Kako je Locarr pretražuje | Provjera preglednika |
 |---|---|---|---|
 | YTS | filmove | službeni API, po IMDb id-u ili naslovu | ne treba |
 | EZTV | serije | javni API, po IMDb id-u serije | ne treba |
@@ -30,7 +30,7 @@ kategorije i RSS (isključen za stranice koje nemaju popis zadnjih izdanja, npr.
 **Uredi** na ugrađenom indexeru nudi:
 - **Adresu** — glavnu ili poznati mirror, ili vlastitu adresu ako je stranica preselila.
 - **Postavke stranice** — npr. rezolucija za SubsPlease, filter za Nyaa.
-- **FlareSolverr URL**, **ograničenje zahtjeva**, **kategorije**, **prioritet** i gdje se indexer koristi
+- **FlareSolverr URL** (samo rezerva, vidi niže), **ograničenje zahtjeva**, **kategorije**, **prioritet** i gdje se indexer koristi
   (RSS, automatska, ručna pretraga).
 
 Kod svakog indexera piše verzija definicije, a pod „Kako je provjereno" piše kako je definicija napisana.
@@ -44,26 +44,70 @@ složene magnete**. Tamo je i **User-Agent** koji Locarr šalje stranicama.
 Ako stranica ne radi, uz indexer piše zašto:
 - **Stranica ne odgovara** — pala je ili je spora; Locarr pričeka i pokuša ponovno sam.
 - **Ograničenje zahtjeva** — stranica traži pauzu; Locarr je poštuje.
-- **Cloudflare provjera** — stranica traži FlareSolverr (vidi niže).
+- **Provjera preglednika** — stranica pred običan zahtjev stavlja provjeru (Cloudflare, DDoS-Guard).
+  Piše i zašto nije prošla: ugrađeni preglednik nije pokrenut, nije uspio ili stranica traži čovjeka
+  (vidi niže).
 - **Izgled stranice se promijenio** — Locarr ne može pročitati rezultate. Broj nepročitanih redaka
   vidi se uz indexer. Čeka se nova verzija definicije (ili vlastita definicija, vidi niže).
 
 Jednom tjedno Locarr sam testira svaki uključeni ugrađeni indexer i zapiše ishod („Tjedna samoprovjera").
 **Testiraj** pokreće isti poznati upit odmah.
 
-### FlareSolverr
-Neke stranice (1337x, ponekad LimeTorrents) pred običan zahtjev stave Cloudflare provjeru. Tada pokreni
-[FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) uz Locarr, npr. u istom `docker-compose.yml`:
+<a id="zasticene-stranice"></a>
+### Zaštićene stranice bez FlareSolverra
+Neke stranice (1337x, ponekad LimeTorrents) pred običan zahtjev stave provjeru preglednika: stranicu
+„Just a moment…" ili „Checking your browser" koja pusti dalje tek kad JavaScript u pravom pregledniku
+odradi svoje. Locarr za to ima **vlastiti preglednik**: mali dodatni kontejner s Chromiumom
+(`ghcr.io/mmzlopasa/locarr-browser`). FlareSolverr više nije potreban.
 
-```yaml
-  flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:latest
-    restart: unless-stopped
+**Uključivanje.** U `.env` uz `docker-compose.yml` postavi zajednički token (barem 16 znakova):
+
+```bash
+echo "LOCARR_BROWSER_TOKEN=$(openssl rand -hex 24)" >> .env
+docker compose --profile browser up -d
 ```
 
-i u indexeru upiši **FlareSolverr URL** `http://flaresolverr:8191`. Locarr ga zove samo kad stranica
-stvarno pokaže provjeru i koristi ga samo za kolačiće. Provjera ponekad ne uspije iz prvog puta;
-Locarr će pokušati opet kasnije.
+Prva naredba upiše token, druga pokrene i Locarr (s tokenom) i preglednik. Preglednik nema
+objavljen port: dostupan je samo Locarru na istoj Docker mreži i samo s tim tokenom. Za
+pokretanje ili nadogradnju ubuduće uvijek dodaj `--profile browser`.
+
+**Provjera.** **Indexeri → Preglednik za zaštićene stranice** pokazuje stanje (povezan, verzija,
+Chromium, kartice u upotrebi, zadnja stranica). **Testiraj** pusti preglednik kroz njegovu ugrađenu
+probnu provjeru (stranica koja JavaScriptom postavi kolačić i ponovno se učita); **Testiraj CAPTCHA
+stranicu** provjerava da se stranica koja traži čovjeka ispravno prepozna; **Ili otvori adresu**
+otvori bilo koju stranicu i kaže što se dogodilo. Ako preglednik nije pokrenut, ploča pokaže točnu
+naredbu. Adresa (zadano `http://locarr-browser:8490`) i token mogu se tu i promijeniti; spremljeni
+token ima prednost pred `LOCARR_BROWSER_TOKEN`.
+
+**Kako radi.** Kad stranica odgovori provjerom (ili za stranice koje je uvijek imaju, npr. 1337x),
+Locarr zamoli preglednik da otvori tu stranicu. Preglednik pričeka da provjera sama prođe (najviše
+minutu) i vrati stranicu, kolačiće i svoj User-Agent. Locarr te kolačiće čuva po stranici i sljedeće
+pretrage šalje svojim običnim klijentom s istim User-Agentom, pa se preglednik koristi rijetko (otprilike
+jednom dok kolačić ne istekne). Ako stranica kolačiće veže uz sam preglednik i provjera se vrati,
+Locarr pola sata šalje zahtjeve te stranice kroz preglednik. Ograničenje zahtjeva i razmak između
+zahtjeva vrijede i za preglednik. Chromium se pokreće tek kad zatreba i ugasi se nakon 5 minuta mirovanja.
+
+**Što ne radi i nikad neće.** Preglednik prolazi samo provjere koje pravi preglednik prođe sam
+(JavaScript provjera, čekaonica, automatska „managed" provjera). Kad stranica traži da **čovjek**
+klikne kvadratić ili riješi CAPTCHA (Turnstile, hCaptcha, reCAPTCHA), Locarr to ne radi i ne koristi
+servise za rješavanje CAPTCHA zadataka. Tada uz indexer piše „treba ljudsku provjeru — otvori stranicu
+u svom pregledniku" i Locarr pola sata ne pokušava ponovno. Cloudflare takav kvadratić češće pokazuje
+poslužiteljima u podatkovnim centrima nego kućnim vezama; pomaže indexerov proxy (preglednik ga
+koristi) ili mirror stranice.
+
+**Sigurnost.** Preglednik radi kao običan korisnik (uid 1000), bez dodatnih Linux ovlasti, s
+`no-new-privileges`, Dockerovim zadanim seccomp profilom, korijenskim datotečnim sustavom samo za
+čitanje i ograničenjem memorije (1 GB) i procesa. Chromiumov vlastiti sandbox traži korisničke
+namespaceove koje Docker kontejnerima obično ne daje; tada Chromium radi bez njega (stanje se vidi
+na ploči), a granica je sam kontejner. Locarr provjerava adresu prije nego pita preglednik, a
+preglednik sve zahtjeve stranice (i slike, skripte, preusmjerenja) šalje kroz svoju provjeru adresa:
+loopback, link-local i adrese metapodataka oblaka su zabranjene, privatne mreže samo za adresu
+indexera (i ono što je u **Dopuštene lokalne adrese**). Preuzimanja su isključena, `file://` i
+`chrome://` adrese odbijene, a jedna stranica smije učitati najviše 64 MB.
+
+**FlareSolverr kao rezerva.** Ako već imaš FlareSolverr i ne želiš drugi kontejner, upiši njegovu adresu
+(`http://flaresolverr:8191`) u **FlareSolverr URL** indexera. Locarr ga koristi samo kad ugrađeni
+preglednik nije pokrenut.
 
 ## 2. Usenet
 

@@ -2,6 +2,9 @@
 #   cp .env.example .env    # adjust paths and PUID/PGID
 #   docker compose up -d
 #   docker compose logs locarr   # shows the first-run setup code
+# Optional browser for sites behind a browser check (Cloudflare, DDoS-Guard),
+# after setting LOCARR_BROWSER_TOKEN in .env:
+#   docker compose --profile browser up -d
 name: locarr
 
 services:
@@ -19,6 +22,8 @@ services:
       LOCARR_TRUSTED_PROXIES: ${LOCARR_TRUSTED_PROXIES:-}
       LOCARR_SETUP_CODE: ${LOCARR_SETUP_CODE:-}
       LOCARR_AUTH_RATE_LIMIT: ${LOCARR_AUTH_RATE_LIMIT:-10,10}
+      # The optional browser (profile "browser") checks this token.
+      LOCARR_BROWSER_TOKEN: ${LOCARR_BROWSER_TOKEN:-}
     volumes:
       # Database and secret key. Back this folder up.
       - ${CONFIG_DIR:-./config}:/config
@@ -37,6 +42,34 @@ services:
     read_only: true
     tmpfs:
       - /tmp
+
+  # Headless Chromium that passes automatic browser checks for Locarr's
+  # indexers. Optional: starts only with --profile browser. Reachable only
+  # from this network (no published port) and with the shared token.
+  locarr-browser:
+    image: ghcr.io/mmzlopasa/locarr-browser:${LOCARR_VERSION:-latest}
+    profiles: [browser]
+    restart: unless-stopped
+    environment:
+      LOCARR_BROWSER_TOKEN: ${LOCARR_BROWSER_TOKEN:-}
+      LOCARR_BROWSER_TABS: ${LOCARR_BROWSER_TABS:-2}
+      TZ: ${TZ:-Etc/UTC}
+    # Runs as uid 1000 (the image's user). Chromium's own sandbox needs user
+    # namespaces, which most Docker hosts refuse to containers; then it runs
+    # without it, so the container itself is the sandbox: no capabilities,
+    # no privilege escalation, Docker's default seccomp profile, read-only
+    # root, and every page request goes through its address guard.
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=512m
+    mem_limit: 1g
+    memswap_limit: 1g
+    pids_limit: 512
+    cpus: 2
 
 networks:
   default:

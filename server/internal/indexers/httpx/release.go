@@ -163,8 +163,22 @@ func requestErr(err error, rawURL string, secrets []string) error {
 func (c *Client) FetchRelease(ctx context.Context, rawURL string, hdr http.Header) (*ReleaseFile, error) {
 	o := FollowOptions{Header: hdr, MaxBytes: c.o.MaxBytes, Secrets: c.o.Secrets, Prepare: c.prepare}
 	rf, err := FollowRelease(ctx, c.hc, rawURL, o)
-	if err != nil || rf.Response == nil || rf.CrossHost || c.fsHC == nil || !isChallenge(rf.Response) {
+	if err != nil || rf.Response == nil || rf.CrossHost || !isChallenge(rf.Response) {
 		return rf, err
+	}
+	if b := c.o.Browser; b != nil {
+		// Earn cookies for the site, then fetch the file with them.
+		u, _ := url.Parse(rawURL)
+		_, berr := c.viaBrowser(ctx, (&url.URL{Scheme: u.Scheme, Host: u.Host, Path: "/"}).String())
+		if berr == nil {
+			return FollowRelease(ctx, c.hc, rawURL, o)
+		}
+		if !c.fallBack(berr) {
+			return nil, berr
+		}
+	}
+	if c.fsHC == nil {
+		return rf, nil
 	}
 	if err := c.solve(ctx, rawURL); err != nil {
 		return nil, err
@@ -172,8 +186,23 @@ func (c *Client) FetchRelease(ctx context.Context, rawURL string, hdr http.Heade
 	return FollowRelease(ctx, c.hc, rawURL, o)
 }
 
-// prepare adds FlareSolverr clearance for the request's host.
+// prepare adds the cookies the built-in browser or FlareSolverr earned for
+// the request's host, with the User-Agent they were earned with.
 func (c *Client) prepare(req *http.Request) {
+	if b := c.o.Browser; b != nil {
+		if cl := b.clearance(req.URL.Host, c.o.Proxy); cl != nil {
+			for _, ck := range cl.cookies {
+				req.AddCookie(ck)
+			}
+			if cl.userAgent != "" {
+				req.Header.Set("User-Agent", cl.userAgent)
+				for k, v := range cl.headers {
+					req.Header.Set(k, v)
+				}
+			}
+			return
+		}
+	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if cf := c.cf; cf != nil && cf.host == req.URL.Host && time.Now().Before(cf.expires) {

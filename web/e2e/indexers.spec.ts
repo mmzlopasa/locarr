@@ -89,3 +89,50 @@ test("switch on a built-in site, point it at a local copy and search it", async 
   await row.getByRole("button", { name: "Delete Nyaa" }).click();
   await expect(row).toHaveCount(0);
 });
+
+// Needs the built-in browser on the stack (docker compose --profile browser up -d); CI sets E2E_BROWSER=1.
+test("a 1337x-style site behind a browser check is searched through the built-in browser", async ({ page }) => {
+  test.skip(!process.env.E2E_BROWSER, "the built-in browser is not running on this stack");
+  test.setTimeout(180_000);
+  await signInAsAdmin(page);
+  await page.getByRole("link", { name: "Indexers" }).click();
+  const panel = page.getByTestId("browser-panel");
+  await expect(panel.getByText("Connected")).toBeVisible();
+  await panel.getByRole("button", { name: "Test", exact: true }).click();
+  await expect(panel.getByTestId("browser-test-result")).toContainText("Passed: page opened", { timeout: 60_000 });
+  await panel.getByLabel("Or open an address").fill(`${fakeBase}/protected/test`);
+  await panel.getByRole("button", { name: "Open" }).click();
+  await expect(panel.getByTestId("browser-test-result")).toContainText("Passed: page opened", { timeout: 60_000 });
+
+  const old = page.getByTestId("indexer-1337x");
+  if (await old.count()) {
+    await old.getByRole("button", { name: "Delete" }).click();
+    await old.getByRole("button", { name: "Delete 1337x" }).click();
+    await expect(old).toHaveCount(0);
+  }
+  await page.getByRole("button", { name: "Add indexer" }).click();
+  await page.getByTestId("builtin-1337x").getByRole("switch", { name: "Use 1337x" }).click();
+  const row = page.getByTestId("indexer-1337x");
+  await expect(row).toBeVisible();
+  await row.getByRole("button", { name: "Edit" }).click();
+  const form = page.getByTestId("native-form");
+  await form.getByLabel("Address").selectOption({ label: "Other address…" });
+  // The recorded 1337x pages behind a JavaScript check that sets a cookie and reloads.
+  await form.getByLabel("Custom address").fill(`${fakeBase}/protected/sites/1337x`);
+  await form.getByRole("button", { name: "Save" }).click();
+  await expect(row).toContainText(`${fakeBase}/protected/sites/1337x`);
+  await row.getByRole("button", { name: "Test" }).click();
+  await expect(row.getByText(/Works: \d+ results/)).toBeVisible({ timeout: 90_000 });
+
+  await page.getByRole("link", { name: "Search" }).click();
+  await page.getByLabel("Search for").fill("ubuntu");
+  await page.getByRole("button", { name: "Search", exact: true }).click();
+  await expect(page.getByTestId("search-results").getByText("Ubuntu Linux Bible 11E by David Clinton (epub)(Nonfiction)").first())
+    .toBeVisible({ timeout: 90_000 });
+
+  await page.getByRole("link", { name: "Indexers" }).click();
+  await expect(panel.getByTestId("browser-last-solve")).toBeVisible();
+  await row.getByRole("button", { name: "Delete" }).click();
+  await row.getByRole("button", { name: "Delete 1337x" }).click();
+  await expect(row).toHaveCount(0);
+});

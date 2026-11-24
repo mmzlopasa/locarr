@@ -2687,6 +2687,23 @@
         }
       }
     },
+    "common.no": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne"
+          }
+        }
+      }
+    },
     "common.remove": {
       "extractionState": "manual",
       "localizations": {
@@ -6535,13 +6552,81 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Indexer {{name}} answers with a Cloudflare challenge. Set a FlareSolverr URL on it."
+            "value": "Indexer {{name}} sits behind a browser check that could not be passed: {{error}}"
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Indexer {{name}} odgovara Cloudflare provjerom. Postavi mu FlareSolverr URL."
+            "value": "Indexer {{name}} je iza provjere preglednika koja nije prošla: {{error}}"
+          }
+        }
+      }
+    },
+    "health.codes.indexer_challenge_blocked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The site of indexer {{name}} refuses the built-in browser (blocked, not a check)."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stranica indexera {{name}} odbija ugrađeni preglednik (blokada, ne provjera)."
+          }
+        }
+      }
+    },
+    "health.codes.indexer_challenge_browser_failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The built-in browser could not pass the check of indexer {{name}}: {{detail}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ugrađeni preglednik nije prošao provjeru indexera {{name}}: {{detail}}"
+          }
+        }
+      }
+    },
+    "health.codes.indexer_challenge_browser_missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer {{name}} sits behind a browser check and the built-in browser is not running. Start it with: {{command}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer {{name}} je iza provjere preglednika, a ugrađeni preglednik nije pokrenut. Pokreni ga naredbom: {{command}}"
+          }
+        }
+      }
+    },
+    "health.codes.indexer_challenge_human": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer {{name}} needs a human check (a CAPTCHA). Open the site in your browser; Locarr does not solve these and tries again later."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer {{name}} traži ljudsku provjeru (CAPTCHA). Otvori stranicu u svom pregledniku; Locarr takve provjere ne rješava i pokušat će ponovno kasnije."
           }
         }
       }
@@ -7498,6 +7583,652 @@
         }
       }
     },
+    "indexers.browser.chromium": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chromium"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chromium"
+          }
+        }
+      }
+    },
+    "indexers.browser.forgetToken": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forget saved token"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaboravi spremljeni token"
+          }
+        }
+      }
+    },
+    "indexers.browser.lastSolve": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last page: {{host}}, {{outcome}} {{when}} ({{seconds}} s)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadnja stranica: {{host}}, {{outcome}} {{when}} ({{seconds}} s)"
+          }
+        }
+      }
+    },
+    "indexers.browser.missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The browser is optional and not running. Start it next to Locarr with:"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preglednik nije obavezan i nije pokrenut. Pokreni ga uz Locarr naredbom:"
+          }
+        }
+      }
+    },
+    "indexers.browser.notStarted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "starts when needed"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pokreće se po potrebi"
+          }
+        }
+      }
+    },
+    "indexers.browser.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otvori"
+          }
+        }
+      }
+    },
+    "indexers.browser.outcome.blocked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "site refuses the browser"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "stranica odbija preglednik"
+          }
+        }
+      }
+    },
+    "indexers.browser.outcome.browser_failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "browser failed"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "preglednik nije uspio"
+          }
+        }
+      }
+    },
+    "indexers.browser.outcome.browser_missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "browser not running"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "preglednik nije pokrenut"
+          }
+        }
+      }
+    },
+    "indexers.browser.outcome.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "error"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "greška"
+          }
+        }
+      }
+    },
+    "indexers.browser.outcome.human": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "needs a human check"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "treba ljudsku provjeru"
+          }
+        }
+      }
+    },
+    "indexers.browser.outcome.refused": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "address not allowed"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "adresa nije dopuštena"
+          }
+        }
+      }
+    },
+    "indexers.browser.outcome.solved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "page opened"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "stranica otvorena"
+          }
+        }
+      }
+    },
+    "indexers.browser.outcome.timeout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "check did not finish"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "provjera nije završila"
+          }
+        }
+      }
+    },
+    "indexers.browser.sandbox": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chromium sandbox"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chromiumov sandbox"
+          }
+        }
+      }
+    },
+    "indexers.browser.state.connected": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connected"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povezan"
+          }
+        }
+      }
+    },
+    "indexers.browser.state.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Greška"
+          }
+        }
+      }
+    },
+    "indexers.browser.state.missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not running"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nije pokrenut"
+          }
+        }
+      }
+    },
+    "indexers.browser.state.unauthorized": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrong token"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pogrešan token"
+          }
+        }
+      }
+    },
+    "indexers.browser.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some sites check that a real browser visits them (Cloudflare, DDoS-Guard). Locarr's own browser passes these automatic checks, keeps the cookies and uses them for later searches. It never solves a CAPTCHA that needs a person."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neke stranice provjeravaju posjećuje li ih pravi preglednik (Cloudflare, DDoS-Guard). Locarrov vlastiti preglednik prolazi te automatske provjere, čuva kolačiće i koristi ih za sljedeće pretrage. Nikad ne rješava CAPTCHA zadatke koje mora riješiti čovjek."
+          }
+        }
+      }
+    },
+    "indexers.browser.tabs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tabs in use"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartice u upotrebi"
+          }
+        }
+      }
+    },
+    "indexers.browser.tabsValue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{inUse}} of {{tabs}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{inUse}} od {{tabs}}"
+          }
+        }
+      }
+    },
+    "indexers.browser.test": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testiraj"
+          }
+        }
+      }
+    },
+    "indexers.browser.testFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not passed: {{outcome}} after {{seconds}} s."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nije prošlo: {{outcome}} nakon {{seconds}} s."
+          }
+        }
+      }
+    },
+    "indexers.browser.testHuman": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test a CAPTCHA page"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testiraj CAPTCHA stranicu"
+          }
+        }
+      }
+    },
+    "indexers.browser.testPassed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passed: {{outcome}} in {{seconds}} s, {{cookies}} cookies."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prošlo: {{outcome}} za {{seconds}} s, kolačića: {{cookies}}."
+          }
+        }
+      }
+    },
+    "indexers.browser.testUrl": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Or open an address"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ili otvori adresu"
+          }
+        }
+      }
+    },
+    "indexers.browser.testUrlHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the page in the browser with the indexers' address rules and reports what happened."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otvara stranicu u pregledniku s pravilima adresa za indexere i javlja što se dogodilo."
+          }
+        }
+      }
+    },
+    "indexers.browser.testing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The browser is working; a check takes a few seconds…"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preglednik radi; provjera traje nekoliko sekundi…"
+          }
+        }
+      }
+    },
+    "indexers.browser.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Browser for protected sites"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preglednik za zaštićene stranice"
+          }
+        }
+      }
+    },
+    "indexers.browser.token": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token"
+          }
+        }
+      }
+    },
+    "indexers.browser.tokenFromEnv": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from LOCARR_BROWSER_TOKEN"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iz LOCARR_BROWSER_TOKEN"
+          }
+        }
+      }
+    },
+    "indexers.browser.tokenHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Must match LOCARR_BROWSER_TOKEN of the browser container. Leave empty to keep the current one."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mora biti isti kao LOCARR_BROWSER_TOKEN kontejnera preglednika. Ostavi prazno da zadržiš trenutni."
+          }
+        }
+      }
+    },
+    "indexers.browser.tokenSaved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "saved (type to replace)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "spremljen (upiši za zamjenu)"
+          }
+        }
+      }
+    },
+    "indexers.browser.unauthorized": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The browser refused Locarr's token. Set the same LOCARR_BROWSER_TOKEN for both containers, or enter the browser's token below."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preglednik je odbio Locarrov token. Postavi isti LOCARR_BROWSER_TOKEN za oba kontejnera ili upiši token preglednika ispod."
+          }
+        }
+      }
+    },
+    "indexers.browser.url": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Browser address"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresa preglednika"
+          }
+        }
+      }
+    },
+    "indexers.browser.urlHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave empty for the default address of the compose service."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ostavi prazno za zadanu adresu compose servisa."
+          }
+        }
+      }
+    },
+    "indexers.browser.version": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verzija"
+          }
+        }
+      }
+    },
     "indexers.builtin.address": {
       "extractionState": "manual",
       "localizations": {
@@ -7572,13 +8303,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Needs FlareSolverr"
+            "value": "Behind a browser check"
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Treba FlareSolverr"
+            "value": "Iza provjere preglednika"
           }
         }
       }
@@ -7589,13 +8320,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "May need FlareSolverr"
+            "value": "May show a browser check"
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Možda treba FlareSolverr"
+            "value": "Može tražiti provjeru preglednika"
           }
         }
       }
@@ -7606,13 +8337,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Needed only when the site shows a Cloudflare challenge."
+            "value": "Only a fallback: Locarr's built-in browser passes browser checks. Set this if you already run FlareSolverr and not the built-in browser."
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Treba samo kad stranica traži Cloudflare provjeru."
+            "value": "Samo rezerva: Locarrov ugrađeni preglednik prolazi provjere preglednika. Upiši ako već imaš FlareSolverr, a ne koristiš ugrađeni preglednik."
           }
         }
       }
@@ -8320,13 +9051,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The site shows a Cloudflare challenge. Set a FlareSolverr URL for this indexer under Edit."
+            "value": "The site shows a browser check. Locarr's built-in browser passes it (see Browser for protected sites below); a FlareSolverr URL on the indexer is the fallback."
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stranica traži Cloudflare provjeru. Upiši FlareSolverr URL za ovaj indexer pod Uredi."
+            "value": "Stranica traži provjeru preglednika. Prolazi je Locarrov ugrađeni preglednik (vidi Preglednik za zaštićene stranice ispod); FlareSolverr URL na indexeru je rezerva."
           }
         }
       }
@@ -8541,13 +9272,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cloudflare challenge"
+            "value": "browser check"
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cloudflare provjera"
+            "value": "provjera preglednika"
           }
         }
       }
@@ -8949,13 +9680,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only for indexers behind a Cloudflare challenge."
+            "value": "Optional fallback when the built-in browser for protected sites is not running."
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Samo za indexere iza Cloudflare provjere."
+            "value": "Neobavezna rezerva kad ugrađeni preglednik za zaštićene stranice nije pokrenut."
           }
         }
       }
@@ -9901,13 +10632,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Off by default, because FlareSolverr and your own services usually run on the same Docker network."
+            "value": "Off by default, because your own services (Prowlarr, the built-in browser) usually run on the same Docker network."
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zadano isključeno jer FlareSolverr i tvoji servisi obično rade na istoj Docker mreži."
+            "value": "Zadano isključeno jer tvoji servisi (Prowlarr, ugrađeni preglednik) obično rade na istoj Docker mreži."
           }
         }
       }

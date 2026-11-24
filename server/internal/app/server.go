@@ -26,6 +26,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/history"
 	"github.com/mmzlopasa/locarr/server/internal/housekeeping"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/native"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
@@ -165,6 +166,7 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 	deps.Downloads = downloads.New(d, box, deps.Settings, cfg.DataRoots, log)
 	deps.Jobs = jobs.New(d, log, jobs.Options{Concurrency: map[string]int{jobs.DefaultQueue: 2}})
 	deps.Indexers = indexers.New(d, box, deps.Settings, log)
+	deps.Indexers.BrowserEnv = httpx.BrowserConfig{URL: cfg.BrowserURL, Token: cfg.BrowserToken}
 	natives, err := native.NewRegistry(filepath.Join(cfg.ConfigDir, "definitions"))
 	if err != nil {
 		_ = d.Close()

@@ -16,7 +16,10 @@ export function describeHealth(t: TFunction, issue: HealthIssue, locale: string)
     else if (typeof v === "string" || typeof v === "number") vars[k] = v;
     else if (Array.isArray(v)) vars[k] = v.join(", ");
   }
-  return t(`health.codes.${issue.code}`, { ...vars, defaultValue: issue.message });
+  // A browser check says why it failed: the browser is missing, it failed, or the site wants a person.
+  const keys = [`health.codes.${issue.code}`];
+  if (issue.code === "indexer_challenge" && typeof vars.reason === "string") keys.unshift(`health.codes.indexer_challenge_${vars.reason}`);
+  return t(keys, { ...vars, defaultValue: issue.message });
 }
 
 export const severityTone = { error: "danger", warning: "warning", info: "info" } as const;

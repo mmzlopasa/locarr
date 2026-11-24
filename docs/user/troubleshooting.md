@@ -72,8 +72,7 @@ nakon popravka **Poništi zdravlje**.
 
 <a id="indexer-builtin"></a>
 ### Ugrađeni indexer ne radi (`indexer_challenge`, `indexer_layout`, `indexer_selftest_failed`)
-- **Cloudflare provjera** (`indexer_challenge`): stranica traži preglednik. Pokreni FlareSolverr i upiši
-  njegovu adresu u indexer (vidi [Indexeri](indexers.md#flaresolverr)).
+- **Provjera preglednika** (`indexer_challenge`): vidi niže.
 - **Promijenjen izgled** (`indexer_layout`): stranica je promijenila stranice pa ih definicija više ne
   zna pročitati. Pričekaj novu verziju Locarra ili stavi ispravljenu vlastitu definiciju u
   `/config/definitions` (vidi [Indexeri](indexers.md#vlastite-definicije)).
@@ -82,6 +81,21 @@ nakon popravka **Poništi zdravlje**.
 
 Kad u „Zašto nije stiglo?" piše da nijedan indexer nije imao izdanje, popisani su i indexeri koji u zadnjoj
 pretrazi nisu radili, s razlogom.
+
+<a id="indexer-challenge"></a>
+### Stranica traži provjeru preglednika (`indexer_challenge`)
+Stranica pred običan zahtjev stavlja provjeru (Cloudflare, DDoS-Guard). Poruka kaže zašto nije prošla:
+- **Ugrađeni preglednik nije pokrenut** — postavi `LOCARR_BROWSER_TOKEN` u `.env` i pokreni
+  `docker compose --profile browser up -d` (vidi [Zaštićene stranice](indexers.md#zasticene-stranice)).
+- **Preglednik nije uspio** — provjera nije završila na vrijeme ili preglednik ne prihvaća token. U
+  **Indexeri → Preglednik za zaštićene stranice** pritisni **Testiraj**; za pogrešan token postavi isti
+  `LOCARR_BROWSER_TOKEN` za oba kontejnera.
+- **Treba ljudska provjera** — stranica traži CAPTCHA. Locarr to ne rješava; otvori stranicu u svom
+  pregledniku, probaj mirror ili proxy. Locarr pokušava ponovno za pola sata.
+- **Stranica odbija preglednik** — blokada (npr. Cloudflare „You have been blocked"), ne provjera.
+
+Ako umjesto ugrađenog preglednika koristiš FlareSolverr, upiši njegovu adresu u indexer; koristi se kad
+ugrađeni preglednik nije pokrenut.
 
 <a id="no-indexers"></a>
 ### Nema indexera (`indexers_none`, `indexer_no_kind`)

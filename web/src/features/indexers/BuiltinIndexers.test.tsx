@@ -5,17 +5,18 @@ import { mockApi, renderApp, testUser } from "@/test-utils";
 
 const now = new Date().toISOString();
 const settings: IndexerSettings = { rssSyncIntervalMinutes: 15, releaseRetentionDays: 14, searchTimeoutSeconds: 45, searchCacheSeconds: 120,
-  allowedHosts: [], blockPrivateNetworks: false, publicTrackers: [], userAgent: "" };
+  allowedHosts: [], blockPrivateNetworks: false, publicTrackers: [], userAgent: "",
+  browserUrl: "", browserDefaultUrl: "http://locarr-browser:8490", browserToken: { configured: false }, browserTokenFromEnv: false };
 const def = (over: Partial<IndexerDefinition>): IndexerDefinition => ({
   id: "nyaa", name: "Nyaa", description: "Anime and more.", version: 1, builtin: true, overrides: false, protocol: "torrent",
-  links: ["https://nyaa.si"], verified: "Observed the RSS feed.", flaresolverr: "never", rss: true, language: "en",
+  links: ["https://nyaa.si"], verified: "Observed the RSS feed.", challenge: "never", flaresolverr: "never", rss: true, language: "en",
   searching: [{ type: "search", available: true, params: ["q"] }, { type: "tv", available: true, params: ["q", "season", "ep"] }],
   categories: [{ id: 5000, name: "TV", subcategories: [{ id: 5070, name: "TV/Anime" }] }],
   settings: [{ name: "filter", type: "select", label: "Filter", default: "0", options: [{ value: "0", label: "No filter" }, { value: "2", label: "Trusted only" }] }],
   aliases: [], indexerIds: [], rateLimit: { requests: 12, periodSeconds: 60 }, ...over,
 });
 const catalog = (over: Partial<IndexerCatalog> = {}): IndexerCatalog => ({
-  definitions: [def({}), def({ id: "1337x", name: "1337x", flaresolverr: "always", rss: false, settings: [] })],
+  definitions: [def({}), def({ id: "1337x", name: "1337x", challenge: "always", flaresolverr: "always", rss: false, settings: [] })],
   presets: [{ id: "nzbgeek", name: "NZBgeek", baseUrl: "https://api.nzbgeek.info", apiPath: "/api", siteUrl: "https://nzbgeek.info" },
     { id: "tabularasa", name: "Tabula Rasa", baseUrl: "https://www.tabula-rasa.pw", apiPath: "/api/v1/api", siteUrl: "https://www.tabula-rasa.pw" }],
   errors: [], customDir: "/config/definitions", ...over,
@@ -55,7 +56,7 @@ describe("built-in indexers", () => {
     await userEvent.click(await screen.findByRole("button", { name: "Add indexer" }));
     expect(screen.getByRole("tab", { name: "Built-in sites" })).toHaveAttribute("aria-selected", "true");
     const row = await screen.findByTestId("builtin-1337x");
-    expect(within(row).getByText("Needs FlareSolverr")).toBeInTheDocument();
+    expect(within(row).getByText("Behind a browser check")).toBeInTheDocument();
     expect(within(row).getByText(/No RSS/)).toBeInTheDocument();
     await userEvent.click(within(screen.getByTestId("builtin-nyaa")).getByRole("switch", { name: "Use Nyaa" }));
     await waitFor(() => expect(state.sent).toHaveLength(1));
@@ -105,7 +106,7 @@ describe("built-in indexers", () => {
     serve(state);
     renderApp("/indexers", { me: testUser() });
     const row = await screen.findByTestId("indexer-Nyaa");
-    expect(within(row).getByTestId("indexer-error")).toHaveTextContent("FlareSolverr");
+    expect(within(row).getByTestId("indexer-error")).toHaveTextContent("built-in browser");
     expect(within(row).getByTestId("indexer-quality")).toHaveTextContent("Unreadable results: 3");
     expect(within(row).getByTestId("indexer-quality")).toHaveTextContent("self-test failed");
     expect(within(row).getByText("Overrides built-in")).toBeInTheDocument();

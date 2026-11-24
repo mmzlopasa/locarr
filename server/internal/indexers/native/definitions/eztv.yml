@@ -7,7 +7,7 @@ links:
   - https://eztvx.to
   - https://eztv.wf
 verified: Written from the public API page (eztvx.to/api) and checked with get-torrents on 2026-11-23.
-flaresolverr: never
+challenge: never
 rateLimit: {requests: 20, periodSeconds: 60}
 delayMillis: 1000
 aliases: [eztv, "eztv.re", "eztvx.to"]

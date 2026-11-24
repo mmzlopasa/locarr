@@ -11977,6 +11977,429 @@ func (s *Indexer) SetUpdatedAt(val time.Time) {
 	s.UpdatedAt = val
 }
 
+// Ref: #/components/schemas/IndexerBrowserSolve
+type IndexerBrowserSolve struct {
+	At   time.Time `json:"at"`
+	Host string    `json:"host"`
+	// Solved, human, timeout, blocked, refused, error, browser_missing or browser_failed.
+	Outcome   string    `json:"outcome"`
+	Message   OptString `json:"message"`
+	ElapsedMs int64     `json:"elapsedMs"`
+}
+
+// GetAt returns the value of At.
+func (s *IndexerBrowserSolve) GetAt() time.Time {
+	return s.At
+}
+
+// GetHost returns the value of Host.
+func (s *IndexerBrowserSolve) GetHost() string {
+	return s.Host
+}
+
+// GetOutcome returns the value of Outcome.
+func (s *IndexerBrowserSolve) GetOutcome() string {
+	return s.Outcome
+}
+
+// GetMessage returns the value of Message.
+func (s *IndexerBrowserSolve) GetMessage() OptString {
+	return s.Message
+}
+
+// GetElapsedMs returns the value of ElapsedMs.
+func (s *IndexerBrowserSolve) GetElapsedMs() int64 {
+	return s.ElapsedMs
+}
+
+// SetAt sets the value of At.
+func (s *IndexerBrowserSolve) SetAt(val time.Time) {
+	s.At = val
+}
+
+// SetHost sets the value of Host.
+func (s *IndexerBrowserSolve) SetHost(val string) {
+	s.Host = val
+}
+
+// SetOutcome sets the value of Outcome.
+func (s *IndexerBrowserSolve) SetOutcome(val string) {
+	s.Outcome = val
+}
+
+// SetMessage sets the value of Message.
+func (s *IndexerBrowserSolve) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetElapsedMs sets the value of ElapsedMs.
+func (s *IndexerBrowserSolve) SetElapsedMs(val int64) {
+	s.ElapsedMs = val
+}
+
+// Ref: #/components/schemas/IndexerBrowserStatus
+type IndexerBrowserStatus struct {
+	// Missing = not running or not reachable; unauthorized = the token differs.
+	State   IndexerBrowserStatusState `json:"state"`
+	URL     string                    `json:"url"`
+	Message OptString                 `json:"message"`
+	// The command that starts the browser next to a compose install.
+	Command string `json:"command"`
+	// Version of the browser's control server.
+	Version OptString `json:"version"`
+	// Chromium version, once the browser has started.
+	Chromium OptString `json:"chromium"`
+	// Chromium is running (it stops when idle and starts on demand).
+	Running OptBool `json:"running"`
+	// Chromium runs with its own sandbox.
+	Sandbox   OptBool                `json:"sandbox"`
+	Tabs      OptInt                 `json:"tabs"`
+	TabsInUse OptInt                 `json:"tabsInUse"`
+	Solves    OptInt                 `json:"solves"`
+	Restarts  OptInt                 `json:"restarts"`
+	LastSolve OptIndexerBrowserSolve `json:"lastSolve"`
+}
+
+// GetState returns the value of State.
+func (s *IndexerBrowserStatus) GetState() IndexerBrowserStatusState {
+	return s.State
+}
+
+// GetURL returns the value of URL.
+func (s *IndexerBrowserStatus) GetURL() string {
+	return s.URL
+}
+
+// GetMessage returns the value of Message.
+func (s *IndexerBrowserStatus) GetMessage() OptString {
+	return s.Message
+}
+
+// GetCommand returns the value of Command.
+func (s *IndexerBrowserStatus) GetCommand() string {
+	return s.Command
+}
+
+// GetVersion returns the value of Version.
+func (s *IndexerBrowserStatus) GetVersion() OptString {
+	return s.Version
+}
+
+// GetChromium returns the value of Chromium.
+func (s *IndexerBrowserStatus) GetChromium() OptString {
+	return s.Chromium
+}
+
+// GetRunning returns the value of Running.
+func (s *IndexerBrowserStatus) GetRunning() OptBool {
+	return s.Running
+}
+
+// GetSandbox returns the value of Sandbox.
+func (s *IndexerBrowserStatus) GetSandbox() OptBool {
+	return s.Sandbox
+}
+
+// GetTabs returns the value of Tabs.
+func (s *IndexerBrowserStatus) GetTabs() OptInt {
+	return s.Tabs
+}
+
+// GetTabsInUse returns the value of TabsInUse.
+func (s *IndexerBrowserStatus) GetTabsInUse() OptInt {
+	return s.TabsInUse
+}
+
+// GetSolves returns the value of Solves.
+func (s *IndexerBrowserStatus) GetSolves() OptInt {
+	return s.Solves
+}
+
+// GetRestarts returns the value of Restarts.
+func (s *IndexerBrowserStatus) GetRestarts() OptInt {
+	return s.Restarts
+}
+
+// GetLastSolve returns the value of LastSolve.
+func (s *IndexerBrowserStatus) GetLastSolve() OptIndexerBrowserSolve {
+	return s.LastSolve
+}
+
+// SetState sets the value of State.
+func (s *IndexerBrowserStatus) SetState(val IndexerBrowserStatusState) {
+	s.State = val
+}
+
+// SetURL sets the value of URL.
+func (s *IndexerBrowserStatus) SetURL(val string) {
+	s.URL = val
+}
+
+// SetMessage sets the value of Message.
+func (s *IndexerBrowserStatus) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetCommand sets the value of Command.
+func (s *IndexerBrowserStatus) SetCommand(val string) {
+	s.Command = val
+}
+
+// SetVersion sets the value of Version.
+func (s *IndexerBrowserStatus) SetVersion(val OptString) {
+	s.Version = val
+}
+
+// SetChromium sets the value of Chromium.
+func (s *IndexerBrowserStatus) SetChromium(val OptString) {
+	s.Chromium = val
+}
+
+// SetRunning sets the value of Running.
+func (s *IndexerBrowserStatus) SetRunning(val OptBool) {
+	s.Running = val
+}
+
+// SetSandbox sets the value of Sandbox.
+func (s *IndexerBrowserStatus) SetSandbox(val OptBool) {
+	s.Sandbox = val
+}
+
+// SetTabs sets the value of Tabs.
+func (s *IndexerBrowserStatus) SetTabs(val OptInt) {
+	s.Tabs = val
+}
+
+// SetTabsInUse sets the value of TabsInUse.
+func (s *IndexerBrowserStatus) SetTabsInUse(val OptInt) {
+	s.TabsInUse = val
+}
+
+// SetSolves sets the value of Solves.
+func (s *IndexerBrowserStatus) SetSolves(val OptInt) {
+	s.Solves = val
+}
+
+// SetRestarts sets the value of Restarts.
+func (s *IndexerBrowserStatus) SetRestarts(val OptInt) {
+	s.Restarts = val
+}
+
+// SetLastSolve sets the value of LastSolve.
+func (s *IndexerBrowserStatus) SetLastSolve(val OptIndexerBrowserSolve) {
+	s.LastSolve = val
+}
+
+// Missing = not running or not reachable; unauthorized = the token differs.
+type IndexerBrowserStatusState string
+
+const (
+	IndexerBrowserStatusStateConnected    IndexerBrowserStatusState = "connected"
+	IndexerBrowserStatusStateMissing      IndexerBrowserStatusState = "missing"
+	IndexerBrowserStatusStateUnauthorized IndexerBrowserStatusState = "unauthorized"
+	IndexerBrowserStatusStateError        IndexerBrowserStatusState = "error"
+)
+
+// AllValues returns all IndexerBrowserStatusState values.
+func (IndexerBrowserStatusState) AllValues() []IndexerBrowserStatusState {
+	return []IndexerBrowserStatusState{
+		IndexerBrowserStatusStateConnected,
+		IndexerBrowserStatusStateMissing,
+		IndexerBrowserStatusStateUnauthorized,
+		IndexerBrowserStatusStateError,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IndexerBrowserStatusState) MarshalText() ([]byte, error) {
+	switch s {
+	case IndexerBrowserStatusStateConnected:
+		return []byte(s), nil
+	case IndexerBrowserStatusStateMissing:
+		return []byte(s), nil
+	case IndexerBrowserStatusStateUnauthorized:
+		return []byte(s), nil
+	case IndexerBrowserStatusStateError:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IndexerBrowserStatusState) UnmarshalText(data []byte) error {
+	switch IndexerBrowserStatusState(data) {
+	case IndexerBrowserStatusStateConnected:
+		*s = IndexerBrowserStatusStateConnected
+		return nil
+	case IndexerBrowserStatusStateMissing:
+		*s = IndexerBrowserStatusStateMissing
+		return nil
+	case IndexerBrowserStatusStateUnauthorized:
+		*s = IndexerBrowserStatusStateUnauthorized
+		return nil
+	case IndexerBrowserStatusStateError:
+		*s = IndexerBrowserStatusStateError
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/IndexerBrowserTestRequest
+type IndexerBrowserTestRequest struct {
+	// A page to open instead of the built-in test page.
+	URL OptString `json:"url"`
+	// Which built-in test page (default js).
+	Variant OptIndexerBrowserTestRequestVariant `json:"variant"`
+}
+
+// GetURL returns the value of URL.
+func (s *IndexerBrowserTestRequest) GetURL() OptString {
+	return s.URL
+}
+
+// GetVariant returns the value of Variant.
+func (s *IndexerBrowserTestRequest) GetVariant() OptIndexerBrowserTestRequestVariant {
+	return s.Variant
+}
+
+// SetURL sets the value of URL.
+func (s *IndexerBrowserTestRequest) SetURL(val OptString) {
+	s.URL = val
+}
+
+// SetVariant sets the value of Variant.
+func (s *IndexerBrowserTestRequest) SetVariant(val OptIndexerBrowserTestRequestVariant) {
+	s.Variant = val
+}
+
+// Which built-in test page (default js).
+type IndexerBrowserTestRequestVariant string
+
+const (
+	IndexerBrowserTestRequestVariantJs    IndexerBrowserTestRequestVariant = "js"
+	IndexerBrowserTestRequestVariantHuman IndexerBrowserTestRequestVariant = "human"
+)
+
+// AllValues returns all IndexerBrowserTestRequestVariant values.
+func (IndexerBrowserTestRequestVariant) AllValues() []IndexerBrowserTestRequestVariant {
+	return []IndexerBrowserTestRequestVariant{
+		IndexerBrowserTestRequestVariantJs,
+		IndexerBrowserTestRequestVariantHuman,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IndexerBrowserTestRequestVariant) MarshalText() ([]byte, error) {
+	switch s {
+	case IndexerBrowserTestRequestVariantJs:
+		return []byte(s), nil
+	case IndexerBrowserTestRequestVariantHuman:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IndexerBrowserTestRequestVariant) UnmarshalText(data []byte) error {
+	switch IndexerBrowserTestRequestVariant(data) {
+	case IndexerBrowserTestRequestVariantJs:
+		*s = IndexerBrowserTestRequestVariantJs
+		return nil
+	case IndexerBrowserTestRequestVariantHuman:
+		*s = IndexerBrowserTestRequestVariantHuman
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/IndexerBrowserTestResult
+type IndexerBrowserTestResult struct {
+	Passed bool `json:"passed"`
+	// Solved, human, timeout, blocked, refused or error.
+	Outcome string    `json:"outcome"`
+	Message OptString `json:"message"`
+	Title   OptString `json:"title"`
+	// A browser check was seen on the way.
+	Challenged bool `json:"challenged"`
+	// Cookies the page set.
+	Cookies   int   `json:"cookies"`
+	ElapsedMs int64 `json:"elapsedMs"`
+}
+
+// GetPassed returns the value of Passed.
+func (s *IndexerBrowserTestResult) GetPassed() bool {
+	return s.Passed
+}
+
+// GetOutcome returns the value of Outcome.
+func (s *IndexerBrowserTestResult) GetOutcome() string {
+	return s.Outcome
+}
+
+// GetMessage returns the value of Message.
+func (s *IndexerBrowserTestResult) GetMessage() OptString {
+	return s.Message
+}
+
+// GetTitle returns the value of Title.
+func (s *IndexerBrowserTestResult) GetTitle() OptString {
+	return s.Title
+}
+
+// GetChallenged returns the value of Challenged.
+func (s *IndexerBrowserTestResult) GetChallenged() bool {
+	return s.Challenged
+}
+
+// GetCookies returns the value of Cookies.
+func (s *IndexerBrowserTestResult) GetCookies() int {
+	return s.Cookies
+}
+
+// GetElapsedMs returns the value of ElapsedMs.
+func (s *IndexerBrowserTestResult) GetElapsedMs() int64 {
+	return s.ElapsedMs
+}
+
+// SetPassed sets the value of Passed.
+func (s *IndexerBrowserTestResult) SetPassed(val bool) {
+	s.Passed = val
+}
+
+// SetOutcome sets the value of Outcome.
+func (s *IndexerBrowserTestResult) SetOutcome(val string) {
+	s.Outcome = val
+}
+
+// SetMessage sets the value of Message.
+func (s *IndexerBrowserTestResult) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetTitle sets the value of Title.
+func (s *IndexerBrowserTestResult) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetChallenged sets the value of Challenged.
+func (s *IndexerBrowserTestResult) SetChallenged(val bool) {
+	s.Challenged = val
+}
+
+// SetCookies sets the value of Cookies.
+func (s *IndexerBrowserTestResult) SetCookies(val int) {
+	s.Cookies = val
+}
+
+// SetElapsedMs sets the value of ElapsedMs.
+func (s *IndexerBrowserTestResult) SetElapsedMs(val int64) {
+	s.ElapsedMs = val
+}
+
 // Ref: #/components/schemas/IndexerCaps
 type IndexerCaps struct {
 	ServerTitle  OptString          `json:"serverTitle"`
@@ -12188,7 +12611,11 @@ type IndexerDefinition struct {
 	Links []string `json:"links"`
 	// How the definition was written and checked.
 	Verified string `json:"verified"`
-	// Whether the site shows a Cloudflare challenge (FlareSolverr needed).
+	// Whether the site shows a browser check (passed by the built-in browser or FlareSolverr).
+	Challenge IndexerDefinitionChallenge `json:"challenge"`
+	// Old name of `challenge`, always equal to it.
+	//
+	// Deprecated: schema marks this property as deprecated.
 	Flaresolverr IndexerDefinitionFlaresolverr `json:"flaresolverr"`
 	RateLimit    OptIndexerRateLimit           `json:"rateLimit"`
 	// The site lists its latest releases (RSS sync).
@@ -12255,6 +12682,11 @@ func (s *IndexerDefinition) GetLinks() []string {
 // GetVerified returns the value of Verified.
 func (s *IndexerDefinition) GetVerified() string {
 	return s.Verified
+}
+
+// GetChallenge returns the value of Challenge.
+func (s *IndexerDefinition) GetChallenge() IndexerDefinitionChallenge {
+	return s.Challenge
 }
 
 // GetFlaresolverr returns the value of Flaresolverr.
@@ -12352,6 +12784,11 @@ func (s *IndexerDefinition) SetVerified(val string) {
 	s.Verified = val
 }
 
+// SetChallenge sets the value of Challenge.
+func (s *IndexerDefinition) SetChallenge(val IndexerDefinitionChallenge) {
+	s.Challenge = val
+}
+
 // SetFlaresolverr sets the value of Flaresolverr.
 func (s *IndexerDefinition) SetFlaresolverr(val IndexerDefinitionFlaresolverr) {
 	s.Flaresolverr = val
@@ -12392,6 +12829,55 @@ func (s *IndexerDefinition) SetIndexerIds(val []int64) {
 	s.IndexerIds = val
 }
 
+// Whether the site shows a browser check (passed by the built-in browser or FlareSolverr).
+type IndexerDefinitionChallenge string
+
+const (
+	IndexerDefinitionChallengeNever     IndexerDefinitionChallenge = "never"
+	IndexerDefinitionChallengeSometimes IndexerDefinitionChallenge = "sometimes"
+	IndexerDefinitionChallengeAlways    IndexerDefinitionChallenge = "always"
+)
+
+// AllValues returns all IndexerDefinitionChallenge values.
+func (IndexerDefinitionChallenge) AllValues() []IndexerDefinitionChallenge {
+	return []IndexerDefinitionChallenge{
+		IndexerDefinitionChallengeNever,
+		IndexerDefinitionChallengeSometimes,
+		IndexerDefinitionChallengeAlways,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s IndexerDefinitionChallenge) MarshalText() ([]byte, error) {
+	switch s {
+	case IndexerDefinitionChallengeNever:
+		return []byte(s), nil
+	case IndexerDefinitionChallengeSometimes:
+		return []byte(s), nil
+	case IndexerDefinitionChallengeAlways:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *IndexerDefinitionChallenge) UnmarshalText(data []byte) error {
+	switch IndexerDefinitionChallenge(data) {
+	case IndexerDefinitionChallengeNever:
+		*s = IndexerDefinitionChallengeNever
+		return nil
+	case IndexerDefinitionChallengeSometimes:
+		*s = IndexerDefinitionChallengeSometimes
+		return nil
+	case IndexerDefinitionChallengeAlways:
+		*s = IndexerDefinitionChallengeAlways
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/IndexerDefinitionError
 type IndexerDefinitionError struct {
 	File    string `json:"file"`
@@ -12418,7 +12904,9 @@ func (s *IndexerDefinitionError) SetMessage(val string) {
 	s.Message = val
 }
 
-// Whether the site shows a Cloudflare challenge (FlareSolverr needed).
+// Old name of `challenge`, always equal to it.
+//
+// Deprecated: schema marks this type as deprecated.
 type IndexerDefinitionFlaresolverr string
 
 const (
@@ -13262,6 +13750,13 @@ func (s *IndexerSettingOption) SetLabel(val string) {
 
 // Ref: #/components/schemas/IndexerSettings
 type IndexerSettings struct {
+	// Address of the built-in browser set in the settings; empty uses browserDefaultUrl.
+	BrowserUrl string `json:"browserUrl"`
+	// The address used when browserUrl is empty (LOCARR_BROWSER_URL or the compose service).
+	BrowserDefaultUrl string      `json:"browserDefaultUrl"`
+	BrowserToken      SecretState `json:"browserToken"`
+	// LOCARR_BROWSER_TOKEN is set (used unless a token is saved in the settings).
+	BrowserTokenFromEnv bool `json:"browserTokenFromEnv"`
 	// How often RSS feeds are fetched (RSS can be turned off per indexer).
 	RssSyncIntervalMinutes int `json:"rssSyncIntervalMinutes"`
 	ReleaseRetentionDays   int `json:"releaseRetentionDays"`
@@ -13278,6 +13773,26 @@ type IndexerSettings struct {
 	PublicTrackers []string `json:"publicTrackers"`
 	// User-Agent sent to indexers and sites; empty sends "Locarr".
 	UserAgent string `json:"userAgent"`
+}
+
+// GetBrowserUrl returns the value of BrowserUrl.
+func (s *IndexerSettings) GetBrowserUrl() string {
+	return s.BrowserUrl
+}
+
+// GetBrowserDefaultUrl returns the value of BrowserDefaultUrl.
+func (s *IndexerSettings) GetBrowserDefaultUrl() string {
+	return s.BrowserDefaultUrl
+}
+
+// GetBrowserToken returns the value of BrowserToken.
+func (s *IndexerSettings) GetBrowserToken() SecretState {
+	return s.BrowserToken
+}
+
+// GetBrowserTokenFromEnv returns the value of BrowserTokenFromEnv.
+func (s *IndexerSettings) GetBrowserTokenFromEnv() bool {
+	return s.BrowserTokenFromEnv
 }
 
 // GetRssSyncIntervalMinutes returns the value of RssSyncIntervalMinutes.
@@ -13318,6 +13833,26 @@ func (s *IndexerSettings) GetPublicTrackers() []string {
 // GetUserAgent returns the value of UserAgent.
 func (s *IndexerSettings) GetUserAgent() string {
 	return s.UserAgent
+}
+
+// SetBrowserUrl sets the value of BrowserUrl.
+func (s *IndexerSettings) SetBrowserUrl(val string) {
+	s.BrowserUrl = val
+}
+
+// SetBrowserDefaultUrl sets the value of BrowserDefaultUrl.
+func (s *IndexerSettings) SetBrowserDefaultUrl(val string) {
+	s.BrowserDefaultUrl = val
+}
+
+// SetBrowserToken sets the value of BrowserToken.
+func (s *IndexerSettings) SetBrowserToken(val SecretState) {
+	s.BrowserToken = val
+}
+
+// SetBrowserTokenFromEnv sets the value of BrowserTokenFromEnv.
+func (s *IndexerSettings) SetBrowserTokenFromEnv(val bool) {
+	s.BrowserTokenFromEnv = val
 }
 
 // SetRssSyncIntervalMinutes sets the value of RssSyncIntervalMinutes.
@@ -13927,7 +14462,8 @@ type IndexerTestResult struct {
 	// Results of the probe search.
 	ProbeResults OptInt `json:"probeResults"`
 	// Auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked, challenge (a
-	// Cloudflare challenge: set FlareSolverr), layout (a built-in site's pages changed) or unknown.
+	// browser check the built-in browser or FlareSolverr could not pass, or one that wants a person),
+	// layout (a built-in site's pages changed) or unknown.
 	ErrorCode OptString `json:"errorCode"`
 	Error     OptString `json:"error"`
 }
@@ -24937,6 +25473,98 @@ func (o OptImportExistingArtistsRequestMonitor) Get() (v ImportExistingArtistsRe
 
 // Or returns value if set, or given parameter if does not.
 func (o OptImportExistingArtistsRequestMonitor) Or(d ImportExistingArtistsRequestMonitor) ImportExistingArtistsRequestMonitor {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptIndexerBrowserSolve returns new OptIndexerBrowserSolve with value set to v.
+func NewOptIndexerBrowserSolve(v IndexerBrowserSolve) OptIndexerBrowserSolve {
+	return OptIndexerBrowserSolve{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptIndexerBrowserSolve is optional IndexerBrowserSolve.
+type OptIndexerBrowserSolve struct {
+	Value IndexerBrowserSolve
+	Set   bool
+}
+
+// IsSet returns true if OptIndexerBrowserSolve was set.
+func (o OptIndexerBrowserSolve) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptIndexerBrowserSolve) Reset() {
+	var v IndexerBrowserSolve
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptIndexerBrowserSolve) SetTo(v IndexerBrowserSolve) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptIndexerBrowserSolve) Get() (v IndexerBrowserSolve, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptIndexerBrowserSolve) Or(d IndexerBrowserSolve) IndexerBrowserSolve {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptIndexerBrowserTestRequestVariant returns new OptIndexerBrowserTestRequestVariant with value set to v.
+func NewOptIndexerBrowserTestRequestVariant(v IndexerBrowserTestRequestVariant) OptIndexerBrowserTestRequestVariant {
+	return OptIndexerBrowserTestRequestVariant{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptIndexerBrowserTestRequestVariant is optional IndexerBrowserTestRequestVariant.
+type OptIndexerBrowserTestRequestVariant struct {
+	Value IndexerBrowserTestRequestVariant
+	Set   bool
+}
+
+// IsSet returns true if OptIndexerBrowserTestRequestVariant was set.
+func (o OptIndexerBrowserTestRequestVariant) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptIndexerBrowserTestRequestVariant) Reset() {
+	var v IndexerBrowserTestRequestVariant
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptIndexerBrowserTestRequestVariant) SetTo(v IndexerBrowserTestRequestVariant) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptIndexerBrowserTestRequestVariant) Get() (v IndexerBrowserTestRequestVariant, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptIndexerBrowserTestRequestVariant) Or(d IndexerBrowserTestRequestVariant) IndexerBrowserTestRequestVariant {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -42841,6 +43469,10 @@ type UpdateIndexerSettingsRequest struct {
 	BlockPrivateNetworks   OptBool   `json:"blockPrivateNetworks"`
 	PublicTrackers         []string  `json:"publicTrackers"`
 	UserAgent              OptString `json:"userAgent"`
+	// Empty returns to the default address.
+	BrowserUrl OptString `json:"browserUrl"`
+	// Write-only; empty removes the saved token (LOCARR_BROWSER_TOKEN applies again).
+	BrowserToken OptString `json:"browserToken"`
 }
 
 // GetRssSyncIntervalMinutes returns the value of RssSyncIntervalMinutes.
@@ -42883,6 +43515,16 @@ func (s *UpdateIndexerSettingsRequest) GetUserAgent() OptString {
 	return s.UserAgent
 }
 
+// GetBrowserUrl returns the value of BrowserUrl.
+func (s *UpdateIndexerSettingsRequest) GetBrowserUrl() OptString {
+	return s.BrowserUrl
+}
+
+// GetBrowserToken returns the value of BrowserToken.
+func (s *UpdateIndexerSettingsRequest) GetBrowserToken() OptString {
+	return s.BrowserToken
+}
+
 // SetRssSyncIntervalMinutes sets the value of RssSyncIntervalMinutes.
 func (s *UpdateIndexerSettingsRequest) SetRssSyncIntervalMinutes(val OptInt) {
 	s.RssSyncIntervalMinutes = val
@@ -42921,6 +43563,16 @@ func (s *UpdateIndexerSettingsRequest) SetPublicTrackers(val []string) {
 // SetUserAgent sets the value of UserAgent.
 func (s *UpdateIndexerSettingsRequest) SetUserAgent(val OptString) {
 	s.UserAgent = val
+}
+
+// SetBrowserUrl sets the value of BrowserUrl.
+func (s *UpdateIndexerSettingsRequest) SetBrowserUrl(val OptString) {
+	s.BrowserUrl = val
+}
+
+// SetBrowserToken sets the value of BrowserToken.
+func (s *UpdateIndexerSettingsRequest) SetBrowserToken(val OptString) {
+	s.BrowserToken = val
 }
 
 // Ref: #/components/schemas/UpdateMeRequest

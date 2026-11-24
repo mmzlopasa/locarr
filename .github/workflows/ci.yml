@@ -77,6 +77,31 @@ jobs:
           LOCARR_CLIENTS_TMP: ${{ runner.temp }}
         run: ./scripts/test-clients.sh qbittorrent transmission sabnzbd
 
+  browser:
+    # The companion browser (browser/): its own tests and lint, then the image
+    # with Locarr's indexer client against fake sites behind a browser check.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: browser/go.mod
+          cache-dependency-path: |
+            browser/go.sum
+            server/go.sum
+      - name: go mod tidy is clean
+        working-directory: browser
+        run: go mod tidy && git diff --exit-code -- go.mod go.sum
+      - working-directory: browser
+        run: go vet ./... && go test -race ./...
+      - uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.15.0
+          working-directory: browser
+      - name: Real browser image against fake protected sites
+        run: ./scripts/test-browser.sh
+
   sources:
     # Importing an existing setup from real applications (the importer only
     # reads them); scripts/test-sources.sh runs every application locally.
@@ -136,9 +161,11 @@ jobs:
             echo "LOCARR_OPENSUBTITLES_URL=http://fake-indexer:9117/opensubtitles/api/v1"
             echo "LOCARR_SUBDL_URL=http://fake-indexer:9117/subdl/api/v1"
             echo "LOCARR_JIMAKU_URL=http://fake-indexer:9117/jimaku/api"
+            # The built-in browser (profile "browser") for the protected-site test.
+            echo "LOCARR_BROWSER_TOKEN=e2e-browser-token-0123456789"
           } >> .env
           mkdir -p "$RUNNER_TEMP/locarr/data/media/movies" "$RUNNER_TEMP/locarr/data/media/tv" "$RUNNER_TEMP/locarr/data/media/music" "$RUNNER_TEMP/locarr/data/downloads/fake-seed"
-          docker compose -f docker-compose.yml -f compose.dev.yml up -d --build --wait
+          docker compose -f docker-compose.yml -f compose.dev.yml --profile browser up -d --build --wait
           curl -fsS http://127.0.0.1:8484/api/v1/system/info
       - name: Start the fake indexers and TMDb
         run: LOCARR_FAKES_SEED_DIR="$RUNNER_TEMP/locarr/data/downloads/fake-seed" ./scripts/dev-fakes.sh up
@@ -172,10 +199,11 @@ jobs:
         env:
           E2E_SETUP_CODE: E2E-SETUP
           E2E_DATA_DIR: ${{ runner.temp }}/locarr/data
+          E2E_BROWSER: "1"
       - name: Compose logs on failure
         if: failure()
         working-directory: deploy
         run: |
-          docker compose -f docker-compose.yml -f compose.dev.yml logs
+          docker compose -f docker-compose.yml -f compose.dev.yml --profile browser logs
           docker logs locarr-fakes || true
           docker logs transmission || true

@@ -15,7 +15,8 @@ const indexer = (over: Partial<Indexer>): Indexer => ({
   proxyPassword: { configured: false }, health: { status: "healthy", failures: 0 }, createdAt: now, updatedAt: now, ...over,
 });
 const settings: IndexerSettings = { rssSyncIntervalMinutes: 15, releaseRetentionDays: 14, searchTimeoutSeconds: 45, searchCacheSeconds: 120,
-  allowedHosts: [], blockPrivateNetworks: false, publicTrackers: ["udp://tracker.example:1337/announce"], userAgent: "" };
+  allowedHosts: [], blockPrivateNetworks: false, publicTrackers: ["udp://tracker.example:1337/announce"], userAgent: "",
+  browserUrl: "", browserDefaultUrl: "http://locarr-browser:8490", browserToken: { configured: false }, browserTokenFromEnv: false };
 
 describe("indexers page", () => {
   it("lists indexers with health and adds one after a test that loads the categories", async () => {

@@ -405,3 +405,37 @@ func TestMatch(t *testing.T) {
 		t.Fatal("matched an unknown site")
 	}
 }
+
+// The old field name "flaresolverr" is still read; "challenge" wins and both
+// must agree when both are set.
+func TestChallengeFieldNames(t *testing.T) {
+	base := func(extra string) []byte {
+		return []byte("id: xx\nname: X\nversion: 1\nlinks: [https://x.example]\nverified: test\n" + extra +
+			"modes:\n  search: [q]\ncategories:\n  - {id: all, cat: 2000, desc: All}\n" +
+			"search:\n  requests:\n    - path: '/s/{{ .Keywords | pathescape }}'\n  response: html\n  rows: tr\n  fields:\n    title: {select: td}\n    details: {select: a, attr: href}\ntest:\n  query: ubuntu\n")
+	}
+	for extra, want := range map[string]string{"": "never", "challenge: always\n": "always", "flaresolverr: sometimes\n": "sometimes",
+		"challenge: always\nflaresolverr: always\n": "always"} {
+		d, err := native.Parse(base(extra))
+		if err != nil {
+			t.Fatalf("%q: %v", extra, err)
+		}
+		if d.Challenge != want || d.FlareSolverr != want {
+			t.Errorf("%q: challenge %q flaresolverr %q, want %q", extra, d.Challenge, d.FlareSolverr, want)
+		}
+	}
+	for _, bad := range []string{"challenge: often\n", "challenge: always\nflaresolverr: never\n"} {
+		if _, err := native.Parse(base(bad)); err == nil {
+			t.Errorf("%q accepted", bad)
+		}
+	}
+	defs, err := native.Builtins()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, d := range defs {
+		if d.ID == "1337x" && d.Challenge != "always" {
+			t.Fatal("1337x is always behind a check")
+		}
+	}
+}

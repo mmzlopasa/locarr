@@ -8,7 +8,7 @@ links:
 verified: >-
   Written by observing the requests thepiratebay.org's own page makes (q.php, precompiled lists)
   and checked against apibay.org on 2026-11-23. Category ids from the site's browse pages.
-flaresolverr: never
+challenge: never
 rateLimit: {requests: 30, periodSeconds: 60}
 delayMillis: 1000
 aliases: [thepiratebay, "the pirate bay", tpb, apibay, "thepiratebay.org"]

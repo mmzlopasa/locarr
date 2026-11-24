@@ -11,7 +11,7 @@ verified: >-
   Written from the official API documentation (list_movies.json) and checked against
   movies-api.accel.li on 2026-11-23 (the API itself names this host as its new address).
   Magnets are built from the info hash: robots.txt forbids /torrent/download/.
-flaresolverr: never
+challenge: never
 rateLimit: {requests: 20, periodSeconds: 60}
 delayMillis: 1000
 aliases: [yts, yify, "yts.mx", "yts.am", "yts.lt"]

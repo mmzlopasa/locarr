@@ -9,7 +9,7 @@ links:
 verified: >-
   Written by observing the search pages (/search/<category>/<words>/seeds/1/) and /rss/ on
   2026-11-23. The search RSS (/searchrss/) is not used: robots.txt forbids it. The site is slow.
-flaresolverr: sometimes
+challenge: sometimes
 rateLimit: {requests: 10, periodSeconds: 60}
 delayMillis: 2000
 timeoutSeconds: 90

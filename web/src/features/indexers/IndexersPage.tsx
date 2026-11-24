@@ -7,6 +7,7 @@ import { Alert, Badge, Button, Checkbox, ConfirmButton, EmptyState, ErrorAlert, 
   TextInput } from "@/components/ui";
 import { IndexerForm, TestResult } from "./IndexerForm";
 import { AddIndexer, DefinitionsPanel, NativeIndexerForm } from "./BuiltinIndexers";
+import { BrowserPanel } from "./BrowserPanel";
 
 export function healthTone(s: Indexer["health"]["status"]) {
   return s === "healthy" ? ("success" as const) : s === "failing" ? ("danger" as const) : s === "disabled" ? ("neutral" as const) : ("info" as const);
@@ -37,6 +38,7 @@ export function IndexersPage() {
         {list.data?.map((i) => <IndexerRow key={i.id} indexer={i} />)}
       </div>
       <DefinitionsPanel />
+      <BrowserPanel />
       <IndexerSettingsPanel />
       <AdvancedSources />
     </div>

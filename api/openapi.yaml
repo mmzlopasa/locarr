@@ -818,6 +818,44 @@ paths:
                 $ref: "#/components/schemas/IndexerSettings"
         default:
           $ref: "#/components/responses/Error"
+  /indexers/browser:
+    get:
+      operationId: getIndexerBrowser
+      summary: State of the built-in browser for sites behind a browser check (administrators)
+      tags: [indexers]
+      responses:
+        "200":
+          description: Browser state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerBrowserStatus"
+        default:
+          $ref: "#/components/responses/Error"
+  /indexers/browser/test:
+    post:
+      operationId: testIndexerBrowser
+      summary: Have the built-in browser pass a test check (administrators)
+      description: |
+        Without `url` the browser opens its own built-in test page (a JavaScript check that sets a cookie and
+        reloads); with `variant: human` it opens a page that asks for a CAPTCHA, which must be reported as
+        `human`. With `url` it opens that page with the indexers' address policy.
+      tags: [indexers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IndexerBrowserTestRequest"
+      responses:
+        "200":
+          description: Test result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexerBrowserTestResult"
+        default:
+          $ref: "#/components/responses/Error"
   /indexers/definitions:
     get:
       operationId: listIndexerDefinitions
@@ -7623,14 +7661,26 @@ components:
           type: string
           description: |
             auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked, challenge
-            (a Cloudflare challenge: set FlareSolverr), layout (a built-in site's pages changed) or unknown.
+            (a browser check the built-in browser or FlareSolverr could not pass, or one that wants a person),
+            layout (a built-in site's pages changed) or unknown.
         error:
           type: string
     IndexerSettings:
       type: object
       required: [rssSyncIntervalMinutes, releaseRetentionDays, searchTimeoutSeconds, searchCacheSeconds, allowedHosts, blockPrivateNetworks,
-        publicTrackers, userAgent]
+        publicTrackers, userAgent, browserUrl, browserDefaultUrl, browserToken, browserTokenFromEnv]
       properties:
+        browserUrl:
+          type: string
+          description: Address of the built-in browser set in the settings; empty uses browserDefaultUrl.
+        browserDefaultUrl:
+          type: string
+          description: The address used when browserUrl is empty (LOCARR_BROWSER_URL or the compose service).
+        browserToken:
+          $ref: "#/components/schemas/SecretState"
+        browserTokenFromEnv:
+          type: boolean
+          description: LOCARR_BROWSER_TOKEN is set (used unless a token is saved in the settings).
         rssSyncIntervalMinutes:
           type: integer
           description: How often RSS feeds are fetched (RSS can be turned off per indexer).
@@ -7693,6 +7743,101 @@ components:
         userAgent:
           type: string
           maxLength: 300
+        browserUrl:
+          type: string
+          maxLength: 300
+          description: Empty returns to the default address.
+        browserToken:
+          type: string
+          maxLength: 300
+          description: Write-only; empty removes the saved token (LOCARR_BROWSER_TOKEN applies again).
+    IndexerBrowserStatus:
+      type: object
+      required: [state, url, command]
+      properties:
+        state:
+          type: string
+          enum: [connected, missing, unauthorized, error]
+          description: missing = not running or not reachable; unauthorized = the token differs.
+        url:
+          type: string
+        message:
+          type: string
+        command:
+          type: string
+          description: The command that starts the browser next to a compose install.
+        version:
+          type: string
+          description: Version of the browser's control server.
+        chromium:
+          type: string
+          description: Chromium version, once the browser has started.
+        running:
+          type: boolean
+          description: Chromium is running (it stops when idle and starts on demand).
+        sandbox:
+          type: boolean
+          description: Chromium runs with its own sandbox.
+        tabs:
+          type: integer
+        tabsInUse:
+          type: integer
+        solves:
+          type: integer
+        restarts:
+          type: integer
+        lastSolve:
+          $ref: "#/components/schemas/IndexerBrowserSolve"
+    IndexerBrowserSolve:
+      type: object
+      required: [at, host, outcome, elapsedMs]
+      properties:
+        at:
+          type: string
+          format: date-time
+        host:
+          type: string
+        outcome:
+          type: string
+          description: solved, human, timeout, blocked, refused, error, browser_missing or browser_failed.
+        message:
+          type: string
+        elapsedMs:
+          type: integer
+          format: int64
+    IndexerBrowserTestRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          maxLength: 2000
+          description: A page to open instead of the built-in test page.
+        variant:
+          type: string
+          enum: [js, human]
+          description: Which built-in test page (default js).
+    IndexerBrowserTestResult:
+      type: object
+      required: [passed, outcome, elapsedMs, challenged, cookies]
+      properties:
+        passed:
+          type: boolean
+        outcome:
+          type: string
+          description: solved, human, timeout, blocked, refused or error.
+        message:
+          type: string
+        title:
+          type: string
+        challenged:
+          type: boolean
+          description: A browser check was seen on the way.
+        cookies:
+          type: integer
+          description: Cookies the page set.
+        elapsedMs:
+          type: integer
+          format: int64
     IndexerCatalog:
       type: object
       required: [definitions, presets, errors, customDir]
@@ -7723,7 +7868,7 @@ components:
           type: string
     IndexerDefinition:
       type: object
-      required: [id, name, description, version, builtin, overrides, protocol, links, verified, flaresolverr, rss,
+      required: [id, name, description, version, builtin, overrides, protocol, links, verified, challenge, flaresolverr, rss,
         searching, categories, settings, indexerIds, aliases]
       properties:
         id:
@@ -7753,10 +7898,15 @@ components:
         verified:
           type: string
           description: How the definition was written and checked.
+        challenge:
+          type: string
+          enum: [never, sometimes, always]
+          description: Whether the site shows a browser check (passed by the built-in browser or FlareSolverr).
         flaresolverr:
           type: string
           enum: [never, sometimes, always]
-          description: Whether the site shows a Cloudflare challenge (FlareSolverr needed).
+          deprecated: true
+          description: Old name of `challenge`, always equal to it.
         rateLimit:
           $ref: "#/components/schemas/IndexerRateLimit"
         rss:

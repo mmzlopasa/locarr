@@ -42,6 +42,19 @@ docker compose logs locarr | grep "setup code"
 ```
 
 Otvorite `http://<lan-ip-servera>:8484` (na samom serveru `http://127.0.0.1:8484`), upišite setup kod iz loga i napravite administratorski račun.
+
+**Preglednik za zaštićene stranice (neobavezno).** Za stranice iza provjere preglednika (1337x,
+ponekad LimeTorrents) Locarr ima vlastiti preglednik u zasebnom kontejneru (Chromium, ~560 MB na
+disku, do 1 GB RAM-a dok radi; u mirovanju se gasi). Uključuje se compose profilom:
+
+```bash
+echo "LOCARR_BROWSER_TOKEN=$(openssl rand -hex 24)" >> .env
+docker compose --profile browser up -d
+```
+
+Ubuduće (i kod nadogradnje) dodajte `--profile browser` svakoj `docker compose` naredbi. Provjera:
+**Indexeri → Preglednik za zaštićene stranice → Testiraj**. Detalji u
+[Indexeri](user/indexers.md#zasticene-stranice).
 Setup kod vrijedi dok ne postoji administrator; nakon toga `/setup` više ne radi.
 
 ## 3. Kućna mreža i pristup izvana
@@ -72,6 +85,8 @@ Ispisuje novu lozinku, isključuje dvofaktorsku prijavu tog računa i odjavljuje
 
 ```bash
 docker compose pull && docker compose up -d
+# s preglednikom za zaštićene stranice:
+docker compose --profile browser pull && docker compose --profile browser up -d
 ```
 
 Migracije baze rade se same pri pokretanju. Za backup kopirajte cijelu `CONFIG_DIR` mapu (uključujući
