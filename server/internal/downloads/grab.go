@@ -17,6 +17,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/downloaders"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
+	"github.com/mmzlopasa/locarr/server/internal/library"
 )
 
 // Release file size caps.
@@ -365,9 +366,10 @@ func (s *Service) grabWith(ctx context.Context, c Client, req GrabRequest, f fet
 		var rowID int64
 		err := tx.QueryRowContext(ctx, `INSERT INTO downloads (client_id, client_name, client_item_id, protocol, title,
 			indexer_id, indexer, guid, info_hash, category, media_kind, item_ref, seed_ratio, seed_time, status, state,
-			added_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 'queued', ?, ?) RETURNING id`,
+			added_at, updated_at, item_title) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 'queued', ?, ?, ?) RETURNING id`,
 			c.ID, c.Name, strings.ToLower(id), string(req.Protocol), req.Title, req.IndexerID, req.Indexer, req.GUID, f.hash,
-			cat, req.MediaKind, string(req.ItemRef), req.SeedRatio, nullDur(req.SeedTime), db.Millis(now), db.Millis(now)).Scan(&rowID)
+			cat, req.MediaKind, string(req.ItemRef), req.SeedRatio, nullDur(req.SeedTime), db.Millis(now), db.Millis(now),
+			itemTitle(ctx, tx, req.ItemRef)).Scan(&rowID)
 		if isUnique(err) {
 			return ErrAlreadyQueued
 		}
@@ -387,4 +389,15 @@ func (s *Service) grabWith(ctx context.Context, c Client, req GrabRequest, f fet
 	s.Bus.Publish(ctx, Event{Type: EventGrabbed, Download: d})
 	s.Kick()
 	return d, nil
+}
+
+// itemTitle is the title of the item a download is for, stored with it so
+// the history keeps it after the item is gone (D-107).
+func itemTitle(ctx context.Context, q db.Querier, raw json.RawMessage) string {
+	r := library.RefFromJSON(raw)
+	if r.IsZero() {
+		return ""
+	}
+	t, _ := library.Title(ctx, q, r.String())
+	return t
 }
