@@ -82,7 +82,18 @@ export function useSetBlur() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (blur: boolean) => unwrap(await api.PUT("/adult/preferences", { body: { blur } })),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [...adultKey, "preferences"] }),
+    // Flip the checkbox right away; the server value replaces it once saved.
+    onMutate: async (blur: boolean) => {
+      const key = [...adultKey, "preferences"];
+      await qc.cancelQueries({ queryKey: key });
+      const prev = qc.getQueryData(key);
+      qc.setQueryData(key, (old: object | undefined) => ({ ...(old ?? {}), blur }));
+      return { prev };
+    },
+    onError: (_err, _blur, ctx) => {
+      if (ctx?.prev !== undefined) qc.setQueryData([...adultKey, "preferences"], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: [...adultKey, "preferences"] }),
   });
 }
 
