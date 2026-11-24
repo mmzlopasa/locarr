@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { FolderInput, LayoutGrid, Plus, Rows3 } from "lucide-react";
+import { FolderInput, LayoutGrid, Plus, Rows3, Sparkles } from "lucide-react";
 import { api, unwrap } from "@/api/client";
 import { formatBytes } from "@/components/format";
 import { Button, EmptyState, ErrorAlert, PageHeader, SelectInput, Spinner, TextInput } from "@/components/ui";
@@ -54,6 +54,10 @@ export function ArtistsPage() {
       <PageHeader title={t("nav.music")} description={t("music.description")}
         actions={canManage ? (
           <>
+            <Link to="/music/discover" data-testid="discover-artists"
+              className="inline-flex h-8 items-center gap-1.5 rounded-ui border border-line-strong bg-surface-3 px-3 text-[13px] hover:bg-line">
+              <Sparkles className="size-3.5" /> {t("discovery.title")}
+            </Link>
             <Link to="/music/import" className="inline-flex h-8 items-center gap-1.5 rounded-ui border border-line-strong bg-surface-3 px-3 text-[13px] hover:bg-line">
               <FolderInput className="size-3.5" /> {t("music.importExisting")}
             </Link>
