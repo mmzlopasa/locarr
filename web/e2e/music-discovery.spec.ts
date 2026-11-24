@@ -60,6 +60,13 @@ test("discover artists: a Last.fm key, suggestions from the library's artist, ad
   expect(add.status(), await add.text()).toBe(201);
   await page.request.post("/api/v1/music/discover/refresh", { data: { seeds: [openMbid] } });
 
+  // The providers answer in the background, each at its own pace: wait until Last.fm has too.
+  await expect.poll(async () => {
+    const res = await (await page.request.get("/api/v1/music/discover/artists")).json();
+    const choir = (res.items ?? []).find((s: { mbid: string }) => s.mbid === choirMbid);
+    return choir ? [...choir.providers].sort().join(",") : "";
+  }, { timeout: 90_000, intervals: [1_000] }).toContain("lastfm");
+
   await page.getByRole("link", { name: "Music" }).first().click();
   await page.getByTestId("discover-artists").click();
   const card = page.locator(`[data-testid="artist-suggestion"][data-mbid="${choirMbid}"]`);
