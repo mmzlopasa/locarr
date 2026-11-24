@@ -514,6 +514,12 @@ type Invoker interface {
 	//
 	// POST /decisions/evaluate
 	EvaluateReleases(ctx context.Context, request *EvaluateRequest) (*DecisionReport, error)
+	// ExcludeArtist invokes excludeArtist operation.
+	//
+	// Mark an artist not interested; it is no longer suggested (library managers).
+	//
+	// POST /music/discover/exclusions
+	ExcludeArtist(ctx context.Context, request *ExcludeArtistReq) (*ArtistExclusion, error)
 	// ExplainItem invokes explainItem operation.
 	//
 	// Why an item is not in the library (yet).
@@ -736,6 +742,12 @@ type Invoker interface {
 	//
 	// GET /music/calendar
 	GetMusicCalendar(ctx context.Context, params GetMusicCalendarParams) ([]AlbumCalendarEntry, error)
+	// GetMusicDiscoverySettings invokes getMusicDiscoverySettings operation.
+	//
+	// Music discovery providers, keys state and refresh schedule (administrators).
+	//
+	// GET /settings/musicdiscovery
+	GetMusicDiscoverySettings(ctx context.Context) (*MusicDiscoverySettings, error)
 	// GetMusicSettings invokes getMusicSettings operation.
 	//
 	// Music naming, import options and the MusicBrainz contact (administrators).
@@ -810,6 +822,12 @@ type Invoker interface {
 	//
 	// GET /settings
 	GetSettings(ctx context.Context) (*Settings, error)
+	// GetSimilarArtists invokes getSimilarArtists operation.
+	//
+	// Artists similar to one library artist, including ones in the library (library managers).
+	//
+	// GET /music/artists/{id}/similar
+	GetSimilarArtists(ctx context.Context, params GetSimilarArtistsParams) (*ArtistSuggestionList, error)
 	// GetStats invokes getStats operation.
 	//
 	// Also served at `/api/stats` (send `X-Api-Key`). At most 15 seconds old. Fields are documented in
@@ -990,6 +1008,21 @@ type Invoker interface {
 	//
 	// GET /music/artists/{id}/albums
 	ListArtistAlbums(ctx context.Context, params ListArtistAlbumsParams) ([]Album, error)
+	// ListArtistExclusions invokes listArtistExclusions operation.
+	//
+	// Artists marked not interested (library managers).
+	//
+	// GET /music/discover/exclusions
+	ListArtistExclusions(ctx context.Context) ([]ArtistExclusion, error)
+	// ListArtistSuggestions invokes listArtistSuggestions operation.
+	//
+	// Suggestions combine the stored answers of every active provider (Last.fm, ListenBrainz, MusicBrainz
+	// relationships, Spotify where Spotify allows it) and leave out artists in the library and those
+	// marked not interested. People who only request see the same list with their request state and
+	// without library ids.
+	//
+	// GET /music/discover/artists
+	ListArtistSuggestions(ctx context.Context, params ListArtistSuggestionsParams) (*ArtistSuggestionList, error)
 	// ListArtists invokes listArtists operation.
 	//
 	// The music library's artists, one page at a time.
@@ -1484,6 +1517,13 @@ type Invoker interface {
 	//
 	// POST /music/artists/{id}/refresh
 	RefreshArtist(ctx context.Context, params RefreshArtistParams) (*Artist, error)
+	// RefreshArtistSuggestions invokes refreshArtistSuggestions operation.
+	//
+	// Without artists, asks about the artists whose answers are missing or old; with artists, about those,
+	// even when fresh.
+	//
+	// POST /music/discover/refresh
+	RefreshArtistSuggestions(ctx context.Context, request OptRefreshArtistSuggestionsReq) (*QueuedCount, error)
 	// RefreshBoard invokes refreshBoard operation.
 	//
 	// Recompute every board item now (library managers).
@@ -1520,6 +1560,12 @@ type Invoker interface {
 	//
 	// POST /indexers/definitions/reload
 	ReloadIndexerDefinitions(ctx context.Context) (*IndexerCatalog, error)
+	// RemoveArtistExclusion invokes removeArtistExclusion operation.
+	//
+	// Suggest an artist again (library managers).
+	//
+	// DELETE /music/discover/exclusions/{mbid}
+	RemoveArtistExclusion(ctx context.Context, params RemoveArtistExclusionParams) error
 	// RemoveQueueItem invokes removeQueueItem operation.
 	//
 	// `deleteData` also deletes the downloaded files (by the client, or by Locarr inside the data roots
@@ -1868,6 +1914,12 @@ type Invoker interface {
 	//
 	// POST /migrate/sources/test
 	TestMigrateSource(ctx context.Context, request *MigrateSourceInput) (*MigrateTestResult, error)
+	// TestMusicDiscoveryProvider invokes testMusicDiscoveryProvider operation.
+	//
+	// Check a provider with the stored keys (administrators).
+	//
+	// POST /settings/musicdiscovery/test
+	TestMusicDiscoveryProvider(ctx context.Context, request *TestMusicDiscoveryProviderReq) (*MusicDiscoveryTestResult, error)
 	// TestNotificationChannel invokes testNotificationChannel operation.
 	//
 	// Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
@@ -2002,6 +2054,12 @@ type Invoker interface {
 	//
 	// PATCH /movies/{id}
 	UpdateMovie(ctx context.Context, request *MovieUpdate, params UpdateMovieParams) (*Movie, error)
+	// UpdateMusicDiscoverySettings invokes updateMusicDiscoverySettings operation.
+	//
+	// Keys are checked with the provider first; a refused key is not stored (`metadata_key_invalid`).
+	//
+	// PUT /settings/musicdiscovery
+	UpdateMusicDiscoverySettings(ctx context.Context, request *MusicDiscoverySettingsInput) (*MusicDiscoverySettings, error)
 	// UpdateMusicSettings invokes updateMusicSettings operation.
 	//
 	// Change music naming and import options (administrators).
@@ -11977,6 +12035,122 @@ func (c *Client) sendEvaluateReleases(ctx context.Context, request *EvaluateRequ
 	return result, nil
 }
 
+// ExcludeArtist invokes excludeArtist operation.
+//
+// Mark an artist not interested; it is no longer suggested (library managers).
+//
+// POST /music/discover/exclusions
+func (c *Client) ExcludeArtist(ctx context.Context, request *ExcludeArtistReq) (*ArtistExclusion, error) {
+	res, err := c.sendExcludeArtist(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendExcludeArtist(ctx context.Context, request *ExcludeArtistReq) (res *ArtistExclusion, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("excludeArtist"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/music/discover/exclusions"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ExcludeArtistOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/music/discover/exclusions"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeExcludeArtistRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ExcludeArtistOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeExcludeArtistResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ExplainItem invokes explainItem operation.
 //
 // Why an item is not in the library (yet).
@@ -16633,6 +16807,119 @@ func (c *Client) sendGetMusicCalendar(ctx context.Context, params GetMusicCalend
 	return result, nil
 }
 
+// GetMusicDiscoverySettings invokes getMusicDiscoverySettings operation.
+//
+// Music discovery providers, keys state and refresh schedule (administrators).
+//
+// GET /settings/musicdiscovery
+func (c *Client) GetMusicDiscoverySettings(ctx context.Context) (*MusicDiscoverySettings, error) {
+	res, err := c.sendGetMusicDiscoverySettings(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetMusicDiscoverySettings(ctx context.Context) (res *MusicDiscoverySettings, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getMusicDiscoverySettings"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/settings/musicdiscovery"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetMusicDiscoverySettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/settings/musicdiscovery"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetMusicDiscoverySettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetMusicDiscoverySettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetMusicSettings invokes getMusicSettings operation.
 //
 // Music naming, import options and the MusicBrainz contact (administrators).
@@ -18077,6 +18364,159 @@ func (c *Client) sendGetSettings(ctx context.Context) (res *Settings, err error)
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetSimilarArtists invokes getSimilarArtists operation.
+//
+// Artists similar to one library artist, including ones in the library (library managers).
+//
+// GET /music/artists/{id}/similar
+func (c *Client) GetSimilarArtists(ctx context.Context, params GetSimilarArtistsParams) (*ArtistSuggestionList, error) {
+	res, err := c.sendGetSimilarArtists(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetSimilarArtists(ctx context.Context, params GetSimilarArtistsParams) (res *ArtistSuggestionList, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getSimilarArtists"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/music/artists/{id}/similar"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSimilarArtistsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/music/artists/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/similar"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetSimilarArtistsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetSimilarArtistsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -21662,6 +22102,359 @@ func (c *Client) sendListArtistAlbums(ctx context.Context, params ListArtistAlbu
 
 	stage = "DecodeResponse"
 	result, err := decodeListArtistAlbumsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListArtistExclusions invokes listArtistExclusions operation.
+//
+// Artists marked not interested (library managers).
+//
+// GET /music/discover/exclusions
+func (c *Client) ListArtistExclusions(ctx context.Context) ([]ArtistExclusion, error) {
+	res, err := c.sendListArtistExclusions(ctx)
+	return res, err
+}
+
+func (c *Client) sendListArtistExclusions(ctx context.Context) (res []ArtistExclusion, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listArtistExclusions"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/music/discover/exclusions"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListArtistExclusionsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/music/discover/exclusions"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListArtistExclusionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListArtistExclusionsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListArtistSuggestions invokes listArtistSuggestions operation.
+//
+// Suggestions combine the stored answers of every active provider (Last.fm, ListenBrainz, MusicBrainz
+// relationships, Spotify where Spotify allows it) and leave out artists in the library and those
+// marked not interested. People who only request see the same list with their request state and
+// without library ids.
+//
+// GET /music/discover/artists
+func (c *Client) ListArtistSuggestions(ctx context.Context, params ListArtistSuggestionsParams) (*ArtistSuggestionList, error) {
+	res, err := c.sendListArtistSuggestions(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListArtistSuggestions(ctx context.Context, params ListArtistSuggestionsParams) (res *ArtistSuggestionList, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listArtistSuggestions"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/music/discover/artists"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListArtistSuggestionsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/music/discover/artists"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "seed" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "seed",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if params.Seed != nil {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range params.Seed {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "tag" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tag",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Tag.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "minScore" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "minScore",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.MinScore.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "provider" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "provider",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if params.Provider != nil {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range params.Provider {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(string(item)))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "offset" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Offset.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListArtistSuggestionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListArtistSuggestionsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -32478,6 +33271,123 @@ func (c *Client) sendRefreshArtist(ctx context.Context, params RefreshArtistPara
 	return result, nil
 }
 
+// RefreshArtistSuggestions invokes refreshArtistSuggestions operation.
+//
+// Without artists, asks about the artists whose answers are missing or old; with artists, about those,
+// even when fresh.
+//
+// POST /music/discover/refresh
+func (c *Client) RefreshArtistSuggestions(ctx context.Context, request OptRefreshArtistSuggestionsReq) (*QueuedCount, error) {
+	res, err := c.sendRefreshArtistSuggestions(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendRefreshArtistSuggestions(ctx context.Context, request OptRefreshArtistSuggestionsReq) (res *QueuedCount, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("refreshArtistSuggestions"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/music/discover/refresh"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RefreshArtistSuggestionsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/music/discover/refresh"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRefreshArtistSuggestionsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, RefreshArtistSuggestionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeRefreshArtistSuggestionsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // RefreshBoard invokes refreshBoard operation.
 //
 // Recompute every board item now (library managers).
@@ -33190,6 +34100,137 @@ func (c *Client) sendReloadIndexerDefinitions(ctx context.Context) (res *Indexer
 
 	stage = "DecodeResponse"
 	result, err := decodeReloadIndexerDefinitionsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RemoveArtistExclusion invokes removeArtistExclusion operation.
+//
+// Suggest an artist again (library managers).
+//
+// DELETE /music/discover/exclusions/{mbid}
+func (c *Client) RemoveArtistExclusion(ctx context.Context, params RemoveArtistExclusionParams) error {
+	_, err := c.sendRemoveArtistExclusion(ctx, params)
+	return err
+}
+
+func (c *Client) sendRemoveArtistExclusion(ctx context.Context, params RemoveArtistExclusionParams) (res *RemoveArtistExclusionNoContent, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("removeArtistExclusion"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/music/discover/exclusions/{mbid}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RemoveArtistExclusionOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/music/discover/exclusions/"
+	{
+		// Encode "mbid" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "mbid",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Mbid))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, RemoveArtistExclusionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeRemoveArtistExclusionResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -40498,6 +41539,122 @@ func (c *Client) sendTestMigrateSource(ctx context.Context, request *MigrateSour
 	return result, nil
 }
 
+// TestMusicDiscoveryProvider invokes testMusicDiscoveryProvider operation.
+//
+// Check a provider with the stored keys (administrators).
+//
+// POST /settings/musicdiscovery/test
+func (c *Client) TestMusicDiscoveryProvider(ctx context.Context, request *TestMusicDiscoveryProviderReq) (*MusicDiscoveryTestResult, error) {
+	res, err := c.sendTestMusicDiscoveryProvider(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendTestMusicDiscoveryProvider(ctx context.Context, request *TestMusicDiscoveryProviderReq) (res *MusicDiscoveryTestResult, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("testMusicDiscoveryProvider"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/settings/musicdiscovery/test"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, TestMusicDiscoveryProviderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/settings/musicdiscovery/test"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeTestMusicDiscoveryProviderRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, TestMusicDiscoveryProviderOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeTestMusicDiscoveryProviderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // TestNotificationChannel invokes testNotificationChannel operation.
 //
 // Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
@@ -43324,6 +44481,122 @@ func (c *Client) sendUpdateMovie(ctx context.Context, request *MovieUpdate, para
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateMovieResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateMusicDiscoverySettings invokes updateMusicDiscoverySettings operation.
+//
+// Keys are checked with the provider first; a refused key is not stored (`metadata_key_invalid`).
+//
+// PUT /settings/musicdiscovery
+func (c *Client) UpdateMusicDiscoverySettings(ctx context.Context, request *MusicDiscoverySettingsInput) (*MusicDiscoverySettings, error) {
+	res, err := c.sendUpdateMusicDiscoverySettings(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendUpdateMusicDiscoverySettings(ctx context.Context, request *MusicDiscoverySettingsInput) (res *MusicDiscoverySettings, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateMusicDiscoverySettings"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.URLTemplateKey.String("/settings/musicdiscovery"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateMusicDiscoverySettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/settings/musicdiscovery"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateMusicDiscoverySettingsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, UpdateMusicDiscoverySettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateMusicDiscoverySettingsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

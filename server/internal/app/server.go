@@ -38,6 +38,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/tvdb"
 	"github.com/mmzlopasa/locarr/server/internal/migrate"
+	"github.com/mmzlopasa/locarr/server/internal/musicdiscovery"
 	"github.com/mmzlopasa/locarr/server/internal/netx"
 	"github.com/mmzlopasa/locarr/server/internal/notify"
 	"github.com/mmzlopasa/locarr/server/internal/notify/delivery"
@@ -88,7 +89,9 @@ type Deps struct {
 	// Music (P6).
 	Music       *music.Service
 	MusicBrainz *musicbrainz.Client
-	CoverArt    *metadata.ImageCache
+	// MusicDiscovery suggests artists similar to the library's.
+	MusicDiscovery *musicdiscovery.Service
+	CoverArt       *metadata.ImageCache
 	// Subtitles (P7).
 	Subtitles *subtitles.Service
 	// Migrate imports an existing setup (P10).

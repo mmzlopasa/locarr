@@ -2,9 +2,11 @@ package app
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/api"
@@ -15,7 +17,11 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/library/music"
 	"github.com/mmzlopasa/locarr/server/internal/mediaserver"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
+	"github.com/mmzlopasa/locarr/server/internal/metadata/lastfm"
+	"github.com/mmzlopasa/locarr/server/internal/metadata/listenbrainz"
 	"github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz"
+	"github.com/mmzlopasa/locarr/server/internal/metadata/spotify"
+	"github.com/mmzlopasa/locarr/server/internal/musicdiscovery"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 )
 
@@ -25,7 +31,13 @@ const (
 	TaskRefreshArtist  = "music-refresh-artist"
 	TaskRefreshArtists = "music-refresh-artists"
 	TaskLinkExisting   = "music-link-existing"
+	// TaskDiscoveryRefresh asks the discovery providers about the library's artists.
+	TaskDiscoveryRefresh = "music-discovery-refresh"
 )
+
+type discoveryArgs struct {
+	Seeds []string `json:"seeds,omitempty"`
+}
 
 type artistArgs struct {
 	ArtistID int64 `json:"artistId"`
@@ -89,6 +101,7 @@ func buildMusic(_ context.Context, d *Deps, cfg config.Config, log *slog.Logger)
 		return err
 	}, jobs.KindOptions{MaxAttempts: 2, Timeout: 2 * time.Hour})
 	d.Jobs.Schedule(TaskRefreshArtists, TaskRefreshArtists, 24*time.Hour)
+	buildMusicDiscovery(d, cfg, mb, log)
 
 	d.Downloads.Bus.Subscribe(func(ctx context.Context, ev downloads.Event) {
 		if ev.Type != downloads.EventCompleted || library.RefFromJSON(ev.Download.ItemRef).Kind != library.RefAlbum {
@@ -104,11 +117,41 @@ func buildMusic(_ context.Context, d *Deps, cfg config.Config, log *slog.Logger)
 
 // attachMusic gives the API handler the music library.
 func attachMusic(h *api.Handler, d *Deps, log *slog.Logger) {
-	h.Music, h.CoverArt = d.Music, d.CoverArt
+	h.Music, h.CoverArt, h.MusicDiscovery = d.Music, d.CoverArt, d.MusicDiscovery
 	h.LinkExisting = func(ctx context.Context, id int64) {
 		if _, _, err := d.Jobs.Enqueue(ctx, TaskLinkExisting, artistArgs{ArtistID: id},
 			jobs.EnqueueOptions{UniqueKey: "artist-link:" + strconv.FormatInt(id, 10)}); err != nil {
 			log.Warn("queue existing music link", "artist", id, "err", err)
 		}
 	}
+}
+
+// buildMusicDiscovery creates the similar-artist providers and the
+// suggestion engine, and its daily background refresh.
+func buildMusicDiscovery(d *Deps, cfg config.Config, mb *musicbrainz.Client, log *slog.Logger) {
+	md := &musicdiscovery.Service{DB: d.DB, Settings: d.Settings, Cache: d.MetaCache, MB: mb, Log: log}
+	md.LastFM = lastfm.New(cfg.LastFMURL, md.LastFMKeyValue)
+	md.LB = listenbrainz.New(cfg.ListenBrainzURL, cfg.ListenBrainzLabsURL)
+	md.LB.Contact = mb.Contact
+	md.Spotify = spotify.New(cfg.SpotifyURL, cfg.SpotifyAccountsURL, md.SpotifyCreds)
+	md.RefreshRequested = func(ctx context.Context, seeds []string) error {
+		key := TaskDiscoveryRefresh
+		if len(seeds) > 0 {
+			key += ":" + strings.Join(seeds, ",")
+		}
+		_, _, err := d.Jobs.Enqueue(ctx, TaskDiscoveryRefresh, discoveryArgs{Seeds: seeds}, jobs.EnqueueOptions{UniqueKey: key})
+		return err
+	}
+	d.Jobs.Register(TaskDiscoveryRefresh, func(ctx context.Context, j *jobs.Job) error {
+		var a discoveryArgs
+		_ = j.Decode(&a)
+		rep, err := md.Refresh(ctx, a.Seeds)
+		if errors.Is(err, musicdiscovery.ErrRunning) {
+			return nil
+		}
+		log.Info("music discovery refreshed", "asked", rep.Asked, "failed", rep.Failed, "enriched", rep.Enriched)
+		return err
+	}, jobs.KindOptions{MaxAttempts: 1, Timeout: 6 * time.Hour})
+	d.Jobs.Schedule(TaskDiscoveryRefresh, TaskDiscoveryRefresh, 24*time.Hour)
+	d.MusicDiscovery = md
 }

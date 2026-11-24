@@ -3434,6 +3434,208 @@ paths:
               schema: {$ref: "#/components/schemas/Artist"}
         default:
           $ref: "#/components/responses/Error"
+  /music/discover/artists:
+    get:
+      operationId: listArtistSuggestions
+      summary: Artists similar to the library's (library managers and people who may request music)
+      description: >-
+        Suggestions combine the stored answers of every active provider (Last.fm, ListenBrainz, MusicBrainz relationships,
+        Spotify where Spotify allows it) and leave out artists in the library and those marked not interested. People who
+        only request see the same list with their request state and without library ids.
+      tags: [music]
+      parameters:
+        - name: seed
+          in: query
+          required: false
+          description: Library artists (MusicBrainz ids) to start from; empty = all.
+          style: form
+          explode: false
+          schema:
+            type: array
+            maxItems: 200
+            items: {type: string, pattern: "^[0-9a-fA-F-]{36}$"}
+        - name: tag
+          in: query
+          required: false
+          schema: {type: string, maxLength: 100}
+        - name: minScore
+          in: query
+          required: false
+          schema: {type: integer, minimum: 0, maximum: 100}
+        - name: provider
+          in: query
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            maxItems: 4
+            items: {$ref: "#/components/schemas/MusicDiscoveryProviderId"}
+        - name: offset
+          in: query
+          required: false
+          schema: {type: integer, minimum: 0, maximum: 100000}
+        - name: limit
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 100}
+      responses:
+        "200":
+          description: Suggestions
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ArtistSuggestionList"}
+        default:
+          $ref: "#/components/responses/Error"
+  /music/discover/refresh:
+    post:
+      operationId: refreshArtistSuggestions
+      summary: Ask the providers again in the background (library managers)
+      description: Without artists, asks about the artists whose answers are missing or old; with artists, about those, even when fresh.
+      tags: [music]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seeds:
+                  type: array
+                  maxItems: 200
+                  items: {type: string, pattern: "^[0-9a-fA-F-]{36}$"}
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/QueuedCount"}
+        default:
+          $ref: "#/components/responses/Error"
+  /music/discover/exclusions:
+    get:
+      operationId: listArtistExclusions
+      summary: Artists marked not interested (library managers)
+      tags: [music]
+      responses:
+        "200":
+          description: The list, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/ArtistExclusion"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: excludeArtist
+      summary: Mark an artist not interested; it is no longer suggested (library managers)
+      tags: [music]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [mbid]
+              properties:
+                mbid: {type: string, pattern: "^[0-9a-fA-F-]{36}$"}
+                name: {type: string, maxLength: 500}
+      responses:
+        "200":
+          description: Marked
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ArtistExclusion"}
+        default:
+          $ref: "#/components/responses/Error"
+  /music/discover/exclusions/{mbid}:
+    delete:
+      operationId: removeArtistExclusion
+      summary: Suggest an artist again (library managers)
+      tags: [music]
+      parameters:
+        - name: mbid
+          in: path
+          required: true
+          schema: {type: string, pattern: "^[0-9a-fA-F-]{36}$"}
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /music/artists/{id}/similar:
+    get:
+      operationId: getSimilarArtists
+      summary: Artists similar to one library artist, including ones in the library (library managers)
+      tags: [music]
+      parameters:
+        - $ref: "#/components/parameters/ID"
+        - name: limit
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 100}
+      responses:
+        "200":
+          description: Similar artists
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ArtistSuggestionList"}
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/musicdiscovery:
+    get:
+      operationId: getMusicDiscoverySettings
+      summary: Music discovery providers, keys state and refresh schedule (administrators)
+      tags: [settings]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MusicDiscoverySettings"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateMusicDiscoverySettings
+      summary: Change providers, keys and the refresh schedule (administrators)
+      description: Keys are checked with the provider first; a refused key is not stored (`metadata_key_invalid`).
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/MusicDiscoverySettingsInput"}
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MusicDiscoverySettings"}
+        default:
+          $ref: "#/components/responses/Error"
+  /settings/musicdiscovery/test:
+    post:
+      operationId: testMusicDiscoveryProvider
+      summary: Check a provider with the stored keys (administrators)
+      tags: [settings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provider]
+              properties:
+                provider: {$ref: "#/components/schemas/MusicDiscoveryProviderId"}
+      responses:
+        "200":
+          description: The outcome
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/MusicDiscoveryTestResult"}
+        default:
+          $ref: "#/components/responses/Error"
   /music/artists/lookup:
     get:
       operationId: lookupArtists
@@ -6277,6 +6479,128 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
   schemas:
+    MusicDiscoveryProviderId:
+      type: string
+      enum: [lastfm, listenbrainz, musicbrainz, spotify]
+    ArtistSuggestionSeed:
+      type: object
+      required: [mbid, name]
+      properties:
+        mbid: {type: string}
+        name: {type: string}
+        artistId: {type: integer, format: int64, description: The library artist (library managers only).}
+    ArtistSuggestion:
+      type: object
+      required: [mbid, name, disambiguation, score, seeds, seedCount, providers, tags, cover, matchedByName, links, status]
+      properties:
+        mbid: {type: string}
+        name: {type: string}
+        disambiguation: {type: string}
+        score: {type: integer, minimum: 0, maximum: 100, description: How strongly the providers and library artists agree.}
+        seeds:
+          type: array
+          description: Library artists it is similar to, strongest first (at most 5).
+          items: {$ref: "#/components/schemas/ArtistSuggestionSeed"}
+        seedCount: {type: integer}
+        providers:
+          type: array
+          items: {$ref: "#/components/schemas/MusicDiscoveryProviderId"}
+        tags: {type: array, items: {type: string}}
+        cover: {type: string, description: "Cover Art Archive image name for /images/coverart/{size}/{file} (empty = none)."}
+        matchedByName: {type: boolean, description: The MusicBrainz artist was found by name; it may be another artist of that name.}
+        links:
+          type: object
+          required: [musicbrainz]
+          properties:
+            musicbrainz: {type: string}
+            listenbrainz: {type: string}
+            lastfm: {type: string}
+            spotify: {type: string}
+        artistId: {type: integer, format: int64, description: Set when the artist is in the library (library managers only).}
+        status: {$ref: "#/components/schemas/DiscoverStatus"}
+        requestId: {type: integer, format: int64, description: The caller's open request for the artist.}
+    ArtistSuggestionTag:
+      type: object
+      required: [name, count]
+      properties:
+        name: {type: string}
+        count: {type: integer}
+    MusicDiscoveryProvider:
+      type: object
+      required: [id, enabled, configured, artists, failed]
+      properties:
+        id: {$ref: "#/components/schemas/MusicDiscoveryProviderId"}
+        enabled: {type: boolean}
+        configured: {type: boolean, description: Has the keys it needs (MusicBrainz and ListenBrainz need none).}
+        artists: {type: integer, description: Library artists it has answered for.}
+        failed: {type: integer, description: Library artists whose last lookup failed.}
+        lastError: {type: string}
+        lastAt: {type: string, format: date-time}
+        relatedArtists:
+          type: string
+          enum: [available, restricted, unknown]
+          description: Spotify only. Spotify stopped serving related artists to new apps in November 2024.
+    ArtistSuggestionList:
+      type: object
+      required: [items, total, tags, providers, refreshing, pending, canAdd, canRequest]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/ArtistSuggestion"}
+        total: {type: integer}
+        tags:
+          type: array
+          description: The most common tags of the suggestions (before the tag filter).
+          items: {$ref: "#/components/schemas/ArtistSuggestionTag"}
+        providers:
+          type: array
+          items: {$ref: "#/components/schemas/MusicDiscoveryProvider"}
+        refreshing: {type: boolean}
+        pending: {type: integer, description: Library artists and providers not asked yet (a refresh is queued).}
+        lastRefreshAt: {type: string, format: date-time}
+        canAdd: {type: boolean, description: The caller adds artists to the library.}
+        canRequest: {type: boolean, description: The caller may request artists.}
+    ArtistExclusion:
+      type: object
+      required: [mbid, name, createdAt]
+      properties:
+        mbid: {type: string}
+        name: {type: string}
+        createdAt: {type: string, format: date-time}
+    MusicDiscoverySettings:
+      type: object
+      required: [lastfm, listenbrainz, musicbrainz, spotify, lastfmApiKey, spotifyClientId, spotifyClientSecret, refreshDays, providers]
+      properties:
+        lastfm: {type: boolean}
+        listenbrainz: {type: boolean}
+        musicbrainz: {type: boolean}
+        spotify: {type: boolean}
+        lastfmApiKey: {$ref: "#/components/schemas/SecretState"}
+        spotifyClientId: {$ref: "#/components/schemas/SecretState"}
+        spotifyClientSecret: {$ref: "#/components/schemas/SecretState"}
+        refreshDays: {type: integer, minimum: 1, maximum: 90}
+        providers:
+          type: array
+          items: {$ref: "#/components/schemas/MusicDiscoveryProvider"}
+    MusicDiscoverySettingsInput:
+      type: object
+      properties:
+        lastfm: {type: boolean}
+        listenbrainz: {type: boolean}
+        musicbrainz: {type: boolean}
+        spotify: {type: boolean}
+        lastfmApiKey: {type: string, maxLength: 256, description: Write-only; empty removes it.}
+        spotifyClientId: {type: string, maxLength: 256, description: Write-only; set together with the secret; empty removes both.}
+        spotifyClientSecret: {type: string, maxLength: 256, description: Write-only.}
+        refreshDays: {type: integer, minimum: 1, maximum: 90}
+    MusicDiscoveryTestResult:
+      type: object
+      required: [ok, message]
+      properties:
+        ok: {type: boolean}
+        code: {type: string, description: "Why it failed: metadata_key_missing, metadata_key_invalid, metadata_unavailable."}
+        message: {type: string}
+        relatedArtists: {type: string, enum: [available, restricted, unknown], description: Spotify only.}
     Error:
       type: object
       required: [code, message]

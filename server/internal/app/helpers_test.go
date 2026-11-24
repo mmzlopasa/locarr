@@ -56,8 +56,9 @@ func newEnvWith(t *testing.T, cfgMod func(*config.Config), mod func(*RouterOptio
 	t.Cleanup(mbSrv.Close)
 	cfg := config.Config{ConfigDir: filepath.Join(base, "config"), DataRoots: []string{data}, LogLevel: "info", TMDbURL: tmdbSrv.URL,
 		MusicBrainzURL: mbSrv.URL + "/mb", CoverArtURL: mbSrv.URL + "/mb/coverart",
-		// No test asks GitHub for releases.
-		ReleasesURL: "http://127.0.0.1:1/releases"}
+		// No test asks GitHub for releases, or the music discovery providers.
+		ReleasesURL: "http://127.0.0.1:1/releases", LastFMURL: "http://127.0.0.1:1/lastfm/", ListenBrainzURL: "http://127.0.0.1:1",
+		ListenBrainzLabsURL: "http://127.0.0.1:1", SpotifyURL: "http://127.0.0.1:1/v1", SpotifyAccountsURL: "http://127.0.0.1:1"}
 	if cfgMod != nil {
 		cfgMod(&cfg)
 	}

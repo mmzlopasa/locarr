@@ -1767,6 +1767,43 @@ func (s *Artist) SetLatestRelease(val OptString) {
 	s.LatestRelease = val
 }
 
+// Ref: #/components/schemas/ArtistExclusion
+type ArtistExclusion struct {
+	Mbid      string    `json:"mbid"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// GetMbid returns the value of Mbid.
+func (s *ArtistExclusion) GetMbid() string {
+	return s.Mbid
+}
+
+// GetName returns the value of Name.
+func (s *ArtistExclusion) GetName() string {
+	return s.Name
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *ArtistExclusion) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetMbid sets the value of Mbid.
+func (s *ArtistExclusion) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetName sets the value of Name.
+func (s *ArtistExclusion) SetName(val string) {
+	s.Name = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *ArtistExclusion) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
 // Ref: #/components/schemas/ArtistList
 type ArtistList struct {
 	Total int      `json:"total"`
@@ -1906,6 +1943,388 @@ func (s *ArtistLookup) SetScore(val int) {
 // SetArtistId sets the value of ArtistId.
 func (s *ArtistLookup) SetArtistId(val OptInt64) {
 	s.ArtistId = val
+}
+
+// Ref: #/components/schemas/ArtistSuggestion
+type ArtistSuggestion struct {
+	Mbid           string `json:"mbid"`
+	Name           string `json:"name"`
+	Disambiguation string `json:"disambiguation"`
+	// How strongly the providers and library artists agree.
+	Score int `json:"score"`
+	// Library artists it is similar to, strongest first (at most 5).
+	Seeds     []ArtistSuggestionSeed     `json:"seeds"`
+	SeedCount int                        `json:"seedCount"`
+	Providers []MusicDiscoveryProviderId `json:"providers"`
+	Tags      []string                   `json:"tags"`
+	// Cover Art Archive image name for /images/coverart/{size}/{file} (empty = none).
+	Cover string `json:"cover"`
+	// The MusicBrainz artist was found by name; it may be another artist of that name.
+	MatchedByName bool                  `json:"matchedByName"`
+	Links         ArtistSuggestionLinks `json:"links"`
+	// Set when the artist is in the library (library managers only).
+	ArtistId OptInt64       `json:"artistId"`
+	Status   DiscoverStatus `json:"status"`
+	// The caller's open request for the artist.
+	RequestId OptInt64 `json:"requestId"`
+}
+
+// GetMbid returns the value of Mbid.
+func (s *ArtistSuggestion) GetMbid() string {
+	return s.Mbid
+}
+
+// GetName returns the value of Name.
+func (s *ArtistSuggestion) GetName() string {
+	return s.Name
+}
+
+// GetDisambiguation returns the value of Disambiguation.
+func (s *ArtistSuggestion) GetDisambiguation() string {
+	return s.Disambiguation
+}
+
+// GetScore returns the value of Score.
+func (s *ArtistSuggestion) GetScore() int {
+	return s.Score
+}
+
+// GetSeeds returns the value of Seeds.
+func (s *ArtistSuggestion) GetSeeds() []ArtistSuggestionSeed {
+	return s.Seeds
+}
+
+// GetSeedCount returns the value of SeedCount.
+func (s *ArtistSuggestion) GetSeedCount() int {
+	return s.SeedCount
+}
+
+// GetProviders returns the value of Providers.
+func (s *ArtistSuggestion) GetProviders() []MusicDiscoveryProviderId {
+	return s.Providers
+}
+
+// GetTags returns the value of Tags.
+func (s *ArtistSuggestion) GetTags() []string {
+	return s.Tags
+}
+
+// GetCover returns the value of Cover.
+func (s *ArtistSuggestion) GetCover() string {
+	return s.Cover
+}
+
+// GetMatchedByName returns the value of MatchedByName.
+func (s *ArtistSuggestion) GetMatchedByName() bool {
+	return s.MatchedByName
+}
+
+// GetLinks returns the value of Links.
+func (s *ArtistSuggestion) GetLinks() ArtistSuggestionLinks {
+	return s.Links
+}
+
+// GetArtistId returns the value of ArtistId.
+func (s *ArtistSuggestion) GetArtistId() OptInt64 {
+	return s.ArtistId
+}
+
+// GetStatus returns the value of Status.
+func (s *ArtistSuggestion) GetStatus() DiscoverStatus {
+	return s.Status
+}
+
+// GetRequestId returns the value of RequestId.
+func (s *ArtistSuggestion) GetRequestId() OptInt64 {
+	return s.RequestId
+}
+
+// SetMbid sets the value of Mbid.
+func (s *ArtistSuggestion) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetName sets the value of Name.
+func (s *ArtistSuggestion) SetName(val string) {
+	s.Name = val
+}
+
+// SetDisambiguation sets the value of Disambiguation.
+func (s *ArtistSuggestion) SetDisambiguation(val string) {
+	s.Disambiguation = val
+}
+
+// SetScore sets the value of Score.
+func (s *ArtistSuggestion) SetScore(val int) {
+	s.Score = val
+}
+
+// SetSeeds sets the value of Seeds.
+func (s *ArtistSuggestion) SetSeeds(val []ArtistSuggestionSeed) {
+	s.Seeds = val
+}
+
+// SetSeedCount sets the value of SeedCount.
+func (s *ArtistSuggestion) SetSeedCount(val int) {
+	s.SeedCount = val
+}
+
+// SetProviders sets the value of Providers.
+func (s *ArtistSuggestion) SetProviders(val []MusicDiscoveryProviderId) {
+	s.Providers = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ArtistSuggestion) SetTags(val []string) {
+	s.Tags = val
+}
+
+// SetCover sets the value of Cover.
+func (s *ArtistSuggestion) SetCover(val string) {
+	s.Cover = val
+}
+
+// SetMatchedByName sets the value of MatchedByName.
+func (s *ArtistSuggestion) SetMatchedByName(val bool) {
+	s.MatchedByName = val
+}
+
+// SetLinks sets the value of Links.
+func (s *ArtistSuggestion) SetLinks(val ArtistSuggestionLinks) {
+	s.Links = val
+}
+
+// SetArtistId sets the value of ArtistId.
+func (s *ArtistSuggestion) SetArtistId(val OptInt64) {
+	s.ArtistId = val
+}
+
+// SetStatus sets the value of Status.
+func (s *ArtistSuggestion) SetStatus(val DiscoverStatus) {
+	s.Status = val
+}
+
+// SetRequestId sets the value of RequestId.
+func (s *ArtistSuggestion) SetRequestId(val OptInt64) {
+	s.RequestId = val
+}
+
+type ArtistSuggestionLinks struct {
+	Musicbrainz  string    `json:"musicbrainz"`
+	Listenbrainz OptString `json:"listenbrainz"`
+	Lastfm       OptString `json:"lastfm"`
+	Spotify      OptString `json:"spotify"`
+}
+
+// GetMusicbrainz returns the value of Musicbrainz.
+func (s *ArtistSuggestionLinks) GetMusicbrainz() string {
+	return s.Musicbrainz
+}
+
+// GetListenbrainz returns the value of Listenbrainz.
+func (s *ArtistSuggestionLinks) GetListenbrainz() OptString {
+	return s.Listenbrainz
+}
+
+// GetLastfm returns the value of Lastfm.
+func (s *ArtistSuggestionLinks) GetLastfm() OptString {
+	return s.Lastfm
+}
+
+// GetSpotify returns the value of Spotify.
+func (s *ArtistSuggestionLinks) GetSpotify() OptString {
+	return s.Spotify
+}
+
+// SetMusicbrainz sets the value of Musicbrainz.
+func (s *ArtistSuggestionLinks) SetMusicbrainz(val string) {
+	s.Musicbrainz = val
+}
+
+// SetListenbrainz sets the value of Listenbrainz.
+func (s *ArtistSuggestionLinks) SetListenbrainz(val OptString) {
+	s.Listenbrainz = val
+}
+
+// SetLastfm sets the value of Lastfm.
+func (s *ArtistSuggestionLinks) SetLastfm(val OptString) {
+	s.Lastfm = val
+}
+
+// SetSpotify sets the value of Spotify.
+func (s *ArtistSuggestionLinks) SetSpotify(val OptString) {
+	s.Spotify = val
+}
+
+// Ref: #/components/schemas/ArtistSuggestionList
+type ArtistSuggestionList struct {
+	Items []ArtistSuggestion `json:"items"`
+	Total int                `json:"total"`
+	// The most common tags of the suggestions (before the tag filter).
+	Tags       []ArtistSuggestionTag    `json:"tags"`
+	Providers  []MusicDiscoveryProvider `json:"providers"`
+	Refreshing bool                     `json:"refreshing"`
+	// Library artists and providers not asked yet (a refresh is queued).
+	Pending       int         `json:"pending"`
+	LastRefreshAt OptDateTime `json:"lastRefreshAt"`
+	// The caller adds artists to the library.
+	CanAdd bool `json:"canAdd"`
+	// The caller may request artists.
+	CanRequest bool `json:"canRequest"`
+}
+
+// GetItems returns the value of Items.
+func (s *ArtistSuggestionList) GetItems() []ArtistSuggestion {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *ArtistSuggestionList) GetTotal() int {
+	return s.Total
+}
+
+// GetTags returns the value of Tags.
+func (s *ArtistSuggestionList) GetTags() []ArtistSuggestionTag {
+	return s.Tags
+}
+
+// GetProviders returns the value of Providers.
+func (s *ArtistSuggestionList) GetProviders() []MusicDiscoveryProvider {
+	return s.Providers
+}
+
+// GetRefreshing returns the value of Refreshing.
+func (s *ArtistSuggestionList) GetRefreshing() bool {
+	return s.Refreshing
+}
+
+// GetPending returns the value of Pending.
+func (s *ArtistSuggestionList) GetPending() int {
+	return s.Pending
+}
+
+// GetLastRefreshAt returns the value of LastRefreshAt.
+func (s *ArtistSuggestionList) GetLastRefreshAt() OptDateTime {
+	return s.LastRefreshAt
+}
+
+// GetCanAdd returns the value of CanAdd.
+func (s *ArtistSuggestionList) GetCanAdd() bool {
+	return s.CanAdd
+}
+
+// GetCanRequest returns the value of CanRequest.
+func (s *ArtistSuggestionList) GetCanRequest() bool {
+	return s.CanRequest
+}
+
+// SetItems sets the value of Items.
+func (s *ArtistSuggestionList) SetItems(val []ArtistSuggestion) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *ArtistSuggestionList) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetTags sets the value of Tags.
+func (s *ArtistSuggestionList) SetTags(val []ArtistSuggestionTag) {
+	s.Tags = val
+}
+
+// SetProviders sets the value of Providers.
+func (s *ArtistSuggestionList) SetProviders(val []MusicDiscoveryProvider) {
+	s.Providers = val
+}
+
+// SetRefreshing sets the value of Refreshing.
+func (s *ArtistSuggestionList) SetRefreshing(val bool) {
+	s.Refreshing = val
+}
+
+// SetPending sets the value of Pending.
+func (s *ArtistSuggestionList) SetPending(val int) {
+	s.Pending = val
+}
+
+// SetLastRefreshAt sets the value of LastRefreshAt.
+func (s *ArtistSuggestionList) SetLastRefreshAt(val OptDateTime) {
+	s.LastRefreshAt = val
+}
+
+// SetCanAdd sets the value of CanAdd.
+func (s *ArtistSuggestionList) SetCanAdd(val bool) {
+	s.CanAdd = val
+}
+
+// SetCanRequest sets the value of CanRequest.
+func (s *ArtistSuggestionList) SetCanRequest(val bool) {
+	s.CanRequest = val
+}
+
+// Ref: #/components/schemas/ArtistSuggestionSeed
+type ArtistSuggestionSeed struct {
+	Mbid string `json:"mbid"`
+	Name string `json:"name"`
+	// The library artist (library managers only).
+	ArtistId OptInt64 `json:"artistId"`
+}
+
+// GetMbid returns the value of Mbid.
+func (s *ArtistSuggestionSeed) GetMbid() string {
+	return s.Mbid
+}
+
+// GetName returns the value of Name.
+func (s *ArtistSuggestionSeed) GetName() string {
+	return s.Name
+}
+
+// GetArtistId returns the value of ArtistId.
+func (s *ArtistSuggestionSeed) GetArtistId() OptInt64 {
+	return s.ArtistId
+}
+
+// SetMbid sets the value of Mbid.
+func (s *ArtistSuggestionSeed) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetName sets the value of Name.
+func (s *ArtistSuggestionSeed) SetName(val string) {
+	s.Name = val
+}
+
+// SetArtistId sets the value of ArtistId.
+func (s *ArtistSuggestionSeed) SetArtistId(val OptInt64) {
+	s.ArtistId = val
+}
+
+// Ref: #/components/schemas/ArtistSuggestionTag
+type ArtistSuggestionTag struct {
+	Name  string `json:"name"`
+	Count int    `json:"count"`
+}
+
+// GetName returns the value of Name.
+func (s *ArtistSuggestionTag) GetName() string {
+	return s.Name
+}
+
+// GetCount returns the value of Count.
+func (s *ArtistSuggestionTag) GetCount() int {
+	return s.Count
+}
+
+// SetName sets the value of Name.
+func (s *ArtistSuggestionTag) SetName(val string) {
+	s.Name = val
+}
+
+// SetCount sets the value of Count.
+func (s *ArtistSuggestionTag) SetCount(val int) {
+	s.Count = val
 }
 
 // Ref: #/components/schemas/ArtistUpdate
@@ -8462,6 +8881,31 @@ func (s *EvaluateRequestMode) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+type ExcludeArtistReq struct {
+	Mbid string    `json:"mbid"`
+	Name OptString `json:"name"`
+}
+
+// GetMbid returns the value of Mbid.
+func (s *ExcludeArtistReq) GetMbid() string {
+	return s.Mbid
+}
+
+// GetName returns the value of Name.
+func (s *ExcludeArtistReq) GetName() OptString {
+	return s.Name
+}
+
+// SetMbid sets the value of Mbid.
+func (s *ExcludeArtistReq) SetMbid(val string) {
+	s.Mbid = val
+}
+
+// SetName sets the value of Name.
+func (s *ExcludeArtistReq) SetName(val OptString) {
+	s.Name = val
 }
 
 // Ref: #/components/schemas/ExistingAlbumFolder
@@ -20728,6 +21172,504 @@ func (s *MultiEpisodeStyle) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/MusicDiscoveryProvider
+type MusicDiscoveryProvider struct {
+	ID      MusicDiscoveryProviderId `json:"id"`
+	Enabled bool                     `json:"enabled"`
+	// Has the keys it needs (MusicBrainz and ListenBrainz need none).
+	Configured bool `json:"configured"`
+	// Library artists it has answered for.
+	Artists int `json:"artists"`
+	// Library artists whose last lookup failed.
+	Failed    int         `json:"failed"`
+	LastError OptString   `json:"lastError"`
+	LastAt    OptDateTime `json:"lastAt"`
+	// Spotify only. Spotify stopped serving related artists to new apps in November 2024.
+	RelatedArtists OptMusicDiscoveryProviderRelatedArtists `json:"relatedArtists"`
+}
+
+// GetID returns the value of ID.
+func (s *MusicDiscoveryProvider) GetID() MusicDiscoveryProviderId {
+	return s.ID
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *MusicDiscoveryProvider) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetConfigured returns the value of Configured.
+func (s *MusicDiscoveryProvider) GetConfigured() bool {
+	return s.Configured
+}
+
+// GetArtists returns the value of Artists.
+func (s *MusicDiscoveryProvider) GetArtists() int {
+	return s.Artists
+}
+
+// GetFailed returns the value of Failed.
+func (s *MusicDiscoveryProvider) GetFailed() int {
+	return s.Failed
+}
+
+// GetLastError returns the value of LastError.
+func (s *MusicDiscoveryProvider) GetLastError() OptString {
+	return s.LastError
+}
+
+// GetLastAt returns the value of LastAt.
+func (s *MusicDiscoveryProvider) GetLastAt() OptDateTime {
+	return s.LastAt
+}
+
+// GetRelatedArtists returns the value of RelatedArtists.
+func (s *MusicDiscoveryProvider) GetRelatedArtists() OptMusicDiscoveryProviderRelatedArtists {
+	return s.RelatedArtists
+}
+
+// SetID sets the value of ID.
+func (s *MusicDiscoveryProvider) SetID(val MusicDiscoveryProviderId) {
+	s.ID = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *MusicDiscoveryProvider) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetConfigured sets the value of Configured.
+func (s *MusicDiscoveryProvider) SetConfigured(val bool) {
+	s.Configured = val
+}
+
+// SetArtists sets the value of Artists.
+func (s *MusicDiscoveryProvider) SetArtists(val int) {
+	s.Artists = val
+}
+
+// SetFailed sets the value of Failed.
+func (s *MusicDiscoveryProvider) SetFailed(val int) {
+	s.Failed = val
+}
+
+// SetLastError sets the value of LastError.
+func (s *MusicDiscoveryProvider) SetLastError(val OptString) {
+	s.LastError = val
+}
+
+// SetLastAt sets the value of LastAt.
+func (s *MusicDiscoveryProvider) SetLastAt(val OptDateTime) {
+	s.LastAt = val
+}
+
+// SetRelatedArtists sets the value of RelatedArtists.
+func (s *MusicDiscoveryProvider) SetRelatedArtists(val OptMusicDiscoveryProviderRelatedArtists) {
+	s.RelatedArtists = val
+}
+
+// Ref: #/components/schemas/MusicDiscoveryProviderId
+type MusicDiscoveryProviderId string
+
+const (
+	MusicDiscoveryProviderIdLastfm       MusicDiscoveryProviderId = "lastfm"
+	MusicDiscoveryProviderIdListenbrainz MusicDiscoveryProviderId = "listenbrainz"
+	MusicDiscoveryProviderIdMusicbrainz  MusicDiscoveryProviderId = "musicbrainz"
+	MusicDiscoveryProviderIdSpotify      MusicDiscoveryProviderId = "spotify"
+)
+
+// AllValues returns all MusicDiscoveryProviderId values.
+func (MusicDiscoveryProviderId) AllValues() []MusicDiscoveryProviderId {
+	return []MusicDiscoveryProviderId{
+		MusicDiscoveryProviderIdLastfm,
+		MusicDiscoveryProviderIdListenbrainz,
+		MusicDiscoveryProviderIdMusicbrainz,
+		MusicDiscoveryProviderIdSpotify,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MusicDiscoveryProviderId) MarshalText() ([]byte, error) {
+	switch s {
+	case MusicDiscoveryProviderIdLastfm:
+		return []byte(s), nil
+	case MusicDiscoveryProviderIdListenbrainz:
+		return []byte(s), nil
+	case MusicDiscoveryProviderIdMusicbrainz:
+		return []byte(s), nil
+	case MusicDiscoveryProviderIdSpotify:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MusicDiscoveryProviderId) UnmarshalText(data []byte) error {
+	switch MusicDiscoveryProviderId(data) {
+	case MusicDiscoveryProviderIdLastfm:
+		*s = MusicDiscoveryProviderIdLastfm
+		return nil
+	case MusicDiscoveryProviderIdListenbrainz:
+		*s = MusicDiscoveryProviderIdListenbrainz
+		return nil
+	case MusicDiscoveryProviderIdMusicbrainz:
+		*s = MusicDiscoveryProviderIdMusicbrainz
+		return nil
+	case MusicDiscoveryProviderIdSpotify:
+		*s = MusicDiscoveryProviderIdSpotify
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Spotify only. Spotify stopped serving related artists to new apps in November 2024.
+type MusicDiscoveryProviderRelatedArtists string
+
+const (
+	MusicDiscoveryProviderRelatedArtistsAvailable  MusicDiscoveryProviderRelatedArtists = "available"
+	MusicDiscoveryProviderRelatedArtistsRestricted MusicDiscoveryProviderRelatedArtists = "restricted"
+	MusicDiscoveryProviderRelatedArtistsUnknown    MusicDiscoveryProviderRelatedArtists = "unknown"
+)
+
+// AllValues returns all MusicDiscoveryProviderRelatedArtists values.
+func (MusicDiscoveryProviderRelatedArtists) AllValues() []MusicDiscoveryProviderRelatedArtists {
+	return []MusicDiscoveryProviderRelatedArtists{
+		MusicDiscoveryProviderRelatedArtistsAvailable,
+		MusicDiscoveryProviderRelatedArtistsRestricted,
+		MusicDiscoveryProviderRelatedArtistsUnknown,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MusicDiscoveryProviderRelatedArtists) MarshalText() ([]byte, error) {
+	switch s {
+	case MusicDiscoveryProviderRelatedArtistsAvailable:
+		return []byte(s), nil
+	case MusicDiscoveryProviderRelatedArtistsRestricted:
+		return []byte(s), nil
+	case MusicDiscoveryProviderRelatedArtistsUnknown:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MusicDiscoveryProviderRelatedArtists) UnmarshalText(data []byte) error {
+	switch MusicDiscoveryProviderRelatedArtists(data) {
+	case MusicDiscoveryProviderRelatedArtistsAvailable:
+		*s = MusicDiscoveryProviderRelatedArtistsAvailable
+		return nil
+	case MusicDiscoveryProviderRelatedArtistsRestricted:
+		*s = MusicDiscoveryProviderRelatedArtistsRestricted
+		return nil
+	case MusicDiscoveryProviderRelatedArtistsUnknown:
+		*s = MusicDiscoveryProviderRelatedArtistsUnknown
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MusicDiscoverySettings
+type MusicDiscoverySettings struct {
+	Lastfm              bool                     `json:"lastfm"`
+	Listenbrainz        bool                     `json:"listenbrainz"`
+	Musicbrainz         bool                     `json:"musicbrainz"`
+	Spotify             bool                     `json:"spotify"`
+	LastfmApiKey        SecretState              `json:"lastfmApiKey"`
+	SpotifyClientId     SecretState              `json:"spotifyClientId"`
+	SpotifyClientSecret SecretState              `json:"spotifyClientSecret"`
+	RefreshDays         int                      `json:"refreshDays"`
+	Providers           []MusicDiscoveryProvider `json:"providers"`
+}
+
+// GetLastfm returns the value of Lastfm.
+func (s *MusicDiscoverySettings) GetLastfm() bool {
+	return s.Lastfm
+}
+
+// GetListenbrainz returns the value of Listenbrainz.
+func (s *MusicDiscoverySettings) GetListenbrainz() bool {
+	return s.Listenbrainz
+}
+
+// GetMusicbrainz returns the value of Musicbrainz.
+func (s *MusicDiscoverySettings) GetMusicbrainz() bool {
+	return s.Musicbrainz
+}
+
+// GetSpotify returns the value of Spotify.
+func (s *MusicDiscoverySettings) GetSpotify() bool {
+	return s.Spotify
+}
+
+// GetLastfmApiKey returns the value of LastfmApiKey.
+func (s *MusicDiscoverySettings) GetLastfmApiKey() SecretState {
+	return s.LastfmApiKey
+}
+
+// GetSpotifyClientId returns the value of SpotifyClientId.
+func (s *MusicDiscoverySettings) GetSpotifyClientId() SecretState {
+	return s.SpotifyClientId
+}
+
+// GetSpotifyClientSecret returns the value of SpotifyClientSecret.
+func (s *MusicDiscoverySettings) GetSpotifyClientSecret() SecretState {
+	return s.SpotifyClientSecret
+}
+
+// GetRefreshDays returns the value of RefreshDays.
+func (s *MusicDiscoverySettings) GetRefreshDays() int {
+	return s.RefreshDays
+}
+
+// GetProviders returns the value of Providers.
+func (s *MusicDiscoverySettings) GetProviders() []MusicDiscoveryProvider {
+	return s.Providers
+}
+
+// SetLastfm sets the value of Lastfm.
+func (s *MusicDiscoverySettings) SetLastfm(val bool) {
+	s.Lastfm = val
+}
+
+// SetListenbrainz sets the value of Listenbrainz.
+func (s *MusicDiscoverySettings) SetListenbrainz(val bool) {
+	s.Listenbrainz = val
+}
+
+// SetMusicbrainz sets the value of Musicbrainz.
+func (s *MusicDiscoverySettings) SetMusicbrainz(val bool) {
+	s.Musicbrainz = val
+}
+
+// SetSpotify sets the value of Spotify.
+func (s *MusicDiscoverySettings) SetSpotify(val bool) {
+	s.Spotify = val
+}
+
+// SetLastfmApiKey sets the value of LastfmApiKey.
+func (s *MusicDiscoverySettings) SetLastfmApiKey(val SecretState) {
+	s.LastfmApiKey = val
+}
+
+// SetSpotifyClientId sets the value of SpotifyClientId.
+func (s *MusicDiscoverySettings) SetSpotifyClientId(val SecretState) {
+	s.SpotifyClientId = val
+}
+
+// SetSpotifyClientSecret sets the value of SpotifyClientSecret.
+func (s *MusicDiscoverySettings) SetSpotifyClientSecret(val SecretState) {
+	s.SpotifyClientSecret = val
+}
+
+// SetRefreshDays sets the value of RefreshDays.
+func (s *MusicDiscoverySettings) SetRefreshDays(val int) {
+	s.RefreshDays = val
+}
+
+// SetProviders sets the value of Providers.
+func (s *MusicDiscoverySettings) SetProviders(val []MusicDiscoveryProvider) {
+	s.Providers = val
+}
+
+// Ref: #/components/schemas/MusicDiscoverySettingsInput
+type MusicDiscoverySettingsInput struct {
+	Lastfm       OptBool `json:"lastfm"`
+	Listenbrainz OptBool `json:"listenbrainz"`
+	Musicbrainz  OptBool `json:"musicbrainz"`
+	Spotify      OptBool `json:"spotify"`
+	// Write-only; empty removes it.
+	LastfmApiKey OptString `json:"lastfmApiKey"`
+	// Write-only; set together with the secret; empty removes both.
+	SpotifyClientId OptString `json:"spotifyClientId"`
+	// Write-only.
+	SpotifyClientSecret OptString `json:"spotifyClientSecret"`
+	RefreshDays         OptInt    `json:"refreshDays"`
+}
+
+// GetLastfm returns the value of Lastfm.
+func (s *MusicDiscoverySettingsInput) GetLastfm() OptBool {
+	return s.Lastfm
+}
+
+// GetListenbrainz returns the value of Listenbrainz.
+func (s *MusicDiscoverySettingsInput) GetListenbrainz() OptBool {
+	return s.Listenbrainz
+}
+
+// GetMusicbrainz returns the value of Musicbrainz.
+func (s *MusicDiscoverySettingsInput) GetMusicbrainz() OptBool {
+	return s.Musicbrainz
+}
+
+// GetSpotify returns the value of Spotify.
+func (s *MusicDiscoverySettingsInput) GetSpotify() OptBool {
+	return s.Spotify
+}
+
+// GetLastfmApiKey returns the value of LastfmApiKey.
+func (s *MusicDiscoverySettingsInput) GetLastfmApiKey() OptString {
+	return s.LastfmApiKey
+}
+
+// GetSpotifyClientId returns the value of SpotifyClientId.
+func (s *MusicDiscoverySettingsInput) GetSpotifyClientId() OptString {
+	return s.SpotifyClientId
+}
+
+// GetSpotifyClientSecret returns the value of SpotifyClientSecret.
+func (s *MusicDiscoverySettingsInput) GetSpotifyClientSecret() OptString {
+	return s.SpotifyClientSecret
+}
+
+// GetRefreshDays returns the value of RefreshDays.
+func (s *MusicDiscoverySettingsInput) GetRefreshDays() OptInt {
+	return s.RefreshDays
+}
+
+// SetLastfm sets the value of Lastfm.
+func (s *MusicDiscoverySettingsInput) SetLastfm(val OptBool) {
+	s.Lastfm = val
+}
+
+// SetListenbrainz sets the value of Listenbrainz.
+func (s *MusicDiscoverySettingsInput) SetListenbrainz(val OptBool) {
+	s.Listenbrainz = val
+}
+
+// SetMusicbrainz sets the value of Musicbrainz.
+func (s *MusicDiscoverySettingsInput) SetMusicbrainz(val OptBool) {
+	s.Musicbrainz = val
+}
+
+// SetSpotify sets the value of Spotify.
+func (s *MusicDiscoverySettingsInput) SetSpotify(val OptBool) {
+	s.Spotify = val
+}
+
+// SetLastfmApiKey sets the value of LastfmApiKey.
+func (s *MusicDiscoverySettingsInput) SetLastfmApiKey(val OptString) {
+	s.LastfmApiKey = val
+}
+
+// SetSpotifyClientId sets the value of SpotifyClientId.
+func (s *MusicDiscoverySettingsInput) SetSpotifyClientId(val OptString) {
+	s.SpotifyClientId = val
+}
+
+// SetSpotifyClientSecret sets the value of SpotifyClientSecret.
+func (s *MusicDiscoverySettingsInput) SetSpotifyClientSecret(val OptString) {
+	s.SpotifyClientSecret = val
+}
+
+// SetRefreshDays sets the value of RefreshDays.
+func (s *MusicDiscoverySettingsInput) SetRefreshDays(val OptInt) {
+	s.RefreshDays = val
+}
+
+// Ref: #/components/schemas/MusicDiscoveryTestResult
+type MusicDiscoveryTestResult struct {
+	Ok bool `json:"ok"`
+	// Why it failed: metadata_key_missing, metadata_key_invalid, metadata_unavailable.
+	Code    OptString `json:"code"`
+	Message string    `json:"message"`
+	// Spotify only.
+	RelatedArtists OptMusicDiscoveryTestResultRelatedArtists `json:"relatedArtists"`
+}
+
+// GetOk returns the value of Ok.
+func (s *MusicDiscoveryTestResult) GetOk() bool {
+	return s.Ok
+}
+
+// GetCode returns the value of Code.
+func (s *MusicDiscoveryTestResult) GetCode() OptString {
+	return s.Code
+}
+
+// GetMessage returns the value of Message.
+func (s *MusicDiscoveryTestResult) GetMessage() string {
+	return s.Message
+}
+
+// GetRelatedArtists returns the value of RelatedArtists.
+func (s *MusicDiscoveryTestResult) GetRelatedArtists() OptMusicDiscoveryTestResultRelatedArtists {
+	return s.RelatedArtists
+}
+
+// SetOk sets the value of Ok.
+func (s *MusicDiscoveryTestResult) SetOk(val bool) {
+	s.Ok = val
+}
+
+// SetCode sets the value of Code.
+func (s *MusicDiscoveryTestResult) SetCode(val OptString) {
+	s.Code = val
+}
+
+// SetMessage sets the value of Message.
+func (s *MusicDiscoveryTestResult) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetRelatedArtists sets the value of RelatedArtists.
+func (s *MusicDiscoveryTestResult) SetRelatedArtists(val OptMusicDiscoveryTestResultRelatedArtists) {
+	s.RelatedArtists = val
+}
+
+// Spotify only.
+type MusicDiscoveryTestResultRelatedArtists string
+
+const (
+	MusicDiscoveryTestResultRelatedArtistsAvailable  MusicDiscoveryTestResultRelatedArtists = "available"
+	MusicDiscoveryTestResultRelatedArtistsRestricted MusicDiscoveryTestResultRelatedArtists = "restricted"
+	MusicDiscoveryTestResultRelatedArtistsUnknown    MusicDiscoveryTestResultRelatedArtists = "unknown"
+)
+
+// AllValues returns all MusicDiscoveryTestResultRelatedArtists values.
+func (MusicDiscoveryTestResultRelatedArtists) AllValues() []MusicDiscoveryTestResultRelatedArtists {
+	return []MusicDiscoveryTestResultRelatedArtists{
+		MusicDiscoveryTestResultRelatedArtistsAvailable,
+		MusicDiscoveryTestResultRelatedArtistsRestricted,
+		MusicDiscoveryTestResultRelatedArtistsUnknown,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MusicDiscoveryTestResultRelatedArtists) MarshalText() ([]byte, error) {
+	switch s {
+	case MusicDiscoveryTestResultRelatedArtistsAvailable:
+		return []byte(s), nil
+	case MusicDiscoveryTestResultRelatedArtistsRestricted:
+		return []byte(s), nil
+	case MusicDiscoveryTestResultRelatedArtistsUnknown:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MusicDiscoveryTestResultRelatedArtists) UnmarshalText(data []byte) error {
+	switch MusicDiscoveryTestResultRelatedArtists(data) {
+	case MusicDiscoveryTestResultRelatedArtistsAvailable:
+		*s = MusicDiscoveryTestResultRelatedArtistsAvailable
+		return nil
+	case MusicDiscoveryTestResultRelatedArtistsRestricted:
+		*s = MusicDiscoveryTestResultRelatedArtistsRestricted
+		return nil
+	case MusicDiscoveryTestResultRelatedArtistsUnknown:
+		*s = MusicDiscoveryTestResultRelatedArtistsUnknown
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/MusicImportPreview
 type MusicImportPreview struct {
 	AlbumId      int64               `json:"albumId"`
@@ -25650,6 +26592,98 @@ func (o OptMovieStatus) Or(d MovieStatus) MovieStatus {
 	return d
 }
 
+// NewOptMusicDiscoveryProviderRelatedArtists returns new OptMusicDiscoveryProviderRelatedArtists with value set to v.
+func NewOptMusicDiscoveryProviderRelatedArtists(v MusicDiscoveryProviderRelatedArtists) OptMusicDiscoveryProviderRelatedArtists {
+	return OptMusicDiscoveryProviderRelatedArtists{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMusicDiscoveryProviderRelatedArtists is optional MusicDiscoveryProviderRelatedArtists.
+type OptMusicDiscoveryProviderRelatedArtists struct {
+	Value MusicDiscoveryProviderRelatedArtists
+	Set   bool
+}
+
+// IsSet returns true if OptMusicDiscoveryProviderRelatedArtists was set.
+func (o OptMusicDiscoveryProviderRelatedArtists) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMusicDiscoveryProviderRelatedArtists) Reset() {
+	var v MusicDiscoveryProviderRelatedArtists
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMusicDiscoveryProviderRelatedArtists) SetTo(v MusicDiscoveryProviderRelatedArtists) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMusicDiscoveryProviderRelatedArtists) Get() (v MusicDiscoveryProviderRelatedArtists, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMusicDiscoveryProviderRelatedArtists) Or(d MusicDiscoveryProviderRelatedArtists) MusicDiscoveryProviderRelatedArtists {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMusicDiscoveryTestResultRelatedArtists returns new OptMusicDiscoveryTestResultRelatedArtists with value set to v.
+func NewOptMusicDiscoveryTestResultRelatedArtists(v MusicDiscoveryTestResultRelatedArtists) OptMusicDiscoveryTestResultRelatedArtists {
+	return OptMusicDiscoveryTestResultRelatedArtists{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMusicDiscoveryTestResultRelatedArtists is optional MusicDiscoveryTestResultRelatedArtists.
+type OptMusicDiscoveryTestResultRelatedArtists struct {
+	Value MusicDiscoveryTestResultRelatedArtists
+	Set   bool
+}
+
+// IsSet returns true if OptMusicDiscoveryTestResultRelatedArtists was set.
+func (o OptMusicDiscoveryTestResultRelatedArtists) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMusicDiscoveryTestResultRelatedArtists) Reset() {
+	var v MusicDiscoveryTestResultRelatedArtists
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMusicDiscoveryTestResultRelatedArtists) SetTo(v MusicDiscoveryTestResultRelatedArtists) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMusicDiscoveryTestResultRelatedArtists) Get() (v MusicDiscoveryTestResultRelatedArtists, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMusicDiscoveryTestResultRelatedArtists) Or(d MusicDiscoveryTestResultRelatedArtists) MusicDiscoveryTestResultRelatedArtists {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptMusicNamingPreviewErrors returns new OptMusicNamingPreviewErrors with value set to v.
 func NewOptMusicNamingPreviewErrors(v MusicNamingPreviewErrors) OptMusicNamingPreviewErrors {
 	return OptMusicNamingPreviewErrors{
@@ -26334,6 +27368,52 @@ func (o OptQuotaRule) Get() (v QuotaRule, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptQuotaRule) Or(d QuotaRule) QuotaRule {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRefreshArtistSuggestionsReq returns new OptRefreshArtistSuggestionsReq with value set to v.
+func NewOptRefreshArtistSuggestionsReq(v RefreshArtistSuggestionsReq) OptRefreshArtistSuggestionsReq {
+	return OptRefreshArtistSuggestionsReq{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRefreshArtistSuggestionsReq is optional RefreshArtistSuggestionsReq.
+type OptRefreshArtistSuggestionsReq struct {
+	Value RefreshArtistSuggestionsReq
+	Set   bool
+}
+
+// IsSet returns true if OptRefreshArtistSuggestionsReq was set.
+func (o OptRefreshArtistSuggestionsReq) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRefreshArtistSuggestionsReq) Reset() {
+	var v RefreshArtistSuggestionsReq
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRefreshArtistSuggestionsReq) SetTo(v RefreshArtistSuggestionsReq) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRefreshArtistSuggestionsReq) Get() (v RefreshArtistSuggestionsReq, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRefreshArtistSuggestionsReq) Or(d RefreshArtistSuggestionsReq) RefreshArtistSuggestionsReq {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -30291,6 +31371,20 @@ func (s *RecycleEntry) SetRecycledAt(val time.Time) {
 	s.RecycledAt = val
 }
 
+type RefreshArtistSuggestionsReq struct {
+	Seeds []string `json:"seeds"`
+}
+
+// GetSeeds returns the value of Seeds.
+func (s *RefreshArtistSuggestionsReq) GetSeeds() []string {
+	return s.Seeds
+}
+
+// SetSeeds sets the value of Seeds.
+func (s *RefreshArtistSuggestionsReq) SetSeeds(val []string) {
+	s.Seeds = val
+}
+
 // RefreshBoardAccepted is response for RefreshBoard operation.
 type RefreshBoardAccepted struct{}
 
@@ -30927,6 +32021,9 @@ func (s *RemotePathMappingInput) SetRemotePath(val string) {
 func (s *RemotePathMappingInput) SetLocalPath(val string) {
 	s.LocalPath = val
 }
+
+// RemoveArtistExclusionNoContent is response for RemoveArtistExclusion operation.
+type RemoveArtistExclusionNoContent struct{}
 
 // RemoveQueueItemNoContent is response for RemoveQueueItem operation.
 type RemoveQueueItemNoContent struct{}
@@ -39437,6 +40534,20 @@ func (s *TaskList) SetScheduled(val []ScheduledTask) {
 // SetJobs sets the value of Jobs.
 func (s *TaskList) SetJobs(val []Job) {
 	s.Jobs = val
+}
+
+type TestMusicDiscoveryProviderReq struct {
+	Provider MusicDiscoveryProviderId `json:"provider"`
+}
+
+// GetProvider returns the value of Provider.
+func (s *TestMusicDiscoveryProviderReq) GetProvider() MusicDiscoveryProviderId {
+	return s.Provider
+}
+
+// SetProvider sets the value of Provider.
+func (s *TestMusicDiscoveryProviderReq) SetProvider(val MusicDiscoveryProviderId) {
+	s.Provider = val
 }
 
 // Ref: #/components/schemas/Timeline
