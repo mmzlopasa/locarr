@@ -14,7 +14,8 @@
     "add": "Add",
     "delete": "Delete",
     "yes": "Yes",
-    "remove": "Remove"
+    "remove": "Remove",
+    "no": "No"
   },
   "languages": {
     "en": "English",
@@ -859,7 +860,7 @@
       "blocked": "This address is blocked for safety. Allow it in the indexer settings below if it is yours.",
       "unknown": "The indexer reported an error.",
       "removed": "The source no longer lists this indexer.",
-      "challenge": "The site shows a Cloudflare challenge. Set a FlareSolverr URL for this indexer under Edit.",
+      "challenge": "The site shows a browser check. Locarr's built-in browser passes it (see Browser for protected sites below); a FlareSolverr URL on the indexer is the fallback.",
       "layout": "The site's pages changed and its results can no longer be read. Update Locarr or add a fixed custom definition."
     },
     "test": {
@@ -903,7 +904,7 @@
       "proxyUsername": "Proxy user name",
       "proxyPassword": "Proxy password",
       "flaresolverr": "FlareSolverr URL",
-      "flaresolverrHint": "Only for indexers behind a Cloudflare challenge.",
+      "flaresolverrHint": "Optional fallback when the built-in browser for protected sites is not running.",
       "add": "Add"
     },
     "import": {
@@ -945,7 +946,7 @@
       "allowedHosts": "Allowed local addresses",
       "allowedHostsHint": "Loopback and link-local addresses are blocked by default. List addresses, networks or host names to allow, e.g. 127.0.0.1.",
       "blockPrivate": "Also block private networks",
-      "blockPrivateHint": "Off by default, because FlareSolverr and your own services usually run on the same Docker network.",
+      "blockPrivateHint": "Off by default, because your own services (Prowlarr, the built-in browser) usually run on the same Docker network.",
       "publicTrackers": "Trackers for built magnets",
       "publicTrackersHint": "One per line. Added to magnet links Locarr builds from a site's info hash.",
       "userAgent": "User agent",
@@ -977,8 +978,8 @@
       "version": "v{{n}}",
       "verified": "How it was checked",
       "flaresolverr": {
-        "sometimes": "May need FlareSolverr",
-        "always": "Needs FlareSolverr"
+        "sometimes": "May show a browser check",
+        "always": "Behind a browser check"
       },
       "custom": "Custom",
       "overrides": "Overrides built-in",
@@ -992,7 +993,7 @@
       "otherAddress": "Other address…",
       "customAddress": "Custom address",
       "options": "Site options",
-      "flaresolverrHint": "Needed only when the site shows a Cloudflare challenge.",
+      "flaresolverrHint": "Only a fallback: Locarr's built-in browser passes browser checks. Set this if you already run FlareSolverr and not the built-in browser.",
       "rateLimit": "Requests",
       "rateLimitHint": "At most this many requests per period, so the site is not hammered."
     },
@@ -1015,7 +1016,7 @@
       "reloaded": "Definitions reloaded."
     },
     "errorShort": {
-      "challenge": "Cloudflare challenge",
+      "challenge": "browser check",
       "layout": "layout changed",
       "unreachable": "site down",
       "rate_limit": "rate limited",
@@ -1026,6 +1027,50 @@
       "bad_response": "unexpected answer",
       "unknown": "error",
       "error": "error"
+    },
+    "browser": {
+      "title": "Browser for protected sites",
+      "subtitle": "Some sites check that a real browser visits them (Cloudflare, DDoS-Guard). Locarr's own browser passes these automatic checks, keeps the cookies and uses them for later searches. It never solves a CAPTCHA that needs a person.",
+      "state": {
+        "connected": "Connected",
+        "missing": "Not running",
+        "unauthorized": "Wrong token",
+        "error": "Error"
+      },
+      "version": "Version",
+      "chromium": "Chromium",
+      "notStarted": "starts when needed",
+      "tabs": "Tabs in use",
+      "tabsValue": "{{inUse}} of {{tabs}}",
+      "sandbox": "Chromium sandbox",
+      "missing": "The browser is optional and not running. Start it next to Locarr with:",
+      "unauthorized": "The browser refused Locarr's token. Set the same LOCARR_BROWSER_TOKEN for both containers, or enter the browser's token below.",
+      "lastSolve": "Last page: {{host}}, {{outcome}} {{when}} ({{seconds}} s)",
+      "test": "Test",
+      "testHuman": "Test a CAPTCHA page",
+      "testUrl": "Or open an address",
+      "testUrlHint": "Opens the page in the browser with the indexers' address rules and reports what happened.",
+      "open": "Open",
+      "testing": "The browser is working; a check takes a few seconds…",
+      "testPassed": "Passed: {{outcome}} in {{seconds}} s, {{cookies}} cookies.",
+      "testFailed": "Not passed: {{outcome}} after {{seconds}} s.",
+      "outcome": {
+        "solved": "page opened",
+        "human": "needs a human check",
+        "timeout": "check did not finish",
+        "blocked": "site refuses the browser",
+        "refused": "address not allowed",
+        "error": "error",
+        "browser_missing": "browser not running",
+        "browser_failed": "browser failed"
+      },
+      "url": "Browser address",
+      "urlHint": "Leave empty for the default address of the compose service.",
+      "token": "Token",
+      "tokenHint": "Must match LOCARR_BROWSER_TOKEN of the browser container. Leave empty to keep the current one.",
+      "tokenSaved": "saved (type to replace)",
+      "tokenFromEnv": "from LOCARR_BROWSER_TOKEN",
+      "forgetToken": "Forget saved token"
     }
   },
   "profiles": {
@@ -3474,9 +3519,13 @@
       "update_available": "Locarr {{latest}} is available (this is {{current}}).",
       "backup_failed": "The last scheduled backup failed: {{error}}",
       "check_failed": "The {{check}} check could not run: {{error}}",
-      "indexer_challenge": "Indexer {{name}} answers with a Cloudflare challenge. Set a FlareSolverr URL on it.",
+      "indexer_challenge": "Indexer {{name}} sits behind a browser check that could not be passed: {{error}}",
       "indexer_layout": "The pages of {{name}} no longer match its definition (the site changed). Wait for an updated definition or add a custom one.",
-      "indexer_selftest_failed": "The weekly test of built-in indexer {{name}} failed."
+      "indexer_selftest_failed": "The weekly test of built-in indexer {{name}} failed.",
+      "indexer_challenge_browser_missing": "Indexer {{name}} sits behind a browser check and the built-in browser is not running. Start it with: {{command}}",
+      "indexer_challenge_browser_failed": "The built-in browser could not pass the check of indexer {{name}}: {{detail}}",
+      "indexer_challenge_human": "Indexer {{name}} needs a human check (a CAPTCHA). Open the site in your browser; Locarr does not solve these and tries again later.",
+      "indexer_challenge_blocked": "The site of indexer {{name}} refuses the built-in browser (blocked, not a check)."
     }
   },
   "logs": {

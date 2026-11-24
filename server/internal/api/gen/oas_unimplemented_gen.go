@@ -1125,6 +1125,15 @@ func (UnimplementedHandler) GetIndexer(ctx context.Context, params GetIndexerPar
 	return r, ht.ErrNotImplemented
 }
 
+// GetIndexerBrowser implements getIndexerBrowser operation.
+//
+// State of the built-in browser for sites behind a browser check (administrators).
+//
+// GET /indexers/browser
+func (UnimplementedHandler) GetIndexerBrowser(ctx context.Context) (r *IndexerBrowserStatus, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetIndexerSettings implements getIndexerSettings operation.
 //
 // Indexer-wide settings (administrators).
@@ -3067,6 +3076,17 @@ func (UnimplementedHandler) TestDownloadClient(ctx context.Context, req *Downloa
 //
 // POST /indexers/{id}/test
 func (UnimplementedHandler) TestIndexer(ctx context.Context, params TestIndexerParams) (r *IndexerTestResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TestIndexerBrowser implements testIndexerBrowser operation.
+//
+// Without `url` the browser opens its own built-in test page (a JavaScript check that sets a cookie
+// and reloads); with `variant: human` it opens a page that asks for a CAPTCHA, which must be reported
+// as `human`. With `url` it opens that page with the indexers' address policy.
+//
+// POST /indexers/browser/test
+func (UnimplementedHandler) TestIndexerBrowser(ctx context.Context, req *IndexerBrowserTestRequest) (r *IndexerBrowserTestResult, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

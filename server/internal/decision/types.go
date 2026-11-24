@@ -111,7 +111,7 @@ type Wanted struct {
 	OriginalLanguage string   `json:"originalLanguage,omitempty"`
 	Tags             []string `json:"tags,omitempty"`
 	Current          *Current `json:"current,omitempty"`
-	// Adult is set for adult scenes and movies (D-104): identity is judged by
+	// Adult is set for adult scenes and movies (D-105): identity is judged by
 	// studio, date and title instead of the usual title/year/episode checks.
 	Adult *Adult `json:"adult,omitempty"`
 }

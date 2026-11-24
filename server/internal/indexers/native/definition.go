@@ -33,8 +33,12 @@ type Definition struct {
 	Links []string `yaml:"links" json:"links"`
 	// Verified says how the definition was written and checked.
 	Verified string `yaml:"verified" json:"verified"`
-	// FlareSolverr hints whether the site sits behind a Cloudflare challenge:
-	// never, sometimes or always.
+	// Challenge says whether the site shows a browser check (Cloudflare,
+	// DDoS-Guard …) that the built-in browser passes: never, sometimes or
+	// always.
+	Challenge string `yaml:"challenge" json:"challenge"`
+	// FlareSolverr is the old name of Challenge, still read from custom
+	// definitions; after loading it always equals Challenge.
 	FlareSolverr string `yaml:"flaresolverr" json:"flaresolverr"`
 	// RateLimit is the default request limit of a new indexer for this site.
 	RateLimit RateLimit `yaml:"rateLimit" json:"rateLimit"`
@@ -236,13 +240,20 @@ func (d *Definition) validate() error {
 		}
 		d.Links[i] = strings.TrimRight(l, "/")
 	}
-	switch d.FlareSolverr {
+	switch {
+	case d.Challenge == "":
+		d.Challenge = d.FlareSolverr
+	case d.FlareSolverr != "" && d.FlareSolverr != d.Challenge:
+		bad("challenge and its old name flaresolverr disagree; keep only challenge")
+	}
+	switch d.Challenge {
 	case "":
-		d.FlareSolverr = "never"
+		d.Challenge = "never"
 	case "never", "sometimes", "always":
 	default:
-		bad("flaresolverr must be never, sometimes or always")
+		bad("challenge must be never, sometimes or always")
 	}
+	d.FlareSolverr = d.Challenge
 	if (d.RateLimit.Requests > 0) != (d.RateLimit.PeriodSeconds > 0) {
 		bad("rateLimit needs both requests and periodSeconds")
 	}

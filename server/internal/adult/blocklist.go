@@ -9,7 +9,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/decision"
 )
 
-// DefaultBlocklist is the conservative seed list (D-102): terms commonly
+// DefaultBlocklist is the conservative seed list (D-103): terms commonly
 // used for content involving minors or without consent. It is applied to
 // searches, RSS, imports and metadata entries; the administrator may add
 // terms and remove seeded ones.

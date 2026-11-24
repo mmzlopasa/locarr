@@ -696,7 +696,7 @@ func (s *Service) TranslateDue(ctx context.Context) (int, error) {
 	now := db.Millis(s.now())
 	rows, err := s.DB.R.QueryContext(ctx, `SELECT item_ref, translate_attempts FROM subtitle_state WHERE translate_at IS NOT NULL AND translate_at <= ?
 		AND missing_count > 0 AND searches > 0 AND (translate_retry_at IS NULL OR translate_retry_at <= ?)
-		AND item_ref NOT LIKE 'scene:%' AND item_ref NOT LIKE 'adult_movie:%' ORDER BY translate_at LIMIT ?`, now, now, limit) // adult items are never translated (D-102)
+		AND item_ref NOT LIKE 'scene:%' AND item_ref NOT LIKE 'adult_movie:%' ORDER BY translate_at LIMIT ?`, now, now, limit) // adult items are never translated (D-103)
 	if err != nil {
 		return 0, err
 	}

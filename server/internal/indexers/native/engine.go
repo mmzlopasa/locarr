@@ -424,7 +424,7 @@ func (c *Client) Do(ctx context.Context, method, rawURL string, hdr http.Header,
 	}
 	if httpx.IsChallenge(res) {
 		return nil, &znab.Error{Kind: znab.KindChallenge, Code: res.Status,
-			Message: "the site answers with a Cloudflare challenge; set a FlareSolverr URL for this indexer"}
+			Message: "the site answers with a browser check; start the built-in browser (" + httpx.BrowserCommand + ") or set a FlareSolverr URL for this indexer"}
 	}
 	if res.Status < 200 || res.Status > 299 {
 		return nil, statusError(res)

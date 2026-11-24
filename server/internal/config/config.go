@@ -61,6 +61,11 @@ type Config struct {
 	// address (LOCARR_AUTH_RATE_LIMIT="perMinute,burst", default "10,10"; "0" turns it off).
 	AuthRatePerMin int
 	AuthRateBurst  int
+	// BrowserURL and BrowserToken reach the optional companion browser
+	// (LOCARR_BROWSER_URL, default http://locarr-browser:8490; LOCARR_BROWSER_TOKEN).
+	// The settings may replace both.
+	BrowserURL   string
+	BrowserToken string
 }
 
 // DatabasePath is the SQLite database file.
@@ -98,6 +103,8 @@ func load(env func(string) string) (Config, error) {
 		FFmpeg:              get("LOCARR_FFMPEG", ""),
 		ReleasesURL:         get("LOCARR_RELEASES_URL", ""),
 		SubtitleURLs:        map[string]string{},
+		BrowserURL:          get("LOCARR_BROWSER_URL", ""),
+		BrowserToken:        strings.TrimSpace(env("LOCARR_BROWSER_TOKEN")),
 	}
 	for name, k := range map[string]string{"opensubtitles": "LOCARR_OPENSUBTITLES_URL", "subdl": "LOCARR_SUBDL_URL", "jimaku": "LOCARR_JIMAKU_URL"} {
 		if v := get(k, ""); v != "" {

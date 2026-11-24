@@ -6,7 +6,7 @@ language: en
 links:
   - https://subsplease.org
 verified: Written by observing subsplease.org's /api/?f=search and f=latest answers on 2026-11-23.
-flaresolverr: never
+challenge: never
 rateLimit: {requests: 20, periodSeconds: 60}
 delayMillis: 1000
 aliases: [subsplease]

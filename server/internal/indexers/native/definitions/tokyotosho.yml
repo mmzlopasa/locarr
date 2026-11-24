@@ -8,7 +8,7 @@ links:
 verified: >-
   Written from the site's RSS feed (rss.php with terms and filter) as published on 2026-10-31
   (read from the Internet Archive's copy; the site itself answered HTTP 522 on 2026-11-23).
-flaresolverr: never
+challenge: never
 rateLimit: {requests: 12, periodSeconds: 60}
 delayMillis: 2000
 aliases: [tokyotosho, "tokyo toshokan", "tokyotosho.info"]

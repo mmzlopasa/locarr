@@ -29524,6 +29524,831 @@ func (s *Indexer) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *IndexerBrowserSolve) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *IndexerBrowserSolve) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("at")
+		json.EncodeDateTime(e, s.At)
+	}
+	{
+		e.FieldStart("host")
+		e.Str(s.Host)
+	}
+	{
+		e.FieldStart("outcome")
+		e.Str(s.Outcome)
+	}
+	{
+		if s.Message.Set {
+			e.FieldStart("message")
+			s.Message.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("elapsedMs")
+		e.Int64(s.ElapsedMs)
+	}
+}
+
+var jsonFieldsNameOfIndexerBrowserSolve = [5]string{
+	0: "at",
+	1: "host",
+	2: "outcome",
+	3: "message",
+	4: "elapsedMs",
+}
+
+// Decode decodes IndexerBrowserSolve from json.
+func (s *IndexerBrowserSolve) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode IndexerBrowserSolve to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "at":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.At = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"at\"")
+			}
+		case "host":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Host = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"host\"")
+			}
+		case "outcome":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Outcome = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"outcome\"")
+			}
+		case "message":
+			if err := func() error {
+				s.Message.Reset()
+				if err := s.Message.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"message\"")
+			}
+		case "elapsedMs":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int64()
+				s.ElapsedMs = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"elapsedMs\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode IndexerBrowserSolve")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00010111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfIndexerBrowserSolve) {
+					name = jsonFieldsNameOfIndexerBrowserSolve[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *IndexerBrowserSolve) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *IndexerBrowserSolve) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *IndexerBrowserStatus) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *IndexerBrowserStatus) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("state")
+		s.State.Encode(e)
+	}
+	{
+		e.FieldStart("url")
+		e.Str(s.URL)
+	}
+	{
+		if s.Message.Set {
+			e.FieldStart("message")
+			s.Message.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("command")
+		e.Str(s.Command)
+	}
+	{
+		if s.Version.Set {
+			e.FieldStart("version")
+			s.Version.Encode(e)
+		}
+	}
+	{
+		if s.Chromium.Set {
+			e.FieldStart("chromium")
+			s.Chromium.Encode(e)
+		}
+	}
+	{
+		if s.Running.Set {
+			e.FieldStart("running")
+			s.Running.Encode(e)
+		}
+	}
+	{
+		if s.Sandbox.Set {
+			e.FieldStart("sandbox")
+			s.Sandbox.Encode(e)
+		}
+	}
+	{
+		if s.Tabs.Set {
+			e.FieldStart("tabs")
+			s.Tabs.Encode(e)
+		}
+	}
+	{
+		if s.TabsInUse.Set {
+			e.FieldStart("tabsInUse")
+			s.TabsInUse.Encode(e)
+		}
+	}
+	{
+		if s.Solves.Set {
+			e.FieldStart("solves")
+			s.Solves.Encode(e)
+		}
+	}
+	{
+		if s.Restarts.Set {
+			e.FieldStart("restarts")
+			s.Restarts.Encode(e)
+		}
+	}
+	{
+		if s.LastSolve.Set {
+			e.FieldStart("lastSolve")
+			s.LastSolve.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfIndexerBrowserStatus = [13]string{
+	0:  "state",
+	1:  "url",
+	2:  "message",
+	3:  "command",
+	4:  "version",
+	5:  "chromium",
+	6:  "running",
+	7:  "sandbox",
+	8:  "tabs",
+	9:  "tabsInUse",
+	10: "solves",
+	11: "restarts",
+	12: "lastSolve",
+}
+
+// Decode decodes IndexerBrowserStatus from json.
+func (s *IndexerBrowserStatus) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode IndexerBrowserStatus to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "state":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				if err := s.State.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"state\"")
+			}
+		case "url":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.URL = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"url\"")
+			}
+		case "message":
+			if err := func() error {
+				s.Message.Reset()
+				if err := s.Message.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"message\"")
+			}
+		case "command":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Command = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"command\"")
+			}
+		case "version":
+			if err := func() error {
+				s.Version.Reset()
+				if err := s.Version.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"version\"")
+			}
+		case "chromium":
+			if err := func() error {
+				s.Chromium.Reset()
+				if err := s.Chromium.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"chromium\"")
+			}
+		case "running":
+			if err := func() error {
+				s.Running.Reset()
+				if err := s.Running.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"running\"")
+			}
+		case "sandbox":
+			if err := func() error {
+				s.Sandbox.Reset()
+				if err := s.Sandbox.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sandbox\"")
+			}
+		case "tabs":
+			if err := func() error {
+				s.Tabs.Reset()
+				if err := s.Tabs.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tabs\"")
+			}
+		case "tabsInUse":
+			if err := func() error {
+				s.TabsInUse.Reset()
+				if err := s.TabsInUse.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tabsInUse\"")
+			}
+		case "solves":
+			if err := func() error {
+				s.Solves.Reset()
+				if err := s.Solves.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"solves\"")
+			}
+		case "restarts":
+			if err := func() error {
+				s.Restarts.Reset()
+				if err := s.Restarts.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"restarts\"")
+			}
+		case "lastSolve":
+			if err := func() error {
+				s.LastSolve.Reset()
+				if err := s.LastSolve.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastSolve\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode IndexerBrowserStatus")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b00001011,
+		0b00000000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfIndexerBrowserStatus) {
+					name = jsonFieldsNameOfIndexerBrowserStatus[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *IndexerBrowserStatus) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *IndexerBrowserStatus) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes IndexerBrowserStatusState as json.
+func (s IndexerBrowserStatusState) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes IndexerBrowserStatusState from json.
+func (s *IndexerBrowserStatusState) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode IndexerBrowserStatusState to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch IndexerBrowserStatusState(v) {
+	case IndexerBrowserStatusStateConnected:
+		*s = IndexerBrowserStatusStateConnected
+	case IndexerBrowserStatusStateMissing:
+		*s = IndexerBrowserStatusStateMissing
+	case IndexerBrowserStatusStateUnauthorized:
+		*s = IndexerBrowserStatusStateUnauthorized
+	case IndexerBrowserStatusStateError:
+		*s = IndexerBrowserStatusStateError
+	default:
+		*s = IndexerBrowserStatusState(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s IndexerBrowserStatusState) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *IndexerBrowserStatusState) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *IndexerBrowserTestRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *IndexerBrowserTestRequest) encodeFields(e *jx.Encoder) {
+	{
+		if s.URL.Set {
+			e.FieldStart("url")
+			s.URL.Encode(e)
+		}
+	}
+	{
+		if s.Variant.Set {
+			e.FieldStart("variant")
+			s.Variant.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfIndexerBrowserTestRequest = [2]string{
+	0: "url",
+	1: "variant",
+}
+
+// Decode decodes IndexerBrowserTestRequest from json.
+func (s *IndexerBrowserTestRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode IndexerBrowserTestRequest to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "url":
+			if err := func() error {
+				s.URL.Reset()
+				if err := s.URL.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"url\"")
+			}
+		case "variant":
+			if err := func() error {
+				s.Variant.Reset()
+				if err := s.Variant.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"variant\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode IndexerBrowserTestRequest")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *IndexerBrowserTestRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *IndexerBrowserTestRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes IndexerBrowserTestRequestVariant as json.
+func (s IndexerBrowserTestRequestVariant) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes IndexerBrowserTestRequestVariant from json.
+func (s *IndexerBrowserTestRequestVariant) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode IndexerBrowserTestRequestVariant to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch IndexerBrowserTestRequestVariant(v) {
+	case IndexerBrowserTestRequestVariantJs:
+		*s = IndexerBrowserTestRequestVariantJs
+	case IndexerBrowserTestRequestVariantHuman:
+		*s = IndexerBrowserTestRequestVariantHuman
+	default:
+		*s = IndexerBrowserTestRequestVariant(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s IndexerBrowserTestRequestVariant) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *IndexerBrowserTestRequestVariant) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *IndexerBrowserTestResult) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *IndexerBrowserTestResult) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("passed")
+		e.Bool(s.Passed)
+	}
+	{
+		e.FieldStart("outcome")
+		e.Str(s.Outcome)
+	}
+	{
+		if s.Message.Set {
+			e.FieldStart("message")
+			s.Message.Encode(e)
+		}
+	}
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("challenged")
+		e.Bool(s.Challenged)
+	}
+	{
+		e.FieldStart("cookies")
+		e.Int(s.Cookies)
+	}
+	{
+		e.FieldStart("elapsedMs")
+		e.Int64(s.ElapsedMs)
+	}
+}
+
+var jsonFieldsNameOfIndexerBrowserTestResult = [7]string{
+	0: "passed",
+	1: "outcome",
+	2: "message",
+	3: "title",
+	4: "challenged",
+	5: "cookies",
+	6: "elapsedMs",
+}
+
+// Decode decodes IndexerBrowserTestResult from json.
+func (s *IndexerBrowserTestResult) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode IndexerBrowserTestResult to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "passed":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Bool()
+				s.Passed = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"passed\"")
+			}
+		case "outcome":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Outcome = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"outcome\"")
+			}
+		case "message":
+			if err := func() error {
+				s.Message.Reset()
+				if err := s.Message.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"message\"")
+			}
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "challenged":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Bool()
+				s.Challenged = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"challenged\"")
+			}
+		case "cookies":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.Cookies = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"cookies\"")
+			}
+		case "elapsedMs":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int64()
+				s.ElapsedMs = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"elapsedMs\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode IndexerBrowserTestResult")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b01110011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfIndexerBrowserTestResult) {
+					name = jsonFieldsNameOfIndexerBrowserTestResult[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *IndexerBrowserTestResult) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *IndexerBrowserTestResult) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *IndexerCaps) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -30312,6 +31137,10 @@ func (s *IndexerDefinition) encodeFields(e *jx.Encoder) {
 		e.Str(s.Verified)
 	}
 	{
+		e.FieldStart("challenge")
+		s.Challenge.Encode(e)
+	}
+	{
 		e.FieldStart("flaresolverr")
 		s.Flaresolverr.Encode(e)
 	}
@@ -30367,7 +31196,7 @@ func (s *IndexerDefinition) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfIndexerDefinition = [19]string{
+var jsonFieldsNameOfIndexerDefinition = [20]string{
 	0:  "id",
 	1:  "name",
 	2:  "description",
@@ -30379,14 +31208,15 @@ var jsonFieldsNameOfIndexerDefinition = [19]string{
 	8:  "language",
 	9:  "links",
 	10: "verified",
-	11: "flaresolverr",
-	12: "rateLimit",
-	13: "rss",
-	14: "searching",
-	15: "categories",
-	16: "settings",
-	17: "aliases",
-	18: "indexerIds",
+	11: "challenge",
+	12: "flaresolverr",
+	13: "rateLimit",
+	14: "rss",
+	15: "searching",
+	16: "categories",
+	17: "settings",
+	18: "aliases",
+	19: "indexerIds",
 }
 
 // Decode decodes IndexerDefinition from json.
@@ -30532,8 +31362,18 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"verified\"")
 			}
-		case "flaresolverr":
+		case "challenge":
 			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				if err := s.Challenge.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"challenge\"")
+			}
+		case "flaresolverr":
+			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				if err := s.Flaresolverr.Decode(d); err != nil {
 					return err
@@ -30553,7 +31393,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"rateLimit\"")
 			}
 		case "rss":
-			requiredBitSet[1] |= 1 << 5
+			requiredBitSet[1] |= 1 << 6
 			if err := func() error {
 				v, err := d.Bool()
 				s.Rss = bool(v)
@@ -30565,7 +31405,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"rss\"")
 			}
 		case "searching":
-			requiredBitSet[1] |= 1 << 6
+			requiredBitSet[1] |= 1 << 7
 			if err := func() error {
 				s.Searching = make([]IndexerSearchCap, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -30583,7 +31423,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"searching\"")
 			}
 		case "categories":
-			requiredBitSet[1] |= 1 << 7
+			requiredBitSet[2] |= 1 << 0
 			if err := func() error {
 				s.Categories = make([]IndexerCategory, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -30601,7 +31441,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"categories\"")
 			}
 		case "settings":
-			requiredBitSet[2] |= 1 << 0
+			requiredBitSet[2] |= 1 << 1
 			if err := func() error {
 				s.Settings = make([]IndexerDefinitionSetting, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -30619,7 +31459,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"settings\"")
 			}
 		case "aliases":
-			requiredBitSet[2] |= 1 << 1
+			requiredBitSet[2] |= 1 << 2
 			if err := func() error {
 				s.Aliases = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -30639,7 +31479,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"aliases\"")
 			}
 		case "indexerIds":
-			requiredBitSet[2] |= 1 << 2
+			requiredBitSet[2] |= 1 << 3
 			if err := func() error {
 				s.IndexerIds = make([]int64, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -30669,8 +31509,8 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 	var failures []validate.FieldError
 	for i, mask := range [3]uint8{
 		0b10111111,
-		0b11101110,
-		0b00000111,
+		0b11011110,
+		0b00001111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -30712,6 +31552,48 @@ func (s *IndexerDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *IndexerDefinition) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes IndexerDefinitionChallenge as json.
+func (s IndexerDefinitionChallenge) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes IndexerDefinitionChallenge from json.
+func (s *IndexerDefinitionChallenge) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode IndexerDefinitionChallenge to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch IndexerDefinitionChallenge(v) {
+	case IndexerDefinitionChallengeNever:
+		*s = IndexerDefinitionChallengeNever
+	case IndexerDefinitionChallengeSometimes:
+		*s = IndexerDefinitionChallengeSometimes
+	case IndexerDefinitionChallengeAlways:
+		*s = IndexerDefinitionChallengeAlways
+	default:
+		*s = IndexerDefinitionChallenge(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s IndexerDefinitionChallenge) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *IndexerDefinitionChallenge) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -32551,6 +33433,22 @@ func (s *IndexerSettings) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *IndexerSettings) encodeFields(e *jx.Encoder) {
 	{
+		e.FieldStart("browserUrl")
+		e.Str(s.BrowserUrl)
+	}
+	{
+		e.FieldStart("browserDefaultUrl")
+		e.Str(s.BrowserDefaultUrl)
+	}
+	{
+		e.FieldStart("browserToken")
+		s.BrowserToken.Encode(e)
+	}
+	{
+		e.FieldStart("browserTokenFromEnv")
+		e.Bool(s.BrowserTokenFromEnv)
+	}
+	{
 		e.FieldStart("rssSyncIntervalMinutes")
 		e.Int(s.RssSyncIntervalMinutes)
 	}
@@ -32592,15 +33490,19 @@ func (s *IndexerSettings) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfIndexerSettings = [8]string{
-	0: "rssSyncIntervalMinutes",
-	1: "releaseRetentionDays",
-	2: "searchTimeoutSeconds",
-	3: "searchCacheSeconds",
-	4: "allowedHosts",
-	5: "blockPrivateNetworks",
-	6: "publicTrackers",
-	7: "userAgent",
+var jsonFieldsNameOfIndexerSettings = [12]string{
+	0:  "browserUrl",
+	1:  "browserDefaultUrl",
+	2:  "browserToken",
+	3:  "browserTokenFromEnv",
+	4:  "rssSyncIntervalMinutes",
+	5:  "releaseRetentionDays",
+	6:  "searchTimeoutSeconds",
+	7:  "searchCacheSeconds",
+	8:  "allowedHosts",
+	9:  "blockPrivateNetworks",
+	10: "publicTrackers",
+	11: "userAgent",
 }
 
 // Decode decodes IndexerSettings from json.
@@ -32608,12 +33510,58 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode IndexerSettings to nil")
 	}
-	var requiredBitSet [1]uint8
+	var requiredBitSet [2]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "rssSyncIntervalMinutes":
+		case "browserUrl":
 			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.BrowserUrl = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"browserUrl\"")
+			}
+		case "browserDefaultUrl":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.BrowserDefaultUrl = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"browserDefaultUrl\"")
+			}
+		case "browserToken":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				if err := s.BrowserToken.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"browserToken\"")
+			}
+		case "browserTokenFromEnv":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Bool()
+				s.BrowserTokenFromEnv = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"browserTokenFromEnv\"")
+			}
+		case "rssSyncIntervalMinutes":
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				v, err := d.Int()
 				s.RssSyncIntervalMinutes = int(v)
@@ -32625,7 +33573,7 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"rssSyncIntervalMinutes\"")
 			}
 		case "releaseRetentionDays":
-			requiredBitSet[0] |= 1 << 1
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Int()
 				s.ReleaseRetentionDays = int(v)
@@ -32637,7 +33585,7 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"releaseRetentionDays\"")
 			}
 		case "searchTimeoutSeconds":
-			requiredBitSet[0] |= 1 << 2
+			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				v, err := d.Int()
 				s.SearchTimeoutSeconds = int(v)
@@ -32649,7 +33597,7 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"searchTimeoutSeconds\"")
 			}
 		case "searchCacheSeconds":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
 				v, err := d.Int()
 				s.SearchCacheSeconds = int(v)
@@ -32661,7 +33609,7 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"searchCacheSeconds\"")
 			}
 		case "allowedHosts":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[1] |= 1 << 0
 			if err := func() error {
 				s.AllowedHosts = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -32681,7 +33629,7 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"allowedHosts\"")
 			}
 		case "blockPrivateNetworks":
-			requiredBitSet[0] |= 1 << 5
+			requiredBitSet[1] |= 1 << 1
 			if err := func() error {
 				v, err := d.Bool()
 				s.BlockPrivateNetworks = bool(v)
@@ -32693,7 +33641,7 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"blockPrivateNetworks\"")
 			}
 		case "publicTrackers":
-			requiredBitSet[0] |= 1 << 6
+			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
 				s.PublicTrackers = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -32713,7 +33661,7 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"publicTrackers\"")
 			}
 		case "userAgent":
-			requiredBitSet[0] |= 1 << 7
+			requiredBitSet[1] |= 1 << 3
 			if err := func() error {
 				v, err := d.Str()
 				s.UserAgent = string(v)
@@ -32733,8 +33681,9 @@ func (s *IndexerSettings) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
+	for i, mask := range [2]uint8{
 		0b11111111,
+		0b00001111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -54917,6 +55866,72 @@ func (s OptImportExistingArtistsRequestMonitor) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptImportExistingArtistsRequestMonitor) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes IndexerBrowserSolve as json.
+func (o OptIndexerBrowserSolve) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes IndexerBrowserSolve from json.
+func (o *OptIndexerBrowserSolve) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptIndexerBrowserSolve to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptIndexerBrowserSolve) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptIndexerBrowserSolve) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes IndexerBrowserTestRequestVariant as json.
+func (o OptIndexerBrowserTestRequestVariant) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes IndexerBrowserTestRequestVariant from json.
+func (o *OptIndexerBrowserTestRequestVariant) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptIndexerBrowserTestRequestVariant to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptIndexerBrowserTestRequestVariant) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptIndexerBrowserTestRequestVariant) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -88257,9 +89272,21 @@ func (s *UpdateIndexerSettingsRequest) encodeFields(e *jx.Encoder) {
 			s.UserAgent.Encode(e)
 		}
 	}
+	{
+		if s.BrowserUrl.Set {
+			e.FieldStart("browserUrl")
+			s.BrowserUrl.Encode(e)
+		}
+	}
+	{
+		if s.BrowserToken.Set {
+			e.FieldStart("browserToken")
+			s.BrowserToken.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfUpdateIndexerSettingsRequest = [8]string{
+var jsonFieldsNameOfUpdateIndexerSettingsRequest = [10]string{
 	0: "rssSyncIntervalMinutes",
 	1: "releaseRetentionDays",
 	2: "searchTimeoutSeconds",
@@ -88268,6 +89295,8 @@ var jsonFieldsNameOfUpdateIndexerSettingsRequest = [8]string{
 	5: "blockPrivateNetworks",
 	6: "publicTrackers",
 	7: "userAgent",
+	8: "browserUrl",
+	9: "browserToken",
 }
 
 // Decode decodes UpdateIndexerSettingsRequest from json.
@@ -88375,6 +89404,26 @@ func (s *UpdateIndexerSettingsRequest) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"userAgent\"")
+			}
+		case "browserUrl":
+			if err := func() error {
+				s.BrowserUrl.Reset()
+				if err := s.BrowserUrl.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"browserUrl\"")
+			}
+		case "browserToken":
+			if err := func() error {
+				s.BrowserToken.Reset()
+				if err := s.BrowserToken.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"browserToken\"")
 			}
 		default:
 			return d.Skip()

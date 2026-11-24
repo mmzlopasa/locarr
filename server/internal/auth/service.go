@@ -79,7 +79,7 @@ type Principal struct {
 	SessionID int64 // zero for API keys
 	APIKeyID  int64 // zero for sessions
 	ReadOnly  bool  // a read-only API key
-	// IncludeAdult: the API key was created with "include adult" (D-102).
+	// IncludeAdult: the API key was created with "include adult" (D-103).
 	IncludeAdult bool
 }
 

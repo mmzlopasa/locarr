@@ -25,3 +25,9 @@ services:
       LOCARR_OPENSUBTITLES_URL: ${LOCARR_OPENSUBTITLES_URL:-}
       LOCARR_SUBDL_URL: ${LOCARR_SUBDL_URL:-}
       LOCARR_JIMAKU_URL: ${LOCARR_JIMAKU_URL:-}
+  locarr-browser:
+    image: locarr-browser:dev
+    build:
+      context: ../browser
+      args:
+        VERSION: ${LOCARR_BUILD_VERSION:-dev}

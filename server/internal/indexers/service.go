@@ -45,6 +45,11 @@ type Service struct {
 	PolicyOverride *httpx.Policy
 	// Natives holds the built-in and custom site definitions (nil: none).
 	Natives *native.Registry
+	// Browser is the companion browser for sites behind a browser check.
+	Browser *httpx.Browser
+	// BrowserEnv is the browser address and token from the environment;
+	// the settings replace them.
+	BrowserEnv httpx.BrowserConfig
 
 	limiter *limiter
 	cache   *cache
@@ -65,8 +70,10 @@ func New(d *db.DB, box *secrets.Box, st *settings.Store, log *slog.Logger) *Serv
 	if log == nil {
 		log = slog.Default()
 	}
-	return &Service{DB: d, Box: box, Settings: st, Log: log, Now: time.Now, limiter: newLimiter(),
+	s := &Service{DB: d, Box: box, Settings: st, Log: log, Now: time.Now, limiter: newLimiter(),
 		cache: newCache(), bus: newBus(), clients: map[int64]*cachedClient{}}
+	s.Browser = &httpx.Browser{Config: s.BrowserConfig}
+	return s
 }
 
 func (s *Service) now() time.Time { return s.Now().UTC() }
@@ -140,7 +147,7 @@ func (s *Service) buildClient(ctx context.Context, in Input, apiKey, proxyPasswo
 		return nil, err
 	}
 	hc, err := httpx.New(httpx.Options{Policy: pol, Timeout: timeout, Proxy: proxy, FlareSolverr: in.FlareSolverrURL,
-		Secrets: []string{apiKey, proxyPassword}, UserAgent: ua})
+		Secrets: []string{apiKey, proxyPassword}, UserAgent: ua, Browser: s.Browser})
 	if err != nil {
 		return nil, err
 	}

@@ -100,7 +100,7 @@ func (s *Service) SearchStream(ctx context.Context, q Query, emit func(Event)) (
 	take := func(a answer) []Release {
 		fresh := make([]Release, 0, len(a.releases))
 		for _, r := range a.releases {
-			// Adult releases only answer adult searches (D-104).
+			// Adult releases only answer adult searches (D-105).
 			if !AnswersQuery(q.Type, &r) {
 				continue
 			}

@@ -17,6 +17,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/native"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/znab"
 	"github.com/mmzlopasa/locarr/server/internal/library"
@@ -375,6 +376,17 @@ func (h *Handler) indexerSettings(ctx context.Context) (*gen.IndexerSettings, er
 	if out.UserAgent, err = settings.Get(ctx, h.Settings, indexers.UserAgent); err != nil {
 		return nil, err
 	}
+	if out.BrowserUrl, err = settings.Get(ctx, h.Settings, indexers.BrowserURL); err != nil {
+		return nil, err
+	}
+	out.BrowserDefaultUrl = h.Indexers.BrowserEnv.URL
+	if out.BrowserDefaultUrl == "" {
+		out.BrowserDefaultUrl = httpx.DefaultBrowserURL
+	}
+	if out.BrowserToken.Configured, err = h.Settings.Configured(ctx, indexers.BrowserToken); err != nil {
+		return nil, err
+	}
+	out.BrowserTokenFromEnv = h.Indexers.BrowserEnv.Token != ""
 	return &out, nil
 }
 
@@ -424,6 +436,20 @@ func (h *Handler) UpdateIndexerSettings(ctx context.Context, req *gen.UpdateInde
 	}
 	if v, ok := req.UserAgent.Get(); ok {
 		if err := settings.Set(ctx, h.Settings, nil, indexers.UserAgent, strings.TrimSpace(v)); err != nil {
+			return nil, err
+		}
+	}
+	if v, ok := req.BrowserUrl.Get(); ok {
+		v = strings.TrimRight(strings.TrimSpace(v), "/")
+		if err := h.Indexers.ValidateBrowserURL(ctx, v); err != nil {
+			return nil, err
+		}
+		if err := settings.Set(ctx, h.Settings, nil, indexers.BrowserURL, v); err != nil {
+			return nil, err
+		}
+	}
+	if v, ok := req.BrowserToken.Get(); ok {
+		if err := h.Settings.SetSecret(ctx, indexers.BrowserToken, strings.TrimSpace(v)); err != nil {
 			return nil, err
 		}
 	}

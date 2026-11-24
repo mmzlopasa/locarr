@@ -12,6 +12,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
 	"github.com/mmzlopasa/locarr/server/internal/rootfolders"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
@@ -101,8 +102,17 @@ func (d *Deps) checkIndexers(ctx context.Context) ([]Issue, error) {
 		}
 		code, docs := "indexer_failing", "indexer-failing"
 		switch ix.Health.LastErrorCode {
-		case "challenge": // a Cloudflare challenge: FlareSolverr helps
-			code, docs = "indexer_challenge", "indexer-builtin"
+		case "challenge": // a browser check: the built-in browser (or FlareSolverr) helps
+			code, docs = "indexer_challenge", "indexer-challenge"
+			// Why: the built-in browser is missing, it failed, or the site
+			// wants a person (a CAPTCHA Locarr never solves).
+			p["reason"] = "unknown"
+			if reason, msg, ok := d.Indexers.ChallengeIssue(ix); ok {
+				p["reason"], p["detail"] = reason, msg
+			}
+			if p["reason"] == httpx.ReasonMissing || p["reason"] == "unknown" {
+				p["command"] = httpx.BrowserCommand
+			}
 		case "layout": // a built-in site's pages no longer match its definition
 			code, docs = "indexer_layout", "indexer-builtin"
 			p["parseFailures"] = ix.Health.ParseFailures
@@ -216,7 +226,7 @@ func (d *Deps) checkClients(ctx context.Context, cats *categoryCache) ([]Issue, 
 	return out, nil
 }
 
-// Adult downloads appear only as "download <id>" (health warnings reach shared channels; D-102).
+// Adult downloads appear only as "download <id>" (health warnings reach shared channels; D-103).
 func (d *Deps) checkPaths(ctx context.Context) ([]Issue, error) {
 	var out []Issue
 	rows, err := d.DB.R.QueryContext(ctx, `SELECT id, CASE WHEN COALESCE(json_extract(item_ref, '$.ref'), '') LIKE 'scene:%' OR COALESCE(json_extract(item_ref, '$.ref'), '') LIKE 'adult_movie:%' THEN 'download ' || id ELSE title END, client_name, content_path, save_path, message FROM downloads

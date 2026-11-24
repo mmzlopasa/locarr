@@ -1,5 +1,5 @@
 -- +goose Up
--- Optional adult library (D-102 .. D-105). Everything lives in its own
+-- Optional adult library (D-103 .. D-106). Everything lives in its own
 -- tables, so no query over media_items, movies, series or root_folders can
 -- ever return adult rows. The feature is off until an administrator enables
 -- it (setting adult.enabled); access is the separate view_adult permission.
