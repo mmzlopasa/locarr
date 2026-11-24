@@ -122,7 +122,14 @@
     "source_wrong_app": "Na ovoj adresi je druga aplikacija.",
     "source_unsupported_version": "Ova je verzija prestara za uvoz.",
     "source_bad_response": "Aplikacija je odgovorila na neočekivan način.",
-    "source_not_found": "Na ovoj adresi ništa ne odgovara (provjeri URL bazu)."
+    "source_not_found": "Na ovoj adresi ništa ne odgovara (provjeri URL bazu).",
+    "translation_cap": "Dosegnuta je mjesečna granica servisa za prijevod.",
+    "translation_unavailable": "Nijedan servis za prijevod nije uključen.",
+    "translation_no_source": "Nema titla na drugom jeziku iz kojeg bi se prevodilo.",
+    "translation_nothing_missing": "Ne nedostaje nijedan traženi jezik.",
+    "translation_file_exists": "Titl koji Locarr nije preveo već ima to ime; nikad se ne prepisuje.",
+    "translation_unsupported_language": "Servis za prijevod ne nudi taj jezik.",
+    "translation_line_mismatch": "Servis za prijevod vratio je drugačiji broj redaka."
   },
   "errorPage": {
     "title": "Ova stranica se ne može prikazati",
@@ -2812,7 +2819,8 @@
       "subtitles_downloaded": "Titl preuzet",
       "subtitles_missing": "Titl još nedostaje",
       "migrate_finished": "Uvoz setupa je gotov",
-      "migrate_failed": "Uvoz setupa nije uspio"
+      "migrate_failed": "Uvoz setupa nije uspio",
+      "subtitles_translated": "Titl strojno preveden"
     },
     "fields": {
       "url": "URL",
@@ -2892,7 +2900,8 @@
       "present": "Postoji",
       "embedded": "U videu",
       "missing": "Nedostaje",
-      "skipped": "Nije potreban"
+      "skipped": "Nije potreban",
+      "translated": "Strojni prijevod"
     },
     "tools": {
       "preview": "Pregled",
@@ -3011,7 +3020,12 @@
       "bad_response": "Provider je poslao odgovor koji Locarr ne može pročitati.",
       "timeout": "Provider nije odgovorio na vrijeme.",
       "connection": "Locarr ne može doći do providera.",
-      "config": "Postavke providera nisu potpune."
+      "config": "Postavke providera nisu potpune.",
+      "cap": "Dosegnuta je mjesečna granica servisa za prijevod.",
+      "line_mismatch": "Servis je vratio drugačiji broj redaka.",
+      "unsupported_language": "Servis ne nudi taj jezik.",
+      "no_source": "Nema titla na drugom jeziku iz kojeg bi se prevodilo.",
+      "error": "Nešto nije u redu."
     },
     "events": {
       "downloaded": "Titl {{language}} pronađen na {{provider}}, bodova {{score}}, spremljen kao {{file}}",
@@ -3027,7 +3041,10 @@
       "syncFailed": "{{file}} nije usklađen: {{message}}",
       "shifted": "{{file}} pomaknut za {{offset}} ms",
       "fps": "{{file}} pretvoren s {{from}} na {{to}} fps",
-      "found": "Na disku pronađen titl {{file}} ({{language}})"
+      "found": "Na disku pronađen titl {{file}} ({{language}})",
+      "translated": "Titl {{language}} preveden s jezika {{from}} pomoću {{translator}}: {{lines}} redaka za {{seconds}} s, spremljen kao {{file}}",
+      "translateFailed": "Prijevod {{language}} nije uspio: {{error}}",
+      "translationReplaced": "Strojni prijevod {{file}} premješten je u koš: stigao je titl koji su preveli ljudi"
     },
     "explain": {
       "no_file": "Naslov još nema datoteku; titlovi se traže čim bude uvezena.",
@@ -3038,7 +3055,8 @@
       "no_providers": "Nijedan provider titlova nije uključen (Postavke → Titlovi).",
       "providers_unavailable": "Svi uključeni provideri trenutno nisu dostupni: {{detail}}",
       "not_searched": "Nedostaje: {{missing}}; još nije traženo, iduća pretraga {{next}}.",
-      "not_found": "Još nema titla: {{missing}} — traženo puta: {{searches}} (zadnji put providera: {{providers}}); iduća pretraga {{next}}."
+      "not_found": "Još nema titla: {{missing}} — traženo puta: {{searches}} (zadnji put providera: {{providers}}); iduća pretraga {{next}}.",
+      "complete_translated": "Svi traženi jezici postoje; neki su strojni prijevodi, a Locarr i dalje traži titlove koje su preveli ljudi."
     },
     "settings": {
       "title": "Titlovi",
@@ -3115,7 +3133,53 @@
       "bulkConfirm": "Primijeni sada",
       "bulkDone": "Ažurirano: {{count}}.",
       "scan": "Pretraži biblioteku",
-      "scanQueued": "Pretraga je pokrenuta."
+      "scanQueued": "Pretraga je pokrenuta.",
+      "translation": {
+        "title": "Prijevod",
+        "hint": "Kad titl na traženom jeziku ne postoji, Locarr ga može strojno prevesti s drugog jezika. Tekst titla (i naslov) šalje se servisu koji odaberete; LibreTranslate i lokalni poslužitelj kompatibilan s OpenAI-jem (Ollama, LM Studio, vLLM) zadržavaju ga u vašoj mreži.",
+        "services": "Servisi za prijevod",
+        "local": "U vašoj mreži",
+        "cloud": "U oblaku",
+        "baseUrl": "Adresa poslužitelja",
+        "baseUrlHint": "npr. http://192.168.1.10:5000 ili http://ollama:11434/v1",
+        "model": "Model",
+        "modelHint": "Prazno = {{model}}",
+        "formality": "Oslovljavanje",
+        "formalityDefault": "Zadano",
+        "formalityMore": "Formalno gdje je moguće",
+        "formalityLess": "Neformalno gdje je moguće",
+        "glossary": "ID pojmovnika",
+        "cap": "Mjesečna granica ({{unit}})",
+        "capHint": "0 = bez granice. Prijevodi staju kad se dosegne.",
+        "units_characters": "znakova",
+        "units_tokens": "tokena",
+        "usage": "Ovaj mjesec",
+        "usageValue": "{{used}} {{unit}} · titlova: {{subtitles}} · zahtjeva: {{requests}}",
+        "ofCap": "od {{cap}}",
+        "providerQuota": "Potrošnja računa prema servisu: {{used}} od {{limit}} znakova",
+        "capReached": "Granica dosegnuta",
+        "testText": "Probni redak",
+        "testTo": "Na jezik",
+        "testResult": "Rezultat: {{text}}",
+        "behaviour": "Ponašanje",
+        "defaultTranslator": "Zadani servis",
+        "firstEnabled": "Prvi uključeni servis",
+        "perLanguage": "Servis po ciljnom jeziku",
+        "perLanguageHint": "Za pojedini jezik zamjenjuje zadani servis (jezik u profilu ga može opet zamijeniti).",
+        "addLanguage": "Dodaj jezik",
+        "never": "Nikad ne prevodi",
+        "suffix": "Oznaka u imenu datoteke",
+        "suffixHint": "Film.hr.{{suffix}}.srt; prazno = Film.hr.srt (tada samo Locarr zna da je prijevod).",
+        "sources": "Prevodi s jezika (po redu)",
+        "sourcesHint": "Kodovi jezika odvojeni zarezom; zatim bilo koji drugi. Engleski obično daje najbolje rezultate.",
+        "perHour": "Automatskih prijevoda na sat",
+        "autoSync": "Uskladi prijevode prema zvuku",
+        "autoSyncHint": "Samo za prijevode iz datoteke titla (zapisi u videu već odgovaraju videu).",
+        "profileAfter": "Prevedi ako ništa nije nađeno nakon (sati)",
+        "profileAfterHint": "Računa se od dolaska datoteke; 0 = nikad automatski (gumb Prevedi uvijek radi).",
+        "profileService": "Prijevod",
+        "profileDefault": "Zadani servis"
+      }
     },
     "wantedPage": {
       "description": "Filmovi i epizode kojima nedostaje jezik iz profila titlova.",
@@ -3134,9 +3198,33 @@
       "searchAll": "Traži sve ({{count}})",
       "empty": "Nikome ne nedostaju titlovi.",
       "setProfile": "Profil titlova za odabrane",
-      "apply": "Primijeni ({{count}})"
+      "apply": "Primijeni ({{count}})",
+      "translateSelected": "Prevedi odabrane",
+      "translateAll": "Prevedi sve",
+      "translateQueued": "Prijevoda u redu čekanja: {{count}}."
     },
-    "tracksOnlyMkvMp4": "Locarr čita zapise samo iz MKV/WebM i MP4/MOV datoteka."
+    "tracksOnlyMkvMp4": "Locarr čita zapise samo iz MKV/WebM i MP4/MOV datoteka.",
+    "translatedBadge": "Strojni prijevod",
+    "translatedFrom": "preveden s jezika {{language}} pomoću {{translator}}",
+    "original": "Izvornik",
+    "translation": {
+      "translateNow": "Prevedi",
+      "translateHint": "Strojno prevedi jezike koji nedostaju iz titla na drugom jeziku.",
+      "queued": "Prijevod je u redu čekanja.",
+      "waiting": "Prijevod čeka početak…",
+      "running": "Prevodi se {{language}} pomoću {{translator}}: {{done}} od {{total}} redaka",
+      "choose": "Jezik za prijevod",
+      "allMissing": "Svi jezici koji nedostaju",
+      "unavailable": "Najprije uključite servis za prijevod u Postavke → Titlovi → Prijevod."
+    },
+    "translatorNames": {
+      "libretranslate": "LibreTranslate",
+      "deepl": "DeepL",
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "gemini": "Google Gemini",
+      "openai-compatible": "Kompatibilno s OpenAI-jem"
+    }
   },
   "board": {
     "title": "Zašto nije stiglo?",

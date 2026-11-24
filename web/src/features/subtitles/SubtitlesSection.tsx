@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle, CheckCircle2, Download, Eye, Info, ListFilter, Search, Timer, Trash2, Wand2, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Download, Eye, Info, Languages, ListFilter, Search, Timer, Trash2, Wand2, XCircle } from "lucide-react";
 import { api, queryKeys, unwrap, type Subtitle, type SubtitleExplanation, type SubtitleItem, type SubtitleResult } from "@/api/client";
 import { Alert, Badge, Button, Checkbox, EmptyState, ErrorAlert, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 import { cueTime, describeSubtitleExplanation, languageName, signed, syncReferences, useSubtitleItem, wantLabel } from "./common";
@@ -35,7 +35,7 @@ export function SubtitleWhyForItem({ itemRef }: { itemRef: string }) {
   return <SubtitleWhy ex={item.data.explanation} compact />;
 }
 
-const statusTone = { present: "success", embedded: "info", missing: "warning", skipped: "neutral" } as const;
+const statusTone = { present: "success", embedded: "info", translated: "info", missing: "warning", skipped: "neutral" } as const;
 
 /** The Subtitles section of a movie or an episode. */
 export function SubtitlesSection({ itemRef }: { itemRef: string }) {
@@ -51,6 +51,10 @@ export function SubtitlesSection({ itemRef }: { itemRef: string }) {
     mutationFn: async () => unwrap(await api.POST("/subtitles/items/{ref}/search", { params: { path: { ref: itemRef } } })),
     onSuccess: refresh,
   });
+  const translate = useMutation({
+    mutationFn: async (keys: string[]) => unwrap(await api.POST("/subtitles/items/{ref}/translate", { params: { path: { ref: itemRef } }, body: { keys } })),
+    onSuccess: refresh,
+  });
   if (item.isLoading) return <Spinner />;
   if (item.error || !item.data) return <ErrorAlert error={item.error} />;
   const it = item.data;
@@ -64,6 +68,13 @@ export function SubtitlesSection({ itemRef }: { itemRef: string }) {
             <Button onClick={() => search.mutate()} busy={search.isPending} data-testid="subtitles-search">
               <Search className="size-3.5" /> {t("subtitles.searchNow")}
             </Button>
+            {it.wants.some((w) => w.status === "missing") ? (
+              <Button onClick={() => translate.mutate(it.wants.filter((w) => w.status === "missing").map((w) => w.key))}
+                busy={translate.isPending || it.translations.length > 0} disabled={!it.translationAvailable}
+                title={it.translationAvailable ? t("subtitles.translation.translateHint") : t("subtitles.translation.unavailable")} data-testid="subtitles-translate">
+                <Languages className="size-3.5" /> {t("subtitles.translation.translateNow")}
+              </Button>
+            ) : null}
             <Button variant={manual ? "secondary" : "ghost"} aria-pressed={manual} onClick={() => setManual(!manual)} data-testid="subtitles-manual">
               <ListFilter className="size-3.5" /> {t("subtitles.manualSearch")}
             </Button>
@@ -87,7 +98,16 @@ export function SubtitlesSection({ itemRef }: { itemRef: string }) {
               : t("subtitles.searchNothing", { count: search.data.providers.filter((p) => !p.skipped).length })}
           </p>
         ) : null}
-        <ErrorAlert error={search.error} />
+        {it.translations.map((p) => (
+          <p key={p.ref + p.key} className="mt-2 text-[12px] text-info" role="status" data-testid="translation-progress" data-state={p.state}>
+            {p.state === "running" && p.total > 0
+              ? t("subtitles.translation.running", { language: wantLabel(t, p.key), translator: t(`subtitles.translatorNames.${p.translator}`, { defaultValue: p.translator }),
+                done: p.done, total: p.total })
+              : t("subtitles.translation.waiting")}
+          </p>
+        ))}
+        {translate.isSuccess && it.translations.length === 0 ? <p className="mt-2 text-[12px] text-muted" role="status">{t("subtitles.translation.queued")}</p> : null}
+        <ErrorAlert error={search.error ?? translate.error} />
       </Panel>
       {manual ? <ManualSearch itemRef={itemRef} onSaved={refresh} /> : null}
       <Panel title={t("subtitles.files")}>
@@ -139,8 +159,11 @@ function SubtitleRow({ s, item, onChanged }: { s: Subtitle; item: SubtitleItem; 
         {s.forced ? <Badge tone="info">{t("subtitles.forced")}</Badge> : null}
         {s.hearingImpaired ? <Badge tone="info">{t("subtitles.hi")}</Badge> : null}
         <Badge>{s.format}</Badge>
+        {s.source === "translated" ? <span data-testid="translated-badge"><Badge tone="warning">{t("subtitles.translatedBadge")}</Badge></span> : null}
         <span className="text-[12px] text-muted">
-          {s.source === "disk" ? t("subtitles.fromDisk") : t("subtitles.fromProvider", { provider: s.provider, score: s.score ?? 0 })}
+          {s.source === "translated"
+            ? t("subtitles.translatedFrom", { language: languageName(t, s.translatedFrom), translator: t(`subtitles.translatorNames.${s.provider}`, { defaultValue: s.provider || "?" }) })
+            : s.source === "disk" ? t("subtitles.fromDisk") : t("subtitles.fromProvider", { provider: s.provider, score: s.score ?? 0 })}
         </span>
         {s.syncState ? <SyncBadge s={s} /> : null}
         <span className="ml-auto flex flex-wrap gap-1">
@@ -189,13 +212,15 @@ function Preview({ id }: { id: number }) {
   });
   if (pv.isLoading) return <Spinner />;
   if (pv.error || !pv.data) return <ErrorAlert error={pv.error} />;
+  const withOriginal = pv.data.lines.some((l) => l.original);
   return (
     <div className="mt-2 rounded border border-line bg-surface-2 p-2" data-testid="subtitle-preview">
       <p className="mb-1 text-[11px] text-faint">{t("subtitles.previewOf", { shown: pv.data.lines.length, total: pv.data.total })}</p>
       <ol className="space-y-1">
         {pv.data.lines.map((l, i) => (
-          <li key={i} className="grid grid-cols-[auto_1fr] gap-3 text-[12px]">
+          <li key={i} className={`grid gap-3 text-[12px] ${withOriginal ? "grid-cols-[auto_1fr] sm:grid-cols-[auto_1fr_1fr]" : "grid-cols-[auto_1fr]"}`}>
             <span className="font-mono tabular-nums text-faint" data-testid="preview-start">{cueTime(l.startMs)}</span>
+            {withOriginal ? <span className="hidden whitespace-pre-line text-muted sm:block" data-testid="preview-original" title={t("subtitles.original")}>{l.original ?? ""}</span> : null}
             <span className="whitespace-pre-line text-fg">{l.text}</span>
           </li>
         ))}
