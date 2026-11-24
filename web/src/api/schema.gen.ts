@@ -625,6 +625,45 @@ export interface paths {
         patch: operations["updateIndexerSettings"];
         trace?: never;
     };
+    "/indexers/browser": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** State of the built-in browser for sites behind a browser check (administrators) */
+        get: operations["getIndexerBrowser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/indexers/browser/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Have the built-in browser pass a test check (administrators)
+         * @description Without `url` the browser opens its own built-in test page (a JavaScript check that sets a cookie and
+         *     reloads); with `variant: human` it opens a page that asks for a CAPTCHA, which must be reported as
+         *     `human`. With `url` it opens that page with the indexers' address policy.
+         */
+        post: operations["testIndexerBrowser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/indexers/definitions": {
         parameters: {
             query?: never;
@@ -5235,12 +5274,20 @@ export interface components {
             probeResults?: number;
             /**
              * @description auth, rate_limit, unsupported, disabled, not_found, bad_response, unreachable, blocked, challenge
-             *     (a Cloudflare challenge: set FlareSolverr), layout (a built-in site's pages changed) or unknown.
+             *     (a browser check the built-in browser or FlareSolverr could not pass, or one that wants a person),
+             *     layout (a built-in site's pages changed) or unknown.
              */
             errorCode?: string;
             error?: string;
         };
         IndexerSettings: {
+            /** @description Address of the built-in browser set in the settings; empty uses browserDefaultUrl. */
+            browserUrl: string;
+            /** @description The address used when browserUrl is empty (LOCARR_BROWSER_URL or the compose service). */
+            browserDefaultUrl: string;
+            browserToken: components["schemas"]["SecretState"];
+            /** @description LOCARR_BROWSER_TOKEN is set (used unless a token is saved in the settings). */
+            browserTokenFromEnv: boolean;
             /** @description How often RSS feeds are fetched (RSS can be turned off per indexer). */
             rssSyncIntervalMinutes: number;
             releaseRetentionDays: number;
@@ -5265,6 +5312,66 @@ export interface components {
             blockPrivateNetworks?: boolean;
             publicTrackers?: string[];
             userAgent?: string;
+            /** @description Empty returns to the default address. */
+            browserUrl?: string;
+            /** @description Write-only; empty removes the saved token (LOCARR_BROWSER_TOKEN applies again). */
+            browserToken?: string;
+        };
+        IndexerBrowserStatus: {
+            /**
+             * @description missing = not running or not reachable; unauthorized = the token differs.
+             * @enum {string}
+             */
+            state: "connected" | "missing" | "unauthorized" | "error";
+            url: string;
+            message?: string;
+            /** @description The command that starts the browser next to a compose install. */
+            command: string;
+            /** @description Version of the browser's control server. */
+            version?: string;
+            /** @description Chromium version, once the browser has started. */
+            chromium?: string;
+            /** @description Chromium is running (it stops when idle and starts on demand). */
+            running?: boolean;
+            /** @description Chromium runs with its own sandbox. */
+            sandbox?: boolean;
+            tabs?: number;
+            tabsInUse?: number;
+            solves?: number;
+            restarts?: number;
+            lastSolve?: components["schemas"]["IndexerBrowserSolve"];
+        };
+        IndexerBrowserSolve: {
+            /** Format: date-time */
+            at: string;
+            host: string;
+            /** @description solved, human, timeout, blocked, refused, error, browser_missing or browser_failed. */
+            outcome: string;
+            message?: string;
+            /** Format: int64 */
+            elapsedMs: number;
+        };
+        IndexerBrowserTestRequest: {
+            /** @description A page to open instead of the built-in test page. */
+            url?: string;
+            /**
+             * @description Which built-in test page (default js).
+             * @enum {string}
+             */
+            variant?: "js" | "human";
+        };
+        IndexerBrowserTestResult: {
+            passed: boolean;
+            /** @description solved, human, timeout, blocked, refused or error. */
+            outcome: string;
+            message?: string;
+            title?: string;
+            /** @description A browser check was seen on the way. */
+            challenged: boolean;
+            /** @description Cookies the page set. */
+            cookies: number;
+            /** Format: int64 */
+            elapsedMs: number;
         };
         IndexerCatalog: {
             definitions: components["schemas"]["IndexerDefinition"][];
@@ -5294,7 +5401,13 @@ export interface components {
             /** @description How the definition was written and checked. */
             verified: string;
             /**
-             * @description Whether the site shows a Cloudflare challenge (FlareSolverr needed).
+             * @description Whether the site shows a browser check (passed by the built-in browser or FlareSolverr).
+             * @enum {string}
+             */
+            challenge: "never" | "sometimes" | "always";
+            /**
+             * @deprecated
+             * @description Old name of `challenge`, always equal to it.
              * @enum {string}
              */
             flaresolverr: "never" | "sometimes" | "always";
@@ -10015,6 +10128,52 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IndexerSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getIndexerBrowser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Browser state */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerBrowserStatus"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testIndexerBrowser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IndexerBrowserTestRequest"];
+            };
+        };
+        responses: {
+            /** @description Test result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexerBrowserTestResult"];
                 };
             };
             default: components["responses"]["Error"];

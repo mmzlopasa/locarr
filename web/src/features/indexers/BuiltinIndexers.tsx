@@ -108,8 +108,8 @@ function BuiltinRow({ def, indexer }: { def: IndexerDefinition; indexer?: Indexe
           <span className="font-mono text-[11px] text-faint">{t("indexers.builtin.version", { n: def.version })}</span>
           {!def.builtin ? <Badge tone="info">{t("indexers.builtin.custom")}</Badge> : null}
           {def.overrides ? <Badge tone="info">{t("indexers.builtin.overrides")}</Badge> : null}
-          {def.flaresolverr !== "never" ? (
-            <Badge tone="warning">{t(`indexers.builtin.flaresolverr.${def.flaresolverr}`)}</Badge>
+          {def.challenge !== "never" ? (
+            <Badge tone="warning">{t(`indexers.builtin.flaresolverr.${def.challenge}`)}</Badge>
           ) : null}
           {def.language ? <Badge>{def.language}</Badge> : null}
         </p>

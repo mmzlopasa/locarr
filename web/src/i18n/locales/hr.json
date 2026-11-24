@@ -14,7 +14,8 @@
     "add": "Dodaj",
     "delete": "Obriši",
     "yes": "Da",
-    "remove": "Ukloni"
+    "remove": "Ukloni",
+    "no": "Ne"
   },
   "languages": {
     "en": "English",
@@ -839,7 +840,7 @@
       "blocked": "Ova adresa je blokirana iz sigurnosnih razloga. Dopusti je u postavkama indexera ispod ako je tvoja.",
       "unknown": "Indexer je prijavio grešku.",
       "removed": "Izvor više ne navodi ovaj indexer.",
-      "challenge": "Stranica traži Cloudflare provjeru. Upiši FlareSolverr URL za ovaj indexer pod Uredi.",
+      "challenge": "Stranica traži provjeru preglednika. Prolazi je Locarrov ugrađeni preglednik (vidi Preglednik za zaštićene stranice ispod); FlareSolverr URL na indexeru je rezerva.",
       "layout": "Stranice ove stranice su se promijenile pa se rezultati više ne mogu pročitati. Ažuriraj Locarr ili dodaj ispravljenu vlastitu definiciju."
     },
     "test": {
@@ -883,7 +884,7 @@
       "proxyUsername": "Korisničko ime za proxy",
       "proxyPassword": "Lozinka za proxy",
       "flaresolverr": "FlareSolverr URL",
-      "flaresolverrHint": "Samo za indexere iza Cloudflare provjere.",
+      "flaresolverrHint": "Neobavezna rezerva kad ugrađeni preglednik za zaštićene stranice nije pokrenut.",
       "add": "Dodaj"
     },
     "import": {
@@ -925,7 +926,7 @@
       "allowedHosts": "Dopuštene lokalne adrese",
       "allowedHostsHint": "Loopback i link-local adrese su zadano blokirane. Navedi adrese, mreže ili imena hostova koje dopuštaš, npr. 127.0.0.1.",
       "blockPrivate": "Blokiraj i privatne mreže",
-      "blockPrivateHint": "Zadano isključeno jer FlareSolverr i tvoji servisi obično rade na istoj Docker mreži.",
+      "blockPrivateHint": "Zadano isključeno jer tvoji servisi (Prowlarr, ugrađeni preglednik) obično rade na istoj Docker mreži.",
       "publicTrackers": "Trackeri za složene magnete",
       "publicTrackersHint": "Jedan po retku. Dodaju se magnet poveznicama koje Locarr složi iz info hasha sa stranice.",
       "userAgent": "User agent",
@@ -957,8 +958,8 @@
       "version": "v{{n}}",
       "verified": "Kako je provjereno",
       "flaresolverr": {
-        "sometimes": "Možda treba FlareSolverr",
-        "always": "Treba FlareSolverr"
+        "sometimes": "Može tražiti provjeru preglednika",
+        "always": "Iza provjere preglednika"
       },
       "custom": "Vlastita",
       "overrides": "Zamjenjuje ugrađenu",
@@ -972,7 +973,7 @@
       "otherAddress": "Druga adresa…",
       "customAddress": "Vlastita adresa",
       "options": "Postavke stranice",
-      "flaresolverrHint": "Treba samo kad stranica traži Cloudflare provjeru.",
+      "flaresolverrHint": "Samo rezerva: Locarrov ugrađeni preglednik prolazi provjere preglednika. Upiši ako već imaš FlareSolverr, a ne koristiš ugrađeni preglednik.",
       "rateLimit": "Zahtjevi",
       "rateLimitHint": "Najviše toliko zahtjeva po razdoblju, da se stranica ne zatrpa."
     },
@@ -995,7 +996,7 @@
       "reloaded": "Definicije su ponovno učitane."
     },
     "errorShort": {
-      "challenge": "Cloudflare provjera",
+      "challenge": "provjera preglednika",
       "layout": "promijenjen izgled",
       "unreachable": "stranica ne radi",
       "rate_limit": "ograničenje zahtjeva",
@@ -1006,6 +1007,50 @@
       "bad_response": "neočekivan odgovor",
       "unknown": "greška",
       "error": "greška"
+    },
+    "browser": {
+      "title": "Preglednik za zaštićene stranice",
+      "subtitle": "Neke stranice provjeravaju posjećuje li ih pravi preglednik (Cloudflare, DDoS-Guard). Locarrov vlastiti preglednik prolazi te automatske provjere, čuva kolačiće i koristi ih za sljedeće pretrage. Nikad ne rješava CAPTCHA zadatke koje mora riješiti čovjek.",
+      "state": {
+        "connected": "Povezan",
+        "missing": "Nije pokrenut",
+        "unauthorized": "Pogrešan token",
+        "error": "Greška"
+      },
+      "version": "Verzija",
+      "chromium": "Chromium",
+      "notStarted": "pokreće se po potrebi",
+      "tabs": "Kartice u upotrebi",
+      "tabsValue": "{{inUse}} od {{tabs}}",
+      "sandbox": "Chromiumov sandbox",
+      "missing": "Preglednik nije obavezan i nije pokrenut. Pokreni ga uz Locarr naredbom:",
+      "unauthorized": "Preglednik je odbio Locarrov token. Postavi isti LOCARR_BROWSER_TOKEN za oba kontejnera ili upiši token preglednika ispod.",
+      "lastSolve": "Zadnja stranica: {{host}}, {{outcome}} {{when}} ({{seconds}} s)",
+      "test": "Testiraj",
+      "testHuman": "Testiraj CAPTCHA stranicu",
+      "testUrl": "Ili otvori adresu",
+      "testUrlHint": "Otvara stranicu u pregledniku s pravilima adresa za indexere i javlja što se dogodilo.",
+      "open": "Otvori",
+      "testing": "Preglednik radi; provjera traje nekoliko sekundi…",
+      "testPassed": "Prošlo: {{outcome}} za {{seconds}} s, kolačića: {{cookies}}.",
+      "testFailed": "Nije prošlo: {{outcome}} nakon {{seconds}} s.",
+      "outcome": {
+        "solved": "stranica otvorena",
+        "human": "treba ljudsku provjeru",
+        "timeout": "provjera nije završila",
+        "blocked": "stranica odbija preglednik",
+        "refused": "adresa nije dopuštena",
+        "error": "greška",
+        "browser_missing": "preglednik nije pokrenut",
+        "browser_failed": "preglednik nije uspio"
+      },
+      "url": "Adresa preglednika",
+      "urlHint": "Ostavi prazno za zadanu adresu compose servisa.",
+      "token": "Token",
+      "tokenHint": "Mora biti isti kao LOCARR_BROWSER_TOKEN kontejnera preglednika. Ostavi prazno da zadržiš trenutni.",
+      "tokenSaved": "spremljen (upiši za zamjenu)",
+      "tokenFromEnv": "iz LOCARR_BROWSER_TOKEN",
+      "forgetToken": "Zaboravi spremljeni token"
     }
   },
   "profiles": {
@@ -3365,9 +3410,13 @@
       "update_available": "Dostupan je Locarr {{latest}} (ovo je {{current}}).",
       "backup_failed": "Zadnja zakazana sigurnosna kopija nije uspjela: {{error}}",
       "check_failed": "Provjera {{check}} nije se mogla izvršiti: {{error}}",
-      "indexer_challenge": "Indexer {{name}} odgovara Cloudflare provjerom. Postavi mu FlareSolverr URL.",
+      "indexer_challenge": "Indexer {{name}} je iza provjere preglednika koja nije prošla: {{error}}",
       "indexer_layout": "Stranice indexera {{name}} više ne odgovaraju njegovoj definiciji (stranica se promijenila). Pričekaj novu verziju definicije ili dodaj vlastitu.",
-      "indexer_selftest_failed": "Tjedna provjera ugrađenog indexera {{name}} nije prošla."
+      "indexer_selftest_failed": "Tjedna provjera ugrađenog indexera {{name}} nije prošla.",
+      "indexer_challenge_browser_missing": "Indexer {{name}} je iza provjere preglednika, a ugrađeni preglednik nije pokrenut. Pokreni ga naredbom: {{command}}",
+      "indexer_challenge_browser_failed": "Ugrađeni preglednik nije prošao provjeru indexera {{name}}: {{detail}}",
+      "indexer_challenge_human": "Indexer {{name}} traži ljudsku provjeru (CAPTCHA). Otvori stranicu u svom pregledniku; Locarr takve provjere ne rješava i pokušat će ponovno kasnije.",
+      "indexer_challenge_blocked": "Stranica indexera {{name}} odbija ugrađeni preglednik (blokada, ne provjera)."
     }
   },
   "logs": {

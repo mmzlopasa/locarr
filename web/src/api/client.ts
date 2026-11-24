@@ -320,6 +320,7 @@ export const queryKeys = {
   indexerSources: ["indexers", "sources"] as const,
   indexerSettings: ["indexers", "settings"] as const,
   indexerDefinitions: ["indexers", "definitions"] as const,
+  indexerBrowser: ["indexers", "browser"] as const,
   movies: ["movies"] as const,
   movie: (id: number) => ["movies", id] as const,
   seriesList: ["series"] as const,
