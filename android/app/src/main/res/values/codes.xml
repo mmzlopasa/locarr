@@ -102,9 +102,13 @@
     <string name="c_health_codes_update_available" formatted="false">Locarr {{latest}} is available (this is {{current}}).</string>
     <string name="c_health_codes_backup_failed" formatted="false">The last scheduled backup failed: {{error}}</string>
     <string name="c_health_codes_check_failed" formatted="false">The {{check}} check could not run: {{error}}</string>
-    <string name="c_health_codes_indexer_challenge" formatted="false">Indexer {{name}} answers with a Cloudflare challenge. Set a FlareSolverr URL on it.</string>
+    <string name="c_health_codes_indexer_challenge" formatted="false">Indexer {{name}} sits behind a browser check that could not be passed: {{error}}</string>
     <string name="c_health_codes_indexer_layout" formatted="false">The pages of {{name}} no longer match its definition (the site changed). Wait for an updated definition or add a custom one.</string>
     <string name="c_health_codes_indexer_selftest_failed" formatted="false">The weekly test of built-in indexer {{name}} failed.</string>
+    <string name="c_health_codes_indexer_challenge_browser_missing" formatted="false">Indexer {{name}} sits behind a browser check and the built-in browser is not running. Start it with: {{command}}</string>
+    <string name="c_health_codes_indexer_challenge_browser_failed" formatted="false">The built-in browser could not pass the check of indexer {{name}}: {{detail}}</string>
+    <string name="c_health_codes_indexer_challenge_human" formatted="false">Indexer {{name}} needs a human check (a CAPTCHA). Open the site in your browser; Locarr does not solve these and tries again later.</string>
+    <string name="c_health_codes_indexer_challenge_blocked" formatted="false">The site of indexer {{name}} refuses the built-in browser (blocked, not a check).</string>
     <string name="c_notifications_types_request_created" formatted="false">{{actor}} requested {{title}}.</string>
     <string name="c_notifications_types_request_approved" formatted="false">Your request for {{title}} was approved.</string>
     <string name="c_notifications_types_request_declined" formatted="false">Your request for {{title}} was declined.</string>
@@ -234,6 +238,6 @@
     <string name="c_indexers_errorkinds_blocked" formatted="false">This address is blocked for safety. Allow it in the indexer settings below if it is yours.</string>
     <string name="c_indexers_errorkinds_unknown" formatted="false">The indexer reported an error.</string>
     <string name="c_indexers_errorkinds_removed" formatted="false">The source no longer lists this indexer.</string>
-    <string name="c_indexers_errorkinds_challenge" formatted="false">The site shows a Cloudflare challenge. Set a FlareSolverr URL for this indexer under Edit.</string>
+    <string name="c_indexers_errorkinds_challenge" formatted="false">The site shows a browser check. Locarr\'s built-in browser passes it (see Browser for protected sites below); a FlareSolverr URL on the indexer is the fallback.</string>
     <string name="c_indexers_errorkinds_layout" formatted="false">The site\'s pages changed and its results can no longer be read. Update Locarr or add a fixed custom definition.</string>
 </resources>

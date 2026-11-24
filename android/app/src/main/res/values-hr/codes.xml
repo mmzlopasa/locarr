@@ -102,9 +102,13 @@
     <string name="c_health_codes_update_available" formatted="false">Dostupan je Locarr {{latest}} (ovo je {{current}}).</string>
     <string name="c_health_codes_backup_failed" formatted="false">Zadnja zakazana sigurnosna kopija nije uspjela: {{error}}</string>
     <string name="c_health_codes_check_failed" formatted="false">Provjera {{check}} nije se mogla izvršiti: {{error}}</string>
-    <string name="c_health_codes_indexer_challenge" formatted="false">Indexer {{name}} odgovara Cloudflare provjerom. Postavi mu FlareSolverr URL.</string>
+    <string name="c_health_codes_indexer_challenge" formatted="false">Indexer {{name}} je iza provjere preglednika koja nije prošla: {{error}}</string>
     <string name="c_health_codes_indexer_layout" formatted="false">Stranice indexera {{name}} više ne odgovaraju njegovoj definiciji (stranica se promijenila). Pričekaj novu verziju definicije ili dodaj vlastitu.</string>
     <string name="c_health_codes_indexer_selftest_failed" formatted="false">Tjedna provjera ugrađenog indexera {{name}} nije prošla.</string>
+    <string name="c_health_codes_indexer_challenge_browser_missing" formatted="false">Indexer {{name}} je iza provjere preglednika, a ugrađeni preglednik nije pokrenut. Pokreni ga naredbom: {{command}}</string>
+    <string name="c_health_codes_indexer_challenge_browser_failed" formatted="false">Ugrađeni preglednik nije prošao provjeru indexera {{name}}: {{detail}}</string>
+    <string name="c_health_codes_indexer_challenge_human" formatted="false">Indexer {{name}} traži ljudsku provjeru (CAPTCHA). Otvori stranicu u svom pregledniku; Locarr takve provjere ne rješava i pokušat će ponovno kasnije.</string>
+    <string name="c_health_codes_indexer_challenge_blocked" formatted="false">Stranica indexera {{name}} odbija ugrađeni preglednik (blokada, ne provjera).</string>
     <string name="c_notifications_types_request_created" formatted="false">{{actor}} je zatražio {{title}}.</string>
     <string name="c_notifications_types_request_approved" formatted="false">Tvoj zahtjev za {{title}} je odobren.</string>
     <string name="c_notifications_types_request_declined" formatted="false">Tvoj zahtjev za {{title}} je odbijen.</string>
@@ -234,6 +238,6 @@
     <string name="c_indexers_errorkinds_blocked" formatted="false">Ova adresa je blokirana iz sigurnosnih razloga. Dopusti je u postavkama indexera ispod ako je tvoja.</string>
     <string name="c_indexers_errorkinds_unknown" formatted="false">Indexer je prijavio grešku.</string>
     <string name="c_indexers_errorkinds_removed" formatted="false">Izvor više ne navodi ovaj indexer.</string>
-    <string name="c_indexers_errorkinds_challenge" formatted="false">Stranica traži Cloudflare provjeru. Upiši FlareSolverr URL za ovaj indexer pod Uredi.</string>
+    <string name="c_indexers_errorkinds_challenge" formatted="false">Stranica traži provjeru preglednika. Prolazi je Locarrov ugrađeni preglednik (vidi Preglednik za zaštićene stranice ispod); FlareSolverr URL na indexeru je rezerva.</string>
     <string name="c_indexers_errorkinds_layout" formatted="false">Stranice ove stranice su se promijenile pa se rezultati više ne mogu pročitati. Ažuriraj Locarr ili dodaj ispravljenu vlastitu definiciju.</string>
 </resources>
