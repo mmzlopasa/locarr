@@ -1200,6 +1200,15 @@ func (UnimplementedHandler) GetSubtitleSettings(ctx context.Context) (r *Subtitl
 	return r, ht.ErrNotImplemented
 }
 
+// GetSubtitleTranslationSettings implements getSubtitleTranslationSettings operation.
+//
+// Translation options (administrators).
+//
+// GET /subtitles/translation
+func (UnimplementedHandler) GetSubtitleTranslationSettings(ctx context.Context) (r *SubtitleTranslationSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetSystemInfo implements getSystemInfo operation.
 //
 // Unauthenticated. Clients use it to check a server address and whether first-run setup is needed.
@@ -1864,6 +1873,15 @@ func (UnimplementedHandler) ListSubtitleProviders(ctx context.Context) (r []Subt
 	return r, ht.ErrNotImplemented
 }
 
+// ListSubtitleTranslators implements listSubtitleTranslators operation.
+//
+// Translation services with usage and health (managers).
+//
+// GET /subtitles/translators
+func (UnimplementedHandler) ListSubtitleTranslators(ctx context.Context) (r []SubtitleTranslator, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListTasks implements listTasks operation.
 //
 // Scheduled tasks and recent job history (administrators).
@@ -2295,6 +2313,15 @@ func (UnimplementedHandler) ResetQualityDefinitions(ctx context.Context, req *Re
 //
 // POST /subtitles/providers/{name}/health/reset
 func (UnimplementedHandler) ResetSubtitleProviderHealth(ctx context.Context, params ResetSubtitleProviderHealthParams) (r *SubtitleProvider, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ResetSubtitleTranslatorHealth implements resetSubtitleTranslatorHealth operation.
+//
+// Clear a translation service's backoff (managers).
+//
+// POST /subtitles/translators/{name}/health/reset
+func (UnimplementedHandler) ResetSubtitleTranslatorHealth(ctx context.Context, params ResetSubtitleTranslatorHealthParams) (r *SubtitleTranslator, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2768,6 +2795,35 @@ func (UnimplementedHandler) TestSubtitleProvider(ctx context.Context, params Tes
 	return r, ht.ErrNotImplemented
 }
 
+// TestSubtitleTranslator implements testSubtitleTranslator operation.
+//
+// Translate a sample line with a service (administrators).
+//
+// POST /subtitles/translators/{name}/test
+func (UnimplementedHandler) TestSubtitleTranslator(ctx context.Context, req OptTestSubtitleTranslatorReq, params TestSubtitleTranslatorParams) (r *SubtitleTranslatorTest, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TranslateItemSubtitles implements translateItemSubtitles operation.
+//
+// Queues a translation of every missing language (or only `keys`, which may also name a language
+// outside the profile) from the best subtitle in another language. Progress shows in the item's
+// `translations`; the result lands on the timeline.
+//
+// POST /subtitles/items/{ref}/translate
+func (UnimplementedHandler) TranslateItemSubtitles(ctx context.Context, req OptTranslateItemSubtitlesReq, params TranslateItemSubtitlesParams) (r *SubtitleCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TranslateWantedSubtitles implements translateWantedSubtitles operation.
+//
+// Queue machine translations for items, or for every item missing subtitles (managers).
+//
+// POST /subtitles/wanted/translate
+func (UnimplementedHandler) TranslateWantedSubtitles(ctx context.Context, req *TranslateWantedSubtitlesReq) (r *SubtitleCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UnlinkMyIdentity implements unlinkMyIdentity operation.
 //
 // Remove the caller's link to a provider.
@@ -3074,6 +3130,24 @@ func (UnimplementedHandler) UpdateSubtitleProvider(ctx context.Context, req *Sub
 //
 // PUT /subtitles/settings
 func (UnimplementedHandler) UpdateSubtitleSettings(ctx context.Context, req *SubtitleSettingsInput) (r *SubtitleSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSubtitleTranslationSettings implements updateSubtitleTranslationSettings operation.
+//
+// Change translation options (administrators).
+//
+// PUT /subtitles/translation
+func (UnimplementedHandler) UpdateSubtitleTranslationSettings(ctx context.Context, req *SubtitleTranslationSettingsInput) (r *SubtitleTranslationSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateSubtitleTranslator implements updateSubtitleTranslator operation.
+//
+// The key is write-only and stored encrypted; an empty string removes it.
+//
+// PUT /subtitles/translators/{name}
+func (UnimplementedHandler) UpdateSubtitleTranslator(ctx context.Context, req *SubtitleTranslatorInput, params UpdateSubtitleTranslatorParams) (r *SubtitleTranslator, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

@@ -68,7 +68,8 @@ var (
 	ErrBadLanguage     = errors.New("unknown language")
 )
 
-// Service is the subtitle subsystem.
+// Service is the subtitle subsystem; missing languages can also be
+// machine-translated from a subtitle in another language (translation.go).
 type Service struct {
 	DB        *db.DB
 	Box       *secrets.Box
@@ -87,11 +88,14 @@ type Service struct {
 	// Notify is told about every timeline entry (P9 sends some of them to
 	// the notification channels); nil = nobody.
 	Notify func(ctx context.Context, ref, typ, msg string)
-	Now       func() time.Time
+	Now    func() time.Time
+	// TranslateSleep waits between retries of translation services (tests); nil = real time.
+	TranslateSleep func(ctx context.Context, d time.Duration) error
 
-	mu      sync.Mutex
-	clients map[string]clientEntry
-	manual  map[string]manualEntry
+	mu       sync.Mutex
+	clients  map[string]clientEntry
+	manual   map[string]manualEntry
+	progress map[string]TranslationProgress
 }
 
 func (s *Service) now() time.Time {

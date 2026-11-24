@@ -16799,6 +16799,79 @@ func decodeResetSubtitleProviderHealthParams(args [1]string, argsEscaped bool, r
 	return params, nil
 }
 
+// ResetSubtitleTranslatorHealthParams is parameters of resetSubtitleTranslatorHealth operation.
+type ResetSubtitleTranslatorHealthParams struct {
+	Name SubtitleTranslatorName
+}
+
+func unpackResetSubtitleTranslatorHealthParams(packed middleware.Parameters) (params ResetSubtitleTranslatorHealthParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "name",
+			In:   "path",
+		}
+		params.Name = packed[key].(SubtitleTranslatorName)
+	}
+	return params
+}
+
+func decodeResetSubtitleTranslatorHealthParams(args [1]string, argsEscaped bool, r *http.Request) (params ResetSubtitleTranslatorHealthParams, _ error) {
+	// Decode path: name.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "name",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Name = SubtitleTranslatorName(c)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.Name.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "name",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // ResetUserPasswordParams is parameters of resetUserPassword operation.
 type ResetUserPasswordParams struct {
 	ID int64
@@ -21890,6 +21963,165 @@ func decodeTestSubtitleProviderParams(args [1]string, argsEscaped bool, r *http.
 	return params, nil
 }
 
+// TestSubtitleTranslatorParams is parameters of testSubtitleTranslator operation.
+type TestSubtitleTranslatorParams struct {
+	Name SubtitleTranslatorName
+}
+
+func unpackTestSubtitleTranslatorParams(packed middleware.Parameters) (params TestSubtitleTranslatorParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "name",
+			In:   "path",
+		}
+		params.Name = packed[key].(SubtitleTranslatorName)
+	}
+	return params
+}
+
+func decodeTestSubtitleTranslatorParams(args [1]string, argsEscaped bool, r *http.Request) (params TestSubtitleTranslatorParams, _ error) {
+	// Decode path: name.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "name",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Name = SubtitleTranslatorName(c)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.Name.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "name",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// TranslateItemSubtitlesParams is parameters of translateItemSubtitles operation.
+type TranslateItemSubtitlesParams struct {
+	// Movie:ID or episode:ID.
+	Ref string
+}
+
+func unpackTranslateItemSubtitlesParams(packed middleware.Parameters) (params TranslateItemSubtitlesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "ref",
+			In:   "path",
+		}
+		params.Ref = packed[key].(string)
+	}
+	return params
+}
+
+func decodeTranslateItemSubtitlesParams(args [1]string, argsEscaped bool, r *http.Request) (params TranslateItemSubtitlesParams, _ error) {
+	// Decode path: ref.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "ref",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Ref = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.String{
+					MinLength:     0,
+					MinLengthSet:  false,
+					MaxLength:     0,
+					MaxLengthSet:  false,
+					Email:         false,
+					Hostname:      false,
+					Regex:         regexMap["^(movie|episode):[0-9]+$"],
+					MinNumeric:    0,
+					MinNumericSet: false,
+					MaxNumeric:    0,
+					MaxNumericSet: false,
+				}).Validate(string(params.Ref)); err != nil {
+					return errors.Wrap(err, "string")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "ref",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UnlinkMyIdentityParams is parameters of unlinkMyIdentity operation.
 type UnlinkMyIdentityParams struct {
 	Provider string
@@ -23826,6 +24058,79 @@ func decodeUpdateSubtitleProviderParams(args [1]string, argsEscaped bool, r *htt
 				}
 
 				params.Name = SubtitleProviderName(c)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.Name.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "name",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateSubtitleTranslatorParams is parameters of updateSubtitleTranslator operation.
+type UpdateSubtitleTranslatorParams struct {
+	Name SubtitleTranslatorName
+}
+
+func unpackUpdateSubtitleTranslatorParams(packed middleware.Parameters) (params UpdateSubtitleTranslatorParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "name",
+			In:   "path",
+		}
+		params.Name = packed[key].(SubtitleTranslatorName)
+	}
+	return params
+}
+
+func decodeUpdateSubtitleTranslatorParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateSubtitleTranslatorParams, _ error) {
+	// Decode path: name.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "name",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Name = SubtitleTranslatorName(c)
 				return nil
 			}(); err != nil {
 				return err

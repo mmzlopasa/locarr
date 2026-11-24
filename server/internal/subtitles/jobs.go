@@ -50,6 +50,7 @@ func (s *Service) RegisterTasks() {
 		}
 		return s.RunSync(ctx, a)
 	}, jobs.KindOptions{Queue: Queue + "-sync", MaxAttempts: 1, Timeout: 30 * time.Minute})
+	s.registerTranslation()
 	s.Jobs.Schedule(TaskMissing, TaskMissing, time.Hour)
 	s.Jobs.Schedule(TaskScan, TaskScan, 24*time.Hour)
 }

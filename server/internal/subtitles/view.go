@@ -46,6 +46,9 @@ type ItemView struct {
 	State         SearchState    `json:"state"`
 	Explanation   Explanation    `json:"explanation"`
 	SyncAvailable bool           `json:"syncAvailable"`
+	// Translations queued or running; TranslationAvailable: a service is enabled.
+	Translations         []TranslationProgress `json:"translations"`
+	TranslationAvailable bool                  `json:"translationAvailable"`
 }
 
 func (s *Service) state(ctx context.Context, ref string) (SearchState, error) {
@@ -64,7 +67,8 @@ func (s *Service) state(ctx context.Context, ref string) (SearchState, error) {
 
 // Item returns the Subtitles section of a movie or episode.
 func (s *Service) Item(ctx context.Context, ref library.Ref) (ItemView, error) {
-	v := ItemView{Ref: ref.String(), Wants: []WantStatus{}, Subtitles: []Subtitle{}, Tracks: []tracks.Track{}, SyncAvailable: s.SyncAvailable()}
+	v := ItemView{Ref: ref.String(), Wants: []WantStatus{}, Subtitles: []Subtitle{}, Tracks: []tracks.Track{}, SyncAvailable: s.SyncAvailable(),
+		Translations: []TranslationProgress{}}
 	t, err := s.Target(ctx, ref)
 	if errors.Is(err, ErrNoFile) {
 		v.Explanation = Explanation{Code: "no_file", Tone: "info", Message: "the item has no file yet; subtitles are searched once it is imported", Params: map[string]any{}}
@@ -82,6 +86,7 @@ func (s *Service) Item(ctx context.Context, ref library.Ref) (ItemView, error) {
 		return v, err
 	}
 	v.Title, v.FilePath, v.HasFile = t.Title, t.Path, true
+	v.Translations, v.TranslationAvailable = s.Progress(ref.String()), s.TranslationAvailable(ctx)
 	if _, _, probed, _ := s.Tracks(ctx, t.FileID); !probed {
 		if _, err := s.RefreshTarget(ctx, &t, true); err != nil {
 			s.log().Warn("subtitle refresh", "item", ref.String(), "err", err)
@@ -132,9 +137,11 @@ func (s *Service) explain(ctx context.Context, v ItemView) (Explanation, error) 
 		return set("no_profile", "warning", "no subtitle profile applies: choose a default profile in Settings → Subtitles or one for this item")
 	}
 	var missing, names []string
-	embedded := 0
+	embedded, translated := 0, 0
 	for _, w := range v.Wants {
 		switch w.Status {
+		case "translated":
+			translated++
 		case "missing":
 			missing = append(missing, w.Key)
 			names = append(names, languages.Name(w.Language))
@@ -144,6 +151,10 @@ func (s *Service) explain(ctx context.Context, v ItemView) (Explanation, error) 
 	}
 	e.Params["missing"] = missing
 	if len(missing) == 0 {
+		if translated > 0 {
+			e.Params["translated"] = translated
+			return set("complete_translated", "info", "every wanted language is present; some are machine translations and Locarr keeps looking for human subtitles")
+		}
 		if embedded > 0 {
 			e.Params["embedded"] = embedded
 			return set("complete_embedded", "success", "every wanted language is present (some as tracks inside the video)")
