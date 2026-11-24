@@ -42,6 +42,8 @@ const (
 	KindMovies = "movies"
 	KindSeries = "series"
 	KindMusic  = "music"
+	// KindAdult downloads use the movies category (D-102).
+	KindAdult = "adult"
 )
 
 // Initial states of a new download.
@@ -85,7 +87,7 @@ type Client struct {
 // Category returns the client's category for a media kind.
 func (c Client) Category(kind string) string {
 	switch kind {
-	case KindMovies:
+	case KindMovies, KindAdult:
 		return c.CategoryMovies
 	case KindSeries:
 		return c.CategorySeries
