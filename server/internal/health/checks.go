@@ -216,9 +216,10 @@ func (d *Deps) checkClients(ctx context.Context, cats *categoryCache) ([]Issue, 
 	return out, nil
 }
 
+// Adult downloads appear only as "download <id>" (health warnings reach shared channels; D-100).
 func (d *Deps) checkPaths(ctx context.Context) ([]Issue, error) {
 	var out []Issue
-	rows, err := d.DB.R.QueryContext(ctx, `SELECT id, title, client_name, content_path, save_path, message FROM downloads
+	rows, err := d.DB.R.QueryContext(ctx, `SELECT id, CASE WHEN COALESCE(json_extract(item_ref, '$.ref'), '') LIKE 'scene:%' OR COALESCE(json_extract(item_ref, '$.ref'), '') LIKE 'adult_movie:%' THEN 'download ' || id ELSE title END, client_name, content_path, save_path, message FROM downloads
 		WHERE status = 'active' AND progress >= 1 AND message LIKE '%not visible%'`)
 	if err != nil {
 		return nil, err
@@ -312,7 +313,7 @@ func (d *Deps) checkImports(ctx context.Context) ([]Issue, error) {
 	if mins <= 0 {
 		return nil, nil
 	}
-	rows, err := d.DB.R.QueryContext(ctx, `SELECT id, title, completed_at, message FROM downloads WHERE status = 'completed' AND completed_at < ?
+	rows, err := d.DB.R.QueryContext(ctx, `SELECT id, CASE WHEN COALESCE(json_extract(item_ref, '$.ref'), '') LIKE 'scene:%' OR COALESCE(json_extract(item_ref, '$.ref'), '') LIKE 'adult_movie:%' THEN 'download ' || id ELSE title END, completed_at, message FROM downloads WHERE status = 'completed' AND completed_at < ?
 		ORDER BY completed_at LIMIT 50`, db.Millis(d.now().Add(-time.Duration(mins)*time.Minute)))
 	if err != nil {
 		return nil, err
