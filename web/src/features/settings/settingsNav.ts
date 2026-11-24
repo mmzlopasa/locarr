@@ -6,6 +6,7 @@ import {
   Captions,
   Clapperboard,
   Download,
+  EyeOff,
   FileCog,
   FlaskConical,
   FolderOpen,
@@ -29,7 +30,7 @@ export type SettingsPath =
   | "/settings" | "/settings/media" | "/settings/mediamanagement" | "/settings/metadata" | "/settings/importlists"
   | "/settings/metadataprofiles" | "/settings/subtitles" | "/settings/profiles" | "/settings/quality"
   | "/settings/customformats" | "/settings/rules" | "/settings/tester" | "/settings/requests" | "/settings/users"
-  | "/settings/mediaserver" | "/settings/notifications" | "/settings/system"
+  | "/settings/mediaserver" | "/settings/notifications" | "/settings/system" | "/settings/adult"
   | "/indexers" | "/downloaders" | "/system/status" | "/migrate";
 
 export type SettingsNavItem = {
@@ -64,6 +65,7 @@ export const SETTINGS_NAV: SettingsNavGroup[] = [
       { key: "metadataProfiles", to: "/settings/metadataprofiles", icon: Tags, visible: admin },
       { key: "importLists", to: "/settings/importlists", icon: ListPlus, visible: admin },
       { key: "subtitles", to: "/settings/subtitles", icon: Captions, visible: admin },
+      { key: "adult", to: "/settings/adult", icon: EyeOff, visible: admin },
     ],
   },
   {

@@ -4779,10 +4779,580 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/adult/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Adult library settings (administrators; 404 for everyone else)
+         * @description Works while the feature is off, so an administrator can enable it. Keys are never returned, only whether they are set.
+         */
+        get: operations["getAdultSettings"];
+        /**
+         * Change adult library settings (administrators)
+         * @description Enabling needs `confirmAdults` (every user with access is an adult). Keys are checked with the source before they are stored.
+         */
+        put: operations["updateAdultSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/blocklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The adult tag blocklist (administrators) */
+        get: operations["listAdultBlocklist"];
+        put?: never;
+        /** Add a blocked term (administrators) */
+        post: operations["addAdultBlocklistTerm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/blocklist/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a blocked term (administrators) */
+        delete: operations["deleteAdultBlocklistTerm"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Own adult preferences (permitted users; 404 otherwise) */
+        get: operations["getAdultPreferences"];
+        /** Change own adult preferences */
+        put: operations["updateAdultPreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/rootfolders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Adult root folders */
+        get: operations["listAdultRootFolders"];
+        put?: never;
+        /** Add an adult root folder (created inside the data roots) */
+        post: operations["addAdultRootFolder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/rootfolders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Forget an adult root folder (files stay) */
+        delete: operations["deleteAdultRootFolder"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search StashDB or ThePornDB
+         * @description Entries the source flags as removed or disputed and entries with a blocked tag are left out. Remote images are never returned.
+         */
+        get: operations["lookupAdult"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/studios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Studios and sites */
+        get: operations["listAdultStudios"];
+        put?: never;
+        /** Add a studio from a source (its newest scenes are added; new ones become wanted) */
+        post: operations["addAdultStudio"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/studios/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** One studio */
+        get: operations["getAdultStudio"];
+        put?: never;
+        post?: never;
+        /** Remove a studio and its scenes (files go to the recycle bin only with deleteFiles) */
+        delete: operations["deleteAdultStudio"];
+        options?: never;
+        head?: never;
+        /** Monitor a studio or change its profile */
+        patch: operations["updateAdultStudio"];
+        trace?: never;
+    };
+    "/adult/studios/{id}/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Look for new scenes of a studio now */
+        post: operations["refreshAdultStudio"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/performers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Performers */
+        get: operations["listAdultPerformers"];
+        put?: never;
+        /** Add (and with monitored, track) a performer from a source */
+        post: operations["addAdultPerformer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/performers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** One performer */
+        get: operations["getAdultPerformer"];
+        put?: never;
+        post?: never;
+        /** Forget a performer (their scenes stay) */
+        delete: operations["deleteAdultPerformer"];
+        options?: never;
+        head?: never;
+        /** Monitor a performer or change the profile */
+        patch: operations["updateAdultPerformer"];
+        trace?: never;
+    };
+    "/adult/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Scenes and movies */
+        get: operations["listAdultItems"];
+        put?: never;
+        /** Add a scene or movie from a source */
+        post: operations["addAdultItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/items/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** One scene or movie */
+        get: operations["getAdultItem"];
+        put?: never;
+        post?: never;
+        /** Remove an item (its file goes to the recycle bin only with deleteFiles) */
+        delete: operations["deleteAdultItem"];
+        options?: never;
+        head?: never;
+        /** Monitor an item or change its profile */
+        patch: operations["updateAdultItem"];
+        trace?: never;
+    };
+    "/adult/items/{id}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue an automatic search now */
+        post: operations["searchAdultItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/items/{id}/releases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** Interactive search with the decision on every release */
+        get: operations["interactiveSearchAdultItem"];
+        put?: never;
+        /** Grab a release chosen in an interactive search */
+        post: operations["grabAdultRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/items/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** The item's timeline and the answer to "why isn't it here?" */
+        get: operations["getAdultItemTimeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/items/{id}/rename": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview or apply renaming the item's file to the template */
+        post: operations["renameAdultItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Scenes and movies by release date (only in the adult section; never in the main calendar or iCal) */
+        get: operations["getAdultCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/images/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A cached adult image (permitted users only; Cache-Control private) */
+        get: operations["getAdultImage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AdultSettings: {
+            enabled: boolean;
+            /** @description When an administrator confirmed that every user with access is an adult. */
+            confirmedAt?: string;
+            stashdbKeySet: boolean;
+            tpdbKeySet: boolean;
+            /** @enum {string} */
+            defaultSource: "stashdb" | "tpdb";
+            /** Format: int64 */
+            defaultProfileId: number;
+            /** Format: int64 */
+            defaultRootFolderId: number;
+            sceneFolder: string;
+            sceneFile: string;
+            movieFolder: string;
+            movieFile: string;
+            /** @description Add one total count of adult items to /api/stats (never a breakdown). */
+            statsAggregate: boolean;
+            /** @description Tell Streamero about adult imports (only with an adult Streamero library mapped). */
+            notifyStreamero: boolean;
+            tokens: string[];
+        };
+        AdultSettingsUpdate: {
+            enabled?: boolean;
+            /** @description Required to enable: every user with access to adult content is an adult. */
+            confirmAdults?: boolean;
+            /** @description Empty clears the key. */
+            stashdbKey?: string;
+            tpdbKey?: string;
+            /** @enum {string} */
+            defaultSource?: "stashdb" | "tpdb";
+            /** Format: int64 */
+            defaultProfileId?: number;
+            /** Format: int64 */
+            defaultRootFolderId?: number;
+            sceneFolder?: string;
+            sceneFile?: string;
+            movieFolder?: string;
+            movieFile?: string;
+            statsAggregate?: boolean;
+            notifyStreamero?: boolean;
+        };
+        AdultBlockTerm: {
+            /** Format: int64 */
+            id: number;
+            term: string;
+            builtin: boolean;
+        };
+        AdultPreferences: {
+            /** @description Blur adult images until clicked (default on). */
+            blur: boolean;
+        };
+        AdultRootFolder: {
+            /** Format: int64 */
+            id: number;
+            path: string;
+        };
+        AdultLookupResult: {
+            /** @enum {string} */
+            source: "stashdb" | "tpdb";
+            id: string;
+            /** @enum {string} */
+            type: "scene" | "movie" | "performer" | "studio";
+            name: string;
+            date?: string;
+            studio?: string;
+            performers?: string[];
+            inLibrary?: boolean;
+        };
+        AdultAddRequest: {
+            /** @enum {string} */
+            source: "stashdb" | "tpdb";
+            id: string;
+            /**
+             * @description For items.
+             * @enum {string}
+             */
+            kind?: "scene" | "movie";
+            /** Format: int64 */
+            qualityProfileId?: number;
+            /** Format: int64 */
+            rootFolderId?: number;
+            /** @default true */
+            monitored: boolean;
+            /** @default true */
+            search: boolean;
+        };
+        AdultEditRequest: {
+            monitored?: boolean;
+            /** Format: int64 */
+            qualityProfileId?: number;
+        };
+        AdultStudio: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            stashdbId?: string;
+            tpdbId?: string;
+            url?: string;
+            /** @description Key for /adult/images/{key}. */
+            image?: string;
+            monitored: boolean;
+            monitorSince?: string;
+            /** Format: int64 */
+            qualityProfileId: number;
+            /** Format: int64 */
+            rootFolderId?: number;
+            path: string;
+            /** Format: date-time */
+            addedAt: string;
+            /** Format: date-time */
+            refreshedAt?: string;
+            scenes: number;
+            files: number;
+        };
+        AdultPerformer: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            disambiguation?: string;
+            stashdbId?: string;
+            tpdbId?: string;
+            image?: string;
+            monitored: boolean;
+            monitorSince?: string;
+            /** Format: int64 */
+            qualityProfileId?: number;
+            /** Format: date-time */
+            addedAt: string;
+            /** Format: date-time */
+            refreshedAt?: string;
+            items: number;
+        };
+        AdultFile: {
+            /** Format: int64 */
+            id: number;
+            path: string;
+            /** Format: int64 */
+            size: number;
+            quality: string;
+            releaseGroup?: string;
+            sceneName?: string;
+            /** Format: date-time */
+            addedAt?: string;
+        };
+        AdultItem: {
+            /** Format: int64 */
+            id: number;
+            /** @enum {string} */
+            kind: "scene" | "movie";
+            /** @description scene:<id> or adult_movie:<id> */
+            ref: string;
+            /** Format: int64 */
+            studioId?: number;
+            studio: string;
+            title: string;
+            releaseDate?: string;
+            year?: number;
+            duration?: number;
+            overview?: string;
+            stashdbId?: string;
+            tpdbId?: string;
+            image?: string;
+            monitored: boolean;
+            /** Format: int64 */
+            qualityProfileId: number;
+            path: string;
+            /** Format: date-time */
+            addedAt: string;
+            sourceTags: string[];
+            performers: {
+                /** Format: int64 */
+                id: number;
+                name: string;
+            }[];
+            file?: components["schemas"]["AdultFile"];
+        };
+        AdultItemPage: {
+            items: components["schemas"]["AdultItem"][];
+            total: number;
+        };
+        AdultRename: {
+            /** Format: int64 */
+            itemId: number;
+            from: string;
+            to: string;
+        };
         Error: {
             /** @description Stable machine-readable code, e.g. `invalid_credentials`, `totp_required`, `forbidden`. */
             code: string;
@@ -4913,6 +5483,8 @@ export interface components {
             autoApproveMusic?: boolean;
             /** @description 4K requests are approved at once. */
             autoApprove4k?: boolean;
+            /** @description See the optional adult library. Never granted by default, not even to administrators; requesters can never hold it. */
+            viewAdult?: boolean;
         };
         User: {
             /** Format: int64 */
@@ -4920,6 +5492,8 @@ export interface components {
             username: string;
             role: components["schemas"]["Role"];
             permissions: components["schemas"]["Permissions"];
+            /** @description Only on /auth/me - the adult library is enabled and this session may see it. */
+            adultVisible?: boolean;
             language: components["schemas"]["Language"];
             disabled: boolean;
             totpEnabled: boolean;
@@ -4959,6 +5533,8 @@ export interface components {
             /** @description The first characters of the key, to recognise it. */
             prefix: string;
             readOnly: boolean;
+            /** @description The key may see the adult library (only when its owner may). */
+            includeAdult?: boolean;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -4967,6 +5543,8 @@ export interface components {
         CreateApiKeyRequest: {
             name: string;
             readOnly?: boolean;
+            /** @description Let the key see the adult library. Ignored unless the owner holds viewAdult. */
+            includeAdult?: boolean;
         };
         CreatedApiKey: {
             apiKey: components["schemas"]["ApiKey"];
@@ -5072,6 +5650,8 @@ export interface components {
             tv: number[];
             music: number[];
             books: number[];
+            /** @description Adult (6xxx) categories. Empty unless an administrator opts the indexer in; only adult searches use them. */
+            adult?: number[];
         };
         IndexerCategory: {
             id: number;
@@ -8351,7 +8931,7 @@ export interface components {
         /** @enum {string} */
         NotificationChannelKind: "webhook" | "ntfy" | "gotify" | "discord" | "telegram" | "pushover" | "email" | "apprise";
         /** @enum {string} */
-        NotificationEventType: "request.created" | "request.approved" | "request.declined" | "request.available" | "request.partial" | "request.failed" | "request.comment" | "issue.created" | "issue.comment" | "issue.resolved" | "issue.reopened" | "library.grabbed" | "library.imported" | "library.upgraded" | "library.download_failed" | "library.import_failed" | "health.warning" | "subtitles.downloaded" | "subtitles.missing" | "migrate.finished" | "migrate.failed" | "test";
+        NotificationEventType: "request.created" | "request.approved" | "request.declined" | "request.available" | "request.partial" | "request.failed" | "request.comment" | "issue.created" | "issue.comment" | "issue.resolved" | "issue.reopened" | "library.grabbed" | "library.imported" | "library.upgraded" | "library.download_failed" | "library.import_failed" | "health.warning" | "subtitles.downloaded" | "subtitles.missing" | "migrate.finished" | "migrate.failed" | "adult.grabbed" | "adult.imported" | "adult.upgraded" | "adult.download_failed" | "adult.import_failed" | "test";
         /** @description Plain settings; each kind uses only its own fields. */
         NotificationChannelSettings: {
             /** @description webhook: target URL; ntfy and gotify: server; apprise: notify endpoint (e.g. http://apprise:8000/notify/apprise). */
@@ -8913,6 +9493,8 @@ export interface components {
             requestsPending: number;
             /** @description Files missing at least one wanted subtitle language. */
             subtitlesMissing: number;
+            /** @description Total adult items; present only when the adult library is enabled and the administrator opted in. Never broken down. */
+            adultItems?: number;
             /** Format: date-time */
             lastRssSyncAt?: string;
             rootFolders: components["schemas"]["StatsRootFolder"][];
@@ -16989,6 +17571,816 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SystemSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateAdultSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultSettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listAdultBlocklist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Terms */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultBlockTerm"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addAdultBlocklistTerm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    term: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultBlockTerm"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteAdultBlocklistTerm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Preferences */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultPreferences"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateAdultPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultPreferences"];
+            };
+        };
+        responses: {
+            /** @description Preferences */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultPreferences"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listAdultRootFolders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Folders */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultRootFolder"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addAdultRootFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    path: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultRootFolder"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteAdultRootFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    lookupAdult: {
+        parameters: {
+            query: {
+                source: "stashdb" | "tpdb";
+                type: "scene" | "movie" | "performer" | "studio";
+                term: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Results */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultLookupResult"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listAdultStudios: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Studios */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultStudio"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addAdultStudio: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultAddRequest"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultStudio"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultStudio: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Studio */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultStudio"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteAdultStudio: {
+        parameters: {
+            query?: {
+                deleteFiles?: boolean;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateAdultStudio: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultEditRequest"];
+            };
+        };
+        responses: {
+            /** @description Studio */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultStudio"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    refreshAdultStudio: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Added scenes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listAdultPerformers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Performers */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultPerformer"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addAdultPerformer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultAddRequest"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultPerformer"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultPerformer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Performer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultPerformer"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteAdultPerformer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateAdultPerformer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultEditRequest"];
+            };
+        };
+        responses: {
+            /** @description Performer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultPerformer"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listAdultItems: {
+        parameters: {
+            query?: {
+                kind?: "scene" | "movie";
+                studioId?: number;
+                performerId?: number;
+                term?: string;
+                missing?: boolean;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description One page */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultItemPage"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addAdultItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultAddRequest"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteAdultItem: {
+        parameters: {
+            query?: {
+                deleteFiles?: boolean;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateAdultItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultEditRequest"];
+            };
+        };
+        responses: {
+            /** @description Item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    searchAdultItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    interactiveSearchAdultItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The decision report */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InteractiveSearch"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    grabAdultRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualGrabRequest"];
+            };
+        };
+        responses: {
+            /** @description Sent to a client */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueueItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultItemTimeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The timeline */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Timeline"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    renameAdultItem: {
+        parameters: {
+            query?: {
+                apply?: boolean;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The rename */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultRename"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultCalendar: {
+        parameters: {
+            query: {
+                start: string;
+                end: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Items */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultItem"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The image */
+            200: {
+                headers: {
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/*": string;
                 };
             };
             default: components["responses"]["Error"];

@@ -52,6 +52,11 @@ import { AlbumDetailPage } from "@/features/music/AlbumDetailPage";
 import { MusicImportPage } from "@/features/music/MusicImportPage";
 import { MetadataProfilesPage } from "@/features/music/MetadataProfilesPage";
 import { SubtitleSettingsPage } from "@/features/subtitles/SubtitleSettingsPage";
+import { AdultSettingsPage } from "@/features/settings/AdultSettingsPage";
+import {
+  AdultAddPage, AdultCalendarPage, AdultItemPage, AdultLayout, AdultMoviesPage, AdultPerformerPage, AdultPerformersPage, AdultScenesPage,
+  AdultStudioPage, AdultStudiosPage, AdultWantedPage,
+} from "@/features/adult/AdultPages";
 import { MigratePage } from "@/features/migrate/MigratePage";
 import { ChecklistPage } from "@/features/migrate/ChecklistPage";
 import { JoinPage } from "@/routes/JoinPage";
@@ -225,6 +230,27 @@ const mediaServerRoute = createRoute({ getParentRoute: () => settingsRoute, path
 const notificationSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/notifications", component: NotificationSettingsPage });
 const subtitleSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/subtitles", component: SubtitleSettingsPage });
 const monitoringSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/system", component: MonitoringSettingsPage });
+const adultSettingsRoute = createRoute({ getParentRoute: () => settingsRoute, path: "/adult", component: AdultSettingsPage });
+
+/** The adult section exists only for accounts the server lets see it (enabled and view_adult). */
+const adultRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: "/adult",
+  beforeLoad: ({ context }) => {
+    if (!context.me.adultVisible) throw redirect({ to: "/" });
+  },
+  component: AdultLayout,
+});
+const adultScenesRoute = createRoute({ getParentRoute: () => adultRoute, path: "/", component: AdultScenesPage });
+const adultMoviesRoute = createRoute({ getParentRoute: () => adultRoute, path: "/movies", component: AdultMoviesPage });
+const adultStudiosRoute = createRoute({ getParentRoute: () => adultRoute, path: "/studios", component: AdultStudiosPage });
+const adultStudioRoute = createRoute({ getParentRoute: () => adultRoute, path: "/studios/$id", component: AdultStudioPage });
+const adultPerformersRoute = createRoute({ getParentRoute: () => adultRoute, path: "/performers", component: AdultPerformersPage });
+const adultPerformerRoute = createRoute({ getParentRoute: () => adultRoute, path: "/performers/$id", component: AdultPerformerPage });
+const adultItemRoute = createRoute({ getParentRoute: () => adultRoute, path: "/items/$id", component: AdultItemPage });
+const adultWantedRoute = createRoute({ getParentRoute: () => adultRoute, path: "/wanted", component: AdultWantedPage });
+const adultCalendarRoute = createRoute({ getParentRoute: () => adultRoute, path: "/calendar", component: AdultCalendarPage });
+const adultAddRoute = createRoute({ getParentRoute: () => adultRoute, path: "/add", component: AdultAddPage });
 const welcomeRoute = createRoute({ getParentRoute: () => adminRoute, path: "/welcome", component: WelcomePage });
 
 const systemRoute = createRoute({ getParentRoute: () => adminRoute, path: "/system", component: SystemLayout });
@@ -277,6 +303,8 @@ export const routeTree = rootRoute.addChildren([
     activityRoute.addChildren([activityIndexRoute, queueRoute, boardRoute, historyRoute, blocklistRoute, activityStatsRoute]),
     searchRoute,
     accountRoute,
+    adultRoute.addChildren([adultScenesRoute, adultMoviesRoute, adultStudiosRoute, adultStudioRoute, adultPerformersRoute, adultPerformerRoute,
+      adultItemRoute, adultWantedRoute, adultCalendarRoute, adultAddRoute]),
     adminRoute.addChildren([
       downloadersRoute,
       indexersRoute,
@@ -284,7 +312,7 @@ export const routeTree = rootRoute.addChildren([
       migrateChecklistRoute,
       settingsRoute.addChildren([settingsIndexRoute, rootFoldersRoute, usersRoute, profilesRoute, qualityRoute, customFormatsRoute,
         rulesRoute, testerRoute, mediaManagementRoute, metadataRoute, importListsRoute, metadataProfilesRoute, subtitleSettingsRoute,
-        requestSettingsRoute, mediaServerRoute, notificationSettingsRoute, monitoringSettingsRoute]),
+        requestSettingsRoute, mediaServerRoute, notificationSettingsRoute, monitoringSettingsRoute, adultSettingsRoute]),
       systemRoute.addChildren([systemIndexRoute, statusRoute, healthRoute, tasksRoute, logsRoute, backupsRoute]),
       welcomeRoute,
     ]),

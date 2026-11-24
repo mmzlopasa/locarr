@@ -44,7 +44,7 @@ func toCats(c indexers.Categories) gen.IndexerCategories {
 		}
 		return l
 	}
-	return gen.IndexerCategories{Movies: nz(c.Movies), Tv: nz(c.TV), Music: nz(c.Music), Books: nz(c.Books)}
+	return gen.IndexerCategories{Movies: nz(c.Movies), Tv: nz(c.TV), Music: nz(c.Music), Books: nz(c.Books), Adult: c.Adult}
 }
 
 var searchTypeNames = map[znab.SearchType]gen.SearchType{
@@ -163,7 +163,7 @@ func (h *Handler) fromInput(g *gen.IndexerInput) indexers.Input {
 	in.Priority = g.Priority.Or(25)
 	in.Tags = g.Tags
 	if c, ok := g.Categories.Get(); ok {
-		in.Categories = &indexers.Categories{Movies: c.Movies, TV: c.Tv, Music: c.Music, Books: c.Books}
+		in.Categories = &indexers.Categories{Movies: c.Movies, TV: c.Tv, Music: c.Music, Books: c.Books, Adult: c.Adult}
 	}
 	in.MinimumSeeders = g.MinimumSeeders.Or(1)
 	if v, ok := g.SeedRatio.Get(); ok {
@@ -232,7 +232,15 @@ func (h *Handler) UpdateIndexer(ctx context.Context, req *gen.IndexerInput, para
 	if _, err := admin(ctx); err != nil {
 		return nil, err
 	}
-	i, err := h.Indexers.Update(ctx, params.ID, h.fromInput(req))
+	in := h.fromInput(req)
+	// Editing an indexer without naming adult categories keeps its adult
+	// opt-in (only an explicit list changes it).
+	if in.Categories != nil && in.Categories.Adult == nil {
+		if cur, err := h.Indexers.Get(ctx, params.ID); err == nil {
+			in.Categories.Adult = cur.Categories.Adult
+		}
+	}
+	i, err := h.Indexers.Update(ctx, params.ID, in)
 	if err != nil {
 		return nil, err
 	}
