@@ -3442,7 +3442,7 @@
   },
   "history": {
     "title": "Povijest",
-    "subtitle": "Što je Locarr preuzeo, uvezao, nadogradio, preimenovao i obrisao, neuspjesi, titlovi i obavijesti media serveru.",
+    "subtitle": "Što je Locarr preuzeo, uvezao, nadogradio, preimenovao i obrisao, neuspjesi, titlovi i obavijesti media servera.",
     "category": "Što",
     "kind": "Vrsta",
     "search": "Traži",
@@ -3459,7 +3459,44 @@
       "renamed": "Preimenovano",
       "subtitles": "Titlovi",
       "notifications": "Obaviješteno"
-    }
+    },
+    "noneHint": "Ovdje se pojavljuju preuzimanja, uvozi, neuspjesi i brisanja dok Locarr radi na biblioteci.",
+    "noMatch": "Nijedan zapis ne odgovara filtrima.",
+    "noMatchHint": "Probaj drugu vrstu događaja ili medija, ili kraću pretragu.",
+    "resetFilters": "Očisti filtre",
+    "removedItem": "(uklonjena stavka)",
+    "times": "{{count}}×",
+    "when": "Kada",
+    "release": "Izdanje",
+    "indexerLabel": "Indexer",
+    "clientLabel": "Klijent",
+    "copy": "Kopiraj",
+    "copied": "Kopirano",
+    "more": "Prikaži starije",
+    "deleteEntry": "Obriši zapis",
+    "deleteEntryConfirm": "Obriši",
+    "retentionForever": "Zapisi se čuvaju dok ih ne obrišeš.",
+    "retentionChange": "Promijeni",
+    "group": {
+      "failed": "{{count}} izdanja nije uspjelo preuzeti — {{reason}}"
+    },
+    "clear": {
+      "open": "Očisti povijest",
+      "title": "Očisti povijest",
+      "what": "Koje zapise?",
+      "all": "Sve",
+      "allFiltered": "Sve što odgovara trenutnim filtrima",
+      "older": "Starije od…",
+      "days": "Dana",
+      "failed": "Samo neuspjehe",
+      "filterNote": "Trenutni filtri (što, vrsta, pretraga) vrijede za svaki izbor.",
+      "shared": "Zapisi povijesti ujedno su vremenska crta svakog naslova, pa nestaju i ondje. Datoteke, blokirana izdanja, pretrage i odluke o izdanjima ostaju. Ovo se ne može poništiti.",
+      "count": "Zapisa za brisanje: {{count}}",
+      "none": "Nijedan zapis ne odgovara.",
+      "confirm": "Obriši ({{count}})"
+    },
+    "deleteGroup": "Obriši ove zapise ({{count}})",
+    "retention": "Zapisi stariji od {{count}} dana brišu se automatski."
   },
   "activityStats": {
     "period": "Razdoblje",
@@ -3604,7 +3641,8 @@
       "downloadEventsDays": "Koraci preuzimanja (dana)",
       "releasesSeenDays": "Viđena RSS izdanja (dana)",
       "vacuumIntervalDays": "Sažmi bazu svakih (dana)",
-      "imageCacheMaxMb": "Granica predmemorije slika (MB)"
+      "imageCacheMaxMb": "Granica predmemorije slika (MB)",
+      "historyDays": "Povijest (dana)"
     },
     "hints": {
       "minFreeSpaceGb": "Za mape za medije i download klijente.",
@@ -3612,12 +3650,13 @@
       "stuckImportMinutes": "Završeno preuzimanje koje nije uvezeno nakon ovoliko vremena prijavljuje se.",
       "backupIntervalHours": "0 isključuje zakazane kopije.",
       "backupKeep": "Starije zakazane kopije se brišu.",
-      "timelineDays": "Zapisi povijesti po naslovu.",
+      "timelineDays": "Ostali zapisi vremenske crte po naslovu (odluke, izmjene, osvježavanja).",
       "searchLogDays": "Svaka pretraga i što je koji indexer odgovorio.",
       "downloadEventsDays": "Koraci završenih preuzimanja.",
       "releasesSeenDays": "Izdanja zapamćena iz RSS feedova.",
       "vacuumIntervalDays": "0 isključuje sažimanje.",
-      "imageCacheMaxMb": "Iznad ove granice brišu se najstariji plakati i omoti."
+      "imageCacheMaxMb": "Iznad ove granice brišu se najstariji plakati i omoti.",
+      "historyDays": "Preuzimanja, uvozi, neuspjesi i brisanja u Aktivnost → Povijest i na vremenskoj crti naslova. 0 = čuvaj zauvijek."
     }
   },
   "overview": {

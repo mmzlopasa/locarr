@@ -3,6 +3,14 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: povijest — ispravni naslovi, pregledniji prikaz, brisanje (branch `feat/history-cleanup`)
+- Uzrok krivih naslova: ponovno korišteni ID-jevi (SQLite bez `AUTOINCREMENT`). Migracija `00017_history_titles.sql` (D-107): `AUTOINCREMENT` za `media_items`, `seasons`, `episodes`, `albums`, `adult_items`, `sqlite_sequence` iznad svih ID-jeva u oznakama, `item_title` na `timeline_events` i `downloads`, odvajanje starih zapisa (`…#removed`) od stavke koja je dobila njihov ID.
+- Spremljene poruke bez tokena i ključeva (`logging.ScrubStored`); ručni grab sada ima kod razloga kao automatski.
+- API: `itemTitle`, `itemGone`, `data` na zapisu povijesti, `retentionDays` na stranici, `DELETE /history/{id}`, `POST /history/clear` (s `dryRun`), `historyDays` u postavkama sustava.
+- Web (EN + HR): ikona po vrsti, naslov kao poveznica (ili „(uklonjena stavka)”), kratak razlog u jednom retku, detalji s cijelom porukom i kopiranjem, grupirani neuspjesi, relativno vrijeme s točnim u opisu, „Prikaži starije”, prazno stanje, brisanje zapisa i grupe, „Očisti povijest” s potvrdom i brojem, zadržavanje u Postavke → Sustav.
+- Testovi: migracija na staroj shemi (`TestMigration17HistoryTitles`), `TestHistoryKeepsTitlesAcrossDeleteAndAdd`, `TestHistoryClearLeavesAdultEntries`, zadržavanje u `TestHousekeepingRetention`, `logging` (adrese), Vitest (grupiranje, adrese, stranica), Playwright `e2e/history.spec.ts`.
+- Sljedeće / poznato: brisanje povijesti u iOS i Android aplikaciji nije napravljeno (ekrani povijesti postoje, prikazuju novi naslov).
+
 ## Gotovo: biblioteka za odrasle (branch `feat/adult-library`)
 - Migracija `00016_adult.sql`: `adult_root_folders`, `adult_studios`, `adult_performers`, `adult_items` (scene i filmovi), `adult_item_performers`, `adult_files`, `adult_tag_blocklist`, `api_keys.include_adult`.
 - Sigurnosni model (D-103): zadano isključeno, uključivanje uz potvrdu, dozvola `view_adult` (bit 11) nikad zadana i nikad tražiteljima, ključevi samo uz oznaku, 404 svugdje inače; filtri u povijesti, statistici, `/api/stats`, redu, blokiranim izdanjima, košu, dnevniku pretraga, općoj vremenskoj crti; obavijesti `adult.*` samo uz izričit izbor kanala; privatne slike.

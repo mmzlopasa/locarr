@@ -67,6 +67,7 @@ export function MonitoringSettingsPage() {
       </Panel>
       <Panel title={t("monitoring.housekeeping")} description={t("monitoring.housekeepingHint")}>
         <div className="grid gap-3 sm:grid-cols-3">
+          {num("historyDays")}
           {num("timelineDays", 7)}
           {num("searchLogDays", 1)}
           {num("downloadEventsDays", 7)}
