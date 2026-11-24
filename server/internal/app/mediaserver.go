@@ -204,6 +204,10 @@ func wireSubtitleEvents(d *Deps, log *slog.Logger) {
 			info := describeRef(ctx, d, r)
 			d.Hub.Publish(ctx, notify.Event{Type: notify.SubtitleDownloaded, Title: info.title, Message: msg, Poster: info.poster,
 				MediaKind: info.kind, ItemRef: info.ref})
+		case subtitles.TypeTranslated:
+			info := describeRef(ctx, d, r)
+			d.Hub.Publish(ctx, notify.Event{Type: notify.SubtitleTranslated, Title: info.title, Message: msg, Poster: info.poster,
+				MediaKind: info.kind, ItemRef: info.ref})
 		case subtitles.TypeNotFound:
 			days, err := settings.Get(ctx, d.Settings, delivery.SubtitleMissingDays)
 			if err != nil || days <= 0 {
