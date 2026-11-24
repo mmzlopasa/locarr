@@ -2529,6 +2529,136 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/music/discover/artists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Artists similar to the library's (library managers and people who may request music)
+         * @description Suggestions combine the stored answers of every active provider (Last.fm, ListenBrainz, MusicBrainz relationships, Spotify where Spotify allows it) and leave out artists in the library and those marked not interested. People who only request see the same list with their request state and without library ids.
+         */
+        get: operations["listArtistSuggestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/discover/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask the providers again in the background (library managers)
+         * @description Without artists, asks about the artists whose answers are missing or old; with artists, about those, even when fresh.
+         */
+        post: operations["refreshArtistSuggestions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/discover/exclusions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Artists marked not interested (library managers) */
+        get: operations["listArtistExclusions"];
+        put?: never;
+        /** Mark an artist not interested; it is no longer suggested (library managers) */
+        post: operations["excludeArtist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/discover/exclusions/{mbid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Suggest an artist again (library managers) */
+        delete: operations["removeArtistExclusion"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/music/artists/{id}/similar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Artists similar to one library artist, including ones in the library (library managers) */
+        get: operations["getSimilarArtists"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/musicdiscovery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Music discovery providers, keys state and refresh schedule (administrators) */
+        get: operations["getMusicDiscoverySettings"];
+        /**
+         * Change providers, keys and the refresh schedule (administrators)
+         * @description Keys are checked with the provider first; a refused key is not stored (`metadata_key_invalid`).
+         */
+        put: operations["updateMusicDiscoverySettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/musicdiscovery/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check a provider with the stored keys (administrators) */
+        post: operations["testMusicDiscoveryProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/music/artists/lookup": {
         parameters: {
             query?: never;
@@ -4919,6 +5049,129 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @enum {string} */
+        MusicDiscoveryProviderId: "lastfm" | "listenbrainz" | "musicbrainz" | "spotify";
+        ArtistSuggestionSeed: {
+            mbid: string;
+            name: string;
+            /**
+             * Format: int64
+             * @description The library artist (library managers only).
+             */
+            artistId?: number;
+        };
+        ArtistSuggestion: {
+            mbid: string;
+            name: string;
+            disambiguation: string;
+            /** @description How strongly the providers and library artists agree. */
+            score: number;
+            /** @description Library artists it is similar to, strongest first (at most 5). */
+            seeds: components["schemas"]["ArtistSuggestionSeed"][];
+            seedCount: number;
+            providers: components["schemas"]["MusicDiscoveryProviderId"][];
+            tags: string[];
+            /** @description Cover Art Archive image name for /images/coverart/{size}/{file} (empty = none). */
+            cover: string;
+            /** @description The MusicBrainz artist was found by name; it may be another artist of that name. */
+            matchedByName: boolean;
+            links: {
+                musicbrainz: string;
+                listenbrainz?: string;
+                lastfm?: string;
+                spotify?: string;
+            };
+            /**
+             * Format: int64
+             * @description Set when the artist is in the library (library managers only).
+             */
+            artistId?: number;
+            status: components["schemas"]["DiscoverStatus"];
+            /**
+             * Format: int64
+             * @description The caller's open request for the artist.
+             */
+            requestId?: number;
+        };
+        ArtistSuggestionTag: {
+            name: string;
+            count: number;
+        };
+        MusicDiscoveryProvider: {
+            id: components["schemas"]["MusicDiscoveryProviderId"];
+            enabled: boolean;
+            /** @description Has the keys it needs (MusicBrainz and ListenBrainz need none). */
+            configured: boolean;
+            /** @description Library artists it has answered for. */
+            artists: number;
+            /** @description Library artists whose last lookup failed. */
+            failed: number;
+            lastError?: string;
+            /** Format: date-time */
+            lastAt?: string;
+            /**
+             * @description Spotify only. Spotify stopped serving related artists to new apps in November 2024.
+             * @enum {string}
+             */
+            relatedArtists?: "available" | "restricted" | "unknown";
+        };
+        ArtistSuggestionList: {
+            items: components["schemas"]["ArtistSuggestion"][];
+            total: number;
+            /** @description The most common tags of the suggestions (before the tag filter). */
+            tags: components["schemas"]["ArtistSuggestionTag"][];
+            providers: components["schemas"]["MusicDiscoveryProvider"][];
+            refreshing: boolean;
+            /** @description Library artists and providers not asked yet (a refresh is queued). */
+            pending: number;
+            /** Format: date-time */
+            lastRefreshAt?: string;
+            /** @description The caller adds artists to the library. */
+            canAdd: boolean;
+            /** @description The caller may request artists. */
+            canRequest: boolean;
+        };
+        ArtistExclusion: {
+            mbid: string;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        MusicDiscoverySettings: {
+            lastfm: boolean;
+            listenbrainz: boolean;
+            musicbrainz: boolean;
+            spotify: boolean;
+            lastfmApiKey: components["schemas"]["SecretState"];
+            spotifyClientId: components["schemas"]["SecretState"];
+            spotifyClientSecret: components["schemas"]["SecretState"];
+            refreshDays: number;
+            providers: components["schemas"]["MusicDiscoveryProvider"][];
+        };
+        MusicDiscoverySettingsInput: {
+            lastfm?: boolean;
+            listenbrainz?: boolean;
+            musicbrainz?: boolean;
+            spotify?: boolean;
+            /** @description Write-only; empty removes it. */
+            lastfmApiKey?: string;
+            /** @description Write-only; set together with the secret; empty removes both. */
+            spotifyClientId?: string;
+            /** @description Write-only. */
+            spotifyClientSecret?: string;
+            refreshDays?: number;
+        };
+        MusicDiscoveryTestResult: {
+            ok: boolean;
+            /** @description Why it failed: metadata_key_missing, metadata_key_invalid, metadata_unavailable. */
+            code?: string;
+            message: string;
+            /**
+             * @description Spotify only.
+             * @enum {string}
+             */
+            relatedArtists?: "available" | "restricted" | "unknown";
+        };
         Error: {
             /** @description Stable machine-readable code, e.g. `invalid_credentials`, `totp_required`, `forbidden`. */
             code: string;
@@ -13692,6 +13945,230 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Artist"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listArtistSuggestions: {
+        parameters: {
+            query?: {
+                /** @description Library artists (MusicBrainz ids) to start from; empty = all. */
+                seed?: string[];
+                tag?: string;
+                minScore?: number;
+                provider?: components["schemas"]["MusicDiscoveryProviderId"][];
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Suggestions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtistSuggestionList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    refreshArtistSuggestions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    seeds?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listArtistExclusions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The list, newest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtistExclusion"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    excludeArtist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    mbid: string;
+                    name?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Marked */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtistExclusion"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    removeArtistExclusion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mbid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getSimilarArtists: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Similar artists */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArtistSuggestionList"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getMusicDiscoverySettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MusicDiscoverySettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateMusicDiscoverySettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MusicDiscoverySettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MusicDiscoverySettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testMusicDiscoveryProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    provider: components["schemas"]["MusicDiscoveryProviderId"];
+                };
+            };
+        };
+        responses: {
+            /** @description The outcome */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MusicDiscoveryTestResult"];
                 };
             };
             default: components["responses"]["Error"];

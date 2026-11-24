@@ -13,9 +13,13 @@
 // /subdl/api/v1 and Jimaku under /jimaku/api (keys in
 // internal/subtitles/providers/fake), and a fake Streamero under /streamero
 // (accounts and keys in internal/mediaserver/streamero/fake; state at
-// /streamero/_fake/state, reset with POST /streamero/_fake/reset), and fake
+// /streamero/_fake/state, reset with POST /streamero/_fake/reset), fake
 // translation services (LibreTranslate, DeepL, OpenAI, an OpenAI-compatible
-// server, Anthropic, Gemini; keys in internal/subtitles/translate/fake).
+// server, Anthropic, Gemini; keys in internal/subtitles/translate/fake), and
+// music discovery's providers: Last.fm at /lastfm (key in
+// internal/metadata/lastfm/fake), ListenBrainz (API and labs) at
+// /listenbrainz and Spotify at /spotify (accounts at /spotify, API at
+// /spotify/v1; credentials in internal/metadata/spotify/fake).
 // The applications an existing setup is imported from are faked under
 // /arr/<kind> (API key migratekey; qBittorrent admin / migratepass); with a
 // seed folder their files go to <seed>/migrate. The built-in public sites'
@@ -32,7 +36,10 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/indexers/fake"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/native/sitefake"
 	stfake "github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero/fake"
+	lfmfake "github.com/mmzlopasa/locarr/server/internal/metadata/lastfm/fake"
+	lbfake "github.com/mmzlopasa/locarr/server/internal/metadata/listenbrainz/fake"
 	mbfake "github.com/mmzlopasa/locarr/server/internal/metadata/musicbrainz/fake"
+	spfake "github.com/mmzlopasa/locarr/server/internal/metadata/spotify/fake"
 	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 	migratefake "github.com/mmzlopasa/locarr/server/internal/migrate/fake"
 	subfake "github.com/mmzlopasa/locarr/server/internal/subtitles/providers/fake"
@@ -56,6 +63,11 @@ func main() {
 	// Like MusicBrainz, refuse clients that send more than one request per second.
 	mb.MinInterval = 950 * time.Millisecond
 	mux.Handle("/musicbrainz/", mb)
+	mux.Handle("/lastfm/", lfmfake.New())
+	lb := lbfake.New()
+	lb.MinInterval = 950 * time.Millisecond
+	mux.Handle("/listenbrainz/", lb)
+	mux.Handle("/spotify/", spfake.New())
 	mux.Handle("/streamero/", http.StripPrefix("/streamero", stfake.New()))
 	subs := subfake.New()
 	for _, p := range []string{"/opensubtitles/", "/subdl/", "/jimaku/"} {

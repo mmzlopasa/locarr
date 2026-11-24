@@ -26,6 +26,10 @@
 # API key fake0000000000000000000000tmdb01).
 # Fake MusicBrainz: http://fake-indexer:9117/musicbrainz (LOCARR_MUSICBRAINZ_URL), covers at
 # http://fake-indexer:9117/musicbrainz/coverart (LOCARR_COVERART_URL); it refuses more than one request per second.
+# Fake music discovery providers: Last.fm http://fake-indexer:9117/lastfm/ (LOCARR_LASTFM_URL, key lastfmkey),
+# ListenBrainz http://fake-indexer:9117/listenbrainz (LOCARR_LISTENBRAINZ_URL and LOCARR_LISTENBRAINZ_LABS_URL),
+# Spotify http://fake-indexer:9117/spotify/v1 (LOCARR_SPOTIFY_URL; accounts LOCARR_SPOTIFY_ACCOUNTS_URL=
+# http://fake-indexer:9117/spotify, client id spotifyid, secret spotifysecret; related artists refused like for new apps).
 # Fake subtitle providers: http://fake-indexer:9117/opensubtitles/api/v1 (LOCARR_OPENSUBTITLES_URL, API key
 # fakeoskey, user locarr / fakepass), http://fake-indexer:9117/subdl/api/v1 (LOCARR_SUBDL_URL, key fakesubdlkey),
 # http://fake-indexer:9117/jimaku/api (LOCARR_JIMAKU_URL, key fakejimakukey).
