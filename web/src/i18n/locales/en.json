@@ -4110,7 +4110,8 @@
       "title": "Adult root folders",
       "hint": "Kept apart from movie, series and music folders.",
       "path": "Folder",
-      "add": "Add folder"
+      "add": "Add folder",
+      "needPermission": "To add folders, first give yourself “See adult content” in Settings → Users, then reload this page. Even admins don't get it automatically."
     },
     "indexers": {
       "title": "Indexers with adult categories",

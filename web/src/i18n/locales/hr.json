@@ -4110,7 +4110,8 @@
       "title": "Mape za odrasle",
       "hint": "Odvojene od mapa za filmove, serije i glazbu.",
       "path": "Mapa",
-      "add": "Dodaj mapu"
+      "add": "Dodaj mapu",
+      "needPermission": "Za dodavanje mapa prvo si dodijeli „Vidi sadržaj za odrasle” u Postavke → Korisnici, pa ponovno učitaj ovu stranicu. Ni administratori je ne dobivaju automatski."
     },
     "indexers": {
       "title": "Indexeri s kategorijama za odrasle",

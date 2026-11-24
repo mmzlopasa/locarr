@@ -5,6 +5,7 @@ import { api, unwrap, type Indexer } from "@/api/client";
 import { Alert, Badge, Button, Checkbox, ConfirmButton, ErrorAlert, PageHeader, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 import { inputFromIndexer } from "@/features/indexers/BuiltinIndexers";
 import { useQualityProfiles } from "@/features/movies/common";
+import { useCurrentUser } from "@/features/auth/hooks";
 import { adultKey, useAdultRootFolders, useAdultSettings, useSaveAdultSettings, type AdultSettings } from "@/features/adult/api";
 
 /** Settings → Adult: off by default; enabling needs an explicit confirmation. */
@@ -131,6 +132,22 @@ function DefaultsPanel({ s }: { s: AdultSettings }) {
 }
 
 function RootsPanel() {
+  const me = useCurrentUser();
+  // Folders belong to the adult library itself, which even admins only reach
+  // with the permission; say so instead of failing with a 404.
+  return me.permissions.viewAdult ? <RootsEditor /> : <RootsNeedPermission />;
+}
+
+function RootsNeedPermission() {
+  const { t } = useTranslation();
+  return (
+    <Panel title={t("adultSettings.roots.title")} description={t("adultSettings.roots.hint")}>
+      <Alert tone="warning">{t("adultSettings.roots.needPermission")}</Alert>
+    </Panel>
+  );
+}
+
+function RootsEditor() {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const roots = useAdultRootFolders();
