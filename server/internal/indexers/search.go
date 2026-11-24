@@ -31,6 +31,9 @@ func (s *Service) eligible(ctx context.Context, q Query) ([]Indexer, error) {
 		if len(q.IndexerIDs) > 0 && !slices.Contains(q.IndexerIDs, ind.ID) {
 			continue
 		}
+		if q.Type == SearchAdult && len(ind.Categories.Adult) == 0 {
+			continue
+		}
 		switch q.Source {
 		case SourceAutomatic:
 			if !ind.EnableAutomatic {
@@ -97,6 +100,10 @@ func (s *Service) SearchStream(ctx context.Context, q Query, emit func(Event)) (
 	take := func(a answer) []Release {
 		fresh := make([]Release, 0, len(a.releases))
 		for _, r := range a.releases {
+			// Adult releases only answer adult searches (D-102).
+			if !AnswersQuery(q.Type, &r) {
+				continue
+			}
 			if k := r.Key(); !seen[k] {
 				seen[k] = true
 				fresh = append(fresh, r)
@@ -242,7 +249,7 @@ func (s *Service) searchOne(ctx context.Context, ind Indexer, q Query) (IndexerR
 
 var searchFunc = map[SearchType]znab.SearchType{
 	SearchAny: znab.SearchGeneric, SearchTV: znab.SearchTV, SearchMovie: znab.SearchMovie,
-	SearchMusic: znab.SearchMusic, SearchBook: znab.SearchBook,
+	SearchMusic: znab.SearchMusic, SearchBook: znab.SearchBook, SearchAdult: znab.SearchGeneric,
 }
 
 // buildRequest maps a query onto what the indexer supports. It falls back to

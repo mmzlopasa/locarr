@@ -42,6 +42,9 @@ type Categories struct {
 	TV     []int `json:"tv"`
 	Music  []int `json:"music"`
 	Books  []int `json:"books"`
+	// Adult (6xxx) is empty unless an administrator opts the indexer in
+	// (D-102); adult searches only go to indexers that have it.
+	Adult []int `json:"adult,omitempty"`
 }
 
 // For returns the categories for a search type (nil for a generic search:
@@ -56,13 +59,15 @@ func (c Categories) For(t SearchType) []int {
 		return c.Music
 	case SearchBook:
 		return c.Books
+	case SearchAdult:
+		return c.Adult
 	}
 	return nil
 }
 
 // All returns every configured category, sorted and unique.
 func (c Categories) All() []int {
-	out := slices.Concat(c.Movies, c.TV, c.Music, c.Books)
+	out := slices.Concat(c.Movies, c.TV, c.Music, c.Books, c.Adult)
 	slices.Sort(out)
 	return slices.Compact(out)
 }
@@ -648,7 +653,7 @@ func normCats(c Categories) Categories {
 		}
 		return out
 	}
-	return Categories{Movies: norm(c.Movies), TV: norm(c.TV), Music: norm(c.Music), Books: norm(c.Books)}
+	return Categories{Movies: norm(c.Movies), TV: norm(c.TV), Music: norm(c.Music), Books: norm(c.Books), Adult: norm(c.Adult)}
 }
 
 // saveCaps stores fetched capabilities.

@@ -119,6 +119,8 @@ const (
 	SearchMovie SearchType = "movie"
 	SearchMusic SearchType = "music"
 	SearchBook  SearchType = "book"
+	// SearchAdult goes only to indexers opted in to adult categories.
+	SearchAdult SearchType = "adult"
 )
 
 // Source says who started a search.

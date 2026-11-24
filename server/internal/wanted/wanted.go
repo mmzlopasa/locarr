@@ -87,6 +87,18 @@ type Item struct {
 	PreferPacks bool
 	// Busy: a download for (part of) the item is under way.
 	Busy bool
+	// BlockedTerms is the adult tag blocklist applied to every release for
+	// the item (blocked_tag).
+	BlockedTerms []string
+}
+
+// AdultSource marks the adult kinds: only they see adult (6xxx) RSS
+// releases, and they see nothing else categorised (D-102).
+type AdultSource interface{ Adult() bool }
+
+func isAdultSource(src Source) bool {
+	a, ok := src.(AdultSource)
+	return ok && a.Adult()
 }
 
 // Multi is implemented by sources where one release may cover several items
@@ -206,6 +218,7 @@ func (s *Service) decisionContext(ctx context.Context, it Item, mode decision.Mo
 	}
 	dc := decision.Context{Wanted: it.Wanted, Profile: p, Mode: mode, Now: s.now(), Blocklist: Blocklist{Checker: s.Downloads}}
 	dc.Wanted.Kind = p.Kind
+	dc.BlockedTerms = it.BlockedTerms
 	formats, err := s.Formats.List(ctx)
 	if err != nil {
 		return dc, err
