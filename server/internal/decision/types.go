@@ -111,6 +111,22 @@ type Wanted struct {
 	OriginalLanguage string   `json:"originalLanguage,omitempty"`
 	Tags             []string `json:"tags,omitempty"`
 	Current          *Current `json:"current,omitempty"`
+	// Adult is set for adult scenes and movies (D-102): identity is judged by
+	// studio, date and title instead of the usual title/year/episode checks.
+	Adult *Adult `json:"adult,omitempty"`
+}
+
+// Adult is what an adult release must name.
+type Adult struct {
+	Scene bool `json:"scene"`
+	// Studios lists the studio name and its aliases.
+	Studios []string `json:"studios,omitempty"`
+	// Date is the scene's release date (YYYY-MM-DD).
+	Date  string `json:"date,omitempty"`
+	Title string `json:"title"`
+	Year  int    `json:"year,omitempty"`
+	// Performers help a match by title when the name has no date.
+	Performers []string `json:"performers,omitempty"`
 }
 
 // Blocklist tells whether a release was blocked before (P4/P11 implement it).
@@ -138,6 +154,9 @@ type Context struct {
 	MinimumAgeMinutes  int
 	AllowHardcodedSubs bool
 	Allow3D            bool
+	// BlockedTerms is the adult tag blocklist (lower case); a release whose
+	// name contains one as a word is rejected with blocked_tag.
+	BlockedTerms []string
 }
 
 // Rejection is one reason a candidate was not taken.
