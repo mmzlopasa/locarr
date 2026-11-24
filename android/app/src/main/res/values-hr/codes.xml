@@ -150,6 +150,8 @@
     <string name="c_rejectioncodes_delayed" formatted="false">odgođeno</string>
     <string name="c_rejectioncodes_season_pack_not_wanted" formatted="false">Sezonski paket za jednu epizodu</string>
     <string name="c_rejectioncodes_episode_not_wanted" formatted="false">Nema tražene epizode</string>
+    <string name="c_rejectioncodes_blocked_tag" formatted="false">Sadrži blokirani pojam</string>
+    <string name="c_rejectioncodes_wrong_scene" formatted="false">Drugi studio, datum ili naslov</string>
     <string name="c_downloadstates_queued" formatted="false">Na čekanju</string>
     <string name="c_downloadstates_downloading" formatted="false">Preuzima se</string>
     <string name="c_downloadstates_paused" formatted="false">Pauzirano</string>

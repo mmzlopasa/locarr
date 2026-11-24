@@ -49,6 +49,10 @@ const (
 	// CodeEpisodeNotWanted: the release holds episodes, none of which is wanted
 	// (they have files that meet the cutoff, or are not monitored).
 	CodeEpisodeNotWanted = "episode_not_wanted"
+	// CodeBlockedTag: the name contains a term from the adult tag blocklist.
+	CodeBlockedTag = "blocked_tag"
+	// CodeWrongScene: an adult release names another studio, date or title.
+	CodeWrongScene = "wrong_scene"
 )
 
 // Codes lists every rejection code (for documentation and clients).
@@ -56,7 +60,7 @@ var Codes = []string{CodeParseFailed, CodeWrongKind, CodeWrongIDs, CodeWrongTitl
 	CodeWrongEpisode, CodeQualityNotAllowed, CodeUpgradesDisabled, CodeCutoffMet, CodeNotAnUpgrade, CodeScoreTooLow,
 	CodeSizeTooSmall, CodeSizeTooLarge, CodeLanguage, CodeMustContain, CodeMustNotContain, CodeBlocklisted, CodeSeeders,
 	CodeTooOld, CodeTooNew, CodeSample, CodeHardcodedSubs, CodeThreeD, CodeIndexerDisabled, CodeIndexerLimited,
-	CodeProtocolDisabled, CodeDelayed, CodeSeasonPack, CodeEpisodeNotWanted}
+	CodeProtocolDisabled, CodeDelayed, CodeSeasonPack, CodeEpisodeNotWanted, CodeBlockedTag, CodeWrongScene}
 
 // Typical runtimes when the wanted item does not say.
 var defaultRuntime = map[quality.Kind]int{quality.Movies: 110, quality.Series: 45, quality.Music: 45}
@@ -88,7 +92,7 @@ type spec func(e *eval)
 
 // specs run in this order on every candidate; all of them run, so a
 // rejected candidate lists every reason.
-var specs = []spec{specParse, specKind, specIdentity, specYear, specEpisodes, specQuality, specUpgrade, specScore,
+var specs = []spec{specParse, specBlockedTag, specAdult, specKind, specIdentity, specYear, specEpisodes, specQuality, specUpgrade, specScore,
 	specSize, specLanguage, specReleaseProfiles, specBlocklist, specSeeders, specAge, specContent, specIndexer, specDelay}
 
 // Evaluate decides on every candidate and ranks the accepted ones.
@@ -210,6 +214,9 @@ func kindOf(k parser.Kind) quality.Kind {
 }
 
 func specKind(e *eval) {
+	if e.ctx.Wanted.Adult != nil {
+		return // judged by specAdult
+	}
 	got := kindOf(e.r.Kind)
 	want := e.ctx.Wanted.Kind
 	if got == "" || got == want {
@@ -258,6 +265,9 @@ func idsMatch(a, b IDs) int {
 }
 
 func specIdentity(e *eval) {
+	if e.ctx.Wanted.Adult != nil {
+		return // judged by specAdult
+	}
 	switch idsMatch(e.c.IDs, e.ctx.Wanted.IDs) {
 	case 1:
 		return // the indexer matched it by id; the name does not need to
@@ -305,6 +315,9 @@ func isVarious(a string) bool {
 }
 
 func specYear(e *eval) {
+	if e.ctx.Wanted.Adult != nil {
+		return // judged by specAdult
+	}
 	w := e.ctx.Wanted
 	if w.Year == 0 || e.r.Year == 0 || idsMatch(e.c.IDs, w.IDs) == 1 {
 		return
@@ -320,6 +333,9 @@ func specYear(e *eval) {
 }
 
 func specEpisodes(e *eval) {
+	if e.ctx.Wanted.Adult != nil {
+		return // judged by specAdult
+	}
 	w := e.ctx.Wanted
 	if w.Kind != quality.Series || len(w.Episodes) == 0 {
 		return

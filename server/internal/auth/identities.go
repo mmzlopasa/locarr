@@ -120,6 +120,7 @@ func (s *Service) createFromIdentity(ctx context.Context, tx *sql.Tx, id Identit
 	if perms == 0 {
 		perms = DefaultPermissions(role)
 	}
+	perms = perms.WithoutAdult() // never through another service (D-103)
 	var u User
 	for i := 1; i <= 50; i++ {
 		name := base

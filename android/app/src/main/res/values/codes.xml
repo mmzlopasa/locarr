@@ -150,6 +150,8 @@
     <string name="c_rejectioncodes_delayed" formatted="false">delayed</string>
     <string name="c_rejectioncodes_season_pack_not_wanted" formatted="false">Season pack for one episode</string>
     <string name="c_rejectioncodes_episode_not_wanted" formatted="false">No wanted episode</string>
+    <string name="c_rejectioncodes_blocked_tag" formatted="false">Contains a blocked term</string>
+    <string name="c_rejectioncodes_wrong_scene" formatted="false">Different studio, date or title</string>
     <string name="c_downloadstates_queued" formatted="false">Queued</string>
     <string name="c_downloadstates_downloading" formatted="false">Downloading</string>
     <string name="c_downloadstates_paused" formatted="false">Paused</string>

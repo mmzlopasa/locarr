@@ -2,7 +2,8 @@ import { Link, useRouterState } from "@tanstack/react-router";
 
 export type Tab = {
   to: "/system/status" | "/system/health" | "/system/tasks" | "/system/logs" | "/system/backups"
-    | "/activity/queue" | "/activity/board" | "/activity/history" | "/activity/blocklist" | "/activity/stats";
+    | "/activity/queue" | "/activity/board" | "/activity/history" | "/activity/blocklist" | "/activity/stats"
+    | "/adult" | "/adult/movies" | "/adult/studios" | "/adult/performers" | "/adult/wanted" | "/adult/calendar" | "/adult/add";
   label: string;
 };
 

@@ -20,6 +20,7 @@ import { useCurrentUser } from "@/features/auth/hooks";
 import { InvitesPanel, QuotaEditor } from "./InvitesPanel";
 import { StreameroLink } from "./StreameroLink";
 import { PERMISSION_KEYS, ROLES, defaultPermissions } from "./permissions";
+import { useAdultSettings } from "@/features/adult/api";
 
 export function UsersPage() {
   const { t } = useTranslation();
@@ -49,9 +50,13 @@ export function UsersPage() {
   );
 }
 
-function PermissionFields({ value, onChange, disabled }: { value: Permissions; onChange: (p: Permissions) => void; disabled?: boolean }) {
+function PermissionFields({ value, onChange, disabled, role }: { value: Permissions; onChange: (p: Permissions) => void; disabled?: boolean; role: Role }) {
   const { t } = useTranslation();
+  // The adult permission is only offered while the adult library is enabled,
+  // never to requesters, and administrators need it too (D-103).
+  const adult = useAdultSettings();
   return (
+    <>
     <fieldset className="grid gap-2 sm:grid-cols-2" disabled={disabled}>
       <legend className="mb-1 text-[12px] font-medium text-muted">{t("users.permissions")}</legend>
       {PERMISSION_KEYS.map((k) => (
@@ -60,6 +65,13 @@ function PermissionFields({ value, onChange, disabled }: { value: Permissions; o
       ))}
       {disabled ? <p className="text-[12px] text-faint sm:col-span-2">{t("users.adminHasAll")}</p> : null}
     </fieldset>
+    {adult.data?.enabled && role !== "requester" ? (
+      <div className="mt-2 rounded-ui border border-line-strong p-2" data-testid="perm-view-adult">
+        <Checkbox label={t("permissions.viewAdult.label")} description={t("permissions.viewAdult.hint")} checked={!!value.viewAdult}
+          onChange={(e) => onChange({ ...value, viewAdult: e.target.checked })} />
+      </div>
+    ) : null}
+    </>
   );
 }
 
@@ -111,7 +123,7 @@ function CreateUserForm({ onDone }: { onDone: () => void }) {
             }}
           />
         </div>
-        <PermissionFields value={perms} onChange={setPerms} disabled={role === "admin"} />
+        <PermissionFields value={perms} onChange={setPerms} disabled={role === "admin"} role={role} />
         <ErrorAlert error={create.error} />
         <div className="flex gap-2">
           <Button type="submit" variant="primary" busy={create.isPending} disabled={!username.trim() || password.length < 8}>
@@ -193,7 +205,7 @@ function UserRow({ user }: { user: User }) {
           <div className="max-w-xs">
             <RoleSelect value={role} onChange={setRole} />
           </div>
-          <PermissionFields value={perms} onChange={setPerms} disabled={role === "admin"} />
+          <PermissionFields value={perms} onChange={setPerms} disabled={role === "admin"} role={role} />
           <ErrorAlert error={update.error} />
           <div className="flex flex-wrap gap-2">
             <Button variant="primary" busy={update.isPending} onClick={() => update.mutate({ role, permissions: perms })}>

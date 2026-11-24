@@ -8,6 +8,7 @@ import {
   CalendarDays,
   Compass,
   Disc3,
+  EyeOff,
   Download,
   Film,
   Inbox,
@@ -30,8 +31,9 @@ import type { User } from "@/api/client";
 import { isAdmin, useChangeLanguage, useMe, useSignOut, useSystemInfo } from "@/features/auth/hooks";
 import { NotificationBell } from "@/features/notifications/NotificationBell";
 import { canManageLibrary } from "@/features/users/permissions";
+import { canSeeAdult } from "@/features/adult/api";
 
-type NavItem = { to: string; key: string; icon: ComponentType<{ className?: string }>; admin?: boolean; library?: boolean };
+type NavItem = { to: string; key: string; icon: ComponentType<{ className?: string }>; admin?: boolean; library?: boolean; adult?: boolean };
 
 const NAV: NavItem[][] = [
   [
@@ -46,6 +48,8 @@ const NAV: NavItem[][] = [
     { to: "/movies", key: "movies", icon: Film, library: true },
     { to: "/series", key: "series", icon: Tv, library: true },
     { to: "/music", key: "music", icon: Disc3, library: true },
+    // Only when the adult library is enabled and this account may see it.
+    { to: "/adult", key: "adult", icon: EyeOff, adult: true },
   ],
   [
     { to: "/activity", key: "activity", icon: Activity, library: true },
@@ -95,7 +99,7 @@ function Shell({ me }: { me: User }) {
         </button>
       </div>
       <div className="flex-1 overflow-y-auto px-2 py-2">
-        {NAV.map((group) => group.filter((item) => (!item.admin || isAdmin(me)) && (!item.library || canManageLibrary(me))))
+        {NAV.map((group) => group.filter((item) => (!item.admin || isAdmin(me)) && (!item.library || canManageLibrary(me)) && (!item.adult || canSeeAdult(me))))
           .filter((group) => group.length > 0).map((group, i) => (
           <ul key={i} className="mb-2 border-b border-line pb-2 last:border-b-0">
             {group

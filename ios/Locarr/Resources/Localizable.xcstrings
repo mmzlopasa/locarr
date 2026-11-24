@@ -3979,6 +3979,57 @@
         }
       }
     },
+    "errors.adult_confirm_required": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm that everyone with access to adult content is an adult."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potvrdite da su svi koji imaju pristup sadržaju za odrasle punoljetni."
+          }
+        }
+      }
+    },
+    "errors.adult_entry_removed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The metadata source marks this entry as removed or disputed, so it is not added."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izvor metapodataka ovaj unos vodi kao uklonjen ili sporan, pa se ne dodaje."
+          }
+        }
+      }
+    },
+    "errors.adult_no_root_folder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add an adult root folder in Settings → Adult content first."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najprije dodajte mapu za odrasle u Postavke → Sadržaj za odrasle."
+          }
+        }
+      }
+    },
     "errors.already_available": {
       "extractionState": "manual",
       "localizations": {
@@ -4111,6 +4162,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Poveznica za preuzimanje nije valjana ili je istekla. Pretraži ponovno."
+          }
+        }
+      }
+    },
+    "errors.blocked_tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This entry carries a term from the adult blocklist."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovaj unos sadrži pojam s popisa blokiranih pojmova."
           }
         }
       }
@@ -13805,6 +13873,23 @@
         }
       }
     },
+    "nav.adult": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adult"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odrasli"
+          }
+        }
+      }
+    },
     "nav.app": {
       "extractionState": "manual",
       "localizations": {
@@ -15369,6 +15454,23 @@
         }
       }
     },
+    "rejectionCodes.blocked_tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contains a blocked term"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sadrži blokirani pojam"
+          }
+        }
+      }
+    },
     "rejectionCodes.blocklisted": {
       "extractionState": "manual",
       "localizations": {
@@ -15824,6 +15926,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "pogrešna vrsta"
+          }
+        }
+      }
+    },
+    "rejectionCodes.wrong_scene": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Different studio, date or title"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drugi studio, datum ili naslov"
           }
         }
       }

@@ -192,6 +192,7 @@ func NewHandler(d *Deps, cfg config.Config, started time.Time, log *slog.Logger)
 	attachMediaServer(h, d)
 	attachOperations(h, d)
 	attachMigrate(h, d)
+	h.Adult = d.Adult
 	return h
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, Info, RotateCw, XCircle } from "lucide-react";
-import { api, queryKeys, unwrap, type Explanation, type Rejection, type TimelineEvent } from "@/api/client";
+import { api, queryKeys, unwrap, type Explanation, type Rejection, type Timeline, type TimelineEvent } from "@/api/client";
 import { formatDateTime, formatRelative } from "@/components/format";
 import { Button, EmptyState, ErrorAlert, Spinner } from "@/components/ui";
 import { describeRejection } from "@/features/profiles/rejections";
@@ -117,12 +117,12 @@ function Event({ e }: { e: TimelineEvent }) {
   );
 }
 
-export function HistoryTab({ itemRef }: { itemRef: string }) {
+export function HistoryTab({ itemRef, load }: { itemRef: string; load?: () => Promise<Timeline> }) {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const tl = useQuery({
     queryKey: queryKeys.timeline(itemRef),
-    queryFn: async () => unwrap(await api.GET("/timeline", { params: { query: { item: itemRef } } })),
+    queryFn: load ?? (async () => unwrap(await api.GET("/timeline", { params: { query: { item: itemRef } } }))),
     refetchInterval: 5_000,
   });
   // New steps on the timeline (a grab, an import) change the movie too.
@@ -131,7 +131,8 @@ export function HistoryTab({ itemRef }: { itemRef: string }) {
   useEffect(() => {
     if (code === undefined) return;
     const kind = itemRef.split(":")[0];
-    void qc.invalidateQueries({ queryKey: [kind === "movie" ? "movies" : kind === "album" || kind === "artist" ? "music" : "series"] });
+    const key = kind === "movie" ? "movies" : kind === "album" || kind === "artist" ? "music" : kind === "scene" || kind === "adult_movie" ? "adult" : "series";
+    void qc.invalidateQueries({ queryKey: [key] });
   }, [code, count, qc, itemRef]);
   if (tl.isLoading) return <Spinner />;
   if (tl.error) return <ErrorAlert error={tl.error} />;

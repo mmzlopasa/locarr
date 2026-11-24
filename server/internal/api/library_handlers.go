@@ -308,6 +308,9 @@ func (h *Handler) GetTimeline(ctx context.Context, p gen.GetTimelineParams) (*ge
 	if err != nil {
 		return nil, err
 	}
+	if library.IsAdult(ref.Kind) {
+		return nil, errAdultHidden // adult items only through /adult (D-103)
+	}
 	ex, title, refs, err := h.explain(ctx, ref)
 	if err != nil {
 		return nil, err
@@ -337,6 +340,9 @@ func (h *Handler) ExplainItem(ctx context.Context, p gen.ExplainItemParams) (*ge
 	if err != nil {
 		return nil, err
 	}
+	if library.IsAdult(ref.Kind) {
+		return nil, errAdultHidden // adult items only through /adult (D-103)
+	}
 	ex, _, _, err := h.explain(ctx, ref)
 	if err != nil {
 		return nil, err
@@ -353,6 +359,9 @@ func (h *Handler) RetryItem(ctx context.Context, p gen.RetryItemParams) (*gen.Qu
 	ref, err := library.ParseRef(p.Item)
 	if err != nil {
 		return nil, err
+	}
+	if library.IsAdult(ref.Kind) {
+		return nil, errAdultHidden // adult items only through /adult (D-103)
 	}
 	if err := h.Wanted.RetryNow(ctx, ref); err != nil {
 		return nil, err
@@ -547,7 +556,11 @@ func (h *Handler) GetRecycleBin(ctx context.Context) (*gen.RecycleBin, error) {
 		return nil, err
 	}
 	out := &gen.RecycleBin{Folder: folder, RetentionDays: days, Entries: make([]gen.RecycleEntry, 0, len(list))}
+	hide := h.hidesAdult(ctx)
 	for _, e := range list {
+		if hide && library.IsAdultRef(e.ItemRef) {
+			continue
+		}
 		out.Entries = append(out.Entries, gen.RecycleEntry{ID: e.ID, OriginalPath: e.OriginalPath, RecycledPath: e.RecycledPath, SizeBytes: e.Size,
 			IsDir: e.IsDir, ItemRef: e.ItemRef, Reason: e.Reason, RecycledAt: e.RecycledAt})
 	}

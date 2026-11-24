@@ -124,6 +124,10 @@
     "source_unsupported_version": "This version is too old to import from.",
     "source_bad_response": "The application answered in an unexpected way.",
     "source_not_found": "Nothing answers at this address (check the URL base).",
+    "adult_confirm_required": "Confirm that everyone with access to adult content is an adult.",
+    "adult_entry_removed": "The metadata source marks this entry as removed or disputed, so it is not added.",
+    "blocked_tag": "This entry carries a term from the adult blocklist.",
+    "adult_no_root_folder": "Add an adult root folder in Settings → Adult content first.",
     "translation_cap": "The monthly cap of the translation service is reached.",
     "translation_unavailable": "No translation service is enabled.",
     "translation_no_source": "There is no subtitle in another language to translate from.",
@@ -178,7 +182,8 @@
     "issues": "Issues",
     "overview": "Overview",
     "board": "Why not here?",
-    "migrate": "Import setup"
+    "migrate": "Import setup",
+    "adult": "Adult"
   },
   "roles": {
     "admin": "Administrator",
@@ -275,7 +280,8 @@
       "readOnlyBadge": "Read-only",
       "fullBadge": "Full",
       "revoke": "Revoke",
-      "revokeConfirm": "Revoke key"
+      "revokeConfirm": "Revoke key",
+      "includeAdult": "Include adult content"
     },
     "notifications": {
       "title": "My notifications",
@@ -379,6 +385,10 @@
     "autoApprove4k": {
       "label": "Auto-approve 4K",
       "hint": "4K requests go through at once."
+    },
+    "viewAdult": {
+      "label": "See adult content",
+      "hint": "Shows the adult library. Never granted by default; grant it only to adults."
     }
   },
   "settings": {
@@ -439,7 +449,8 @@
         "indexers": "Indexers",
         "downloaders": "Download clients",
         "system": "Status, logs & backups",
-        "migrate": "Import setup"
+        "migrate": "Import setup",
+        "adult": "Adult content"
       },
       "keywords": {
         "general": "server name, instance name, TMDb API key, language",
@@ -462,7 +473,8 @@
         "indexers": "Torznab, Newznab, trackers, usenet, sources, sites",
         "downloaders": "qBittorrent, Transmission, Deluge, rTorrent, aria2, SABnzbd, NZBGet, path mappings, remote paths",
         "system": "status, health, tasks, logs, backups, restore, version",
-        "migrate": "import from other apps, migration, checklist"
+        "migrate": "import from other apps, migration, checklist",
+        "adult": "adult stashdb theporndb tpdb scenes studios performers blocklist"
       }
     }
   },
@@ -1661,7 +1673,9 @@
     "protocol_disabled": "protocol off",
     "delayed": "delayed",
     "season_pack_not_wanted": "Season pack for one episode",
-    "episode_not_wanted": "No wanted episode"
+    "episode_not_wanted": "No wanted episode",
+    "blocked_tag": "Contains a blocked term",
+    "wrong_scene": "Different studio, date or title"
   },
   "timeline": {
     "title": "Timeline",
@@ -2842,7 +2856,8 @@
       "issues": "Problems",
       "library": "Library",
       "system": "System",
-      "subtitles": "Subtitles"
+      "subtitles": "Subtitles",
+      "adult": "Adult content"
     },
     "eventNames": {
       "request_created": "New request",
@@ -2866,6 +2881,11 @@
       "subtitles_missing": "Subtitle still missing",
       "migrate_finished": "Setup import finished",
       "migrate_failed": "Setup import failed",
+      "adult_grabbed": "Adult: grabbed",
+      "adult_imported": "Adult: imported",
+      "adult_upgraded": "Adult: upgraded",
+      "adult_download_failed": "Adult: download failed",
+      "adult_import_failed": "Adult: import failed",
       "subtitles_translated": "Subtitle translated"
     },
     "fields": {
@@ -3991,6 +4011,115 @@
           "body": "{{count}} imported items wait for a key or password: the applications hide them in their API. Until then those indexers and clients stay off."
         }
       }
+    }
+  },
+  "adult": {
+    "title": "Adult",
+    "description": "Your adult library. It is separate from everything else and only visible to accounts allowed to see it.",
+    "blur": "Blur images",
+    "tabs": {
+      "scenes": "Scenes",
+      "movies": "Movies",
+      "studios": "Studios",
+      "performers": "Performers",
+      "wanted": "Wanted",
+      "calendar": "Calendar",
+      "add": "Add"
+    },
+    "empty": "Nothing here yet.",
+    "filter": "Filter",
+    "have": "In library",
+    "missing": "Missing",
+    "monitored": "Monitored",
+    "monitorNew": "Monitor new scenes",
+    "refresh": "Look for new scenes",
+    "trackPerformer": "Track this performer",
+    "trackPerformerHint": "New scenes with this performer become wanted.",
+    "studioCounts": "{{scenes}} scenes, {{files}} in library",
+    "calendarHint": "Release dates from {{start}} to {{end}}.",
+    "searchNow": "Search now",
+    "rename": "Rename file",
+    "history": "Why isn't it here?",
+    "interactive": "Interactive search",
+    "noRoot": "Add an adult root folder in Settings → Adult content before adding anything.",
+    "image": {
+      "reveal": "Show image",
+      "hide": "Blur image",
+      "tap": "Click to show"
+    },
+    "add": {
+      "title": "Add from StashDB or ThePornDB",
+      "hint": "Entries the source marks as removed or disputed and entries with a blocked term are never shown.",
+      "source": "Source",
+      "type": "Type",
+      "term": "Search",
+      "search": "Search",
+      "types": {
+        "studio": "Studio / site",
+        "scene": "Scene",
+        "movie": "Movie",
+        "performer": "Performer"
+      },
+      "profile": "Quality profile",
+      "root": "Root folder",
+      "default": "Default",
+      "none": "No results.",
+      "inLibrary": "In library",
+      "add": "Add"
+    }
+  },
+  "adultSettings": {
+    "title": "Adult content",
+    "description": "An optional library for legal adult content between consenting adults. Off unless you turn it on.",
+    "enable": {
+      "title": "Adult library",
+      "hint": "While it is off, nothing adult appears anywhere and every adult address answers \"not found\".",
+      "on": "On",
+      "off": "Off",
+      "enable": "Enable adult content",
+      "disable": "Turn off",
+      "confirmTitle": "Enable adult content",
+      "warning": "Only enable this if every person who will get access is an adult. Content involving minors is never allowed; entries flagged by the source and blocked terms are refused.",
+      "confirm": "I confirm that every user I give access to adult content is an adult.",
+      "confirmedAt": "Confirmed on {{at}}.",
+      "permission": "Turning it on gives nobody access: grant \"See adult content\" per user in Settings → Users (administrators too)."
+    },
+    "keys": {
+      "title": "Metadata sources",
+      "hint": "Your own API keys for StashDB and ThePornDB. Keys are checked with the source and stored encrypted.",
+      "set": "A key is set.",
+      "notSet": "No key yet."
+    },
+    "defaults": {
+      "title": "Defaults and naming",
+      "hint": "Tokens: {{tokens}}",
+      "source": "Search first in",
+      "profile": "Quality profile",
+      "root": "Root folder",
+      "sceneFolder": "Scene folder",
+      "sceneFile": "Scene file name",
+      "movieFolder": "Movie folder",
+      "movieFile": "Movie file name",
+      "stats": "Total count in /api/stats",
+      "statsHint": "Adds one number (adultItems) for dashboards. Nothing is ever broken down.",
+      "streamero": "Tell Streamero about imports",
+      "streameroHint": "Only if you mapped a separate adult library in Streamero."
+    },
+    "roots": {
+      "title": "Adult root folders",
+      "hint": "Kept apart from movie, series and music folders.",
+      "path": "Folder",
+      "add": "Add folder"
+    },
+    "indexers": {
+      "title": "Indexers with adult categories",
+      "hint": "Off for every indexer by default. Only chosen indexers are asked, in the 6000 (XXX) categories."
+    },
+    "blocklist": {
+      "title": "Tag blocklist",
+      "hint": "Releases, imports and metadata entries containing one of these terms are refused (blocked_tag). The list starts with terms commonly used for illegal or non-consensual content.",
+      "term": "Term",
+      "add": "Block term"
     }
   },
   "discovery": {

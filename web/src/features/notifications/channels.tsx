@@ -15,6 +15,8 @@ import {
   type NotificationTestResult,
 } from "@/api/client";
 import { formatRelative } from "@/components/format";
+import { useMe } from "@/features/auth/hooks";
+import { canSeeAdult } from "@/features/adult/api";
 import { Modal } from "@/components/Modal";
 import { Alert, Badge, Button, Checkbox, ConfirmButton, EmptyState, ErrorAlert, SelectInput, Spinner, TextInput } from "@/components/ui";
 
@@ -22,7 +24,7 @@ export const ALL_KINDS: NotificationChannelKind[] = ["webhook", "ntfy", "gotify"
 /** Kinds a person can use for their own channel (no webhooks or Apprise: those reach internal services). */
 export const PERSONAL_KINDS: NotificationChannelKind[] = ["ntfy", "gotify", "discord", "telegram", "pushover", "email"];
 
-export const EVENT_GROUPS: { key: string; personal: boolean; events: NotificationEventType[] }[] = [
+export const EVENT_GROUPS: { key: string; personal: boolean; adult?: boolean; events: NotificationEventType[] }[] = [
   { key: "requests", personal: true, events: ["request.created", "request.approved", "request.declined", "request.available",
     "request.partial", "request.failed", "request.comment"] },
   { key: "issues", personal: true, events: ["issue.created", "issue.comment", "issue.resolved", "issue.reopened"] },
@@ -30,6 +32,9 @@ export const EVENT_GROUPS: { key: string; personal: boolean; events: Notificatio
     "library.import_failed"] },
   { key: "subtitles", personal: false, events: ["subtitles.downloaded", "subtitles.translated", "subtitles.missing"] },
   { key: "system", personal: false, events: ["health.warning", "migrate.finished", "migrate.failed"] },
+  // Adult events are never chosen by default and only listed while the adult library is visible.
+  { key: "adult", personal: false, adult: true, events: ["adult.grabbed", "adult.imported", "adult.upgraded", "adult.download_failed",
+    "adult.import_failed"] },
 ];
 
 type SettingKey = "url" | "method" | "topic" | "priority" | "tags" | "tag" | "chatId" | "sound" | "device" | "to" | "username";
@@ -94,7 +99,7 @@ type Form = {
 
 function initialForm(ch: NotificationChannel | undefined, personal: boolean, lang: string): Form {
   if (ch) return { name: ch.name, kind: ch.kind, enabled: ch.enabled, events: ch.events, settings: { ...ch.settings }, secrets: {} };
-  const events = EVENT_GROUPS.filter((g) => !personal || g.personal).flatMap((g) => g.events)
+  const events = EVENT_GROUPS.filter((g) => (!personal || g.personal) && !g.adult).flatMap((g) => g.events)
     .filter((e) => (personal ? e !== "request.created" && e !== "issue.created" : true));
   return { name: "", kind: personal ? "ntfy" : "webhook", enabled: true, events, settings: { language: lang === "hr" ? "hr" : "en" }, secrets: {} };
 }
@@ -184,6 +189,7 @@ export function ChannelList({ personal }: { personal: boolean }) {
 /** Add or edit one channel; shows only the chosen kind's fields. */
 export function ChannelEditor({ channel, personal, onClose }: { channel?: NotificationChannel; personal: boolean; onClose: () => void }) {
   const { t, i18n } = useTranslation();
+  const { data: me } = useMe();
   const qc = useQueryClient();
   const [f, setF] = useState<Form>(() => initialForm(channel, personal, i18n.language));
   const [result, setResult] = useState<NotificationTestResult | null>(null);
@@ -210,7 +216,7 @@ export function ChannelEditor({ channel, personal, onClose }: { channel?: Notifi
       unwrap(await api.POST("/notificationchannels/test", { body: { ...(channel ? { id: channel.id } : {}), channel: toInput(f, personal) } })),
     onSuccess: setResult,
   });
-  const groups = EVENT_GROUPS.filter((g) => !personal || g.personal);
+  const groups = EVENT_GROUPS.filter((g) => (!personal || g.personal) && (!g.adult || canSeeAdult(me)));
   const toggleEvent = (e: NotificationEventType, on: boolean) =>
     set({ events: on ? [...f.events.filter((x) => x !== e), e] : f.events.filter((x) => x !== e) });
 

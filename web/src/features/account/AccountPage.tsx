@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { canSeeAdult } from "@/features/adult/api";
+import { useMe } from "@/features/auth/hooks";
 import { api, queryKeys, unwrap, type CreatedApiKey, type TotpSetup } from "@/api/client";
 import { formatDateTime, formatRelative } from "@/components/format";
 import { LanguagePicker } from "@/components/LanguagePicker";
@@ -280,10 +282,12 @@ function ApiKeysPanel() {
   const qc = useQueryClient();
   const [name, setName] = useState("");
   const [readOnly, setReadOnly] = useState(true);
+  const [includeAdult, setIncludeAdult] = useState(false);
+  const { data: me } = useMe();
   const [created, setCreated] = useState<CreatedApiKey | null>(null);
   const keys = useQuery({ queryKey: queryKeys.apiKeys, queryFn: async () => unwrap(await api.GET("/auth/apikeys")) });
   const create = useMutation({
-    mutationFn: async () => unwrap(await api.POST("/auth/apikeys", { body: { name: name.trim(), readOnly } })),
+    mutationFn: async () => unwrap(await api.POST("/auth/apikeys", { body: { name: name.trim(), readOnly, ...(includeAdult ? { includeAdult } : {}) } })),
     onSuccess: (k) => {
       setCreated(k);
       setName("");
@@ -309,6 +313,11 @@ function ApiKeysPanel() {
         <div className="pb-1.5">
           <Checkbox label={t("account.apiKeys.readOnly")} checked={readOnly} onChange={(e) => setReadOnly(e.target.checked)} />
         </div>
+        {canSeeAdult(me) ? (
+          <div className="pb-1.5">
+            <Checkbox label={t("account.apiKeys.includeAdult")} checked={includeAdult} onChange={(e) => setIncludeAdult(e.target.checked)} />
+          </div>
+        ) : null}
         <Button type="submit" variant="primary" busy={create.isPending} disabled={!name.trim()}>
           {t("account.apiKeys.create")}
         </Button>

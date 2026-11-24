@@ -156,7 +156,11 @@ func (s *Service) ProcessRSS(ctx context.Context, batch []indexers.Release) (int
 		if err != nil {
 			return 0, err
 		}
+		adult := isAdultSource(src)
 		for i := range batch {
+			if adult != indexers.IsAdultRelease(&batch[i]) && (!adult || len(batch[i].Categories) > 0) {
+				continue
+			}
 			p := parser.Parse(batch[i].Title)
 			for _, ref := range match(&batch[i], &p) {
 				if _, ok := byRef[ref]; !ok {

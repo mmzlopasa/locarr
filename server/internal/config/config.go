@@ -24,6 +24,10 @@ type Config struct {
 	// TMDbURL replaces TMDb's API address (LOCARR_TMDB_URL; tests and the
 	// fake services only, default https://api.themoviedb.org).
 	TMDbURL string
+	// StashDBURL and TPDBURL replace the adult metadata sources' addresses
+	// (LOCARR_STASHDB_URL, LOCARR_TPDB_URL; tests and the fake services only).
+	StashDBURL string
+	TPDBURL    string
 	// TVDBURL replaces TVDB's API address (LOCARR_TVDB_URL; tests and the
 	// fake services only, default https://api4.thetvdb.com).
 	TVDBURL string
@@ -84,6 +88,8 @@ func load(env func(string) string) (Config, error) {
 		TrustedProxies:      get("LOCARR_TRUSTED_PROXIES", ""),
 		SetupCode:           get("LOCARR_SETUP_CODE", ""),
 		TMDbURL:             get("LOCARR_TMDB_URL", ""),
+		StashDBURL:          get("LOCARR_STASHDB_URL", ""),
+		TPDBURL:             get("LOCARR_TPDB_URL", ""),
 		TVDBURL:             get("LOCARR_TVDB_URL", ""),
 		MusicBrainzURL:      get("LOCARR_MUSICBRAINZ_URL", ""),
 		CoverArtURL:         get("LOCARR_COVERART_URL", ""),

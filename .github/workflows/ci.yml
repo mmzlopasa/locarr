@@ -148,6 +148,8 @@ jobs:
             echo "LOCARR_BUILD_COMMIT=$GITHUB_SHA"
             # The fake TMDb of scripts/dev-fakes.sh (compose.dev.yml passes it on).
             echo "LOCARR_TMDB_URL=http://fake-indexer:9117/tmdb"
+            echo "LOCARR_STASHDB_URL=http://fake-indexer:9117/adultmeta/graphql"
+            echo "LOCARR_TPDB_URL=http://fake-indexer:9117/adultmeta/tpdb"
             # The fake MusicBrainz and Cover Art Archive (one request per second, like the real one).
             echo "LOCARR_MUSICBRAINZ_URL=http://fake-indexer:9117/musicbrainz"
             echo "LOCARR_COVERART_URL=http://fake-indexer:9117/musicbrainz/coverart"

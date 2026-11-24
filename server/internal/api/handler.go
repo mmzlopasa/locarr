@@ -12,6 +12,7 @@ import (
 	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/ogen-go/ogen/validate"
 
+	"github.com/mmzlopasa/locarr/server/internal/adult"
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/backup"
@@ -61,9 +62,11 @@ type Handler struct {
 	Downloads   *downloads.Service
 	Indexers    *indexers.Service
 	Movies      *movies.Service
-	Series      *series.Service
-	Music       *music.Service
-	Subtitles   *subtitles.Service
+	// Adult is the optional adult library (D-103); nil-safe when off.
+	Adult     *adult.Service
+	Series    *series.Service
+	Music     *music.Service
+	Subtitles *subtitles.Service
 	// CoverArt caches Cover Art Archive images; LinkExisting queues linking
 	// an existing artist folder's files (both set by the app).
 	CoverArt     *metadata.ImageCache
@@ -148,6 +151,9 @@ func mapError(err error) *StatusError {
 		return &StatusError{Status: http.StatusBadRequest, Code: "validation", Message: err.Error()}
 	case errors.As(err, &locked):
 		return &StatusError{Status: http.StatusLocked, Code: "account_locked", Message: err.Error()}
+	}
+	if se := mapAdultError(err); se != nil {
+		return se
 	}
 	if se := mapOperationsError(err); se != nil {
 		return se

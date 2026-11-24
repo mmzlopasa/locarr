@@ -14,6 +14,7 @@
 // internal/subtitles/providers/fake), and a fake Streamero under /streamero
 // (accounts and keys in internal/mediaserver/streamero/fake; state at
 // /streamero/_fake/state, reset with POST /streamero/_fake/reset), fake
+// StashDB/ThePornDB under /adultmeta (keys in internal/adult/meta/fake), fake
 // translation services (LibreTranslate, DeepL, OpenAI, an OpenAI-compatible
 // server, Anthropic, Gemini; keys in internal/subtitles/translate/fake), and
 // music discovery's providers: Last.fm at /lastfm (key in
@@ -33,6 +34,7 @@ import (
 	"path/filepath"
 	"time"
 
+	adultfake "github.com/mmzlopasa/locarr/server/internal/adult/meta/fake"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/fake"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/challengefake"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/native/sitefake"
@@ -70,6 +72,8 @@ func main() {
 	mux.Handle("/listenbrainz/", lb)
 	mux.Handle("/spotify/", spfake.New())
 	mux.Handle("/streamero/", http.StripPrefix("/streamero", stfake.New()))
+	// StashDB (/adultmeta/graphql) and ThePornDB (/adultmeta/tpdb) with synthetic, non-explicit data.
+	mux.Handle("/adultmeta/", http.StripPrefix("/adultmeta", adultfake.New(env("LOCARR_FAKES_ADULT_BASE", "http://fake-indexer:9117/adultmeta"))))
 	subs := subfake.New()
 	for _, p := range []string{"/opensubtitles/", "/subdl/", "/jimaku/"} {
 		mux.Handle(p, subs)

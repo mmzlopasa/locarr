@@ -124,6 +124,10 @@
     "source_unsupported_version": "Ova je verzija prestara za uvoz.",
     "source_bad_response": "Aplikacija je odgovorila na neočekivan način.",
     "source_not_found": "Na ovoj adresi ništa ne odgovara (provjeri URL bazu).",
+    "adult_confirm_required": "Potvrdite da su svi koji imaju pristup sadržaju za odrasle punoljetni.",
+    "adult_entry_removed": "Izvor metapodataka ovaj unos vodi kao uklonjen ili sporan, pa se ne dodaje.",
+    "blocked_tag": "Ovaj unos sadrži pojam s popisa blokiranih pojmova.",
+    "adult_no_root_folder": "Najprije dodajte mapu za odrasle u Postavke → Sadržaj za odrasle.",
     "translation_cap": "Dosegnuta je mjesečna granica servisa za prijevod.",
     "translation_unavailable": "Nijedan servis za prijevod nije uključen.",
     "translation_no_source": "Nema titla na drugom jeziku iz kojeg bi se prevodilo.",
@@ -178,7 +182,8 @@
     "issues": "Problemi",
     "overview": "Pregled",
     "board": "Zašto nije stiglo?",
-    "migrate": "Uvoz setupa"
+    "migrate": "Uvoz setupa",
+    "adult": "Odrasli"
   },
   "roles": {
     "admin": "Administrator",
@@ -275,7 +280,8 @@
       "readOnlyBadge": "Samo čitanje",
       "fullBadge": "Puni",
       "revoke": "Opozovi",
-      "revokeConfirm": "Opozovi ključ"
+      "revokeConfirm": "Opozovi ključ",
+      "includeAdult": "Uključi sadržaj za odrasle"
     },
     "notifications": {
       "title": "Moje obavijesti",
@@ -379,6 +385,10 @@
     "autoApprove4k": {
       "label": "Automatski odobri 4K",
       "hint": "Zahtjevi za 4K prolaze odmah."
+    },
+    "viewAdult": {
+      "label": "Vidi sadržaj za odrasle",
+      "hint": "Prikazuje biblioteku za odrasle. Nikad se ne dodjeljuje sama; dajte je samo odraslima."
     }
   },
   "settings": {
@@ -439,7 +449,8 @@
         "indexers": "Indexeri",
         "downloaders": "Klijenti za preuzimanje",
         "system": "Stanje, zapisi i kopije",
-        "migrate": "Uvoz setupa"
+        "migrate": "Uvoz setupa",
+        "adult": "Sadržaj za odrasle"
       },
       "keywords": {
         "general": "ime servera, naziv poslužitelja, TMDb API ključ, jezik, server name",
@@ -462,7 +473,8 @@
         "indexers": "Torznab, Newznab, trackeri, usenet, izvori, stranice",
         "downloaders": "qBittorrent, Transmission, Deluge, rTorrent, aria2, SABnzbd, NZBGet, mapiranje putanja, udaljene putanje",
         "system": "stanje, zdravlje, zadaci, zapisi, logovi, sigurnosne kopije, vraćanje, verzija",
-        "migrate": "uvoz iz drugih aplikacija, migracija, popis koraka"
+        "migrate": "uvoz iz drugih aplikacija, migracija, popis koraka",
+        "adult": "odrasli stashdb theporndb tpdb scene studiji izvođači blokirani pojmovi"
       }
     }
   },
@@ -1661,7 +1673,9 @@
     "protocol_disabled": "protokol isključen",
     "delayed": "odgođeno",
     "season_pack_not_wanted": "Sezonski paket za jednu epizodu",
-    "episode_not_wanted": "Nema tražene epizode"
+    "episode_not_wanted": "Nema tražene epizode",
+    "blocked_tag": "Sadrži blokirani pojam",
+    "wrong_scene": "Drugi studio, datum ili naslov"
   },
   "timeline": {
     "title": "Vremenska crta",
@@ -2842,7 +2856,8 @@
       "issues": "Problemi",
       "library": "Biblioteka",
       "system": "Sustav",
-      "subtitles": "Titlovi"
+      "subtitles": "Titlovi",
+      "adult": "Sadržaj za odrasle"
     },
     "eventNames": {
       "request_created": "Novi zahtjev",
@@ -2866,6 +2881,11 @@
       "subtitles_missing": "Titl još nedostaje",
       "migrate_finished": "Uvoz setupa je gotov",
       "migrate_failed": "Uvoz setupa nije uspio",
+      "adult_grabbed": "Odrasli: poslano na preuzimanje",
+      "adult_imported": "Odrasli: uvezeno",
+      "adult_upgraded": "Odrasli: nadograđeno",
+      "adult_download_failed": "Odrasli: preuzimanje nije uspjelo",
+      "adult_import_failed": "Odrasli: uvoz nije uspio",
       "subtitles_translated": "Titl strojno preveden"
     },
     "fields": {
@@ -3991,6 +4011,115 @@
           "body": "Uvezenih stavki koje čekaju ključ ili lozinku: {{count}}. Aplikacije ih skrivaju u svom API-ju. Do tada su ti indexeri i klijenti isključeni."
         }
       }
+    }
+  },
+  "adult": {
+    "title": "Odrasli",
+    "description": "Vaša biblioteka za odrasle. Odvojena je od svega ostalog i vide je samo računi kojima je to dopušteno.",
+    "blur": "Zamuti slike",
+    "tabs": {
+      "scenes": "Scene",
+      "movies": "Filmovi",
+      "studios": "Studiji",
+      "performers": "Izvođači",
+      "wanted": "Traženo",
+      "calendar": "Kalendar",
+      "add": "Dodaj"
+    },
+    "empty": "Ovdje još nema ničega.",
+    "filter": "Filtar",
+    "have": "U biblioteci",
+    "missing": "Nedostaje",
+    "monitored": "Prati se",
+    "monitorNew": "Prati nove scene",
+    "refresh": "Potraži nove scene",
+    "trackPerformer": "Prati ovog izvođača",
+    "trackPerformerHint": "Nove scene s ovim izvođačem postaju tražene.",
+    "studioCounts": "{{scenes}} scena, {{files}} u biblioteci",
+    "calendarHint": "Datumi izlaska od {{start}} do {{end}}.",
+    "searchNow": "Traži odmah",
+    "rename": "Preimenuj datoteku",
+    "history": "Zašto nije ovdje?",
+    "interactive": "Ručna pretraga",
+    "noRoot": "Prije dodavanja dodajte mapu za odrasle u Postavke → Sadržaj za odrasle.",
+    "image": {
+      "reveal": "Prikaži sliku",
+      "hide": "Zamuti sliku",
+      "tap": "Kliknite za prikaz"
+    },
+    "add": {
+      "title": "Dodaj iz StashDB-a ili ThePornDB-a",
+      "hint": "Unosi koje izvor vodi kao uklonjene ili sporne i unosi s blokiranim pojmom nikad se ne prikazuju.",
+      "source": "Izvor",
+      "type": "Vrsta",
+      "term": "Pretraga",
+      "search": "Traži",
+      "types": {
+        "studio": "Studio / stranica",
+        "scene": "Scena",
+        "movie": "Film",
+        "performer": "Izvođač"
+      },
+      "profile": "Profil kvalitete",
+      "root": "Mapa",
+      "default": "Zadano",
+      "none": "Nema rezultata.",
+      "inLibrary": "U biblioteci",
+      "add": "Dodaj"
+    }
+  },
+  "adultSettings": {
+    "title": "Sadržaj za odrasle",
+    "description": "Izborna biblioteka za legalan sadržaj za odrasle između punoljetnih osoba koje na to pristaju. Isključena je dok je ne uključite.",
+    "enable": {
+      "title": "Biblioteka za odrasle",
+      "hint": "Dok je isključena, ništa za odrasle se nigdje ne prikazuje, a svaka adresa za odrasle odgovara „nije pronađeno”.",
+      "on": "Uključeno",
+      "off": "Isključeno",
+      "enable": "Uključi sadržaj za odrasle",
+      "disable": "Isključi",
+      "confirmTitle": "Uključivanje sadržaja za odrasle",
+      "warning": "Uključite ovo samo ako je svaka osoba kojoj ćete dati pristup punoljetna. Sadržaj s maloljetnicima nikad nije dopušten; unosi koje izvor označi i blokirani pojmovi se odbijaju.",
+      "confirm": "Potvrđujem da je svaki korisnik kojem dam pristup sadržaju za odrasle punoljetan.",
+      "confirmedAt": "Potvrđeno {{at}}.",
+      "permission": "Uključivanje nikome ne daje pristup: dozvolu „Vidi sadržaj za odrasle” dodijelite pojedinom korisniku u Postavke → Korisnici (i administratorima)."
+    },
+    "keys": {
+      "title": "Izvori metapodataka",
+      "hint": "Vaši vlastiti API ključevi za StashDB i ThePornDB. Ključevi se provjeravaju kod izvora i spremaju šifrirano.",
+      "set": "Ključ je postavljen.",
+      "notSet": "Ključ još nije postavljen."
+    },
+    "defaults": {
+      "title": "Zadane vrijednosti i imena",
+      "hint": "Oznake: {{tokens}}",
+      "source": "Najprije traži u",
+      "profile": "Profil kvalitete",
+      "root": "Mapa",
+      "sceneFolder": "Mapa scene",
+      "sceneFile": "Ime datoteke scene",
+      "movieFolder": "Mapa filma",
+      "movieFile": "Ime datoteke filma",
+      "stats": "Ukupan broj u /api/stats",
+      "statsHint": "Dodaje jedan broj (adultItems) za nadzorne ploče. Ništa se nikad ne razlaže po stavkama.",
+      "streamero": "Javi Streameru za uvoze",
+      "streameroHint": "Samo ako ste u Streameru postavili zasebnu biblioteku za odrasle."
+    },
+    "roots": {
+      "title": "Mape za odrasle",
+      "hint": "Odvojene od mapa za filmove, serije i glazbu.",
+      "path": "Mapa",
+      "add": "Dodaj mapu"
+    },
+    "indexers": {
+      "title": "Indexeri s kategorijama za odrasle",
+      "hint": "Za svaki indexer zadano isključeno. Pitaju se samo odabrani indexeri, u kategorijama 6000 (XXX)."
+    },
+    "blocklist": {
+      "title": "Blokirani pojmovi",
+      "hint": "Izdanja, uvozi i unosi metapodataka koji sadrže neki od ovih pojmova se odbijaju (blocked_tag). Popis počinje pojmovima koji se često koriste za nezakonit sadržaj ili sadržaj bez pristanka.",
+      "term": "Pojam",
+      "add": "Blokiraj pojam"
     }
   },
   "discovery": {

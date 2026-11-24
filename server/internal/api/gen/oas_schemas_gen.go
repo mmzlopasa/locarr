@@ -52,6 +52,34 @@ func (s *ActivityStats) SetClients(val []SourceStats) {
 	s.Clients = val
 }
 
+type AddAdultBlocklistTermReq struct {
+	Term string `json:"term"`
+}
+
+// GetTerm returns the value of Term.
+func (s *AddAdultBlocklistTermReq) GetTerm() string {
+	return s.Term
+}
+
+// SetTerm sets the value of Term.
+func (s *AddAdultBlocklistTermReq) SetTerm(val string) {
+	s.Term = val
+}
+
+type AddAdultRootFolderReq struct {
+	Path string `json:"path"`
+}
+
+// GetPath returns the value of Path.
+func (s *AddAdultRootFolderReq) GetPath() string {
+	return s.Path
+}
+
+// SetPath sets the value of Path.
+func (s *AddAdultRootFolderReq) SetPath(val string) {
+	s.Path = val
+}
+
 // Ref: #/components/schemas/AddArtistRequest
 type AddArtistRequest struct {
 	Mbid              string  `json:"mbid"`
@@ -512,6 +540,1597 @@ func (s *AddSeriesRequest) SetTvdbId(val OptInt64) {
 // SetPath sets the value of Path.
 func (s *AddSeriesRequest) SetPath(val OptString) {
 	s.Path = val
+}
+
+// Ref: #/components/schemas/AdultAddRequest
+type AdultAddRequest struct {
+	Source AdultAddRequestSource `json:"source"`
+	ID     string                `json:"id"`
+	// For items.
+	Kind             OptAdultAddRequestKind `json:"kind"`
+	QualityProfileId OptInt64               `json:"qualityProfileId"`
+	RootFolderId     OptInt64               `json:"rootFolderId"`
+	Monitored        OptBool                `json:"monitored"`
+	Search           OptBool                `json:"search"`
+}
+
+// GetSource returns the value of Source.
+func (s *AdultAddRequest) GetSource() AdultAddRequestSource {
+	return s.Source
+}
+
+// GetID returns the value of ID.
+func (s *AdultAddRequest) GetID() string {
+	return s.ID
+}
+
+// GetKind returns the value of Kind.
+func (s *AdultAddRequest) GetKind() OptAdultAddRequestKind {
+	return s.Kind
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AdultAddRequest) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *AdultAddRequest) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AdultAddRequest) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetSearch returns the value of Search.
+func (s *AdultAddRequest) GetSearch() OptBool {
+	return s.Search
+}
+
+// SetSource sets the value of Source.
+func (s *AdultAddRequest) SetSource(val AdultAddRequestSource) {
+	s.Source = val
+}
+
+// SetID sets the value of ID.
+func (s *AdultAddRequest) SetID(val string) {
+	s.ID = val
+}
+
+// SetKind sets the value of Kind.
+func (s *AdultAddRequest) SetKind(val OptAdultAddRequestKind) {
+	s.Kind = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AdultAddRequest) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *AdultAddRequest) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AdultAddRequest) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetSearch sets the value of Search.
+func (s *AdultAddRequest) SetSearch(val OptBool) {
+	s.Search = val
+}
+
+// For items.
+type AdultAddRequestKind string
+
+const (
+	AdultAddRequestKindScene AdultAddRequestKind = "scene"
+	AdultAddRequestKindMovie AdultAddRequestKind = "movie"
+)
+
+// AllValues returns all AdultAddRequestKind values.
+func (AdultAddRequestKind) AllValues() []AdultAddRequestKind {
+	return []AdultAddRequestKind{
+		AdultAddRequestKindScene,
+		AdultAddRequestKindMovie,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultAddRequestKind) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultAddRequestKindScene:
+		return []byte(s), nil
+	case AdultAddRequestKindMovie:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultAddRequestKind) UnmarshalText(data []byte) error {
+	switch AdultAddRequestKind(data) {
+	case AdultAddRequestKindScene:
+		*s = AdultAddRequestKindScene
+		return nil
+	case AdultAddRequestKindMovie:
+		*s = AdultAddRequestKindMovie
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type AdultAddRequestSource string
+
+const (
+	AdultAddRequestSourceStashdb AdultAddRequestSource = "stashdb"
+	AdultAddRequestSourceTpdb    AdultAddRequestSource = "tpdb"
+)
+
+// AllValues returns all AdultAddRequestSource values.
+func (AdultAddRequestSource) AllValues() []AdultAddRequestSource {
+	return []AdultAddRequestSource{
+		AdultAddRequestSourceStashdb,
+		AdultAddRequestSourceTpdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultAddRequestSource) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultAddRequestSourceStashdb:
+		return []byte(s), nil
+	case AdultAddRequestSourceTpdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultAddRequestSource) UnmarshalText(data []byte) error {
+	switch AdultAddRequestSource(data) {
+	case AdultAddRequestSourceStashdb:
+		*s = AdultAddRequestSourceStashdb
+		return nil
+	case AdultAddRequestSourceTpdb:
+		*s = AdultAddRequestSourceTpdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AdultBlockTerm
+type AdultBlockTerm struct {
+	ID      int64  `json:"id"`
+	Term    string `json:"term"`
+	Builtin bool   `json:"builtin"`
+}
+
+// GetID returns the value of ID.
+func (s *AdultBlockTerm) GetID() int64 {
+	return s.ID
+}
+
+// GetTerm returns the value of Term.
+func (s *AdultBlockTerm) GetTerm() string {
+	return s.Term
+}
+
+// GetBuiltin returns the value of Builtin.
+func (s *AdultBlockTerm) GetBuiltin() bool {
+	return s.Builtin
+}
+
+// SetID sets the value of ID.
+func (s *AdultBlockTerm) SetID(val int64) {
+	s.ID = val
+}
+
+// SetTerm sets the value of Term.
+func (s *AdultBlockTerm) SetTerm(val string) {
+	s.Term = val
+}
+
+// SetBuiltin sets the value of Builtin.
+func (s *AdultBlockTerm) SetBuiltin(val bool) {
+	s.Builtin = val
+}
+
+// Ref: #/components/schemas/AdultEditRequest
+type AdultEditRequest struct {
+	Monitored        OptBool  `json:"monitored"`
+	QualityProfileId OptInt64 `json:"qualityProfileId"`
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AdultEditRequest) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AdultEditRequest) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AdultEditRequest) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AdultEditRequest) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// Ref: #/components/schemas/AdultFile
+type AdultFile struct {
+	ID           int64       `json:"id"`
+	Path         string      `json:"path"`
+	Size         int64       `json:"size"`
+	Quality      string      `json:"quality"`
+	ReleaseGroup OptString   `json:"releaseGroup"`
+	SceneName    OptString   `json:"sceneName"`
+	AddedAt      OptDateTime `json:"addedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *AdultFile) GetID() int64 {
+	return s.ID
+}
+
+// GetPath returns the value of Path.
+func (s *AdultFile) GetPath() string {
+	return s.Path
+}
+
+// GetSize returns the value of Size.
+func (s *AdultFile) GetSize() int64 {
+	return s.Size
+}
+
+// GetQuality returns the value of Quality.
+func (s *AdultFile) GetQuality() string {
+	return s.Quality
+}
+
+// GetReleaseGroup returns the value of ReleaseGroup.
+func (s *AdultFile) GetReleaseGroup() OptString {
+	return s.ReleaseGroup
+}
+
+// GetSceneName returns the value of SceneName.
+func (s *AdultFile) GetSceneName() OptString {
+	return s.SceneName
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *AdultFile) GetAddedAt() OptDateTime {
+	return s.AddedAt
+}
+
+// SetID sets the value of ID.
+func (s *AdultFile) SetID(val int64) {
+	s.ID = val
+}
+
+// SetPath sets the value of Path.
+func (s *AdultFile) SetPath(val string) {
+	s.Path = val
+}
+
+// SetSize sets the value of Size.
+func (s *AdultFile) SetSize(val int64) {
+	s.Size = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *AdultFile) SetQuality(val string) {
+	s.Quality = val
+}
+
+// SetReleaseGroup sets the value of ReleaseGroup.
+func (s *AdultFile) SetReleaseGroup(val OptString) {
+	s.ReleaseGroup = val
+}
+
+// SetSceneName sets the value of SceneName.
+func (s *AdultFile) SetSceneName(val OptString) {
+	s.SceneName = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *AdultFile) SetAddedAt(val OptDateTime) {
+	s.AddedAt = val
+}
+
+// Ref: #/components/schemas/AdultItem
+type AdultItem struct {
+	ID   int64         `json:"id"`
+	Kind AdultItemKind `json:"kind"`
+	// Scene: or adult_movie:.
+	Ref              string                    `json:"ref"`
+	StudioId         OptInt64                  `json:"studioId"`
+	Studio           string                    `json:"studio"`
+	Title            string                    `json:"title"`
+	ReleaseDate      OptString                 `json:"releaseDate"`
+	Year             OptInt                    `json:"year"`
+	Duration         OptInt                    `json:"duration"`
+	Overview         OptString                 `json:"overview"`
+	StashdbId        OptString                 `json:"stashdbId"`
+	TpdbId           OptString                 `json:"tpdbId"`
+	Image            OptString                 `json:"image"`
+	Monitored        bool                      `json:"monitored"`
+	QualityProfileId int64                     `json:"qualityProfileId"`
+	Path             string                    `json:"path"`
+	AddedAt          time.Time                 `json:"addedAt"`
+	SourceTags       []string                  `json:"sourceTags"`
+	Performers       []AdultItemPerformersItem `json:"performers"`
+	File             OptAdultFile              `json:"file"`
+}
+
+// GetID returns the value of ID.
+func (s *AdultItem) GetID() int64 {
+	return s.ID
+}
+
+// GetKind returns the value of Kind.
+func (s *AdultItem) GetKind() AdultItemKind {
+	return s.Kind
+}
+
+// GetRef returns the value of Ref.
+func (s *AdultItem) GetRef() string {
+	return s.Ref
+}
+
+// GetStudioId returns the value of StudioId.
+func (s *AdultItem) GetStudioId() OptInt64 {
+	return s.StudioId
+}
+
+// GetStudio returns the value of Studio.
+func (s *AdultItem) GetStudio() string {
+	return s.Studio
+}
+
+// GetTitle returns the value of Title.
+func (s *AdultItem) GetTitle() string {
+	return s.Title
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *AdultItem) GetReleaseDate() OptString {
+	return s.ReleaseDate
+}
+
+// GetYear returns the value of Year.
+func (s *AdultItem) GetYear() OptInt {
+	return s.Year
+}
+
+// GetDuration returns the value of Duration.
+func (s *AdultItem) GetDuration() OptInt {
+	return s.Duration
+}
+
+// GetOverview returns the value of Overview.
+func (s *AdultItem) GetOverview() OptString {
+	return s.Overview
+}
+
+// GetStashdbId returns the value of StashdbId.
+func (s *AdultItem) GetStashdbId() OptString {
+	return s.StashdbId
+}
+
+// GetTpdbId returns the value of TpdbId.
+func (s *AdultItem) GetTpdbId() OptString {
+	return s.TpdbId
+}
+
+// GetImage returns the value of Image.
+func (s *AdultItem) GetImage() OptString {
+	return s.Image
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AdultItem) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AdultItem) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetPath returns the value of Path.
+func (s *AdultItem) GetPath() string {
+	return s.Path
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *AdultItem) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetSourceTags returns the value of SourceTags.
+func (s *AdultItem) GetSourceTags() []string {
+	return s.SourceTags
+}
+
+// GetPerformers returns the value of Performers.
+func (s *AdultItem) GetPerformers() []AdultItemPerformersItem {
+	return s.Performers
+}
+
+// GetFile returns the value of File.
+func (s *AdultItem) GetFile() OptAdultFile {
+	return s.File
+}
+
+// SetID sets the value of ID.
+func (s *AdultItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetKind sets the value of Kind.
+func (s *AdultItem) SetKind(val AdultItemKind) {
+	s.Kind = val
+}
+
+// SetRef sets the value of Ref.
+func (s *AdultItem) SetRef(val string) {
+	s.Ref = val
+}
+
+// SetStudioId sets the value of StudioId.
+func (s *AdultItem) SetStudioId(val OptInt64) {
+	s.StudioId = val
+}
+
+// SetStudio sets the value of Studio.
+func (s *AdultItem) SetStudio(val string) {
+	s.Studio = val
+}
+
+// SetTitle sets the value of Title.
+func (s *AdultItem) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *AdultItem) SetReleaseDate(val OptString) {
+	s.ReleaseDate = val
+}
+
+// SetYear sets the value of Year.
+func (s *AdultItem) SetYear(val OptInt) {
+	s.Year = val
+}
+
+// SetDuration sets the value of Duration.
+func (s *AdultItem) SetDuration(val OptInt) {
+	s.Duration = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *AdultItem) SetOverview(val OptString) {
+	s.Overview = val
+}
+
+// SetStashdbId sets the value of StashdbId.
+func (s *AdultItem) SetStashdbId(val OptString) {
+	s.StashdbId = val
+}
+
+// SetTpdbId sets the value of TpdbId.
+func (s *AdultItem) SetTpdbId(val OptString) {
+	s.TpdbId = val
+}
+
+// SetImage sets the value of Image.
+func (s *AdultItem) SetImage(val OptString) {
+	s.Image = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AdultItem) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AdultItem) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetPath sets the value of Path.
+func (s *AdultItem) SetPath(val string) {
+	s.Path = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *AdultItem) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetSourceTags sets the value of SourceTags.
+func (s *AdultItem) SetSourceTags(val []string) {
+	s.SourceTags = val
+}
+
+// SetPerformers sets the value of Performers.
+func (s *AdultItem) SetPerformers(val []AdultItemPerformersItem) {
+	s.Performers = val
+}
+
+// SetFile sets the value of File.
+func (s *AdultItem) SetFile(val OptAdultFile) {
+	s.File = val
+}
+
+type AdultItemKind string
+
+const (
+	AdultItemKindScene AdultItemKind = "scene"
+	AdultItemKindMovie AdultItemKind = "movie"
+)
+
+// AllValues returns all AdultItemKind values.
+func (AdultItemKind) AllValues() []AdultItemKind {
+	return []AdultItemKind{
+		AdultItemKindScene,
+		AdultItemKindMovie,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultItemKind) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultItemKindScene:
+		return []byte(s), nil
+	case AdultItemKindMovie:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultItemKind) UnmarshalText(data []byte) error {
+	switch AdultItemKind(data) {
+	case AdultItemKindScene:
+		*s = AdultItemKindScene
+		return nil
+	case AdultItemKindMovie:
+		*s = AdultItemKindMovie
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AdultItemPage
+type AdultItemPage struct {
+	Items []AdultItem `json:"items"`
+	Total int         `json:"total"`
+}
+
+// GetItems returns the value of Items.
+func (s *AdultItemPage) GetItems() []AdultItem {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *AdultItemPage) GetTotal() int {
+	return s.Total
+}
+
+// SetItems sets the value of Items.
+func (s *AdultItemPage) SetItems(val []AdultItem) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *AdultItemPage) SetTotal(val int) {
+	s.Total = val
+}
+
+type AdultItemPerformersItem struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
+// GetID returns the value of ID.
+func (s *AdultItemPerformersItem) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *AdultItemPerformersItem) GetName() string {
+	return s.Name
+}
+
+// SetID sets the value of ID.
+func (s *AdultItemPerformersItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *AdultItemPerformersItem) SetName(val string) {
+	s.Name = val
+}
+
+// Ref: #/components/schemas/AdultLookupResult
+type AdultLookupResult struct {
+	Source     AdultLookupResultSource `json:"source"`
+	ID         string                  `json:"id"`
+	Type       AdultLookupResultType   `json:"type"`
+	Name       string                  `json:"name"`
+	Date       OptString               `json:"date"`
+	Studio     OptString               `json:"studio"`
+	Performers []string                `json:"performers"`
+	InLibrary  OptBool                 `json:"inLibrary"`
+}
+
+// GetSource returns the value of Source.
+func (s *AdultLookupResult) GetSource() AdultLookupResultSource {
+	return s.Source
+}
+
+// GetID returns the value of ID.
+func (s *AdultLookupResult) GetID() string {
+	return s.ID
+}
+
+// GetType returns the value of Type.
+func (s *AdultLookupResult) GetType() AdultLookupResultType {
+	return s.Type
+}
+
+// GetName returns the value of Name.
+func (s *AdultLookupResult) GetName() string {
+	return s.Name
+}
+
+// GetDate returns the value of Date.
+func (s *AdultLookupResult) GetDate() OptString {
+	return s.Date
+}
+
+// GetStudio returns the value of Studio.
+func (s *AdultLookupResult) GetStudio() OptString {
+	return s.Studio
+}
+
+// GetPerformers returns the value of Performers.
+func (s *AdultLookupResult) GetPerformers() []string {
+	return s.Performers
+}
+
+// GetInLibrary returns the value of InLibrary.
+func (s *AdultLookupResult) GetInLibrary() OptBool {
+	return s.InLibrary
+}
+
+// SetSource sets the value of Source.
+func (s *AdultLookupResult) SetSource(val AdultLookupResultSource) {
+	s.Source = val
+}
+
+// SetID sets the value of ID.
+func (s *AdultLookupResult) SetID(val string) {
+	s.ID = val
+}
+
+// SetType sets the value of Type.
+func (s *AdultLookupResult) SetType(val AdultLookupResultType) {
+	s.Type = val
+}
+
+// SetName sets the value of Name.
+func (s *AdultLookupResult) SetName(val string) {
+	s.Name = val
+}
+
+// SetDate sets the value of Date.
+func (s *AdultLookupResult) SetDate(val OptString) {
+	s.Date = val
+}
+
+// SetStudio sets the value of Studio.
+func (s *AdultLookupResult) SetStudio(val OptString) {
+	s.Studio = val
+}
+
+// SetPerformers sets the value of Performers.
+func (s *AdultLookupResult) SetPerformers(val []string) {
+	s.Performers = val
+}
+
+// SetInLibrary sets the value of InLibrary.
+func (s *AdultLookupResult) SetInLibrary(val OptBool) {
+	s.InLibrary = val
+}
+
+type AdultLookupResultSource string
+
+const (
+	AdultLookupResultSourceStashdb AdultLookupResultSource = "stashdb"
+	AdultLookupResultSourceTpdb    AdultLookupResultSource = "tpdb"
+)
+
+// AllValues returns all AdultLookupResultSource values.
+func (AdultLookupResultSource) AllValues() []AdultLookupResultSource {
+	return []AdultLookupResultSource{
+		AdultLookupResultSourceStashdb,
+		AdultLookupResultSourceTpdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultLookupResultSource) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultLookupResultSourceStashdb:
+		return []byte(s), nil
+	case AdultLookupResultSourceTpdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultLookupResultSource) UnmarshalText(data []byte) error {
+	switch AdultLookupResultSource(data) {
+	case AdultLookupResultSourceStashdb:
+		*s = AdultLookupResultSourceStashdb
+		return nil
+	case AdultLookupResultSourceTpdb:
+		*s = AdultLookupResultSourceTpdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type AdultLookupResultType string
+
+const (
+	AdultLookupResultTypeScene     AdultLookupResultType = "scene"
+	AdultLookupResultTypeMovie     AdultLookupResultType = "movie"
+	AdultLookupResultTypePerformer AdultLookupResultType = "performer"
+	AdultLookupResultTypeStudio    AdultLookupResultType = "studio"
+)
+
+// AllValues returns all AdultLookupResultType values.
+func (AdultLookupResultType) AllValues() []AdultLookupResultType {
+	return []AdultLookupResultType{
+		AdultLookupResultTypeScene,
+		AdultLookupResultTypeMovie,
+		AdultLookupResultTypePerformer,
+		AdultLookupResultTypeStudio,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultLookupResultType) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultLookupResultTypeScene:
+		return []byte(s), nil
+	case AdultLookupResultTypeMovie:
+		return []byte(s), nil
+	case AdultLookupResultTypePerformer:
+		return []byte(s), nil
+	case AdultLookupResultTypeStudio:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultLookupResultType) UnmarshalText(data []byte) error {
+	switch AdultLookupResultType(data) {
+	case AdultLookupResultTypeScene:
+		*s = AdultLookupResultTypeScene
+		return nil
+	case AdultLookupResultTypeMovie:
+		*s = AdultLookupResultTypeMovie
+		return nil
+	case AdultLookupResultTypePerformer:
+		*s = AdultLookupResultTypePerformer
+		return nil
+	case AdultLookupResultTypeStudio:
+		*s = AdultLookupResultTypeStudio
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AdultPerformer
+type AdultPerformer struct {
+	ID               int64       `json:"id"`
+	Name             string      `json:"name"`
+	Disambiguation   OptString   `json:"disambiguation"`
+	StashdbId        OptString   `json:"stashdbId"`
+	TpdbId           OptString   `json:"tpdbId"`
+	Image            OptString   `json:"image"`
+	Monitored        bool        `json:"monitored"`
+	MonitorSince     OptString   `json:"monitorSince"`
+	QualityProfileId OptInt64    `json:"qualityProfileId"`
+	AddedAt          time.Time   `json:"addedAt"`
+	RefreshedAt      OptDateTime `json:"refreshedAt"`
+	Items            int         `json:"items"`
+}
+
+// GetID returns the value of ID.
+func (s *AdultPerformer) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *AdultPerformer) GetName() string {
+	return s.Name
+}
+
+// GetDisambiguation returns the value of Disambiguation.
+func (s *AdultPerformer) GetDisambiguation() OptString {
+	return s.Disambiguation
+}
+
+// GetStashdbId returns the value of StashdbId.
+func (s *AdultPerformer) GetStashdbId() OptString {
+	return s.StashdbId
+}
+
+// GetTpdbId returns the value of TpdbId.
+func (s *AdultPerformer) GetTpdbId() OptString {
+	return s.TpdbId
+}
+
+// GetImage returns the value of Image.
+func (s *AdultPerformer) GetImage() OptString {
+	return s.Image
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AdultPerformer) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetMonitorSince returns the value of MonitorSince.
+func (s *AdultPerformer) GetMonitorSince() OptString {
+	return s.MonitorSince
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AdultPerformer) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *AdultPerformer) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetRefreshedAt returns the value of RefreshedAt.
+func (s *AdultPerformer) GetRefreshedAt() OptDateTime {
+	return s.RefreshedAt
+}
+
+// GetItems returns the value of Items.
+func (s *AdultPerformer) GetItems() int {
+	return s.Items
+}
+
+// SetID sets the value of ID.
+func (s *AdultPerformer) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *AdultPerformer) SetName(val string) {
+	s.Name = val
+}
+
+// SetDisambiguation sets the value of Disambiguation.
+func (s *AdultPerformer) SetDisambiguation(val OptString) {
+	s.Disambiguation = val
+}
+
+// SetStashdbId sets the value of StashdbId.
+func (s *AdultPerformer) SetStashdbId(val OptString) {
+	s.StashdbId = val
+}
+
+// SetTpdbId sets the value of TpdbId.
+func (s *AdultPerformer) SetTpdbId(val OptString) {
+	s.TpdbId = val
+}
+
+// SetImage sets the value of Image.
+func (s *AdultPerformer) SetImage(val OptString) {
+	s.Image = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AdultPerformer) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetMonitorSince sets the value of MonitorSince.
+func (s *AdultPerformer) SetMonitorSince(val OptString) {
+	s.MonitorSince = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AdultPerformer) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *AdultPerformer) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetRefreshedAt sets the value of RefreshedAt.
+func (s *AdultPerformer) SetRefreshedAt(val OptDateTime) {
+	s.RefreshedAt = val
+}
+
+// SetItems sets the value of Items.
+func (s *AdultPerformer) SetItems(val int) {
+	s.Items = val
+}
+
+// Ref: #/components/schemas/AdultPreferences
+type AdultPreferences struct {
+	// Blur adult images until clicked (default on).
+	Blur bool `json:"blur"`
+}
+
+// GetBlur returns the value of Blur.
+func (s *AdultPreferences) GetBlur() bool {
+	return s.Blur
+}
+
+// SetBlur sets the value of Blur.
+func (s *AdultPreferences) SetBlur(val bool) {
+	s.Blur = val
+}
+
+// Ref: #/components/schemas/AdultRename
+type AdultRename struct {
+	ItemId int64  `json:"itemId"`
+	From   string `json:"from"`
+	To     string `json:"to"`
+}
+
+// GetItemId returns the value of ItemId.
+func (s *AdultRename) GetItemId() int64 {
+	return s.ItemId
+}
+
+// GetFrom returns the value of From.
+func (s *AdultRename) GetFrom() string {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *AdultRename) GetTo() string {
+	return s.To
+}
+
+// SetItemId sets the value of ItemId.
+func (s *AdultRename) SetItemId(val int64) {
+	s.ItemId = val
+}
+
+// SetFrom sets the value of From.
+func (s *AdultRename) SetFrom(val string) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *AdultRename) SetTo(val string) {
+	s.To = val
+}
+
+// Ref: #/components/schemas/AdultRootFolder
+type AdultRootFolder struct {
+	ID   int64  `json:"id"`
+	Path string `json:"path"`
+}
+
+// GetID returns the value of ID.
+func (s *AdultRootFolder) GetID() int64 {
+	return s.ID
+}
+
+// GetPath returns the value of Path.
+func (s *AdultRootFolder) GetPath() string {
+	return s.Path
+}
+
+// SetID sets the value of ID.
+func (s *AdultRootFolder) SetID(val int64) {
+	s.ID = val
+}
+
+// SetPath sets the value of Path.
+func (s *AdultRootFolder) SetPath(val string) {
+	s.Path = val
+}
+
+// Ref: #/components/schemas/AdultSettings
+type AdultSettings struct {
+	Enabled bool `json:"enabled"`
+	// When an administrator confirmed that every user with access is an adult.
+	ConfirmedAt         OptString                  `json:"confirmedAt"`
+	StashdbKeySet       bool                       `json:"stashdbKeySet"`
+	TpdbKeySet          bool                       `json:"tpdbKeySet"`
+	DefaultSource       AdultSettingsDefaultSource `json:"defaultSource"`
+	DefaultProfileId    int64                      `json:"defaultProfileId"`
+	DefaultRootFolderId int64                      `json:"defaultRootFolderId"`
+	SceneFolder         string                     `json:"sceneFolder"`
+	SceneFile           string                     `json:"sceneFile"`
+	MovieFolder         string                     `json:"movieFolder"`
+	MovieFile           string                     `json:"movieFile"`
+	// Add one total count of adult items to /api/stats (never a breakdown).
+	StatsAggregate bool `json:"statsAggregate"`
+	// Tell Streamero about adult imports (only with an adult Streamero library mapped).
+	NotifyStreamero bool     `json:"notifyStreamero"`
+	Tokens          []string `json:"tokens"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *AdultSettings) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetConfirmedAt returns the value of ConfirmedAt.
+func (s *AdultSettings) GetConfirmedAt() OptString {
+	return s.ConfirmedAt
+}
+
+// GetStashdbKeySet returns the value of StashdbKeySet.
+func (s *AdultSettings) GetStashdbKeySet() bool {
+	return s.StashdbKeySet
+}
+
+// GetTpdbKeySet returns the value of TpdbKeySet.
+func (s *AdultSettings) GetTpdbKeySet() bool {
+	return s.TpdbKeySet
+}
+
+// GetDefaultSource returns the value of DefaultSource.
+func (s *AdultSettings) GetDefaultSource() AdultSettingsDefaultSource {
+	return s.DefaultSource
+}
+
+// GetDefaultProfileId returns the value of DefaultProfileId.
+func (s *AdultSettings) GetDefaultProfileId() int64 {
+	return s.DefaultProfileId
+}
+
+// GetDefaultRootFolderId returns the value of DefaultRootFolderId.
+func (s *AdultSettings) GetDefaultRootFolderId() int64 {
+	return s.DefaultRootFolderId
+}
+
+// GetSceneFolder returns the value of SceneFolder.
+func (s *AdultSettings) GetSceneFolder() string {
+	return s.SceneFolder
+}
+
+// GetSceneFile returns the value of SceneFile.
+func (s *AdultSettings) GetSceneFile() string {
+	return s.SceneFile
+}
+
+// GetMovieFolder returns the value of MovieFolder.
+func (s *AdultSettings) GetMovieFolder() string {
+	return s.MovieFolder
+}
+
+// GetMovieFile returns the value of MovieFile.
+func (s *AdultSettings) GetMovieFile() string {
+	return s.MovieFile
+}
+
+// GetStatsAggregate returns the value of StatsAggregate.
+func (s *AdultSettings) GetStatsAggregate() bool {
+	return s.StatsAggregate
+}
+
+// GetNotifyStreamero returns the value of NotifyStreamero.
+func (s *AdultSettings) GetNotifyStreamero() bool {
+	return s.NotifyStreamero
+}
+
+// GetTokens returns the value of Tokens.
+func (s *AdultSettings) GetTokens() []string {
+	return s.Tokens
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *AdultSettings) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetConfirmedAt sets the value of ConfirmedAt.
+func (s *AdultSettings) SetConfirmedAt(val OptString) {
+	s.ConfirmedAt = val
+}
+
+// SetStashdbKeySet sets the value of StashdbKeySet.
+func (s *AdultSettings) SetStashdbKeySet(val bool) {
+	s.StashdbKeySet = val
+}
+
+// SetTpdbKeySet sets the value of TpdbKeySet.
+func (s *AdultSettings) SetTpdbKeySet(val bool) {
+	s.TpdbKeySet = val
+}
+
+// SetDefaultSource sets the value of DefaultSource.
+func (s *AdultSettings) SetDefaultSource(val AdultSettingsDefaultSource) {
+	s.DefaultSource = val
+}
+
+// SetDefaultProfileId sets the value of DefaultProfileId.
+func (s *AdultSettings) SetDefaultProfileId(val int64) {
+	s.DefaultProfileId = val
+}
+
+// SetDefaultRootFolderId sets the value of DefaultRootFolderId.
+func (s *AdultSettings) SetDefaultRootFolderId(val int64) {
+	s.DefaultRootFolderId = val
+}
+
+// SetSceneFolder sets the value of SceneFolder.
+func (s *AdultSettings) SetSceneFolder(val string) {
+	s.SceneFolder = val
+}
+
+// SetSceneFile sets the value of SceneFile.
+func (s *AdultSettings) SetSceneFile(val string) {
+	s.SceneFile = val
+}
+
+// SetMovieFolder sets the value of MovieFolder.
+func (s *AdultSettings) SetMovieFolder(val string) {
+	s.MovieFolder = val
+}
+
+// SetMovieFile sets the value of MovieFile.
+func (s *AdultSettings) SetMovieFile(val string) {
+	s.MovieFile = val
+}
+
+// SetStatsAggregate sets the value of StatsAggregate.
+func (s *AdultSettings) SetStatsAggregate(val bool) {
+	s.StatsAggregate = val
+}
+
+// SetNotifyStreamero sets the value of NotifyStreamero.
+func (s *AdultSettings) SetNotifyStreamero(val bool) {
+	s.NotifyStreamero = val
+}
+
+// SetTokens sets the value of Tokens.
+func (s *AdultSettings) SetTokens(val []string) {
+	s.Tokens = val
+}
+
+type AdultSettingsDefaultSource string
+
+const (
+	AdultSettingsDefaultSourceStashdb AdultSettingsDefaultSource = "stashdb"
+	AdultSettingsDefaultSourceTpdb    AdultSettingsDefaultSource = "tpdb"
+)
+
+// AllValues returns all AdultSettingsDefaultSource values.
+func (AdultSettingsDefaultSource) AllValues() []AdultSettingsDefaultSource {
+	return []AdultSettingsDefaultSource{
+		AdultSettingsDefaultSourceStashdb,
+		AdultSettingsDefaultSourceTpdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultSettingsDefaultSource) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultSettingsDefaultSourceStashdb:
+		return []byte(s), nil
+	case AdultSettingsDefaultSourceTpdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultSettingsDefaultSource) UnmarshalText(data []byte) error {
+	switch AdultSettingsDefaultSource(data) {
+	case AdultSettingsDefaultSourceStashdb:
+		*s = AdultSettingsDefaultSourceStashdb
+		return nil
+	case AdultSettingsDefaultSourceTpdb:
+		*s = AdultSettingsDefaultSourceTpdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AdultSettingsUpdate
+type AdultSettingsUpdate struct {
+	Enabled OptBool `json:"enabled"`
+	// Required to enable: every user with access to adult content is an adult.
+	ConfirmAdults OptBool `json:"confirmAdults"`
+	// Empty clears the key.
+	StashdbKey          OptString                           `json:"stashdbKey"`
+	TpdbKey             OptString                           `json:"tpdbKey"`
+	DefaultSource       OptAdultSettingsUpdateDefaultSource `json:"defaultSource"`
+	DefaultProfileId    OptInt64                            `json:"defaultProfileId"`
+	DefaultRootFolderId OptInt64                            `json:"defaultRootFolderId"`
+	SceneFolder         OptString                           `json:"sceneFolder"`
+	SceneFile           OptString                           `json:"sceneFile"`
+	MovieFolder         OptString                           `json:"movieFolder"`
+	MovieFile           OptString                           `json:"movieFile"`
+	StatsAggregate      OptBool                             `json:"statsAggregate"`
+	NotifyStreamero     OptBool                             `json:"notifyStreamero"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *AdultSettingsUpdate) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetConfirmAdults returns the value of ConfirmAdults.
+func (s *AdultSettingsUpdate) GetConfirmAdults() OptBool {
+	return s.ConfirmAdults
+}
+
+// GetStashdbKey returns the value of StashdbKey.
+func (s *AdultSettingsUpdate) GetStashdbKey() OptString {
+	return s.StashdbKey
+}
+
+// GetTpdbKey returns the value of TpdbKey.
+func (s *AdultSettingsUpdate) GetTpdbKey() OptString {
+	return s.TpdbKey
+}
+
+// GetDefaultSource returns the value of DefaultSource.
+func (s *AdultSettingsUpdate) GetDefaultSource() OptAdultSettingsUpdateDefaultSource {
+	return s.DefaultSource
+}
+
+// GetDefaultProfileId returns the value of DefaultProfileId.
+func (s *AdultSettingsUpdate) GetDefaultProfileId() OptInt64 {
+	return s.DefaultProfileId
+}
+
+// GetDefaultRootFolderId returns the value of DefaultRootFolderId.
+func (s *AdultSettingsUpdate) GetDefaultRootFolderId() OptInt64 {
+	return s.DefaultRootFolderId
+}
+
+// GetSceneFolder returns the value of SceneFolder.
+func (s *AdultSettingsUpdate) GetSceneFolder() OptString {
+	return s.SceneFolder
+}
+
+// GetSceneFile returns the value of SceneFile.
+func (s *AdultSettingsUpdate) GetSceneFile() OptString {
+	return s.SceneFile
+}
+
+// GetMovieFolder returns the value of MovieFolder.
+func (s *AdultSettingsUpdate) GetMovieFolder() OptString {
+	return s.MovieFolder
+}
+
+// GetMovieFile returns the value of MovieFile.
+func (s *AdultSettingsUpdate) GetMovieFile() OptString {
+	return s.MovieFile
+}
+
+// GetStatsAggregate returns the value of StatsAggregate.
+func (s *AdultSettingsUpdate) GetStatsAggregate() OptBool {
+	return s.StatsAggregate
+}
+
+// GetNotifyStreamero returns the value of NotifyStreamero.
+func (s *AdultSettingsUpdate) GetNotifyStreamero() OptBool {
+	return s.NotifyStreamero
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *AdultSettingsUpdate) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetConfirmAdults sets the value of ConfirmAdults.
+func (s *AdultSettingsUpdate) SetConfirmAdults(val OptBool) {
+	s.ConfirmAdults = val
+}
+
+// SetStashdbKey sets the value of StashdbKey.
+func (s *AdultSettingsUpdate) SetStashdbKey(val OptString) {
+	s.StashdbKey = val
+}
+
+// SetTpdbKey sets the value of TpdbKey.
+func (s *AdultSettingsUpdate) SetTpdbKey(val OptString) {
+	s.TpdbKey = val
+}
+
+// SetDefaultSource sets the value of DefaultSource.
+func (s *AdultSettingsUpdate) SetDefaultSource(val OptAdultSettingsUpdateDefaultSource) {
+	s.DefaultSource = val
+}
+
+// SetDefaultProfileId sets the value of DefaultProfileId.
+func (s *AdultSettingsUpdate) SetDefaultProfileId(val OptInt64) {
+	s.DefaultProfileId = val
+}
+
+// SetDefaultRootFolderId sets the value of DefaultRootFolderId.
+func (s *AdultSettingsUpdate) SetDefaultRootFolderId(val OptInt64) {
+	s.DefaultRootFolderId = val
+}
+
+// SetSceneFolder sets the value of SceneFolder.
+func (s *AdultSettingsUpdate) SetSceneFolder(val OptString) {
+	s.SceneFolder = val
+}
+
+// SetSceneFile sets the value of SceneFile.
+func (s *AdultSettingsUpdate) SetSceneFile(val OptString) {
+	s.SceneFile = val
+}
+
+// SetMovieFolder sets the value of MovieFolder.
+func (s *AdultSettingsUpdate) SetMovieFolder(val OptString) {
+	s.MovieFolder = val
+}
+
+// SetMovieFile sets the value of MovieFile.
+func (s *AdultSettingsUpdate) SetMovieFile(val OptString) {
+	s.MovieFile = val
+}
+
+// SetStatsAggregate sets the value of StatsAggregate.
+func (s *AdultSettingsUpdate) SetStatsAggregate(val OptBool) {
+	s.StatsAggregate = val
+}
+
+// SetNotifyStreamero sets the value of NotifyStreamero.
+func (s *AdultSettingsUpdate) SetNotifyStreamero(val OptBool) {
+	s.NotifyStreamero = val
+}
+
+type AdultSettingsUpdateDefaultSource string
+
+const (
+	AdultSettingsUpdateDefaultSourceStashdb AdultSettingsUpdateDefaultSource = "stashdb"
+	AdultSettingsUpdateDefaultSourceTpdb    AdultSettingsUpdateDefaultSource = "tpdb"
+)
+
+// AllValues returns all AdultSettingsUpdateDefaultSource values.
+func (AdultSettingsUpdateDefaultSource) AllValues() []AdultSettingsUpdateDefaultSource {
+	return []AdultSettingsUpdateDefaultSource{
+		AdultSettingsUpdateDefaultSourceStashdb,
+		AdultSettingsUpdateDefaultSourceTpdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultSettingsUpdateDefaultSource) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultSettingsUpdateDefaultSourceStashdb:
+		return []byte(s), nil
+	case AdultSettingsUpdateDefaultSourceTpdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultSettingsUpdateDefaultSource) UnmarshalText(data []byte) error {
+	switch AdultSettingsUpdateDefaultSource(data) {
+	case AdultSettingsUpdateDefaultSourceStashdb:
+		*s = AdultSettingsUpdateDefaultSourceStashdb
+		return nil
+	case AdultSettingsUpdateDefaultSourceTpdb:
+		*s = AdultSettingsUpdateDefaultSourceTpdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AdultStudio
+type AdultStudio struct {
+	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
+	StashdbId OptString `json:"stashdbId"`
+	TpdbId    OptString `json:"tpdbId"`
+	URL       OptString `json:"url"`
+	// Key for /adult/images/{key}.
+	Image            OptString   `json:"image"`
+	Monitored        bool        `json:"monitored"`
+	MonitorSince     OptString   `json:"monitorSince"`
+	QualityProfileId int64       `json:"qualityProfileId"`
+	RootFolderId     OptInt64    `json:"rootFolderId"`
+	Path             string      `json:"path"`
+	AddedAt          time.Time   `json:"addedAt"`
+	RefreshedAt      OptDateTime `json:"refreshedAt"`
+	Scenes           int         `json:"scenes"`
+	Files            int         `json:"files"`
+}
+
+// GetID returns the value of ID.
+func (s *AdultStudio) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *AdultStudio) GetName() string {
+	return s.Name
+}
+
+// GetStashdbId returns the value of StashdbId.
+func (s *AdultStudio) GetStashdbId() OptString {
+	return s.StashdbId
+}
+
+// GetTpdbId returns the value of TpdbId.
+func (s *AdultStudio) GetTpdbId() OptString {
+	return s.TpdbId
+}
+
+// GetURL returns the value of URL.
+func (s *AdultStudio) GetURL() OptString {
+	return s.URL
+}
+
+// GetImage returns the value of Image.
+func (s *AdultStudio) GetImage() OptString {
+	return s.Image
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AdultStudio) GetMonitored() bool {
+	return s.Monitored
+}
+
+// GetMonitorSince returns the value of MonitorSince.
+func (s *AdultStudio) GetMonitorSince() OptString {
+	return s.MonitorSince
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AdultStudio) GetQualityProfileId() int64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *AdultStudio) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetPath returns the value of Path.
+func (s *AdultStudio) GetPath() string {
+	return s.Path
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *AdultStudio) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// GetRefreshedAt returns the value of RefreshedAt.
+func (s *AdultStudio) GetRefreshedAt() OptDateTime {
+	return s.RefreshedAt
+}
+
+// GetScenes returns the value of Scenes.
+func (s *AdultStudio) GetScenes() int {
+	return s.Scenes
+}
+
+// GetFiles returns the value of Files.
+func (s *AdultStudio) GetFiles() int {
+	return s.Files
+}
+
+// SetID sets the value of ID.
+func (s *AdultStudio) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *AdultStudio) SetName(val string) {
+	s.Name = val
+}
+
+// SetStashdbId sets the value of StashdbId.
+func (s *AdultStudio) SetStashdbId(val OptString) {
+	s.StashdbId = val
+}
+
+// SetTpdbId sets the value of TpdbId.
+func (s *AdultStudio) SetTpdbId(val OptString) {
+	s.TpdbId = val
+}
+
+// SetURL sets the value of URL.
+func (s *AdultStudio) SetURL(val OptString) {
+	s.URL = val
+}
+
+// SetImage sets the value of Image.
+func (s *AdultStudio) SetImage(val OptString) {
+	s.Image = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AdultStudio) SetMonitored(val bool) {
+	s.Monitored = val
+}
+
+// SetMonitorSince sets the value of MonitorSince.
+func (s *AdultStudio) SetMonitorSince(val OptString) {
+	s.MonitorSince = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AdultStudio) SetQualityProfileId(val int64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *AdultStudio) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetPath sets the value of Path.
+func (s *AdultStudio) SetPath(val string) {
+	s.Path = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *AdultStudio) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+// SetRefreshedAt sets the value of RefreshedAt.
+func (s *AdultStudio) SetRefreshedAt(val OptDateTime) {
+	s.RefreshedAt = val
+}
+
+// SetScenes sets the value of Scenes.
+func (s *AdultStudio) SetScenes(val int) {
+	s.Scenes = val
+}
+
+// SetFiles sets the value of Files.
+func (s *AdultStudio) SetFiles(val int) {
+	s.Files = val
 }
 
 // Ref: #/components/schemas/Album
@@ -1399,10 +3018,12 @@ type ApiKey struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 	// The first characters of the key, to recognise it.
-	Prefix     string      `json:"prefix"`
-	ReadOnly   bool        `json:"readOnly"`
-	CreatedAt  time.Time   `json:"createdAt"`
-	LastUsedAt OptDateTime `json:"lastUsedAt"`
+	Prefix   string `json:"prefix"`
+	ReadOnly bool   `json:"readOnly"`
+	// The key may see the adult library (only when its owner may).
+	IncludeAdult OptBool     `json:"includeAdult"`
+	CreatedAt    time.Time   `json:"createdAt"`
+	LastUsedAt   OptDateTime `json:"lastUsedAt"`
 }
 
 // GetID returns the value of ID.
@@ -1423,6 +3044,11 @@ func (s *ApiKey) GetPrefix() string {
 // GetReadOnly returns the value of ReadOnly.
 func (s *ApiKey) GetReadOnly() bool {
 	return s.ReadOnly
+}
+
+// GetIncludeAdult returns the value of IncludeAdult.
+func (s *ApiKey) GetIncludeAdult() OptBool {
+	return s.IncludeAdult
 }
 
 // GetCreatedAt returns the value of CreatedAt.
@@ -1453,6 +3079,11 @@ func (s *ApiKey) SetPrefix(val string) {
 // SetReadOnly sets the value of ReadOnly.
 func (s *ApiKey) SetReadOnly(val bool) {
 	s.ReadOnly = val
+}
+
+// SetIncludeAdult sets the value of IncludeAdult.
+func (s *ApiKey) SetIncludeAdult(val OptBool) {
+	s.IncludeAdult = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.
@@ -4419,6 +6050,8 @@ func (s *ConvertSubtitleFpsReq) SetTo(val string) {
 type CreateApiKeyRequest struct {
 	Name     string  `json:"name"`
 	ReadOnly OptBool `json:"readOnly"`
+	// Let the key see the adult library. Ignored unless the owner holds viewAdult.
+	IncludeAdult OptBool `json:"includeAdult"`
 }
 
 // GetName returns the value of Name.
@@ -4431,6 +6064,11 @@ func (s *CreateApiKeyRequest) GetReadOnly() OptBool {
 	return s.ReadOnly
 }
 
+// GetIncludeAdult returns the value of IncludeAdult.
+func (s *CreateApiKeyRequest) GetIncludeAdult() OptBool {
+	return s.IncludeAdult
+}
+
 // SetName sets the value of Name.
 func (s *CreateApiKeyRequest) SetName(val string) {
 	s.Name = val
@@ -4439,6 +6077,11 @@ func (s *CreateApiKeyRequest) SetName(val string) {
 // SetReadOnly sets the value of ReadOnly.
 func (s *CreateApiKeyRequest) SetReadOnly(val OptBool) {
 	s.ReadOnly = val
+}
+
+// SetIncludeAdult sets the value of IncludeAdult.
+func (s *CreateApiKeyRequest) SetIncludeAdult(val OptBool) {
+	s.IncludeAdult = val
 }
 
 // Ref: #/components/schemas/CreateRequest
@@ -5753,6 +7396,21 @@ func (s *DelayProfileInput) SetMinimumScore(val OptInt) {
 func (s *DelayProfileInput) SetTags(val []string) {
 	s.Tags = val
 }
+
+// DeleteAdultBlocklistTermNoContent is response for DeleteAdultBlocklistTerm operation.
+type DeleteAdultBlocklistTermNoContent struct{}
+
+// DeleteAdultItemNoContent is response for DeleteAdultItem operation.
+type DeleteAdultItemNoContent struct{}
+
+// DeleteAdultPerformerNoContent is response for DeleteAdultPerformer operation.
+type DeleteAdultPerformerNoContent struct{}
+
+// DeleteAdultRootFolderNoContent is response for DeleteAdultRootFolder operation.
+type DeleteAdultRootFolderNoContent struct{}
+
+// DeleteAdultStudioNoContent is response for DeleteAdultStudio operation.
+type DeleteAdultStudioNoContent struct{}
 
 // DeleteApiKeyNoContent is response for DeleteApiKey operation.
 type DeleteApiKeyNoContent struct{}
@@ -9547,6 +11205,57 @@ func (s *FormatScore) SetScore(val int) {
 	s.Score = val
 }
 
+type GetAdultImageOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s GetAdultImageOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+// GetAdultImageOKHeaders wraps GetAdultImageOK with response headers.
+type GetAdultImageOKHeaders struct {
+	CacheControl OptString
+	ContentType  string
+	Response     GetAdultImageOK
+}
+
+// GetCacheControl returns the value of CacheControl.
+func (s *GetAdultImageOKHeaders) GetCacheControl() OptString {
+	return s.CacheControl
+}
+
+// GetContentType returns the value of ContentType.
+func (s *GetAdultImageOKHeaders) GetContentType() string {
+	return s.ContentType
+}
+
+// GetResponse returns the value of Response.
+func (s *GetAdultImageOKHeaders) GetResponse() GetAdultImageOK {
+	return s.Response
+}
+
+// SetCacheControl sets the value of CacheControl.
+func (s *GetAdultImageOKHeaders) SetCacheControl(val OptString) {
+	s.CacheControl = val
+}
+
+// SetContentType sets the value of ContentType.
+func (s *GetAdultImageOKHeaders) SetContentType(val string) {
+	s.ContentType = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetAdultImageOKHeaders) SetResponse(val GetAdultImageOK) {
+	s.Response = val
+}
+
 type GetCalendarFeedOK struct {
 	Data io.Reader
 }
@@ -12516,6 +14225,9 @@ type IndexerCategories struct {
 	Tv     []int `json:"tv"`
 	Music  []int `json:"music"`
 	Books  []int `json:"books"`
+	// Adult (6xxx) categories. Empty unless an administrator opts the indexer in; only adult searches use
+	// them.
+	Adult []int `json:"adult"`
 }
 
 // GetMovies returns the value of Movies.
@@ -12538,6 +14250,11 @@ func (s *IndexerCategories) GetBooks() []int {
 	return s.Books
 }
 
+// GetAdult returns the value of Adult.
+func (s *IndexerCategories) GetAdult() []int {
+	return s.Adult
+}
+
 // SetMovies sets the value of Movies.
 func (s *IndexerCategories) SetMovies(val []int) {
 	s.Movies = val
@@ -12556,6 +14273,11 @@ func (s *IndexerCategories) SetMusic(val []int) {
 // SetBooks sets the value of Books.
 func (s *IndexerCategories) SetBooks(val []int) {
 	s.Books = val
+}
+
+// SetAdult sets the value of Adult.
+func (s *IndexerCategories) SetAdult(val []int) {
+	s.Adult = val
 }
 
 // Ref: #/components/schemas/IndexerCategory
@@ -15958,6 +17680,47 @@ func (s *LinkedIdentity) SetLastLoginAt(val OptDateTime) {
 	s.LastLoginAt = val
 }
 
+type ListAdultItemsKind string
+
+const (
+	ListAdultItemsKindScene ListAdultItemsKind = "scene"
+	ListAdultItemsKindMovie ListAdultItemsKind = "movie"
+)
+
+// AllValues returns all ListAdultItemsKind values.
+func (ListAdultItemsKind) AllValues() []ListAdultItemsKind {
+	return []ListAdultItemsKind{
+		ListAdultItemsKindScene,
+		ListAdultItemsKindMovie,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListAdultItemsKind) MarshalText() ([]byte, error) {
+	switch s {
+	case ListAdultItemsKindScene:
+		return []byte(s), nil
+	case ListAdultItemsKindMovie:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListAdultItemsKind) UnmarshalText(data []byte) error {
+	switch ListAdultItemsKind(data) {
+	case ListAdultItemsKindScene:
+		*s = ListAdultItemsKindScene
+		return nil
+	case ListAdultItemsKindMovie:
+		*s = ListAdultItemsKindMovie
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 type ListArtistsSort string
 
 const (
@@ -16562,6 +18325,102 @@ func (s *LogoutNoContent) GetSetCookie() OptString {
 // SetSetCookie sets the value of SetCookie.
 func (s *LogoutNoContent) SetSetCookie(val OptString) {
 	s.SetCookie = val
+}
+
+type LookupAdultSource string
+
+const (
+	LookupAdultSourceStashdb LookupAdultSource = "stashdb"
+	LookupAdultSourceTpdb    LookupAdultSource = "tpdb"
+)
+
+// AllValues returns all LookupAdultSource values.
+func (LookupAdultSource) AllValues() []LookupAdultSource {
+	return []LookupAdultSource{
+		LookupAdultSourceStashdb,
+		LookupAdultSourceTpdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LookupAdultSource) MarshalText() ([]byte, error) {
+	switch s {
+	case LookupAdultSourceStashdb:
+		return []byte(s), nil
+	case LookupAdultSourceTpdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LookupAdultSource) UnmarshalText(data []byte) error {
+	switch LookupAdultSource(data) {
+	case LookupAdultSourceStashdb:
+		*s = LookupAdultSourceStashdb
+		return nil
+	case LookupAdultSourceTpdb:
+		*s = LookupAdultSourceTpdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type LookupAdultType string
+
+const (
+	LookupAdultTypeScene     LookupAdultType = "scene"
+	LookupAdultTypeMovie     LookupAdultType = "movie"
+	LookupAdultTypePerformer LookupAdultType = "performer"
+	LookupAdultTypeStudio    LookupAdultType = "studio"
+)
+
+// AllValues returns all LookupAdultType values.
+func (LookupAdultType) AllValues() []LookupAdultType {
+	return []LookupAdultType{
+		LookupAdultTypeScene,
+		LookupAdultTypeMovie,
+		LookupAdultTypePerformer,
+		LookupAdultTypeStudio,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LookupAdultType) MarshalText() ([]byte, error) {
+	switch s {
+	case LookupAdultTypeScene:
+		return []byte(s), nil
+	case LookupAdultTypeMovie:
+		return []byte(s), nil
+	case LookupAdultTypePerformer:
+		return []byte(s), nil
+	case LookupAdultTypeStudio:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LookupAdultType) UnmarshalText(data []byte) error {
+	switch LookupAdultType(data) {
+	case LookupAdultTypeScene:
+		*s = LookupAdultTypeScene
+		return nil
+	case LookupAdultTypeMovie:
+		*s = LookupAdultTypeMovie
+		return nil
+	case LookupAdultTypePerformer:
+		*s = LookupAdultTypePerformer
+		return nil
+	case LookupAdultTypeStudio:
+		*s = LookupAdultTypeStudio
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/ManualGrabRequest
@@ -23955,6 +25814,11 @@ const (
 	NotificationEventTypeSubtitlesTranslated   NotificationEventType = "subtitles.translated"
 	NotificationEventTypeMigrateFinished       NotificationEventType = "migrate.finished"
 	NotificationEventTypeMigrateFailed         NotificationEventType = "migrate.failed"
+	NotificationEventTypeAdultGrabbed          NotificationEventType = "adult.grabbed"
+	NotificationEventTypeAdultImported         NotificationEventType = "adult.imported"
+	NotificationEventTypeAdultUpgraded         NotificationEventType = "adult.upgraded"
+	NotificationEventTypeAdultDownloadFailed   NotificationEventType = "adult.download_failed"
+	NotificationEventTypeAdultImportFailed     NotificationEventType = "adult.import_failed"
 	NotificationEventTypeTest                  NotificationEventType = "test"
 )
 
@@ -23983,6 +25847,11 @@ func (NotificationEventType) AllValues() []NotificationEventType {
 		NotificationEventTypeSubtitlesTranslated,
 		NotificationEventTypeMigrateFinished,
 		NotificationEventTypeMigrateFailed,
+		NotificationEventTypeAdultGrabbed,
+		NotificationEventTypeAdultImported,
+		NotificationEventTypeAdultUpgraded,
+		NotificationEventTypeAdultDownloadFailed,
+		NotificationEventTypeAdultImportFailed,
 		NotificationEventTypeTest,
 	}
 }
@@ -24033,6 +25902,16 @@ func (s NotificationEventType) MarshalText() ([]byte, error) {
 	case NotificationEventTypeMigrateFinished:
 		return []byte(s), nil
 	case NotificationEventTypeMigrateFailed:
+		return []byte(s), nil
+	case NotificationEventTypeAdultGrabbed:
+		return []byte(s), nil
+	case NotificationEventTypeAdultImported:
+		return []byte(s), nil
+	case NotificationEventTypeAdultUpgraded:
+		return []byte(s), nil
+	case NotificationEventTypeAdultDownloadFailed:
+		return []byte(s), nil
+	case NotificationEventTypeAdultImportFailed:
 		return []byte(s), nil
 	case NotificationEventTypeTest:
 		return []byte(s), nil
@@ -24109,6 +25988,21 @@ func (s *NotificationEventType) UnmarshalText(data []byte) error {
 		return nil
 	case NotificationEventTypeMigrateFailed:
 		*s = NotificationEventTypeMigrateFailed
+		return nil
+	case NotificationEventTypeAdultGrabbed:
+		*s = NotificationEventTypeAdultGrabbed
+		return nil
+	case NotificationEventTypeAdultImported:
+		*s = NotificationEventTypeAdultImported
+		return nil
+	case NotificationEventTypeAdultUpgraded:
+		*s = NotificationEventTypeAdultUpgraded
+		return nil
+	case NotificationEventTypeAdultDownloadFailed:
+		*s = NotificationEventTypeAdultDownloadFailed
+		return nil
+	case NotificationEventTypeAdultImportFailed:
+		*s = NotificationEventTypeAdultImportFailed
 		return nil
 	case NotificationEventTypeTest:
 		*s = NotificationEventTypeTest
@@ -24415,6 +26309,144 @@ func (o OptAddArtistRequestMonitor) Get() (v AddArtistRequestMonitor, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptAddArtistRequestMonitor) Or(d AddArtistRequestMonitor) AddArtistRequestMonitor {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAdultAddRequestKind returns new OptAdultAddRequestKind with value set to v.
+func NewOptAdultAddRequestKind(v AdultAddRequestKind) OptAdultAddRequestKind {
+	return OptAdultAddRequestKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAdultAddRequestKind is optional AdultAddRequestKind.
+type OptAdultAddRequestKind struct {
+	Value AdultAddRequestKind
+	Set   bool
+}
+
+// IsSet returns true if OptAdultAddRequestKind was set.
+func (o OptAdultAddRequestKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAdultAddRequestKind) Reset() {
+	var v AdultAddRequestKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAdultAddRequestKind) SetTo(v AdultAddRequestKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAdultAddRequestKind) Get() (v AdultAddRequestKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAdultAddRequestKind) Or(d AdultAddRequestKind) AdultAddRequestKind {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAdultFile returns new OptAdultFile with value set to v.
+func NewOptAdultFile(v AdultFile) OptAdultFile {
+	return OptAdultFile{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAdultFile is optional AdultFile.
+type OptAdultFile struct {
+	Value AdultFile
+	Set   bool
+}
+
+// IsSet returns true if OptAdultFile was set.
+func (o OptAdultFile) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAdultFile) Reset() {
+	var v AdultFile
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAdultFile) SetTo(v AdultFile) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAdultFile) Get() (v AdultFile, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAdultFile) Or(d AdultFile) AdultFile {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAdultSettingsUpdateDefaultSource returns new OptAdultSettingsUpdateDefaultSource with value set to v.
+func NewOptAdultSettingsUpdateDefaultSource(v AdultSettingsUpdateDefaultSource) OptAdultSettingsUpdateDefaultSource {
+	return OptAdultSettingsUpdateDefaultSource{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAdultSettingsUpdateDefaultSource is optional AdultSettingsUpdateDefaultSource.
+type OptAdultSettingsUpdateDefaultSource struct {
+	Value AdultSettingsUpdateDefaultSource
+	Set   bool
+}
+
+// IsSet returns true if OptAdultSettingsUpdateDefaultSource was set.
+func (o OptAdultSettingsUpdateDefaultSource) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAdultSettingsUpdateDefaultSource) Reset() {
+	var v AdultSettingsUpdateDefaultSource
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAdultSettingsUpdateDefaultSource) SetTo(v AdultSettingsUpdateDefaultSource) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAdultSettingsUpdateDefaultSource) Get() (v AdultSettingsUpdateDefaultSource, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAdultSettingsUpdateDefaultSource) Or(d AdultSettingsUpdateDefaultSource) AdultSettingsUpdateDefaultSource {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -26117,6 +28149,52 @@ func (o OptLanguage) Get() (v Language, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptLanguage) Or(d Language) Language {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptListAdultItemsKind returns new OptListAdultItemsKind with value set to v.
+func NewOptListAdultItemsKind(v ListAdultItemsKind) OptListAdultItemsKind {
+	return OptListAdultItemsKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListAdultItemsKind is optional ListAdultItemsKind.
+type OptListAdultItemsKind struct {
+	Value ListAdultItemsKind
+	Set   bool
+}
+
+// IsSet returns true if OptListAdultItemsKind was set.
+func (o OptListAdultItemsKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListAdultItemsKind) Reset() {
+	var v ListAdultItemsKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListAdultItemsKind) SetTo(v ListAdultItemsKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListAdultItemsKind) Get() (v ListAdultItemsKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListAdultItemsKind) Or(d ListAdultItemsKind) ListAdultItemsKind {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -30473,6 +32551,9 @@ type Permissions struct {
 	AutoApproveMusic  OptBool `json:"autoApproveMusic"`
 	// 4K requests are approved at once.
 	AutoApprove4k OptBool `json:"autoApprove4k"`
+	// See the optional adult library. Never granted by default, not even to administrators; requesters can
+	// never hold it.
+	ViewAdult OptBool `json:"viewAdult"`
 }
 
 // GetRequestMovies returns the value of RequestMovies.
@@ -30530,6 +32611,11 @@ func (s *Permissions) GetAutoApprove4k() OptBool {
 	return s.AutoApprove4k
 }
 
+// GetViewAdult returns the value of ViewAdult.
+func (s *Permissions) GetViewAdult() OptBool {
+	return s.ViewAdult
+}
+
 // SetRequestMovies sets the value of RequestMovies.
 func (s *Permissions) SetRequestMovies(val bool) {
 	s.RequestMovies = val
@@ -30583,6 +32669,11 @@ func (s *Permissions) SetAutoApproveMusic(val OptBool) {
 // SetAutoApprove4k sets the value of AutoApprove4k.
 func (s *Permissions) SetAutoApprove4k(val OptBool) {
 	s.AutoApprove4k = val
+}
+
+// SetViewAdult sets the value of ViewAdult.
+func (s *Permissions) SetViewAdult(val OptBool) {
+	s.ViewAdult = val
 }
 
 // Ref: #/components/schemas/PersonDetail
@@ -37608,9 +39699,12 @@ type Stats struct {
 	IndexersDisabled int `json:"indexersDisabled"`
 	RequestsPending  int `json:"requestsPending"`
 	// Files missing at least one wanted subtitle language.
-	SubtitlesMissing int               `json:"subtitlesMissing"`
-	LastRssSyncAt    OptDateTime       `json:"lastRssSyncAt"`
-	RootFolders      []StatsRootFolder `json:"rootFolders"`
+	SubtitlesMissing int `json:"subtitlesMissing"`
+	// Total adult items; present only when the adult library is enabled and the administrator opted in.
+	// Never broken down.
+	AdultItems    OptInt            `json:"adultItems"`
+	LastRssSyncAt OptDateTime       `json:"lastRssSyncAt"`
+	RootFolders   []StatsRootFolder `json:"rootFolders"`
 }
 
 // GetVersion returns the value of Version.
@@ -37761,6 +39855,11 @@ func (s *Stats) GetRequestsPending() int {
 // GetSubtitlesMissing returns the value of SubtitlesMissing.
 func (s *Stats) GetSubtitlesMissing() int {
 	return s.SubtitlesMissing
+}
+
+// GetAdultItems returns the value of AdultItems.
+func (s *Stats) GetAdultItems() OptInt {
+	return s.AdultItems
 }
 
 // GetLastRssSyncAt returns the value of LastRssSyncAt.
@@ -37921,6 +40020,11 @@ func (s *Stats) SetRequestsPending(val int) {
 // SetSubtitlesMissing sets the value of SubtitlesMissing.
 func (s *Stats) SetSubtitlesMissing(val int) {
 	s.SubtitlesMissing = val
+}
+
+// SetAdultItems sets the value of AdultItems.
+func (s *Stats) SetAdultItems(val OptInt) {
+	s.AdultItems = val
 }
 
 // SetLastRssSyncAt sets the value of LastRssSyncAt.
@@ -43735,9 +45839,11 @@ type User struct {
 	Username    string      `json:"username"`
 	Role        Role        `json:"role"`
 	Permissions Permissions `json:"permissions"`
-	Language    Language    `json:"language"`
-	Disabled    bool        `json:"disabled"`
-	TotpEnabled bool        `json:"totpEnabled"`
+	// Only on /auth/me - the adult library is enabled and this session may see it.
+	AdultVisible OptBool  `json:"adultVisible"`
+	Language     Language `json:"language"`
+	Disabled     bool     `json:"disabled"`
+	TotpEnabled  bool     `json:"totpEnabled"`
 	// Set while the account is locked after failed sign-ins.
 	LockedUntil OptDateTime `json:"lockedUntil"`
 	CreatedAt   time.Time   `json:"createdAt"`
@@ -43762,6 +45868,11 @@ func (s *User) GetRole() Role {
 // GetPermissions returns the value of Permissions.
 func (s *User) GetPermissions() Permissions {
 	return s.Permissions
+}
+
+// GetAdultVisible returns the value of AdultVisible.
+func (s *User) GetAdultVisible() OptBool {
+	return s.AdultVisible
 }
 
 // GetLanguage returns the value of Language.
@@ -43812,6 +45923,11 @@ func (s *User) SetRole(val Role) {
 // SetPermissions sets the value of Permissions.
 func (s *User) SetPermissions(val Permissions) {
 	s.Permissions = val
+}
+
+// SetAdultVisible sets the value of AdultVisible.
+func (s *User) SetAdultVisible(val OptBool) {
+	s.AdultVisible = val
 }
 
 // SetLanguage sets the value of Language.

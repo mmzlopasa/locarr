@@ -13,6 +13,51 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AddAdultBlocklistTerm implements addAdultBlocklistTerm operation.
+//
+// Add a blocked term (administrators).
+//
+// POST /adult/blocklist
+func (UnimplementedHandler) AddAdultBlocklistTerm(ctx context.Context, req *AddAdultBlocklistTermReq) (r *AdultBlockTerm, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AddAdultItem implements addAdultItem operation.
+//
+// Add a scene or movie from a source.
+//
+// POST /adult/items
+func (UnimplementedHandler) AddAdultItem(ctx context.Context, req *AdultAddRequest) (r *AdultItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AddAdultPerformer implements addAdultPerformer operation.
+//
+// Add (and with monitored, track) a performer from a source.
+//
+// POST /adult/performers
+func (UnimplementedHandler) AddAdultPerformer(ctx context.Context, req *AdultAddRequest) (r *AdultPerformer, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AddAdultRootFolder implements addAdultRootFolder operation.
+//
+// Add an adult root folder (created inside the data roots).
+//
+// POST /adult/rootfolders
+func (UnimplementedHandler) AddAdultRootFolder(ctx context.Context, req *AddAdultRootFolderReq) (r *AdultRootFolder, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AddAdultStudio implements addAdultStudio operation.
+//
+// Add a studio from a source (its newest scenes are added; new ones become wanted).
+//
+// POST /adult/studios
+func (UnimplementedHandler) AddAdultStudio(ctx context.Context, req *AdultAddRequest) (r *AdultStudio, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AddArtist implements addArtist operation.
 //
 // Albums appear at once; editions and track lists load in the background (MusicBrainz allows one
@@ -412,6 +457,51 @@ func (UnimplementedHandler) DeclineRequest(ctx context.Context, req *DeclineRequ
 	return r, ht.ErrNotImplemented
 }
 
+// DeleteAdultBlocklistTerm implements deleteAdultBlocklistTerm operation.
+//
+// Remove a blocked term (administrators).
+//
+// DELETE /adult/blocklist/{id}
+func (UnimplementedHandler) DeleteAdultBlocklistTerm(ctx context.Context, params DeleteAdultBlocklistTermParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteAdultItem implements deleteAdultItem operation.
+//
+// Remove an item (its file goes to the recycle bin only with deleteFiles).
+//
+// DELETE /adult/items/{id}
+func (UnimplementedHandler) DeleteAdultItem(ctx context.Context, params DeleteAdultItemParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteAdultPerformer implements deleteAdultPerformer operation.
+//
+// Forget a performer (their scenes stay).
+//
+// DELETE /adult/performers/{id}
+func (UnimplementedHandler) DeleteAdultPerformer(ctx context.Context, params DeleteAdultPerformerParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteAdultRootFolder implements deleteAdultRootFolder operation.
+//
+// Forget an adult root folder (files stay).
+//
+// DELETE /adult/rootfolders/{id}
+func (UnimplementedHandler) DeleteAdultRootFolder(ctx context.Context, params DeleteAdultRootFolderParams) error {
+	return ht.ErrNotImplemented
+}
+
+// DeleteAdultStudio implements deleteAdultStudio operation.
+//
+// Remove a studio and its scenes (files go to the recycle bin only with deleteFiles).
+//
+// DELETE /adult/studios/{id}
+func (UnimplementedHandler) DeleteAdultStudio(ctx context.Context, params DeleteAdultStudioParams) error {
+	return ht.ErrNotImplemented
+}
+
 // DeleteApiKey implements deleteApiKey operation.
 //
 // Revoke an API key.
@@ -765,6 +855,79 @@ func (UnimplementedHandler) ExportCustomFormat(ctx context.Context, params Expor
 //
 // GET /activity/stats
 func (UnimplementedHandler) GetActivityStats(ctx context.Context, params GetActivityStatsParams) (r *ActivityStats, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAdultCalendar implements getAdultCalendar operation.
+//
+// Scenes and movies by release date (only in the adult section; never in the main calendar or iCal).
+//
+// GET /adult/calendar
+func (UnimplementedHandler) GetAdultCalendar(ctx context.Context, params GetAdultCalendarParams) (r []AdultItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAdultImage implements getAdultImage operation.
+//
+// A cached adult image (permitted users only; Cache-Control private).
+//
+// GET /adult/images/{key}
+func (UnimplementedHandler) GetAdultImage(ctx context.Context, params GetAdultImageParams) (r *GetAdultImageOKHeaders, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAdultItem implements getAdultItem operation.
+//
+// One scene or movie.
+//
+// GET /adult/items/{id}
+func (UnimplementedHandler) GetAdultItem(ctx context.Context, params GetAdultItemParams) (r *AdultItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAdultItemTimeline implements getAdultItemTimeline operation.
+//
+// The item's timeline and the answer to "why isn't it here?".
+//
+// GET /adult/items/{id}/timeline
+func (UnimplementedHandler) GetAdultItemTimeline(ctx context.Context, params GetAdultItemTimelineParams) (r *Timeline, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAdultPerformer implements getAdultPerformer operation.
+//
+// One performer.
+//
+// GET /adult/performers/{id}
+func (UnimplementedHandler) GetAdultPerformer(ctx context.Context, params GetAdultPerformerParams) (r *AdultPerformer, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAdultPreferences implements getAdultPreferences operation.
+//
+// Own adult preferences (permitted users; 404 otherwise).
+//
+// GET /adult/preferences
+func (UnimplementedHandler) GetAdultPreferences(ctx context.Context) (r *AdultPreferences, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAdultSettings implements getAdultSettings operation.
+//
+// Works while the feature is off, so an administrator can enable it. Keys are never returned, only
+// whether they are set.
+//
+// GET /adult/settings
+func (UnimplementedHandler) GetAdultSettings(ctx context.Context) (r *AdultSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAdultStudio implements getAdultStudio operation.
+//
+// One studio.
+//
+// GET /adult/studios/{id}
+func (UnimplementedHandler) GetAdultStudio(ctx context.Context, params GetAdultStudioParams) (r *AdultStudio, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1310,6 +1473,15 @@ func (UnimplementedHandler) GetUserQuotas(ctx context.Context, params GetUserQuo
 	return r, ht.ErrNotImplemented
 }
 
+// GrabAdultRelease implements grabAdultRelease operation.
+//
+// Grab a release chosen in an interactive search.
+//
+// POST /adult/items/{id}/releases
+func (UnimplementedHandler) GrabAdultRelease(ctx context.Context, req *ManualGrabRequest, params GrabAdultReleaseParams) (r *QueueItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GrabAlbumRelease implements grabAlbumRelease operation.
 //
 // Grab a release chosen in an interactive search (library managers).
@@ -1405,6 +1577,15 @@ func (UnimplementedHandler) ImportMigrateRun(ctx context.Context, params ImportM
 	return r, ht.ErrNotImplemented
 }
 
+// InteractiveSearchAdultItem implements interactiveSearchAdultItem operation.
+//
+// Interactive search with the decision on every release.
+//
+// GET /adult/items/{id}/releases
+func (UnimplementedHandler) InteractiveSearchAdultItem(ctx context.Context, params InteractiveSearchAdultItemParams) (r *InteractiveSearch, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // InteractiveSearchAlbum implements interactiveSearchAlbum operation.
 //
 // Interactive search for an album - every release and the decision on it (library managers).
@@ -1460,6 +1641,51 @@ func (UnimplementedHandler) LinkMyIdentity(ctx context.Context, req *ProviderCre
 //
 // PUT /users/{id}/identities/{provider}
 func (UnimplementedHandler) LinkUserIdentity(ctx context.Context, req *LinkIdentityRequest, params LinkUserIdentityParams) (r *LinkedIdentity, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListAdultBlocklist implements listAdultBlocklist operation.
+//
+// The adult tag blocklist (administrators).
+//
+// GET /adult/blocklist
+func (UnimplementedHandler) ListAdultBlocklist(ctx context.Context) (r []AdultBlockTerm, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListAdultItems implements listAdultItems operation.
+//
+// Scenes and movies.
+//
+// GET /adult/items
+func (UnimplementedHandler) ListAdultItems(ctx context.Context, params ListAdultItemsParams) (r *AdultItemPage, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListAdultPerformers implements listAdultPerformers operation.
+//
+// Performers.
+//
+// GET /adult/performers
+func (UnimplementedHandler) ListAdultPerformers(ctx context.Context) (r []AdultPerformer, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListAdultRootFolders implements listAdultRootFolders operation.
+//
+// Adult root folders.
+//
+// GET /adult/rootfolders
+func (UnimplementedHandler) ListAdultRootFolders(ctx context.Context) (r []AdultRootFolder, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListAdultStudios implements listAdultStudios operation.
+//
+// Studios and sites.
+//
+// GET /adult/studios
+func (UnimplementedHandler) ListAdultStudios(ctx context.Context) (r []AdultStudio, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2018,6 +2244,16 @@ func (UnimplementedHandler) Logout(ctx context.Context) (r *LogoutNoContent, _ e
 	return r, ht.ErrNotImplemented
 }
 
+// LookupAdult implements lookupAdult operation.
+//
+// Entries the source flags as removed or disputed and entries with a blocked tag are left out. Remote
+// images are never returned.
+//
+// GET /adult/lookup
+func (UnimplementedHandler) LookupAdult(ctx context.Context, params LookupAdultParams) (r []AdultLookupResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // LookupArtists implements lookupArtists operation.
 //
 // Search MusicBrainz for artists by name, or by id ("mbid:").
@@ -2236,6 +2472,15 @@ func (UnimplementedHandler) PutRequestSettings(ctx context.Context, req *Request
 	return r, ht.ErrNotImplemented
 }
 
+// RefreshAdultStudio implements refreshAdultStudio operation.
+//
+// Look for new scenes of a studio now.
+//
+// POST /adult/studios/{id}/refresh
+func (UnimplementedHandler) RefreshAdultStudio(ctx context.Context, params RefreshAdultStudioParams) (r *QueuedCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RefreshArtist implements refreshArtist operation.
 //
 // Albums are synced at once; editions and track lists follow in the background.
@@ -2326,6 +2571,15 @@ func (UnimplementedHandler) RemoveArtistExclusion(ctx context.Context, params Re
 // DELETE /queue/{id}
 func (UnimplementedHandler) RemoveQueueItem(ctx context.Context, params RemoveQueueItemParams) error {
 	return ht.ErrNotImplemented
+}
+
+// RenameAdultItem implements renameAdultItem operation.
+//
+// Preview or apply renaming the item's file to the template.
+//
+// POST /adult/items/{id}/rename
+func (UnimplementedHandler) RenameAdultItem(ctx context.Context, params RenameAdultItemParams) (r *AdultRename, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // RenameMovies implements renameMovies operation.
@@ -2561,6 +2815,15 @@ func (UnimplementedHandler) ScanSubtitles(ctx context.Context) (r *SubtitleCount
 //
 // GET /search
 func (UnimplementedHandler) Search(ctx context.Context, params SearchParams) (r *SearchResponse, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchAdultItem implements searchAdultItem operation.
+//
+// Queue an automatic search now.
+//
+// POST /adult/items/{id}/search
+func (UnimplementedHandler) SearchAdultItem(ctx context.Context, params SearchAdultItemParams) (r *QueuedCount, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2936,6 +3199,52 @@ func (UnimplementedHandler) UnlinkMyIdentity(ctx context.Context, params UnlinkM
 // DELETE /users/{id}/identities/{provider}
 func (UnimplementedHandler) UnlinkUserIdentity(ctx context.Context, params UnlinkUserIdentityParams) error {
 	return ht.ErrNotImplemented
+}
+
+// UpdateAdultItem implements updateAdultItem operation.
+//
+// Monitor an item or change its profile.
+//
+// PATCH /adult/items/{id}
+func (UnimplementedHandler) UpdateAdultItem(ctx context.Context, req *AdultEditRequest, params UpdateAdultItemParams) (r *AdultItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateAdultPerformer implements updateAdultPerformer operation.
+//
+// Monitor a performer or change the profile.
+//
+// PATCH /adult/performers/{id}
+func (UnimplementedHandler) UpdateAdultPerformer(ctx context.Context, req *AdultEditRequest, params UpdateAdultPerformerParams) (r *AdultPerformer, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateAdultPreferences implements updateAdultPreferences operation.
+//
+// Change own adult preferences.
+//
+// PUT /adult/preferences
+func (UnimplementedHandler) UpdateAdultPreferences(ctx context.Context, req *AdultPreferences) (r *AdultPreferences, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateAdultSettings implements updateAdultSettings operation.
+//
+// Enabling needs `confirmAdults` (every user with access is an adult). Keys are checked with the
+// source before they are stored.
+//
+// PUT /adult/settings
+func (UnimplementedHandler) UpdateAdultSettings(ctx context.Context, req *AdultSettingsUpdate) (r *AdultSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateAdultStudio implements updateAdultStudio operation.
+//
+// Monitor a studio or change its profile.
+//
+// PATCH /adult/studios/{id}
+func (UnimplementedHandler) UpdateAdultStudio(ctx context.Context, req *AdultEditRequest, params UpdateAdultStudioParams) (r *AdultStudio, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // UpdateAlbum implements updateAlbum operation.

@@ -256,6 +256,9 @@ func (h *Handler) GetStats(ctx context.Context) (*gen.Stats, error) {
 	if st.LastRSSSyncAt != nil {
 		out.LastRssSyncAt = gen.NewOptDateTime(*st.LastRSSSyncAt)
 	}
+	if st.AdultItems != nil {
+		out.AdultItems = gen.NewOptInt(*st.AdultItems)
+	}
 	for _, r := range st.RootFolders {
 		g := gen.StatsRootFolder{Path: r.Path, Kind: gen.MediaKind(r.Kind), Accessible: r.Accessible}
 		if r.FreeBytes != nil {

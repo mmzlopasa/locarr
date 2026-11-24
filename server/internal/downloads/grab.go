@@ -241,7 +241,7 @@ func (s *Service) Grab(ctx context.Context, req GrabRequest) (Download, error) {
 		return Download{}, invalid("protocol must be torrent or usenet")
 	}
 	switch req.MediaKind {
-	case "", KindMovies, KindSeries, KindMusic:
+	case "", KindMovies, KindSeries, KindMusic, KindAdult:
 	default:
 		return Download{}, invalid("unknown media kind %q", req.MediaKind)
 	}

@@ -370,7 +370,11 @@ func (h *Handler) GetQueue(ctx context.Context, params gen.GetQueueParams) (*gen
 	}
 	snaps := h.Downloads.Snapshots()
 	out := &gen.Queue{Items: make([]gen.QueueItem, 0, len(items)), Clients: make([]gen.QueueClient, 0, len(clients))}
+	hide := h.hidesAdult(ctx)
 	for _, it := range items {
+		if hide && isAdultDownload(it.Download.ItemRef) {
+			continue
+		}
 		out.Items = append(out.Items, toQueueItem(it))
 	}
 	{
@@ -477,8 +481,10 @@ func (h *Handler) ListQueueItemEvents(ctx context.Context, params gen.ListQueueI
 	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
-	if _, err := h.Downloads.Get(ctx, params.ID); err != nil {
+	if d, err := h.Downloads.Get(ctx, params.ID); err != nil {
 		return nil, err
+	} else if isAdultDownload(d.ItemRef) && h.hidesAdult(ctx) {
+		return nil, errAdultHidden
 	}
 	evs, err := h.Downloads.Events(ctx, params.ID)
 	if err != nil {
@@ -514,7 +520,11 @@ func (h *Handler) ListBlocklist(ctx context.Context, params gen.ListBlocklistPar
 		return nil, err
 	}
 	out := make([]gen.BlocklistEntry, 0, len(list))
+	hide := h.hidesAdult(ctx)
 	for _, e := range list {
+		if hide && isAdultDownload(e.ItemRef) {
+			continue
+		}
 		out = append(out, toBlock(e))
 	}
 	return out, nil

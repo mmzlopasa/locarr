@@ -67,7 +67,16 @@ func buildMediaServer(_ context.Context, d *Deps, cfg config.Config, log *slog.L
 		default:
 			return
 		}
-		info := describeRef(ctx, d, library.RefFromJSON(ev.Download.ItemRef))
+		ref := library.RefFromJSON(ev.Download.ItemRef)
+		if library.IsAdult(ref.Kind) {
+			// Adult downloads never reach the library events (D-103); only
+			// channels that chose adult events hear about them.
+			if d.Adult != nil {
+				d.Adult.Events(ctx, "adult."+strings.TrimPrefix(string(typ), "library."), ev.Download.Title, msg, ref.String())
+			}
+			return
+		}
+		info := describeRef(ctx, d, ref)
 		if info.title == "" {
 			info.title = ev.Download.Title
 		}
@@ -196,7 +205,9 @@ func describeRef(ctx context.Context, d *Deps, r library.Ref) refInfo {
 func wireSubtitleEvents(d *Deps, log *slog.Logger) {
 	d.Subtitles.Notify = func(ctx context.Context, ref, typ, msg string) {
 		r, err := library.ParseRef(ref)
-		if err != nil || d.Hub == nil {
+		// Subtitle events (downloaded, translated, missing) never name adult
+		// items; the adult library has no subtitle features (D-103).
+		if err != nil || d.Hub == nil || library.IsAdult(r.Kind) {
 			return
 		}
 		switch typ {

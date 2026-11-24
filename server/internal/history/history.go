@@ -120,7 +120,7 @@ func (s *Store) List(ctx context.Context, f Filter) ([]Entry, bool, error) {
 			dTypes = append(dTypes, list...)
 		}
 	}
-	refFilter := func(col string) (string, []any) {
+	kindFilter := func(col string) (string, []any) {
 		var parts []string
 		var args []any
 		for _, p := range refPrefixes(f.Kind) {
@@ -130,6 +130,12 @@ func (s *Store) List(ctx context.Context, f Filter) ([]Entry, bool, error) {
 			return "", nil
 		}
 		return " AND (" + strings.Join(parts, " OR ") + ")", args
+	}
+	// Adult items never appear in the shared history (D-103); they have
+	// their own timelines in the adult section.
+	refFilter := func(col string) (string, []any) {
+		f, a := kindFilter(col)
+		return " AND " + col + " NOT LIKE 'scene:%' AND " + col + " NOT LIKE 'adult_movie:%'" + f, a
 	}
 	q := strings.TrimSpace(f.Query)
 	like := ""
@@ -306,7 +312,9 @@ func (s *Store) Stats(ctx context.Context, since time.Time) (indexers, clients [
 	q := func(idCol, nameCol string) ([]SourceStats, error) {
 		rows, err := s.DB.R.QueryContext(ctx, `SELECT `+idCol+`, `+nameCol+`, COUNT(*), SUM(status = 'imported'), SUM(status = 'failed'),
 			SUM(status IN ('active', 'completed')), AVG(CASE WHEN status = 'imported' AND finished_at IS NOT NULL THEN finished_at - added_at END)
-			FROM downloads WHERE added_at >= ? GROUP BY `+idCol+`, `+nameCol+` ORDER BY COUNT(*) DESC, `+nameCol, db.Millis(since)) // #nosec G202 -- constant columns
+			FROM downloads WHERE added_at >= ?
+			AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'
+			GROUP BY `+idCol+`, `+nameCol+` ORDER BY COUNT(*) DESC, `+nameCol, db.Millis(since)) // #nosec G202 -- constant columns
 		if err != nil {
 			return nil, err
 		}
