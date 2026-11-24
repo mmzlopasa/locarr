@@ -28,6 +28,10 @@ type Definition struct {
 	Version  int    `yaml:"version" json:"version"`
 	Protocol string `yaml:"protocol" json:"protocol"` // torrent (default)
 	Language string `yaml:"language" json:"language"`
+	// Adult marks a site that only carries adult content: every category is
+	// adult (6xxx), every result is labelled adult, and the site answers only
+	// adult searches and RSS (D-108).
+	Adult bool `yaml:"adult" json:"adult"`
 	// Links are the site's addresses: the first is the default, the others
 	// are known mirrors an administrator may pick.
 	Links []string `yaml:"links" json:"links"`
@@ -288,6 +292,12 @@ func (d *Definition) validate() error {
 			bad("category %q is listed twice", c.ID)
 		}
 		seen[c.ID] = true
+		if d.Adult && !IsAdultCategory(c.Cat) {
+			bad("category %q: an adult site maps every category to 6xxx", c.ID)
+		}
+	}
+	if d.Adult && len(d.Categories) == 0 {
+		bad("an adult site needs its categories mapped to 6xxx")
 	}
 	for i, s := range d.Settings {
 		if !idPattern.MatchString(s.Name) && !regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]{0,39}$`).MatchString(s.Name) {
@@ -486,6 +496,15 @@ func (d *Definition) SupportsRSS() bool {
 		return ok
 	}
 	return false
+}
+
+// IsAdultCategory reports a Newznab adult (6xxx) category.
+func IsAdultCategory(cat int) bool { return cat >= 6000 && cat < 7000 }
+
+// HasAdult reports whether the site carries adult content in categories of
+// its own, so adult searches can ask for them.
+func (d *Definition) HasAdult() bool {
+	return slices.ContainsFunc(d.Categories, func(c CategoryMap) bool { return IsAdultCategory(c.Cat) })
 }
 
 // DefaultURL is the site's main address.

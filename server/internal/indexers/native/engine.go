@@ -242,6 +242,15 @@ func (c *Client) Search(ctx context.Context, r znab.Request) (*znab.Page, error)
 		return nil, err
 	}
 	items = c.filter(items, q)
+	if c.Def.Adult {
+		// Whatever an adult site returns is adult, even a row whose category
+		// could not be read: it must never answer another search.
+		for i := range items {
+			if !slices.ContainsFunc(items[i].Categories, IsAdultCategory) {
+				items[i].Categories = append(items[i].Categories, 6000)
+			}
+		}
+	}
 	if q.Limit > 0 && len(items) > q.Limit {
 		items = items[:q.Limit]
 	}

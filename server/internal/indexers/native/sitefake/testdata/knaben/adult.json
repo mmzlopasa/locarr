@@ -1,0 +1,54 @@
+{
+ "hits": [
+  {
+   "bytes": 1048576000,
+   "cachedOrigin": "The Pirate Bay",
+   "category": "XXX / Video",
+   "categoryId": [
+    5000000,
+    5001000
+   ],
+   "date": "2024-01-15T10:00:00+00:00",
+   "details": "https://example.invalid/description.php?id=1",
+   "grabs": 3,
+   "hash": "49386576E8658013E468E25286F9763F8B83A388",
+   "id": "49386576e8658013e468e25286f9763f8b83a388",
+   "lastSeen": "2026-11-23T10:00:00+00:00",
+   "link": null,
+   "magnetUrl": null,
+   "peers": 4,
+   "seeders": 12,
+   "title": "StudioA.24.01.15.Performer.One.Scene.Title.1080p.MP4-GRP",
+   "tracker": "The Pirate Bay",
+   "trackerId": "tpb",
+   "virusDetection": 0
+  },
+  {
+   "bytes": 1048576000,
+   "cachedOrigin": "The Pirate Bay",
+   "category": "XXX",
+   "categoryId": [
+    5000000
+   ],
+   "date": "2024-01-15T10:00:00+00:00",
+   "details": "https://example.invalid/description.php?id=2",
+   "grabs": 3,
+   "hash": "5379B8A1C02FBF05013B7B4A2BAFB90F292DCC9B",
+   "id": "5379b8a1c02fbf05013b7b4a2bafb90f292dcc9b",
+   "lastSeen": "2026-11-23T10:00:00+00:00",
+   "link": null,
+   "magnetUrl": null,
+   "peers": 4,
+   "seeders": 11,
+   "title": "StudioA - Performer One - Scene Title 720p",
+   "tracker": "The Pirate Bay",
+   "trackerId": "tpb",
+   "virusDetection": 0
+  }
+ ],
+ "max_score": 1,
+ "total": {
+  "relation": "eq",
+  "value": 2
+ }
+}

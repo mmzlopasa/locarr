@@ -1,13 +1,15 @@
 id: thepiratebay
 name: The Pirate Bay
 description: The general torrent index, searched through the JSON API its own web site uses (apibay).
-version: 1
+version: 2
 language: en
 links:
   - https://apibay.org
 verified: >-
   Written by observing the requests thepiratebay.org's own page makes (q.php, precompiled lists)
-  and checked against apibay.org on 2026-11-23. Category ids from the site's browse pages.
+  and checked against apibay.org on 2026-11-23. Category ids from the site's browse pages; the
+  Porn group (500, 501-507, 599) read from the category list in thepiratebay.org/static/main.js
+  and checked with q.php?cat=500 on 2026-11-24.
 challenge: never
 rateLimit: {requests: 30, periodSeconds: 60}
 delayMillis: 1000
@@ -31,6 +33,15 @@ categories:
   - {id: "205", cat: 5000, desc: TV shows}
   - {id: "208", cat: 5040, desc: HD TV shows}
   - {id: "212", cat: 5045, desc: UHD/4k TV shows}
+  - {id: "500", cat: 6000, desc: Porn}
+  - {id: "501", cat: 6000, desc: Porn - Movies}
+  - {id: "502", cat: 6010, desc: Porn - Movies DVDR}
+  - {id: "503", cat: 6060, desc: Porn - Pictures}
+  - {id: "504", cat: 6070, desc: Porn - Games}
+  - {id: "505", cat: 6040, desc: Porn - HD Movies}
+  - {id: "506", cat: 6000, desc: Porn - Movie clips}
+  - {id: "507", cat: 6045, desc: Porn - UHD/4k Movies}
+  - {id: "599", cat: 6070, desc: Porn - Other}
   - {id: "601", cat: 7020, desc: E-books}
   - {id: "602", cat: 7030, desc: Comics}
 test:

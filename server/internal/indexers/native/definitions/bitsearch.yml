@@ -1,12 +1,14 @@
 id: bitsearch
 name: BitSearch
 description: A torrent search engine fed by the DHT, read from its search pages.
-version: 1
+version: 2
 language: en
 links:
   - https://bitsearch.eu
   - https://bitsearch.to
-verified: Written by observing bitsearch.eu's search pages (/search?q=&category=) on 2026-11-23; robots.txt allows them.
+verified: >-
+  Written by observing bitsearch.eu's search pages (/search?q=&category=) on 2026-11-23; robots.txt allows them.
+  The XXX category (10, shown as "XXX/Video") read from the search page's category list on 2026-11-24.
 challenge: never
 rateLimit: {requests: 20, periodSeconds: 60}
 delayMillis: 1000
@@ -24,6 +26,7 @@ categories:
   - {id: "7", cat: 3000, desc: Music}
   - {id: "8", cat: 3030, desc: AudioBook}
   - {id: "9", cat: 7000, desc: Ebook}
+  - {id: "10", cat: 6000, desc: XXX}
 search:
   requests:
     - if: [keywords]

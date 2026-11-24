@@ -13492,9 +13492,13 @@ type Indexer struct {
 	Source          OptIndexerSourceRef     `json:"source"`
 	Caps            OptIndexerCaps          `json:"caps"`
 	CapsUpdatedAt   OptDateTime             `json:"capsUpdatedAt"`
-	Health          IndexerHealth           `json:"health"`
-	CreatedAt       time.Time               `json:"createdAt"`
-	UpdatedAt       time.Time               `json:"updatedAt"`
+	// The indexer can answer adult searches: a built-in site whose definition has adult categories, or any
+	// Torznab/Newznab indexer (its capabilities do not always list every category). Built-in sites without
+	// adult categories are left out of adult searches.
+	AdultCapable OptBool       `json:"adultCapable"`
+	Health       IndexerHealth `json:"health"`
+	CreatedAt    time.Time     `json:"createdAt"`
+	UpdatedAt    time.Time     `json:"updatedAt"`
 }
 
 // GetID returns the value of ID.
@@ -13645,6 +13649,11 @@ func (s *Indexer) GetCaps() OptIndexerCaps {
 // GetCapsUpdatedAt returns the value of CapsUpdatedAt.
 func (s *Indexer) GetCapsUpdatedAt() OptDateTime {
 	return s.CapsUpdatedAt
+}
+
+// GetAdultCapable returns the value of AdultCapable.
+func (s *Indexer) GetAdultCapable() OptBool {
+	return s.AdultCapable
 }
 
 // GetHealth returns the value of Health.
@@ -13810,6 +13819,11 @@ func (s *Indexer) SetCaps(val OptIndexerCaps) {
 // SetCapsUpdatedAt sets the value of CapsUpdatedAt.
 func (s *Indexer) SetCapsUpdatedAt(val OptDateTime) {
 	s.CapsUpdatedAt = val
+}
+
+// SetAdultCapable sets the value of AdultCapable.
+func (s *Indexer) SetAdultCapable(val OptBool) {
+	s.AdultCapable = val
 }
 
 // SetHealth sets the value of Health.
@@ -14466,6 +14480,9 @@ type IndexerDefinition struct {
 	Version     int    `json:"version"`
 	Builtin     bool   `json:"builtin"`
 	Overrides   bool   `json:"overrides"`
+	// The site carries only adult content: it answers adult searches and RSS only. Such definitions are
+	// listed only while the adult library is on.
+	Adult OptBool `json:"adult"`
 	// For a custom definition: its file name in the custom folder.
 	File     OptString `json:"file"`
 	Protocol Protocol  `json:"protocol"`
@@ -14520,6 +14537,11 @@ func (s *IndexerDefinition) GetBuiltin() bool {
 // GetOverrides returns the value of Overrides.
 func (s *IndexerDefinition) GetOverrides() bool {
 	return s.Overrides
+}
+
+// GetAdult returns the value of Adult.
+func (s *IndexerDefinition) GetAdult() OptBool {
+	return s.Adult
 }
 
 // GetFile returns the value of File.
@@ -14620,6 +14642,11 @@ func (s *IndexerDefinition) SetBuiltin(val bool) {
 // SetOverrides sets the value of Overrides.
 func (s *IndexerDefinition) SetOverrides(val bool) {
 	s.Overrides = val
+}
+
+// SetAdult sets the value of Adult.
+func (s *IndexerDefinition) SetAdult(val OptBool) {
+	s.Adult = val
 }
 
 // SetFile sets the value of File.

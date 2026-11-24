@@ -6211,6 +6211,8 @@ export interface components {
             caps?: components["schemas"]["IndexerCaps"];
             /** Format: date-time */
             capsUpdatedAt?: string;
+            /** @description The indexer can answer adult searches: a built-in site whose definition has adult categories, or any Torznab/Newznab indexer (its capabilities do not always list every category). Built-in sites without adult categories are left out of adult searches. */
+            adultCapable?: boolean;
             health: components["schemas"]["IndexerHealth"];
             /** Format: date-time */
             createdAt: string;
@@ -6403,6 +6405,8 @@ export interface components {
             version: number;
             builtin: boolean;
             overrides: boolean;
+            /** @description The site carries only adult content: it answers adult searches and RSS only. Such definitions are listed only while the adult library is on. */
+            adult?: boolean;
             /** @description For a custom definition: its file name in the custom folder. */
             file?: string;
             protocol: components["schemas"]["Protocol"];

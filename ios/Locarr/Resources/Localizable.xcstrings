@@ -8892,6 +8892,23 @@
         }
       }
     },
+    "indexers.builtin.adultOnly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adult only"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samo za odrasle"
+          }
+        }
+      }
+    },
     "indexers.builtin.custom": {
       "extractionState": "manual",
       "localizations": {

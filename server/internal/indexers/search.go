@@ -31,7 +31,10 @@ func (s *Service) eligible(ctx context.Context, q Query) ([]Indexer, error) {
 		if len(q.IndexerIDs) > 0 && !slices.Contains(q.IndexerIDs, ind.ID) {
 			continue
 		}
-		if q.Type == SearchAdult && len(ind.Categories.Adult) == 0 {
+		if q.Type == SearchAdult && (len(ind.Categories.Adult) == 0 || !s.AdultCapable(ind)) {
+			continue
+		}
+		if q.Type != SearchAdult && q.Source != SourceRSS && s.adultOnly(ind) {
 			continue
 		}
 		switch q.Source {

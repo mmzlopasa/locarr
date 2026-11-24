@@ -1,0 +1,56 @@
+id: xxxclub
+name: XXXClub
+description: Adult only. A public index of adult studio releases in scene naming, read from its search pages and RSS.
+version: 1
+language: en
+adult: true
+links:
+  - https://xxxclub.to
+verified: >-
+  Written by observing xxxclub.to's search pages (/torrents/search/all/<words>), its category list
+  (/torrents/browse/0-7) and its RSS feed (/feed/All.xml) on 2026-11-24. The info hash is read from
+  the result link (a hidden decoy link in each row is skipped); magnets are built from it because
+  robots.txt forbids /torrents/download/. No account is needed.
+challenge: sometimes
+rateLimit: {requests: 10, periodSeconds: 60}
+delayMillis: 2000
+aliases: [xxxclub, "xxxclub.to", "xxx club"]
+modes:
+  search: [q]
+categories:
+  - {id: "0", cat: 6080, desc: 480p/SD Videos}
+  - {id: "1", cat: 6040, desc: 720p/HD Videos}
+  - {id: "2", cat: 6040, desc: 1080p/FullHD Videos}
+  - {id: "4", cat: 6045, desc: 2160p/UHD/4K Videos}
+  - {id: "3", cat: 6000, desc: Movies/DVD/WEB}
+  - {id: "5", cat: 6060, desc: IMAGESET}
+  - {id: "6", cat: 6000, desc: VR/VirtualReality}
+  - {id: "7", cat: 6050, desc: Pack/MegaPack}
+search:
+  requests:
+    - if: [keywords]
+      path: '/torrents/search/all/{{ .Keywords | pathescape }}'
+  response: html
+  rows: 'ul.tsearch li:has(span.catlabe)'
+  empty: 'div.internalbrowsediv div.alert'
+  fields:
+    title: {select: 'span.toral a[href^="/torrents/details/"]'}
+    details: {select: 'span.toral a[href^="/torrents/details/"]', attr: href}
+    infohash: {select: 'span.toral a[href^="/torrents/details/"]', attr: id, regex: '([0-9A-Fa-f]{40})'}
+    category: {select: 'span.catlabe a', attr: href, regex: '/torrents/browse/(\d+)/'}
+    date: {select: span.adde, layouts: ["02 Jan 2006 15:04:05"]}
+    size: {select: span.siz}
+    seeders: {select: span.see}
+    leechers: {select: span.lee}
+    uploader: {select: span.uploadertable}
+rss:
+  requests:
+    - path: /feed/All.xml
+  response: xml
+  rows: item
+  fields:
+    title: {select: title}
+    infohash: {select: link, regex: '([0-9A-Fa-f]{40})'}
+    date: {select: pubdate}
+test:
+  query: brazzers

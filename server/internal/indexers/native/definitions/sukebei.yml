@@ -1,0 +1,51 @@
+id: sukebei
+name: Sukebei
+description: Adult only. Nyaa's sister site for adult videos, art and games, through the site's RSS search.
+version: 1
+language: en
+adult: true
+links:
+  - https://sukebei.nyaa.si
+verified: >-
+  Written from sukebei.nyaa.si's RSS output (/?page=rss with q, c and f) and its category list
+  (1_x Art, 2_x Real Life) observed on 2026-11-24. Magnets are built from nyaa:infoHash:
+  robots.txt forbids /download. No account is needed.
+challenge: never
+rateLimit: {requests: 10, periodSeconds: 60}
+delayMillis: 5000
+aliases: [sukebei, "sukebei.nyaa.si", "nyaa sukebei", sukebeinyaa]
+modes:
+  search: [q]
+categories:
+  - {id: "1_0", cat: 6070, desc: Art}
+  - {id: "1_1", cat: 6070, desc: Art - Anime}
+  - {id: "1_2", cat: 6070, desc: Art - Doujinshi}
+  - {id: "1_3", cat: 6070, desc: Art - Games}
+  - {id: "1_4", cat: 6070, desc: Art - Manga}
+  - {id: "1_5", cat: 6060, desc: Art - Pictures}
+  - {id: "2_0", cat: 6000, desc: Real Life}
+  - {id: "2_1", cat: 6060, desc: Real Life - Pictures}
+  - {id: "2_2", cat: 6000, desc: Real Life - Videos}
+settings:
+  - name: filter
+    type: select
+    label: Filter
+    default: "0"
+    options: {"0": No filter, "1": No remakes, "2": Trusted only}
+search:
+  requests:
+    - path: '/?page=rss&q={{ .Keywords | urlquery }}&c={{ first .Categories "0_0" }}&f={{ .Config.filter }}'
+  response: xml
+  rows: item
+  fields:
+    title: {select: title}
+    details: {select: guid}
+    infohash: {select: infohash}
+    size: {select: size}
+    date: {select: pubdate}
+    seeders: {select: seeders}
+    leechers: {select: leechers}
+    grabs: {select: downloads}
+    category: {select: categoryid}
+test:
+  query: brazzers

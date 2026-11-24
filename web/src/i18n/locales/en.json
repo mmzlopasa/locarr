@@ -995,7 +995,8 @@
       "options": "Site options",
       "flaresolverrHint": "Only a fallback: Locarr's built-in browser passes browser checks. Set this if you already run FlareSolverr and not the built-in browser.",
       "rateLimit": "Requests",
-      "rateLimitHint": "At most this many requests per period, so the site is not hammered."
+      "rateLimitHint": "At most this many requests per period, so the site is not hammered.",
+      "adultOnly": "Adult only"
     },
     "usenet": {
       "preset": "Indexer",
@@ -4153,7 +4154,9 @@
     },
     "indexers": {
       "title": "Indexers with adult categories",
-      "hint": "Off for every indexer by default. Only chosen indexers are asked, in the 6000 (XXX) categories."
+      "hint": "Off for every indexer by default. Only the ticked indexers are asked, in their adult (6000, XXX) categories. Adult-only sites (Sukebei, XXXClub) are ticked when added.",
+      "noAdult": "Cannot search adult content",
+      "noAdultHint": "These indexers have no adult categories, so adult searches leave them out even if they are ticked."
     },
     "blocklist": {
       "title": "Tag blocklist",

@@ -29353,6 +29353,12 @@ func (s *Indexer) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.AdultCapable.Set {
+			e.FieldStart("adultCapable")
+			s.AdultCapable.Encode(e)
+		}
+	}
+	{
 		e.FieldStart("health")
 		s.Health.Encode(e)
 	}
@@ -29366,7 +29372,7 @@ func (s *Indexer) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfIndexer = [33]string{
+var jsonFieldsNameOfIndexer = [34]string{
 	0:  "id",
 	1:  "name",
 	2:  "kind",
@@ -29397,9 +29403,10 @@ var jsonFieldsNameOfIndexer = [33]string{
 	27: "source",
 	28: "caps",
 	29: "capsUpdatedAt",
-	30: "health",
-	31: "createdAt",
-	32: "updatedAt",
+	30: "adultCapable",
+	31: "health",
+	32: "createdAt",
+	33: "updatedAt",
 }
 
 // Decode decodes Indexer from json.
@@ -29743,8 +29750,18 @@ func (s *Indexer) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"capsUpdatedAt\"")
 			}
+		case "adultCapable":
+			if err := func() error {
+				s.AdultCapable.Reset()
+				if err := s.AdultCapable.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"adultCapable\"")
+			}
 		case "health":
-			requiredBitSet[3] |= 1 << 6
+			requiredBitSet[3] |= 1 << 7
 			if err := func() error {
 				if err := s.Health.Decode(d); err != nil {
 					return err
@@ -29754,7 +29771,7 @@ func (s *Indexer) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"health\"")
 			}
 		case "createdAt":
-			requiredBitSet[3] |= 1 << 7
+			requiredBitSet[4] |= 1 << 0
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -29766,7 +29783,7 @@ func (s *Indexer) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"createdAt\"")
 			}
 		case "updatedAt":
-			requiredBitSet[4] |= 1 << 0
+			requiredBitSet[4] |= 1 << 1
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.UpdatedAt = v
@@ -29790,8 +29807,8 @@ func (s *Indexer) Decode(d *jx.Decoder) error {
 		0b11111111,
 		0b01111111,
 		0b10010000,
-		0b11000000,
-		0b00000001,
+		0b10000000,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -31423,6 +31440,12 @@ func (s *IndexerDefinition) encodeFields(e *jx.Encoder) {
 		e.Bool(s.Overrides)
 	}
 	{
+		if s.Adult.Set {
+			e.FieldStart("adult")
+			s.Adult.Encode(e)
+		}
+	}
+	{
 		if s.File.Set {
 			e.FieldStart("file")
 			s.File.Encode(e)
@@ -31510,27 +31533,28 @@ func (s *IndexerDefinition) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfIndexerDefinition = [20]string{
+var jsonFieldsNameOfIndexerDefinition = [21]string{
 	0:  "id",
 	1:  "name",
 	2:  "description",
 	3:  "version",
 	4:  "builtin",
 	5:  "overrides",
-	6:  "file",
-	7:  "protocol",
-	8:  "language",
-	9:  "links",
-	10: "verified",
-	11: "challenge",
-	12: "flaresolverr",
-	13: "rateLimit",
-	14: "rss",
-	15: "searching",
-	16: "categories",
-	17: "settings",
-	18: "aliases",
-	19: "indexerIds",
+	6:  "adult",
+	7:  "file",
+	8:  "protocol",
+	9:  "language",
+	10: "links",
+	11: "verified",
+	12: "challenge",
+	13: "flaresolverr",
+	14: "rateLimit",
+	15: "rss",
+	16: "searching",
+	17: "categories",
+	18: "settings",
+	19: "aliases",
+	20: "indexerIds",
 }
 
 // Decode decodes IndexerDefinition from json.
@@ -31614,6 +31638,16 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"overrides\"")
 			}
+		case "adult":
+			if err := func() error {
+				s.Adult.Reset()
+				if err := s.Adult.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"adult\"")
+			}
 		case "file":
 			if err := func() error {
 				s.File.Reset()
@@ -31625,7 +31659,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"file\"")
 			}
 		case "protocol":
-			requiredBitSet[0] |= 1 << 7
+			requiredBitSet[1] |= 1 << 0
 			if err := func() error {
 				if err := s.Protocol.Decode(d); err != nil {
 					return err
@@ -31645,7 +31679,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"language\"")
 			}
 		case "links":
-			requiredBitSet[1] |= 1 << 1
+			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
 				s.Links = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -31665,7 +31699,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"links\"")
 			}
 		case "verified":
-			requiredBitSet[1] |= 1 << 2
+			requiredBitSet[1] |= 1 << 3
 			if err := func() error {
 				v, err := d.Str()
 				s.Verified = string(v)
@@ -31677,7 +31711,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"verified\"")
 			}
 		case "challenge":
-			requiredBitSet[1] |= 1 << 3
+			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				if err := s.Challenge.Decode(d); err != nil {
 					return err
@@ -31687,7 +31721,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"challenge\"")
 			}
 		case "flaresolverr":
-			requiredBitSet[1] |= 1 << 4
+			requiredBitSet[1] |= 1 << 5
 			if err := func() error {
 				if err := s.Flaresolverr.Decode(d); err != nil {
 					return err
@@ -31707,7 +31741,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"rateLimit\"")
 			}
 		case "rss":
-			requiredBitSet[1] |= 1 << 6
+			requiredBitSet[1] |= 1 << 7
 			if err := func() error {
 				v, err := d.Bool()
 				s.Rss = bool(v)
@@ -31719,7 +31753,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"rss\"")
 			}
 		case "searching":
-			requiredBitSet[1] |= 1 << 7
+			requiredBitSet[2] |= 1 << 0
 			if err := func() error {
 				s.Searching = make([]IndexerSearchCap, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -31737,7 +31771,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"searching\"")
 			}
 		case "categories":
-			requiredBitSet[2] |= 1 << 0
+			requiredBitSet[2] |= 1 << 1
 			if err := func() error {
 				s.Categories = make([]IndexerCategory, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -31755,7 +31789,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"categories\"")
 			}
 		case "settings":
-			requiredBitSet[2] |= 1 << 1
+			requiredBitSet[2] |= 1 << 2
 			if err := func() error {
 				s.Settings = make([]IndexerDefinitionSetting, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -31773,7 +31807,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"settings\"")
 			}
 		case "aliases":
-			requiredBitSet[2] |= 1 << 2
+			requiredBitSet[2] |= 1 << 3
 			if err := func() error {
 				s.Aliases = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -31793,7 +31827,7 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"aliases\"")
 			}
 		case "indexerIds":
-			requiredBitSet[2] |= 1 << 3
+			requiredBitSet[2] |= 1 << 4
 			if err := func() error {
 				s.IndexerIds = make([]int64, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -31822,9 +31856,9 @@ func (s *IndexerDefinition) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [3]uint8{
-		0b10111111,
-		0b11011110,
-		0b00001111,
+		0b00111111,
+		0b10111101,
+		0b00011111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

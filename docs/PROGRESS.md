@@ -3,6 +3,12 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: javni indexeri za odrasle (branch `feat/adult-public-indexers`)
+- D-108: kategorije za odrasle na The Pirate Bay (500–599), Knaben (XXX, `hide_xxx` samo izvan pretraga za odrasle), BitSearch (10) i 1337x (XXX); nove definicije samo za odrasle `sukebei` i `xxxclub` (polje `adult: true`); `Indexer.adultCapable` i `IndexerDefinition.adult` u API-ju; pretraga za odrasle preskače indexere bez kategorija za odrasle, obične pretrage preskaču stranice samo za odrasle; web prikazuje indexere bez kategorija za odrasle zasebno.
+- Pretraga scene s više oblika upita (`wanted.Item.AltTerms`, rano zaustavljanje); `ParseScene` čita `[Studio] … (DD.MM.YYYY)`; odluka za imena bez datuma (naslov + izvođač/studio, godina) i za više scena istog studija i dana.
+- Testovi: sitefake snimke (sintetička imena), `TestAdultCategories`, `TestSukebei`, `TestXXXClub`, golden scene i odluke, `TestAdultBuiltinIndexers` (integracijski: obične pretrage nikad ne vraćaju izdanja za odrasle), web test panela. Live provjera 2026-11-24 (`-tags live`): primjer vlasnika nađen na The Pirate Bay i Knabenu (treći oblik upita), nove scene na XXXClubu i The Pirate Bay, starija scena na BitSearchu, Knabenu i The Pirate Bay; 1337x traži čovjeka, Sukebei za zapadne scene nema ništa.
+- Poznato: RSS uparuje samo imena sa studijem i datumom; zadani blokirani pojmovi su engleski.
+
 ## Gotovo: povijest — ispravni naslovi, pregledniji prikaz, brisanje (branch `feat/history-cleanup`)
 - Uzrok krivih naslova: ponovno korišteni ID-jevi (SQLite bez `AUTOINCREMENT`). Migracija `00017_history_titles.sql` (D-107): `AUTOINCREMENT` za `media_items`, `seasons`, `episodes`, `albums`, `adult_items`, `sqlite_sequence` iznad svih ID-jeva u oznakama, `item_title` na `timeline_events` i `downloads`, odvajanje starih zapisa (`…#removed`) od stavke koja je dobila njihov ID.
 - Spremljene poruke bez tokena i ključeva (`logging.ScrubStored`); ručni grab sada ima kod razloga kao automatski.
