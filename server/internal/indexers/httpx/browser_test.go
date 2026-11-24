@@ -252,3 +252,18 @@ func TestIsChallenge(t *testing.T) {
 		}
 	}
 }
+
+// Without the browser an "always" site still gets a plain request: the check
+// may not be up.
+func TestBrowserMissingAlwaysTriesPlain(t *testing.T) {
+	site := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) { _, _ = io.WriteString(w, "content") }))
+	defer site.Close()
+	b := &Browser{ControlPolicy: loopback, Config: func(context.Context) (BrowserConfig, error) {
+		return BrowserConfig{URL: "http://127.0.0.1:1", Token: "x"}, nil
+	}}
+	c, _ := New(Options{Policy: loopback, Browser: b, Challenge: "always"})
+	res, err := c.Get(context.Background(), site.URL, nil)
+	if err != nil || string(res.Body) != "content" {
+		t.Fatalf("%v %+v", err, res)
+	}
+}

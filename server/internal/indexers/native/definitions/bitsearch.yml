@@ -7,7 +7,7 @@ links:
   - https://bitsearch.eu
   - https://bitsearch.to
 verified: Written by observing bitsearch.eu's search pages (/search?q=&category=) on 2026-11-23; robots.txt allows them.
-flaresolverr: never
+challenge: never
 rateLimit: {requests: 20, periodSeconds: 60}
 delayMillis: 1000
 aliases: [bitsearch, "bitsearch.to", "bitsearch.eu"]

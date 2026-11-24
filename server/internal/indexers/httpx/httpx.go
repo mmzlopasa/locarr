@@ -308,7 +308,9 @@ func (c *Client) Do(ctx context.Context, method, rawURL string, hdr http.Header,
 	if b != nil && method == http.MethodGet && host != "" &&
 		(b.direct(host, c.o.Proxy) || c.o.Challenge == "always" && b.clearance(host, c.o.Proxy) == nil) {
 		res, err := c.viaBrowser(ctx, rawURL)
-		if !c.fallBack(err) {
+		var ce *ChallengeError
+		// Without the browser, the plain request may still get through.
+		if err == nil || !errors.As(err, &ce) || ce.Reason != ReasonMissing {
 			return res, err
 		}
 	}

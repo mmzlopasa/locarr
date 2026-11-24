@@ -45,6 +45,8 @@ func (e *ChallengeError) Is(t error) bool { return t == ErrChallenge }
 type BrowserConfig struct {
 	URL   string
 	Token string
+	// Policy, when set, replaces ControlPolicy for reaching the browser.
+	Policy *Policy
 }
 
 // Browser talks to the companion browser (the locarr-browser image). It is
@@ -63,6 +65,7 @@ type Browser struct {
 
 	once   sync.Once
 	hc     *http.Client
+	hcs    map[string]*http.Client // by control policy
 	mu     sync.Mutex
 	jar    map[string]*browserClearance
 	hosts  map[string]*hostState
@@ -281,7 +284,7 @@ func (b *Browser) call(ctx context.Context, method, path string, in, out any) er
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+cfg.Token)
-	res, err := b.hc.Do(req)
+	res, err := b.client(cfg.Policy).Do(req)
 	if err != nil {
 		if ctx.Err() != nil {
 			return &ChallengeError{Reason: ReasonFailed, Message: "the browser did not answer in time"}
@@ -310,6 +313,38 @@ func (b *Browser) call(ctx context.Context, method, path string, in, out any) er
 		return &ChallengeError{Reason: ReasonFailed, Message: "the browser's answer could not be read"}
 	}
 	return nil
+}
+
+// client returns the HTTP client for the control connection.
+func (b *Browser) client(p *Policy) *http.Client {
+	if p == nil {
+		return b.hc
+	}
+	key := policyKey(*p)
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if b.hcs == nil {
+		b.hcs = map[string]*http.Client{}
+	}
+	if hc := b.hcs[key]; hc != nil {
+		return hc
+	}
+	hc := &http.Client{
+		Transport:     &http.Transport{DialContext: p.dialer(5 * time.Second), MaxIdleConnsPerHost: 2},
+		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
+	}
+	b.hcs[key] = hc
+	return hc
+}
+
+func policyKey(p Policy) string {
+	var sb strings.Builder
+	fmt.Fprintf(&sb, "%v;", p.BlockPrivate)
+	for _, a := range p.Allowed {
+		sb.WriteString(a.String() + ";")
+	}
+	sb.WriteString(strings.Join(p.AllowedHosts, ";"))
+	return sb.String()
 }
 
 // policyEntries turns an address policy into the browser's allowed list.

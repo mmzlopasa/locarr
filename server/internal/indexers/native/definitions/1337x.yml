@@ -9,8 +9,8 @@ links:
   - https://x1337x.cc
 verified: >-
   Written by observing the search (/search/, /category-search/) and details pages on 2026-11-23,
-  through FlareSolverr: the site shows a Cloudflare challenge to plain requests.
-flaresolverr: always
+  through a browser: the site shows a Cloudflare check to plain requests.
+challenge: always
 rateLimit: {requests: 10, periodSeconds: 60}
 delayMillis: 2000
 timeoutSeconds: 60

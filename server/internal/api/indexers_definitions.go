@@ -63,7 +63,7 @@ func toDefinition(d *native.Definition, ids []int64) gen.IndexerDefinition {
 	gc := toCaps(caps)
 	g := gen.IndexerDefinition{ID: d.ID, Name: d.Name, Description: d.Description, Version: d.Version, Builtin: d.Builtin,
 		Overrides: d.Overrides, File: optStr(d.File), Protocol: gen.Protocol(d.Protocol), Language: optStr(d.Language),
-		Links: slices.Clone(d.Links), Verified: d.Verified, Flaresolverr: gen.IndexerDefinitionFlaresolverr(d.FlareSolverr),
+		Links: slices.Clone(d.Links), Verified: d.Verified, Challenge: gen.IndexerDefinitionChallenge(d.Challenge), Flaresolverr: gen.IndexerDefinitionFlaresolverr(d.Challenge),
 		Rss: d.SupportsRSS(), Searching: gc.Searching, Categories: gc.Categories, Settings: []gen.IndexerDefinitionSetting{},
 		Aliases: slices.Clone(d.Aliases), IndexerIds: ids}
 	if g.Aliases == nil {

@@ -12,6 +12,7 @@ import (
 
 	"github.com/mmzlopasa/locarr/server/internal/downloads"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
+	"github.com/mmzlopasa/locarr/server/internal/indexers/httpx"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/native"
 	"github.com/mmzlopasa/locarr/server/internal/library"
 	"github.com/mmzlopasa/locarr/server/internal/library/movies"
@@ -323,8 +324,8 @@ func (p *planner) planBuiltin(s *Snapshot, ix Indexer, def *native.Definition) {
 	in := p.l.Indexers.NativeInput(def)
 	in.Name, in.Enabled, in.Priority, in.Tags = ix.Name, ix.Enable, clamp(ix.Priority, 1, 50, 25), p.tagNames(s, ix.Tags)
 	it.note("uses Locarr's built-in %s (definition v%d) instead of Prowlarr", def.Name, def.Version)
-	if def.FlareSolverr == "always" {
-		it.note("the site needs FlareSolverr: set its address on the indexer")
+	if def.Challenge == "always" {
+		it.note("the site shows a browser check: start Locarr's built-in browser (" + httpx.BrowserCommand + ") or set a FlareSolverr address on the indexer")
 	}
 	p.finishIndexer(s, it, in, strconv.FormatInt(ix.ID, 10))
 }

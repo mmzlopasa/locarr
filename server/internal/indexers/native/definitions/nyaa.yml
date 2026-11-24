@@ -8,7 +8,7 @@ links:
 verified: >-
   Written from nyaa.si's RSS output (/?page=rss with q, c and f) observed on 2026-11-23.
   Magnets are built from nyaa:infoHash: robots.txt forbids /download.
-flaresolverr: never
+challenge: never
 rateLimit: {requests: 12, periodSeconds: 60}
 delayMillis: 2000
 aliases: [nyaa, nyaasi, "nyaa.si"]

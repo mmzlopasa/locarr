@@ -113,6 +113,7 @@ func (s *Service) nativeClient(ctx context.Context, in Input, hc *httpx.Client) 
 	if err != nil {
 		return nil, err
 	}
+	hc.SetChallenge(def.Challenge)
 	base := in.BaseURL
 	if strings.TrimRight(base, "/") == def.DefaultURL() {
 		base = ""

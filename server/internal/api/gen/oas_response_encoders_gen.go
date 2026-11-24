@@ -1312,6 +1312,19 @@ func encodeGetIndexerResponse(response *Indexer, w http.ResponseWriter, span tra
 	return nil
 }
 
+func encodeGetIndexerBrowserResponse(response *IndexerBrowserStatus, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
 func encodeGetIndexerSettingsResponse(response *IndexerSettings, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
@@ -4122,6 +4135,19 @@ func encodeTestDownloadClientResponse(response *DownloadClientTestResult, w http
 }
 
 func encodeTestIndexerResponse(response *IndexerTestResult, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeTestIndexerBrowserResponse(response *IndexerBrowserTestResult, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 
