@@ -3,6 +3,15 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: preglednik za zaštićene stranice (branch `feat/challenge-solver`)
+- `browser/` (D-100): vlastiti Go modul i slika `ghcr.io/mmzlopasa/locarr-browser` (Debian Chromium `--headless=new`, ~560 MB na disku), kontrolni poslužitelj s tokenom (`/v1/solve`, `/v1/status`, `/v1/selftest`, `/healthz`), heuristike provjere (Cloudflare, DDoS-Guard, općenite JS provjere; CAPTCHA → `human`, blokada → `blocked`), proxy-čuvar adresa po rješavanju (loopback/link-local/metapodaci zabranjeni, privatne samo za host stranice), bez preuzimanja, ograničenja veličine i vremena, bazen kartica (2), gašenje u mirovanju, ponovno pokretanje nakon pada/200 rješavanja/memorije, client hints kao desktop Chromium.
+- `indexers/httpx`: `Browser` dijeljen među indexerima, kolačići po hostu i proxyju s preglednikovim User-Agentom, izravni način kad stranica veže kolačiće uz preglednik, odgode, FlareSolverr kao rezerva; šira detekcija provjere. Definicije: polje `challenge` (staro `flaresolverr` se čita).
+- API: `GET /indexers/browser`, `POST /indexers/browser/test`, postavke `browserUrl`/`browserToken`; `challenge` u definicijama; zdravlje `indexer_challenge` s razlogom. Web: ploča „Preglednik za zaštićene stranice" u Indexeri (EN + HR).
+- Compose: servis `locarr-browser` iza profila `browser`; `LOCARR_BROWSER_TOKEN` u `.env`; `scripts/deploy-dev.sh` s `LOCARR_DEV_BROWSER=1`. CI: posao `browser` (testovi, lint, `scripts/test-browser.sh` sa stvarnom slikom), e2e sa profilom `browser`, `image.yml` objavljuje multi-arch sliku preglednika.
+- Testovi: heuristike i čuvar adresa (browser), ponovna upotreba kolačića, izravni način, odgode, nedostupan preglednik, krivi token, politika adresa (httpx), API i zdravlje s lažnim preglednikom (app), stvarna slika protiv lažnih stranica (JS provjera, CAPTCHA, preusmjerenje na metapodatke, 1337x iza provjere), Playwright: 1337x iza provjere kroz preglednik.
+- Ručna provjera (`-tags live`, 2026-11-24, s ovog poslužitelja u podatkovnom centru): LimeTorrents radi (trenutno bez provjere); 1337x.to, 1337x.st i x1337x.cc pokazuju Cloudflare Turnstile kvadratić koji traži čovjeka → Locarr ispravno javlja „treba ljudsku provjeru". S kućne veze stranica može pustiti automatski.
+- Poznato: Chromiumov sandbox ne radi u Dockeru bez korisničkih namespaceova (radi s `--no-sandbox`, granica je kontejner); slika preglednika je velika (~200 MB komprimirano).
+
 ## Gotovo u P12 — Android (branch `phase/P12-android`)
 - `android/` (D-095): Kotlin 2.1, Jetpack Compose (Material 3), OkHttp, kotlinx.serialization, Coil (memorija + 200 MB diska), WorkManager; `net.scyde.locarr`, Android 8+; telefon (donja traka) i tablet (bočna traka, ograničena širina). Tokeni dizajna iz `web/src/styles.css` u `ui/Theme.kt`.
 - Ručno pisani tolerantni modeli (`api/Models.kt`), `Api` s Bearer tokenom i `onUnauthorized`; prijevodi serverskih kodova generira `android/tools/gen-codes.py` iz web locala (`values{,-hr}/codes.xml`, `ui/Codes.kt`); ostali tekstovi u `values{,-hr}/strings.xml`.
