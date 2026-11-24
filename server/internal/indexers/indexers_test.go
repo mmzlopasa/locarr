@@ -30,7 +30,7 @@ func newService(t *testing.T) (*Service, *fake.Server, string) {
 	s := New(d, box, settings.New(d, box), slog.New(slog.NewTextHandler(io.Discard, nil)))
 	s.PolicyOverride = &httpx.Policy{Allowed: []netip.Prefix{netip.MustParsePrefix("127.0.0.0/8")}}
 	f := fake.New("fakekey", "sourcekey")
-	f.SlowDelay = 300 * time.Millisecond
+	f.SlowDelay = 1500 * time.Millisecond // well past the others even on a busy CI runner with -race
 	srv := httptest.NewServer(f)
 	t.Cleanup(srv.Close)
 	return s, f, srv.URL
