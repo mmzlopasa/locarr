@@ -12,6 +12,7 @@ import (
 	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/ogen-go/ogen/validate"
 
+	"github.com/mmzlopasa/locarr/server/internal/adult"
 	"github.com/mmzlopasa/locarr/server/internal/api/gen"
 	"github.com/mmzlopasa/locarr/server/internal/auth"
 	"github.com/mmzlopasa/locarr/server/internal/backup"
@@ -60,9 +61,11 @@ type Handler struct {
 	Downloads   *downloads.Service
 	Indexers    *indexers.Service
 	Movies      *movies.Service
-	Series      *series.Service
-	Music       *music.Service
-	Subtitles   *subtitles.Service
+	// Adult is the optional adult library (D-100); nil-safe when off.
+	Adult     *adult.Service
+	Series    *series.Service
+	Music     *music.Service
+	Subtitles *subtitles.Service
 	// CoverArt caches Cover Art Archive images; LinkExisting queues linking
 	// an existing artist folder's files (both set by the app).
 	CoverArt     *metadata.ImageCache
@@ -76,10 +79,10 @@ type Handler struct {
 	Streamero *streamero.Service
 	Channels  *delivery.Service
 	// Migrate imports an existing setup (P10).
-	Migrate   *migrate.Service
-	Timeline  *timeline.Store
-	Recycle   *recycle.Bin
-	Images    *metadata.ImageCache
+	Migrate  *migrate.Service
+	Timeline *timeline.Store
+	Recycle  *recycle.Bin
+	Images   *metadata.ImageCache
 	// TMDb validates keys before they are stored; MetaCache is cleared when the language changes.
 	TMDb metadata.MovieProvider
 	// TVDB validates a TVDB key before it is stored (nil = TVDB not available).
@@ -145,6 +148,9 @@ func mapError(err error) *StatusError {
 		return &StatusError{Status: http.StatusBadRequest, Code: "validation", Message: err.Error()}
 	case errors.As(err, &locked):
 		return &StatusError{Status: http.StatusLocked, Code: "account_locked", Message: err.Error()}
+	}
+	if se := mapAdultError(err); se != nil {
+		return se
 	}
 	if se := mapOperationsError(err); se != nil {
 		return se

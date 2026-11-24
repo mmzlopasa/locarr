@@ -19,6 +19,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/native"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/znab"
+	"github.com/mmzlopasa/locarr/server/internal/library"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 )
 
@@ -674,7 +675,11 @@ func (h *Handler) ListSearchLog(ctx context.Context, params gen.ListSearchLogPar
 		return nil, err
 	}
 	out := make([]gen.SearchLogEntry, 0, len(list))
+	hide := h.hidesAdult(ctx)
 	for _, e := range list {
+		if hide && (library.IsAdultRef(e.ItemRef) || e.Type == indexers.SearchAdult) {
+			continue
+		}
 		g := gen.SearchLogEntry{ID: e.ID, StartedAt: e.StartedAt, DurationMs: e.Duration.Milliseconds(),
 			Source: gen.SearchLogEntrySource(e.Source), Type: gen.SearchType(apiSearchType(e.Type)), Query: e.Query,
 			ItemRef: optStr(e.ItemRef), ResultCount: e.ResultCount, ErrorCount: e.ErrorCount,

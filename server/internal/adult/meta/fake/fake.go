@@ -94,7 +94,11 @@ func writeJSON(w http.ResponseWriter, v any) {
 	_ = json.NewEncoder(w).Encode(v)
 }
 
-func (s *Server) list() []Scene { s.mu.Lock(); defer s.mu.Unlock(); return append([]Scene{}, s.Scenes...) }
+func (s *Server) list() []Scene {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return append([]Scene{}, s.Scenes...)
+}
 
 // --- StashDB ---
 

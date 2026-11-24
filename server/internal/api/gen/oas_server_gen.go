@@ -8,6 +8,36 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AddAdultBlocklistTerm implements addAdultBlocklistTerm operation.
+	//
+	// Add a blocked term (administrators).
+	//
+	// POST /adult/blocklist
+	AddAdultBlocklistTerm(ctx context.Context, req *AddAdultBlocklistTermReq) (*AdultBlockTerm, error)
+	// AddAdultItem implements addAdultItem operation.
+	//
+	// Add a scene or movie from a source.
+	//
+	// POST /adult/items
+	AddAdultItem(ctx context.Context, req *AdultAddRequest) (*AdultItem, error)
+	// AddAdultPerformer implements addAdultPerformer operation.
+	//
+	// Add (and with monitored, track) a performer from a source.
+	//
+	// POST /adult/performers
+	AddAdultPerformer(ctx context.Context, req *AdultAddRequest) (*AdultPerformer, error)
+	// AddAdultRootFolder implements addAdultRootFolder operation.
+	//
+	// Add an adult root folder (created inside the data roots).
+	//
+	// POST /adult/rootfolders
+	AddAdultRootFolder(ctx context.Context, req *AddAdultRootFolderReq) (*AdultRootFolder, error)
+	// AddAdultStudio implements addAdultStudio operation.
+	//
+	// Add a studio from a source (its newest scenes are added; new ones become wanted).
+	//
+	// POST /adult/studios
+	AddAdultStudio(ctx context.Context, req *AdultAddRequest) (*AdultStudio, error)
 	// AddArtist implements addArtist operation.
 	//
 	// Albums appear at once; editions and track lists load in the background (MusicBrainz allows one
@@ -278,6 +308,36 @@ type Handler interface {
 	//
 	// POST /requests/{id}/decline
 	DeclineRequest(ctx context.Context, req *DeclineRequest, params DeclineRequestParams) (*MediaRequest, error)
+	// DeleteAdultBlocklistTerm implements deleteAdultBlocklistTerm operation.
+	//
+	// Remove a blocked term (administrators).
+	//
+	// DELETE /adult/blocklist/{id}
+	DeleteAdultBlocklistTerm(ctx context.Context, params DeleteAdultBlocklistTermParams) error
+	// DeleteAdultItem implements deleteAdultItem operation.
+	//
+	// Remove an item (its file goes to the recycle bin only with deleteFiles).
+	//
+	// DELETE /adult/items/{id}
+	DeleteAdultItem(ctx context.Context, params DeleteAdultItemParams) error
+	// DeleteAdultPerformer implements deleteAdultPerformer operation.
+	//
+	// Forget a performer (their scenes stay).
+	//
+	// DELETE /adult/performers/{id}
+	DeleteAdultPerformer(ctx context.Context, params DeleteAdultPerformerParams) error
+	// DeleteAdultRootFolder implements deleteAdultRootFolder operation.
+	//
+	// Forget an adult root folder (files stay).
+	//
+	// DELETE /adult/rootfolders/{id}
+	DeleteAdultRootFolder(ctx context.Context, params DeleteAdultRootFolderParams) error
+	// DeleteAdultStudio implements deleteAdultStudio operation.
+	//
+	// Remove a studio and its scenes (files go to the recycle bin only with deleteFiles).
+	//
+	// DELETE /adult/studios/{id}
+	DeleteAdultStudio(ctx context.Context, params DeleteAdultStudioParams) error
 	// DeleteApiKey implements deleteApiKey operation.
 	//
 	// Revoke an API key.
@@ -511,6 +571,55 @@ type Handler interface {
 	//
 	// GET /activity/stats
 	GetActivityStats(ctx context.Context, params GetActivityStatsParams) (*ActivityStats, error)
+	// GetAdultCalendar implements getAdultCalendar operation.
+	//
+	// Scenes and movies by release date (only in the adult section; never in the main calendar or iCal).
+	//
+	// GET /adult/calendar
+	GetAdultCalendar(ctx context.Context, params GetAdultCalendarParams) ([]AdultItem, error)
+	// GetAdultImage implements getAdultImage operation.
+	//
+	// A cached adult image (permitted users only; Cache-Control private).
+	//
+	// GET /adult/images/{key}
+	GetAdultImage(ctx context.Context, params GetAdultImageParams) (*GetAdultImageOKHeaders, error)
+	// GetAdultItem implements getAdultItem operation.
+	//
+	// One scene or movie.
+	//
+	// GET /adult/items/{id}
+	GetAdultItem(ctx context.Context, params GetAdultItemParams) (*AdultItem, error)
+	// GetAdultItemTimeline implements getAdultItemTimeline operation.
+	//
+	// The item's timeline and the answer to "why isn't it here?".
+	//
+	// GET /adult/items/{id}/timeline
+	GetAdultItemTimeline(ctx context.Context, params GetAdultItemTimelineParams) (*Timeline, error)
+	// GetAdultPerformer implements getAdultPerformer operation.
+	//
+	// One performer.
+	//
+	// GET /adult/performers/{id}
+	GetAdultPerformer(ctx context.Context, params GetAdultPerformerParams) (*AdultPerformer, error)
+	// GetAdultPreferences implements getAdultPreferences operation.
+	//
+	// Own adult preferences (permitted users; 404 otherwise).
+	//
+	// GET /adult/preferences
+	GetAdultPreferences(ctx context.Context) (*AdultPreferences, error)
+	// GetAdultSettings implements getAdultSettings operation.
+	//
+	// Works while the feature is off, so an administrator can enable it. Keys are never returned, only
+	// whether they are set.
+	//
+	// GET /adult/settings
+	GetAdultSettings(ctx context.Context) (*AdultSettings, error)
+	// GetAdultStudio implements getAdultStudio operation.
+	//
+	// One studio.
+	//
+	// GET /adult/studios/{id}
+	GetAdultStudio(ctx context.Context, params GetAdultStudioParams) (*AdultStudio, error)
 	// GetAlbum implements getAlbum operation.
 	//
 	// The track list loads from MusicBrainz on first view when the background refresh has not got to it
@@ -852,6 +961,12 @@ type Handler interface {
 	//
 	// GET /users/{id}/quotas
 	GetUserQuotas(ctx context.Context, params GetUserQuotasParams) (*UserQuotas, error)
+	// GrabAdultRelease implements grabAdultRelease operation.
+	//
+	// Grab a release chosen in an interactive search.
+	//
+	// POST /adult/items/{id}/releases
+	GrabAdultRelease(ctx context.Context, req *ManualGrabRequest, params GrabAdultReleaseParams) (*QueueItem, error)
 	// GrabAlbumRelease implements grabAlbumRelease operation.
 	//
 	// Grab a release chosen in an interactive search (library managers).
@@ -917,6 +1032,12 @@ type Handler interface {
 	//
 	// POST /migrate/runs/{id}/import
 	ImportMigrateRun(ctx context.Context, params ImportMigrateRunParams) (*MigrateRun, error)
+	// InteractiveSearchAdultItem implements interactiveSearchAdultItem operation.
+	//
+	// Interactive search with the decision on every release.
+	//
+	// GET /adult/items/{id}/releases
+	InteractiveSearchAdultItem(ctx context.Context, params InteractiveSearchAdultItemParams) (*InteractiveSearch, error)
 	// InteractiveSearchAlbum implements interactiveSearchAlbum operation.
 	//
 	// Interactive search for an album - every release and the decision on it (library managers).
@@ -957,6 +1078,36 @@ type Handler interface {
 	//
 	// PUT /users/{id}/identities/{provider}
 	LinkUserIdentity(ctx context.Context, req *LinkIdentityRequest, params LinkUserIdentityParams) (*LinkedIdentity, error)
+	// ListAdultBlocklist implements listAdultBlocklist operation.
+	//
+	// The adult tag blocklist (administrators).
+	//
+	// GET /adult/blocklist
+	ListAdultBlocklist(ctx context.Context) ([]AdultBlockTerm, error)
+	// ListAdultItems implements listAdultItems operation.
+	//
+	// Scenes and movies.
+	//
+	// GET /adult/items
+	ListAdultItems(ctx context.Context, params ListAdultItemsParams) (*AdultItemPage, error)
+	// ListAdultPerformers implements listAdultPerformers operation.
+	//
+	// Performers.
+	//
+	// GET /adult/performers
+	ListAdultPerformers(ctx context.Context) ([]AdultPerformer, error)
+	// ListAdultRootFolders implements listAdultRootFolders operation.
+	//
+	// Adult root folders.
+	//
+	// GET /adult/rootfolders
+	ListAdultRootFolders(ctx context.Context) ([]AdultRootFolder, error)
+	// ListAdultStudios implements listAdultStudios operation.
+	//
+	// Studios and sites.
+	//
+	// GET /adult/studios
+	ListAdultStudios(ctx context.Context) ([]AdultStudio, error)
 	// ListApiKeys implements listApiKeys operation.
 	//
 	// Own API keys.
@@ -1311,6 +1462,13 @@ type Handler interface {
 	//
 	// POST /auth/logout
 	Logout(ctx context.Context) (*LogoutNoContent, error)
+	// LookupAdult implements lookupAdult operation.
+	//
+	// Entries the source flags as removed or disputed and entries with a blocked tag are left out. Remote
+	// images are never returned.
+	//
+	// GET /adult/lookup
+	LookupAdult(ctx context.Context, params LookupAdultParams) ([]AdultLookupResult, error)
 	// LookupArtists implements lookupArtists operation.
 	//
 	// Search MusicBrainz for artists by name, or by id ("mbid:").
@@ -1457,6 +1615,12 @@ type Handler interface {
 	//
 	// PUT /settings/requests
 	PutRequestSettings(ctx context.Context, req *RequestSettings) (*RequestSettings, error)
+	// RefreshAdultStudio implements refreshAdultStudio operation.
+	//
+	// Look for new scenes of a studio now.
+	//
+	// POST /adult/studios/{id}/refresh
+	RefreshAdultStudio(ctx context.Context, params RefreshAdultStudioParams) (*QueuedCount, error)
 	// RefreshArtist implements refreshArtist operation.
 	//
 	// Albums are synced at once; editions and track lists follow in the background.
@@ -1506,6 +1670,12 @@ type Handler interface {
 	//
 	// DELETE /queue/{id}
 	RemoveQueueItem(ctx context.Context, params RemoveQueueItemParams) error
+	// RenameAdultItem implements renameAdultItem operation.
+	//
+	// Preview or apply renaming the item's file to the template.
+	//
+	// POST /adult/items/{id}/rename
+	RenameAdultItem(ctx context.Context, params RenameAdultItemParams) (*AdultRename, error)
 	// RenameMovies implements renameMovies operation.
 	//
 	// An empty list renames every movie. Files are renamed in place; nothing is deleted.
@@ -1661,6 +1831,12 @@ type Handler interface {
 	//
 	// GET /search
 	Search(ctx context.Context, params SearchParams) (*SearchResponse, error)
+	// SearchAdultItem implements searchAdultItem operation.
+	//
+	// Queue an automatic search now.
+	//
+	// POST /adult/items/{id}/search
+	SearchAdultItem(ctx context.Context, params SearchAdultItemParams) (*QueuedCount, error)
 	// SearchAlbum implements searchAlbum operation.
 	//
 	// Queue an automatic search for an album now (library managers).
@@ -1884,6 +2060,37 @@ type Handler interface {
 	//
 	// DELETE /users/{id}/identities/{provider}
 	UnlinkUserIdentity(ctx context.Context, params UnlinkUserIdentityParams) error
+	// UpdateAdultItem implements updateAdultItem operation.
+	//
+	// Monitor an item or change its profile.
+	//
+	// PATCH /adult/items/{id}
+	UpdateAdultItem(ctx context.Context, req *AdultEditRequest, params UpdateAdultItemParams) (*AdultItem, error)
+	// UpdateAdultPerformer implements updateAdultPerformer operation.
+	//
+	// Monitor a performer or change the profile.
+	//
+	// PATCH /adult/performers/{id}
+	UpdateAdultPerformer(ctx context.Context, req *AdultEditRequest, params UpdateAdultPerformerParams) (*AdultPerformer, error)
+	// UpdateAdultPreferences implements updateAdultPreferences operation.
+	//
+	// Change own adult preferences.
+	//
+	// PUT /adult/preferences
+	UpdateAdultPreferences(ctx context.Context, req *AdultPreferences) (*AdultPreferences, error)
+	// UpdateAdultSettings implements updateAdultSettings operation.
+	//
+	// Enabling needs `confirmAdults` (every user with access is an adult). Keys are checked with the
+	// source before they are stored.
+	//
+	// PUT /adult/settings
+	UpdateAdultSettings(ctx context.Context, req *AdultSettingsUpdate) (*AdultSettings, error)
+	// UpdateAdultStudio implements updateAdultStudio operation.
+	//
+	// Monitor a studio or change its profile.
+	//
+	// PATCH /adult/studios/{id}
+	UpdateAdultStudio(ctx context.Context, req *AdultEditRequest, params UpdateAdultStudioParams) (*AdultStudio, error)
 	// UpdateAlbum implements updateAlbum operation.
 	//
 	// `releaseId` picks an edition and keeps it; 0 lets Locarr choose again.

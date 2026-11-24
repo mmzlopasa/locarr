@@ -65,6 +65,9 @@ type Stats struct {
 	SubtitlesMissing   int          `json:"subtitlesMissing"`
 	LastRSSSyncAt      *time.Time   `json:"lastRssSyncAt,omitempty"`
 	RootFolders        []RootFolder `json:"rootFolders"`
+	// AdultItems is one total, present only when the administrator opted in
+	// (adult.statsAggregate); adult content is never broken down (D-100).
+	AdultItems *int `json:"adultItems,omitempty"`
 }
 
 // Service computes Stats.
@@ -76,7 +79,9 @@ type Service struct {
 	Health func() (errs, warnings, info int)
 	// WantedMovies counts monitored, available movies without a file.
 	WantedMovies func(ctx context.Context) (int, error)
-	Now          func() time.Time
+	// AdultTotal returns the aggregate adult count when it may be shown.
+	AdultTotal func(ctx context.Context) (int, bool)
+	Now        func() time.Time
 
 	mu     sync.Mutex
 	cached *Stats
@@ -129,10 +134,10 @@ func (s *Service) compute(ctx context.Context) (Stats, error) {
 		{&st.AlbumsHave, `SELECT COUNT(DISTINCT album_id) FROM album_files`, nil},
 		{&st.AlbumsMissing, `SELECT COUNT(*) FROM albums a JOIN media_items i ON i.id = a.artist_id WHERE a.monitored = 1 AND i.monitored = 1
 			AND a.release_date <> '' AND a.release_date <= ? AND NOT EXISTS (SELECT 1 FROM album_files f WHERE f.album_id = a.id)`, []any{today}},
-		{&st.QueueSize, `SELECT COUNT(*) FROM downloads WHERE status IN ('active', 'completed')`, nil},
-		{&st.ActiveDownloads, `SELECT COUNT(*) FROM downloads WHERE status = 'active' AND state = 'downloading'`, nil},
+		{&st.QueueSize, `SELECT COUNT(*) FROM downloads WHERE status IN ('active', 'completed') AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'`, nil},
+		{&st.ActiveDownloads, `SELECT COUNT(*) FROM downloads WHERE status = 'active' AND state = 'downloading' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'`, nil},
 		{&st.FailedImports, `SELECT COUNT(*) FROM downloads d WHERE d.status = 'completed' AND EXISTS (SELECT 1 FROM download_events e
-			WHERE e.download_id = d.id AND e.type = 'import_failed')`, nil},
+			WHERE e.download_id = d.id AND e.type = 'import_failed') AND COALESCE(json_extract(d.item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(d.item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'`, nil},
 		{&st.RequestsPending, `SELECT COUNT(*) FROM requests WHERE status = 'pending'`, nil},
 		{&st.SubtitlesMissing, `SELECT COUNT(*) FROM subtitle_state WHERE missing_count > 0`, nil},
 	}
@@ -142,6 +147,11 @@ func (s *Service) compute(ctx context.Context) (Stats, error) {
 		}
 	}
 	st.WantedEpisodes, st.WantedAlbums = st.EpisodesMissing, st.AlbumsMissing
+	if s.AdultTotal != nil {
+		if n, ok := s.AdultTotal(ctx); ok {
+			st.AdultItems = &n
+		}
+	}
 	if s.WantedMovies != nil {
 		n, err := s.WantedMovies(ctx)
 		if err != nil {
@@ -149,7 +159,7 @@ func (s *Service) compute(ctx context.Context) (Stats, error) {
 		}
 		st.WantedMovies = n
 	}
-	if err := s.DB.R.QueryRowContext(ctx, `SELECT COALESCE(SUM(download_speed), 0) FROM downloads WHERE status = 'active'`).
+	if err := s.DB.R.QueryRowContext(ctx, `SELECT COALESCE(SUM(download_speed), 0) FROM downloads WHERE status = 'active' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'`).
 		Scan(&st.DownloadSpeedBytes); err != nil {
 		return st, err
 	}

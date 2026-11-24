@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/mmzlopasa/locarr/server/internal/adult"
 	"log/slog"
 	"net"
 	"net/http"
@@ -77,6 +78,7 @@ type Deps struct {
 	Indexers  *indexers.Service
 	// The library (P4).
 	Movies    *movies.Service
+	Adult     *adult.Service
 	Series    *series.Service
 	TVDB      *tvdb.Client
 	Wanted    *wanted.Service
@@ -193,6 +195,7 @@ func Bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, setupCo
 	deps.Discover.Streamero = deps.Streamero
 	buildOperations(ctx, deps, cfg, log)
 	buildMigrate(deps, cfg, log)
+	buildAdult(ctx, deps, cfg, log)
 	return deps, nil
 }
 

@@ -315,6 +315,11 @@ func (h *Handler) InteractiveSearchMovie(ctx context.Context, p gen.InteractiveS
 	if err != nil {
 		return nil, err
 	}
+	return h.toInteractive(ev)
+}
+
+// toInteractive renders an interactive search (download links stay on the server).
+func (h *Handler) toInteractive(ev wanted.Evaluation) (*gen.InteractiveSearch, error) {
 	rep := ev.Report
 	out := &gen.InteractiveSearch{Kind: gen.MediaKind(rep.Kind), ProfileName: rep.ProfileName, Accepted: rep.Accepted, Pending: rep.Pending,
 		Rejected: rep.Rejected, Decisions: make([]gen.InteractiveDecision, 0, len(rep.Decisions)),

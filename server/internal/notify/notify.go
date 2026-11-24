@@ -67,6 +67,13 @@ const (
 	// ended (Message = the counts or the reason).
 	MigrateFinished Type = "migrate.finished"
 	MigrateFailed   Type = "migrate.failed"
+	// Adult library events (D-100): only shared channels that chose them
+	// explicitly receive them, and only while the adult library is enabled.
+	AdultGrabbed        Type = "adult.grabbed"
+	AdultImported       Type = "adult.imported"
+	AdultUpgraded       Type = "adult.upgraded"
+	AdultDownloadFailed Type = "adult.download_failed"
+	AdultImportFailed   Type = "adult.import_failed"
 	// Test is only sent by a channel's Test button.
 	Test Type = "test"
 )
@@ -78,6 +85,19 @@ var Types = []Type{RequestCreated, RequestApproved, RequestDeclined, RequestAvai
 // LibraryTypes lists the library and system event types.
 var LibraryTypes = []Type{LibraryGrabbed, LibraryImported, LibraryUpgraded, LibraryDownloadFailed, LibraryImportFailed, HealthWarning,
 	SubtitleDownloaded, SubtitleMissing, MigrateFinished, MigrateFailed}
+
+// AdultTypes lists the adult library event types (never chosen by default).
+var AdultTypes = []Type{AdultGrabbed, AdultImported, AdultUpgraded, AdultDownloadFailed, AdultImportFailed}
+
+// IsAdult reports an adult event type.
+func IsAdult(t Type) bool {
+	for _, x := range AdultTypes {
+		if x == t {
+			return true
+		}
+	}
+	return false
+}
 
 // Personal reports whether t is about requests or issues (the events a
 // user's own channel can receive).

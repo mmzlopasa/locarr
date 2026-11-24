@@ -222,7 +222,7 @@ type Owner struct {
 }
 
 func validEvent(t notify.Type) bool {
-	return notify.Personal(t) || t == notify.Test || func() bool {
+	return notify.Personal(t) || t == notify.Test || notify.IsAdult(t) || func() bool {
 		for _, x := range notify.LibraryTypes {
 			if x == t {
 				return true

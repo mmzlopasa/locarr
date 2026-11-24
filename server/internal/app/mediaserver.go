@@ -67,7 +67,16 @@ func buildMediaServer(_ context.Context, d *Deps, cfg config.Config, log *slog.L
 		default:
 			return
 		}
-		info := describeRef(ctx, d, library.RefFromJSON(ev.Download.ItemRef))
+		ref := library.RefFromJSON(ev.Download.ItemRef)
+		if library.IsAdult(ref.Kind) {
+			// Adult downloads never reach the library events (D-100); only
+			// channels that chose adult events hear about them.
+			if d.Adult != nil {
+				d.Adult.Events(ctx, "adult."+strings.TrimPrefix(string(typ), "library."), ev.Download.Title, msg, ref.String())
+			}
+			return
+		}
+		info := describeRef(ctx, d, ref)
 		if info.title == "" {
 			info.title = ev.Download.Title
 		}

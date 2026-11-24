@@ -407,9 +407,9 @@ func (s *Service) Authenticate(ctx context.Context, token string) (Principal, er
 	h := hashToken(token)
 	if strings.HasPrefix(token, APIKeyPrefix) {
 		var (
-			keyID    int64
-			readOnly bool
-			lastUsed sql.NullInt64
+			keyID        int64
+			readOnly     bool
+			lastUsed     sql.NullInt64
 			includeAdult bool
 		)
 		u, err := scanUser(s.db.R.QueryRowContext(ctx, `SELECT `+userColumns+`, k.id, k.read_only, k.last_used_at, k.include_adult

@@ -59,6 +59,18 @@ func (s *AddSeriesRequest) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *AdultAddRequest) setDefaults() {
+	{
+		val := bool(true)
+		s.Monitored.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.Search.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *DownloadClientInput) setDefaults() {
 	{
 		val := bool(true)

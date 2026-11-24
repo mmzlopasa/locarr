@@ -23,6 +23,7 @@ tags:
   - name: auth
   - name: sessions
   - name: apikeys
+  - name: adult
   - name: twofactor
   - name: users
   - name: settings
@@ -6070,6 +6071,545 @@ paths:
               schema: {$ref: "#/components/schemas/SystemSettings"}
         default:
           $ref: "#/components/responses/Error"
+  /adult/settings:
+    get:
+      operationId: getAdultSettings
+      summary: Adult library settings (administrators; 404 for everyone else)
+      description: Works while the feature is off, so an administrator can enable it. Keys are never returned, only whether they are set.
+      tags: [adult]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateAdultSettings
+      summary: Change adult library settings (administrators)
+      description: Enabling needs `confirmAdults` (every user with access is an adult). Keys are checked with the source before they are stored.
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultSettingsUpdate"}
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/blocklist:
+    get:
+      operationId: listAdultBlocklist
+      summary: The adult tag blocklist (administrators)
+      tags: [adult]
+      responses:
+        "200":
+          description: Terms
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/AdultBlockTerm"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addAdultBlocklistTerm
+      summary: Add a blocked term (administrators)
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [term]
+              properties:
+                term: {type: string, minLength: 2, maxLength: 100}
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultBlockTerm"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/blocklist/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    delete:
+      operationId: deleteAdultBlocklistTerm
+      summary: Remove a blocked term (administrators)
+      tags: [adult]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/preferences:
+    get:
+      operationId: getAdultPreferences
+      summary: Own adult preferences (permitted users; 404 otherwise)
+      tags: [adult]
+      responses:
+        "200":
+          description: Preferences
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultPreferences"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateAdultPreferences
+      summary: Change own adult preferences
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultPreferences"}
+      responses:
+        "200":
+          description: Preferences
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultPreferences"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/rootfolders:
+    get:
+      operationId: listAdultRootFolders
+      summary: Adult root folders
+      tags: [adult]
+      responses:
+        "200":
+          description: Folders
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/AdultRootFolder"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addAdultRootFolder
+      summary: Add an adult root folder (created inside the data roots)
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [path]
+              properties:
+                path: {type: string, minLength: 1, maxLength: 4096}
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultRootFolder"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/rootfolders/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    delete:
+      operationId: deleteAdultRootFolder
+      summary: Forget an adult root folder (files stay)
+      tags: [adult]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/lookup:
+    get:
+      operationId: lookupAdult
+      summary: Search StashDB or ThePornDB
+      description: Entries the source flags as removed or disputed and entries with a blocked tag are left out. Remote images are never returned.
+      tags: [adult]
+      parameters:
+        - {name: source, in: query, required: true, schema: {type: string, enum: [stashdb, tpdb]}}
+        - {name: type, in: query, required: true, schema: {type: string, enum: [scene, movie, performer, studio]}}
+        - {name: term, in: query, required: true, schema: {type: string, minLength: 1, maxLength: 200}}
+      responses:
+        "200":
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/AdultLookupResult"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/studios:
+    get:
+      operationId: listAdultStudios
+      summary: Studios and sites
+      tags: [adult]
+      responses:
+        "200":
+          description: Studios
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/AdultStudio"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addAdultStudio
+      summary: Add a studio from a source (its newest scenes are added; new ones become wanted)
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultAddRequest"}
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultStudio"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/studios/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: getAdultStudio
+      summary: One studio
+      tags: [adult]
+      responses:
+        "200":
+          description: Studio
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultStudio"}
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateAdultStudio
+      summary: Monitor a studio or change its profile
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultEditRequest"}
+      responses:
+        "200":
+          description: Studio
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultStudio"}
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteAdultStudio
+      summary: Remove a studio and its scenes (files go to the recycle bin only with deleteFiles)
+      tags: [adult]
+      parameters:
+        - {name: deleteFiles, in: query, required: false, schema: {type: boolean, default: false}}
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/studios/{id}/refresh:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: refreshAdultStudio
+      summary: Look for new scenes of a studio now
+      tags: [adult]
+      responses:
+        "200":
+          description: Added scenes
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/QueuedCount"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/performers:
+    get:
+      operationId: listAdultPerformers
+      summary: Performers
+      tags: [adult]
+      responses:
+        "200":
+          description: Performers
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/AdultPerformer"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addAdultPerformer
+      summary: Add (and with monitored, track) a performer from a source
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultAddRequest"}
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultPerformer"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/performers/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: getAdultPerformer
+      summary: One performer
+      tags: [adult]
+      responses:
+        "200":
+          description: Performer
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultPerformer"}
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateAdultPerformer
+      summary: Monitor a performer or change the profile
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultEditRequest"}
+      responses:
+        "200":
+          description: Performer
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultPerformer"}
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteAdultPerformer
+      summary: Forget a performer (their scenes stay)
+      tags: [adult]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/items:
+    get:
+      operationId: listAdultItems
+      summary: Scenes and movies
+      tags: [adult]
+      parameters:
+        - {name: kind, in: query, required: false, schema: {type: string, enum: [scene, movie]}}
+        - {name: studioId, in: query, required: false, schema: {type: integer, format: int64}}
+        - {name: performerId, in: query, required: false, schema: {type: integer, format: int64}}
+        - {name: term, in: query, required: false, schema: {type: string, maxLength: 200}}
+        - {name: missing, in: query, required: false, schema: {type: boolean}}
+        - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 500, default: 100}}
+        - {name: offset, in: query, required: false, schema: {type: integer, minimum: 0, default: 0}}
+      responses:
+        "200":
+          description: One page
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultItemPage"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: addAdultItem
+      summary: Add a scene or movie from a source
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultAddRequest"}
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultItem"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/items/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: getAdultItem
+      summary: One scene or movie
+      tags: [adult]
+      responses:
+        "200":
+          description: Item
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultItem"}
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      operationId: updateAdultItem
+      summary: Monitor an item or change its profile
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultEditRequest"}
+      responses:
+        "200":
+          description: Item
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultItem"}
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteAdultItem
+      summary: Remove an item (its file goes to the recycle bin only with deleteFiles)
+      tags: [adult]
+      parameters:
+        - {name: deleteFiles, in: query, required: false, schema: {type: boolean, default: false}}
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/items/{id}/search:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: searchAdultItem
+      summary: Queue an automatic search now
+      tags: [adult]
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/QueuedCount"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/items/{id}/releases:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: interactiveSearchAdultItem
+      summary: Interactive search with the decision on every release
+      tags: [adult]
+      responses:
+        "200":
+          description: The decision report
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/InteractiveSearch"}
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: grabAdultRelease
+      summary: Grab a release chosen in an interactive search
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ManualGrabRequest"}
+      responses:
+        "201":
+          description: Sent to a client
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/QueueItem"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/items/{id}/timeline:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    get:
+      operationId: getAdultItemTimeline
+      summary: The item's timeline and the answer to "why isn't it here?"
+      tags: [adult]
+      responses:
+        "200":
+          description: The timeline
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Timeline"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/items/{id}/rename:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: renameAdultItem
+      summary: Preview or apply renaming the item's file to the template
+      tags: [adult]
+      parameters:
+        - {name: apply, in: query, required: false, schema: {type: boolean, default: false}}
+      responses:
+        "200":
+          description: The rename
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultRename"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/calendar:
+    get:
+      operationId: getAdultCalendar
+      summary: Scenes and movies by release date (only in the adult section; never in the main calendar or iCal)
+      tags: [adult]
+      parameters:
+        - {name: start, in: query, required: true, schema: {type: string, format: date}}
+        - {name: end, in: query, required: true, schema: {type: string, format: date}}
+      responses:
+        "200":
+          description: Items
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/AdultItem"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/images/{key}:
+    get:
+      operationId: getAdultImage
+      summary: A cached adult image (permitted users only; Cache-Control private)
+      tags: [adult]
+      parameters:
+        - {name: key, in: path, required: true, schema: {type: string, pattern: "^[0-9a-f]{32}$"}}
+      responses:
+        "200":
+          description: The image
+          headers:
+            Cache-Control:
+              schema: {type: string}
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: "#/components/responses/Error"
 components:
   securitySchemes:
     sessionToken:
@@ -6277,6 +6817,185 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
   schemas:
+    AdultSettings:
+      type: object
+      required: [enabled, stashdbKeySet, tpdbKeySet, defaultSource, defaultProfileId, defaultRootFolderId, sceneFolder, sceneFile, movieFolder,
+        movieFile, statsAggregate, notifyStreamero, tokens]
+      properties:
+        enabled: {type: boolean}
+        confirmedAt: {type: string, description: "When an administrator confirmed that every user with access is an adult."}
+        stashdbKeySet: {type: boolean}
+        tpdbKeySet: {type: boolean}
+        defaultSource: {type: string, enum: [stashdb, tpdb]}
+        defaultProfileId: {type: integer, format: int64}
+        defaultRootFolderId: {type: integer, format: int64}
+        sceneFolder: {type: string}
+        sceneFile: {type: string}
+        movieFolder: {type: string}
+        movieFile: {type: string}
+        statsAggregate: {type: boolean, description: "Add one total count of adult items to /api/stats (never a breakdown)."}
+        notifyStreamero: {type: boolean, description: "Tell Streamero about adult imports (only with an adult Streamero library mapped)."}
+        tokens:
+          type: array
+          items: {type: string}
+    AdultSettingsUpdate:
+      type: object
+      properties:
+        enabled: {type: boolean}
+        confirmAdults: {type: boolean, description: "Required to enable: every user with access to adult content is an adult."}
+        stashdbKey: {type: string, maxLength: 500, description: "Empty clears the key."}
+        tpdbKey: {type: string, maxLength: 500}
+        defaultSource: {type: string, enum: [stashdb, tpdb]}
+        defaultProfileId: {type: integer, format: int64}
+        defaultRootFolderId: {type: integer, format: int64}
+        sceneFolder: {type: string, maxLength: 300}
+        sceneFile: {type: string, maxLength: 300}
+        movieFolder: {type: string, maxLength: 300}
+        movieFile: {type: string, maxLength: 300}
+        statsAggregate: {type: boolean}
+        notifyStreamero: {type: boolean}
+    AdultBlockTerm:
+      type: object
+      required: [id, term, builtin]
+      properties:
+        id: {type: integer, format: int64}
+        term: {type: string}
+        builtin: {type: boolean}
+    AdultPreferences:
+      type: object
+      required: [blur]
+      properties:
+        blur: {type: boolean, description: "Blur adult images until clicked (default on)."}
+    AdultRootFolder:
+      type: object
+      required: [id, path]
+      properties:
+        id: {type: integer, format: int64}
+        path: {type: string}
+    AdultLookupResult:
+      type: object
+      required: [source, id, type, name]
+      properties:
+        source: {type: string, enum: [stashdb, tpdb]}
+        id: {type: string}
+        type: {type: string, enum: [scene, movie, performer, studio]}
+        name: {type: string}
+        date: {type: string}
+        studio: {type: string}
+        performers:
+          type: array
+          items: {type: string}
+        inLibrary: {type: boolean}
+    AdultAddRequest:
+      type: object
+      required: [source, id]
+      properties:
+        source: {type: string, enum: [stashdb, tpdb]}
+        id: {type: string, minLength: 1, maxLength: 100}
+        kind: {type: string, enum: [scene, movie], description: "For items."}
+        qualityProfileId: {type: integer, format: int64}
+        rootFolderId: {type: integer, format: int64}
+        monitored: {type: boolean, default: true}
+        search: {type: boolean, default: true}
+    AdultEditRequest:
+      type: object
+      properties:
+        monitored: {type: boolean}
+        qualityProfileId: {type: integer, format: int64}
+    AdultStudio:
+      type: object
+      required: [id, name, monitored, qualityProfileId, path, addedAt, scenes, files]
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+        stashdbId: {type: string}
+        tpdbId: {type: string}
+        url: {type: string}
+        image: {type: string, description: "Key for /adult/images/{key}."}
+        monitored: {type: boolean}
+        monitorSince: {type: string}
+        qualityProfileId: {type: integer, format: int64}
+        rootFolderId: {type: integer, format: int64}
+        path: {type: string}
+        addedAt: {type: string, format: date-time}
+        refreshedAt: {type: string, format: date-time}
+        scenes: {type: integer}
+        files: {type: integer}
+    AdultPerformer:
+      type: object
+      required: [id, name, monitored, addedAt, items]
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+        disambiguation: {type: string}
+        stashdbId: {type: string}
+        tpdbId: {type: string}
+        image: {type: string}
+        monitored: {type: boolean}
+        monitorSince: {type: string}
+        qualityProfileId: {type: integer, format: int64}
+        addedAt: {type: string, format: date-time}
+        refreshedAt: {type: string, format: date-time}
+        items: {type: integer}
+    AdultFile:
+      type: object
+      required: [id, path, size, quality]
+      properties:
+        id: {type: integer, format: int64}
+        path: {type: string}
+        size: {type: integer, format: int64}
+        quality: {type: string}
+        releaseGroup: {type: string}
+        sceneName: {type: string}
+        addedAt: {type: string, format: date-time}
+    AdultItem:
+      type: object
+      required: [id, kind, ref, studio, title, monitored, qualityProfileId, path, addedAt, performers, sourceTags]
+      properties:
+        id: {type: integer, format: int64}
+        kind: {type: string, enum: [scene, movie]}
+        ref: {type: string, description: "scene:<id> or adult_movie:<id>"}
+        studioId: {type: integer, format: int64}
+        studio: {type: string}
+        title: {type: string}
+        releaseDate: {type: string}
+        year: {type: integer}
+        duration: {type: integer}
+        overview: {type: string}
+        stashdbId: {type: string}
+        tpdbId: {type: string}
+        image: {type: string}
+        monitored: {type: boolean}
+        qualityProfileId: {type: integer, format: int64}
+        path: {type: string}
+        addedAt: {type: string, format: date-time}
+        sourceTags:
+          type: array
+          items: {type: string}
+        performers:
+          type: array
+          items:
+            type: object
+            required: [id, name]
+            properties:
+              id: {type: integer, format: int64}
+              name: {type: string}
+        file: {$ref: "#/components/schemas/AdultFile"}
+    AdultItemPage:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/AdultItem"}
+        total: {type: integer}
+    AdultRename:
+      type: object
+      required: [itemId, from, to]
+      properties:
+        itemId: {type: integer, format: int64}
+        from: {type: string}
+        to: {type: string}
     Error:
       type: object
       required: [code, message]
@@ -6513,6 +7232,9 @@ components:
         autoApprove4k:
           type: boolean
           description: 4K requests are approved at once.
+        viewAdult:
+          type: boolean
+          description: See the optional adult library. Never granted by default, not even to administrators; requesters can never hold it.
     User:
       type: object
       required: [id, username, role, permissions, language, disabled, totpEnabled, createdAt]
@@ -6526,6 +7248,9 @@ components:
           $ref: "#/components/schemas/Role"
         permissions:
           $ref: "#/components/schemas/Permissions"
+        adultVisible:
+          type: boolean
+          description: Only on /auth/me - the adult library is enabled and this session may see it.
         language:
           $ref: "#/components/schemas/Language"
         disabled:
@@ -6591,6 +7316,9 @@ components:
           description: The first characters of the key, to recognise it.
         readOnly:
           type: boolean
+        includeAdult:
+          type: boolean
+          description: The key may see the adult library (only when its owner may).
         createdAt:
           type: string
           format: date-time
@@ -6607,6 +7335,9 @@ components:
           maxLength: 100
         readOnly:
           type: boolean
+        includeAdult:
+          type: boolean
+          description: Let the key see the adult library. Ignored unless the owner holds viewAdult.
     CreatedApiKey:
       type: object
       required: [apiKey, key]
@@ -6803,6 +7534,11 @@ components:
             type: integer
         books:
           type: array
+          items:
+            type: integer
+        adult:
+          type: array
+          description: Adult (6xxx) categories. Empty unless an administrator opts the indexer in; only adult searches use them.
           items:
             type: integer
     IndexerCategory:
@@ -11411,7 +12147,8 @@ components:
       type: string
       enum: [request.created, request.approved, request.declined, request.available, request.partial, request.failed,
         request.comment, issue.created, issue.comment, issue.resolved, issue.reopened, library.grabbed, library.imported,
-        library.upgraded, library.download_failed, library.import_failed, health.warning, subtitles.downloaded, subtitles.missing, migrate.finished, migrate.failed, test]
+        library.upgraded, library.download_failed, library.import_failed, health.warning, subtitles.downloaded, subtitles.missing, migrate.finished, migrate.failed, adult.grabbed, adult.imported, adult.upgraded,
+        adult.download_failed, adult.import_failed, test]
     NotificationChannelSettings:
       type: object
       description: Plain settings; each kind uses only its own fields.

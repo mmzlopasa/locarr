@@ -166,3 +166,16 @@ func (s *Service) record(ctx context.Context, ref, typ, msg string, data any, dl
 		s.Log.Warn("timeline", "err", err)
 	}
 }
+
+// StatsTotal is the opt-in aggregate for /api/stats: one number, only while
+// the feature is on and adult.statsAggregate is set.
+func (s *Service) StatsTotal(ctx context.Context) (int, bool) {
+	if !s.On(ctx) {
+		return 0, false
+	}
+	if on, _ := settings.Get(ctx, s.Settings, StatsAggregate); !on {
+		return 0, false
+	}
+	n, err := s.Count(ctx)
+	return n, err == nil
+}

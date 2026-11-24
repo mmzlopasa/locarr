@@ -19,6 +19,7 @@ func toPermissions(p auth.Permissions) gen.Permissions {
 		AutoApproveSeries: gen.NewOptBool(p.Has(auth.PermAutoApproveSeries)),
 		AutoApproveMusic:  gen.NewOptBool(p.Has(auth.PermAutoApproveMusic)),
 		AutoApprove4k:     gen.NewOptBool(p.Has(auth.PermAutoApprove4K)),
+		ViewAdult:         gen.NewOptBool(p.Has(auth.PermViewAdult)),
 	}
 }
 
@@ -40,13 +41,14 @@ func fromPermissions(g gen.Permissions) auth.Permissions {
 	set(g.AutoApproveSeries.Or(false), auth.PermAutoApproveSeries)
 	set(g.AutoApproveMusic.Or(false), auth.PermAutoApproveMusic)
 	set(g.AutoApprove4k.Or(false), auth.PermAutoApprove4K)
+	set(g.ViewAdult.Or(false), auth.PermViewAdult)
 	return p
 }
 
 func toUser(u auth.User) gen.User {
 	perms := u.Permissions
 	if u.Role == auth.RoleAdmin {
-		perms = auth.DefaultPermissions(auth.RoleAdmin)
+		perms = auth.DefaultPermissions(auth.RoleAdmin) | (u.Permissions & auth.PermViewAdult)
 	}
 	return gen.User{
 		ID: u.ID, Username: u.Username, Role: gen.Role(u.Role), Permissions: toPermissions(perms),

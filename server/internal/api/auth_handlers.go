@@ -80,6 +80,7 @@ func (h *Handler) GetMe(ctx context.Context) (*gen.User, error) {
 		return nil, err
 	}
 	u := toUser(p.User)
+	u.AdultVisible = gen.NewOptBool(h.Adult.Visible(ctx, p))
 	return &u, nil
 }
 
@@ -136,7 +137,7 @@ func (h *Handler) RevokeSession(ctx context.Context, params gen.RevokeSessionPar
 }
 
 func toAPIKey(k auth.APIKey) gen.ApiKey {
-	return gen.ApiKey{ID: k.ID, Name: k.Name, Prefix: k.Prefix, ReadOnly: k.ReadOnly, CreatedAt: k.CreatedAt,
+	return gen.ApiKey{ID: k.ID, Name: k.Name, Prefix: k.Prefix, ReadOnly: k.ReadOnly, IncludeAdult: gen.NewOptBool(k.IncludeAdult), CreatedAt: k.CreatedAt,
 		LastUsedAt: optTime(k.LastUsedAt)}
 }
 
@@ -163,7 +164,7 @@ func (h *Handler) CreateApiKey(ctx context.Context, req *gen.CreateApiKeyRequest
 	if err != nil {
 		return nil, err
 	}
-	k, key, err := h.Auth.CreateAPIKey(ctx, p, req.Name, req.ReadOnly.Or(false))
+	k, key, err := h.Auth.CreateAPIKeyWith(ctx, p, req.Name, auth.KeyOptions{ReadOnly: req.ReadOnly.Or(false), IncludeAdult: req.IncludeAdult.Or(false)})
 	if err != nil {
 		return nil, err
 	}

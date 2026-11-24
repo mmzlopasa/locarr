@@ -32,6 +32,11 @@ var headlines = map[string]map[notify.Type]string{
 		notify.SubtitleMissing:       "Subtitle still missing",
 		notify.MigrateFinished:       "Setup import finished",
 		notify.MigrateFailed:         "Setup import failed",
+		notify.AdultGrabbed:          "Adult: grabbed",
+		notify.AdultImported:         "Adult: imported",
+		notify.AdultUpgraded:         "Adult: upgraded",
+		notify.AdultDownloadFailed:   "Adult: download failed",
+		notify.AdultImportFailed:     "Adult: import failed",
 		notify.Test:                  "Test message from Locarr",
 	},
 	"hr": {
@@ -56,6 +61,11 @@ var headlines = map[string]map[notify.Type]string{
 		notify.SubtitleMissing:       "Titl još nedostaje",
 		notify.MigrateFinished:       "Uvoz setupa je gotov",
 		notify.MigrateFailed:         "Uvoz setupa nije uspio",
+		notify.AdultGrabbed:          "Odrasli: poslano na preuzimanje",
+		notify.AdultImported:         "Odrasli: uvezeno",
+		notify.AdultUpgraded:         "Odrasli: nadograđeno",
+		notify.AdultDownloadFailed:   "Odrasli: preuzimanje nije uspjelo",
+		notify.AdultImportFailed:     "Odrasli: uvoz nije uspio",
 		notify.Test:                  "Probna poruka iz Locarra",
 	},
 }
@@ -103,9 +113,10 @@ func Compose(ev notify.Event, l, baseURL string) Message {
 	}
 	if m := strings.TrimSpace(ev.Message); m != "" {
 		switch ev.Type {
-		case notify.RequestDeclined, notify.RequestFailed, notify.LibraryDownloadFailed, notify.LibraryImportFailed:
+		case notify.RequestDeclined, notify.RequestFailed, notify.LibraryDownloadFailed, notify.LibraryImportFailed, notify.AdultDownloadFailed,
+			notify.AdultImportFailed:
 			lines = append(lines, text(l, "reason")+": "+m)
-		case notify.LibraryGrabbed:
+		case notify.LibraryGrabbed, notify.AdultGrabbed:
 			lines = append(lines, text(l, "release")+": "+m)
 		default:
 			lines = append(lines, m)

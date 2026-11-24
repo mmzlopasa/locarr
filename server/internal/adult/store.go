@@ -58,40 +58,40 @@ type Performer struct {
 
 // File is a scene's or movie's file.
 type File struct {
-	ID           int64            `json:"id"`
-	Path         string           `json:"path"`
-	Size         int64            `json:"size"`
-	Quality      string           `json:"quality"`
+	ID           int64           `json:"id"`
+	Path         string          `json:"path"`
+	Size         int64           `json:"size"`
+	Quality      string          `json:"quality"`
 	Revision     parser.Revision `json:"revision"`
-	Score        int              `json:"score"`
-	ReleaseGroup string           `json:"releaseGroup,omitempty"`
-	SceneName    string           `json:"sceneName,omitempty"`
-	AddedAt      time.Time        `json:"addedAt"`
+	Score        int             `json:"score"`
+	ReleaseGroup string          `json:"releaseGroup,omitempty"`
+	SceneName    string          `json:"sceneName,omitempty"`
+	AddedAt      time.Time       `json:"addedAt"`
 }
 
 // Item is a scene or a movie.
 type Item struct {
-	ID               int64        `json:"id"`
-	Kind             string       `json:"kind"`
-	StudioID         *int64       `json:"studioId,omitempty"`
-	Studio           string       `json:"studio"`
-	Title            string       `json:"title"`
-	ReleaseDate      string       `json:"releaseDate,omitempty"`
-	Year             int          `json:"year,omitempty"`
-	Duration         int          `json:"duration,omitempty"`
-	Overview         string       `json:"overview,omitempty"`
-	StashDBID        string       `json:"stashdbId,omitempty"`
-	TPDBID           string       `json:"tpdbId,omitempty"`
-	PHash            string       `json:"phash,omitempty"`
-	SourceTags       []string     `json:"sourceTags"`
-	Image            string       `json:"image,omitempty"`
-	Monitored        bool         `json:"monitored"`
-	QualityProfileID int64        `json:"qualityProfileId"`
-	RootFolderID     *int64       `json:"rootFolderId,omitempty"`
-	Path             string       `json:"path"`
-	AddedAt          time.Time    `json:"addedAt"`
-	Performers       []PerfRef    `json:"performers"`
-	File             *File        `json:"file,omitempty"`
+	ID               int64     `json:"id"`
+	Kind             string    `json:"kind"`
+	StudioID         *int64    `json:"studioId,omitempty"`
+	Studio           string    `json:"studio"`
+	Title            string    `json:"title"`
+	ReleaseDate      string    `json:"releaseDate,omitempty"`
+	Year             int       `json:"year,omitempty"`
+	Duration         int       `json:"duration,omitempty"`
+	Overview         string    `json:"overview,omitempty"`
+	StashDBID        string    `json:"stashdbId,omitempty"`
+	TPDBID           string    `json:"tpdbId,omitempty"`
+	PHash            string    `json:"phash,omitempty"`
+	SourceTags       []string  `json:"sourceTags"`
+	Image            string    `json:"image,omitempty"`
+	Monitored        bool      `json:"monitored"`
+	QualityProfileID int64     `json:"qualityProfileId"`
+	RootFolderID     *int64    `json:"rootFolderId,omitempty"`
+	Path             string    `json:"path"`
+	AddedAt          time.Time `json:"addedAt"`
+	Performers       []PerfRef `json:"performers"`
+	File             *File     `json:"file,omitempty"`
 }
 
 // PerfRef names a performer of an item.

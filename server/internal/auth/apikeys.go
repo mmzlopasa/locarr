@@ -11,14 +11,14 @@ import (
 
 // APIKey describes a key (never the key itself, which is only stored hashed).
 type APIKey struct {
-	ID         int64
-	Name       string
-	Prefix     string
-	ReadOnly   bool
+	ID       int64
+	Name     string
+	Prefix   string
+	ReadOnly bool
 	// IncludeAdult: the key may see the adult library (when its owner may).
 	IncludeAdult bool
-	CreatedAt  time.Time
-	LastUsedAt *time.Time
+	CreatedAt    time.Time
+	LastUsedAt   *time.Time
 }
 
 // CreateAPIKey creates a key for the caller and returns it once. Only a session
