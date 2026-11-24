@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Search } from "lucide-react";
+import { Languages, Search } from "lucide-react";
 import { api, queryKeys, unwrap } from "@/api/client";
 import { formatRelative } from "@/components/format";
 import { Button, EmptyState, ErrorAlert, PageHeader, Spinner } from "@/components/ui";
@@ -26,6 +26,12 @@ export function WantedSubtitles() {
   });
   const search = useMutation({
     mutationFn: async (body: { refs?: string[]; all?: boolean }) => unwrap(await api.POST("/subtitles/wanted/search", { body: { ...body, ...(kind ? { kind } : {}) } })),
+    onSuccess: () => setSelected(new Set()),
+  });
+  const translators = useQuery({ queryKey: queryKeys.subtitleTranslators, queryFn: async () => unwrap(await api.GET("/subtitles/translators")) });
+  const canTranslate = (translators.data ?? []).some((x) => x.enabled);
+  const translate = useMutation({
+    mutationFn: async (body: { refs?: string[]; all?: boolean }) => unwrap(await api.POST("/subtitles/wanted/translate", { body: { ...body, ...(kind ? { kind } : {}) } })),
     onSuccess: () => setSelected(new Set()),
   });
   const items = list.data?.items ?? [];
@@ -52,6 +58,16 @@ export function WantedSubtitles() {
             <Button onClick={() => search.mutate({ refs: [...selected] })} disabled={selected.size === 0} busy={search.isPending} data-testid="subtitles-search-selected">
               <Search className="size-3.5" /> {t("wanted.searchSelected", { count: selected.size })}
             </Button>
+            {canTranslate ? (
+              <>
+                <Button onClick={() => translate.mutate({ refs: [...selected] })} disabled={selected.size === 0} busy={translate.isPending} data-testid="subtitles-translate-selected">
+                  <Languages className="size-3.5" /> {t("subtitles.wantedPage.translateSelected")}
+                </Button>
+                <Button onClick={() => translate.mutate({ all: true })} disabled={total === 0} busy={translate.isPending} data-testid="subtitles-translate-all">
+                  <Languages className="size-3.5" /> {t("subtitles.wantedPage.translateAll")}
+                </Button>
+              </>
+            ) : null}
             <Button variant="primary" onClick={() => search.mutate({ all: true })} disabled={total === 0} busy={search.isPending} data-testid="subtitles-search-all">
               <Search className="size-3.5" /> {t("subtitles.wantedPage.searchAll", { count: total })}
             </Button>
@@ -66,7 +82,8 @@ export function WantedSubtitles() {
         ))}
       </div>
       {search.data ? <p className="mb-2 text-[12px] text-success" role="status">{t("wanted.queued", { count: search.data.count })}</p> : null}
-      <ErrorAlert error={list.error ?? search.error ?? assign.error} />
+      {translate.data ? <p className="mb-2 text-[12px] text-success" role="status">{t("subtitles.wantedPage.translateQueued", { count: translate.data.count })}</p> : null}
+      <ErrorAlert error={list.error ?? search.error ?? assign.error ?? translate.error} />
       {selected.size > 0 ? (
         <div className="mb-3 flex flex-wrap items-end gap-2 rounded border border-line bg-surface-2 p-2">
           <div className="w-56">

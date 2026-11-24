@@ -3669,6 +3669,125 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/subtitles/translators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Translation services with usage and health (managers) */
+        get: operations["listSubtitleTranslators"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/translators/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleTranslatorName"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Change a translation service (administrators)
+         * @description The key is write-only and stored encrypted; an empty string removes it.
+         */
+        put: operations["updateSubtitleTranslator"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/translators/{name}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleTranslatorName"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Translate a sample line with a service (administrators) */
+        post: operations["testSubtitleTranslator"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/translators/{name}/health/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleTranslatorName"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Clear a translation service's backoff (managers) */
+        post: operations["resetSubtitleTranslatorHealth"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/translation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Translation options (administrators) */
+        get: operations["getSubtitleTranslationSettings"];
+        /** Change translation options (administrators) */
+        put: operations["updateSubtitleTranslationSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/items/{ref}/translate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Machine-translate missing subtitles of a movie or episode now (managers)
+         * @description Queues a translation of every missing language (or only `keys`, which may also name a language outside the profile)
+         *     from the best subtitle in another language. Progress shows in the item's `translations`; the result lands on the timeline.
+         */
+        post: operations["translateItemSubtitles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/subtitles/items/{ref}": {
         parameters: {
             query?: never;
@@ -3822,6 +3941,23 @@ export interface paths {
         put?: never;
         /** Queue subtitle searches for items, or for every item missing subtitles (managers) */
         post: operations["searchWantedSubtitles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subtitles/wanted/translate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Queue machine translations for items, or for every item missing subtitles (managers) */
+        post: operations["translateWantedSubtitles"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8067,6 +8203,8 @@ export interface components {
             forced: boolean;
             /** @enum {string} */
             hearingImpaired: "include" | "prefer" | "exclude" | "only";
+            /** @description Translation service for this language: empty = the language's default, none = never translate, or a service name. */
+            translator?: string;
         };
         SubtitleProfile: {
             /** Format: int64 */
@@ -8077,12 +8215,15 @@ export interface components {
             skipEmbedded: boolean;
             /** @description Stop once any language (in order) is present. */
             cutoff: boolean;
+            /** @description Machine-translate a missing language this many hours after the file arrived (0 = never automatically). */
+            translateAfterHours: number;
         };
         SubtitleProfileInput: {
             name: string;
             languages: components["schemas"]["SubtitleWant"][];
             skipEmbedded?: boolean;
             cutoff?: boolean;
+            translateAfterHours?: number;
         };
         SubtitleProfileAssign: {
             itemIds?: number[];
@@ -8178,7 +8319,8 @@ export interface components {
             hearingImpaired: boolean;
             format: string;
             /** @enum {string} */
-            source: "downloaded" | "disk";
+            source: "downloaded" | "disk" | "translated";
+            /** @description The subtitle provider, or for a machine translation the translation service. */
             provider: string;
             providerId: string;
             release: string;
@@ -8193,6 +8335,10 @@ export interface components {
             syncScale: number;
             /** Format: date-time */
             syncAt?: string;
+            /** @description Source language of a machine translation ('' otherwise). */
+            translatedFrom: string;
+            /** @description What it was translated from: subtitle:<file name> or track:<n>. */
+            translationSource: string;
             /** Format: date-time */
             addedAt: string;
         };
@@ -8214,14 +8360,17 @@ export interface components {
             language: string;
             forced: boolean;
             hearingImpaired: string;
-            /** @enum {string} */
-            status: "present" | "embedded" | "missing" | "skipped";
+            /**
+             * @description translated = only a machine translation so far (a human subtitle replaces it).
+             * @enum {string}
+             */
+            status: "present" | "embedded" | "translated" | "missing" | "skipped";
             /** Format: int64 */
             subtitleId?: number;
             trackIndex?: number;
         };
         SubtitleExplanation: {
-            /** @description no_file, disabled, no_profile, complete, complete_embedded, no_providers, providers_unavailable, not_searched, not_found. */
+            /** @description no_file, disabled, no_profile, complete, complete_embedded, complete_translated, no_providers, providers_unavailable, not_searched, not_found. */
             code: string;
             /** @enum {string} */
             tone: "success" | "info" | "warning" | "danger";
@@ -8253,6 +8402,139 @@ export interface components {
             providersAsked: number;
             explanation: components["schemas"]["SubtitleExplanation"];
             syncAvailable: boolean;
+            translations: components["schemas"]["SubtitleTranslationProgress"][];
+            /** @description A translation service is enabled. */
+            translationAvailable: boolean;
+        };
+        SubtitleTranslationProgress: {
+            ref: string;
+            /** @description The wanted key being translated ('' while queued for every missing one). */
+            key: string;
+            translator: string;
+            /** @enum {string} */
+            state: "queued" | "running";
+            /** @description Lines translated so far. */
+            done: number;
+            total: number;
+            /** Format: date-time */
+            startedAt: string;
+        };
+        SubtitleTranslator: {
+            /** @description libretranslate, deepl, openai, anthropic, gemini or openai-compatible */
+            name: string;
+            enabled: boolean;
+            fields: ("baseUrl" | "apiKey" | "model" | "formality" | "glossaryId")[];
+            needsKey: boolean;
+            needsUrl: boolean;
+            /** @description Runs on the user's own server; subtitle text stays at home. */
+            local: boolean;
+            /**
+             * @description What usage and the monthly cap count.
+             * @enum {string}
+             */
+            unit: "characters" | "tokens";
+            defaultModel: string;
+            models: string[];
+            website: string;
+            baseUrl: string;
+            apiKey: components["schemas"]["SecretState"];
+            model: string;
+            formality: string;
+            glossaryId: string;
+            /**
+             * Format: int64
+             * @description 0 = no cap.
+             */
+            monthlyCap: number;
+            failures: number;
+            /** Format: date-time */
+            retryAt?: string;
+            lastError: string;
+            /** @description cap, quota, rate_limited, auth, missing_key, bad_response, line_mismatch, unsupported_language, timeout, connection, error */
+            lastErrorCode: string;
+            /** Format: date-time */
+            lastErrorAt?: string;
+            /** Format: date-time */
+            lastSuccessAt?: string;
+            /**
+             * Format: int64
+             * @description Usage the service itself reports for its billing period (DeepL).
+             */
+            quotaUsed?: number;
+            /** Format: int64 */
+            quotaLimit?: number;
+            /** Format: date-time */
+            quotaCheckedAt?: string;
+            month: components["schemas"]["SubtitleTranslationUsage"];
+        };
+        SubtitleTranslationUsage: {
+            /** @description 2026-11 (UTC) */
+            month: string;
+            /** Format: int64 */
+            characters: number;
+            /** Format: int64 */
+            inputTokens: number;
+            /** Format: int64 */
+            outputTokens: number;
+            /** Format: int64 */
+            requests: number;
+            /** Format: int64 */
+            lines: number;
+            /** Format: int64 */
+            subtitles: number;
+        };
+        SubtitleTranslatorInput: {
+            enabled?: boolean;
+            baseUrl?: string;
+            /** @description Write-only; empty removes it. */
+            apiKey?: string;
+            model?: string;
+            /** @enum {string} */
+            formality?: "" | "default" | "prefer_more" | "prefer_less";
+            glossaryId?: string;
+            /** Format: int64 */
+            monthlyCap?: number;
+        };
+        SubtitleTranslatorTest: {
+            input: string;
+            output: string;
+            from: string;
+            to: string;
+            /** Format: int64 */
+            durationMs: number;
+            /** Format: int64 */
+            characters: number;
+            /** Format: int64 */
+            inputTokens: number;
+            /** Format: int64 */
+            outputTokens: number;
+            translator: components["schemas"]["SubtitleTranslator"];
+        };
+        SubtitleTranslationSettings: {
+            /** @description '' = the first enabled service. */
+            defaultTranslator: string;
+            /** @description Target language → service (or none). */
+            languageTranslators: {
+                [key: string]: string;
+            };
+            /** @description Marker in the file name (Movie.hr.<suffix>.srt); '' = none. */
+            suffix: string;
+            /** @description Languages to translate from, in order of preference (then any). */
+            sourceLanguages: string[];
+            /** @description Re-time translations made from a subtitle file against the audio. */
+            autoSync: boolean;
+            /** @description Automatic translations per hourly run. */
+            perHour: number;
+        };
+        SubtitleTranslationSettingsInput: {
+            defaultTranslator?: string;
+            languageTranslators?: {
+                [key: string]: string;
+            };
+            suffix?: string;
+            sourceLanguages?: string[];
+            autoSync?: boolean;
+            perHour?: number;
         };
         SubtitleProviderReport: {
             provider: string;
@@ -8324,6 +8606,8 @@ export interface components {
                 /** Format: int64 */
                 endMs: number;
                 text: string;
+                /** @description The source line of a machine translation. */
+                original?: string;
             }[];
         };
         WantedSubtitle: {
@@ -8464,7 +8748,7 @@ export interface components {
         /** @enum {string} */
         NotificationChannelKind: "webhook" | "ntfy" | "gotify" | "discord" | "telegram" | "pushover" | "email" | "apprise";
         /** @enum {string} */
-        NotificationEventType: "request.created" | "request.approved" | "request.declined" | "request.available" | "request.partial" | "request.failed" | "request.comment" | "issue.created" | "issue.comment" | "issue.resolved" | "issue.reopened" | "library.grabbed" | "library.imported" | "library.upgraded" | "library.download_failed" | "library.import_failed" | "health.warning" | "subtitles.downloaded" | "subtitles.missing" | "migrate.finished" | "migrate.failed" | "test";
+        NotificationEventType: "request.created" | "request.approved" | "request.declined" | "request.available" | "request.partial" | "request.failed" | "request.comment" | "issue.created" | "issue.comment" | "issue.resolved" | "issue.reopened" | "library.grabbed" | "library.imported" | "library.upgraded" | "library.download_failed" | "library.import_failed" | "health.warning" | "subtitles.downloaded" | "subtitles.missing" | "subtitles.translated" | "migrate.finished" | "migrate.failed" | "test";
         /** @description Plain settings; each kind uses only its own fields. */
         NotificationChannelSettings: {
             /** @description webhook: target URL; ntfy and gotify: server; apprise: notify endpoint (e.g. http://apprise:8000/notify/apprise). */
@@ -9125,6 +9409,7 @@ export interface components {
     parameters: {
         Provider: string;
         SubtitleProviderName: "opensubtitles" | "subdl" | "jimaku";
+        SubtitleTranslatorName: "libretranslate" | "deepl" | "openai" | "anthropic" | "gemini" | "openai-compatible";
         /** @description movie:ID or episode:ID */
         SubtitleItemRef: string;
         BackupName: string;
@@ -15451,6 +15736,185 @@ export interface operations {
             default: components["responses"]["Error"];
         };
     };
+    listSubtitleTranslators: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Services */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleTranslator"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSubtitleTranslator: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleTranslatorName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubtitleTranslatorInput"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleTranslator"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    testSubtitleTranslator: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleTranslatorName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    text?: string;
+                    from?: string;
+                    to?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description The translation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleTranslatorTest"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    resetSubtitleTranslatorHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: components["parameters"]["SubtitleTranslatorName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleTranslator"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getSubtitleTranslationSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Options */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleTranslationSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    updateSubtitleTranslationSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubtitleTranslationSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleTranslationSettings"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    translateItemSubtitles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description movie:ID or episode:ID */
+                ref: components["parameters"]["SubtitleItemRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    keys?: string[];
+                    translator?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Queued */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
     getItemSubtitles: {
         parameters: {
             query?: never;
@@ -15646,6 +16110,37 @@ export interface operations {
         responses: {
             /** @description Queued */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubtitleCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    translateWantedSubtitles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    refs?: string[];
+                    all?: boolean;
+                    /** @enum {string} */
+                    kind?: "movie" | "episode";
+                    translator?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Queued */
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -78,9 +78,11 @@ func toSubtitleProfile(p subtitles.Profile) (gen.SubtitleProfile, error) {
 }
 
 func fromSubtitleProfileInput(req *gen.SubtitleProfileInput) subtitles.ProfileInput {
-	in := subtitles.ProfileInput{Name: req.Name, SkipEmbedded: req.SkipEmbedded.Or(true), Cutoff: req.Cutoff.Or(false)}
+	in := subtitles.ProfileInput{Name: req.Name, SkipEmbedded: req.SkipEmbedded.Or(true), Cutoff: req.Cutoff.Or(false),
+		TranslateAfterHours: req.TranslateAfterHours.Or(0)}
 	for _, w := range req.Languages {
-		in.Languages = append(in.Languages, subtitles.Want{Language: w.Language, Forced: w.Forced, HearingImpaired: string(w.HearingImpaired)})
+		in.Languages = append(in.Languages, subtitles.Want{Language: w.Language, Forced: w.Forced, HearingImpaired: string(w.HearingImpaired),
+			Translator: w.Translator.Or("")})
 	}
 	return in
 }
@@ -370,7 +372,12 @@ func (h *Handler) GetItemSubtitles(ctx context.Context, p gen.GetItemSubtitlesPa
 	out := &gen.SubtitleItem{Ref: v.Ref, Title: v.Title, FilePath: v.FilePath, HasFile: v.HasFile, ProfileSource: gen.SubtitleItemProfileSource(v.Profile.Source),
 		ProfileOverride: v.Profile.Override, ProbeError: v.ProbeError, Searches: v.State.Searches, LastSearchAt: optTime(v.State.LastSearchAt),
 		NextSearchAt: optTime(v.State.NextSearchAt), LastResult: v.State.LastResult, ProvidersAsked: v.State.ProvidersAsked,
-		Explanation: toSubtitleExplanation(v.Explanation), SyncAvailable: v.SyncAvailable, Wants: []gen.SubtitleWantStatus{}, Tracks: []gen.MediaTrack{}}
+		Explanation: toSubtitleExplanation(v.Explanation), SyncAvailable: v.SyncAvailable, Wants: []gen.SubtitleWantStatus{}, Tracks: []gen.MediaTrack{},
+		TranslationAvailable: v.TranslationAvailable, Translations: []gen.SubtitleTranslationProgress{}}
+	for _, tp := range v.Translations {
+		out.Translations = append(out.Translations, gen.SubtitleTranslationProgress{Ref: tp.Ref, Key: tp.Key, Translator: tp.Translator,
+			State: gen.SubtitleTranslationProgressState(tp.State), Done: tp.Done, Total: tp.Total, StartedAt: tp.StartedAt})
+	}
 	if out.ProfileSource == "" {
 		out.ProfileSource = gen.SubtitleItemProfileSourceNone
 	}
@@ -590,7 +597,8 @@ func (h *Handler) PreviewSubtitle(ctx context.Context, p gen.PreviewSubtitlePara
 	}
 	out := &gen.SubtitlePreview{Total: total, Lines: make([]gen.SubtitlePreviewLinesItem, 0, len(cues))}
 	for _, c := range cues {
-		out.Lines = append(out.Lines, gen.SubtitlePreviewLinesItem{StartMs: c.Start.Milliseconds(), EndMs: c.End.Milliseconds(), Text: c.Text})
+		out.Lines = append(out.Lines, gen.SubtitlePreviewLinesItem{StartMs: c.Start.Milliseconds(), EndMs: c.End.Milliseconds(), Text: c.Text,
+			Original: optStr(c.Original)})
 	}
 	return out, nil
 }

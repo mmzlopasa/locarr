@@ -18,7 +18,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab) — pod „Napredno"; više nisu potrebni
 - [x] Prioriteti, oznake (tagovi), ograničenja zahtjeva (rate limit), dnevni limiti, backoff i zdravlje
 - [x] Paralelna pretraga svih indexera, rezultati čim stignu, ručna (interaktivna) pretraga
-- [x] Vlastiti preglednik za stranice iza provjere preglednika (D-100): neobavezni kontejner `locarr-browser` (compose profil `browser`), automatske provjere (JavaScript, čekaonica, managed) bez FlareSolverra, kolačići se ponovno koriste, CAPTCHA koja traži čovjeka se jasno prijavi; ploča stanja i test u Indexeri; FlareSolverr ostaje kao rezerva
+- [x] Vlastiti preglednik za stranice iza provjere preglednika (D-101): neobavezni kontejner `locarr-browser` (compose profil `browser`), automatske provjere (JavaScript, čekaonica, managed) bez FlareSolverra, kolačići se ponovno koriste, CAPTCHA koja traži čovjeka se jasno prijavi; ploča stanja i test u Indexeri; FlareSolverr ostaje kao rezerva
 - [ ] Proxyji po indexeru (HTTP/SOCKS5), FlareSolverr po izboru (ugrađeno; FlareSolverr testiran s lažnim servisom, proxyji još nisu testirani end-to-end)
 
 ## Parser i odluke (P2)
@@ -71,6 +71,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Provideri: OpenSubtitles.com (hash, ID-evi, prijava, kvota), SubDL, Jimaku; zdravlje, čekanje, kvote; ocjena podudaranja po izdanju (D-063, D-064) — provjereno s lažnim providerima napravljenim iz javne dokumentacije
 - [x] Automatska pretraga nakon uvoza, ponovna pretraga za nedostajuće raspoređena kroz dan, nadogradnje, ručni izbor, odbacivanje, skeniranje postojećih titlova
 - [x] Sinkronizacija titla po zvuku (vlastita, uz mali ffmpeg u slici), prema ugrađenom ili drugom titlu, pomak, broj sličica, pretvorba u UTF-8 i SRT (D-062, D-066)
+- [x] Strojni prijevod titlova kad traženog jezika nema: LibreTranslate, DeepL (Free/Pro), OpenAI, Anthropic, Gemini, OpenAI-kompatibilni poslužitelji (Ollama, LM Studio, vLLM); izvor iz datoteke ili tekstualnog zapisa u videu, vremena i ASS stilovi netaknuti, provjera broja redaka, mjesečne granice, automatski nakon N sati po profilu, „Prevedi" i skupno, oznaka „Strojni prijevod", ljudski titl ga zamjenjuje (D-100)
 - [ ] Provideri bez javnog API-ja (Podnapisi, Addic7ed, Titlovi.com) — nisu uključeni (D-063)
 
 ## Zahtjevi (P8)

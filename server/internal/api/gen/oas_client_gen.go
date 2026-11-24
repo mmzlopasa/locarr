@@ -835,6 +835,12 @@ type Invoker interface {
 	//
 	// GET /subtitles/settings
 	GetSubtitleSettings(ctx context.Context) (*SubtitleSettings, error)
+	// GetSubtitleTranslationSettings invokes getSubtitleTranslationSettings operation.
+	//
+	// Translation options (administrators).
+	//
+	// GET /subtitles/translation
+	GetSubtitleTranslationSettings(ctx context.Context) (*SubtitleTranslationSettings, error)
 	// GetSystemInfo invokes getSystemInfo operation.
 	//
 	// Unauthenticated. Clients use it to check a server address and whether first-run setup is needed.
@@ -1283,6 +1289,12 @@ type Invoker interface {
 	//
 	// GET /subtitles/providers
 	ListSubtitleProviders(ctx context.Context) ([]SubtitleProvider, error)
+	// ListSubtitleTranslators invokes listSubtitleTranslators operation.
+	//
+	// Translation services with usage and health (managers).
+	//
+	// GET /subtitles/translators
+	ListSubtitleTranslators(ctx context.Context) ([]SubtitleTranslator, error)
 	// ListTasks invokes listTasks operation.
 	//
 	// Scheduled tasks and recent job history (administrators).
@@ -1576,6 +1588,12 @@ type Invoker interface {
 	//
 	// POST /subtitles/providers/{name}/health/reset
 	ResetSubtitleProviderHealth(ctx context.Context, params ResetSubtitleProviderHealthParams) (*SubtitleProvider, error)
+	// ResetSubtitleTranslatorHealth invokes resetSubtitleTranslatorHealth operation.
+	//
+	// Clear a translation service's backoff (managers).
+	//
+	// POST /subtitles/translators/{name}/health/reset
+	ResetSubtitleTranslatorHealth(ctx context.Context, params ResetSubtitleTranslatorHealthParams) (*SubtitleTranslator, error)
 	// ResetUserPassword invokes resetUserPassword operation.
 	//
 	// Signs the user out everywhere and clears an account lockout.
@@ -1907,6 +1925,26 @@ type Invoker interface {
 	//
 	// POST /subtitles/providers/{name}/test
 	TestSubtitleProvider(ctx context.Context, params TestSubtitleProviderParams) (*SubtitleProvider, error)
+	// TestSubtitleTranslator invokes testSubtitleTranslator operation.
+	//
+	// Translate a sample line with a service (administrators).
+	//
+	// POST /subtitles/translators/{name}/test
+	TestSubtitleTranslator(ctx context.Context, request OptTestSubtitleTranslatorReq, params TestSubtitleTranslatorParams) (*SubtitleTranslatorTest, error)
+	// TranslateItemSubtitles invokes translateItemSubtitles operation.
+	//
+	// Queues a translation of every missing language (or only `keys`, which may also name a language
+	// outside the profile) from the best subtitle in another language. Progress shows in the item's
+	// `translations`; the result lands on the timeline.
+	//
+	// POST /subtitles/items/{ref}/translate
+	TranslateItemSubtitles(ctx context.Context, request OptTranslateItemSubtitlesReq, params TranslateItemSubtitlesParams) (*SubtitleCount, error)
+	// TranslateWantedSubtitles invokes translateWantedSubtitles operation.
+	//
+	// Queue machine translations for items, or for every item missing subtitles (managers).
+	//
+	// POST /subtitles/wanted/translate
+	TranslateWantedSubtitles(ctx context.Context, request *TranslateWantedSubtitlesReq) (*SubtitleCount, error)
 	// UnlinkMyIdentity invokes unlinkMyIdentity operation.
 	//
 	// Remove the caller's link to a provider.
@@ -2114,6 +2152,18 @@ type Invoker interface {
 	//
 	// PUT /subtitles/settings
 	UpdateSubtitleSettings(ctx context.Context, request *SubtitleSettingsInput) (*SubtitleSettings, error)
+	// UpdateSubtitleTranslationSettings invokes updateSubtitleTranslationSettings operation.
+	//
+	// Change translation options (administrators).
+	//
+	// PUT /subtitles/translation
+	UpdateSubtitleTranslationSettings(ctx context.Context, request *SubtitleTranslationSettingsInput) (*SubtitleTranslationSettings, error)
+	// UpdateSubtitleTranslator invokes updateSubtitleTranslator operation.
+	//
+	// The key is write-only and stored encrypted; an empty string removes it.
+	//
+	// PUT /subtitles/translators/{name}
+	UpdateSubtitleTranslator(ctx context.Context, request *SubtitleTranslatorInput, params UpdateSubtitleTranslatorParams) (*SubtitleTranslator, error)
 	// UpdateSystemSettings invokes updateSystemSettings operation.
 	//
 	// Leave `metricsToken` out to keep it, "" to turn `/metrics` off.
@@ -18551,6 +18601,119 @@ func (c *Client) sendGetSubtitleSettings(ctx context.Context) (res *SubtitleSett
 	return result, nil
 }
 
+// GetSubtitleTranslationSettings invokes getSubtitleTranslationSettings operation.
+//
+// Translation options (administrators).
+//
+// GET /subtitles/translation
+func (c *Client) GetSubtitleTranslationSettings(ctx context.Context) (*SubtitleTranslationSettings, error) {
+	res, err := c.sendGetSubtitleTranslationSettings(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetSubtitleTranslationSettings(ctx context.Context) (res *SubtitleTranslationSettings, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getSubtitleTranslationSettings"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/translation"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSubtitleTranslationSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/translation"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetSubtitleTranslationSettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetSubtitleTranslationSettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetSystemInfo invokes getSystemInfo operation.
 //
 // Unauthenticated. Clients use it to check a server address and whether first-run setup is needed.
@@ -28350,6 +28513,119 @@ func (c *Client) sendListSubtitleProviders(ctx context.Context) (res []SubtitleP
 	return result, nil
 }
 
+// ListSubtitleTranslators invokes listSubtitleTranslators operation.
+//
+// Translation services with usage and health (managers).
+//
+// GET /subtitles/translators
+func (c *Client) ListSubtitleTranslators(ctx context.Context) ([]SubtitleTranslator, error) {
+	res, err := c.sendListSubtitleTranslators(ctx)
+	return res, err
+}
+
+func (c *Client) sendListSubtitleTranslators(ctx context.Context) (res []SubtitleTranslator, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listSubtitleTranslators"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/subtitles/translators"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListSubtitleTranslatorsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/translators"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListSubtitleTranslatorsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListSubtitleTranslatorsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ListTasks invokes listTasks operation.
 //
 // Scheduled tasks and recent job history (administrators).
@@ -34365,6 +34641,138 @@ func (c *Client) sendResetSubtitleProviderHealth(ctx context.Context, params Res
 
 	stage = "DecodeResponse"
 	result, err := decodeResetSubtitleProviderHealthResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ResetSubtitleTranslatorHealth invokes resetSubtitleTranslatorHealth operation.
+//
+// Clear a translation service's backoff (managers).
+//
+// POST /subtitles/translators/{name}/health/reset
+func (c *Client) ResetSubtitleTranslatorHealth(ctx context.Context, params ResetSubtitleTranslatorHealthParams) (*SubtitleTranslator, error) {
+	res, err := c.sendResetSubtitleTranslatorHealth(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendResetSubtitleTranslatorHealth(ctx context.Context, params ResetSubtitleTranslatorHealthParams) (res *SubtitleTranslator, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("resetSubtitleTranslatorHealth"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/translators/{name}/health/reset"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ResetSubtitleTranslatorHealthOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/translators/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(string(params.Name)))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/health/reset"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ResetSubtitleTranslatorHealthOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeResetSubtitleTranslatorHealthResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -41240,6 +41648,394 @@ func (c *Client) sendTestSubtitleProvider(ctx context.Context, params TestSubtit
 	return result, nil
 }
 
+// TestSubtitleTranslator invokes testSubtitleTranslator operation.
+//
+// Translate a sample line with a service (administrators).
+//
+// POST /subtitles/translators/{name}/test
+func (c *Client) TestSubtitleTranslator(ctx context.Context, request OptTestSubtitleTranslatorReq, params TestSubtitleTranslatorParams) (*SubtitleTranslatorTest, error) {
+	res, err := c.sendTestSubtitleTranslator(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendTestSubtitleTranslator(ctx context.Context, request OptTestSubtitleTranslatorReq, params TestSubtitleTranslatorParams) (res *SubtitleTranslatorTest, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("testSubtitleTranslator"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/translators/{name}/test"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, TestSubtitleTranslatorOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/translators/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(string(params.Name)))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/test"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeTestSubtitleTranslatorRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, TestSubtitleTranslatorOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeTestSubtitleTranslatorResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// TranslateItemSubtitles invokes translateItemSubtitles operation.
+//
+// Queues a translation of every missing language (or only `keys`, which may also name a language
+// outside the profile) from the best subtitle in another language. Progress shows in the item's
+// `translations`; the result lands on the timeline.
+//
+// POST /subtitles/items/{ref}/translate
+func (c *Client) TranslateItemSubtitles(ctx context.Context, request OptTranslateItemSubtitlesReq, params TranslateItemSubtitlesParams) (*SubtitleCount, error) {
+	res, err := c.sendTranslateItemSubtitles(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendTranslateItemSubtitles(ctx context.Context, request OptTranslateItemSubtitlesReq, params TranslateItemSubtitlesParams) (res *SubtitleCount, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("translateItemSubtitles"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/items/{ref}/translate"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, TranslateItemSubtitlesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/subtitles/items/"
+	{
+		// Encode "ref" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "ref",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Ref))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/translate"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeTranslateItemSubtitlesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, TranslateItemSubtitlesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeTranslateItemSubtitlesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// TranslateWantedSubtitles invokes translateWantedSubtitles operation.
+//
+// Queue machine translations for items, or for every item missing subtitles (managers).
+//
+// POST /subtitles/wanted/translate
+func (c *Client) TranslateWantedSubtitles(ctx context.Context, request *TranslateWantedSubtitlesReq) (*SubtitleCount, error) {
+	res, err := c.sendTranslateWantedSubtitles(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendTranslateWantedSubtitles(ctx context.Context, request *TranslateWantedSubtitlesReq) (res *SubtitleCount, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("translateWantedSubtitles"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/subtitles/wanted/translate"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, TranslateWantedSubtitlesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/wanted/translate"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeTranslateWantedSubtitlesRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, TranslateWantedSubtitlesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeTranslateWantedSubtitlesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // UnlinkMyIdentity invokes unlinkMyIdentity operation.
 //
 // Remove the caller's link to a provider.
@@ -45608,6 +46404,256 @@ func (c *Client) sendUpdateSubtitleSettings(ctx context.Context, request *Subtit
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateSubtitleSettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateSubtitleTranslationSettings invokes updateSubtitleTranslationSettings operation.
+//
+// Change translation options (administrators).
+//
+// PUT /subtitles/translation
+func (c *Client) UpdateSubtitleTranslationSettings(ctx context.Context, request *SubtitleTranslationSettingsInput) (*SubtitleTranslationSettings, error) {
+	res, err := c.sendUpdateSubtitleTranslationSettings(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendUpdateSubtitleTranslationSettings(ctx context.Context, request *SubtitleTranslationSettingsInput) (res *SubtitleTranslationSettings, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateSubtitleTranslationSettings"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.URLTemplateKey.String("/subtitles/translation"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateSubtitleTranslationSettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/subtitles/translation"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateSubtitleTranslationSettingsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, UpdateSubtitleTranslationSettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateSubtitleTranslationSettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateSubtitleTranslator invokes updateSubtitleTranslator operation.
+//
+// The key is write-only and stored encrypted; an empty string removes it.
+//
+// PUT /subtitles/translators/{name}
+func (c *Client) UpdateSubtitleTranslator(ctx context.Context, request *SubtitleTranslatorInput, params UpdateSubtitleTranslatorParams) (*SubtitleTranslator, error) {
+	res, err := c.sendUpdateSubtitleTranslator(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateSubtitleTranslator(ctx context.Context, request *SubtitleTranslatorInput, params UpdateSubtitleTranslatorParams) (res *SubtitleTranslator, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("updateSubtitleTranslator"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.URLTemplateKey.String("/subtitles/translators/{name}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateSubtitleTranslatorOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/subtitles/translators/"
+	{
+		// Encode "name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(string(params.Name)))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateSubtitleTranslatorRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, UpdateSubtitleTranslatorOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateSubtitleTranslatorResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

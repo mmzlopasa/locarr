@@ -131,6 +131,9 @@ export type SubtitleWant = Schemas["SubtitleWant"];
 export type SubtitleSettings = Schemas["SubtitleSettings"];
 export type SubtitleProvider = Schemas["SubtitleProvider"];
 export type Subtitle = Schemas["Subtitle"];
+export type SubtitleTranslator = Schemas["SubtitleTranslator"];
+export type SubtitleTranslationSettings = Schemas["SubtitleTranslationSettings"];
+export type SubtitleTranslationProgress = Schemas["SubtitleTranslationProgress"];
 export type SubtitleItem = Schemas["SubtitleItem"];
 export type SubtitleWantStatus = Schemas["SubtitleWantStatus"];
 export type SubtitleExplanation = Schemas["SubtitleExplanation"];
@@ -339,6 +342,8 @@ export const queryKeys = {
   subtitleProfiles: ["subtitles", "profiles"] as const,
   subtitleProviders: ["subtitles", "providers"] as const,
   subtitleSettings: ["subtitles", "settings"] as const,
+  subtitleTranslators: ["subtitles", "translators"] as const,
+  subtitleTranslation: ["subtitles", "translation"] as const,
   wantedSubtitles: (kind: string, offset: number) => ["subtitles", "wanted", kind, offset] as const,
   exclusions: ["exclusions"] as const,
   discover: ["discover"] as const,

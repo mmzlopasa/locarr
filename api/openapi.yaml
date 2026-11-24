@@ -4833,6 +4833,142 @@ paths:
               schema: {$ref: "#/components/schemas/SubtitleProvider"}
         default:
           $ref: "#/components/responses/Error"
+  /subtitles/translators:
+    get:
+      operationId: listSubtitleTranslators
+      summary: Translation services with usage and health (managers)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: Services
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/SubtitleTranslator"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/translators/{name}:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleTranslatorName"
+    put:
+      operationId: updateSubtitleTranslator
+      summary: Change a translation service (administrators)
+      description: The key is write-only and stored encrypted; an empty string removes it.
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SubtitleTranslatorInput"}
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleTranslator"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/translators/{name}/test:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleTranslatorName"
+    post:
+      operationId: testSubtitleTranslator
+      summary: Translate a sample line with a service (administrators)
+      tags: [subtitles]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text: {type: string, maxLength: 500}
+                from: {type: string, maxLength: 10}
+                to: {type: string, maxLength: 10}
+      responses:
+        "200":
+          description: The translation
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleTranslatorTest"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/translators/{name}/health/reset:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleTranslatorName"
+    post:
+      operationId: resetSubtitleTranslatorHealth
+      summary: Clear a translation service's backoff (managers)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: Reset
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleTranslator"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/translation:
+    get:
+      operationId: getSubtitleTranslationSettings
+      summary: Translation options (administrators)
+      tags: [subtitles]
+      responses:
+        "200":
+          description: Options
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleTranslationSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      operationId: updateSubtitleTranslationSettings
+      summary: Change translation options (administrators)
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/SubtitleTranslationSettingsInput"}
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleTranslationSettings"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/items/{ref}/translate:
+    parameters:
+      - $ref: "#/components/parameters/SubtitleItemRef"
+    post:
+      operationId: translateItemSubtitles
+      summary: Machine-translate missing subtitles of a movie or episode now (managers)
+      description: |
+        Queues a translation of every missing language (or only `keys`, which may also name a language outside the profile)
+        from the best subtitle in another language. Progress shows in the item's `translations`; the result lands on the timeline.
+      tags: [subtitles]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keys:
+                  type: array
+                  maxItems: 20
+                  items: {type: string, maxLength: 20}
+                translator: {type: string, maxLength: 40}
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleCount"}
+        default:
+          $ref: "#/components/responses/Error"
   /subtitles/items/{ref}:
     parameters:
       - $ref: "#/components/parameters/SubtitleItemRef"
@@ -4985,6 +5121,33 @@ paths:
                 kind: {type: string, enum: [movie, episode]}
       responses:
         "200":
+          description: Queued
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SubtitleCount"}
+        default:
+          $ref: "#/components/responses/Error"
+  /subtitles/wanted/translate:
+    post:
+      operationId: translateWantedSubtitles
+      summary: Queue machine translations for items, or for every item missing subtitles (managers)
+      tags: [subtitles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refs:
+                  type: array
+                  maxItems: 1000
+                  items: {type: string, maxLength: 40}
+                all: {type: boolean}
+                kind: {type: string, enum: [movie, episode]}
+                translator: {type: string, maxLength: 40}
+      responses:
+        "202":
           description: Queued
           content:
             application/json:
@@ -6129,6 +6292,13 @@ components:
       schema:
         type: string
         enum: [opensubtitles, subdl, jimaku]
+    SubtitleTranslatorName:
+      name: name
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [libretranslate, deepl, openai, anthropic, gemini, openai-compatible]
     SubtitleItemRef:
       name: ref
       in: path
@@ -11115,9 +11285,13 @@ components:
         language: {type: string, maxLength: 10}
         forced: {type: boolean, description: Only foreign-parts (forced) subtitles.}
         hearingImpaired: {type: string, enum: [include, prefer, exclude, only]}
+        translator:
+          type: string
+          maxLength: 40
+          description: "Translation service for this language: empty = the language's default, none = never translate, or a service name."
     SubtitleProfile:
       type: object
-      required: [id, name, languages, skipEmbedded, cutoff]
+      required: [id, name, languages, skipEmbedded, cutoff, translateAfterHours]
       properties:
         id: {type: integer, format: int64}
         name: {type: string}
@@ -11126,6 +11300,7 @@ components:
           items: {$ref: "#/components/schemas/SubtitleWant"}
         skipEmbedded: {type: boolean, description: A matching text or image track inside the video counts as present.}
         cutoff: {type: boolean, description: Stop once any language (in order) is present.}
+        translateAfterHours: {type: integer, description: "Machine-translate a missing language this many hours after the file arrived (0 = never automatically)."}
     SubtitleProfileInput:
       type: object
       required: [name, languages]
@@ -11138,6 +11313,7 @@ components:
           items: {$ref: "#/components/schemas/SubtitleWant"}
         skipEmbedded: {type: boolean}
         cutoff: {type: boolean}
+        translateAfterHours: {type: integer, minimum: 0, maximum: 8760}
     SubtitleProfileAssign:
       type: object
       required: [profileId]
@@ -11215,7 +11391,7 @@ components:
         password: {type: string, maxLength: 512, description: Write-only; empty removes it.}
     Subtitle:
       type: object
-      required: [id, mediaFileId, itemRef, path, language, forced, hearingImpaired, format, source, provider, providerId, release, encoding, syncState, syncMessage, syncOffsetMs, syncScale, addedAt]
+      required: [id, mediaFileId, itemRef, path, language, forced, hearingImpaired, format, source, provider, providerId, release, encoding, syncState, syncMessage, syncOffsetMs, syncScale, translatedFrom, translationSource, addedAt]
       properties:
         id: {type: integer, format: int64}
         mediaFileId: {type: integer, format: int64}
@@ -11225,8 +11401,8 @@ components:
         forced: {type: boolean}
         hearingImpaired: {type: boolean}
         format: {type: string}
-        source: {type: string, enum: [downloaded, disk]}
-        provider: {type: string}
+        source: {type: string, enum: [downloaded, disk, translated]}
+        provider: {type: string, description: "The subtitle provider, or for a machine translation the translation service."}
         providerId: {type: string}
         release: {type: string}
         score: {type: integer}
@@ -11236,6 +11412,8 @@ components:
         syncOffsetMs: {type: integer, format: int64}
         syncScale: {type: number}
         syncAt: {type: string, format: date-time}
+        translatedFrom: {type: string, description: "Source language of a machine translation ('' otherwise)."}
+        translationSource: {type: string, description: "What it was translated from: subtitle:<file name> or track:<n>."}
         addedAt: {type: string, format: date-time}
     MediaTrack:
       type: object
@@ -11258,7 +11436,7 @@ components:
         language: {type: string}
         forced: {type: boolean}
         hearingImpaired: {type: string}
-        status: {type: string, enum: [present, embedded, missing, skipped]}
+        status: {type: string, enum: [present, embedded, translated, missing, skipped], description: "translated = only a machine translation so far (a human subtitle replaces it)."}
         subtitleId: {type: integer, format: int64}
         trackIndex: {type: integer}
     SubtitleExplanation:
@@ -11267,13 +11445,13 @@ components:
       properties:
         code:
           type: string
-          description: no_file, disabled, no_profile, complete, complete_embedded, no_providers, providers_unavailable, not_searched, not_found.
+          description: no_file, disabled, no_profile, complete, complete_embedded, complete_translated, no_providers, providers_unavailable, not_searched, not_found.
         tone: {type: string, enum: [success, info, warning, danger]}
         message: {type: string}
         params: {type: object, additionalProperties: true}
     SubtitleItem:
       type: object
-      required: [ref, title, filePath, hasFile, profileSource, profileOverride, wants, subtitles, tracks, probeError, searches, lastResult, providersAsked, explanation, syncAvailable]
+      required: [ref, title, filePath, hasFile, profileSource, profileOverride, wants, subtitles, tracks, probeError, searches, lastResult, providersAsked, explanation, syncAvailable, translations, translationAvailable]
       properties:
         ref: {type: string}
         title: {type: string}
@@ -11299,6 +11477,121 @@ components:
         providersAsked: {type: integer}
         explanation: {$ref: "#/components/schemas/SubtitleExplanation"}
         syncAvailable: {type: boolean}
+        translations:
+          type: array
+          items: {$ref: "#/components/schemas/SubtitleTranslationProgress"}
+        translationAvailable: {type: boolean, description: A translation service is enabled.}
+    SubtitleTranslationProgress:
+      type: object
+      required: [ref, key, translator, state, done, total, startedAt]
+      properties:
+        ref: {type: string}
+        key: {type: string, description: "The wanted key being translated ('' while queued for every missing one)."}
+        translator: {type: string}
+        state: {type: string, enum: [queued, running]}
+        done: {type: integer, description: Lines translated so far.}
+        total: {type: integer}
+        startedAt: {type: string, format: date-time}
+    SubtitleTranslator:
+      type: object
+      required: [name, enabled, fields, needsKey, needsUrl, local, unit, defaultModel, models, website, baseUrl, apiKey, model, formality,
+        glossaryId, monthlyCap, failures, lastError, lastErrorCode, month]
+      properties:
+        name: {type: string, description: "libretranslate, deepl, openai, anthropic, gemini or openai-compatible"}
+        enabled: {type: boolean}
+        fields:
+          type: array
+          items: {type: string, enum: [baseUrl, apiKey, model, formality, glossaryId]}
+        needsKey: {type: boolean}
+        needsUrl: {type: boolean}
+        local: {type: boolean, description: Runs on the user's own server; subtitle text stays at home.}
+        unit: {type: string, enum: [characters, tokens], description: What usage and the monthly cap count.}
+        defaultModel: {type: string}
+        models:
+          type: array
+          items: {type: string}
+        website: {type: string}
+        baseUrl: {type: string}
+        apiKey: {$ref: "#/components/schemas/SecretState"}
+        model: {type: string}
+        formality: {type: string}
+        glossaryId: {type: string}
+        monthlyCap: {type: integer, format: int64, description: 0 = no cap.}
+        failures: {type: integer}
+        retryAt: {type: string, format: date-time}
+        lastError: {type: string}
+        lastErrorCode: {type: string, description: "cap, quota, rate_limited, auth, missing_key, bad_response, line_mismatch, unsupported_language, timeout, connection, error"}
+        lastErrorAt: {type: string, format: date-time}
+        lastSuccessAt: {type: string, format: date-time}
+        quotaUsed: {type: integer, format: int64, description: Usage the service itself reports for its billing period (DeepL).}
+        quotaLimit: {type: integer, format: int64}
+        quotaCheckedAt: {type: string, format: date-time}
+        month: {$ref: "#/components/schemas/SubtitleTranslationUsage"}
+    SubtitleTranslationUsage:
+      type: object
+      required: [month, characters, inputTokens, outputTokens, requests, lines, subtitles]
+      properties:
+        month: {type: string, description: "2026-11 (UTC)"}
+        characters: {type: integer, format: int64}
+        inputTokens: {type: integer, format: int64}
+        outputTokens: {type: integer, format: int64}
+        requests: {type: integer, format: int64}
+        lines: {type: integer, format: int64}
+        subtitles: {type: integer, format: int64}
+    SubtitleTranslatorInput:
+      type: object
+      properties:
+        enabled: {type: boolean}
+        baseUrl: {type: string, maxLength: 300}
+        apiKey: {type: string, maxLength: 512, description: Write-only; empty removes it.}
+        model: {type: string, maxLength: 100}
+        formality: {type: string, enum: ["", default, prefer_more, prefer_less]}
+        glossaryId: {type: string, maxLength: 100}
+        monthlyCap: {type: integer, format: int64, minimum: 0}
+    SubtitleTranslatorTest:
+      type: object
+      required: [input, output, from, to, durationMs, characters, inputTokens, outputTokens, translator]
+      properties:
+        input: {type: string}
+        output: {type: string}
+        from: {type: string}
+        to: {type: string}
+        durationMs: {type: integer, format: int64}
+        characters: {type: integer, format: int64}
+        inputTokens: {type: integer, format: int64}
+        outputTokens: {type: integer, format: int64}
+        translator: {$ref: "#/components/schemas/SubtitleTranslator"}
+    SubtitleTranslationSettings:
+      type: object
+      required: [defaultTranslator, languageTranslators, suffix, sourceLanguages, autoSync, perHour]
+      properties:
+        defaultTranslator: {type: string, description: "'' = the first enabled service."}
+        languageTranslators:
+          type: object
+          description: Target language → service (or none).
+          additionalProperties: {type: string}
+        suffix: {type: string, description: "Marker in the file name (Movie.hr.<suffix>.srt); '' = none."}
+        sourceLanguages:
+          type: array
+          description: Languages to translate from, in order of preference (then any).
+          items: {type: string}
+        autoSync: {type: boolean, description: Re-time translations made from a subtitle file against the audio.}
+        perHour: {type: integer, description: Automatic translations per hourly run.}
+    SubtitleTranslationSettingsInput:
+      type: object
+      properties:
+        defaultTranslator: {type: string, maxLength: 40}
+        languageTranslators:
+          type: object
+          maxProperties: 200
+          additionalProperties: {type: string, maxLength: 40}
+        suffix: {type: string, maxLength: 20}
+        sourceLanguages:
+          type: array
+          maxItems: 20
+          items: {type: string, maxLength: 10}
+        autoSync: {type: boolean}
+        perHour: {type: integer, minimum: 0, maximum: 500}
     SubtitleProviderReport:
       type: object
       required: [provider, results]
@@ -11397,6 +11690,7 @@ components:
               startMs: {type: integer, format: int64}
               endMs: {type: integer, format: int64}
               text: {type: string}
+              original: {type: string, description: The source line of a machine translation.}
     WantedSubtitle:
       type: object
       required: [ref, kind, itemId, title, missing, searches, lastResult]
@@ -11561,7 +11855,7 @@ components:
       type: string
       enum: [request.created, request.approved, request.declined, request.available, request.partial, request.failed,
         request.comment, issue.created, issue.comment, issue.resolved, issue.reopened, library.grabbed, library.imported,
-        library.upgraded, library.download_failed, library.import_failed, health.warning, subtitles.downloaded, subtitles.missing, migrate.finished, migrate.failed, test]
+        library.upgraded, library.download_failed, library.import_failed, health.warning, subtitles.downloaded, subtitles.missing, subtitles.translated, migrate.finished, migrate.failed, test]
     NotificationChannelSettings:
       type: object
       description: Plain settings; each kind uses only its own fields.

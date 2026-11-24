@@ -18,20 +18,20 @@ const movie = (over: Partial<Movie> = {}): Movie => ({
 const sub = (over: Partial<Subtitle> = {}): Subtitle => ({
   id: 5, mediaFileId: 1, itemRef: "movie:1", path: "/data/media/movies/BBB/Big Buck Bunny (2008).hr.srt", language: "hr", forced: false,
   hearingImpaired: false, format: "srt", source: "downloaded", provider: "opensubtitles", providerId: "9100001", release: "Big.Buck.Bunny.2008.1080p.BluRay.x264-LOCARR",
-  score: 90, encoding: "windows-1250", syncState: "", syncMessage: "", syncOffsetMs: 0, syncScale: 1, addedAt: now, ...over,
+  score: 90, encoding: "windows-1250", syncState: "", syncMessage: "", syncOffsetMs: 0, syncScale: 1, translatedFrom: "", translationSource: "", addedAt: now, ...over,
 });
 
 const item = (over: Partial<SubtitleItem> = {}): SubtitleItem => ({
   ref: "movie:1", title: "Big Buck Bunny", filePath: "/data/media/movies/BBB/Big Buck Bunny (2008).mkv", hasFile: true,
   profile: { id: 1, name: "Hrvatski", languages: [{ language: "hr", forced: false, hearingImpaired: "include" }, { language: "en", forced: false, hearingImpaired: "include" }],
-    skipEmbedded: true, cutoff: false },
+    skipEmbedded: true, cutoff: false, translateAfterHours: 0 },
   profileSource: "default", profileOverride: 0,
   wants: [{ key: "hr", language: "hr", forced: false, hearingImpaired: "include", status: "present", subtitleId: 5 },
     { key: "en", language: "en", forced: false, hearingImpaired: "include", status: "missing" }],
   subtitles: [sub()],
   tracks: [{ index: 0, kind: "audio", codec: "ac3", language: "en", name: "", default: true, forced: false, hearingImpaired: false, text: false },
     { index: 0, kind: "subtitle", codec: "srt", language: "en", name: "English", default: false, forced: false, hearingImpaired: false, text: true }],
-  probeError: "", searches: 2, lastResult: "", providersAsked: 2, syncAvailable: false,
+  probeError: "", searches: 2, lastResult: "", providersAsked: 2, syncAvailable: false, translations: [], translationAvailable: false,
   explanation: { code: "not_found", tone: "warning", message: "x", params: { missing: ["en"], searches: 2, providers: 2 } },
   ...over,
 });

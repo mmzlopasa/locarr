@@ -6,6 +6,7 @@ import { api, queryKeys, unwrap, type SubtitleProfile, type SubtitleProvider, ty
 import { formatDateTime } from "@/components/format";
 import { Alert, Badge, Button, Checkbox, ConfirmButton, ErrorAlert, PageHeader, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
 import { languageName, useSubtitleProfiles } from "./common";
+import { ProfileTranslatorSelect, TranslationSettingsPanel } from "./TranslationSettings";
 
 /** Settings → Subtitles: language profiles, providers with health and quota, options. */
 export function SubtitleSettingsPage() {
@@ -16,6 +17,7 @@ export function SubtitleSettingsPage() {
       <Options />
       <Profiles />
       <Providers />
+      <TranslationSettingsPanel />
       <ApplyToLibrary />
     </div>
   );
@@ -98,6 +100,7 @@ function Profiles() {
             <span className="text-[13px] font-medium text-fg">{p.name}</span>
             <span className="text-[12px] text-muted">{p.languages.map((w) => wantText(t, w)).join(" → ")}</span>
             {p.cutoff ? <Badge>{t("subtitles.settings.cutoffShort")}</Badge> : null}
+            {p.translateAfterHours > 0 ? <Badge tone="info">{t("subtitles.settings.translation.title")} · {p.translateAfterHours} h</Badge> : null}
             <Button variant="ghost" className="ml-auto" onClick={() => setEditing(p)}>{t("subtitles.settings.edit")}</Button>
           </li>
         ))}
@@ -122,10 +125,11 @@ function ProfileForm({ profile, onDone }: { profile: SubtitleProfile | null; onD
   const [wants, setWants] = useState<SubtitleWant[]>(profile?.languages ?? [{ language: "hr", forced: false, hearingImpaired: "include" }]);
   const [skip, setSkip] = useState(profile?.skipEmbedded ?? true);
   const [cutoff, setCutoff] = useState(profile?.cutoff ?? false);
+  const [after, setAfter] = useState(String(profile?.translateAfterHours ?? 0));
   const done = () => { void qc.invalidateQueries({ queryKey: queryKeys.subtitleProfiles }); onDone(); };
   const save = useMutation({
     mutationFn: async () => {
-      const body = { name, languages: wants, skipEmbedded: skip, cutoff };
+      const body = { name, languages: wants, skipEmbedded: skip, cutoff, translateAfterHours: Math.min(Math.max(0, Math.round(Number(after) || 0)), 8760) };
       return profile
         ? unwrap(await api.PUT("/subtitles/profiles/{id}", { params: { path: { id: profile.id } }, body }))
         : unwrap(await api.POST("/subtitles/profiles", { body }));
@@ -165,6 +169,7 @@ function ProfileForm({ profile, onDone }: { profile: SubtitleProfile | null; onD
               </SelectInput>
             </div>
             <div className="pb-1.5"><Checkbox label={t("subtitles.settings.forcedOnly")} checked={w.forced} onChange={(e) => update(i, { forced: e.target.checked })} /></div>
+            <div className="w-48"><ProfileTranslatorSelect value={w.translator ?? ""} onChange={(v) => update(i, { translator: v })} /></div>
             <Button variant="ghost" disabled={i === 0} onClick={() => move(i, -1)} aria-label={t("subtitles.settings.up")}><ArrowUp className="size-3.5" /></Button>
             <Button variant="ghost" disabled={i === wants.length - 1} onClick={() => move(i, 1)} aria-label={t("subtitles.settings.down")}><ArrowDown className="size-3.5" /></Button>
             <Button variant="ghost" disabled={wants.length === 1} onClick={() => setWants(wants.filter((_, j) => j !== i))} aria-label={t("common.delete")}>
@@ -179,6 +184,10 @@ function ProfileForm({ profile, onDone }: { profile: SubtitleProfile | null; onD
       <div className="space-y-2">
         <Checkbox label={t("subtitles.settings.skipEmbedded")} description={t("subtitles.settings.skipEmbeddedHint")} checked={skip} onChange={(e) => setSkip(e.target.checked)} />
         <Checkbox label={t("subtitles.settings.cutoff")} description={t("subtitles.settings.cutoffHint")} checked={cutoff} onChange={(e) => setCutoff(e.target.checked)} />
+      </div>
+      <div className="max-w-sm">
+        <TextInput label={t("subtitles.settings.translation.profileAfter")} inputMode="numeric" value={after} onChange={(e) => setAfter(e.target.value)}
+          hint={t("subtitles.settings.translation.profileAfterHint")} data-testid="profile-translate-after" />
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="primary" onClick={() => save.mutate()} busy={save.isPending} disabled={!name.trim()} data-testid="profile-save">{t("common.save")}</Button>
