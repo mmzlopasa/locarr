@@ -20,12 +20,18 @@ export function AdultLayout() {
   const { t } = useTranslation();
   const prefs = useAdultPreferences();
   const setBlur = useSetBlur();
+  // Local value so the checkbox flips on the click itself, before the save returns.
+  const [blur, setBlurLocal] = useState<boolean | null>(null);
   return (
     <div data-testid="adult-section">
       <PageHeader title={t("adult.title")} description={t("adult.description")}
         actions={
-          <Checkbox label={t("adult.blur")} checked={prefs.data?.blur ?? true} disabled={!prefs.data}
-            onChange={(e) => setBlur.mutate(e.target.checked)} />
+          <Checkbox label={t("adult.blur")} checked={blur ?? prefs.data?.blur ?? true} disabled={!prefs.data}
+            onChange={(e) => {
+              const next = e.target.checked;
+              setBlurLocal(next);
+              setBlur.mutate(next, { onError: () => setBlurLocal(null) });
+            }} />
         } />
       <Tabs label={t("adult.title")} tabs={[
         { to: "/adult", label: t("adult.tabs.scenes") },
