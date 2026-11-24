@@ -98,19 +98,17 @@ func AdultCategories(c *znab.Caps) []int {
 	return out
 }
 
-// AdultCapable reports whether an indexer can answer adult searches: a
-// built-in site whose definition maps adult categories, or a Torznab/Newznab
-// indexer whose capabilities list 6xxx (or are not known yet). Indexers that
-// cannot are left out of adult searches even when opted in (D-108).
+// AdultCapable reports whether an indexer can answer adult searches. A
+// built-in site can when its definition maps adult categories; built-ins
+// that cannot are left out of adult searches even when opted in (D-108).
+// Torznab/Newznab indexers are left to the administrator's choice: their
+// capabilities do not always list every category they return.
 func (s *Service) AdultCapable(ind Indexer) bool {
 	if ind.Kind == Native {
 		d, ok := s.Definition(ind.Definition)
 		return ok && d.HasAdult()
 	}
-	if ind.Caps == nil {
-		return true
-	}
-	return slices.ContainsFunc(ind.Caps.CategoryIDs(), func(id int) bool { return inRange(id, catAdult) })
+	return true
 }
 
 // adultOnly reports a built-in site that carries nothing but adult content:

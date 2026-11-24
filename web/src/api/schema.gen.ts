@@ -6169,7 +6169,7 @@ export interface components {
             caps?: components["schemas"]["IndexerCaps"];
             /** Format: date-time */
             capsUpdatedAt?: string;
-            /** @description The indexer can answer adult searches (a built-in site with adult categories, or a Torznab/Newznab indexer whose capabilities list 6xxx or are not known yet). Others are left out of adult searches. */
+            /** @description The indexer can answer adult searches: a built-in site whose definition has adult categories, or any Torznab/Newznab indexer (its capabilities do not always list every category). Built-in sites without adult categories are left out of adult searches. */
             adultCapable?: boolean;
             health: components["schemas"]["IndexerHealth"];
             /** Format: date-time */
