@@ -116,6 +116,50 @@ u pozadini pridružuju albumima **tamo gdje jesu** — ništa se ne premješta n
 albuma pokazuje koliko je datoteka pronađeno i s kojim bodovima; mape koje ne odgovaraju ni jednom albumu
 (npr. jer ih profil metapodataka isključuje) zapisane su na vremenskoj crti izvođača.
 
+## Otkrivanje izvođača
+
+**Glazba → Otkrij izvođače** predlaže izvođače slične onima koje već imate. Locarr za svakog izvođača iz
+biblioteke pita nekoliko izvora, spoji odgovore i izostavi ono što već imate i ono što ste odbili.
+
+**Izvori** (Postavke → Metapodaci → Otkrivanje glazbe):
+
+- **Last.fm** — slični izvođači i oznake (žanrovi) prema slušateljima Last.fma. Treba besplatan API ključ:
+  prijavite se na last.fm, otvorite <https://www.last.fm/api/account/create>, upišite ime aplikacije (npr.
+  „Locarr kod kuće") i kopirajte *API key* u polje „Last.fm API ključ". Ključ se provjeri kod Last.fma prije
+  spremanja, sprema se šifrirano i više se ne prikazuje.
+- **ListenBrainz** — izvođači koje ljudi slušaju u istim sesijama. Ne treba ključ. Daje i omot najslušanijeg
+  albuma, koji se prikazuje kao slika izvođača.
+- **MusicBrainz** — veze među izvođačima (članovi benda, suradnje, prateći glazbenici). Ne treba ključ; ima
+  najmanju težinu jer suradnja ne znači da zvuče slično.
+- **Spotify** — povezani izvođači. Spotify ih od studenog 2024. ne daje novim aplikacijama (ni onima u
+  „development" načinu, za koji vlasnik treba i Premium). Ako ipak imate aplikaciju s proširenim pristupom,
+  napravite je na <https://developer.spotify.com/dashboard> i upišite *Client ID* i *Client secret*. „Provjeri"
+  kaže radi li: „restricted" znači da Spotify odbija povezane izvođače, pa se Spotify koristi samo za poveznice.
+
+Svaki izvor se može isključiti. „Ponovno pitaj nakon" (zadano 7 dana) određuje koliko su stari odgovori
+dobri; novi izvođači se pitaju odmah nakon dodavanja, a zadatak „Otkrivanje glazbe" (Sustav → Zadaci) radi
+svaki dan. Izvori se pitaju polako i pristojno (ListenBrainz i MusicBrainz jedan zahtjev u sekundi), pa za
+veliku biblioteku prvi krug traje: 1000 izvođača ≈ 17 minuta. Prijedlozi se pojavljuju postupno.
+
+**Kako se boduje.** Svaki odgovor ima sličnost (0–1) i pouzdanost da je to pravi izvođač na MusicBrainzu:
+Last.fm i ListenBrainz najčešće daju MusicBrainz ID; kad izvor da samo ime, Locarr ga traži na MusicBrainzu i
+uzima ga samo ako postoji izvođač točno tog imena — takvi prijedlozi imaju oznaku **„Pronađen po imenu"**
+(provjerite da je to taj izvođač prije dodavanja). Težina izvora × sličnost × pouzdanost; više izvora koji se
+slažu i više vaših izvođača koji upućuju na isti prijedlog podižu bodove (najviše 100 %). Ispod imena piše
+zašto: „Sličan izvođačima A, B i još 3 · Oznake: shoegaze, dream pop".
+
+**Filtri:** „Na temelju" (samo odabrani izvođači iz biblioteke; „Još ovakvih" na stranici izvođača otvara
+isto), oznaka, najmanje podudaranje i izvori. **Dodaj** otvara iste opcije kao dodavanje izvođača (root
+mapa, profil kvalitete i metapodataka, praćenje, traži odmah); kvačicama na omotima odaberete više izvođača i
+dodate ih odjednom. **Ne zanima me** sakrije izvođača zauvijek; popis „Ne zanima me" na dnu stranice ga vraća.
+
+Stranica svakog izvođača ima odjeljak **Slični izvođači** (uključujući one koje već imate, s poveznicom).
+Članovi obitelji koji smiju tražiti glazbu vide iste prijedloge na **Otkrivanju** („Izvođači koji bi ti se
+mogli svidjeti") s gumbom **Zatraži**; njima se ne prikazuju putanje ni ID-jevi biblioteke.
+
+Podaci dolaze s Last.fma, ListenBrainza, MusicBrainza i Spotifyja prema njihovim uvjetima; svaki prijedlog ima
+poveznice natrag na njihove stranice, a slike su samo omoti s Cover Art Archivea.
+
 ## Nedostaje i kalendar
 
 **Nedostaje → Albumi** pokazuje praćene albume koji su izašli, a nedostaju im pjesme (ili su ispod granice

@@ -64,6 +64,8 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Uvoz s prepoznavanjem po tagovima, brojevima, naslovima i trajanju (bodovi, više diskova, izbor izdanja), djelomični albumi po izboru, preimenovanje, omoti (iz preuzimanja ili Cover Art Archive), zamjena u koš
 - [x] Uvoz postojeće glazbene biblioteke (datoteke ostaju na mjestu), kalendar izlazaka albuma, nedostajući albumi
 - [ ] Cue slike (jedna datoteka po albumu) i pisanje tagova osim FLAC-a (D-044)
+- [x] Otkrivanje izvođača: slični izvođači iz Last.fma, ListenBrainza, MusicBrainz veza (i Spotifyja gdje ga Spotify još daje), mapirani na MusicBrainz s pouzdanošću, bodovi i objašnjenje, filtri, „ne zanima me", dodavanje jednim klikom i skupno, slični izvođači na stranici izvođača, prijedlozi s „Zatraži" u Otkrivanju (D-100)
+- [ ] Otkrivanje izvođača u Android i iOS aplikaciji (API postoji: `GET /music/discover/artists`)
 
 ## Titlovi (P7)
 - [x] Jezični profili (redoslijed jezika, forsirani, za gluhe, zapisi u videu, granica), zadani po vrsti, po filmu/seriji i za cijelu biblioteku (D-065)
