@@ -72,6 +72,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Provideri: OpenSubtitles.com (hash, ID-evi, prijava, kvota), SubDL, Jimaku; zdravlje, čekanje, kvote; ocjena podudaranja po izdanju (D-063, D-064) — provjereno s lažnim providerima napravljenim iz javne dokumentacije
 - [x] Automatska pretraga nakon uvoza, ponovna pretraga za nedostajuće raspoređena kroz dan, nadogradnje, ručni izbor, odbacivanje, skeniranje postojećih titlova
 - [x] Sinkronizacija titla po zvuku (vlastita, uz mali ffmpeg u slici), prema ugrađenom ili drugom titlu, pomak, broj sličica, pretvorba u UTF-8 i SRT (D-062, D-066)
+- [x] Strojni prijevod titlova kad traženog jezika nema: LibreTranslate, DeepL (Free/Pro), OpenAI, Anthropic, Gemini, OpenAI-kompatibilni poslužitelji (Ollama, LM Studio, vLLM); izvor iz datoteke ili tekstualnog zapisa u videu, vremena i ASS stilovi netaknuti, provjera broja redaka, mjesečne granice, automatski nakon N sati po profilu, „Prevedi" i skupno, oznaka „Strojni prijevod", ljudski titl ga zamjenjuje (D-100)
 - [ ] Provideri bez javnog API-ja (Podnapisi, Addic7ed, Titlovi.com) — nisu uključeni (D-063)
 
 ## Zahtjevi (P8)

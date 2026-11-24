@@ -38,8 +38,24 @@ type Subtitle struct {
 	SyncOffsetMs    int64      `json:"syncOffsetMs"`
 	SyncScale       float64    `json:"syncScale"`
 	SyncAt          *time.Time `json:"syncAt,omitempty"`
-	AddedAt         time.Time  `json:"addedAt"`
+	// TranslatedFrom and TranslationSource are set on machine translations
+	// (Source "translated"; Provider is then the translation service).
+	TranslatedFrom    string    `json:"translatedFrom"`
+	TranslationSource string    `json:"translationSource"`
+	AddedAt           time.Time `json:"addedAt"`
+
+	original string
 }
+
+// Translated reports a machine translation.
+func (s Subtitle) Translated() bool { return s.Source == SourceTranslated }
+
+// Subtitle sources.
+const (
+	SourceDownloaded = "downloaded"
+	SourceDisk       = "disk"
+	SourceTranslated = "translated"
+)
 
 // Want returns the profile key the subtitle satisfies.
 func (s Subtitle) Want() Want {
@@ -51,7 +67,7 @@ func (s Subtitle) Want() Want {
 }
 
 const subCols = `id, media_file_id, item_ref, path, language, forced, hearing_impaired, format, source, provider, provider_id, release, score,
-	encoding, sync_state, sync_message, sync_offset_ms, sync_scale, sync_at, added_at`
+	encoding, sync_state, sync_message, sync_offset_ms, sync_scale, sync_at, translated_from, translation_source, translation_original, added_at`
 
 func scanSub(row interface{ Scan(...any) error }) (Subtitle, error) {
 	var (
@@ -61,7 +77,7 @@ func scanSub(row interface{ Scan(...any) error }) (Subtitle, error) {
 		added  int64
 	)
 	err := row.Scan(&s.ID, &s.MediaFileID, &s.ItemRef, &s.Path, &s.Language, &s.Forced, &s.HearingImpaired, &s.Format, &s.Source, &s.Provider,
-		&s.ProviderID, &s.Release, &score, &s.Encoding, &s.SyncState, &s.SyncMessage, &s.SyncOffsetMs, &s.SyncScale, &syncAt, &added)
+		&s.ProviderID, &s.Release, &score, &s.Encoding, &s.SyncState, &s.SyncMessage, &s.SyncOffsetMs, &s.SyncScale, &syncAt, &s.TranslatedFrom, &s.TranslationSource, &s.original, &added)
 	if score.Valid {
 		v := int(score.Int64)
 		s.Score = &v
@@ -251,5 +267,8 @@ func (s *Service) save(ctx context.Context, t *Target, in saveInput) (Subtitle, 
 		return Subtitle{}, recycled, err
 	}
 	sub, err := s.Get(ctx, id)
+	if err == nil {
+		s.retireTranslations(ctx, t)
+	}
 	return sub, recycled, err
 }

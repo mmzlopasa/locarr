@@ -125,3 +125,53 @@ test("subtitles: imported movie gets its Croatian subtitle, a manual pick replac
   await row.getByTestId("subtitle-tool-sync").click();
   await expect(row.getByTestId("sync-reference")).toBeVisible();
 });
+
+// Uses the movie of the test above. The fake LibreTranslate of scripts/dev-fakes.sh "translates" to "[hr] <text>".
+test("subtitles: a movie with only an English subtitle gets a Croatian machine translation with a badge", async ({ page }) => {
+  test.skip(tmHost === "none", "no Transmission instance for this run");
+  test.setTimeout(120_000);
+  const libreUrl = process.env.E2E_LIBRETRANSLATE_URL ?? "http://fake-indexer:9117/libretranslate";
+  await signInAsAdmin(page);
+  const list = await (await page.request.get("/api/v1/movies?q=Tears%20of%20Steel")).json();
+  const movie = (list.items ?? [])[0];
+  test.skip(!movie, "the movie of the subtitle test is not there");
+  const ref = `movie:${movie.id}`;
+
+  // Only English: download the English subtitle, move the Croatian ones to the recycle bin (never downloaded again).
+  const results = await (await page.request.get(`/api/v1/subtitles/items/${ref}/results?language=en`)).json();
+  const en = (results.results ?? []).find((r: { language: string }) => r.language === "en");
+  expect(en, JSON.stringify(results)).toBeTruthy();
+  const dl = await page.request.post(`/api/v1/subtitles/items/${ref}/download`, { data: { key: en.key } });
+  expect(dl.status(), await dl.text()).toBe(200);
+  const item = await (await page.request.get(`/api/v1/subtitles/items/${ref}`)).json();
+  for (const s of item.subtitles.filter((x: { language: string }) => x.language === "hr")) {
+    expect((await page.request.delete(`/api/v1/subtitles/${s.id}?blacklist=true`)).status()).toBe(204);
+  }
+
+  // Settings → Subtitles → Translation: LibreTranslate on the local network, tested with a sample line.
+  await page.goto("/settings/subtitles");
+  const card = page.locator('[data-testid="subtitle-translator"][data-name="libretranslate"]');
+  await card.getByTestId("translator-url-libretranslate").fill(libreUrl);
+  await card.getByLabel("Enabled").check();
+  await card.getByTestId("translator-save-libretranslate").click();
+  await expect(card.getByText("Working")).toBeVisible();
+  await card.getByTestId("translator-test-libretranslate").click();
+  await expect(card.getByTestId("translator-test-result")).toContainText("[hr] Where are you going?");
+
+  // Movie → Subtitles → Translate: the Croatian translation appears with its badge.
+  await page.goto(`/movies/${movie.id}`);
+  await page.getByTestId("tab-subtitles").click();
+  await expect(page.locator('[data-testid="subtitle-want"][data-key="hr"]')).toHaveAttribute("data-status", "missing");
+  await page.getByTestId("subtitles-translate").click();
+  const row = page.locator('[data-testid="subtitle-row"][data-language="hr"]');
+  await expect(row.getByTestId("translated-badge")).toBeVisible({ timeout: 30_000 });
+  await expect(row).toContainText("translated from English with LibreTranslate");
+  await expect(page.locator('[data-testid="subtitle-want"][data-key="hr"]')).toHaveAttribute("data-status", "translated");
+  await row.getByTestId("subtitle-tool-preview").click();
+  await expect(row.getByTestId("subtitle-preview")).toContainText("[hr] ");
+
+  // The timeline says what happened.
+  await page.getByTestId("tab-history").click();
+  await expect(page.getByTestId("timeline").locator('[data-type="subtitle_translated"]').first())
+    .toContainText("translated from English with LibreTranslate");
+});

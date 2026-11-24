@@ -433,3 +433,46 @@ func assFieldName(f string) string {
 
 // Ext is the file extension (without dot) for a format.
 func Ext(format string) string { return format }
+
+// textField is the index of the Text field of ASS events (-1 = none).
+func (d *Doc) textField() int {
+	for i, f := range d.format {
+		if f == "text" {
+			return i
+		}
+	}
+	return -1
+}
+
+// EditableText returns the text of cue i for editing: for ASS/SSA the
+// event text with its override blocks ({\an8}) and "\n" for line breaks;
+// for SRT/VTT the text as it is.
+func (d *Doc) EditableText(i int) string {
+	c := d.Cues[i]
+	if f := d.textField(); (d.Format == ASS || d.Format == SSA) && f >= 0 && f < len(c.raw) {
+		s := strings.ReplaceAll(c.raw[f], `\N`, "\n")
+		return strings.ReplaceAll(s, `\n`, "\n")
+	}
+	return c.Text
+}
+
+// SetText replaces the text of cue i (same convention as EditableText);
+// times and, for ASS/SSA, the style and every other field stay.
+func (d *Doc) SetText(i int, text string) {
+	c := &d.Cues[i]
+	if f := d.textField(); (d.Format == ASS || d.Format == SSA) && f >= 0 && f < len(c.raw) {
+		raw := append([]string(nil), c.raw...)
+		raw[f] = strings.ReplaceAll(text, "\n", `\N`)
+		c.raw = raw
+		c.Text = assText(raw[f])
+		return
+	}
+	c.Text = text
+}
+
+// Clone returns a copy that can be changed without touching d.
+func (d *Doc) Clone() *Doc {
+	n := *d
+	n.Cues = append([]Cue(nil), d.Cues...)
+	return &n
+}

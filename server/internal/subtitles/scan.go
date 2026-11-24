@@ -92,7 +92,7 @@ func sidecarInfo(suffix string) (lang string, forced, hi bool, format string, ok
 			forced = true
 		case "hi", "sdh", "cc":
 			hi = true
-		case "default":
+		case "default", TranslatedMarker:
 		default:
 			if l := languages.FromContainer(p); l != "" && lang == "" {
 				lang = l
@@ -132,6 +132,7 @@ func (s *Service) ScanDisk(ctx context.Context, t *Target) ([]Subtitle, error) {
 		byPath[k.Path] = true
 	}
 	vbase := strings.ToLower(strings.TrimSuffix(filepath.Base(t.Path), filepath.Ext(t.Path))) + "."
+	marker, _ := settings.Get(ctx, s.Settings, TranslationSuffix)
 	var added []Subtitle
 	now := db.Millis(s.now())
 	for _, e := range entries {
@@ -142,16 +143,21 @@ func (s *Service) ScanDisk(ctx context.Context, t *Target) ([]Subtitle, error) {
 		if byPath[p] || strings.HasSuffix(e.Name(), ".locarr-new") {
 			continue
 		}
-		lang, forced, hi, format, ok := sidecarInfo(importer.SidecarSuffix(t.Path, p))
+		suffix := importer.SidecarSuffix(t.Path, p)
+		lang, forced, hi, format, ok := sidecarInfo(suffix)
 		if !ok {
 			continue
 		}
 		if format == subfmt.VTT || format == subfmt.SRT || format == subfmt.ASS || format == subfmt.SSA {
+			source := SourceDisk
+			if translatedName(suffix, marker) {
+				source = SourceTranslated
+			}
 			var id int64
 			err := s.DB.W.QueryRowContext(ctx, `INSERT INTO subtitles (media_file_id, item_ref, path, language, forced, hearing_impaired, format,
-				source, added_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'disk', ?, ?)
+				source, added_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 				ON CONFLICT (path) DO UPDATE SET media_file_id = excluded.media_file_id, item_ref = excluded.item_ref RETURNING id`,
-				t.FileID, t.Ref.String(), p, lang, forced, hi, format, now, now).Scan(&id)
+				t.FileID, t.Ref.String(), p, lang, forced, hi, format, source, now, now).Scan(&id)
 			if err != nil {
 				return added, err
 			}
@@ -160,7 +166,19 @@ func (s *Service) ScanDisk(ctx context.Context, t *Target) ([]Subtitle, error) {
 			}
 		}
 	}
+	s.retireTranslations(ctx, t)
 	return added, nil
+}
+
+// translatedName reports a sidecar suffix that marks a machine translation
+// (".hr.translated.srt", or the configured marker).
+func translatedName(suffix, marker string) bool {
+	for _, p := range strings.Split(strings.ToLower(suffix), ".") {
+		if p == TranslatedMarker || marker != "" && p == strings.ToLower(marker) {
+			return true
+		}
+	}
+	return false
 }
 
 // satisfies reports whether a present subtitle (file or embedded track) covers a want.
@@ -210,7 +228,7 @@ func (s *Service) Status(ctx context.Context, t *Target) (ItemProfile, []WantSta
 	for _, w := range ip.Profile.Languages {
 		st := WantStatus{Want: w, Key: w.Key(), Status: "missing"}
 		for _, sub := range subs {
-			if satisfies(w, sub.Language, sub.Forced, sub.HearingImpaired) {
+			if !sub.Translated() && satisfies(w, sub.Language, sub.Forced, sub.HearingImpaired) {
 				st.Status, st.SubtitleID = "present", sub.ID
 				break
 			}
@@ -220,6 +238,15 @@ func (s *Service) Status(ctx context.Context, t *Target) (ItemProfile, []WantSta
 				if tr.Kind == tracks.Subtitle && satisfies(w, tr.Language, tr.Forced, tr.HearingImpaired) {
 					idx := tr.Index
 					st.Status, st.TrackIndex = "embedded", &idx
+					break
+				}
+			}
+		}
+		if st.Status == "missing" {
+			// A machine translation covers it until a human subtitle is found.
+			for _, sub := range subs {
+				if sub.Translated() && satisfies(w, sub.Language, sub.Forced, sub.HearingImpaired) {
+					st.Status, st.SubtitleID = "translated", sub.ID
 					break
 				}
 			}
@@ -255,17 +282,26 @@ func missingWants(st []WantStatus) []Want {
 
 // UpdateState recomputes a target's row in subtitle_state.
 func (s *Service) UpdateState(ctx context.Context, t *Target) error {
-	_, st, err := s.Status(ctx, t)
+	ip, st, err := s.Status(ctx, t)
 	if err != nil {
 		return err
 	}
 	keys := []string{}
+	translated := false
 	for _, w := range st {
-		if w.Status == "missing" {
+		switch w.Status {
+		case "missing":
 			keys = append(keys, w.Key)
+		case "translated":
+			translated = true
 		}
 	}
-	upgradable := false
+	// Translation: once the profile's wait after the file arrived is over.
+	var translateAt any
+	if ip.Profile != nil && ip.Profile.TranslateAfterHours > 0 && len(translatableKeys(ip.Profile, keys)) > 0 {
+		translateAt = t.AddedAt + int64(ip.Profile.TranslateAfterHours)*3_600_000
+	}
+	upgradable := translated // keep looking for a human subtitle
 	if days, _ := settings.Get(ctx, s.Settings, UpgradeDays); days > 0 && s.now().Sub(db.Time(t.AddedAt)) < time.Duration(days)*24*time.Hour {
 		subs, err := s.FileSubtitles(ctx, t.FileID)
 		if err != nil {
@@ -280,15 +316,17 @@ func (s *Service) UpdateState(ctx context.Context, t *Target) error {
 	b, _ := json.Marshal(keys)
 	now := db.Millis(s.now())
 	_, err = s.DB.W.ExecContext(ctx, `INSERT INTO subtitle_state (item_ref, item_id, entity_id, kind, media_file_id, missing, missing_count, upgradable,
-		next_search_at, file_added_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		next_search_at, file_added_at, updated_at, translate_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT (item_ref) DO UPDATE SET item_id = excluded.item_id, media_file_id = excluded.media_file_id, missing = excluded.missing,
 		missing_count = excluded.missing_count, upgradable = excluded.upgradable, file_added_at = excluded.file_added_at,
-		updated_at = excluded.updated_at,
+		updated_at = excluded.updated_at, translate_at = excluded.translate_at,
+		translate_retry_at = CASE WHEN subtitle_state.media_file_id <> excluded.media_file_id THEN NULL ELSE subtitle_state.translate_retry_at END,
+		translate_attempts = CASE WHEN subtitle_state.media_file_id <> excluded.media_file_id THEN 0 ELSE subtitle_state.translate_attempts END,
 		-- A new file starts its searches over.
 		searches = CASE WHEN subtitle_state.media_file_id <> excluded.media_file_id THEN 0 ELSE subtitle_state.searches END,
 		next_search_at = CASE WHEN subtitle_state.media_file_id <> excluded.media_file_id THEN excluded.next_search_at
 			ELSE COALESCE(subtitle_state.next_search_at, excluded.next_search_at) END`,
-		t.Ref.String(), t.ItemID, t.Ref.ID, t.Kind, t.FileID, string(b), len(keys), upgradable, now, t.AddedAt, now)
+		t.Ref.String(), t.ItemID, t.Ref.ID, t.Kind, t.FileID, string(b), len(keys), upgradable, now, t.AddedAt, now, translateAt)
 	return err
 }
 

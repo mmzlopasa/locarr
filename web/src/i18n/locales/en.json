@@ -122,7 +122,14 @@
     "source_wrong_app": "This address is another application.",
     "source_unsupported_version": "This version is too old to import from.",
     "source_bad_response": "The application answered in an unexpected way.",
-    "source_not_found": "Nothing answers at this address (check the URL base)."
+    "source_not_found": "Nothing answers at this address (check the URL base).",
+    "translation_cap": "The monthly cap of the translation service is reached.",
+    "translation_unavailable": "No translation service is enabled.",
+    "translation_no_source": "There is no subtitle in another language to translate from.",
+    "translation_nothing_missing": "No wanted language is missing.",
+    "translation_file_exists": "A subtitle that Locarr did not translate already has this name; it is never overwritten.",
+    "translation_unsupported_language": "The translation service does not offer this language.",
+    "translation_line_mismatch": "The translation service returned a different number of lines."
   },
   "errorPage": {
     "title": "This page could not be shown",
@@ -441,7 +448,7 @@
         "metadata": "TMDb, TVDb, MusicBrainz, API key, artwork, posters, NFO, Last.fm, ListenBrainz, Spotify, similar artists, music discovery",
         "metadataProfiles": "music, album types, release types, singles, EP",
         "importLists": "lists, watchlist, sync, automatic add",
-        "subtitles": "subtitle languages, providers, OpenSubtitles, SubDL, Jimaku, captions",
+        "subtitles": "subtitle languages, providers, OpenSubtitles, SubDL, Jimaku, captions, translation, DeepL, LibreTranslate, Ollama",
         "profiles": "quality profile, cutoff, upgrades, resolution, 1080p, 4K, languages, format scores",
         "quality": "file sizes, minimum, maximum, bitrate, quality definitions",
         "customFormats": "conditions, score, regex, HDR, Dolby Vision, release group, import JSON",
@@ -2813,7 +2820,8 @@
       "subtitles_downloaded": "Subtitle downloaded",
       "subtitles_missing": "Subtitle still missing",
       "migrate_finished": "Setup import finished",
-      "migrate_failed": "Setup import failed"
+      "migrate_failed": "Setup import failed",
+      "subtitles_translated": "Subtitle translated"
     },
     "fields": {
       "url": "URL",
@@ -2893,7 +2901,8 @@
       "present": "Present",
       "embedded": "In the video",
       "missing": "Missing",
-      "skipped": "Not needed"
+      "skipped": "Not needed",
+      "translated": "Machine translated"
     },
     "tools": {
       "preview": "Preview",
@@ -3012,7 +3021,12 @@
       "bad_response": "The provider sent an answer Locarr cannot read.",
       "timeout": "The provider did not answer in time.",
       "connection": "Locarr could not reach the provider.",
-      "config": "The provider settings are incomplete."
+      "config": "The provider settings are incomplete.",
+      "cap": "The monthly cap of the translation service is reached.",
+      "line_mismatch": "The service returned a different number of lines.",
+      "unsupported_language": "The service does not offer this language.",
+      "no_source": "There is no subtitle in another language to translate from.",
+      "error": "Something went wrong."
     },
     "events": {
       "downloaded": "Subtitle {{language}} found on {{provider}}, score {{score}}, saved as {{file}}",
@@ -3028,7 +3042,10 @@
       "syncFailed": "Could not re-time {{file}}: {{message}}",
       "shifted": "{{file}} shifted by {{offset}} ms",
       "fps": "{{file}} converted from {{from}} to {{to}} fps",
-      "found": "Found subtitle {{file}} ({{language}}) on disk"
+      "found": "Found subtitle {{file}} ({{language}}) on disk",
+      "translated": "Subtitle {{language}} translated from {{from}} with {{translator}}: {{lines}} lines in {{seconds}} s, saved as {{file}}",
+      "translateFailed": "Could not translate {{language}}: {{error}}",
+      "translationReplaced": "Machine translation {{file}} moved to the recycle bin: a human subtitle arrived"
     },
     "explain": {
       "no_file": "The item has no file yet; subtitles are searched once it is imported.",
@@ -3039,7 +3056,8 @@
       "no_providers": "No subtitle provider is enabled (Settings → Subtitles).",
       "providers_unavailable": "Every enabled provider is unavailable right now: {{detail}}",
       "not_searched": "Missing {{missing}}; not searched yet, the next search is {{next}}.",
-      "not_found": "No {{missing}} subtitle yet — searched {{searches}} times ({{providers}} providers last time); next search {{next}}."
+      "not_found": "No {{missing}} subtitle yet — searched {{searches}} times ({{providers}} providers last time); next search {{next}}.",
+      "complete_translated": "Every wanted language is present; some are machine translations, and Locarr keeps looking for human subtitles."
     },
     "settings": {
       "title": "Subtitles",
@@ -3116,7 +3134,53 @@
       "bulkConfirm": "Apply now",
       "bulkDone": "Updated: {{count}}.",
       "scan": "Scan the library",
-      "scanQueued": "The scan has started."
+      "scanQueued": "The scan has started.",
+      "translation": {
+        "title": "Translation",
+        "hint": "When no subtitle exists in a wanted language, Locarr can machine-translate one from another language. The subtitle text (and the title) is sent to the service you choose; LibreTranslate and a local OpenAI-compatible server (Ollama, LM Studio, vLLM) keep it on your own network.",
+        "services": "Translation services",
+        "local": "On your network",
+        "cloud": "Cloud",
+        "baseUrl": "Server address",
+        "baseUrlHint": "e.g. http://192.168.1.10:5000 or http://ollama:11434/v1",
+        "model": "Model",
+        "modelHint": "Empty = {{model}}",
+        "formality": "Formality",
+        "formalityDefault": "Default",
+        "formalityMore": "Formal where possible",
+        "formalityLess": "Informal where possible",
+        "glossary": "Glossary ID",
+        "cap": "Monthly cap ({{unit}})",
+        "capHint": "0 = no cap. Translations stop when it is reached.",
+        "units_characters": "characters",
+        "units_tokens": "tokens",
+        "usage": "This month",
+        "usageValue": "{{used}} {{unit}} · {{subtitles}} subtitles · {{requests}} requests",
+        "ofCap": "of {{cap}}",
+        "providerQuota": "Account usage reported by the service: {{used}} of {{limit}} characters",
+        "capReached": "Cap reached",
+        "testText": "Sample line",
+        "testTo": "Into",
+        "testResult": "Result: {{text}}",
+        "behaviour": "Behaviour",
+        "defaultTranslator": "Default service",
+        "firstEnabled": "The first enabled service",
+        "perLanguage": "Service per target language",
+        "perLanguageHint": "Overrides the default for one language (a profile language can override this again).",
+        "addLanguage": "Add language",
+        "never": "Never translate",
+        "suffix": "File marker",
+        "suffixHint": "Movie.hr.{{suffix}}.srt; empty = Movie.hr.srt (then only Locarr knows it is a translation).",
+        "sources": "Translate from (in order)",
+        "sourcesHint": "Language codes separated by commas; then any other. English usually gives the best results.",
+        "perHour": "Automatic translations per hour",
+        "autoSync": "Re-time translations against the audio",
+        "autoSyncHint": "Only for translations made from a subtitle file (embedded tracks already fit the video).",
+        "profileAfter": "Translate when nothing is found after (hours)",
+        "profileAfterHint": "Counted from the file's arrival; 0 = never automatically (the Translate button always works).",
+        "profileService": "Translation",
+        "profileDefault": "Default service"
+      }
     },
     "wantedPage": {
       "description": "Movies and episodes that miss a language of their subtitle profile.",
@@ -3135,9 +3199,33 @@
       "searchAll": "Search all ({{count}})",
       "empty": "Nothing misses subtitles.",
       "setProfile": "Subtitle profile for the selected",
-      "apply": "Apply ({{count}})"
+      "apply": "Apply ({{count}})",
+      "translateSelected": "Translate selected",
+      "translateAll": "Translate all",
+      "translateQueued": "Translations queued: {{count}}."
     },
-    "tracksOnlyMkvMp4": "Locarr reads the tracks of MKV/WebM and MP4/MOV files only."
+    "tracksOnlyMkvMp4": "Locarr reads the tracks of MKV/WebM and MP4/MOV files only.",
+    "translatedBadge": "Machine translated",
+    "translatedFrom": "translated from {{language}} with {{translator}}",
+    "original": "Original",
+    "translation": {
+      "translateNow": "Translate",
+      "translateHint": "Machine-translate the missing languages from a subtitle in another language.",
+      "queued": "Translation queued.",
+      "waiting": "Translation waiting to start…",
+      "running": "Translating {{language}} with {{translator}}: {{done}} of {{total}} lines",
+      "choose": "Language to translate",
+      "allMissing": "Every missing language",
+      "unavailable": "Enable a translation service in Settings → Subtitles → Translation first."
+    },
+    "translatorNames": {
+      "libretranslate": "LibreTranslate",
+      "deepl": "DeepL",
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "gemini": "Google Gemini",
+      "openai-compatible": "OpenAI-compatible"
+    }
   },
   "board": {
     "title": "Why didn't it land?",

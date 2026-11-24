@@ -13,8 +13,10 @@
 // /subdl/api/v1 and Jimaku under /jimaku/api (keys in
 // internal/subtitles/providers/fake), and a fake Streamero under /streamero
 // (accounts and keys in internal/mediaserver/streamero/fake; state at
-// /streamero/_fake/state, reset with POST /streamero/_fake/reset).
-// Music discovery's providers are faked too: Last.fm at /lastfm (key in
+// /streamero/_fake/state, reset with POST /streamero/_fake/reset), fake
+// translation services (LibreTranslate, DeepL, OpenAI, an OpenAI-compatible
+// server, Anthropic, Gemini; keys in internal/subtitles/translate/fake), and
+// music discovery's providers: Last.fm at /lastfm (key in
 // internal/metadata/lastfm/fake), ListenBrainz (API and labs) at
 // /listenbrainz and Spotify at /spotify (accounts at /spotify, API at
 // /spotify/v1; credentials in internal/metadata/spotify/fake).
@@ -41,6 +43,7 @@ import (
 	tmdbfake "github.com/mmzlopasa/locarr/server/internal/metadata/tmdb/fake"
 	migratefake "github.com/mmzlopasa/locarr/server/internal/migrate/fake"
 	subfake "github.com/mmzlopasa/locarr/server/internal/subtitles/providers/fake"
+	trfake "github.com/mmzlopasa/locarr/server/internal/subtitles/translate/fake"
 )
 
 func env(k, def string) string {
@@ -69,6 +72,14 @@ func main() {
 	subs := subfake.New()
 	for _, p := range []string{"/opensubtitles/", "/subdl/", "/jimaku/"} {
 		mux.Handle(p, subs)
+	}
+	// Translation services (internal/subtitles/translate/fake): LibreTranslate
+	// at /libretranslate, DeepL at /deepl, OpenAI at /openai/v1, an
+	// OpenAI-compatible server at /compatible/v1, Anthropic at /anthropic and
+	// Gemini at /gemini. Each "translates" to "[<lang>] <text>".
+	tr := trfake.New()
+	for _, p := range []string{"/libretranslate/", "/deepl/", "/openai/", "/compatible/", "/anthropic/", "/gemini/"} {
+		mux.Handle(p, tr)
 	}
 	// The applications an existing setup is imported from (P10), each under
 	// /arr/<kind> with API key "migratekey" (qBittorrent: admin / migratepass).
