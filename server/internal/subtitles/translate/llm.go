@@ -96,7 +96,8 @@ func ParseLines(answer string, input []string) ([]string, error) {
 		return nil, fmt.Errorf("%w: %d lines for %d", ErrCountMismatch, len(out.Lines), len(input))
 	}
 	lines := make([]string, len(out.Lines))
-	for i, raw := range out.Lines {
+	for i, src := range input {
+		raw := out.Lines[i]
 		var v string
 		if err := json.Unmarshal(raw, &v); err != nil {
 			// {"n": 1, "text": "..."} instead of a string.
@@ -106,17 +107,17 @@ func ParseLines(answer string, input []string) ([]string, error) {
 			}
 			v = o.Text
 		}
-		if m := reNumbered.FindStringSubmatch(v); m != nil && m[1] == fmt.Sprint(i+1) && !reNumbered.MatchString(input[i]) {
+		if m := reNumbered.FindStringSubmatch(v); m != nil && m[1] == fmt.Sprint(i+1) && !reNumbered.MatchString(src) {
 			v = v[len(m[0]):]
 		}
 		v = strings.TrimSpace(strings.ReplaceAll(v, "\n", " "))
-		if v == "" && strings.TrimSpace(input[i]) != "" {
+		if v == "" && strings.TrimSpace(src) != "" {
 			return nil, fmt.Errorf("%w: line %d is empty", ErrCountMismatch, i+1)
 		}
-		if !SameTags(input[i], v) {
+		if !SameTags(src, v) {
 			return nil, fmt.Errorf("%w: line %d lost or changed its markup", ErrCountMismatch, i+1)
 		}
-		in, o := utf8.RuneCountInString(input[i]), utf8.RuneCountInString(v)
+		in, o := utf8.RuneCountInString(src), utf8.RuneCountInString(v)
 		if len(input) > 1 && o > 3*in+40 {
 			return nil, fmt.Errorf("%w: line %d looks merged with others", ErrCountMismatch, i+1)
 		}

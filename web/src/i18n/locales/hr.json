@@ -448,7 +448,7 @@
         "metadata": "TMDb, TVDb, MusicBrainz, API ključ, slike, posteri, NFO",
         "metadataProfiles": "glazba, vrste albuma, vrste izdanja, singlovi, EP",
         "importLists": "popisi, watchlist, sinkronizacija, automatsko dodavanje",
-        "subtitles": "jezici titlova, pružatelji, OpenSubtitles, SubDL, Jimaku, prijevodi",
+        "subtitles": "jezici titlova, pružatelji, OpenSubtitles, SubDL, Jimaku, prijevodi, strojni prijevod, DeepL, LibreTranslate, Ollama",
         "profiles": "profil kvalitete, granica, nadogradnje, rezolucija, 1080p, 4K, jezici, bodovi formata",
         "quality": "veličine datoteka, minimum, maksimum, bitrate, definicije kvalitete",
         "customFormats": "prilagođeni formati, custom formats, uvjeti, bodovi, regex, HDR, Dolby Vision, grupa izdanja, uvoz JSON",

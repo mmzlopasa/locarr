@@ -92,7 +92,7 @@ func (g *gemini) complete(ctx context.Context, system, user string, maxTokens in
 		} `json:"usageMetadata"`
 	}
 	if err := json.Unmarshal(res.Body, &out); err != nil {
-		return completion{}, fmt.Errorf("%w: %v", providers.ErrBadResponse, err)
+		return completion{}, fmt.Errorf("%w: %w", providers.ErrBadResponse, err)
 	}
 	c := completion{Usage: Usage{InputTokens: out.UsageMetadata.PromptTokenCount,
 		OutputTokens: out.UsageMetadata.CandidatesTokenCount + out.UsageMetadata.ThoughtsTokenCount, Requests: 1}}

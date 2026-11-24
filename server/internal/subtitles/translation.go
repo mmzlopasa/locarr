@@ -608,7 +608,7 @@ func (s *Service) TranslateItem(ctx context.Context, ref library.Ref, keys []str
 	}
 	var wants []Want
 	for _, w := range st {
-		if w.Status != "missing" && !(len(keys) > 0 && w.Status == "skipped") {
+		if w.Status != "missing" && (len(keys) == 0 || w.Status != "skipped") {
 			continue
 		}
 		if len(keys) > 0 && !contains(keys, w.Key) {

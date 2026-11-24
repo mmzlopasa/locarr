@@ -236,7 +236,7 @@ func (s *Service) UpdateTranslator(ctx context.Context, name string, in Translat
 	if err != nil {
 		return cur, err
 	}
-	enabled, base, key, model, formality, glossary, cap := cur.Enabled, cur.BaseURL, cur.apiKey, cur.Model, cur.Formality, cur.GlossaryID, cur.MonthlyCap
+	enabled, base, key, model, formality, glossary, limit := cur.Enabled, cur.BaseURL, cur.apiKey, cur.Model, cur.Formality, cur.GlossaryID, cur.MonthlyCap
 	if in.Enabled != nil {
 		enabled = *in.Enabled
 	}
@@ -282,7 +282,7 @@ func (s *Service) UpdateTranslator(ctx context.Context, name string, in Translat
 		if *in.MonthlyCap < 0 {
 			return cur, invalid("the monthly cap cannot be negative")
 		}
-		cap = *in.MonthlyCap
+		limit = *in.MonthlyCap
 	}
 	if enabled && info.NeedsKey && len(key) == 0 {
 		return cur, invalid("%s needs an API key before it can be enabled", name)
@@ -294,7 +294,7 @@ func (s *Service) UpdateTranslator(ctx context.Context, name string, in Translat
 		return cur, invalid("choose the model the server should use")
 	}
 	_, err = s.DB.W.ExecContext(ctx, `UPDATE subtitle_translators SET enabled = ?, base_url = ?, api_key = ?, model = ?, formality = ?, glossary_id = ?,
-		monthly_cap = ?, failures = 0, retry_at = NULL, updated_at = ? WHERE name = ?`, enabled, base, key, model, formality, glossary, cap,
+		monthly_cap = ?, failures = 0, retry_at = NULL, updated_at = ? WHERE name = ?`, enabled, base, key, model, formality, glossary, limit,
 		db.Millis(s.now()), name)
 	if err != nil {
 		return cur, err

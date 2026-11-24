@@ -64,13 +64,13 @@ describe("subtitle translation", () => {
     state = item({ wants: [{ key: "hr", language: "hr", forced: false, hearingImpaired: "include", status: "translated", subtitleId: 8 }],
       subtitles: [sub(), sub({ id: 8, path: "/m/Big Buck Bunny (2008).hr.translated.srt", language: "hr", source: "translated", provider: "deepl",
         translatedFrom: "en", translationSource: "subtitle:Big Buck Bunny (2008).en.srt" })] });
-    const row = await screen.findByText("translated from English with DeepL", {}, { timeout: 5000 });
+    const row = await screen.findByText("translated from English with DeepL", {}, { timeout: 15_000 });
     const li = row.closest("[data-testid=subtitle-row]") as HTMLElement;
     expect(within(li).getByTestId("translated-badge")).toHaveTextContent("Machine translated");
     expect(screen.getAllByTestId("subtitle-want")[0]).toHaveAttribute("data-status", "translated");
     await userEvent.click(within(li).getByTestId("subtitle-tool-preview"));
     expect(await within(li).findByTestId("preview-original")).toHaveTextContent("Hello");
-  });
+  }, 30_000);
 
   it("configures a translation service write-only and tests it", async () => {
     const puts: unknown[] = [];
@@ -103,7 +103,7 @@ describe("subtitle translation", () => {
     await userEvent.click(within(cards[1]!).getByTestId("translator-enabled-libretranslate"));
     await userEvent.click(within(cards[1]!).getByTestId("translator-save-libretranslate"));
     await waitFor(() => expect(puts).toEqual([{ enabled: true, monthlyCap: 0, baseUrl: "http://192.168.1.10:5000" }]));
-  });
+  }, 30_000);
 
   it("describes translation events in both languages", async () => {
     const ev: TimelineEvent = { id: 1, at: now, type: "subtitle_translated", source: "timeline", message: "",

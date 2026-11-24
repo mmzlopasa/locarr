@@ -76,7 +76,7 @@ func (l *libre) Translate(ctx context.Context, r Request) ([]string, Usage, erro
 		TranslatedText json.RawMessage `json:"translatedText"`
 	}
 	if err := json.Unmarshal(res.Body, &out); err != nil {
-		return nil, Usage{}, fmt.Errorf("%w: %v", providers.ErrBadResponse, err)
+		return nil, Usage{}, fmt.Errorf("%w: %w", providers.ErrBadResponse, err)
 	}
 	var lines []string
 	if err := json.Unmarshal(out.TranslatedText, &lines); err != nil {
@@ -115,7 +115,7 @@ func (l *libre) Languages(ctx context.Context) (map[string][]string, error) {
 		Targets []string `json:"targets"`
 	}
 	if err := json.Unmarshal(res.Body, &list); err != nil {
-		return nil, fmt.Errorf("%w: %v", providers.ErrBadResponse, err)
+		return nil, fmt.Errorf("%w: %w", providers.ErrBadResponse, err)
 	}
 	out := map[string][]string{}
 	for _, x := range list {

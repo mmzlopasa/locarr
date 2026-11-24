@@ -181,13 +181,13 @@ func Rewrap(s string, width int) []string {
 		punct    bool
 	}
 	var cands []cand
-	depth := byte(0)
+	depth := rune(0)
 	left := 0
 	var prev rune
 	for i, r := range s {
 		switch {
 		case depth != 0:
-			if byte(r) == depth {
+			if r == depth {
 				depth = 0
 			}
 			continue

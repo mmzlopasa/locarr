@@ -112,7 +112,7 @@ func (d *deepl) Translate(ctx context.Context, r Request) ([]string, Usage, erro
 		} `json:"translations"`
 	}
 	if err := json.Unmarshal(res.Body, &out); err != nil {
-		return nil, Usage{}, fmt.Errorf("%w: %v", providers.ErrBadResponse, err)
+		return nil, Usage{}, fmt.Errorf("%w: %w", providers.ErrBadResponse, err)
 	}
 	if len(out.Translations) != len(texts) {
 		return nil, Usage{}, fmt.Errorf("%w: %d for %d", ErrCountMismatch, len(out.Translations), len(texts))
@@ -156,7 +156,7 @@ func (d *deepl) Quota(ctx context.Context) (int64, int64, error) {
 		CharacterLimit int64 `json:"character_limit"`
 	}
 	if err := json.Unmarshal(res.Body, &u); err != nil {
-		return 0, 0, fmt.Errorf("%w: %v", providers.ErrBadResponse, err)
+		return 0, 0, fmt.Errorf("%w: %w", providers.ErrBadResponse, err)
 	}
 	return u.CharacterCount, u.CharacterLimit, nil
 }

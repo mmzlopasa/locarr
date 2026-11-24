@@ -77,7 +77,7 @@ func (m *messages) complete(ctx context.Context, system, user string, maxTokens 
 		} `json:"usage"`
 	}
 	if err := json.Unmarshal(res.Body, &out); err != nil {
-		return completion{}, fmt.Errorf("%w: %v", providers.ErrBadResponse, err)
+		return completion{}, fmt.Errorf("%w: %w", providers.ErrBadResponse, err)
 	}
 	c := completion{Usage: Usage{InputTokens: out.Usage.InputTokens, OutputTokens: out.Usage.OutputTokens, Requests: 1},
 		Truncated: out.StopReason == "max_tokens", Refused: out.StopReason == "refusal"}

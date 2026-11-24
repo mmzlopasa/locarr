@@ -448,7 +448,7 @@
         "metadata": "TMDb, TVDb, MusicBrainz, API key, artwork, posters, NFO",
         "metadataProfiles": "music, album types, release types, singles, EP",
         "importLists": "lists, watchlist, sync, automatic add",
-        "subtitles": "subtitle languages, providers, OpenSubtitles, SubDL, Jimaku, captions",
+        "subtitles": "subtitle languages, providers, OpenSubtitles, SubDL, Jimaku, captions, translation, DeepL, LibreTranslate, Ollama",
         "profiles": "quality profile, cutoff, upgrades, resolution, 1080p, 4K, languages, format scores",
         "quality": "file sizes, minimum, maximum, bitrate, quality definitions",
         "customFormats": "conditions, score, regex, HDR, Dolby Vision, release group, import JSON",

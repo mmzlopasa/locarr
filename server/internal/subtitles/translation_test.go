@@ -53,7 +53,7 @@ func TestTranslateDocKeepsASSStylesTimingAndMarkup(t *testing.T) {
 	}
 	p := &prefixer{}
 	steps := 0
-	out, units, u, err := TranslateDoc(context.Background(), p, d, "en", "hr", "Sintel (2010)", nil, func(done, total int) { steps++ })
+	out, units, u, err := TranslateDoc(context.Background(), p, d, "en", "hr", "Sintel (2010)", nil, func(_, _ int) { steps++ })
 	if err != nil {
 		t.Fatal(err)
 	}
