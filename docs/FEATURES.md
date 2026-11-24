@@ -13,7 +13,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 
 ## Indexeri (P1)
 - [x] Torznab i Newznab: caps, kategorije, pretraga po ID-u (TMDb/TVDB/IMDb/TVmaze) i tekstu, RSS (glazba po izvođaču/albumu: Newznab nema MusicBrainz parametar)
-- [x] Ugrađeni javni indexeri bez Prowlarra/Jacketta (D-087 – D-089): YTS, EZTV, The Pirate Bay, SubsPlease, Knaben, Nyaa, Tokyo Toshokan, LimeTorrents, 1337x (iza provjere preglednika), BitSearch; vlastite definicije u `/config/definitions`; zdravlje s razlozima (stranica pala, promijenjen izgled, Cloudflare, ograničenje), tjedni samotest
+- [x] Ugrađeni javni indexeri bez Prowlarra/Jacketta (D-087 – D-089): YTS, EZTV, The Pirate Bay, SubsPlease, Knaben, Nyaa, Tokyo Toshokan, LimeTorrents, 1337x (iza provjere preglednika), BitSearch, a uz biblioteku za odrasle Sukebei i XXXClub (D-108); vlastite definicije u `/config/definitions`; zdravlje s razlozima (stranica pala, promijenjen izgled, Cloudflare, ograničenje), tjedni samotest
 - [x] Usenet indexeri izravno (popis poznatih Newznab indexera: odaberi i upiši ključ)
 - [x] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab) — pod „Napredno"; više nisu potrebni
 - [x] Prioriteti, oznake (tagovi), ograničenja zahtjeva (rate limit), dnevni limiti, backoff i zdravlje
@@ -122,6 +122,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Popis blokiranih pojmova (zadani konzervativni pojmovi, uređuje administrator) u metapodacima, pretrazi, RSS-u, ručnom grabu i uvozu (`blocked_tag`)
 - [x] Studiji/stranice sa scenama po datumu, filmovi, izvođači (praćeni izvođač → nove scene tražene), zasebne mape, predlošci imena (D-106)
 - [x] Indexeri s kategorijama 6xxx samo uz izričit izbor po indexeru; parser imena scena s golden testovima (D-105)
+- [x] Pretraga za odrasle preko javnih ugrađenih indexera: kategorije za odrasle na The Pirate Bay, Knaben, BitSearch i 1337x, nove stranice samo za odrasle Sukebei i XXXClub, indexeri bez kategorija za odrasle se ne nude ni ne pitaju, više oblika upita po sceni redom, scene istog studija i dana se razlikuju (D-108)
 - [x] Traženo, automatska i ručna pretraga, grab, uvoz, preimenovanje, vremenska crta i „Zašto nije ovdje?” preko zajedničke jezgre
 - [ ] Web: odjeljak „Odrasli” (scene, filmovi, studiji, izvođači, traženo, kalendar, dodavanje), zamućene slike, Postavke → Sadržaj za odrasle — napravljeno, Playwright test u CI-ju
 - [ ] Mobilne aplikacije (API je spreman; aplikacije ga zasad ne prikazuju)

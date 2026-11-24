@@ -22,6 +22,10 @@ Javne stranice koje Locarr zna pretraživati bez ikakvog posrednika:
 | LimeTorrents | sve | stranice pretrage i RSS zadnjih izdanja (spora stranica) | ponekad |
 | 1337x | sve | stranice pretrage; magnet se uzima sa stranice izdanja tek kad se grabi | **uvijek** |
 | BitSearch | sve | stranice pretrage | ne treba |
+| Sukebei | samo za odrasle | RSS pretraga | ne treba |
+| XXXClub | samo za odrasle | stranice pretrage i RSS | ponekad |
+
+Sukebei i XXXClub se nude samo dok je uključena biblioteka za odrasle; vidi [Sadržaj za odrasle](adult.md).
 
 Za uključivanje stranice dovoljan je jedan klik na prekidač „Koristi …". Locarr postavi razumne
 zadane vrijednosti: adresu stranice, ograničenje zahtjeva (npr. Nyaa 12 u minuti), vrijeme čekanja,

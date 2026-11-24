@@ -3,6 +3,12 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: javni indexeri za odrasle (branch `feat/adult-public-indexers`)
+- D-108: kategorije za odrasle na The Pirate Bay (500–599), Knaben (XXX, `hide_xxx` samo izvan pretraga za odrasle), BitSearch (10) i 1337x (XXX); nove definicije samo za odrasle `sukebei` i `xxxclub` (polje `adult: true`); `Indexer.adultCapable` i `IndexerDefinition.adult` u API-ju; pretraga za odrasle preskače indexere bez kategorija za odrasle, obične pretrage preskaču stranice samo za odrasle; web prikazuje indexere bez kategorija za odrasle zasebno.
+- Pretraga scene s više oblika upita (`wanted.Item.AltTerms`, rano zaustavljanje); `ParseScene` čita `[Studio] … (DD.MM.YYYY)`; odluka za imena bez datuma (naslov + izvođač/studio, godina) i za više scena istog studija i dana.
+- Testovi: sitefake snimke (sintetička imena), `TestAdultCategories`, `TestSukebei`, `TestXXXClub`, golden scene i odluke, `TestAdultBuiltinIndexers` (integracijski: obične pretrage nikad ne vraćaju izdanja za odrasle), web test panela. Live provjera 2026-11-24 (`-tags live`): primjer vlasnika nađen na The Pirate Bay i Knabenu (treći oblik upita), nove scene na XXXClubu i The Pirate Bay, starija scena na BitSearchu, Knabenu i The Pirate Bay; 1337x traži čovjeka, Sukebei za zapadne scene nema ništa.
+- Poznato: RSS uparuje samo imena sa studijem i datumom; zadani blokirani pojmovi su engleski.
+
 ## Gotovo: biblioteka za odrasle (branch `feat/adult-library`)
 - Migracija `00016_adult.sql`: `adult_root_folders`, `adult_studios`, `adult_performers`, `adult_items` (scene i filmovi), `adult_item_performers`, `adult_files`, `adult_tag_blocklist`, `api_keys.include_adult`.
 - Sigurnosni model (D-103): zadano isključeno, uključivanje uz potvrdu, dozvola `view_adult` (bit 11) nikad zadana i nikad tražiteljima, ključevi samo uz oznaku, 404 svugdje inače; filtri u povijesti, statistici, `/api/stats`, redu, blokiranim izdanjima, košu, dnevniku pretraga, općoj vremenskoj crti; obavijesti `adult.*` samo uz izričit izbor kanala; privatne slike.

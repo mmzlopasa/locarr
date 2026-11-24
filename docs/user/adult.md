@@ -39,7 +39,7 @@ Unosi koje izvor vodi kao obrisane ili sporne nikad se ne prikazuju ni ne uvoze.
 
 - **Mape za odrasle** su odvojene od mapa za filmove, serije i glazbu (npr. `/data/media/adult`).
 - **Indexeri**: kategorije 6000 (XXX) se ne koriste dok za pojedini indexer ne uključite „Indexeri s kategorijama za odrasle”.
-  Izdanja iz tih kategorija nikad se ne pojavljuju u običnim pretragama.
+  Izdanja iz tih kategorija nikad se ne pojavljuju u običnim pretragama. Koji javni indexeri rade, vidi odjeljak 9.
 - **Imena**: predlošci za mapu i datoteku scene i filma, s oznakama `{Studio}`, `{Date}`, `{Title}`, `{Performers}`, `{Year}`,
   `{Quality}`, `{ReleaseGroup}`. Zadano: `{Studio}/{Studio} - {Date} - {Title} [Izvođači] {Quality}`.
 
@@ -70,3 +70,37 @@ vrijede zadani pojmovi.
 - Streamero se o uvozima obavještava samo ako uključite „Javi Streameru za uvoze” (za zasebnu biblioteku za odrasle u Streameru).
 - Mobilne aplikacije zasad ne prikazuju sadržaj za odrasle.
 - Dnevnici poslužitelja (vidi ih samo administrator) mogu sadržavati imena izdanja.
+
+## 9. Javni indexeri za odrasle
+
+Pretraga za odrasle radi i samo s Locarrovim ugrađenim javnim stranicama, bez ikakvog računa:
+
+| Indexer | Što ima za odrasle | Napomena |
+|---|---|---|
+| The Pirate Bay | kategorija Porn (filmovi, isječci, HD, 4K…) | najbolji izvor starijih scena |
+| Knaben | kategorija XXX (pretraga preko više trackera) | XXX se traži samo za pretrage za odrasle |
+| BitSearch | kategorija XXX | starije scene |
+| XXXClub | samo za odrasle, scene po imenu `Studio YY MM DD` | najbolji izvor novih scena; dodaje se kao gotov za odrasle |
+| Sukebei | samo za odrasle, uglavnom japanski sadržaj | za zapadne scene rijetko nađe nešto |
+| 1337x | kategorija XXX | iza provjere preglednika; s poslužitelja u podatkovnom centru često traži čovjeka |
+
+EZTV, YTS, Nyaa, SubsPlease, Tokyo Toshokan i LimeTorrents nemaju kategoriju za odrasle. Ne nude se u popisu
+„Indexeri s kategorijama za odrasle”, nego su navedeni ispod njega kao indexeri koji ne mogu tražiti sadržaj za odrasle,
+i pretraga za odrasle ih preskače.
+
+**Što označiti:** Postavke → Sadržaj za odrasle → „Indexeri s kategorijama za odrasle”: The Pirate Bay, Knaben i BitSearch
+(i 1337x ako vam radi). U Indexeri → Dodaj indexer → Ugrađeni uključite **XXXClub** i po želji **Sukebei**; one su
+odmah označene za odrasle i nikad ne odgovaraju na obične pretrage.
+
+**Kako Locarr traži scenu.** Javne stranice istu scenu zovu na više načina (`Studio.20.08.19.Izvođač.Naslov…`,
+`[Studio] Izvođač - Naslov (2020)`, `[Studio] Naslov (19.08.2020)`, `Izvođač - Naslov`). Zato Locarr redom pokušava:
+
+1. studio i datum („Broken Teens 20 08 19”),
+2. studio napisan zajedno i datum s točkama („BrokenTeens 20.08.19”),
+3. izvođač i riječi naslova,
+4. sam naslov,
+
+i staje čim nađe izdanje koje može uzeti. Izdanje mora biti ta scena: sa studijem i datumom mora biti isti studio i dan i,
+ako ime nakon datuma nešto kaže, izvođač ili većina naslova (studio istog dana objavljuje više scena); bez datuma ime mora
+imati naslov uz izvođača ili studio, a godina u imenu mora odgovarati.
+
