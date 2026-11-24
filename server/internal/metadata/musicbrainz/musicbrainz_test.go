@@ -170,3 +170,19 @@ func TestRetryAfter503(t *testing.T) {
 		t.Fatalf("violations %d requests %d", f.Violations, f.Count())
 	}
 }
+
+func TestRelationsAndURL(t *testing.T) {
+	c, _ := newClient(t, true)
+	ctx := context.Background()
+	rels, err := c.ArtistRelations(ctx, fake.ArtistOpen)
+	if err != nil || len(rels) != 1 || rels[0].MBID != fake.ArtistChoir || rels[0].Relation != "collaboration" || rels[0].Name != "Creative Commons Choir" {
+		t.Fatalf("relations: %+v %v", rels, err)
+	}
+	a, err := c.ArtistByURL(ctx, "https://open.spotify.com/artist/"+fake.SpotifyChoir)
+	if err != nil || a.MBID != fake.ArtistChoir {
+		t.Fatalf("by url: %+v %v", a, err)
+	}
+	if _, err := c.ArtistByURL(ctx, "https://open.spotify.com/artist/unknown"); !errors.Is(err, metadata.ErrNotFound) {
+		t.Fatalf("unknown url: %v", err)
+	}
+}
