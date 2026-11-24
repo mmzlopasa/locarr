@@ -22,7 +22,20 @@ const (
 	RefEpisode = "episode"
 	RefArtist  = "artist"
 	RefAlbum   = "album"
+	// Adult kinds (D-100): only visible when the adult library is enabled
+	// and the caller holds view_adult.
+	RefScene      = "scene"
+	RefAdultMovie = "adult_movie"
 )
+
+// IsAdult reports an adult ref kind.
+func IsAdult(kind string) bool { return kind == RefScene || kind == RefAdultMovie }
+
+// IsAdultRef reports whether a ref string ("scene:3") names an adult item.
+func IsAdultRef(ref string) bool {
+	kind, _, _ := strings.Cut(ref, ":")
+	return IsAdult(kind)
+}
 
 // ErrBadRef is returned for a malformed item reference.
 var ErrBadRef = errors.New("invalid item reference")
@@ -54,7 +67,7 @@ func (r Ref) IsZero() bool { return r.Kind == "" && r.ID == 0 }
 
 func validKind(k string) bool {
 	switch k {
-	case RefMovie, RefSeries, RefSeason, RefEpisode, RefArtist, RefAlbum:
+	case RefMovie, RefSeries, RefSeason, RefEpisode, RefArtist, RefAlbum, RefScene, RefAdultMovie:
 		return true
 	}
 	return false
