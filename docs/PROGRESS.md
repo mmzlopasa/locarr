@@ -3,6 +3,15 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: biblioteka za odrasle (branch `feat/adult-library`)
+- Migracija `00014_adult.sql`: `adult_root_folders`, `adult_studios`, `adult_performers`, `adult_items` (scene i filmovi), `adult_item_performers`, `adult_files`, `adult_tag_blocklist`, `api_keys.include_adult`.
+- Sigurnosni model (D-100): zadano isključeno, uključivanje uz potvrdu, dozvola `view_adult` (bit 11) nikad zadana i nikad tražiteljima, ključevi samo uz oznaku, 404 svugdje inače; filtri u povijesti, statistici, `/api/stats`, redu, blokiranim izdanjima, košu, dnevniku pretraga, općoj vremenskoj crti; obavijesti `adult.*` samo uz izričit izbor kanala; privatne slike.
+- `internal/adult` (D-101 – D-103): StashDB i ThePornDB klijenti s lažnim servisima (`adult/meta/fake`, i u `locarr-fakes` pod `/adultmeta`), studiji/izvođači/scene/filmovi, osvježavanje praćenih (12 h), izvori za `wanted`, uvoz, preimenovanje, objašnjenje; `parser.ParseScene`; `decision` `blocked_tag` i `wrong_scene`; indexeri s kategorijama `adult` uz izričit izbor.
+- API `/adult/*`; web (EN + HR): odjeljak „Odrasli”, zamućene slike s postavkom po korisniku, Postavke → Sadržaj za odrasle (uključivanje, ključevi, zadane vrijednosti i imena, mape, indexeri, blokirani pojmovi), dozvola u korisnicima, oznaka na API ključu, događaji `adult.*` u kanalima.
+- Testovi: `TestAdultLibraryEndToEnd` (isključeno → uključi → dodijeli → studio (obrisani i blokirani unosi preskočeni) → bez odabranog indexera ništa → grab preko lažnog klijenta (blokirano izdanje odbijeno) → uvoz → preimenovanje → vremenska crta; matrica dozvola za svaku krajnju točku i svako curenje), jedinični (parser golden, odluka, klijenti protiv lažnih servisa), Playwright `e2e/adult.spec.ts`.
+- Dokumentacija: `docs/user/adult.md`.
+- Sljedeće / poznato: aplikacije (iOS, Android) ne prikazuju sadržaj za odrasle; uparivanje po PHASH-u, ručni uvoz postojeće mape i zasebna kategorija u download klijentu nisu napravljeni; dnevnici poslužitelja mogu sadržavati imena izdanja.
+
 ## Gotovo u P12 — Android (branch `phase/P12-android`)
 - `android/` (D-095): Kotlin 2.1, Jetpack Compose (Material 3), OkHttp, kotlinx.serialization, Coil (memorija + 200 MB diska), WorkManager; `net.scyde.locarr`, Android 8+; telefon (donja traka) i tablet (bočna traka, ograničena širina). Tokeni dizajna iz `web/src/styles.css` u `ui/Theme.kt`.
 - Ručno pisani tolerantni modeli (`api/Models.kt`), `Api` s Bearer tokenom i `onUnauthorized`; prijevodi serverskih kodova generira `android/tools/gen-codes.py` iz web locala (`values{,-hr}/codes.xml`, `ui/Codes.kt`); ostali tekstovi u `values{,-hr}/strings.xml`.

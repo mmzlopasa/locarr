@@ -111,5 +111,17 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [ ] Android: Otkrivanje, naslov, zahtjev (sezone, 4K, album), moji zahtjevi, prijava problema, centar obavijesti; za upravitelje pregled, biblioteke s detaljima, „Zašto nije ovdje?" i Pokušaj sada, dodavanje, ručna pretraga s odlukama i grab, red, ploča, traženo, kalendar, povijest, odobravanje, problemi, zdravlje, indexeri (i ugrađene stranice, usenet) i klijenti s testom, mape za medije; duboke postavke otvaraju web (D-098) — ugrađeno, čitanje odgovora jedinično testirano, prazna stanja provjerena u emulatoru; tokovi s pravim podacima (TMDb) još nisu provjereni na uređaju
 - [ ] Android: obavijesti bez FCM-a (WorkManager svakih 15 min i pri otvaranju, kanali, poveznice; D-096) — logika jedinično testirana, isporuka na uređaju još nije provjerena
 
+## Sadržaj za odrasle (izborno, zadano isključeno)
+- [x] Uključivanje samo uz potvrdu administratora; zasebna dozvola `view_adult` (nikad zadana, ni administratorima; tražitelji nikad; API ključ samo uz „uključi sadržaj za odrasle”); isključeno = svaka adresa 404 (D-100)
+- [x] Nigdje ne curi: popisi, povijest, statistika, kalendar i iCal, ploča, opća vremenska crta, red i koš za one bez dozvole, `/api/stats` (samo izborni ukupan broj), Otkrivanje i zahtjevi, Streamero rute, obavijesti samo kanalima koji izričito odaberu `adult.*` (D-100)
+- [x] StashDB (GraphQL) i ThePornDB (REST) s vlastitim ključem, predmemorijom i ograničenjem; obrisani/sporni unosi se ne uvoze (D-101)
+- [x] Popis blokiranih pojmova (zadani konzervativni pojmovi, uređuje administrator) u metapodacima, pretrazi, RSS-u, ručnom grabu i uvozu (`blocked_tag`)
+- [x] Studiji/stranice sa scenama po datumu, filmovi, izvođači (praćeni izvođač → nove scene tražene), zasebne mape, predlošci imena (D-103)
+- [x] Indexeri s kategorijama 6xxx samo uz izričit izbor po indexeru; parser imena scena s golden testovima (D-102)
+- [x] Traženo, automatska i ručna pretraga, grab, uvoz, preimenovanje, vremenska crta i „Zašto nije ovdje?” preko zajedničke jezgre
+- [ ] Web: odjeljak „Odrasli” (scene, filmovi, studiji, izvođači, traženo, kalendar, dodavanje), zamućene slike, Postavke → Sadržaj za odrasle — napravljeno, Playwright test u CI-ju
+- [ ] Mobilne aplikacije (API je spreman; aplikacije ga zasad ne prikazuju)
+- [ ] Uparivanje datoteka po PHASH-u, ručni uvoz postojeće mape za odrasle, zasebna kategorija u download klijentu
+
 ## Kvaliteta (P13)
 - [ ] Sigurnosni pregled, ciljevi performansi testirani, korisnička dokumentacija, v1.0.0

@@ -13,7 +13,8 @@
 // /subdl/api/v1 and Jimaku under /jimaku/api (keys in
 // internal/subtitles/providers/fake), and a fake Streamero under /streamero
 // (accounts and keys in internal/mediaserver/streamero/fake; state at
-// /streamero/_fake/state, reset with POST /streamero/_fake/reset).
+// /streamero/_fake/state, reset with POST /streamero/_fake/reset), and fake
+// StashDB/ThePornDB under /adultmeta (keys in internal/adult/meta/fake).
 // The applications an existing setup is imported from are faked under
 // /arr/<kind> (API key migratekey; qBittorrent admin / migratepass); with a
 // seed folder their files go to <seed>/migrate. The built-in public sites'
@@ -27,6 +28,7 @@ import (
 	"path/filepath"
 	"time"
 
+	adultfake "github.com/mmzlopasa/locarr/server/internal/adult/meta/fake"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/fake"
 	"github.com/mmzlopasa/locarr/server/internal/indexers/native/sitefake"
 	stfake "github.com/mmzlopasa/locarr/server/internal/mediaserver/streamero/fake"
@@ -54,6 +56,8 @@ func main() {
 	mb.MinInterval = 950 * time.Millisecond
 	mux.Handle("/musicbrainz/", mb)
 	mux.Handle("/streamero/", http.StripPrefix("/streamero", stfake.New()))
+	// StashDB (/adultmeta/graphql) and ThePornDB (/adultmeta/tpdb) with synthetic, non-explicit data.
+	mux.Handle("/adultmeta/", http.StripPrefix("/adultmeta", adultfake.New(env("LOCARR_FAKES_ADULT_BASE", "http://fake-indexer:9117/adultmeta"))))
 	subs := subfake.New()
 	for _, p := range []string{"/opensubtitles/", "/subdl/", "/jimaku/"} {
 		mux.Handle(p, subs)
