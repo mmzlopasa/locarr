@@ -66,11 +66,15 @@ test("adult content: off by default, enable with confirmation, grant, blurred im
   const results = page.getByTestId("adult-lookup");
   await expect(results).toContainText("Studio A");
   const add = results.getByRole("button", { name: "Add" });
-  if (await add.count()) await add.first().click();
-  else await page.goto("/adult/studios");
+  if (await add.count()) {
+    await add.first().click();
+    // Adding a studio pulls its scenes in; the page opens when that is done.
+    await page.waitForURL(/\/adult\/studios\/\d+/);
+  }
 
   // Images are blurred until clicked, and only served to permitted users.
   await page.goto("/adult");
+  await expect(page.getByTestId("adult-items")).toContainText("Scene Title");
   const image = page.getByTestId("adult-image").first();
   await expect(image).toHaveAttribute("data-blurred", "true");
   await expect(image.locator("img")).toBeVisible();

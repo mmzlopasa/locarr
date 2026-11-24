@@ -2,7 +2,7 @@
 
 Locarr za svaki film i epizodu u biblioteci zna koje titlove želite, traži ih kod providera čim datoteka
 stigne, bira onaj koji odgovara baš vašem izdanju, sprema ga pokraj videa i to zapisuje na vremensku crtu.
-Ako titl kasni ili žuri, uskladi ga prema zvuku.
+Ako titl kasni ili žuri, uskladi ga prema zvuku. Ako ga nema, može ga strojno prevesti s drugog jezika.
 
 ## Prije prvog titla
 
@@ -113,6 +113,62 @@ drugom titlu iste datoteke i dalje radi. Drugi ffmpeg postavlja se varijablom `L
 U **Mogućnostima** se može uključiti automatsko usklađivanje svakog preuzetog titla (osim onih
 napravljenih baš za tu datoteku).
 
+## Prijevod titlova
+
+Kad za film ili epizodu nema titla na jeziku koji želite, a postoji na drugom (npr. engleski titl koji je
+stigao s preuzimanjem ili tekstualni zapis u MKV-u), Locarr ga može **strojno prevesti**.
+
+### Servisi
+
+**Postavke → Titlovi → Prijevod**, za svaki servis upišite što traži, uključite ga i stisnite **Test**
+(prevede probni redak na odabrani jezik):
+
+| Servis | Što treba | Trošak | Kvaliteta |
+|---|---|---|---|
+| **LibreTranslate** | adresa vašeg poslužitelja (npr. `http://192.168.1.10:5000`), ključ ako ga je postavio | besplatno (vaš poslužitelj) | osnovna; dobra za razumijevanje |
+| **DeepL** | API ključ s deepl.com (Free ključ završava na `:fx`, Locarr sam bira Free ili Pro adresu) | Free: 500 000 znakova mjesečno; Pro po znaku | vrlo dobra i dosljedna; oslovljavanje (formalno/neformalno) i pojmovnik po izboru |
+| **OpenAI** | API ključ, model (zadano `gpt-6-luna`) | po tokenu | vrlo dobra, prirodan govorni jezik |
+| **Anthropic** | API ključ, model `claude-haiku-5-5` (zadano, jeftiniji) ili `claude-sonnet-5-5` | po tokenu | vrlo dobra, prirodan govorni jezik |
+| **Google Gemini** | API ključ iz AI Studija, model (zadano `gemini-3.5-flash-lite`) | po tokenu (postoji besplatna razina) | dobra |
+| **Kompatibilno s OpenAI-jem** | adresa (npr. `http://ollama:11434/v1` za Ollamu, LM Studio, vLLM), model, ključ po izboru | besplatno (vaše računalo) | ovisi o modelu; veći modeli su bolji |
+
+Prosječan film ima 1000–1500 redaka, oko 40 000–60 000 znakova; s jezičnim modelom to je otprilike
+30 000–60 000 tokena po filmu. **Mjesečna granica** (znakova ili tokena) zaustavlja prijevode kad se dosegne
+i na kartici servisa piše „Granica dosegnuta" (nastavlja se idući mjesec ili kad je povećate). Kartica
+pokazuje potrošnju ovog mjeseca; DeepL pokazuje i potrošnju cijelog računa.
+
+**Privatnost:** tekst titla i naslov filma ili serije šalju se servisu koji odaberete (ništa drugo, ni
+imena datoteka). LibreTranslate i lokalni poslužitelj (Ollama i sl.) drže sve u vašoj mreži. Ključevi se
+spremaju šifrirano i više se ne prikazuju.
+
+### Kada se prevodi
+
+- **Ručno:** na kartici **Titlovi** filma ili epizode gumb **Prevedi** prevodi sve jezike koji nedostaju; u
+  **Nedostaje → Titlovi** **Prevedi odabrane** ili **Prevedi sve**. Tijekom prijevoda vidi se koliko je redaka gotovo.
+- **Automatski:** u jezičnom profilu postavite **Prevedi ako ništa nije nađeno nakon (sati)**, npr. 72. Kad
+  prođe toliko vremena od dolaska datoteke, a titla još nema (traženo je barem jednom), Locarr ga prevede.
+  Svaki sat prevede najviše „automatskih prijevoda na sat" (zadano 10); neuspjeli pokušaj ponavlja nakon 6 h, 12 h… najrjeđe tjedno.
+- **Koji servis:** u profilu se za svaki jezik može odabrati servis ili **Nikad ne prevodi**; inače vrijedi
+  servis za taj jezik iz **Servis po ciljnom jeziku**, pa **Zadani servis**, pa prvi uključeni.
+
+### Što Locarr radi
+
+- Bira **izvor**: prvo jezike iz „Prevodi s jezika" (zadano engleski), pa bilo koji; datoteku titla prije
+  zapisa u videu; običan titl prije titla za gluhe. Slikovni zapisi (PGS, VobSub na Blu-ray i DVD izdanjima) se
+  preskaču jer bi trebali OCR; na vremenskoj crti piše zašto.
+- **Vremena ostaju točno ista**, reci se prelamaju na najviše dva retka (~42 znaka), dijalog s crticama
+  ostaje redak po govorniku, kurziv (`<i>`) i ASS oznake (`{\an8}`, stilovi) ostaju.
+- Kod jezičnih modela Locarr provjerava da je vraćeno točno onoliko redaka koliko je poslano i da nijedan
+  nije spojen, izgubljen ili bez svojih oznaka; inače ponovi u manjim dijelovima.
+- Sprema `Film (2008).hr.translated.srt` (oznaku `translated` možete promijeniti ili ukloniti; bez nje je
+  `Film (2008).hr.srt` i tada samo Locarr zna da je prijevod). Titl koji nije Locarrov prijevod **nikad se ne prepisuje**.
+- Na kartici titlova prijevod ima oznaku **Strojni prijevod** i servis; **Pregled** pokazuje izvorni redak
+  pokraj prijevoda. Na vremenskoj crti: „Titl hrvatski preveden s jezika engleski pomoću DeepL: 742 redaka za 31 s".
+- Locarr i dalje traži **titl koji su preveli ljudi**. Čim ga nađe (kod providera ili na disku), prijevod
+  ide u koš.
+- Po izboru (**Uskladi prijevode prema zvuku**) prijevod napravljen iz datoteke titla usklađuje se prema zvuku.
+- Obavijest „Titl strojno preveden" može se uključiti na kanalima obavijesti.
+
 ## Ograničenja
 
 - Podnapisi, Addic7ed i Titlovi.com nisu uključeni: nemaju javni API koji bi Locarr smio koristiti.
@@ -120,3 +176,5 @@ napravljenih baš za tu datoteku).
 - Sinkronizacija nalazi jedan pomak (i broj sličica) za cijeli titl; titl kojem se pomak mijenja usred
   filma (drugačiji rez) treba ručno popraviti ili zamijeniti.
 - RAR i 7z arhive s titlovima se ne raspakiravaju (ZIP da).
+- Strojni prijevod ne čita slikovne titlove (PGS, VobSub) i ne nastavlja prijevod prekinut restartom (ponovi se idući sat ili gumbom).
+- Ugrađeni ASS zapis ffmpeg izvlači kao SRT, pa prijevod iz njega gubi stilove; ASS datoteka pokraj videa ih zadržava.

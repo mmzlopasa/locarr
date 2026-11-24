@@ -53,6 +53,8 @@ type PreviewCue struct {
 	Start time.Duration `json:"startMs"`
 	End   time.Duration `json:"endMs"`
 	Text  string        `json:"text"`
+	// Original is the source line of a machine translation ("" otherwise).
+	Original string `json:"original,omitempty"`
 }
 
 // Preview returns the first n cues and the total count.
@@ -66,12 +68,13 @@ func (s *Service) Preview(ctx context.Context, id int64, n int) ([]PreviewCue, i
 		return nil, 0, err
 	}
 	cues := d.Sorted()
+	orig := translationOriginal(sub)
 	out := []PreviewCue{}
 	for i, c := range cues {
 		if i >= n {
 			break
 		}
-		out = append(out, PreviewCue{Start: c.Start, End: c.End, Text: c.Text})
+		out = append(out, PreviewCue{Start: c.Start, End: c.End, Text: c.Text, Original: orig[c.Start.Milliseconds()]})
 	}
 	return out, len(cues), nil
 }
@@ -170,17 +173,18 @@ func (s *Service) Delete(ctx context.Context, id int64, blacklist bool) error {
 	if _, err := s.DB.W.ExecContext(ctx, `DELETE FROM subtitles WHERE id = ?`, id); err != nil {
 		return err
 	}
-	if blacklist && sub.Provider != "" {
+	blacklist = blacklist && sub.Provider != "" && !sub.Translated()
+	if blacklist {
 		if _, err := s.DB.W.ExecContext(ctx, `INSERT OR IGNORE INTO subtitle_blacklist (item_ref, provider, provider_id, language, release, at)
 			VALUES (?, ?, ?, ?, ?, ?)`, sub.ItemRef, sub.Provider, sub.ProviderID, sub.Language, sub.Release, db.Millis(s.now())); err != nil {
 			return err
 		}
 	}
 	msg := "moved subtitle " + filepath.Base(sub.Path) + " to the recycle bin"
-	if blacklist && sub.Provider != "" {
+	if blacklist {
 		msg += " and blacklisted it"
 	}
-	s.record(ctx, sub.ItemRef, TypeDeleted, msg, map[string]any{"path": sub.Path, "recycled": recycled, "blacklisted": blacklist && sub.Provider != "",
+	s.record(ctx, sub.ItemRef, TypeDeleted, msg, map[string]any{"path": sub.Path, "recycled": recycled, "blacklisted": blacklist,
 		"provider": sub.Provider, "language": sub.Language})
 	if ref, err := library.ParseRef(sub.ItemRef); err == nil {
 		if t, err := s.Target(ctx, ref); err == nil {

@@ -30,7 +30,7 @@ export const EVENT_GROUPS: { key: string; personal: boolean; adult?: boolean; ev
   { key: "issues", personal: true, events: ["issue.created", "issue.comment", "issue.resolved", "issue.reopened"] },
   { key: "library", personal: false, events: ["library.grabbed", "library.imported", "library.upgraded", "library.download_failed",
     "library.import_failed"] },
-  { key: "subtitles", personal: false, events: ["subtitles.downloaded", "subtitles.missing"] },
+  { key: "subtitles", personal: false, events: ["subtitles.downloaded", "subtitles.translated", "subtitles.missing"] },
   { key: "system", personal: false, events: ["health.warning", "migrate.finished", "migrate.failed"] },
   // Adult events are never chosen by default and only listed while the adult library is visible.
   { key: "adult", personal: false, adult: true, events: ["adult.grabbed", "adult.imported", "adult.upgraded", "adult.download_failed",

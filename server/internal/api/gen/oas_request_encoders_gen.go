@@ -1384,6 +1384,60 @@ func encodeTestStreameroRequest(
 	return nil
 }
 
+func encodeTestSubtitleTranslatorRequest(
+	req OptTestSubtitleTranslatorReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
+	e := new(jx.Encoder)
+	{
+		if req.Set {
+			req.Encode(e)
+		}
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeTranslateItemSubtitlesRequest(
+	req OptTranslateItemSubtitlesReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
+	e := new(jx.Encoder)
+	{
+		if req.Set {
+			req.Encode(e)
+		}
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeTranslateWantedSubtitlesRequest(
+	req *TranslateWantedSubtitlesReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeUpdateAdultItemRequest(
 	req *AdultEditRequest,
 	r *http.Request,
@@ -1890,6 +1944,34 @@ func encodeUpdateSubtitleProviderRequest(
 
 func encodeUpdateSubtitleSettingsRequest(
 	req *SubtitleSettingsInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSubtitleTranslationSettingsRequest(
+	req *SubtitleTranslationSettingsInput,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSubtitleTranslatorRequest(
+	req *SubtitleTranslatorInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

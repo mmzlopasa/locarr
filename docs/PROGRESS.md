@@ -12,6 +12,15 @@ P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacim
 - Dokumentacija: `docs/user/adult.md`.
 - Sljedeće / poznato: aplikacije (iOS, Android) ne prikazuju sadržaj za odrasle; uparivanje po PHASH-u, ručni uvoz postojeće mape i zasebna kategorija u download klijentu nisu napravljeni; dnevnici poslužitelja mogu sadržavati imena izdanja.
 
+## Gotovo: strojni prijevod titlova (branch `feat/subtitle-translation`)
+- `internal/subtitles/translate` (D-100): klijenti LibreTranslate, DeepL (Free/Pro po ključu, usage), OpenAI, Anthropic, Gemini, OpenAI-kompatibilni; zajednički JSON protokol za jezične modele s provjerom redaka i dijeljenjem serija, ponavljanja 429/5xx, izbacivanje odbijenih neobaveznih polja; dijeljenje redaka, oznake, prelamanje; lažni servisi u `translate/fake` (i u `locarr-fakes`).
+- Migracija `00014_subtitle_translation.sql`: `subtitle_translators`, `subtitle_translation_usage`, `subtitles.source = 'translated'` (+ izvor, izvorni reci), `subtitle_profiles.translate_after_hours`, raspored prijevoda u `subtitle_state`.
+- Cjevovod (`subtitles/translation.go`): izbor izvora i servisa, izvlačenje zapisa ffmpegom, `TranslateDoc`, spremanje bez prepisivanja ljudskog titla, povlačenje prijevoda kad stigne ljudski, satni posao, napredak, vremenska crta, obavijest `subtitles.translated`.
+- API: `/subtitles/translators*`, `/subtitles/translation`, `/subtitles/items/{ref}/translate`, `/subtitles/wanted/translate`; nova polja na titlu, profilu, stavci i pregledu.
+- Web (EN + HR): Postavke → Titlovi → Prijevod (servisi s Testom, potrošnjom i granicom, ponašanje, servis po jeziku), profil (nakon N sati, servis po jeziku), kartica titlova (Prevedi, napredak, oznaka, pregled izvornik/prijevod), Nedostaje → Titlovi (prevedi odabrane/sve).
+- Testovi: klijenti protiv lažnih servisa (DeepL free/pro, LibreTranslate nizovi, provjera JSON redaka i ponavljanje s manjim serijama, 429), `TranslateDoc` (ASS stilovi, vremena, prelamanje, granica), integracijski `TestSubtitleTranslationFlow` (dozvole, Test, prijevod, granica, raspored s Anthropicom, ljudski titl zamjenjuje prijevod), Vitest, Playwright (LibreTranslate → hrvatski prijevod s oznakom).
+- Poznato / sljedeće: `live` testovi sa stvarnim ključevima nisu napisani; napredak se ne pamti preko restarta.
+
 ## Gotovo u P12 — Android (branch `phase/P12-android`)
 - `android/` (D-095): Kotlin 2.1, Jetpack Compose (Material 3), OkHttp, kotlinx.serialization, Coil (memorija + 200 MB diska), WorkManager; `net.scyde.locarr`, Android 8+; telefon (donja traka) i tablet (bočna traka, ograničena širina). Tokeni dizajna iz `web/src/styles.css` u `ui/Theme.kt`.
 - Ručno pisani tolerantni modeli (`api/Models.kt`), `Api` s Bearer tokenom i `onUnauthorized`; prijevodi serverskih kodova generira `android/tools/gen-codes.py` iz web locala (`values{,-hr}/codes.xml`, `ui/Codes.kt`); ostali tekstovi u `values{,-hr}/strings.xml`.

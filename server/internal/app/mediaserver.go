@@ -205,13 +205,19 @@ func describeRef(ctx context.Context, d *Deps, r library.Ref) refInfo {
 func wireSubtitleEvents(d *Deps, log *slog.Logger) {
 	d.Subtitles.Notify = func(ctx context.Context, ref, typ, msg string) {
 		r, err := library.ParseRef(ref)
-		if err != nil || d.Hub == nil {
+		// Subtitle events (downloaded, translated, missing) never name adult
+		// items; the adult library has no subtitle features (D-101).
+		if err != nil || d.Hub == nil || library.IsAdult(r.Kind) {
 			return
 		}
 		switch typ {
 		case subtitles.TypeDownloaded, subtitles.TypeUpgraded:
 			info := describeRef(ctx, d, r)
 			d.Hub.Publish(ctx, notify.Event{Type: notify.SubtitleDownloaded, Title: info.title, Message: msg, Poster: info.poster,
+				MediaKind: info.kind, ItemRef: info.ref})
+		case subtitles.TypeTranslated:
+			info := describeRef(ctx, d, r)
+			d.Hub.Publish(ctx, notify.Event{Type: notify.SubtitleTranslated, Title: info.title, Message: msg, Poster: info.poster,
 				MediaKind: info.kind, ItemRef: info.ref})
 		case subtitles.TypeNotFound:
 			days, err := settings.Get(ctx, d.Settings, delivery.SubtitleMissingDays)

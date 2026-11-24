@@ -208,6 +208,14 @@ func (s *Service) Search(ctx context.Context, ref library.Ref, reason string, pr
 		return out, s.UpdateState(ctx, &t)
 	}
 	wants := missingWants(st)
+	// Languages covered only by a machine translation: a human subtitle replaces it.
+	translatedKeys := map[string]bool{}
+	for _, w := range st {
+		if w.Status == "translated" {
+			wants = append(wants, w.Want)
+			translatedKeys[w.Key] = true
+		}
+	}
 	// Upgrades: downloaded subtitles below a hash match, while the file is new.
 	upgradeFrom := map[string]int{}
 	if days, _ := settings.Get(ctx, s.Settings, UpgradeDays); days > 0 && s.now().Sub(db.Time(t.AddedAt)) < time.Duration(days)*24*time.Hour {
@@ -288,8 +296,8 @@ func (s *Service) Search(ctx context.Context, ref library.Ref, reason string, pr
 			out.Downloaded = append(out.Downloaded, *saved)
 			gotAny = true
 			s.maybeAutoSync(ctx, *saved, results)
-		case upgradeFrom[w.Key()] > 0:
-			// No better version: nothing to record.
+		case upgradeFrom[w.Key()] > 0 || translatedKeys[w.Key()]:
+			// No better version (or no human subtitle yet): nothing to record.
 		default:
 			out.Missing = append(out.Missing, w.Key())
 			data := map[string]any{"language": w.Language, "key": w.Key(), "providers": asked, "reports": reports, "minScore": minimum, "reason": reason}
@@ -308,7 +316,17 @@ func (s *Service) Search(ctx context.Context, ref library.Ref, reason string, pr
 		return out, err
 	}
 	out.Message = fmt.Sprintf("%d downloaded, %d still missing", len(out.Downloaded), len(out.Missing))
-	return out, s.afterSearch(ctx, &t, len(out.Missing) > 0, asked, out.Message)
+	stillTranslated := false
+	for k := range translatedKeys {
+		got := false
+		for _, d := range out.Downloaded {
+			if d.Want().Key() == k || d.Language+":forced" == k && d.Forced {
+				got = true
+			}
+		}
+		stillTranslated = stillTranslated || !got
+	}
+	return out, s.afterSearch(ctx, &t, len(out.Missing) > 0 || stillTranslated, asked, out.Message)
 }
 
 func first(s []string) string {

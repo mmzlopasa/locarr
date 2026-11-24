@@ -5577,6 +5577,125 @@
         }
       }
     },
+    "errors.translation_cap": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The monthly cap of the translation service is reached."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dosegnuta je mjesečna granica servisa za prijevod."
+          }
+        }
+      }
+    },
+    "errors.translation_file_exists": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A subtitle that Locarr did not translate already has this name; it is never overwritten."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titl koji Locarr nije preveo već ima to ime; nikad se ne prepisuje."
+          }
+        }
+      }
+    },
+    "errors.translation_line_mismatch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The translation service returned a different number of lines."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servis za prijevod vratio je drugačiji broj redaka."
+          }
+        }
+      }
+    },
+    "errors.translation_no_source": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There is no subtitle in another language to translate from."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nema titla na drugom jeziku iz kojeg bi se prevodilo."
+          }
+        }
+      }
+    },
+    "errors.translation_nothing_missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No wanted language is missing."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne nedostaje nijedan traženi jezik."
+          }
+        }
+      }
+    },
+    "errors.translation_unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No translation service is enabled."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nijedan servis za prijevod nije uključen."
+          }
+        }
+      }
+    },
+    "errors.translation_unsupported_language": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The translation service does not offer this language."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servis za prijevod ne nudi taj jezik."
+          }
+        }
+      }
+    },
     "errors.unauthorized": {
       "extractionState": "manual",
       "localizations": {

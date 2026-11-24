@@ -51342,6 +51342,8 @@ func (s *NotificationEventType) Decode(d *jx.Decoder) error {
 		*s = NotificationEventTypeSubtitlesDownloaded
 	case NotificationEventTypeSubtitlesMissing:
 		*s = NotificationEventTypeSubtitlesMissing
+	case NotificationEventTypeSubtitlesTranslated:
+		*s = NotificationEventTypeSubtitlesTranslated
 	case NotificationEventTypeMigrateFinished:
 		*s = NotificationEventTypeMigrateFinished
 	case NotificationEventTypeMigrateFailed:
@@ -54795,6 +54797,106 @@ func (s *OptSubtitleSettingsInputPreferredFormat) UnmarshalJSON(data []byte) err
 	return s.Decode(d)
 }
 
+// Encode encodes SubtitleTranslationSettingsInputLanguageTranslators as json.
+func (o OptSubtitleTranslationSettingsInputLanguageTranslators) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SubtitleTranslationSettingsInputLanguageTranslators from json.
+func (o *OptSubtitleTranslationSettingsInputLanguageTranslators) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSubtitleTranslationSettingsInputLanguageTranslators to nil")
+	}
+	o.Set = true
+	o.Value = make(SubtitleTranslationSettingsInputLanguageTranslators)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSubtitleTranslationSettingsInputLanguageTranslators) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSubtitleTranslationSettingsInputLanguageTranslators) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SubtitleTranslatorInputFormality as json.
+func (o OptSubtitleTranslatorInputFormality) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes SubtitleTranslatorInputFormality from json.
+func (o *OptSubtitleTranslatorInputFormality) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSubtitleTranslatorInputFormality to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSubtitleTranslatorInputFormality) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSubtitleTranslatorInputFormality) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes TestSubtitleTranslatorReq as json.
+func (o OptTestSubtitleTranslatorReq) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes TestSubtitleTranslatorReq from json.
+func (o *OptTestSubtitleTranslatorReq) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptTestSubtitleTranslatorReq to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptTestSubtitleTranslatorReq) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptTestSubtitleTranslatorReq) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes TrackFile as json.
 func (o OptTrackFile) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -54857,6 +54959,72 @@ func (s OptTransferMode) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptTransferMode) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes TranslateItemSubtitlesReq as json.
+func (o OptTranslateItemSubtitlesReq) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes TranslateItemSubtitlesReq from json.
+func (o *OptTranslateItemSubtitlesReq) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptTranslateItemSubtitlesReq to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptTranslateItemSubtitlesReq) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptTranslateItemSubtitlesReq) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes TranslateWantedSubtitlesReqKind as json.
+func (o OptTranslateWantedSubtitlesReqKind) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes TranslateWantedSubtitlesReqKind from json.
+func (o *OptTranslateWantedSubtitlesReqKind) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptTranslateWantedSubtitlesReqKind to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptTranslateWantedSubtitlesReqKind) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptTranslateWantedSubtitlesReqKind) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -75546,12 +75714,20 @@ func (s *Subtitle) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		e.FieldStart("translatedFrom")
+		e.Str(s.TranslatedFrom)
+	}
+	{
+		e.FieldStart("translationSource")
+		e.Str(s.TranslationSource)
+	}
+	{
 		e.FieldStart("addedAt")
 		json.EncodeDateTime(e, s.AddedAt)
 	}
 }
 
-var jsonFieldsNameOfSubtitle = [20]string{
+var jsonFieldsNameOfSubtitle = [22]string{
 	0:  "id",
 	1:  "mediaFileId",
 	2:  "itemRef",
@@ -75571,7 +75747,9 @@ var jsonFieldsNameOfSubtitle = [20]string{
 	16: "syncOffsetMs",
 	17: "syncScale",
 	18: "syncAt",
-	19: "addedAt",
+	19: "translatedFrom",
+	20: "translationSource",
+	21: "addedAt",
 }
 
 // Decode decodes Subtitle from json.
@@ -75805,8 +75983,32 @@ func (s *Subtitle) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"syncAt\"")
 			}
-		case "addedAt":
+		case "translatedFrom":
 			requiredBitSet[2] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.TranslatedFrom = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translatedFrom\"")
+			}
+		case "translationSource":
+			requiredBitSet[2] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.TranslationSource = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translationSource\"")
+			}
+		case "addedAt":
+			requiredBitSet[2] |= 1 << 5
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.AddedAt = v
@@ -75829,7 +76031,7 @@ func (s *Subtitle) Decode(d *jx.Decoder) error {
 	for i, mask := range [3]uint8{
 		0b11111111,
 		0b11101111,
-		0b00001011,
+		0b00111011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -76513,9 +76715,21 @@ func (s *SubtitleItem) encodeFields(e *jx.Encoder) {
 		e.FieldStart("syncAvailable")
 		e.Bool(s.SyncAvailable)
 	}
+	{
+		e.FieldStart("translations")
+		e.ArrStart()
+		for _, elem := range s.Translations {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("translationAvailable")
+		e.Bool(s.TranslationAvailable)
+	}
 }
 
-var jsonFieldsNameOfSubtitleItem = [18]string{
+var jsonFieldsNameOfSubtitleItem = [20]string{
 	0:  "ref",
 	1:  "title",
 	2:  "filePath",
@@ -76534,6 +76748,8 @@ var jsonFieldsNameOfSubtitleItem = [18]string{
 	15: "providersAsked",
 	16: "explanation",
 	17: "syncAvailable",
+	18: "translations",
+	19: "translationAvailable",
 }
 
 // Decode decodes SubtitleItem from json.
@@ -76769,6 +76985,36 @@ func (s *SubtitleItem) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"syncAvailable\"")
 			}
+		case "translations":
+			requiredBitSet[2] |= 1 << 2
+			if err := func() error {
+				s.Translations = make([]SubtitleTranslationProgress, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SubtitleTranslationProgress
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Translations = append(s.Translations, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translations\"")
+			}
+		case "translationAvailable":
+			requiredBitSet[2] |= 1 << 3
+			if err := func() error {
+				v, err := d.Bool()
+				s.TranslationAvailable = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translationAvailable\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -76781,7 +77027,7 @@ func (s *SubtitleItem) Decode(d *jx.Decoder) error {
 	for i, mask := range [3]uint8{
 		0b11101111,
 		0b11001111,
-		0b00000011,
+		0b00001111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -77146,12 +77392,19 @@ func (s *SubtitlePreviewLinesItem) encodeFields(e *jx.Encoder) {
 		e.FieldStart("text")
 		e.Str(s.Text)
 	}
+	{
+		if s.Original.Set {
+			e.FieldStart("original")
+			s.Original.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfSubtitlePreviewLinesItem = [3]string{
+var jsonFieldsNameOfSubtitlePreviewLinesItem = [4]string{
 	0: "startMs",
 	1: "endMs",
 	2: "text",
+	3: "original",
 }
 
 // Decode decodes SubtitlePreviewLinesItem from json.
@@ -77198,6 +77451,16 @@ func (s *SubtitlePreviewLinesItem) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"text\"")
+			}
+		case "original":
+			if err := func() error {
+				s.Original.Reset()
+				if err := s.Original.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original\"")
 			}
 		default:
 			return d.Skip()
@@ -77288,14 +77551,19 @@ func (s *SubtitleProfile) encodeFields(e *jx.Encoder) {
 		e.FieldStart("cutoff")
 		e.Bool(s.Cutoff)
 	}
+	{
+		e.FieldStart("translateAfterHours")
+		e.Int(s.TranslateAfterHours)
+	}
 }
 
-var jsonFieldsNameOfSubtitleProfile = [5]string{
+var jsonFieldsNameOfSubtitleProfile = [6]string{
 	0: "id",
 	1: "name",
 	2: "languages",
 	3: "skipEmbedded",
 	4: "cutoff",
+	5: "translateAfterHours",
 }
 
 // Decode decodes SubtitleProfile from json.
@@ -77373,6 +77641,18 @@ func (s *SubtitleProfile) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"cutoff\"")
 			}
+		case "translateAfterHours":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.TranslateAfterHours = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translateAfterHours\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -77383,7 +77663,7 @@ func (s *SubtitleProfile) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00011111,
+		0b00111111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -77645,13 +77925,20 @@ func (s *SubtitleProfileInput) encodeFields(e *jx.Encoder) {
 			s.Cutoff.Encode(e)
 		}
 	}
+	{
+		if s.TranslateAfterHours.Set {
+			e.FieldStart("translateAfterHours")
+			s.TranslateAfterHours.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfSubtitleProfileInput = [4]string{
+var jsonFieldsNameOfSubtitleProfileInput = [5]string{
 	0: "name",
 	1: "languages",
 	2: "skipEmbedded",
 	3: "cutoff",
+	4: "translateAfterHours",
 }
 
 // Decode decodes SubtitleProfileInput from json.
@@ -77712,6 +77999,16 @@ func (s *SubtitleProfileInput) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"cutoff\"")
+			}
+		case "translateAfterHours":
+			if err := func() error {
+				s.TranslateAfterHours.Reset()
+				if err := s.TranslateAfterHours.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translateAfterHours\"")
 			}
 		default:
 			return d.Skip()
@@ -79895,6 +80192,8 @@ func (s *SubtitleSource) Decode(d *jx.Decoder) error {
 		*s = SubtitleSourceDownloaded
 	case SubtitleSourceDisk:
 		*s = SubtitleSourceDisk
+	case SubtitleSourceTranslated:
+		*s = SubtitleSourceTranslated
 	default:
 		*s = SubtitleSource(v)
 	}
@@ -79911,6 +80210,1981 @@ func (s SubtitleSource) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *SubtitleSource) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SubtitleTranslationProgress) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SubtitleTranslationProgress) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("ref")
+		e.Str(s.Ref)
+	}
+	{
+		e.FieldStart("key")
+		e.Str(s.Key)
+	}
+	{
+		e.FieldStart("translator")
+		e.Str(s.Translator)
+	}
+	{
+		e.FieldStart("state")
+		s.State.Encode(e)
+	}
+	{
+		e.FieldStart("done")
+		e.Int(s.Done)
+	}
+	{
+		e.FieldStart("total")
+		e.Int(s.Total)
+	}
+	{
+		e.FieldStart("startedAt")
+		json.EncodeDateTime(e, s.StartedAt)
+	}
+}
+
+var jsonFieldsNameOfSubtitleTranslationProgress = [7]string{
+	0: "ref",
+	1: "key",
+	2: "translator",
+	3: "state",
+	4: "done",
+	5: "total",
+	6: "startedAt",
+}
+
+// Decode decodes SubtitleTranslationProgress from json.
+func (s *SubtitleTranslationProgress) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslationProgress to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "ref":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Ref = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"ref\"")
+			}
+		case "key":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Key = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"key\"")
+			}
+		case "translator":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Translator = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translator\"")
+			}
+		case "state":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				if err := s.State.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"state\"")
+			}
+		case "done":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int()
+				s.Done = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"done\"")
+			}
+		case "total":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.Total = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
+		case "startedAt":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.StartedAt = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"startedAt\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslationProgress")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b01111111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSubtitleTranslationProgress) {
+					name = jsonFieldsNameOfSubtitleTranslationProgress[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SubtitleTranslationProgress) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslationProgress) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SubtitleTranslationProgressState as json.
+func (s SubtitleTranslationProgressState) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SubtitleTranslationProgressState from json.
+func (s *SubtitleTranslationProgressState) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslationProgressState to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SubtitleTranslationProgressState(v) {
+	case SubtitleTranslationProgressStateQueued:
+		*s = SubtitleTranslationProgressStateQueued
+	case SubtitleTranslationProgressStateRunning:
+		*s = SubtitleTranslationProgressStateRunning
+	default:
+		*s = SubtitleTranslationProgressState(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SubtitleTranslationProgressState) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslationProgressState) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SubtitleTranslationSettings) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SubtitleTranslationSettings) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("defaultTranslator")
+		e.Str(s.DefaultTranslator)
+	}
+	{
+		e.FieldStart("languageTranslators")
+		s.LanguageTranslators.Encode(e)
+	}
+	{
+		e.FieldStart("suffix")
+		e.Str(s.Suffix)
+	}
+	{
+		e.FieldStart("sourceLanguages")
+		e.ArrStart()
+		for _, elem := range s.SourceLanguages {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("autoSync")
+		e.Bool(s.AutoSync)
+	}
+	{
+		e.FieldStart("perHour")
+		e.Int(s.PerHour)
+	}
+}
+
+var jsonFieldsNameOfSubtitleTranslationSettings = [6]string{
+	0: "defaultTranslator",
+	1: "languageTranslators",
+	2: "suffix",
+	3: "sourceLanguages",
+	4: "autoSync",
+	5: "perHour",
+}
+
+// Decode decodes SubtitleTranslationSettings from json.
+func (s *SubtitleTranslationSettings) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslationSettings to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "defaultTranslator":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.DefaultTranslator = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"defaultTranslator\"")
+			}
+		case "languageTranslators":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				if err := s.LanguageTranslators.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"languageTranslators\"")
+			}
+		case "suffix":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Suffix = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"suffix\"")
+			}
+		case "sourceLanguages":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				s.SourceLanguages = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.SourceLanguages = append(s.SourceLanguages, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sourceLanguages\"")
+			}
+		case "autoSync":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Bool()
+				s.AutoSync = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"autoSync\"")
+			}
+		case "perHour":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.PerHour = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"perHour\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslationSettings")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00111111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSubtitleTranslationSettings) {
+					name = jsonFieldsNameOfSubtitleTranslationSettings[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SubtitleTranslationSettings) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslationSettings) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SubtitleTranslationSettingsInput) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SubtitleTranslationSettingsInput) encodeFields(e *jx.Encoder) {
+	{
+		if s.DefaultTranslator.Set {
+			e.FieldStart("defaultTranslator")
+			s.DefaultTranslator.Encode(e)
+		}
+	}
+	{
+		if s.LanguageTranslators.Set {
+			e.FieldStart("languageTranslators")
+			s.LanguageTranslators.Encode(e)
+		}
+	}
+	{
+		if s.Suffix.Set {
+			e.FieldStart("suffix")
+			s.Suffix.Encode(e)
+		}
+	}
+	{
+		if s.SourceLanguages != nil {
+			e.FieldStart("sourceLanguages")
+			e.ArrStart()
+			for _, elem := range s.SourceLanguages {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.AutoSync.Set {
+			e.FieldStart("autoSync")
+			s.AutoSync.Encode(e)
+		}
+	}
+	{
+		if s.PerHour.Set {
+			e.FieldStart("perHour")
+			s.PerHour.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSubtitleTranslationSettingsInput = [6]string{
+	0: "defaultTranslator",
+	1: "languageTranslators",
+	2: "suffix",
+	3: "sourceLanguages",
+	4: "autoSync",
+	5: "perHour",
+}
+
+// Decode decodes SubtitleTranslationSettingsInput from json.
+func (s *SubtitleTranslationSettingsInput) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslationSettingsInput to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "defaultTranslator":
+			if err := func() error {
+				s.DefaultTranslator.Reset()
+				if err := s.DefaultTranslator.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"defaultTranslator\"")
+			}
+		case "languageTranslators":
+			if err := func() error {
+				s.LanguageTranslators.Reset()
+				if err := s.LanguageTranslators.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"languageTranslators\"")
+			}
+		case "suffix":
+			if err := func() error {
+				s.Suffix.Reset()
+				if err := s.Suffix.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"suffix\"")
+			}
+		case "sourceLanguages":
+			if err := func() error {
+				s.SourceLanguages = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.SourceLanguages = append(s.SourceLanguages, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sourceLanguages\"")
+			}
+		case "autoSync":
+			if err := func() error {
+				s.AutoSync.Reset()
+				if err := s.AutoSync.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"autoSync\"")
+			}
+		case "perHour":
+			if err := func() error {
+				s.PerHour.Reset()
+				if err := s.PerHour.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"perHour\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslationSettingsInput")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SubtitleTranslationSettingsInput) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslationSettingsInput) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s SubtitleTranslationSettingsInputLanguageTranslators) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s SubtitleTranslationSettingsInputLanguageTranslators) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.Str(elem)
+	}
+}
+
+// Decode decodes SubtitleTranslationSettingsInputLanguageTranslators from json.
+func (s *SubtitleTranslationSettingsInputLanguageTranslators) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslationSettingsInputLanguageTranslators to nil")
+	}
+	m := s.init()
+	var propertiesCount int
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		propertiesCount++
+		var elem string
+		if err := func() error {
+			v, err := d.Str()
+			elem = string(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslationSettingsInputLanguageTranslators")
+	}
+	// Validate properties count.
+	if err := (validate.Object{
+		MinProperties:    0,
+		MinPropertiesSet: false,
+		MaxProperties:    200,
+		MaxPropertiesSet: true,
+	}).ValidateProperties(propertiesCount); err != nil {
+		return errors.Wrap(err, "object")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SubtitleTranslationSettingsInputLanguageTranslators) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslationSettingsInputLanguageTranslators) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s SubtitleTranslationSettingsLanguageTranslators) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s SubtitleTranslationSettingsLanguageTranslators) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.Str(elem)
+	}
+}
+
+// Decode decodes SubtitleTranslationSettingsLanguageTranslators from json.
+func (s *SubtitleTranslationSettingsLanguageTranslators) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslationSettingsLanguageTranslators to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem string
+		if err := func() error {
+			v, err := d.Str()
+			elem = string(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslationSettingsLanguageTranslators")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SubtitleTranslationSettingsLanguageTranslators) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslationSettingsLanguageTranslators) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SubtitleTranslationUsage) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SubtitleTranslationUsage) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("month")
+		e.Str(s.Month)
+	}
+	{
+		e.FieldStart("characters")
+		e.Int64(s.Characters)
+	}
+	{
+		e.FieldStart("inputTokens")
+		e.Int64(s.InputTokens)
+	}
+	{
+		e.FieldStart("outputTokens")
+		e.Int64(s.OutputTokens)
+	}
+	{
+		e.FieldStart("requests")
+		e.Int64(s.Requests)
+	}
+	{
+		e.FieldStart("lines")
+		e.Int64(s.Lines)
+	}
+	{
+		e.FieldStart("subtitles")
+		e.Int64(s.Subtitles)
+	}
+}
+
+var jsonFieldsNameOfSubtitleTranslationUsage = [7]string{
+	0: "month",
+	1: "characters",
+	2: "inputTokens",
+	3: "outputTokens",
+	4: "requests",
+	5: "lines",
+	6: "subtitles",
+}
+
+// Decode decodes SubtitleTranslationUsage from json.
+func (s *SubtitleTranslationUsage) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslationUsage to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "month":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Month = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"month\"")
+			}
+		case "characters":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Characters = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"characters\"")
+			}
+		case "inputTokens":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int64()
+				s.InputTokens = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"inputTokens\"")
+			}
+		case "outputTokens":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int64()
+				s.OutputTokens = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"outputTokens\"")
+			}
+		case "requests":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int64()
+				s.Requests = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"requests\"")
+			}
+		case "lines":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int64()
+				s.Lines = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lines\"")
+			}
+		case "subtitles":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int64()
+				s.Subtitles = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"subtitles\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslationUsage")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b01111111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSubtitleTranslationUsage) {
+					name = jsonFieldsNameOfSubtitleTranslationUsage[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SubtitleTranslationUsage) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslationUsage) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SubtitleTranslator) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SubtitleTranslator) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("name")
+		e.Str(s.Name)
+	}
+	{
+		e.FieldStart("enabled")
+		e.Bool(s.Enabled)
+	}
+	{
+		e.FieldStart("fields")
+		e.ArrStart()
+		for _, elem := range s.Fields {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("needsKey")
+		e.Bool(s.NeedsKey)
+	}
+	{
+		e.FieldStart("needsUrl")
+		e.Bool(s.NeedsUrl)
+	}
+	{
+		e.FieldStart("local")
+		e.Bool(s.Local)
+	}
+	{
+		e.FieldStart("unit")
+		s.Unit.Encode(e)
+	}
+	{
+		e.FieldStart("defaultModel")
+		e.Str(s.DefaultModel)
+	}
+	{
+		e.FieldStart("models")
+		e.ArrStart()
+		for _, elem := range s.Models {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("website")
+		e.Str(s.Website)
+	}
+	{
+		e.FieldStart("baseUrl")
+		e.Str(s.BaseUrl)
+	}
+	{
+		e.FieldStart("apiKey")
+		s.ApiKey.Encode(e)
+	}
+	{
+		e.FieldStart("model")
+		e.Str(s.Model)
+	}
+	{
+		e.FieldStart("formality")
+		e.Str(s.Formality)
+	}
+	{
+		e.FieldStart("glossaryId")
+		e.Str(s.GlossaryId)
+	}
+	{
+		e.FieldStart("monthlyCap")
+		e.Int64(s.MonthlyCap)
+	}
+	{
+		e.FieldStart("failures")
+		e.Int(s.Failures)
+	}
+	{
+		if s.RetryAt.Set {
+			e.FieldStart("retryAt")
+			s.RetryAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		e.FieldStart("lastError")
+		e.Str(s.LastError)
+	}
+	{
+		e.FieldStart("lastErrorCode")
+		e.Str(s.LastErrorCode)
+	}
+	{
+		if s.LastErrorAt.Set {
+			e.FieldStart("lastErrorAt")
+			s.LastErrorAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.LastSuccessAt.Set {
+			e.FieldStart("lastSuccessAt")
+			s.LastSuccessAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.QuotaUsed.Set {
+			e.FieldStart("quotaUsed")
+			s.QuotaUsed.Encode(e)
+		}
+	}
+	{
+		if s.QuotaLimit.Set {
+			e.FieldStart("quotaLimit")
+			s.QuotaLimit.Encode(e)
+		}
+	}
+	{
+		if s.QuotaCheckedAt.Set {
+			e.FieldStart("quotaCheckedAt")
+			s.QuotaCheckedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		e.FieldStart("month")
+		s.Month.Encode(e)
+	}
+}
+
+var jsonFieldsNameOfSubtitleTranslator = [26]string{
+	0:  "name",
+	1:  "enabled",
+	2:  "fields",
+	3:  "needsKey",
+	4:  "needsUrl",
+	5:  "local",
+	6:  "unit",
+	7:  "defaultModel",
+	8:  "models",
+	9:  "website",
+	10: "baseUrl",
+	11: "apiKey",
+	12: "model",
+	13: "formality",
+	14: "glossaryId",
+	15: "monthlyCap",
+	16: "failures",
+	17: "retryAt",
+	18: "lastError",
+	19: "lastErrorCode",
+	20: "lastErrorAt",
+	21: "lastSuccessAt",
+	22: "quotaUsed",
+	23: "quotaLimit",
+	24: "quotaCheckedAt",
+	25: "month",
+}
+
+// Decode decodes SubtitleTranslator from json.
+func (s *SubtitleTranslator) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslator to nil")
+	}
+	var requiredBitSet [4]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "name":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Name = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "enabled":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Bool()
+				s.Enabled = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"enabled\"")
+			}
+		case "fields":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				s.Fields = make([]SubtitleTranslatorFieldsItem, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SubtitleTranslatorFieldsItem
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Fields = append(s.Fields, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"fields\"")
+			}
+		case "needsKey":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Bool()
+				s.NeedsKey = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"needsKey\"")
+			}
+		case "needsUrl":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Bool()
+				s.NeedsUrl = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"needsUrl\"")
+			}
+		case "local":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Bool()
+				s.Local = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"local\"")
+			}
+		case "unit":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				if err := s.Unit.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"unit\"")
+			}
+		case "defaultModel":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.DefaultModel = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"defaultModel\"")
+			}
+		case "models":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				s.Models = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Models = append(s.Models, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"models\"")
+			}
+		case "website":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Website = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"website\"")
+			}
+		case "baseUrl":
+			requiredBitSet[1] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.BaseUrl = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"baseUrl\"")
+			}
+		case "apiKey":
+			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				if err := s.ApiKey.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"apiKey\"")
+			}
+		case "model":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.Model = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"model\"")
+			}
+		case "formality":
+			requiredBitSet[1] |= 1 << 5
+			if err := func() error {
+				v, err := d.Str()
+				s.Formality = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"formality\"")
+			}
+		case "glossaryId":
+			requiredBitSet[1] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.GlossaryId = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"glossaryId\"")
+			}
+		case "monthlyCap":
+			requiredBitSet[1] |= 1 << 7
+			if err := func() error {
+				v, err := d.Int64()
+				s.MonthlyCap = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monthlyCap\"")
+			}
+		case "failures":
+			requiredBitSet[2] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.Failures = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"failures\"")
+			}
+		case "retryAt":
+			if err := func() error {
+				s.RetryAt.Reset()
+				if err := s.RetryAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"retryAt\"")
+			}
+		case "lastError":
+			requiredBitSet[2] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.LastError = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastError\"")
+			}
+		case "lastErrorCode":
+			requiredBitSet[2] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.LastErrorCode = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastErrorCode\"")
+			}
+		case "lastErrorAt":
+			if err := func() error {
+				s.LastErrorAt.Reset()
+				if err := s.LastErrorAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastErrorAt\"")
+			}
+		case "lastSuccessAt":
+			if err := func() error {
+				s.LastSuccessAt.Reset()
+				if err := s.LastSuccessAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastSuccessAt\"")
+			}
+		case "quotaUsed":
+			if err := func() error {
+				s.QuotaUsed.Reset()
+				if err := s.QuotaUsed.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"quotaUsed\"")
+			}
+		case "quotaLimit":
+			if err := func() error {
+				s.QuotaLimit.Reset()
+				if err := s.QuotaLimit.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"quotaLimit\"")
+			}
+		case "quotaCheckedAt":
+			if err := func() error {
+				s.QuotaCheckedAt.Reset()
+				if err := s.QuotaCheckedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"quotaCheckedAt\"")
+			}
+		case "month":
+			requiredBitSet[3] |= 1 << 1
+			if err := func() error {
+				if err := s.Month.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"month\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslator")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [4]uint8{
+		0b11111111,
+		0b11111111,
+		0b00001101,
+		0b00000010,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSubtitleTranslator) {
+					name = jsonFieldsNameOfSubtitleTranslator[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SubtitleTranslator) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslator) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SubtitleTranslatorFieldsItem as json.
+func (s SubtitleTranslatorFieldsItem) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SubtitleTranslatorFieldsItem from json.
+func (s *SubtitleTranslatorFieldsItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslatorFieldsItem to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SubtitleTranslatorFieldsItem(v) {
+	case SubtitleTranslatorFieldsItemBaseUrl:
+		*s = SubtitleTranslatorFieldsItemBaseUrl
+	case SubtitleTranslatorFieldsItemApiKey:
+		*s = SubtitleTranslatorFieldsItemApiKey
+	case SubtitleTranslatorFieldsItemModel:
+		*s = SubtitleTranslatorFieldsItemModel
+	case SubtitleTranslatorFieldsItemFormality:
+		*s = SubtitleTranslatorFieldsItemFormality
+	case SubtitleTranslatorFieldsItemGlossaryId:
+		*s = SubtitleTranslatorFieldsItemGlossaryId
+	default:
+		*s = SubtitleTranslatorFieldsItem(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SubtitleTranslatorFieldsItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslatorFieldsItem) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SubtitleTranslatorInput) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SubtitleTranslatorInput) encodeFields(e *jx.Encoder) {
+	{
+		if s.Enabled.Set {
+			e.FieldStart("enabled")
+			s.Enabled.Encode(e)
+		}
+	}
+	{
+		if s.BaseUrl.Set {
+			e.FieldStart("baseUrl")
+			s.BaseUrl.Encode(e)
+		}
+	}
+	{
+		if s.ApiKey.Set {
+			e.FieldStart("apiKey")
+			s.ApiKey.Encode(e)
+		}
+	}
+	{
+		if s.Model.Set {
+			e.FieldStart("model")
+			s.Model.Encode(e)
+		}
+	}
+	{
+		if s.Formality.Set {
+			e.FieldStart("formality")
+			s.Formality.Encode(e)
+		}
+	}
+	{
+		if s.GlossaryId.Set {
+			e.FieldStart("glossaryId")
+			s.GlossaryId.Encode(e)
+		}
+	}
+	{
+		if s.MonthlyCap.Set {
+			e.FieldStart("monthlyCap")
+			s.MonthlyCap.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSubtitleTranslatorInput = [7]string{
+	0: "enabled",
+	1: "baseUrl",
+	2: "apiKey",
+	3: "model",
+	4: "formality",
+	5: "glossaryId",
+	6: "monthlyCap",
+}
+
+// Decode decodes SubtitleTranslatorInput from json.
+func (s *SubtitleTranslatorInput) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslatorInput to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "enabled":
+			if err := func() error {
+				s.Enabled.Reset()
+				if err := s.Enabled.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"enabled\"")
+			}
+		case "baseUrl":
+			if err := func() error {
+				s.BaseUrl.Reset()
+				if err := s.BaseUrl.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"baseUrl\"")
+			}
+		case "apiKey":
+			if err := func() error {
+				s.ApiKey.Reset()
+				if err := s.ApiKey.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"apiKey\"")
+			}
+		case "model":
+			if err := func() error {
+				s.Model.Reset()
+				if err := s.Model.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"model\"")
+			}
+		case "formality":
+			if err := func() error {
+				s.Formality.Reset()
+				if err := s.Formality.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"formality\"")
+			}
+		case "glossaryId":
+			if err := func() error {
+				s.GlossaryId.Reset()
+				if err := s.GlossaryId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"glossaryId\"")
+			}
+		case "monthlyCap":
+			if err := func() error {
+				s.MonthlyCap.Reset()
+				if err := s.MonthlyCap.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monthlyCap\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslatorInput")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SubtitleTranslatorInput) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslatorInput) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SubtitleTranslatorInputFormality as json.
+func (s SubtitleTranslatorInputFormality) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SubtitleTranslatorInputFormality from json.
+func (s *SubtitleTranslatorInputFormality) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslatorInputFormality to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SubtitleTranslatorInputFormality(v) {
+	case SubtitleTranslatorInputFormalityEmpty:
+		*s = SubtitleTranslatorInputFormalityEmpty
+	case SubtitleTranslatorInputFormalityDefault:
+		*s = SubtitleTranslatorInputFormalityDefault
+	case SubtitleTranslatorInputFormalityPreferMore:
+		*s = SubtitleTranslatorInputFormalityPreferMore
+	case SubtitleTranslatorInputFormalityPreferLess:
+		*s = SubtitleTranslatorInputFormalityPreferLess
+	default:
+		*s = SubtitleTranslatorInputFormality(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SubtitleTranslatorInputFormality) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslatorInputFormality) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SubtitleTranslatorTest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SubtitleTranslatorTest) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("input")
+		e.Str(s.Input)
+	}
+	{
+		e.FieldStart("output")
+		e.Str(s.Output)
+	}
+	{
+		e.FieldStart("from")
+		e.Str(s.From)
+	}
+	{
+		e.FieldStart("to")
+		e.Str(s.To)
+	}
+	{
+		e.FieldStart("durationMs")
+		e.Int64(s.DurationMs)
+	}
+	{
+		e.FieldStart("characters")
+		e.Int64(s.Characters)
+	}
+	{
+		e.FieldStart("inputTokens")
+		e.Int64(s.InputTokens)
+	}
+	{
+		e.FieldStart("outputTokens")
+		e.Int64(s.OutputTokens)
+	}
+	{
+		e.FieldStart("translator")
+		s.Translator.Encode(e)
+	}
+}
+
+var jsonFieldsNameOfSubtitleTranslatorTest = [9]string{
+	0: "input",
+	1: "output",
+	2: "from",
+	3: "to",
+	4: "durationMs",
+	5: "characters",
+	6: "inputTokens",
+	7: "outputTokens",
+	8: "translator",
+}
+
+// Decode decodes SubtitleTranslatorTest from json.
+func (s *SubtitleTranslatorTest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslatorTest to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "input":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Input = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"input\"")
+			}
+		case "output":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Output = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"output\"")
+			}
+		case "from":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.From = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"from\"")
+			}
+		case "to":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.To = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"to\"")
+			}
+		case "durationMs":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int64()
+				s.DurationMs = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"durationMs\"")
+			}
+		case "characters":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int64()
+				s.Characters = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"characters\"")
+			}
+		case "inputTokens":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int64()
+				s.InputTokens = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"inputTokens\"")
+			}
+		case "outputTokens":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Int64()
+				s.OutputTokens = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"outputTokens\"")
+			}
+		case "translator":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				if err := s.Translator.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translator\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SubtitleTranslatorTest")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b11111111,
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSubtitleTranslatorTest) {
+					name = jsonFieldsNameOfSubtitleTranslatorTest[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SubtitleTranslatorTest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslatorTest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SubtitleTranslatorUnit as json.
+func (s SubtitleTranslatorUnit) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes SubtitleTranslatorUnit from json.
+func (s *SubtitleTranslatorUnit) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SubtitleTranslatorUnit to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch SubtitleTranslatorUnit(v) {
+	case SubtitleTranslatorUnitCharacters:
+		*s = SubtitleTranslatorUnitCharacters
+	case SubtitleTranslatorUnitTokens:
+		*s = SubtitleTranslatorUnitTokens
+	default:
+		*s = SubtitleTranslatorUnit(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SubtitleTranslatorUnit) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SubtitleTranslatorUnit) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -79936,12 +82210,19 @@ func (s *SubtitleWant) encodeFields(e *jx.Encoder) {
 		e.FieldStart("hearingImpaired")
 		s.HearingImpaired.Encode(e)
 	}
+	{
+		if s.Translator.Set {
+			e.FieldStart("translator")
+			s.Translator.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfSubtitleWant = [3]string{
+var jsonFieldsNameOfSubtitleWant = [4]string{
 	0: "language",
 	1: "forced",
 	2: "hearingImpaired",
+	3: "translator",
 }
 
 // Decode decodes SubtitleWant from json.
@@ -79986,6 +82267,16 @@ func (s *SubtitleWant) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"hearingImpaired\"")
+			}
+		case "translator":
+			if err := func() error {
+				s.Translator.Reset()
+				if err := s.Translator.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translator\"")
 			}
 		default:
 			return d.Skip()
@@ -80303,6 +82594,8 @@ func (s *SubtitleWantStatusStatus) Decode(d *jx.Decoder) error {
 		*s = SubtitleWantStatusStatusPresent
 	case SubtitleWantStatusStatusEmbedded:
 		*s = SubtitleWantStatusStatusEmbedded
+	case SubtitleWantStatusStatusTranslated:
+		*s = SubtitleWantStatusStatusTranslated
 	case SubtitleWantStatusStatusMissing:
 		*s = SubtitleWantStatusStatusMissing
 	case SubtitleWantStatusStatusSkipped:
@@ -81530,6 +83823,103 @@ func (s *TaskList) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *TaskList) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *TestSubtitleTranslatorReq) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *TestSubtitleTranslatorReq) encodeFields(e *jx.Encoder) {
+	{
+		if s.Text.Set {
+			e.FieldStart("text")
+			s.Text.Encode(e)
+		}
+	}
+	{
+		if s.From.Set {
+			e.FieldStart("from")
+			s.From.Encode(e)
+		}
+	}
+	{
+		if s.To.Set {
+			e.FieldStart("to")
+			s.To.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfTestSubtitleTranslatorReq = [3]string{
+	0: "text",
+	1: "from",
+	2: "to",
+}
+
+// Decode decodes TestSubtitleTranslatorReq from json.
+func (s *TestSubtitleTranslatorReq) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode TestSubtitleTranslatorReq to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "text":
+			if err := func() error {
+				s.Text.Reset()
+				if err := s.Text.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"text\"")
+			}
+		case "from":
+			if err := func() error {
+				s.From.Reset()
+				if err := s.From.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"from\"")
+			}
+		case "to":
+			if err := func() error {
+				s.To.Reset()
+				if err := s.To.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"to\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode TestSubtitleTranslatorReq")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *TestSubtitleTranslatorReq) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *TestSubtitleTranslatorReq) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -82944,6 +85334,266 @@ func (s TransferMode) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *TransferMode) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *TranslateItemSubtitlesReq) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *TranslateItemSubtitlesReq) encodeFields(e *jx.Encoder) {
+	{
+		if s.Keys != nil {
+			e.FieldStart("keys")
+			e.ArrStart()
+			for _, elem := range s.Keys {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Translator.Set {
+			e.FieldStart("translator")
+			s.Translator.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfTranslateItemSubtitlesReq = [2]string{
+	0: "keys",
+	1: "translator",
+}
+
+// Decode decodes TranslateItemSubtitlesReq from json.
+func (s *TranslateItemSubtitlesReq) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode TranslateItemSubtitlesReq to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "keys":
+			if err := func() error {
+				s.Keys = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Keys = append(s.Keys, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"keys\"")
+			}
+		case "translator":
+			if err := func() error {
+				s.Translator.Reset()
+				if err := s.Translator.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translator\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode TranslateItemSubtitlesReq")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *TranslateItemSubtitlesReq) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *TranslateItemSubtitlesReq) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *TranslateWantedSubtitlesReq) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *TranslateWantedSubtitlesReq) encodeFields(e *jx.Encoder) {
+	{
+		if s.Refs != nil {
+			e.FieldStart("refs")
+			e.ArrStart()
+			for _, elem := range s.Refs {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.All.Set {
+			e.FieldStart("all")
+			s.All.Encode(e)
+		}
+	}
+	{
+		if s.Kind.Set {
+			e.FieldStart("kind")
+			s.Kind.Encode(e)
+		}
+	}
+	{
+		if s.Translator.Set {
+			e.FieldStart("translator")
+			s.Translator.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfTranslateWantedSubtitlesReq = [4]string{
+	0: "refs",
+	1: "all",
+	2: "kind",
+	3: "translator",
+}
+
+// Decode decodes TranslateWantedSubtitlesReq from json.
+func (s *TranslateWantedSubtitlesReq) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode TranslateWantedSubtitlesReq to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "refs":
+			if err := func() error {
+				s.Refs = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Refs = append(s.Refs, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"refs\"")
+			}
+		case "all":
+			if err := func() error {
+				s.All.Reset()
+				if err := s.All.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"all\"")
+			}
+		case "kind":
+			if err := func() error {
+				s.Kind.Reset()
+				if err := s.Kind.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"kind\"")
+			}
+		case "translator":
+			if err := func() error {
+				s.Translator.Reset()
+				if err := s.Translator.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"translator\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode TranslateWantedSubtitlesReq")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *TranslateWantedSubtitlesReq) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *TranslateWantedSubtitlesReq) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes TranslateWantedSubtitlesReqKind as json.
+func (s TranslateWantedSubtitlesReqKind) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes TranslateWantedSubtitlesReqKind from json.
+func (s *TranslateWantedSubtitlesReqKind) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode TranslateWantedSubtitlesReqKind to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch TranslateWantedSubtitlesReqKind(v) {
+	case TranslateWantedSubtitlesReqKindMovie:
+		*s = TranslateWantedSubtitlesReqKindMovie
+	case TranslateWantedSubtitlesReqKindEpisode:
+		*s = TranslateWantedSubtitlesReqKindEpisode
+	default:
+		*s = TranslateWantedSubtitlesReqKind(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s TranslateWantedSubtitlesReqKind) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *TranslateWantedSubtitlesReqKind) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

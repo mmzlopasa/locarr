@@ -53,7 +53,15 @@ export function describeSubtitleEvent(t: TFunction, e: TimelineEvent): string | 
     case "subtitle_failed":
       return t("subtitles.events.failed", { language: languageName(t, str(d.language)), provider: str(d.provider),
         error: t(`subtitles.errorCodes.${str(d.code)}`, { defaultValue: str(d.error) }) });
+    case "subtitle_translated":
+      return t("subtitles.events.translated", { language: wantLabel(t, str(d.key) || str(d.language)), from: languageName(t, str(d.from)),
+        translator: t(`subtitles.translatorNames.${str(d.translator)}`, { defaultValue: str(d.translator) }), lines: Number(d.lines ?? 0),
+        seconds: Number(d.seconds ?? 0), file });
+    case "subtitle_translation_failed":
+      return t("subtitles.events.translateFailed", { language: wantLabel(t, str(d.key) || str(d.language)),
+        error: t(`subtitles.errorCodes.${str(d.code)}`, { defaultValue: str(d.error) }) });
     case "subtitle_deleted":
+      if (d.translated) return t("subtitles.events.translationReplaced", { file });
       return d.blacklisted ? t("subtitles.events.deletedBlacklisted", { file }) : t("subtitles.events.deleted", { file });
     case "subtitle_synced":
       if (d.state === "done") {
@@ -82,8 +90,10 @@ export function subtitleEventTone(type: string): "success" | "danger" | "warning
     case "subtitle_upgraded":
     case "subtitle_found_on_disk":
     case "subtitle_synced":
+    case "subtitle_translated":
       return "success";
     case "subtitle_failed":
+    case "subtitle_translation_failed":
       return "danger";
     case "subtitle_not_found":
     case "subtitle_deleted":
@@ -112,7 +122,7 @@ export function useSubtitleItem(ref: string, poll = false) {
   return useQuery({
     queryKey: queryKeys.subtitleItem(ref),
     queryFn: async () => unwrap(await api.GET("/subtitles/items/{ref}", { params: { path: { ref } } })),
-    refetchInterval: (q) => (poll || q.state.data?.subtitles.some((s) => s.syncState === "running") ? 2_000 : false),
+    refetchInterval: (q) => (poll || q.state.data?.subtitles.some((s) => s.syncState === "running") || (q.state.data?.translations.length ?? 0) > 0 ? 2_000 : false),
   });
 }
 

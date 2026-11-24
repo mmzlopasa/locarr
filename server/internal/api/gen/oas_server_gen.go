@@ -917,6 +917,12 @@ type Handler interface {
 	//
 	// GET /subtitles/settings
 	GetSubtitleSettings(ctx context.Context) (*SubtitleSettings, error)
+	// GetSubtitleTranslationSettings implements getSubtitleTranslationSettings operation.
+	//
+	// Translation options (administrators).
+	//
+	// GET /subtitles/translation
+	GetSubtitleTranslationSettings(ctx context.Context) (*SubtitleTranslationSettings, error)
 	// GetSystemInfo implements getSystemInfo operation.
 	//
 	// Unauthenticated. Clients use it to check a server address and whether first-run setup is needed.
@@ -1407,6 +1413,12 @@ type Handler interface {
 	//
 	// GET /subtitles/providers
 	ListSubtitleProviders(ctx context.Context) ([]SubtitleProvider, error)
+	// ListSubtitleTranslators implements listSubtitleTranslators operation.
+	//
+	// Translation services with usage and health (managers).
+	//
+	// GET /subtitles/translators
+	ListSubtitleTranslators(ctx context.Context) ([]SubtitleTranslator, error)
 	// ListTasks implements listTasks operation.
 	//
 	// Scheduled tasks and recent job history (administrators).
@@ -1719,6 +1731,12 @@ type Handler interface {
 	//
 	// POST /subtitles/providers/{name}/health/reset
 	ResetSubtitleProviderHealth(ctx context.Context, params ResetSubtitleProviderHealthParams) (*SubtitleProvider, error)
+	// ResetSubtitleTranslatorHealth implements resetSubtitleTranslatorHealth operation.
+	//
+	// Clear a translation service's backoff (managers).
+	//
+	// POST /subtitles/translators/{name}/health/reset
+	ResetSubtitleTranslatorHealth(ctx context.Context, params ResetSubtitleTranslatorHealthParams) (*SubtitleTranslator, error)
 	// ResetUserPassword implements resetUserPassword operation.
 	//
 	// Signs the user out everywhere and clears an account lockout.
@@ -2048,6 +2066,26 @@ type Handler interface {
 	//
 	// POST /subtitles/providers/{name}/test
 	TestSubtitleProvider(ctx context.Context, params TestSubtitleProviderParams) (*SubtitleProvider, error)
+	// TestSubtitleTranslator implements testSubtitleTranslator operation.
+	//
+	// Translate a sample line with a service (administrators).
+	//
+	// POST /subtitles/translators/{name}/test
+	TestSubtitleTranslator(ctx context.Context, req OptTestSubtitleTranslatorReq, params TestSubtitleTranslatorParams) (*SubtitleTranslatorTest, error)
+	// TranslateItemSubtitles implements translateItemSubtitles operation.
+	//
+	// Queues a translation of every missing language (or only `keys`, which may also name a language
+	// outside the profile) from the best subtitle in another language. Progress shows in the item's
+	// `translations`; the result lands on the timeline.
+	//
+	// POST /subtitles/items/{ref}/translate
+	TranslateItemSubtitles(ctx context.Context, req OptTranslateItemSubtitlesReq, params TranslateItemSubtitlesParams) (*SubtitleCount, error)
+	// TranslateWantedSubtitles implements translateWantedSubtitles operation.
+	//
+	// Queue machine translations for items, or for every item missing subtitles (managers).
+	//
+	// POST /subtitles/wanted/translate
+	TranslateWantedSubtitles(ctx context.Context, req *TranslateWantedSubtitlesReq) (*SubtitleCount, error)
 	// UnlinkMyIdentity implements unlinkMyIdentity operation.
 	//
 	// Remove the caller's link to a provider.
@@ -2286,6 +2324,18 @@ type Handler interface {
 	//
 	// PUT /subtitles/settings
 	UpdateSubtitleSettings(ctx context.Context, req *SubtitleSettingsInput) (*SubtitleSettings, error)
+	// UpdateSubtitleTranslationSettings implements updateSubtitleTranslationSettings operation.
+	//
+	// Change translation options (administrators).
+	//
+	// PUT /subtitles/translation
+	UpdateSubtitleTranslationSettings(ctx context.Context, req *SubtitleTranslationSettingsInput) (*SubtitleTranslationSettings, error)
+	// UpdateSubtitleTranslator implements updateSubtitleTranslator operation.
+	//
+	// The key is write-only and stored encrypted; an empty string removes it.
+	//
+	// PUT /subtitles/translators/{name}
+	UpdateSubtitleTranslator(ctx context.Context, req *SubtitleTranslatorInput, params UpdateSubtitleTranslatorParams) (*SubtitleTranslator, error)
 	// UpdateSystemSettings implements updateSystemSettings operation.
 	//
 	// Leave `metricsToken` out to keep it, "" to turn `/metrics` off.

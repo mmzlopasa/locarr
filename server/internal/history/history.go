@@ -36,7 +36,7 @@ var timelineTypes = map[string][]string{
 	Failed:        {timeline.TypeImportFailed, timeline.TypeGrabFailed},
 	Deleted:       {timeline.TypeRecycled, timeline.TypeDeleted},
 	Renamed:       {timeline.TypeRenamed},
-	Subtitles:     {"subtitle_downloaded", "subtitle_upgraded"},
+	Subtitles:     {"subtitle_downloaded", "subtitle_upgraded", "subtitle_translated"},
 	Notifications: {timeline.TypeNotified},
 }
 

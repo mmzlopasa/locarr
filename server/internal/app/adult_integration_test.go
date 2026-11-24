@@ -344,6 +344,16 @@ func TestAdultLibraryEndToEnd(t *testing.T) {
 		t.Fatal("no explanation")
 	}
 
+	// No subtitle work (search, translation) is ever queued for adult items.
+	var subs int
+	_ = ae.deps.DB.R.QueryRow(`SELECT COUNT(*) FROM subtitle_state WHERE item_ref LIKE 'scene:%' OR item_ref LIKE 'adult_movie:%'`).Scan(&subs)
+	if subs != 0 {
+		t.Fatalf("subtitle state for adult items: %d", subs)
+	}
+	if n, err := ae.deps.Subtitles.TranslateDue(t.Context()); err != nil || n != 0 {
+		t.Fatalf("translation ran for adult items: %d %v", n, err)
+	}
+
 	// Channels: only the one that chose adult events hears about it.
 	waitFor(t, "the adult webhook", func() bool { return strings.Contains(hook.all("/adult"), "adult.imported") })
 	if p := hook.all("/plain"); strings.Contains(p, "Scene Title") || strings.Contains(p, "StudioA") || strings.Contains(p, "adult") {

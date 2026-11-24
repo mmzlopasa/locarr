@@ -30,6 +30,9 @@ type Want struct {
 	Language        string `json:"language"`
 	Forced          bool   `json:"forced"`
 	HearingImpaired string `json:"hearingImpaired"`
+	// Translator is the translation service for this language ("" = the
+	// default for the language, "none" = never translate it).
+	Translator string `json:"translator,omitempty"`
 }
 
 // Key is the stable name of a wanted subtitle ("hr", "hr:forced", "en:hi").
@@ -46,21 +49,25 @@ func (w Want) Key() string {
 
 // Profile is a subtitle language profile.
 type Profile struct {
-	ID           int64     `json:"id"`
-	Name         string    `json:"name"`
-	Languages    []Want    `json:"languages"`
-	SkipEmbedded bool      `json:"skipEmbedded"`
-	Cutoff       bool      `json:"cutoff"`
-	CreatedAt    time.Time `json:"createdAt"`
-	UpdatedAt    time.Time `json:"updatedAt"`
+	ID           int64  `json:"id"`
+	Name         string `json:"name"`
+	Languages    []Want `json:"languages"`
+	SkipEmbedded bool   `json:"skipEmbedded"`
+	Cutoff       bool   `json:"cutoff"`
+	// TranslateAfterHours: translate a missing language this long after the
+	// file arrived when no subtitle was found (0 = never automatically).
+	TranslateAfterHours int       `json:"translateAfterHours"`
+	CreatedAt           time.Time `json:"createdAt"`
+	UpdatedAt           time.Time `json:"updatedAt"`
 }
 
 // ProfileInput is a new or changed profile.
 type ProfileInput struct {
-	Name         string
-	Languages    []Want
-	SkipEmbedded bool
-	Cutoff       bool
+	Name                string
+	Languages           []Want
+	SkipEmbedded        bool
+	Cutoff              bool
+	TranslateAfterHours int
 }
 
 // ValidationError is input Locarr refuses.
@@ -78,6 +85,9 @@ func (in *ProfileInput) check() error {
 	if len(in.Languages) == 0 || len(in.Languages) > 20 {
 		return invalid("a profile needs between 1 and 20 languages")
 	}
+	if in.TranslateAfterHours < 0 || in.TranslateAfterHours > 24*365 {
+		return invalid("translateAfterHours must be between 0 and 8760")
+	}
 	seen := map[string]bool{}
 	for i := range in.Languages {
 		w := &in.Languages[i]
@@ -92,6 +102,13 @@ func (in *ProfileInput) check() error {
 		default:
 			return invalid("hearingImpaired must be include, prefer, exclude or only")
 		}
+		switch w.Translator {
+		case "", TranslatorNone:
+		default:
+			if !knownTranslator(w.Translator) {
+				return invalid("unknown translation service %q", w.Translator)
+			}
+		}
 		if seen[w.Key()] {
 			return invalid("%s is in the profile twice", w.Key())
 		}
@@ -100,7 +117,7 @@ func (in *ProfileInput) check() error {
 	return nil
 }
 
-const profileCols = `id, name, languages, skip_embedded, cutoff, created_at, updated_at`
+const profileCols = `id, name, languages, skip_embedded, cutoff, translate_after_hours, created_at, updated_at`
 
 func scanProfile(row interface{ Scan(...any) error }) (Profile, error) {
 	var (
@@ -109,7 +126,7 @@ func scanProfile(row interface{ Scan(...any) error }) (Profile, error) {
 		cr, up     int64
 		skip, stop bool
 	)
-	if err := row.Scan(&p.ID, &p.Name, &langs, &skip, &stop, &cr, &up); err != nil {
+	if err := row.Scan(&p.ID, &p.Name, &langs, &skip, &stop, &p.TranslateAfterHours, &cr, &up); err != nil {
 		return p, err
 	}
 	p.SkipEmbedded, p.Cutoff, p.CreatedAt, p.UpdatedAt = skip, stop, db.Time(cr), db.Time(up)
@@ -161,8 +178,8 @@ func (s *Service) CreateProfile(ctx context.Context, in ProfileInput) (Profile, 
 	b, _ := json.Marshal(in.Languages)
 	now := db.Millis(s.now())
 	var id int64
-	err := s.DB.W.QueryRowContext(ctx, `INSERT INTO subtitle_profiles (name, languages, skip_embedded, cutoff, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?) RETURNING id`, in.Name, string(b), in.SkipEmbedded, in.Cutoff, now, now).Scan(&id)
+	err := s.DB.W.QueryRowContext(ctx, `INSERT INTO subtitle_profiles (name, languages, skip_embedded, cutoff, translate_after_hours, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id`, in.Name, string(b), in.SkipEmbedded, in.Cutoff, in.TranslateAfterHours, now, now).Scan(&id)
 	if isUnique(err) {
 		return Profile{}, ErrDuplicateName
 	}
@@ -178,8 +195,8 @@ func (s *Service) UpdateProfile(ctx context.Context, id int64, in ProfileInput) 
 		return Profile{}, err
 	}
 	b, _ := json.Marshal(in.Languages)
-	res, err := s.DB.W.ExecContext(ctx, `UPDATE subtitle_profiles SET name = ?, languages = ?, skip_embedded = ?, cutoff = ?, updated_at = ? WHERE id = ?`,
-		in.Name, string(b), in.SkipEmbedded, in.Cutoff, db.Millis(s.now()), id)
+	res, err := s.DB.W.ExecContext(ctx, `UPDATE subtitle_profiles SET name = ?, languages = ?, skip_embedded = ?, cutoff = ?, translate_after_hours = ?,
+		updated_at = ? WHERE id = ?`, in.Name, string(b), in.SkipEmbedded, in.Cutoff, in.TranslateAfterHours, db.Millis(s.now()), id)
 	if isUnique(err) {
 		return Profile{}, ErrDuplicateName
 	}
