@@ -164,6 +164,9 @@ func mapError(err error) *StatusError {
 	if se := mapMediaServerError(err); se != nil {
 		return se
 	}
+	if se := mapTranslationError(err); se != nil {
+		return se
+	}
 	if se := mapSubtitlesError(err); se != nil {
 		return se
 	}

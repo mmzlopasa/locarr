@@ -22474,6 +22474,7 @@ const (
 	NotificationEventTypeHealthWarning         NotificationEventType = "health.warning"
 	NotificationEventTypeSubtitlesDownloaded   NotificationEventType = "subtitles.downloaded"
 	NotificationEventTypeSubtitlesMissing      NotificationEventType = "subtitles.missing"
+	NotificationEventTypeSubtitlesTranslated   NotificationEventType = "subtitles.translated"
 	NotificationEventTypeMigrateFinished       NotificationEventType = "migrate.finished"
 	NotificationEventTypeMigrateFailed         NotificationEventType = "migrate.failed"
 	NotificationEventTypeTest                  NotificationEventType = "test"
@@ -22501,6 +22502,7 @@ func (NotificationEventType) AllValues() []NotificationEventType {
 		NotificationEventTypeHealthWarning,
 		NotificationEventTypeSubtitlesDownloaded,
 		NotificationEventTypeSubtitlesMissing,
+		NotificationEventTypeSubtitlesTranslated,
 		NotificationEventTypeMigrateFinished,
 		NotificationEventTypeMigrateFailed,
 		NotificationEventTypeTest,
@@ -22547,6 +22549,8 @@ func (s NotificationEventType) MarshalText() ([]byte, error) {
 	case NotificationEventTypeSubtitlesDownloaded:
 		return []byte(s), nil
 	case NotificationEventTypeSubtitlesMissing:
+		return []byte(s), nil
+	case NotificationEventTypeSubtitlesTranslated:
 		return []byte(s), nil
 	case NotificationEventTypeMigrateFinished:
 		return []byte(s), nil
@@ -22618,6 +22622,9 @@ func (s *NotificationEventType) UnmarshalText(data []byte) error {
 		return nil
 	case NotificationEventTypeSubtitlesMissing:
 		*s = NotificationEventTypeSubtitlesMissing
+		return nil
+	case NotificationEventTypeSubtitlesTranslated:
+		*s = NotificationEventTypeSubtitlesTranslated
 		return nil
 	case NotificationEventTypeMigrateFinished:
 		*s = NotificationEventTypeMigrateFinished
@@ -27352,6 +27359,144 @@ func (o OptSubtitleSettingsInputPreferredFormat) Or(d SubtitleSettingsInputPrefe
 	return d
 }
 
+// NewOptSubtitleTranslationSettingsInputLanguageTranslators returns new OptSubtitleTranslationSettingsInputLanguageTranslators with value set to v.
+func NewOptSubtitleTranslationSettingsInputLanguageTranslators(v SubtitleTranslationSettingsInputLanguageTranslators) OptSubtitleTranslationSettingsInputLanguageTranslators {
+	return OptSubtitleTranslationSettingsInputLanguageTranslators{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSubtitleTranslationSettingsInputLanguageTranslators is optional SubtitleTranslationSettingsInputLanguageTranslators.
+type OptSubtitleTranslationSettingsInputLanguageTranslators struct {
+	Value SubtitleTranslationSettingsInputLanguageTranslators
+	Set   bool
+}
+
+// IsSet returns true if OptSubtitleTranslationSettingsInputLanguageTranslators was set.
+func (o OptSubtitleTranslationSettingsInputLanguageTranslators) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSubtitleTranslationSettingsInputLanguageTranslators) Reset() {
+	var v SubtitleTranslationSettingsInputLanguageTranslators
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSubtitleTranslationSettingsInputLanguageTranslators) SetTo(v SubtitleTranslationSettingsInputLanguageTranslators) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSubtitleTranslationSettingsInputLanguageTranslators) Get() (v SubtitleTranslationSettingsInputLanguageTranslators, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSubtitleTranslationSettingsInputLanguageTranslators) Or(d SubtitleTranslationSettingsInputLanguageTranslators) SubtitleTranslationSettingsInputLanguageTranslators {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSubtitleTranslatorInputFormality returns new OptSubtitleTranslatorInputFormality with value set to v.
+func NewOptSubtitleTranslatorInputFormality(v SubtitleTranslatorInputFormality) OptSubtitleTranslatorInputFormality {
+	return OptSubtitleTranslatorInputFormality{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSubtitleTranslatorInputFormality is optional SubtitleTranslatorInputFormality.
+type OptSubtitleTranslatorInputFormality struct {
+	Value SubtitleTranslatorInputFormality
+	Set   bool
+}
+
+// IsSet returns true if OptSubtitleTranslatorInputFormality was set.
+func (o OptSubtitleTranslatorInputFormality) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSubtitleTranslatorInputFormality) Reset() {
+	var v SubtitleTranslatorInputFormality
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSubtitleTranslatorInputFormality) SetTo(v SubtitleTranslatorInputFormality) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSubtitleTranslatorInputFormality) Get() (v SubtitleTranslatorInputFormality, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSubtitleTranslatorInputFormality) Or(d SubtitleTranslatorInputFormality) SubtitleTranslatorInputFormality {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTestSubtitleTranslatorReq returns new OptTestSubtitleTranslatorReq with value set to v.
+func NewOptTestSubtitleTranslatorReq(v TestSubtitleTranslatorReq) OptTestSubtitleTranslatorReq {
+	return OptTestSubtitleTranslatorReq{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTestSubtitleTranslatorReq is optional TestSubtitleTranslatorReq.
+type OptTestSubtitleTranslatorReq struct {
+	Value TestSubtitleTranslatorReq
+	Set   bool
+}
+
+// IsSet returns true if OptTestSubtitleTranslatorReq was set.
+func (o OptTestSubtitleTranslatorReq) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTestSubtitleTranslatorReq) Reset() {
+	var v TestSubtitleTranslatorReq
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTestSubtitleTranslatorReq) SetTo(v TestSubtitleTranslatorReq) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTestSubtitleTranslatorReq) Get() (v TestSubtitleTranslatorReq, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTestSubtitleTranslatorReq) Or(d TestSubtitleTranslatorReq) TestSubtitleTranslatorReq {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptTrackFile returns new OptTrackFile with value set to v.
 func NewOptTrackFile(v TrackFile) OptTrackFile {
 	return OptTrackFile{
@@ -27438,6 +27583,98 @@ func (o OptTransferMode) Get() (v TransferMode, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptTransferMode) Or(d TransferMode) TransferMode {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTranslateItemSubtitlesReq returns new OptTranslateItemSubtitlesReq with value set to v.
+func NewOptTranslateItemSubtitlesReq(v TranslateItemSubtitlesReq) OptTranslateItemSubtitlesReq {
+	return OptTranslateItemSubtitlesReq{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTranslateItemSubtitlesReq is optional TranslateItemSubtitlesReq.
+type OptTranslateItemSubtitlesReq struct {
+	Value TranslateItemSubtitlesReq
+	Set   bool
+}
+
+// IsSet returns true if OptTranslateItemSubtitlesReq was set.
+func (o OptTranslateItemSubtitlesReq) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTranslateItemSubtitlesReq) Reset() {
+	var v TranslateItemSubtitlesReq
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTranslateItemSubtitlesReq) SetTo(v TranslateItemSubtitlesReq) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTranslateItemSubtitlesReq) Get() (v TranslateItemSubtitlesReq, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTranslateItemSubtitlesReq) Or(d TranslateItemSubtitlesReq) TranslateItemSubtitlesReq {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTranslateWantedSubtitlesReqKind returns new OptTranslateWantedSubtitlesReqKind with value set to v.
+func NewOptTranslateWantedSubtitlesReqKind(v TranslateWantedSubtitlesReqKind) OptTranslateWantedSubtitlesReqKind {
+	return OptTranslateWantedSubtitlesReqKind{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTranslateWantedSubtitlesReqKind is optional TranslateWantedSubtitlesReqKind.
+type OptTranslateWantedSubtitlesReqKind struct {
+	Value TranslateWantedSubtitlesReqKind
+	Set   bool
+}
+
+// IsSet returns true if OptTranslateWantedSubtitlesReqKind was set.
+func (o OptTranslateWantedSubtitlesReqKind) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTranslateWantedSubtitlesReqKind) Reset() {
+	var v TranslateWantedSubtitlesReqKind
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTranslateWantedSubtitlesReqKind) SetTo(v TranslateWantedSubtitlesReqKind) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTranslateWantedSubtitlesReqKind) Get() (v TranslateWantedSubtitlesReqKind, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTranslateWantedSubtitlesReqKind) Or(d TranslateWantedSubtitlesReqKind) TranslateWantedSubtitlesReqKind {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -36597,10 +36834,11 @@ type Subtitle struct {
 	HearingImpaired bool           `json:"hearingImpaired"`
 	Format          string         `json:"format"`
 	Source          SubtitleSource `json:"source"`
-	Provider        string         `json:"provider"`
-	ProviderId      string         `json:"providerId"`
-	Release         string         `json:"release"`
-	Score           OptInt         `json:"score"`
+	// The subtitle provider, or for a machine translation the translation service.
+	Provider   string `json:"provider"`
+	ProviderId string `json:"providerId"`
+	Release    string `json:"release"`
+	Score      OptInt `json:"score"`
 	// Encoding of the original download (the saved file is UTF-8).
 	Encoding string `json:"encoding"`
 	// '' (never), running, done, not_confident, failed, unavailable.
@@ -36609,7 +36847,11 @@ type Subtitle struct {
 	SyncOffsetMs int64       `json:"syncOffsetMs"`
 	SyncScale    float64     `json:"syncScale"`
 	SyncAt       OptDateTime `json:"syncAt"`
-	AddedAt      time.Time   `json:"addedAt"`
+	// Source language of a machine translation ('' otherwise).
+	TranslatedFrom string `json:"translatedFrom"`
+	// What it was translated from: subtitle: or track:.
+	TranslationSource string    `json:"translationSource"`
+	AddedAt           time.Time `json:"addedAt"`
 }
 
 // GetID returns the value of ID.
@@ -36705,6 +36947,16 @@ func (s *Subtitle) GetSyncScale() float64 {
 // GetSyncAt returns the value of SyncAt.
 func (s *Subtitle) GetSyncAt() OptDateTime {
 	return s.SyncAt
+}
+
+// GetTranslatedFrom returns the value of TranslatedFrom.
+func (s *Subtitle) GetTranslatedFrom() string {
+	return s.TranslatedFrom
+}
+
+// GetTranslationSource returns the value of TranslationSource.
+func (s *Subtitle) GetTranslationSource() string {
+	return s.TranslationSource
 }
 
 // GetAddedAt returns the value of AddedAt.
@@ -36805,6 +37057,16 @@ func (s *Subtitle) SetSyncScale(val float64) {
 // SetSyncAt sets the value of SyncAt.
 func (s *Subtitle) SetSyncAt(val OptDateTime) {
 	s.SyncAt = val
+}
+
+// SetTranslatedFrom sets the value of TranslatedFrom.
+func (s *Subtitle) SetTranslatedFrom(val string) {
+	s.TranslatedFrom = val
+}
+
+// SetTranslationSource sets the value of TranslationSource.
+func (s *Subtitle) SetTranslationSource(val string) {
+	s.TranslationSource = val
 }
 
 // SetAddedAt sets the value of AddedAt.
@@ -36910,8 +37172,8 @@ func (s *SubtitleCount) SetCount(val int) {
 
 // Ref: #/components/schemas/SubtitleExplanation
 type SubtitleExplanation struct {
-	// No_file, disabled, no_profile, complete, complete_embedded, no_providers, providers_unavailable,
-	// not_searched, not_found.
+	// No_file, disabled, no_profile, complete, complete_embedded, complete_translated, no_providers,
+	// providers_unavailable, not_searched, not_found.
 	Code    string                    `json:"code"`
 	Tone    SubtitleExplanationTone   `json:"tone"`
 	Message string                    `json:"message"`
@@ -37026,24 +37288,27 @@ func (s *SubtitleExplanationTone) UnmarshalText(data []byte) error {
 
 // Ref: #/components/schemas/SubtitleItem
 type SubtitleItem struct {
-	Ref             string                    `json:"ref"`
-	Title           string                    `json:"title"`
-	FilePath        string                    `json:"filePath"`
-	HasFile         bool                      `json:"hasFile"`
-	Profile         OptSubtitleProfile        `json:"profile"`
-	ProfileSource   SubtitleItemProfileSource `json:"profileSource"`
-	ProfileOverride int64                     `json:"profileOverride"`
-	Wants           []SubtitleWantStatus      `json:"wants"`
-	Subtitles       []Subtitle                `json:"subtitles"`
-	Tracks          []MediaTrack              `json:"tracks"`
-	ProbeError      string                    `json:"probeError"`
-	Searches        int                       `json:"searches"`
-	LastSearchAt    OptDateTime               `json:"lastSearchAt"`
-	NextSearchAt    OptDateTime               `json:"nextSearchAt"`
-	LastResult      string                    `json:"lastResult"`
-	ProvidersAsked  int                       `json:"providersAsked"`
-	Explanation     SubtitleExplanation       `json:"explanation"`
-	SyncAvailable   bool                      `json:"syncAvailable"`
+	Ref             string                        `json:"ref"`
+	Title           string                        `json:"title"`
+	FilePath        string                        `json:"filePath"`
+	HasFile         bool                          `json:"hasFile"`
+	Profile         OptSubtitleProfile            `json:"profile"`
+	ProfileSource   SubtitleItemProfileSource     `json:"profileSource"`
+	ProfileOverride int64                         `json:"profileOverride"`
+	Wants           []SubtitleWantStatus          `json:"wants"`
+	Subtitles       []Subtitle                    `json:"subtitles"`
+	Tracks          []MediaTrack                  `json:"tracks"`
+	ProbeError      string                        `json:"probeError"`
+	Searches        int                           `json:"searches"`
+	LastSearchAt    OptDateTime                   `json:"lastSearchAt"`
+	NextSearchAt    OptDateTime                   `json:"nextSearchAt"`
+	LastResult      string                        `json:"lastResult"`
+	ProvidersAsked  int                           `json:"providersAsked"`
+	Explanation     SubtitleExplanation           `json:"explanation"`
+	SyncAvailable   bool                          `json:"syncAvailable"`
+	Translations    []SubtitleTranslationProgress `json:"translations"`
+	// A translation service is enabled.
+	TranslationAvailable bool `json:"translationAvailable"`
 }
 
 // GetRef returns the value of Ref.
@@ -37136,6 +37401,16 @@ func (s *SubtitleItem) GetSyncAvailable() bool {
 	return s.SyncAvailable
 }
 
+// GetTranslations returns the value of Translations.
+func (s *SubtitleItem) GetTranslations() []SubtitleTranslationProgress {
+	return s.Translations
+}
+
+// GetTranslationAvailable returns the value of TranslationAvailable.
+func (s *SubtitleItem) GetTranslationAvailable() bool {
+	return s.TranslationAvailable
+}
+
 // SetRef sets the value of Ref.
 func (s *SubtitleItem) SetRef(val string) {
 	s.Ref = val
@@ -37224,6 +37499,16 @@ func (s *SubtitleItem) SetExplanation(val SubtitleExplanation) {
 // SetSyncAvailable sets the value of SyncAvailable.
 func (s *SubtitleItem) SetSyncAvailable(val bool) {
 	s.SyncAvailable = val
+}
+
+// SetTranslations sets the value of Translations.
+func (s *SubtitleItem) SetTranslations(val []SubtitleTranslationProgress) {
+	s.Translations = val
+}
+
+// SetTranslationAvailable sets the value of TranslationAvailable.
+func (s *SubtitleItem) SetTranslationAvailable(val bool) {
+	s.TranslationAvailable = val
 }
 
 type SubtitleItemProfileSource string
@@ -37330,6 +37615,8 @@ type SubtitlePreviewLinesItem struct {
 	StartMs int64  `json:"startMs"`
 	EndMs   int64  `json:"endMs"`
 	Text    string `json:"text"`
+	// The source line of a machine translation.
+	Original OptString `json:"original"`
 }
 
 // GetStartMs returns the value of StartMs.
@@ -37347,6 +37634,11 @@ func (s *SubtitlePreviewLinesItem) GetText() string {
 	return s.Text
 }
 
+// GetOriginal returns the value of Original.
+func (s *SubtitlePreviewLinesItem) GetOriginal() OptString {
+	return s.Original
+}
+
 // SetStartMs sets the value of StartMs.
 func (s *SubtitlePreviewLinesItem) SetStartMs(val int64) {
 	s.StartMs = val
@@ -37362,6 +37654,11 @@ func (s *SubtitlePreviewLinesItem) SetText(val string) {
 	s.Text = val
 }
 
+// SetOriginal sets the value of Original.
+func (s *SubtitlePreviewLinesItem) SetOriginal(val OptString) {
+	s.Original = val
+}
+
 // Ref: #/components/schemas/SubtitleProfile
 type SubtitleProfile struct {
 	ID        int64          `json:"id"`
@@ -37371,6 +37668,9 @@ type SubtitleProfile struct {
 	SkipEmbedded bool `json:"skipEmbedded"`
 	// Stop once any language (in order) is present.
 	Cutoff bool `json:"cutoff"`
+	// Machine-translate a missing language this many hours after the file arrived (0 = never
+	// automatically).
+	TranslateAfterHours int `json:"translateAfterHours"`
 }
 
 // GetID returns the value of ID.
@@ -37398,6 +37698,11 @@ func (s *SubtitleProfile) GetCutoff() bool {
 	return s.Cutoff
 }
 
+// GetTranslateAfterHours returns the value of TranslateAfterHours.
+func (s *SubtitleProfile) GetTranslateAfterHours() int {
+	return s.TranslateAfterHours
+}
+
 // SetID sets the value of ID.
 func (s *SubtitleProfile) SetID(val int64) {
 	s.ID = val
@@ -37421,6 +37726,11 @@ func (s *SubtitleProfile) SetSkipEmbedded(val bool) {
 // SetCutoff sets the value of Cutoff.
 func (s *SubtitleProfile) SetCutoff(val bool) {
 	s.Cutoff = val
+}
+
+// SetTranslateAfterHours sets the value of TranslateAfterHours.
+func (s *SubtitleProfile) SetTranslateAfterHours(val int) {
+	s.TranslateAfterHours = val
 }
 
 // Ref: #/components/schemas/SubtitleProfileAssign
@@ -37505,10 +37815,11 @@ func (s *SubtitleProfileAssignAll) UnmarshalText(data []byte) error {
 
 // Ref: #/components/schemas/SubtitleProfileInput
 type SubtitleProfileInput struct {
-	Name         string         `json:"name"`
-	Languages    []SubtitleWant `json:"languages"`
-	SkipEmbedded OptBool        `json:"skipEmbedded"`
-	Cutoff       OptBool        `json:"cutoff"`
+	Name                string         `json:"name"`
+	Languages           []SubtitleWant `json:"languages"`
+	SkipEmbedded        OptBool        `json:"skipEmbedded"`
+	Cutoff              OptBool        `json:"cutoff"`
+	TranslateAfterHours OptInt         `json:"translateAfterHours"`
 }
 
 // GetName returns the value of Name.
@@ -37531,6 +37842,11 @@ func (s *SubtitleProfileInput) GetCutoff() OptBool {
 	return s.Cutoff
 }
 
+// GetTranslateAfterHours returns the value of TranslateAfterHours.
+func (s *SubtitleProfileInput) GetTranslateAfterHours() OptInt {
+	return s.TranslateAfterHours
+}
+
 // SetName sets the value of Name.
 func (s *SubtitleProfileInput) SetName(val string) {
 	s.Name = val
@@ -37549,6 +37865,11 @@ func (s *SubtitleProfileInput) SetSkipEmbedded(val OptBool) {
 // SetCutoff sets the value of Cutoff.
 func (s *SubtitleProfileInput) SetCutoff(val OptBool) {
 	s.Cutoff = val
+}
+
+// SetTranslateAfterHours sets the value of TranslateAfterHours.
+func (s *SubtitleProfileInput) SetTranslateAfterHours(val OptInt) {
+	s.TranslateAfterHours = val
 }
 
 // Ref: #/components/schemas/SubtitleProvider
@@ -38647,6 +38968,7 @@ type SubtitleSource string
 const (
 	SubtitleSourceDownloaded SubtitleSource = "downloaded"
 	SubtitleSourceDisk       SubtitleSource = "disk"
+	SubtitleSourceTranslated SubtitleSource = "translated"
 )
 
 // AllValues returns all SubtitleSource values.
@@ -38654,6 +38976,7 @@ func (SubtitleSource) AllValues() []SubtitleSource {
 	return []SubtitleSource{
 		SubtitleSourceDownloaded,
 		SubtitleSourceDisk,
+		SubtitleSourceTranslated,
 	}
 }
 
@@ -38663,6 +38986,8 @@ func (s SubtitleSource) MarshalText() ([]byte, error) {
 	case SubtitleSourceDownloaded:
 		return []byte(s), nil
 	case SubtitleSourceDisk:
+		return []byte(s), nil
+	case SubtitleSourceTranslated:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -38678,6 +39003,1094 @@ func (s *SubtitleSource) UnmarshalText(data []byte) error {
 	case SubtitleSourceDisk:
 		*s = SubtitleSourceDisk
 		return nil
+	case SubtitleSourceTranslated:
+		*s = SubtitleSourceTranslated
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleTranslationProgress
+type SubtitleTranslationProgress struct {
+	Ref string `json:"ref"`
+	// The wanted key being translated ('' while queued for every missing one).
+	Key        string                           `json:"key"`
+	Translator string                           `json:"translator"`
+	State      SubtitleTranslationProgressState `json:"state"`
+	// Lines translated so far.
+	Done      int       `json:"done"`
+	Total     int       `json:"total"`
+	StartedAt time.Time `json:"startedAt"`
+}
+
+// GetRef returns the value of Ref.
+func (s *SubtitleTranslationProgress) GetRef() string {
+	return s.Ref
+}
+
+// GetKey returns the value of Key.
+func (s *SubtitleTranslationProgress) GetKey() string {
+	return s.Key
+}
+
+// GetTranslator returns the value of Translator.
+func (s *SubtitleTranslationProgress) GetTranslator() string {
+	return s.Translator
+}
+
+// GetState returns the value of State.
+func (s *SubtitleTranslationProgress) GetState() SubtitleTranslationProgressState {
+	return s.State
+}
+
+// GetDone returns the value of Done.
+func (s *SubtitleTranslationProgress) GetDone() int {
+	return s.Done
+}
+
+// GetTotal returns the value of Total.
+func (s *SubtitleTranslationProgress) GetTotal() int {
+	return s.Total
+}
+
+// GetStartedAt returns the value of StartedAt.
+func (s *SubtitleTranslationProgress) GetStartedAt() time.Time {
+	return s.StartedAt
+}
+
+// SetRef sets the value of Ref.
+func (s *SubtitleTranslationProgress) SetRef(val string) {
+	s.Ref = val
+}
+
+// SetKey sets the value of Key.
+func (s *SubtitleTranslationProgress) SetKey(val string) {
+	s.Key = val
+}
+
+// SetTranslator sets the value of Translator.
+func (s *SubtitleTranslationProgress) SetTranslator(val string) {
+	s.Translator = val
+}
+
+// SetState sets the value of State.
+func (s *SubtitleTranslationProgress) SetState(val SubtitleTranslationProgressState) {
+	s.State = val
+}
+
+// SetDone sets the value of Done.
+func (s *SubtitleTranslationProgress) SetDone(val int) {
+	s.Done = val
+}
+
+// SetTotal sets the value of Total.
+func (s *SubtitleTranslationProgress) SetTotal(val int) {
+	s.Total = val
+}
+
+// SetStartedAt sets the value of StartedAt.
+func (s *SubtitleTranslationProgress) SetStartedAt(val time.Time) {
+	s.StartedAt = val
+}
+
+type SubtitleTranslationProgressState string
+
+const (
+	SubtitleTranslationProgressStateQueued  SubtitleTranslationProgressState = "queued"
+	SubtitleTranslationProgressStateRunning SubtitleTranslationProgressState = "running"
+)
+
+// AllValues returns all SubtitleTranslationProgressState values.
+func (SubtitleTranslationProgressState) AllValues() []SubtitleTranslationProgressState {
+	return []SubtitleTranslationProgressState{
+		SubtitleTranslationProgressStateQueued,
+		SubtitleTranslationProgressStateRunning,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleTranslationProgressState) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleTranslationProgressStateQueued:
+		return []byte(s), nil
+	case SubtitleTranslationProgressStateRunning:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleTranslationProgressState) UnmarshalText(data []byte) error {
+	switch SubtitleTranslationProgressState(data) {
+	case SubtitleTranslationProgressStateQueued:
+		*s = SubtitleTranslationProgressStateQueued
+		return nil
+	case SubtitleTranslationProgressStateRunning:
+		*s = SubtitleTranslationProgressStateRunning
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleTranslationSettings
+type SubtitleTranslationSettings struct {
+	// '' = the first enabled service.
+	DefaultTranslator string `json:"defaultTranslator"`
+	// Target language → service (or none).
+	LanguageTranslators SubtitleTranslationSettingsLanguageTranslators `json:"languageTranslators"`
+	// Marker in the file name (Movie.hr..srt); '' = none.
+	Suffix string `json:"suffix"`
+	// Languages to translate from, in order of preference (then any).
+	SourceLanguages []string `json:"sourceLanguages"`
+	// Re-time translations made from a subtitle file against the audio.
+	AutoSync bool `json:"autoSync"`
+	// Automatic translations per hourly run.
+	PerHour int `json:"perHour"`
+}
+
+// GetDefaultTranslator returns the value of DefaultTranslator.
+func (s *SubtitleTranslationSettings) GetDefaultTranslator() string {
+	return s.DefaultTranslator
+}
+
+// GetLanguageTranslators returns the value of LanguageTranslators.
+func (s *SubtitleTranslationSettings) GetLanguageTranslators() SubtitleTranslationSettingsLanguageTranslators {
+	return s.LanguageTranslators
+}
+
+// GetSuffix returns the value of Suffix.
+func (s *SubtitleTranslationSettings) GetSuffix() string {
+	return s.Suffix
+}
+
+// GetSourceLanguages returns the value of SourceLanguages.
+func (s *SubtitleTranslationSettings) GetSourceLanguages() []string {
+	return s.SourceLanguages
+}
+
+// GetAutoSync returns the value of AutoSync.
+func (s *SubtitleTranslationSettings) GetAutoSync() bool {
+	return s.AutoSync
+}
+
+// GetPerHour returns the value of PerHour.
+func (s *SubtitleTranslationSettings) GetPerHour() int {
+	return s.PerHour
+}
+
+// SetDefaultTranslator sets the value of DefaultTranslator.
+func (s *SubtitleTranslationSettings) SetDefaultTranslator(val string) {
+	s.DefaultTranslator = val
+}
+
+// SetLanguageTranslators sets the value of LanguageTranslators.
+func (s *SubtitleTranslationSettings) SetLanguageTranslators(val SubtitleTranslationSettingsLanguageTranslators) {
+	s.LanguageTranslators = val
+}
+
+// SetSuffix sets the value of Suffix.
+func (s *SubtitleTranslationSettings) SetSuffix(val string) {
+	s.Suffix = val
+}
+
+// SetSourceLanguages sets the value of SourceLanguages.
+func (s *SubtitleTranslationSettings) SetSourceLanguages(val []string) {
+	s.SourceLanguages = val
+}
+
+// SetAutoSync sets the value of AutoSync.
+func (s *SubtitleTranslationSettings) SetAutoSync(val bool) {
+	s.AutoSync = val
+}
+
+// SetPerHour sets the value of PerHour.
+func (s *SubtitleTranslationSettings) SetPerHour(val int) {
+	s.PerHour = val
+}
+
+// Ref: #/components/schemas/SubtitleTranslationSettingsInput
+type SubtitleTranslationSettingsInput struct {
+	DefaultTranslator   OptString                                              `json:"defaultTranslator"`
+	LanguageTranslators OptSubtitleTranslationSettingsInputLanguageTranslators `json:"languageTranslators"`
+	Suffix              OptString                                              `json:"suffix"`
+	SourceLanguages     []string                                               `json:"sourceLanguages"`
+	AutoSync            OptBool                                                `json:"autoSync"`
+	PerHour             OptInt                                                 `json:"perHour"`
+}
+
+// GetDefaultTranslator returns the value of DefaultTranslator.
+func (s *SubtitleTranslationSettingsInput) GetDefaultTranslator() OptString {
+	return s.DefaultTranslator
+}
+
+// GetLanguageTranslators returns the value of LanguageTranslators.
+func (s *SubtitleTranslationSettingsInput) GetLanguageTranslators() OptSubtitleTranslationSettingsInputLanguageTranslators {
+	return s.LanguageTranslators
+}
+
+// GetSuffix returns the value of Suffix.
+func (s *SubtitleTranslationSettingsInput) GetSuffix() OptString {
+	return s.Suffix
+}
+
+// GetSourceLanguages returns the value of SourceLanguages.
+func (s *SubtitleTranslationSettingsInput) GetSourceLanguages() []string {
+	return s.SourceLanguages
+}
+
+// GetAutoSync returns the value of AutoSync.
+func (s *SubtitleTranslationSettingsInput) GetAutoSync() OptBool {
+	return s.AutoSync
+}
+
+// GetPerHour returns the value of PerHour.
+func (s *SubtitleTranslationSettingsInput) GetPerHour() OptInt {
+	return s.PerHour
+}
+
+// SetDefaultTranslator sets the value of DefaultTranslator.
+func (s *SubtitleTranslationSettingsInput) SetDefaultTranslator(val OptString) {
+	s.DefaultTranslator = val
+}
+
+// SetLanguageTranslators sets the value of LanguageTranslators.
+func (s *SubtitleTranslationSettingsInput) SetLanguageTranslators(val OptSubtitleTranslationSettingsInputLanguageTranslators) {
+	s.LanguageTranslators = val
+}
+
+// SetSuffix sets the value of Suffix.
+func (s *SubtitleTranslationSettingsInput) SetSuffix(val OptString) {
+	s.Suffix = val
+}
+
+// SetSourceLanguages sets the value of SourceLanguages.
+func (s *SubtitleTranslationSettingsInput) SetSourceLanguages(val []string) {
+	s.SourceLanguages = val
+}
+
+// SetAutoSync sets the value of AutoSync.
+func (s *SubtitleTranslationSettingsInput) SetAutoSync(val OptBool) {
+	s.AutoSync = val
+}
+
+// SetPerHour sets the value of PerHour.
+func (s *SubtitleTranslationSettingsInput) SetPerHour(val OptInt) {
+	s.PerHour = val
+}
+
+type SubtitleTranslationSettingsInputLanguageTranslators map[string]string
+
+func (s *SubtitleTranslationSettingsInputLanguageTranslators) init() SubtitleTranslationSettingsInputLanguageTranslators {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+// Target language → service (or none).
+type SubtitleTranslationSettingsLanguageTranslators map[string]string
+
+func (s *SubtitleTranslationSettingsLanguageTranslators) init() SubtitleTranslationSettingsLanguageTranslators {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/SubtitleTranslationUsage
+type SubtitleTranslationUsage struct {
+	// 2026-11 (UTC).
+	Month        string `json:"month"`
+	Characters   int64  `json:"characters"`
+	InputTokens  int64  `json:"inputTokens"`
+	OutputTokens int64  `json:"outputTokens"`
+	Requests     int64  `json:"requests"`
+	Lines        int64  `json:"lines"`
+	Subtitles    int64  `json:"subtitles"`
+}
+
+// GetMonth returns the value of Month.
+func (s *SubtitleTranslationUsage) GetMonth() string {
+	return s.Month
+}
+
+// GetCharacters returns the value of Characters.
+func (s *SubtitleTranslationUsage) GetCharacters() int64 {
+	return s.Characters
+}
+
+// GetInputTokens returns the value of InputTokens.
+func (s *SubtitleTranslationUsage) GetInputTokens() int64 {
+	return s.InputTokens
+}
+
+// GetOutputTokens returns the value of OutputTokens.
+func (s *SubtitleTranslationUsage) GetOutputTokens() int64 {
+	return s.OutputTokens
+}
+
+// GetRequests returns the value of Requests.
+func (s *SubtitleTranslationUsage) GetRequests() int64 {
+	return s.Requests
+}
+
+// GetLines returns the value of Lines.
+func (s *SubtitleTranslationUsage) GetLines() int64 {
+	return s.Lines
+}
+
+// GetSubtitles returns the value of Subtitles.
+func (s *SubtitleTranslationUsage) GetSubtitles() int64 {
+	return s.Subtitles
+}
+
+// SetMonth sets the value of Month.
+func (s *SubtitleTranslationUsage) SetMonth(val string) {
+	s.Month = val
+}
+
+// SetCharacters sets the value of Characters.
+func (s *SubtitleTranslationUsage) SetCharacters(val int64) {
+	s.Characters = val
+}
+
+// SetInputTokens sets the value of InputTokens.
+func (s *SubtitleTranslationUsage) SetInputTokens(val int64) {
+	s.InputTokens = val
+}
+
+// SetOutputTokens sets the value of OutputTokens.
+func (s *SubtitleTranslationUsage) SetOutputTokens(val int64) {
+	s.OutputTokens = val
+}
+
+// SetRequests sets the value of Requests.
+func (s *SubtitleTranslationUsage) SetRequests(val int64) {
+	s.Requests = val
+}
+
+// SetLines sets the value of Lines.
+func (s *SubtitleTranslationUsage) SetLines(val int64) {
+	s.Lines = val
+}
+
+// SetSubtitles sets the value of Subtitles.
+func (s *SubtitleTranslationUsage) SetSubtitles(val int64) {
+	s.Subtitles = val
+}
+
+// Ref: #/components/schemas/SubtitleTranslator
+type SubtitleTranslator struct {
+	// Libretranslate, deepl, openai, anthropic, gemini or openai-compatible.
+	Name     string                         `json:"name"`
+	Enabled  bool                           `json:"enabled"`
+	Fields   []SubtitleTranslatorFieldsItem `json:"fields"`
+	NeedsKey bool                           `json:"needsKey"`
+	NeedsUrl bool                           `json:"needsUrl"`
+	// Runs on the user's own server; subtitle text stays at home.
+	Local bool `json:"local"`
+	// What usage and the monthly cap count.
+	Unit         SubtitleTranslatorUnit `json:"unit"`
+	DefaultModel string                 `json:"defaultModel"`
+	Models       []string               `json:"models"`
+	Website      string                 `json:"website"`
+	BaseUrl      string                 `json:"baseUrl"`
+	ApiKey       SecretState            `json:"apiKey"`
+	Model        string                 `json:"model"`
+	Formality    string                 `json:"formality"`
+	GlossaryId   string                 `json:"glossaryId"`
+	// 0 = no cap.
+	MonthlyCap int64       `json:"monthlyCap"`
+	Failures   int         `json:"failures"`
+	RetryAt    OptDateTime `json:"retryAt"`
+	LastError  string      `json:"lastError"`
+	// Cap, quota, rate_limited, auth, missing_key, bad_response, line_mismatch, unsupported_language,
+	// timeout, connection, error.
+	LastErrorCode string      `json:"lastErrorCode"`
+	LastErrorAt   OptDateTime `json:"lastErrorAt"`
+	LastSuccessAt OptDateTime `json:"lastSuccessAt"`
+	// Usage the service itself reports for its billing period (DeepL).
+	QuotaUsed      OptInt64                 `json:"quotaUsed"`
+	QuotaLimit     OptInt64                 `json:"quotaLimit"`
+	QuotaCheckedAt OptDateTime              `json:"quotaCheckedAt"`
+	Month          SubtitleTranslationUsage `json:"month"`
+}
+
+// GetName returns the value of Name.
+func (s *SubtitleTranslator) GetName() string {
+	return s.Name
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *SubtitleTranslator) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetFields returns the value of Fields.
+func (s *SubtitleTranslator) GetFields() []SubtitleTranslatorFieldsItem {
+	return s.Fields
+}
+
+// GetNeedsKey returns the value of NeedsKey.
+func (s *SubtitleTranslator) GetNeedsKey() bool {
+	return s.NeedsKey
+}
+
+// GetNeedsUrl returns the value of NeedsUrl.
+func (s *SubtitleTranslator) GetNeedsUrl() bool {
+	return s.NeedsUrl
+}
+
+// GetLocal returns the value of Local.
+func (s *SubtitleTranslator) GetLocal() bool {
+	return s.Local
+}
+
+// GetUnit returns the value of Unit.
+func (s *SubtitleTranslator) GetUnit() SubtitleTranslatorUnit {
+	return s.Unit
+}
+
+// GetDefaultModel returns the value of DefaultModel.
+func (s *SubtitleTranslator) GetDefaultModel() string {
+	return s.DefaultModel
+}
+
+// GetModels returns the value of Models.
+func (s *SubtitleTranslator) GetModels() []string {
+	return s.Models
+}
+
+// GetWebsite returns the value of Website.
+func (s *SubtitleTranslator) GetWebsite() string {
+	return s.Website
+}
+
+// GetBaseUrl returns the value of BaseUrl.
+func (s *SubtitleTranslator) GetBaseUrl() string {
+	return s.BaseUrl
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *SubtitleTranslator) GetApiKey() SecretState {
+	return s.ApiKey
+}
+
+// GetModel returns the value of Model.
+func (s *SubtitleTranslator) GetModel() string {
+	return s.Model
+}
+
+// GetFormality returns the value of Formality.
+func (s *SubtitleTranslator) GetFormality() string {
+	return s.Formality
+}
+
+// GetGlossaryId returns the value of GlossaryId.
+func (s *SubtitleTranslator) GetGlossaryId() string {
+	return s.GlossaryId
+}
+
+// GetMonthlyCap returns the value of MonthlyCap.
+func (s *SubtitleTranslator) GetMonthlyCap() int64 {
+	return s.MonthlyCap
+}
+
+// GetFailures returns the value of Failures.
+func (s *SubtitleTranslator) GetFailures() int {
+	return s.Failures
+}
+
+// GetRetryAt returns the value of RetryAt.
+func (s *SubtitleTranslator) GetRetryAt() OptDateTime {
+	return s.RetryAt
+}
+
+// GetLastError returns the value of LastError.
+func (s *SubtitleTranslator) GetLastError() string {
+	return s.LastError
+}
+
+// GetLastErrorCode returns the value of LastErrorCode.
+func (s *SubtitleTranslator) GetLastErrorCode() string {
+	return s.LastErrorCode
+}
+
+// GetLastErrorAt returns the value of LastErrorAt.
+func (s *SubtitleTranslator) GetLastErrorAt() OptDateTime {
+	return s.LastErrorAt
+}
+
+// GetLastSuccessAt returns the value of LastSuccessAt.
+func (s *SubtitleTranslator) GetLastSuccessAt() OptDateTime {
+	return s.LastSuccessAt
+}
+
+// GetQuotaUsed returns the value of QuotaUsed.
+func (s *SubtitleTranslator) GetQuotaUsed() OptInt64 {
+	return s.QuotaUsed
+}
+
+// GetQuotaLimit returns the value of QuotaLimit.
+func (s *SubtitleTranslator) GetQuotaLimit() OptInt64 {
+	return s.QuotaLimit
+}
+
+// GetQuotaCheckedAt returns the value of QuotaCheckedAt.
+func (s *SubtitleTranslator) GetQuotaCheckedAt() OptDateTime {
+	return s.QuotaCheckedAt
+}
+
+// GetMonth returns the value of Month.
+func (s *SubtitleTranslator) GetMonth() SubtitleTranslationUsage {
+	return s.Month
+}
+
+// SetName sets the value of Name.
+func (s *SubtitleTranslator) SetName(val string) {
+	s.Name = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *SubtitleTranslator) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetFields sets the value of Fields.
+func (s *SubtitleTranslator) SetFields(val []SubtitleTranslatorFieldsItem) {
+	s.Fields = val
+}
+
+// SetNeedsKey sets the value of NeedsKey.
+func (s *SubtitleTranslator) SetNeedsKey(val bool) {
+	s.NeedsKey = val
+}
+
+// SetNeedsUrl sets the value of NeedsUrl.
+func (s *SubtitleTranslator) SetNeedsUrl(val bool) {
+	s.NeedsUrl = val
+}
+
+// SetLocal sets the value of Local.
+func (s *SubtitleTranslator) SetLocal(val bool) {
+	s.Local = val
+}
+
+// SetUnit sets the value of Unit.
+func (s *SubtitleTranslator) SetUnit(val SubtitleTranslatorUnit) {
+	s.Unit = val
+}
+
+// SetDefaultModel sets the value of DefaultModel.
+func (s *SubtitleTranslator) SetDefaultModel(val string) {
+	s.DefaultModel = val
+}
+
+// SetModels sets the value of Models.
+func (s *SubtitleTranslator) SetModels(val []string) {
+	s.Models = val
+}
+
+// SetWebsite sets the value of Website.
+func (s *SubtitleTranslator) SetWebsite(val string) {
+	s.Website = val
+}
+
+// SetBaseUrl sets the value of BaseUrl.
+func (s *SubtitleTranslator) SetBaseUrl(val string) {
+	s.BaseUrl = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *SubtitleTranslator) SetApiKey(val SecretState) {
+	s.ApiKey = val
+}
+
+// SetModel sets the value of Model.
+func (s *SubtitleTranslator) SetModel(val string) {
+	s.Model = val
+}
+
+// SetFormality sets the value of Formality.
+func (s *SubtitleTranslator) SetFormality(val string) {
+	s.Formality = val
+}
+
+// SetGlossaryId sets the value of GlossaryId.
+func (s *SubtitleTranslator) SetGlossaryId(val string) {
+	s.GlossaryId = val
+}
+
+// SetMonthlyCap sets the value of MonthlyCap.
+func (s *SubtitleTranslator) SetMonthlyCap(val int64) {
+	s.MonthlyCap = val
+}
+
+// SetFailures sets the value of Failures.
+func (s *SubtitleTranslator) SetFailures(val int) {
+	s.Failures = val
+}
+
+// SetRetryAt sets the value of RetryAt.
+func (s *SubtitleTranslator) SetRetryAt(val OptDateTime) {
+	s.RetryAt = val
+}
+
+// SetLastError sets the value of LastError.
+func (s *SubtitleTranslator) SetLastError(val string) {
+	s.LastError = val
+}
+
+// SetLastErrorCode sets the value of LastErrorCode.
+func (s *SubtitleTranslator) SetLastErrorCode(val string) {
+	s.LastErrorCode = val
+}
+
+// SetLastErrorAt sets the value of LastErrorAt.
+func (s *SubtitleTranslator) SetLastErrorAt(val OptDateTime) {
+	s.LastErrorAt = val
+}
+
+// SetLastSuccessAt sets the value of LastSuccessAt.
+func (s *SubtitleTranslator) SetLastSuccessAt(val OptDateTime) {
+	s.LastSuccessAt = val
+}
+
+// SetQuotaUsed sets the value of QuotaUsed.
+func (s *SubtitleTranslator) SetQuotaUsed(val OptInt64) {
+	s.QuotaUsed = val
+}
+
+// SetQuotaLimit sets the value of QuotaLimit.
+func (s *SubtitleTranslator) SetQuotaLimit(val OptInt64) {
+	s.QuotaLimit = val
+}
+
+// SetQuotaCheckedAt sets the value of QuotaCheckedAt.
+func (s *SubtitleTranslator) SetQuotaCheckedAt(val OptDateTime) {
+	s.QuotaCheckedAt = val
+}
+
+// SetMonth sets the value of Month.
+func (s *SubtitleTranslator) SetMonth(val SubtitleTranslationUsage) {
+	s.Month = val
+}
+
+type SubtitleTranslatorFieldsItem string
+
+const (
+	SubtitleTranslatorFieldsItemBaseUrl    SubtitleTranslatorFieldsItem = "baseUrl"
+	SubtitleTranslatorFieldsItemApiKey     SubtitleTranslatorFieldsItem = "apiKey"
+	SubtitleTranslatorFieldsItemModel      SubtitleTranslatorFieldsItem = "model"
+	SubtitleTranslatorFieldsItemFormality  SubtitleTranslatorFieldsItem = "formality"
+	SubtitleTranslatorFieldsItemGlossaryId SubtitleTranslatorFieldsItem = "glossaryId"
+)
+
+// AllValues returns all SubtitleTranslatorFieldsItem values.
+func (SubtitleTranslatorFieldsItem) AllValues() []SubtitleTranslatorFieldsItem {
+	return []SubtitleTranslatorFieldsItem{
+		SubtitleTranslatorFieldsItemBaseUrl,
+		SubtitleTranslatorFieldsItemApiKey,
+		SubtitleTranslatorFieldsItemModel,
+		SubtitleTranslatorFieldsItemFormality,
+		SubtitleTranslatorFieldsItemGlossaryId,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleTranslatorFieldsItem) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleTranslatorFieldsItemBaseUrl:
+		return []byte(s), nil
+	case SubtitleTranslatorFieldsItemApiKey:
+		return []byte(s), nil
+	case SubtitleTranslatorFieldsItemModel:
+		return []byte(s), nil
+	case SubtitleTranslatorFieldsItemFormality:
+		return []byte(s), nil
+	case SubtitleTranslatorFieldsItemGlossaryId:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleTranslatorFieldsItem) UnmarshalText(data []byte) error {
+	switch SubtitleTranslatorFieldsItem(data) {
+	case SubtitleTranslatorFieldsItemBaseUrl:
+		*s = SubtitleTranslatorFieldsItemBaseUrl
+		return nil
+	case SubtitleTranslatorFieldsItemApiKey:
+		*s = SubtitleTranslatorFieldsItemApiKey
+		return nil
+	case SubtitleTranslatorFieldsItemModel:
+		*s = SubtitleTranslatorFieldsItemModel
+		return nil
+	case SubtitleTranslatorFieldsItemFormality:
+		*s = SubtitleTranslatorFieldsItemFormality
+		return nil
+	case SubtitleTranslatorFieldsItemGlossaryId:
+		*s = SubtitleTranslatorFieldsItemGlossaryId
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleTranslatorInput
+type SubtitleTranslatorInput struct {
+	Enabled OptBool   `json:"enabled"`
+	BaseUrl OptString `json:"baseUrl"`
+	// Write-only; empty removes it.
+	ApiKey     OptString                           `json:"apiKey"`
+	Model      OptString                           `json:"model"`
+	Formality  OptSubtitleTranslatorInputFormality `json:"formality"`
+	GlossaryId OptString                           `json:"glossaryId"`
+	MonthlyCap OptInt64                            `json:"monthlyCap"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *SubtitleTranslatorInput) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetBaseUrl returns the value of BaseUrl.
+func (s *SubtitleTranslatorInput) GetBaseUrl() OptString {
+	return s.BaseUrl
+}
+
+// GetApiKey returns the value of ApiKey.
+func (s *SubtitleTranslatorInput) GetApiKey() OptString {
+	return s.ApiKey
+}
+
+// GetModel returns the value of Model.
+func (s *SubtitleTranslatorInput) GetModel() OptString {
+	return s.Model
+}
+
+// GetFormality returns the value of Formality.
+func (s *SubtitleTranslatorInput) GetFormality() OptSubtitleTranslatorInputFormality {
+	return s.Formality
+}
+
+// GetGlossaryId returns the value of GlossaryId.
+func (s *SubtitleTranslatorInput) GetGlossaryId() OptString {
+	return s.GlossaryId
+}
+
+// GetMonthlyCap returns the value of MonthlyCap.
+func (s *SubtitleTranslatorInput) GetMonthlyCap() OptInt64 {
+	return s.MonthlyCap
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *SubtitleTranslatorInput) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetBaseUrl sets the value of BaseUrl.
+func (s *SubtitleTranslatorInput) SetBaseUrl(val OptString) {
+	s.BaseUrl = val
+}
+
+// SetApiKey sets the value of ApiKey.
+func (s *SubtitleTranslatorInput) SetApiKey(val OptString) {
+	s.ApiKey = val
+}
+
+// SetModel sets the value of Model.
+func (s *SubtitleTranslatorInput) SetModel(val OptString) {
+	s.Model = val
+}
+
+// SetFormality sets the value of Formality.
+func (s *SubtitleTranslatorInput) SetFormality(val OptSubtitleTranslatorInputFormality) {
+	s.Formality = val
+}
+
+// SetGlossaryId sets the value of GlossaryId.
+func (s *SubtitleTranslatorInput) SetGlossaryId(val OptString) {
+	s.GlossaryId = val
+}
+
+// SetMonthlyCap sets the value of MonthlyCap.
+func (s *SubtitleTranslatorInput) SetMonthlyCap(val OptInt64) {
+	s.MonthlyCap = val
+}
+
+type SubtitleTranslatorInputFormality string
+
+const (
+	SubtitleTranslatorInputFormalityEmpty      SubtitleTranslatorInputFormality = ""
+	SubtitleTranslatorInputFormalityDefault    SubtitleTranslatorInputFormality = "default"
+	SubtitleTranslatorInputFormalityPreferMore SubtitleTranslatorInputFormality = "prefer_more"
+	SubtitleTranslatorInputFormalityPreferLess SubtitleTranslatorInputFormality = "prefer_less"
+)
+
+// AllValues returns all SubtitleTranslatorInputFormality values.
+func (SubtitleTranslatorInputFormality) AllValues() []SubtitleTranslatorInputFormality {
+	return []SubtitleTranslatorInputFormality{
+		SubtitleTranslatorInputFormalityEmpty,
+		SubtitleTranslatorInputFormalityDefault,
+		SubtitleTranslatorInputFormalityPreferMore,
+		SubtitleTranslatorInputFormalityPreferLess,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleTranslatorInputFormality) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleTranslatorInputFormalityEmpty:
+		return []byte(s), nil
+	case SubtitleTranslatorInputFormalityDefault:
+		return []byte(s), nil
+	case SubtitleTranslatorInputFormalityPreferMore:
+		return []byte(s), nil
+	case SubtitleTranslatorInputFormalityPreferLess:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleTranslatorInputFormality) UnmarshalText(data []byte) error {
+	switch SubtitleTranslatorInputFormality(data) {
+	case SubtitleTranslatorInputFormalityEmpty:
+		*s = SubtitleTranslatorInputFormalityEmpty
+		return nil
+	case SubtitleTranslatorInputFormalityDefault:
+		*s = SubtitleTranslatorInputFormalityDefault
+		return nil
+	case SubtitleTranslatorInputFormalityPreferMore:
+		*s = SubtitleTranslatorInputFormalityPreferMore
+		return nil
+	case SubtitleTranslatorInputFormalityPreferLess:
+		*s = SubtitleTranslatorInputFormalityPreferLess
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type SubtitleTranslatorName string
+
+const (
+	SubtitleTranslatorNameLibretranslate   SubtitleTranslatorName = "libretranslate"
+	SubtitleTranslatorNameDeepl            SubtitleTranslatorName = "deepl"
+	SubtitleTranslatorNameOpenai           SubtitleTranslatorName = "openai"
+	SubtitleTranslatorNameAnthropic        SubtitleTranslatorName = "anthropic"
+	SubtitleTranslatorNameGemini           SubtitleTranslatorName = "gemini"
+	SubtitleTranslatorNameOpenaiCompatible SubtitleTranslatorName = "openai-compatible"
+)
+
+// AllValues returns all SubtitleTranslatorName values.
+func (SubtitleTranslatorName) AllValues() []SubtitleTranslatorName {
+	return []SubtitleTranslatorName{
+		SubtitleTranslatorNameLibretranslate,
+		SubtitleTranslatorNameDeepl,
+		SubtitleTranslatorNameOpenai,
+		SubtitleTranslatorNameAnthropic,
+		SubtitleTranslatorNameGemini,
+		SubtitleTranslatorNameOpenaiCompatible,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleTranslatorName) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleTranslatorNameLibretranslate:
+		return []byte(s), nil
+	case SubtitleTranslatorNameDeepl:
+		return []byte(s), nil
+	case SubtitleTranslatorNameOpenai:
+		return []byte(s), nil
+	case SubtitleTranslatorNameAnthropic:
+		return []byte(s), nil
+	case SubtitleTranslatorNameGemini:
+		return []byte(s), nil
+	case SubtitleTranslatorNameOpenaiCompatible:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleTranslatorName) UnmarshalText(data []byte) error {
+	switch SubtitleTranslatorName(data) {
+	case SubtitleTranslatorNameLibretranslate:
+		*s = SubtitleTranslatorNameLibretranslate
+		return nil
+	case SubtitleTranslatorNameDeepl:
+		*s = SubtitleTranslatorNameDeepl
+		return nil
+	case SubtitleTranslatorNameOpenai:
+		*s = SubtitleTranslatorNameOpenai
+		return nil
+	case SubtitleTranslatorNameAnthropic:
+		*s = SubtitleTranslatorNameAnthropic
+		return nil
+	case SubtitleTranslatorNameGemini:
+		*s = SubtitleTranslatorNameGemini
+		return nil
+	case SubtitleTranslatorNameOpenaiCompatible:
+		*s = SubtitleTranslatorNameOpenaiCompatible
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SubtitleTranslatorTest
+type SubtitleTranslatorTest struct {
+	Input        string             `json:"input"`
+	Output       string             `json:"output"`
+	From         string             `json:"from"`
+	To           string             `json:"to"`
+	DurationMs   int64              `json:"durationMs"`
+	Characters   int64              `json:"characters"`
+	InputTokens  int64              `json:"inputTokens"`
+	OutputTokens int64              `json:"outputTokens"`
+	Translator   SubtitleTranslator `json:"translator"`
+}
+
+// GetInput returns the value of Input.
+func (s *SubtitleTranslatorTest) GetInput() string {
+	return s.Input
+}
+
+// GetOutput returns the value of Output.
+func (s *SubtitleTranslatorTest) GetOutput() string {
+	return s.Output
+}
+
+// GetFrom returns the value of From.
+func (s *SubtitleTranslatorTest) GetFrom() string {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *SubtitleTranslatorTest) GetTo() string {
+	return s.To
+}
+
+// GetDurationMs returns the value of DurationMs.
+func (s *SubtitleTranslatorTest) GetDurationMs() int64 {
+	return s.DurationMs
+}
+
+// GetCharacters returns the value of Characters.
+func (s *SubtitleTranslatorTest) GetCharacters() int64 {
+	return s.Characters
+}
+
+// GetInputTokens returns the value of InputTokens.
+func (s *SubtitleTranslatorTest) GetInputTokens() int64 {
+	return s.InputTokens
+}
+
+// GetOutputTokens returns the value of OutputTokens.
+func (s *SubtitleTranslatorTest) GetOutputTokens() int64 {
+	return s.OutputTokens
+}
+
+// GetTranslator returns the value of Translator.
+func (s *SubtitleTranslatorTest) GetTranslator() SubtitleTranslator {
+	return s.Translator
+}
+
+// SetInput sets the value of Input.
+func (s *SubtitleTranslatorTest) SetInput(val string) {
+	s.Input = val
+}
+
+// SetOutput sets the value of Output.
+func (s *SubtitleTranslatorTest) SetOutput(val string) {
+	s.Output = val
+}
+
+// SetFrom sets the value of From.
+func (s *SubtitleTranslatorTest) SetFrom(val string) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *SubtitleTranslatorTest) SetTo(val string) {
+	s.To = val
+}
+
+// SetDurationMs sets the value of DurationMs.
+func (s *SubtitleTranslatorTest) SetDurationMs(val int64) {
+	s.DurationMs = val
+}
+
+// SetCharacters sets the value of Characters.
+func (s *SubtitleTranslatorTest) SetCharacters(val int64) {
+	s.Characters = val
+}
+
+// SetInputTokens sets the value of InputTokens.
+func (s *SubtitleTranslatorTest) SetInputTokens(val int64) {
+	s.InputTokens = val
+}
+
+// SetOutputTokens sets the value of OutputTokens.
+func (s *SubtitleTranslatorTest) SetOutputTokens(val int64) {
+	s.OutputTokens = val
+}
+
+// SetTranslator sets the value of Translator.
+func (s *SubtitleTranslatorTest) SetTranslator(val SubtitleTranslator) {
+	s.Translator = val
+}
+
+// What usage and the monthly cap count.
+type SubtitleTranslatorUnit string
+
+const (
+	SubtitleTranslatorUnitCharacters SubtitleTranslatorUnit = "characters"
+	SubtitleTranslatorUnitTokens     SubtitleTranslatorUnit = "tokens"
+)
+
+// AllValues returns all SubtitleTranslatorUnit values.
+func (SubtitleTranslatorUnit) AllValues() []SubtitleTranslatorUnit {
+	return []SubtitleTranslatorUnit{
+		SubtitleTranslatorUnitCharacters,
+		SubtitleTranslatorUnitTokens,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SubtitleTranslatorUnit) MarshalText() ([]byte, error) {
+	switch s {
+	case SubtitleTranslatorUnitCharacters:
+		return []byte(s), nil
+	case SubtitleTranslatorUnitTokens:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SubtitleTranslatorUnit) UnmarshalText(data []byte) error {
+	switch SubtitleTranslatorUnit(data) {
+	case SubtitleTranslatorUnitCharacters:
+		*s = SubtitleTranslatorUnitCharacters
+		return nil
+	case SubtitleTranslatorUnitTokens:
+		*s = SubtitleTranslatorUnitTokens
+		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
@@ -38689,6 +40102,9 @@ type SubtitleWant struct {
 	// Only foreign-parts (forced) subtitles.
 	Forced          bool                        `json:"forced"`
 	HearingImpaired SubtitleWantHearingImpaired `json:"hearingImpaired"`
+	// Translation service for this language: empty = the language's default, none = never translate, or a
+	// service name.
+	Translator OptString `json:"translator"`
 }
 
 // GetLanguage returns the value of Language.
@@ -38706,6 +40122,11 @@ func (s *SubtitleWant) GetHearingImpaired() SubtitleWantHearingImpaired {
 	return s.HearingImpaired
 }
 
+// GetTranslator returns the value of Translator.
+func (s *SubtitleWant) GetTranslator() OptString {
+	return s.Translator
+}
+
 // SetLanguage sets the value of Language.
 func (s *SubtitleWant) SetLanguage(val string) {
 	s.Language = val
@@ -38719,6 +40140,11 @@ func (s *SubtitleWant) SetForced(val bool) {
 // SetHearingImpaired sets the value of HearingImpaired.
 func (s *SubtitleWant) SetHearingImpaired(val SubtitleWantHearingImpaired) {
 	s.HearingImpaired = val
+}
+
+// SetTranslator sets the value of Translator.
+func (s *SubtitleWant) SetTranslator(val OptString) {
+	s.Translator = val
 }
 
 type SubtitleWantHearingImpaired string
@@ -38778,13 +40204,14 @@ func (s *SubtitleWantHearingImpaired) UnmarshalText(data []byte) error {
 
 // Ref: #/components/schemas/SubtitleWantStatus
 type SubtitleWantStatus struct {
-	Key             string                   `json:"key"`
-	Language        string                   `json:"language"`
-	Forced          bool                     `json:"forced"`
-	HearingImpaired string                   `json:"hearingImpaired"`
-	Status          SubtitleWantStatusStatus `json:"status"`
-	SubtitleId      OptInt64                 `json:"subtitleId"`
-	TrackIndex      OptInt                   `json:"trackIndex"`
+	Key             string `json:"key"`
+	Language        string `json:"language"`
+	Forced          bool   `json:"forced"`
+	HearingImpaired string `json:"hearingImpaired"`
+	// Translated = only a machine translation so far (a human subtitle replaces it).
+	Status     SubtitleWantStatusStatus `json:"status"`
+	SubtitleId OptInt64                 `json:"subtitleId"`
+	TrackIndex OptInt                   `json:"trackIndex"`
 }
 
 // GetKey returns the value of Key.
@@ -38857,13 +40284,15 @@ func (s *SubtitleWantStatus) SetTrackIndex(val OptInt) {
 	s.TrackIndex = val
 }
 
+// Translated = only a machine translation so far (a human subtitle replaces it).
 type SubtitleWantStatusStatus string
 
 const (
-	SubtitleWantStatusStatusPresent  SubtitleWantStatusStatus = "present"
-	SubtitleWantStatusStatusEmbedded SubtitleWantStatusStatus = "embedded"
-	SubtitleWantStatusStatusMissing  SubtitleWantStatusStatus = "missing"
-	SubtitleWantStatusStatusSkipped  SubtitleWantStatusStatus = "skipped"
+	SubtitleWantStatusStatusPresent    SubtitleWantStatusStatus = "present"
+	SubtitleWantStatusStatusEmbedded   SubtitleWantStatusStatus = "embedded"
+	SubtitleWantStatusStatusTranslated SubtitleWantStatusStatus = "translated"
+	SubtitleWantStatusStatusMissing    SubtitleWantStatusStatus = "missing"
+	SubtitleWantStatusStatusSkipped    SubtitleWantStatusStatus = "skipped"
 )
 
 // AllValues returns all SubtitleWantStatusStatus values.
@@ -38871,6 +40300,7 @@ func (SubtitleWantStatusStatus) AllValues() []SubtitleWantStatusStatus {
 	return []SubtitleWantStatusStatus{
 		SubtitleWantStatusStatusPresent,
 		SubtitleWantStatusStatusEmbedded,
+		SubtitleWantStatusStatusTranslated,
 		SubtitleWantStatusStatusMissing,
 		SubtitleWantStatusStatusSkipped,
 	}
@@ -38882,6 +40312,8 @@ func (s SubtitleWantStatusStatus) MarshalText() ([]byte, error) {
 	case SubtitleWantStatusStatusPresent:
 		return []byte(s), nil
 	case SubtitleWantStatusStatusEmbedded:
+		return []byte(s), nil
+	case SubtitleWantStatusStatusTranslated:
 		return []byte(s), nil
 	case SubtitleWantStatusStatusMissing:
 		return []byte(s), nil
@@ -38900,6 +40332,9 @@ func (s *SubtitleWantStatusStatus) UnmarshalText(data []byte) error {
 		return nil
 	case SubtitleWantStatusStatusEmbedded:
 		*s = SubtitleWantStatusStatusEmbedded
+		return nil
+	case SubtitleWantStatusStatusTranslated:
+		*s = SubtitleWantStatusStatusTranslated
 		return nil
 	case SubtitleWantStatusStatusMissing:
 		*s = SubtitleWantStatusStatusMissing
@@ -39437,6 +40872,42 @@ func (s *TaskList) SetScheduled(val []ScheduledTask) {
 // SetJobs sets the value of Jobs.
 func (s *TaskList) SetJobs(val []Job) {
 	s.Jobs = val
+}
+
+type TestSubtitleTranslatorReq struct {
+	Text OptString `json:"text"`
+	From OptString `json:"from"`
+	To   OptString `json:"to"`
+}
+
+// GetText returns the value of Text.
+func (s *TestSubtitleTranslatorReq) GetText() OptString {
+	return s.Text
+}
+
+// GetFrom returns the value of From.
+func (s *TestSubtitleTranslatorReq) GetFrom() OptString {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *TestSubtitleTranslatorReq) GetTo() OptString {
+	return s.To
+}
+
+// SetText sets the value of Text.
+func (s *TestSubtitleTranslatorReq) SetText(val OptString) {
+	s.Text = val
+}
+
+// SetFrom sets the value of From.
+func (s *TestSubtitleTranslatorReq) SetFrom(val OptString) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *TestSubtitleTranslatorReq) SetTo(val OptString) {
+	s.To = val
 }
 
 // Ref: #/components/schemas/Timeline
@@ -40083,6 +41554,119 @@ func (s *TransferMode) UnmarshalText(data []byte) error {
 		return nil
 	case TransferModeMove:
 		*s = TransferModeMove
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type TranslateItemSubtitlesReq struct {
+	Keys       []string  `json:"keys"`
+	Translator OptString `json:"translator"`
+}
+
+// GetKeys returns the value of Keys.
+func (s *TranslateItemSubtitlesReq) GetKeys() []string {
+	return s.Keys
+}
+
+// GetTranslator returns the value of Translator.
+func (s *TranslateItemSubtitlesReq) GetTranslator() OptString {
+	return s.Translator
+}
+
+// SetKeys sets the value of Keys.
+func (s *TranslateItemSubtitlesReq) SetKeys(val []string) {
+	s.Keys = val
+}
+
+// SetTranslator sets the value of Translator.
+func (s *TranslateItemSubtitlesReq) SetTranslator(val OptString) {
+	s.Translator = val
+}
+
+type TranslateWantedSubtitlesReq struct {
+	Refs       []string                           `json:"refs"`
+	All        OptBool                            `json:"all"`
+	Kind       OptTranslateWantedSubtitlesReqKind `json:"kind"`
+	Translator OptString                          `json:"translator"`
+}
+
+// GetRefs returns the value of Refs.
+func (s *TranslateWantedSubtitlesReq) GetRefs() []string {
+	return s.Refs
+}
+
+// GetAll returns the value of All.
+func (s *TranslateWantedSubtitlesReq) GetAll() OptBool {
+	return s.All
+}
+
+// GetKind returns the value of Kind.
+func (s *TranslateWantedSubtitlesReq) GetKind() OptTranslateWantedSubtitlesReqKind {
+	return s.Kind
+}
+
+// GetTranslator returns the value of Translator.
+func (s *TranslateWantedSubtitlesReq) GetTranslator() OptString {
+	return s.Translator
+}
+
+// SetRefs sets the value of Refs.
+func (s *TranslateWantedSubtitlesReq) SetRefs(val []string) {
+	s.Refs = val
+}
+
+// SetAll sets the value of All.
+func (s *TranslateWantedSubtitlesReq) SetAll(val OptBool) {
+	s.All = val
+}
+
+// SetKind sets the value of Kind.
+func (s *TranslateWantedSubtitlesReq) SetKind(val OptTranslateWantedSubtitlesReqKind) {
+	s.Kind = val
+}
+
+// SetTranslator sets the value of Translator.
+func (s *TranslateWantedSubtitlesReq) SetTranslator(val OptString) {
+	s.Translator = val
+}
+
+type TranslateWantedSubtitlesReqKind string
+
+const (
+	TranslateWantedSubtitlesReqKindMovie   TranslateWantedSubtitlesReqKind = "movie"
+	TranslateWantedSubtitlesReqKindEpisode TranslateWantedSubtitlesReqKind = "episode"
+)
+
+// AllValues returns all TranslateWantedSubtitlesReqKind values.
+func (TranslateWantedSubtitlesReqKind) AllValues() []TranslateWantedSubtitlesReqKind {
+	return []TranslateWantedSubtitlesReqKind{
+		TranslateWantedSubtitlesReqKindMovie,
+		TranslateWantedSubtitlesReqKindEpisode,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TranslateWantedSubtitlesReqKind) MarshalText() ([]byte, error) {
+	switch s {
+	case TranslateWantedSubtitlesReqKindMovie:
+		return []byte(s), nil
+	case TranslateWantedSubtitlesReqKindEpisode:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TranslateWantedSubtitlesReqKind) UnmarshalText(data []byte) error {
+	switch TranslateWantedSubtitlesReqKind(data) {
+	case TranslateWantedSubtitlesReqKindMovie:
+		*s = TranslateWantedSubtitlesReqKindMovie
+		return nil
+	case TranslateWantedSubtitlesReqKindEpisode:
+		*s = TranslateWantedSubtitlesReqKindEpisode
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
