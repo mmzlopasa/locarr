@@ -156,6 +156,13 @@ type Handler interface {
 	//
 	// DELETE /queue/blocklist
 	ClearBlocklist(ctx context.Context) (*BlocklistCleared, error)
+	// ClearHistory implements clearHistory operation.
+	//
+	// The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
+	// `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+	//
+	// POST /history/clear
+	ClearHistory(ctx context.Context, req *HistoryClearRequest) (*HistoryClearResult, error)
 	// ConvertSubtitleFps implements convertSubtitleFps operation.
 	//
 	// Convert a subtitle made for one frame rate to another (managers).
@@ -386,6 +393,13 @@ type Handler interface {
 	//
 	// DELETE /downloadclients/{id}
 	DeleteDownloadClient(ctx context.Context, params DeleteDownloadClientParams) error
+	// DeleteHistoryEntry implements deleteHistoryEntry operation.
+	//
+	// The entry is the same row the item's timeline shows, so it disappears there too. Files, the
+	// blocklist, searches and release decisions are not touched.
+	//
+	// DELETE /history/{id}
+	DeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) error
 	// DeleteImportExclusion implements deleteImportExclusion operation.
 	//
 	// Let import lists add a movie again (administrators).

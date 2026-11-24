@@ -11,6 +11,7 @@ import (
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	"github.com/mmzlopasa/locarr/server/internal/downloaders"
+	"github.com/mmzlopasa/locarr/server/internal/logging"
 )
 
 // Status is where a download is in Locarr's own life cycle.
@@ -209,7 +210,7 @@ func (s *Service) addEvent(ctx context.Context, q db.Querier, id int64, typ Even
 		}
 	}
 	_, err := q.ExecContext(ctx, `INSERT INTO download_events (download_id, at, type, from_state, to_state, message, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?)`, id, db.Millis(s.now()), string(typ), from, to, msg, string(raw))
+		VALUES (?, ?, ?, ?, ?, ?, ?)`, id, db.Millis(s.now()), string(typ), from, to, logging.ScrubStored(msg), string(logging.ScrubStoredJSON(raw)))
 	return err
 }
 

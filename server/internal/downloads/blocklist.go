@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/logging"
 )
 
 // Blocklist reasons.
@@ -172,7 +173,7 @@ func (s *Service) addBlock(ctx context.Context, q db.Querier, e BlockEntry) (Blo
 	e.CreatedAt = s.now()
 	err := q.QueryRowContext(ctx, `INSERT INTO blocklist (title, protocol, indexer_id, indexer, info_hash, guid, reason, message,
 		item_ref, download_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`,
-		e.Title, e.Protocol, e.IndexerID, e.Indexer, e.InfoHash, e.GUID, e.Reason, e.Message, string(e.ItemRef),
+		e.Title, e.Protocol, e.IndexerID, e.Indexer, e.InfoHash, e.GUID, e.Reason, logging.ScrubStored(e.Message), string(e.ItemRef),
 		e.DownloadID, db.Millis(e.CreatedAt)).Scan(&e.ID)
 	return e, err
 }

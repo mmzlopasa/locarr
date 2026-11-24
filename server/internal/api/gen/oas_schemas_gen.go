@@ -7436,6 +7436,9 @@ type DeleteDelayProfileNoContent struct{}
 // DeleteDownloadClientNoContent is response for DeleteDownloadClient operation.
 type DeleteDownloadClientNoContent struct{}
 
+// DeleteHistoryEntryNoContent is response for DeleteHistoryEntry operation.
+type DeleteHistoryEntryNoContent struct{}
+
 // DeleteImportExclusionNoContent is response for DeleteImportExclusion operation.
 type DeleteImportExclusionNoContent struct{}
 
@@ -12034,21 +12037,117 @@ func (s *HistoryCategory) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/HistoryClearRequest
+type HistoryClearRequest struct {
+	Category OptHistoryCategory `json:"category"`
+	Kind     OptMediaKind       `json:"kind"`
+	Q        OptString          `json:"q"`
+	// Only entries older than this many days.
+	OlderThanDays OptInt  `json:"olderThanDays"`
+	DryRun        OptBool `json:"dryRun"`
+}
+
+// GetCategory returns the value of Category.
+func (s *HistoryClearRequest) GetCategory() OptHistoryCategory {
+	return s.Category
+}
+
+// GetKind returns the value of Kind.
+func (s *HistoryClearRequest) GetKind() OptMediaKind {
+	return s.Kind
+}
+
+// GetQ returns the value of Q.
+func (s *HistoryClearRequest) GetQ() OptString {
+	return s.Q
+}
+
+// GetOlderThanDays returns the value of OlderThanDays.
+func (s *HistoryClearRequest) GetOlderThanDays() OptInt {
+	return s.OlderThanDays
+}
+
+// GetDryRun returns the value of DryRun.
+func (s *HistoryClearRequest) GetDryRun() OptBool {
+	return s.DryRun
+}
+
+// SetCategory sets the value of Category.
+func (s *HistoryClearRequest) SetCategory(val OptHistoryCategory) {
+	s.Category = val
+}
+
+// SetKind sets the value of Kind.
+func (s *HistoryClearRequest) SetKind(val OptMediaKind) {
+	s.Kind = val
+}
+
+// SetQ sets the value of Q.
+func (s *HistoryClearRequest) SetQ(val OptString) {
+	s.Q = val
+}
+
+// SetOlderThanDays sets the value of OlderThanDays.
+func (s *HistoryClearRequest) SetOlderThanDays(val OptInt) {
+	s.OlderThanDays = val
+}
+
+// SetDryRun sets the value of DryRun.
+func (s *HistoryClearRequest) SetDryRun(val OptBool) {
+	s.DryRun = val
+}
+
+// Ref: #/components/schemas/HistoryClearResult
+type HistoryClearResult struct {
+	Count int64 `json:"count"`
+	// False for a dry run.
+	Deleted bool `json:"deleted"`
+}
+
+// GetCount returns the value of Count.
+func (s *HistoryClearResult) GetCount() int64 {
+	return s.Count
+}
+
+// GetDeleted returns the value of Deleted.
+func (s *HistoryClearResult) GetDeleted() bool {
+	return s.Deleted
+}
+
+// SetCount sets the value of Count.
+func (s *HistoryClearResult) SetCount(val int64) {
+	s.Count = val
+}
+
+// SetDeleted sets the value of Deleted.
+func (s *HistoryClearResult) SetDeleted(val bool) {
+	s.Deleted = val
+}
+
 // Ref: #/components/schemas/HistoryEntry
 type HistoryEntry struct {
 	// Stable within its source ("t:12", "d:7", "s:3").
-	ID         string              `json:"id"`
-	At         time.Time           `json:"at"`
-	Category   HistoryCategory     `json:"category"`
-	Type       string              `json:"type"`
-	Kind       OptHistoryEntryKind `json:"kind"`
-	ItemRef    string              `json:"itemRef"`
-	Title      string              `json:"title"`
-	Release    OptString           `json:"release"`
-	Indexer    OptString           `json:"indexer"`
-	Client     OptString           `json:"client"`
-	Message    string              `json:"message"`
-	DownloadId OptInt64            `json:"downloadId"`
+	ID       string              `json:"id"`
+	At       time.Time           `json:"at"`
+	Category HistoryCategory     `json:"category"`
+	Type     string              `json:"type"`
+	Kind     OptHistoryEntryKind `json:"kind"`
+	ItemRef  string              `json:"itemRef"`
+	Title    string              `json:"title"`
+	Release  OptString           `json:"release"`
+	Indexer  OptString           `json:"indexer"`
+	Client   OptString           `json:"client"`
+	// English summary; URLs carry no credentials or download tokens.
+	Message    string   `json:"message"`
+	DownloadId OptInt64 `json:"downloadId"`
+	// The item's title when the event happened ("" for older entries of an item that is gone). `title` is
+	// this or, when empty, the release.
+	ItemTitle OptString `json:"itemTitle"`
+	// The item is no longer in the library (no page to link to).
+	ItemGone OptBool `json:"itemGone"`
+	// Event details as on the item's timeline (shape depends on the type): code, indexer, until, error,
+	// title….
+	Data jx.Raw `json:"data"`
 }
 
 // GetID returns the value of ID.
@@ -12111,6 +12210,21 @@ func (s *HistoryEntry) GetDownloadId() OptInt64 {
 	return s.DownloadId
 }
 
+// GetItemTitle returns the value of ItemTitle.
+func (s *HistoryEntry) GetItemTitle() OptString {
+	return s.ItemTitle
+}
+
+// GetItemGone returns the value of ItemGone.
+func (s *HistoryEntry) GetItemGone() OptBool {
+	return s.ItemGone
+}
+
+// GetData returns the value of Data.
+func (s *HistoryEntry) GetData() jx.Raw {
+	return s.Data
+}
+
 // SetID sets the value of ID.
 func (s *HistoryEntry) SetID(val string) {
 	s.ID = val
@@ -12171,6 +12285,21 @@ func (s *HistoryEntry) SetDownloadId(val OptInt64) {
 	s.DownloadId = val
 }
 
+// SetItemTitle sets the value of ItemTitle.
+func (s *HistoryEntry) SetItemTitle(val OptString) {
+	s.ItemTitle = val
+}
+
+// SetItemGone sets the value of ItemGone.
+func (s *HistoryEntry) SetItemGone(val OptBool) {
+	s.ItemGone = val
+}
+
+// SetData sets the value of Data.
+func (s *HistoryEntry) SetData(val jx.Raw) {
+	s.Data = val
+}
+
 type HistoryEntryKind string
 
 const (
@@ -12223,6 +12352,8 @@ func (s *HistoryEntryKind) UnmarshalText(data []byte) error {
 type HistoryPage struct {
 	Items   []HistoryEntry `json:"items"`
 	HasMore bool           `json:"hasMore"`
+	// Entries older than this are deleted automatically; 0 = kept forever.
+	RetentionDays OptInt `json:"retentionDays"`
 }
 
 // GetItems returns the value of Items.
@@ -12235,6 +12366,11 @@ func (s *HistoryPage) GetHasMore() bool {
 	return s.HasMore
 }
 
+// GetRetentionDays returns the value of RetentionDays.
+func (s *HistoryPage) GetRetentionDays() OptInt {
+	return s.RetentionDays
+}
+
 // SetItems sets the value of Items.
 func (s *HistoryPage) SetItems(val []HistoryEntry) {
 	s.Items = val
@@ -12243,6 +12379,11 @@ func (s *HistoryPage) SetItems(val []HistoryEntry) {
 // SetHasMore sets the value of HasMore.
 func (s *HistoryPage) SetHasMore(val bool) {
 	s.HasMore = val
+}
+
+// SetRetentionDays sets the value of RetentionDays.
+func (s *HistoryPage) SetRetentionDays(val OptInt) {
+	s.RetentionDays = val
 }
 
 // Ref: #/components/schemas/ImportCustomFormatsRequest
@@ -44301,10 +44442,12 @@ type SystemSettings struct {
 	// 0 turns scheduled backups off.
 	BackupIntervalHours int `json:"backupIntervalHours"`
 	BackupKeep          int `json:"backupKeep"`
-	TimelineDays        int `json:"timelineDays"`
-	SearchLogDays       int `json:"searchLogDays"`
-	DownloadEventsDays  int `json:"downloadEventsDays"`
-	ReleasesSeenDays    int `json:"releasesSeenDays"`
+	// Activity history retention; 0 keeps it forever.
+	HistoryDays        int `json:"historyDays"`
+	TimelineDays       int `json:"timelineDays"`
+	SearchLogDays      int `json:"searchLogDays"`
+	DownloadEventsDays int `json:"downloadEventsDays"`
+	ReleasesSeenDays   int `json:"releasesSeenDays"`
 	// 0 turns the database compaction off.
 	VacuumIntervalDays int  `json:"vacuumIntervalDays"`
 	ImageCacheMaxMb    int  `json:"imageCacheMaxMb"`
@@ -44339,6 +44482,11 @@ func (s *SystemSettings) GetBackupIntervalHours() int {
 // GetBackupKeep returns the value of BackupKeep.
 func (s *SystemSettings) GetBackupKeep() int {
 	return s.BackupKeep
+}
+
+// GetHistoryDays returns the value of HistoryDays.
+func (s *SystemSettings) GetHistoryDays() int {
+	return s.HistoryDays
 }
 
 // GetTimelineDays returns the value of TimelineDays.
@@ -44406,6 +44554,11 @@ func (s *SystemSettings) SetBackupKeep(val int) {
 	s.BackupKeep = val
 }
 
+// SetHistoryDays sets the value of HistoryDays.
+func (s *SystemSettings) SetHistoryDays(val int) {
+	s.HistoryDays = val
+}
+
 // SetTimelineDays sets the value of TimelineDays.
 func (s *SystemSettings) SetTimelineDays(val int) {
 	s.TimelineDays = val
@@ -44449,6 +44602,7 @@ type SystemSettingsInput struct {
 	StuckImportMinutes  OptInt    `json:"stuckImportMinutes"`
 	BackupIntervalHours OptInt    `json:"backupIntervalHours"`
 	BackupKeep          OptInt    `json:"backupKeep"`
+	HistoryDays         OptInt    `json:"historyDays"`
 	TimelineDays        OptInt    `json:"timelineDays"`
 	SearchLogDays       OptInt    `json:"searchLogDays"`
 	DownloadEventsDays  OptInt    `json:"downloadEventsDays"`
@@ -44486,6 +44640,11 @@ func (s *SystemSettingsInput) GetBackupIntervalHours() OptInt {
 // GetBackupKeep returns the value of BackupKeep.
 func (s *SystemSettingsInput) GetBackupKeep() OptInt {
 	return s.BackupKeep
+}
+
+// GetHistoryDays returns the value of HistoryDays.
+func (s *SystemSettingsInput) GetHistoryDays() OptInt {
+	return s.HistoryDays
 }
 
 // GetTimelineDays returns the value of TimelineDays.
@@ -44551,6 +44710,11 @@ func (s *SystemSettingsInput) SetBackupIntervalHours(val OptInt) {
 // SetBackupKeep sets the value of BackupKeep.
 func (s *SystemSettingsInput) SetBackupKeep(val OptInt) {
 	s.BackupKeep = val
+}
+
+// SetHistoryDays sets the value of HistoryDays.
+func (s *SystemSettingsInput) SetHistoryDays(val OptInt) {
+	s.HistoryDays = val
 }
 
 // SetTimelineDays sets the value of TimelineDays.

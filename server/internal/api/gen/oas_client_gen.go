@@ -177,6 +177,13 @@ type Invoker interface {
 	//
 	// DELETE /queue/blocklist
 	ClearBlocklist(ctx context.Context) (*BlocklistCleared, error)
+	// ClearHistory invokes clearHistory operation.
+	//
+	// The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
+	// `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+	//
+	// POST /history/clear
+	ClearHistory(ctx context.Context, request *HistoryClearRequest) (*HistoryClearResult, error)
 	// ConvertSubtitleFps invokes convertSubtitleFps operation.
 	//
 	// Convert a subtitle made for one frame rate to another (managers).
@@ -407,6 +414,13 @@ type Invoker interface {
 	//
 	// DELETE /downloadclients/{id}
 	DeleteDownloadClient(ctx context.Context, params DeleteDownloadClientParams) error
+	// DeleteHistoryEntry invokes deleteHistoryEntry operation.
+	//
+	// The entry is the same row the item's timeline shows, so it disappears there too. Files, the
+	// blocklist, searches and release decisions are not touched.
+	//
+	// DELETE /history/{id}
+	DeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) error
 	// DeleteImportExclusion invokes deleteImportExclusion operation.
 	//
 	// Let import lists add a movie again (administrators).
@@ -5396,6 +5410,123 @@ func (c *Client) sendClearBlocklist(ctx context.Context) (res *BlocklistCleared,
 	return result, nil
 }
 
+// ClearHistory invokes clearHistory operation.
+//
+// The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
+// `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+//
+// POST /history/clear
+func (c *Client) ClearHistory(ctx context.Context, request *HistoryClearRequest) (*HistoryClearResult, error) {
+	res, err := c.sendClearHistory(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendClearHistory(ctx context.Context, request *HistoryClearRequest) (res *HistoryClearResult, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("clearHistory"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/history/clear"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ClearHistoryOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/history/clear"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeClearHistoryRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ClearHistoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeClearHistoryResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ConvertSubtitleFps invokes convertSubtitleFps operation.
 //
 // Convert a subtitle made for one frame rate to another (managers).
@@ -9977,6 +10108,138 @@ func (c *Client) sendDeleteDownloadClient(ctx context.Context, params DeleteDown
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteDownloadClientResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteHistoryEntry invokes deleteHistoryEntry operation.
+//
+// The entry is the same row the item's timeline shows, so it disappears there too. Files, the
+// blocklist, searches and release decisions are not touched.
+//
+// DELETE /history/{id}
+func (c *Client) DeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) error {
+	_, err := c.sendDeleteHistoryEntry(ctx, params)
+	return err
+}
+
+func (c *Client) sendDeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) (res *DeleteHistoryEntryNoContent, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteHistoryEntry"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/history/{id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteHistoryEntryOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/history/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DeleteHistoryEntryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteHistoryEntryResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

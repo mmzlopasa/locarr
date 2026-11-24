@@ -6208,6 +6208,42 @@ paths:
               schema: {$ref: "#/components/schemas/HistoryPage"}
         default:
           $ref: "#/components/responses/Error"
+  /history/{id}:
+    delete:
+      operationId: deleteHistoryEntry
+      summary: Delete one history entry (library managers)
+      description: |
+        The entry is the same row the item's timeline shows, so it disappears there too. Files, the
+        blocklist, searches and release decisions are not touched.
+      tags: [history]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string, pattern: "^[td]:[0-9]{1,19}$"}}
+      responses:
+        "204":
+          description: Deleted
+        default:
+          $ref: "#/components/responses/Error"
+  /history/clear:
+    post:
+      operationId: clearHistory
+      summary: Delete the history entries that match a filter, or count them first (library managers)
+      description: |
+        The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
+        `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+      tags: [history]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/HistoryClearRequest"}
+      responses:
+        "200":
+          description: How many entries match (dry run) or were deleted
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/HistoryClearResult"}
+        default:
+          $ref: "#/components/responses/Error"
   /activity/stats:
     get:
       operationId: getActivityStats
@@ -13432,8 +13468,15 @@ components:
         release: {type: string}
         indexer: {type: string}
         client: {type: string}
-        message: {type: string}
+        message: {type: string, description: "English summary; URLs carry no credentials or download tokens."}
         downloadId: {type: integer, format: int64}
+        itemTitle:
+          type: string
+          description: |
+            The item's title when the event happened ("" for older entries of an item that is gone).
+            `title` is this or, when empty, the release.
+        itemGone: {type: boolean, description: "The item is no longer in the library (no page to link to)."}
+        data: {description: "Event details as on the item's timeline (shape depends on the type): code, indexer, until, error, title…"}
     HistoryPage:
       type: object
       required: [items, hasMore]
@@ -13442,6 +13485,21 @@ components:
           type: array
           items: {$ref: "#/components/schemas/HistoryEntry"}
         hasMore: {type: boolean}
+        retentionDays: {type: integer, description: "Entries older than this are deleted automatically; 0 = kept forever."}
+    HistoryClearRequest:
+      type: object
+      properties:
+        category: {$ref: "#/components/schemas/HistoryCategory"}
+        kind: {$ref: "#/components/schemas/MediaKind"}
+        q: {type: string, maxLength: 200}
+        olderThanDays: {type: integer, minimum: 1, maximum: 36500, description: "Only entries older than this many days."}
+        dryRun: {type: boolean, default: false}
+    HistoryClearResult:
+      type: object
+      required: [count, deleted]
+      properties:
+        count: {type: integer, format: int64}
+        deleted: {type: boolean, description: "false for a dry run."}
     SourceStats:
       type: object
       required: [name, grabs, imported, failed, inProgress]
@@ -13581,7 +13639,7 @@ components:
         preRestoreBackup: {type: string, description: "The backup of the state before the restore."}
     SystemSettings:
       type: object
-      required: [updateCheck, minFreeSpaceGb, recycleBinWarnGb, stuckImportMinutes, backupIntervalHours, backupKeep, timelineDays,
+      required: [updateCheck, minFreeSpaceGb, recycleBinWarnGb, stuckImportMinutes, backupIntervalHours, backupKeep, historyDays, timelineDays,
         searchLogDays, downloadEventsDays, releasesSeenDays, vacuumIntervalDays, imageCacheMaxMb, metricsTokenSet]
       properties:
         updateCheck: {type: boolean, description: "Ask GitHub once a day whether a newer Locarr exists."}
@@ -13590,6 +13648,7 @@ components:
         stuckImportMinutes: {type: integer}
         backupIntervalHours: {type: integer, description: "0 turns scheduled backups off."}
         backupKeep: {type: integer}
+        historyDays: {type: integer, description: "Activity history retention; 0 keeps it forever."}
         timelineDays: {type: integer}
         searchLogDays: {type: integer}
         downloadEventsDays: {type: integer}
@@ -13606,6 +13665,7 @@ components:
         stuckImportMinutes: {type: integer, minimum: 5, maximum: 100000}
         backupIntervalHours: {type: integer, minimum: 0, maximum: 8760}
         backupKeep: {type: integer, minimum: 1, maximum: 365}
+        historyDays: {type: integer, minimum: 0, maximum: 36500}
         timelineDays: {type: integer, minimum: 7, maximum: 36500}
         searchLogDays: {type: integer, minimum: 1, maximum: 36500}
         downloadEventsDays: {type: integer, minimum: 7, maximum: 36500}

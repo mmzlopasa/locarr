@@ -13,6 +13,8 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
+	"github.com/mmzlopasa/locarr/server/internal/library"
+	"github.com/mmzlopasa/locarr/server/internal/logging"
 )
 
 // Event types recorded in timeline_events.
@@ -75,17 +77,11 @@ func (s *Store) now() time.Time {
 	return time.Now()
 }
 
-// Record adds an event (data is marshalled to JSON; nil = {}).
+// Record adds an event (data is marshalled to JSON; nil = {}). The item's
+// title is stored with it (D-107) and URLs in the message and data lose
+// their credentials and tokens.
 func (s *Store) Record(ctx context.Context, ref, typ, message string, data any, downloadID *int64) error {
-	raw := []byte("{}")
-	if data != nil {
-		var err error
-		if raw, err = json.Marshal(data); err != nil {
-			return err
-		}
-	}
-	_, err := s.DB.W.ExecContext(ctx, `INSERT INTO timeline_events (item_ref, at, type, message, data, download_id) VALUES (?, ?, ?, ?, ?, ?)`,
-		ref, db.Millis(s.now()), typ, message, string(raw), downloadID)
+	err := insert(ctx, s.DB.W, ref, typ, message, data, s.now(), downloadID)
 	if err == nil && s.OnRecord != nil {
 		s.OnRecord(ref)
 	}
@@ -95,6 +91,10 @@ func (s *Store) Record(ctx context.Context, ref, typ, message string, data any, 
 // RecordAt adds an event that happened at a given time (history brought in
 // from another application) through q, so callers can batch it in a transaction.
 func RecordAt(ctx context.Context, q db.Querier, ref, typ, message string, data any, at time.Time) error {
+	return insert(ctx, q, ref, typ, message, data, at, nil)
+}
+
+func insert(ctx context.Context, q db.Querier, ref, typ, message string, data any, at time.Time, downloadID *int64) error {
 	raw := []byte("{}")
 	if data != nil {
 		var err error
@@ -102,8 +102,9 @@ func RecordAt(ctx context.Context, q db.Querier, ref, typ, message string, data 
 			return err
 		}
 	}
-	_, err := q.ExecContext(ctx, `INSERT INTO timeline_events (item_ref, at, type, message, data) VALUES (?, ?, ?, ?, ?)`,
-		ref, db.Millis(at), typ, message, string(raw))
+	title, _ := library.Title(ctx, q, ref)
+	_, err := q.ExecContext(ctx, `INSERT INTO timeline_events (item_ref, at, type, message, data, download_id, item_title) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		ref, db.Millis(at), typ, logging.ScrubStored(message), string(logging.ScrubStoredJSON(raw)), downloadID, title)
 	return err
 }
 

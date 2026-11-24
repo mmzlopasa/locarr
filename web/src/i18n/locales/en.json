@@ -3460,7 +3460,44 @@
       "renamed": "Renamed",
       "subtitles": "Subtitles",
       "notifications": "Notified"
-    }
+    },
+    "noneHint": "Grabs, imports, failures and deletions show up here as Locarr works through the library.",
+    "noMatch": "No entries match these filters.",
+    "noMatchHint": "Try another category or kind, or a shorter search.",
+    "resetFilters": "Clear the filters",
+    "removedItem": "(removed item)",
+    "times": "{{count}}×",
+    "when": "When",
+    "release": "Release",
+    "indexerLabel": "Indexer",
+    "clientLabel": "Client",
+    "copy": "Copy",
+    "copied": "Copied",
+    "more": "Show older",
+    "deleteEntry": "Delete entry",
+    "deleteEntryConfirm": "Delete",
+    "retentionForever": "Entries are kept until you delete them.",
+    "retentionChange": "Change",
+    "group": {
+      "failed": "Could not grab {{count}} releases — {{reason}}"
+    },
+    "clear": {
+      "open": "Clear history",
+      "title": "Clear history",
+      "what": "Which entries?",
+      "all": "Everything",
+      "allFiltered": "Everything matching the current filters",
+      "older": "Older than…",
+      "days": "Days",
+      "failed": "Only failures",
+      "filterNote": "The current filters (what, kind, search) apply to every choice.",
+      "shared": "History entries are also each title's timeline, so they disappear there too. Files, the blocklist, searches and release decisions are not touched. This cannot be undone.",
+      "count": "Entries to delete: {{count}}",
+      "none": "No entries match.",
+      "confirm": "Delete ({{count}})"
+    },
+    "deleteGroup": "Delete these entries ({{count}})",
+    "retention": "Entries older than {{count}} days are deleted automatically."
   },
   "activityStats": {
     "period": "Period",
@@ -3605,7 +3642,8 @@
       "downloadEventsDays": "Download steps (days)",
       "releasesSeenDays": "RSS releases seen (days)",
       "vacuumIntervalDays": "Compact the database every (days)",
-      "imageCacheMaxMb": "Image cache limit (MB)"
+      "imageCacheMaxMb": "Image cache limit (MB)",
+      "historyDays": "History (days)"
     },
     "hints": {
       "minFreeSpaceGb": "For media folders and download clients.",
@@ -3613,12 +3651,13 @@
       "stuckImportMinutes": "A finished download not imported after this long is reported.",
       "backupIntervalHours": "0 turns scheduled backups off.",
       "backupKeep": "Older scheduled backups are deleted.",
-      "timelineDays": "Per-title history entries.",
+      "timelineDays": "Other per-title timeline entries (decisions, edits, refreshes).",
       "searchLogDays": "Every search and what each indexer answered.",
       "downloadEventsDays": "Steps of finished downloads.",
       "releasesSeenDays": "Releases remembered from RSS feeds.",
       "vacuumIntervalDays": "0 turns it off.",
-      "imageCacheMaxMb": "Oldest posters and covers are removed above this."
+      "imageCacheMaxMb": "Oldest posters and covers are removed above this.",
+      "historyDays": "Grabs, imports, failures and deletions under Activity → History and on each title's timeline. 0 = keep forever."
     }
   },
   "overview": {

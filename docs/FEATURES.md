@@ -104,6 +104,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Vremenska crta po naslovu: pretrage, odbijena izdanja s razlozima, grab, preuzimanje, uvoz, obavijesti (za filmove od P4, za epizode i sezone od P5, za albume od P6)
 - [x] „Zašto nije stiglo?": ploča svih nedostajućih filmova, epizoda, albuma i titlova po razlogu, sa zbrojenim razlozima odbijanja, poveznicom za popravak i skupnim radnjama (D-081)
 - [x] Aktivnost (red preuzimanja), povijest cijele biblioteke, blokirana izdanja (i brisanje svih), statistika po indexeru i klijentu, nedostajuće/ispod granice (D-082)
+- [x] Povijest: naslov kakav je bio, ID-jevi se ne ponavljaju, poruke bez tokena, grupirani neuspjesi, brisanje zapisa i čišćenje s potvrdom, zadržavanje N dana (D-107)
 - [x] Zdravlje sustava (indexeri, klijenti, kategorije, putanje, root mape i prostor, koš, zapeli uvozi, metapodaci, titlovi, Streamero, sat, baza, kopije, nova verzija) s uputama (D-083), logovi s pretragom, uživo i rotiranim datotekama (D-084), zadaci
 - [x] `/api/stats` za nadzorne ploče, Prometheus metrike, održavanje baze i predmemorije (D-086)
 

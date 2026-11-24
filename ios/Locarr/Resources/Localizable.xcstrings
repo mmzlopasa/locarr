@@ -7379,6 +7379,227 @@
         }
       }
     },
+    "history.clear.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sve"
+          }
+        }
+      }
+    },
+    "history.clear.allFiltered": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything matching the current filters"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sve što odgovara trenutnim filtrima"
+          }
+        }
+      }
+    },
+    "history.clear.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete ({{count}})"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši ({{count}})"
+          }
+        }
+      }
+    },
+    "history.clear.count": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries to delete: {{count}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapisa za brisanje: {{count}}"
+          }
+        }
+      }
+    },
+    "history.clear.days": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dana"
+          }
+        }
+      }
+    },
+    "history.clear.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only failures"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samo neuspjehe"
+          }
+        }
+      }
+    },
+    "history.clear.filterNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The current filters (what, kind, search) apply to every choice."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trenutni filtri (što, vrsta, pretraga) vrijede za svaki izbor."
+          }
+        }
+      }
+    },
+    "history.clear.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No entries match."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nijedan zapis ne odgovara."
+          }
+        }
+      }
+    },
+    "history.clear.older": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Older than…"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starije od…"
+          }
+        }
+      }
+    },
+    "history.clear.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear history"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Očisti povijest"
+          }
+        }
+      }
+    },
+    "history.clear.shared": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History entries are also each title's timeline, so they disappear there too. Files, the blocklist, searches and release decisions are not touched. This cannot be undone."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapisi povijesti ujedno su vremenska crta svakog naslova, pa nestaju i ondje. Datoteke, blokirana izdanja, pretrage i odluke o izdanjima ostaju. Ovo se ne može poništiti."
+          }
+        }
+      }
+    },
+    "history.clear.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear history"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Očisti povijest"
+          }
+        }
+      }
+    },
+    "history.clear.what": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which entries?"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koje zapise?"
+          }
+        }
+      }
+    },
     "history.client": {
       "extractionState": "manual",
       "localizations": {
@@ -7392,6 +7613,125 @@
           "stringUnit": {
             "state": "translated",
             "value": "klijent: {{name}}"
+          }
+        }
+      }
+    },
+    "history.clientLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Client"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klijent"
+          }
+        }
+      }
+    },
+    "history.copied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopirano"
+          }
+        }
+      }
+    },
+    "history.copy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiraj"
+          }
+        }
+      }
+    },
+    "history.deleteEntry": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete entry"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši zapis"
+          }
+        }
+      }
+    },
+    "history.deleteEntryConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši"
+          }
+        }
+      }
+    },
+    "history.deleteGroup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete these entries ({{count}})"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši ove zapise ({{count}})"
+          }
+        }
+      }
+    },
+    "history.group.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not grab {{count}} releases — {{reason}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{count}} izdanja nije uspjelo preuzeti — {{reason}}"
           }
         }
       }
@@ -7413,6 +7753,23 @@
         }
       }
     },
+    "history.indexerLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexer"
+          }
+        }
+      }
+    },
     "history.kind": {
       "extractionState": "manual",
       "localizations": {
@@ -7430,6 +7787,57 @@
         }
       }
     },
+    "history.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show older"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži starije"
+          }
+        }
+      }
+    },
+    "history.noMatch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No entries match these filters."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nijedan zapis ne odgovara filtrima."
+          }
+        }
+      }
+    },
+    "history.noMatchHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try another category or kind, or a shorter search."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probaj drugu vrstu događaja ili medija, ili kraću pretragu."
+          }
+        }
+      }
+    },
     "history.none": {
       "extractionState": "manual",
       "localizations": {
@@ -7443,6 +7851,125 @@
           "stringUnit": {
             "state": "translated",
             "value": "Još se ništa nije dogodilo."
+          }
+        }
+      }
+    },
+    "history.noneHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grabs, imports, failures and deletions show up here as Locarr works through the library."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovdje se pojavljuju preuzimanja, uvozi, neuspjesi i brisanja dok Locarr radi na biblioteci."
+          }
+        }
+      }
+    },
+    "history.release": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Release"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izdanje"
+          }
+        }
+      }
+    },
+    "history.removedItem": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(removed item)"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(uklonjena stavka)"
+          }
+        }
+      }
+    },
+    "history.resetFilters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the filters"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Očisti filtre"
+          }
+        }
+      }
+    },
+    "history.retention": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries older than {{count}} days are deleted automatically."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapisi stariji od {{count}} dana brišu se automatski."
+          }
+        }
+      }
+    },
+    "history.retentionChange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promijeni"
+          }
+        }
+      }
+    },
+    "history.retentionForever": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries are kept until you delete them."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapisi se čuvaju dok ih ne obrišeš."
           }
         }
       }
@@ -7476,7 +8003,24 @@
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Što je Locarr preuzeo, uvezao, nadogradio, preimenovao i obrisao, neuspjesi, titlovi i obavijesti media serveru."
+            "value": "Što je Locarr preuzeo, uvezao, nadogradio, preimenovao i obrisao, neuspjesi, titlovi i obavijesti media servera."
+          }
+        }
+      }
+    },
+    "history.times": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{count}}×"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{count}}×"
           }
         }
       }
@@ -7494,6 +8038,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Povijest"
+          }
+        }
+      }
+    },
+    "history.when": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kada"
           }
         }
       }
