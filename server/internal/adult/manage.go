@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/mmzlopasa/locarr/server/internal/adult/meta"
@@ -165,7 +166,7 @@ func (s *Service) AddStudio(ctx context.Context, o AddOptions) (Studio, error) {
 	if err != nil {
 		return Studio{}, err
 	}
-	path, err := naming.Join(root, naming.Sanitize(ms.Name, naming.Options{}), "")
+	path, err := s.folder(root, naming.Sanitize(ms.Name, naming.Options{}))
 	if err != nil {
 		return Studio{}, err
 	}
@@ -305,7 +306,7 @@ func (s *Service) addItem(ctx context.Context, sc *meta.Scene, o AddOptions, stu
 	if sc.Movie {
 		tmpl, _ = getStr(ctx, s, MovieFolder)
 	}
-	path, err := naming.Join(root, folderName(tmpl, v), "")
+	path, err := s.folder(root, folderName(tmpl, v))
 	if err != nil {
 		return Item{}, err
 	}
@@ -607,4 +608,13 @@ func getStr(ctx context.Context, s *Service, k settings.Key[string]) (string, er
 
 func getInt(ctx context.Context, s *Service, k settings.Key[int64]) (int64, error) {
 	return settings.Get(ctx, s.Settings, k)
+}
+
+// folder is a sanitised folder inside a root (inside the data roots).
+func (s *Service) folder(root, name string) (string, error) {
+	name = naming.Sanitize(name, naming.Options{})
+	if name == "" || name == "." || name == ".." {
+		name = "Unknown"
+	}
+	return lfs.SafePath(s.DataRoots, filepath.Join(root, name))
 }

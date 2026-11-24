@@ -248,7 +248,7 @@ func (s *Service) Rename(ctx context.Context, id int64, apply bool) (RenamePrevi
 		return RenamePreview{}, err
 	}
 	to := naming.WithExtension(name, strings.TrimPrefix(filepath.Ext(it.File.Path), "."))
-	dst, err := naming.Join(it.Path, "", to)
+	dst, err := lfs.SafePath(s.DataRoots, filepath.Join(it.Path, to))
 	if err != nil {
 		return RenamePreview{}, err
 	}

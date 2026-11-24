@@ -62,12 +62,13 @@ func cutoffMet(p *quality.Profile, f *File) bool {
 	return p.CutoffFormatScore <= 0 || f.Score >= p.CutoffFormatScore
 }
 
-// sceneDate writes 2024-01-15 as 24.01.15, the way scene names carry it.
+// sceneDate writes 2024-01-15 as "24 01 15": scene names carry 24.01.15,
+// and indexers split words on the dots.
 func sceneDate(d string) string {
 	if len(d) != 10 {
 		return ""
 	}
-	return d[2:4] + "." + d[5:7] + "." + d[8:10]
+	return d[2:4] + " " + d[5:7] + " " + d[8:10]
 }
 
 func (w Source) toItem(ctx context.Context, it *Item, p *quality.Profile) wanted.Item {

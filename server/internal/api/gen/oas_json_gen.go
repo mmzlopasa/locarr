@@ -73212,6 +73212,12 @@ func (s *Stats) encodeFields(e *jx.Encoder) {
 		e.Int(s.SubtitlesMissing)
 	}
 	{
+		if s.AdultItems.Set {
+			e.FieldStart("adultItems")
+			s.AdultItems.Encode(e)
+		}
+	}
+	{
 		if s.LastRssSyncAt.Set {
 			e.FieldStart("lastRssSyncAt")
 			s.LastRssSyncAt.Encode(e, json.EncodeDateTime)
@@ -73227,7 +73233,7 @@ func (s *Stats) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfStats = [32]string{
+var jsonFieldsNameOfStats = [33]string{
 	0:  "version",
 	1:  "commit",
 	2:  "generatedAt",
@@ -73258,8 +73264,9 @@ var jsonFieldsNameOfStats = [32]string{
 	27: "indexersDisabled",
 	28: "requestsPending",
 	29: "subtitlesMissing",
-	30: "lastRssSyncAt",
-	31: "rootFolders",
+	30: "adultItems",
+	31: "lastRssSyncAt",
+	32: "rootFolders",
 }
 
 // Decode decodes Stats from json.
@@ -73267,7 +73274,7 @@ func (s *Stats) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode Stats to nil")
 	}
-	var requiredBitSet [4]uint8
+	var requiredBitSet [5]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -73631,6 +73638,16 @@ func (s *Stats) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"subtitlesMissing\"")
 			}
+		case "adultItems":
+			if err := func() error {
+				s.AdultItems.Reset()
+				if err := s.AdultItems.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"adultItems\"")
+			}
 		case "lastRssSyncAt":
 			if err := func() error {
 				s.LastRssSyncAt.Reset()
@@ -73642,7 +73659,7 @@ func (s *Stats) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"lastRssSyncAt\"")
 			}
 		case "rootFolders":
-			requiredBitSet[3] |= 1 << 7
+			requiredBitSet[4] |= 1 << 0
 			if err := func() error {
 				s.RootFolders = make([]StatsRootFolder, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -73668,11 +73685,12 @@ func (s *Stats) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [4]uint8{
+	for i, mask := range [5]uint8{
 		0b11111111,
 		0b11111111,
 		0b11111111,
-		0b10111111,
+		0b00111111,
+		0b00000001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

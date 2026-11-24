@@ -62,7 +62,8 @@ func (h *Handler) adultAdmin(ctx context.Context) (auth.Principal, error) {
 	if err != nil {
 		return p, err
 	}
-	if !p.IsAdmin() || h.Adult == nil {
+	// API keys reach these only when created with "include adult".
+	if !p.IsAdmin() || h.Adult == nil || (p.APIKeyID != 0 && !p.IncludeAdult) {
 		return p, errAdultHidden
 	}
 	return p, nil

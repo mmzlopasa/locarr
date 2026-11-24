@@ -37737,9 +37737,12 @@ type Stats struct {
 	IndexersDisabled int `json:"indexersDisabled"`
 	RequestsPending  int `json:"requestsPending"`
 	// Files missing at least one wanted subtitle language.
-	SubtitlesMissing int               `json:"subtitlesMissing"`
-	LastRssSyncAt    OptDateTime       `json:"lastRssSyncAt"`
-	RootFolders      []StatsRootFolder `json:"rootFolders"`
+	SubtitlesMissing int `json:"subtitlesMissing"`
+	// Total adult items; present only when the adult library is enabled and the administrator opted in.
+	// Never broken down.
+	AdultItems    OptInt            `json:"adultItems"`
+	LastRssSyncAt OptDateTime       `json:"lastRssSyncAt"`
+	RootFolders   []StatsRootFolder `json:"rootFolders"`
 }
 
 // GetVersion returns the value of Version.
@@ -37890,6 +37893,11 @@ func (s *Stats) GetRequestsPending() int {
 // GetSubtitlesMissing returns the value of SubtitlesMissing.
 func (s *Stats) GetSubtitlesMissing() int {
 	return s.SubtitlesMissing
+}
+
+// GetAdultItems returns the value of AdultItems.
+func (s *Stats) GetAdultItems() OptInt {
+	return s.AdultItems
 }
 
 // GetLastRssSyncAt returns the value of LastRssSyncAt.
@@ -38050,6 +38058,11 @@ func (s *Stats) SetRequestsPending(val int) {
 // SetSubtitlesMissing sets the value of SubtitlesMissing.
 func (s *Stats) SetSubtitlesMissing(val int) {
 	s.SubtitlesMissing = val
+}
+
+// SetAdultItems sets the value of AdultItems.
+func (s *Stats) SetAdultItems(val OptInt) {
+	s.AdultItems = val
 }
 
 // SetLastRssSyncAt sets the value of LastRssSyncAt.

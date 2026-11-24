@@ -95,6 +95,14 @@ func (s *Service) now() time.Time {
 	return time.Now()
 }
 
+// Invalidate drops the cached stats (after a change that alters them, such
+// as switching the adult aggregate).
+func (s *Service) Invalidate() {
+	s.mu.Lock()
+	s.cached = nil
+	s.mu.Unlock()
+}
+
 // Get returns the stats (at most CacheFor old).
 func (s *Service) Get(ctx context.Context) (Stats, error) {
 	s.mu.Lock()

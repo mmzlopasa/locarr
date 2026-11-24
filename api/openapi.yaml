@@ -12761,6 +12761,7 @@ components:
         indexersDisabled: {type: integer}
         requestsPending: {type: integer}
         subtitlesMissing: {type: integer, description: "Files missing at least one wanted subtitle language."}
+        adultItems: {type: integer, description: "Total adult items; present only when the adult library is enabled and the administrator opted in. Never broken down."}
         lastRssSyncAt: {type: string, format: date-time}
         rootFolders:
           type: array
