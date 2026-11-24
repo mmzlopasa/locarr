@@ -32,6 +32,10 @@ type Config struct {
 	// and the fake services only).
 	MusicBrainzURL string
 	CoverArtURL    string
+	// DiscoveryURLs replace the music discovery providers' addresses
+	// (LOCARR_LASTFM_URL, LOCARR_LISTENBRAINZ_URL, LOCARR_LISTENBRAINZ_LABS_URL,
+	// LOCARR_SPOTIFY_URL, LOCARR_SPOTIFY_ACCOUNTS_URL; tests and the fake services only).
+	LastFMURL, ListenBrainzURL, ListenBrainzLabsURL, SpotifyURL, SpotifyAccountsURL string
 	// TelegramURL and PushoverURL replace the Telegram Bot API and Pushover
 	// addresses (LOCARR_TELEGRAM_URL, LOCARR_PUSHOVER_URL; tests only).
 	TelegramURL string
@@ -74,22 +78,27 @@ func load(env func(string) string) (Config, error) {
 		return def
 	}
 	c := Config{
-		HTTPAddr:       get("LOCARR_HTTP_ADDR", ":8484"),
-		ConfigDir:      get("LOCARR_CONFIG_DIR", "/config"),
-		LogLevel:       strings.ToLower(get("LOCARR_LOG_LEVEL", "info")),
-		TrustedProxies: get("LOCARR_TRUSTED_PROXIES", ""),
-		SetupCode:      get("LOCARR_SETUP_CODE", ""),
-		TMDbURL:        get("LOCARR_TMDB_URL", ""),
-		TVDBURL:        get("LOCARR_TVDB_URL", ""),
-		MusicBrainzURL: get("LOCARR_MUSICBRAINZ_URL", ""),
-		CoverArtURL:    get("LOCARR_COVERART_URL", ""),
-		TelegramURL:    get("LOCARR_TELEGRAM_URL", ""),
-		PushoverURL:    get("LOCARR_PUSHOVER_URL", ""),
-		FFmpeg:         get("LOCARR_FFMPEG", ""),
-		ReleasesURL:    get("LOCARR_RELEASES_URL", ""),
-		SubtitleURLs:   map[string]string{},
-		BrowserURL:     get("LOCARR_BROWSER_URL", ""),
-		BrowserToken:   strings.TrimSpace(env("LOCARR_BROWSER_TOKEN")),
+		HTTPAddr:            get("LOCARR_HTTP_ADDR", ":8484"),
+		ConfigDir:           get("LOCARR_CONFIG_DIR", "/config"),
+		LogLevel:            strings.ToLower(get("LOCARR_LOG_LEVEL", "info")),
+		TrustedProxies:      get("LOCARR_TRUSTED_PROXIES", ""),
+		SetupCode:           get("LOCARR_SETUP_CODE", ""),
+		TMDbURL:             get("LOCARR_TMDB_URL", ""),
+		TVDBURL:             get("LOCARR_TVDB_URL", ""),
+		MusicBrainzURL:      get("LOCARR_MUSICBRAINZ_URL", ""),
+		CoverArtURL:         get("LOCARR_COVERART_URL", ""),
+		LastFMURL:           get("LOCARR_LASTFM_URL", ""),
+		ListenBrainzURL:     get("LOCARR_LISTENBRAINZ_URL", ""),
+		ListenBrainzLabsURL: get("LOCARR_LISTENBRAINZ_LABS_URL", ""),
+		SpotifyURL:          get("LOCARR_SPOTIFY_URL", ""),
+		SpotifyAccountsURL:  get("LOCARR_SPOTIFY_ACCOUNTS_URL", ""),
+		TelegramURL:         get("LOCARR_TELEGRAM_URL", ""),
+		PushoverURL:         get("LOCARR_PUSHOVER_URL", ""),
+		FFmpeg:              get("LOCARR_FFMPEG", ""),
+		ReleasesURL:         get("LOCARR_RELEASES_URL", ""),
+		SubtitleURLs:        map[string]string{},
+		BrowserURL:          get("LOCARR_BROWSER_URL", ""),
+		BrowserToken:        strings.TrimSpace(env("LOCARR_BROWSER_TOKEN")),
 	}
 	for name, k := range map[string]string{"opensubtitles": "LOCARR_OPENSUBTITLES_URL", "subdl": "LOCARR_SUBDL_URL", "jimaku": "LOCARR_JIMAKU_URL"} {
 		if v := get(k, ""); v != "" {

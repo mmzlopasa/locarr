@@ -493,6 +493,12 @@ type Handler interface {
 	//
 	// POST /decisions/evaluate
 	EvaluateReleases(ctx context.Context, req *EvaluateRequest) (*DecisionReport, error)
+	// ExcludeArtist implements excludeArtist operation.
+	//
+	// Mark an artist not interested; it is no longer suggested (library managers).
+	//
+	// POST /music/discover/exclusions
+	ExcludeArtist(ctx context.Context, req *ExcludeArtistReq) (*ArtistExclusion, error)
 	// ExplainItem implements explainItem operation.
 	//
 	// Why an item is not in the library (yet).
@@ -721,6 +727,12 @@ type Handler interface {
 	//
 	// GET /music/calendar
 	GetMusicCalendar(ctx context.Context, params GetMusicCalendarParams) ([]AlbumCalendarEntry, error)
+	// GetMusicDiscoverySettings implements getMusicDiscoverySettings operation.
+	//
+	// Music discovery providers, keys state and refresh schedule (administrators).
+	//
+	// GET /settings/musicdiscovery
+	GetMusicDiscoverySettings(ctx context.Context) (*MusicDiscoverySettings, error)
 	// GetMusicSettings implements getMusicSettings operation.
 	//
 	// Music naming, import options and the MusicBrainz contact (administrators).
@@ -795,6 +807,12 @@ type Handler interface {
 	//
 	// GET /settings
 	GetSettings(ctx context.Context) (*Settings, error)
+	// GetSimilarArtists implements getSimilarArtists operation.
+	//
+	// Artists similar to one library artist, including ones in the library (library managers).
+	//
+	// GET /music/artists/{id}/similar
+	GetSimilarArtists(ctx context.Context, params GetSimilarArtistsParams) (*ArtistSuggestionList, error)
 	// GetStats implements getStats operation.
 	//
 	// Also served at `/api/stats` (send `X-Api-Key`). At most 15 seconds old. Fields are documented in
@@ -981,6 +999,21 @@ type Handler interface {
 	//
 	// GET /music/artists/{id}/albums
 	ListArtistAlbums(ctx context.Context, params ListArtistAlbumsParams) ([]Album, error)
+	// ListArtistExclusions implements listArtistExclusions operation.
+	//
+	// Artists marked not interested (library managers).
+	//
+	// GET /music/discover/exclusions
+	ListArtistExclusions(ctx context.Context) ([]ArtistExclusion, error)
+	// ListArtistSuggestions implements listArtistSuggestions operation.
+	//
+	// Suggestions combine the stored answers of every active provider (Last.fm, ListenBrainz, MusicBrainz
+	// relationships, Spotify where Spotify allows it) and leave out artists in the library and those
+	// marked not interested. People who only request see the same list with their request state and
+	// without library ids.
+	//
+	// GET /music/discover/artists
+	ListArtistSuggestions(ctx context.Context, params ListArtistSuggestionsParams) (*ArtistSuggestionList, error)
 	// ListArtists implements listArtists operation.
 	//
 	// The music library's artists, one page at a time.
@@ -1481,6 +1514,13 @@ type Handler interface {
 	//
 	// POST /music/artists/{id}/refresh
 	RefreshArtist(ctx context.Context, params RefreshArtistParams) (*Artist, error)
+	// RefreshArtistSuggestions implements refreshArtistSuggestions operation.
+	//
+	// Without artists, asks about the artists whose answers are missing or old; with artists, about those,
+	// even when fresh.
+	//
+	// POST /music/discover/refresh
+	RefreshArtistSuggestions(ctx context.Context, req OptRefreshArtistSuggestionsReq) (*QueuedCount, error)
 	// RefreshBoard implements refreshBoard operation.
 	//
 	// Recompute every board item now (library managers).
@@ -1517,6 +1557,12 @@ type Handler interface {
 	//
 	// POST /indexers/definitions/reload
 	ReloadIndexerDefinitions(ctx context.Context) (*IndexerCatalog, error)
+	// RemoveArtistExclusion implements removeArtistExclusion operation.
+	//
+	// Suggest an artist again (library managers).
+	//
+	// DELETE /music/discover/exclusions/{mbid}
+	RemoveArtistExclusion(ctx context.Context, params RemoveArtistExclusionParams) error
 	// RemoveQueueItem implements removeQueueItem operation.
 	//
 	// `deleteData` also deletes the downloaded files (by the client, or by Locarr inside the data roots
@@ -1879,6 +1925,12 @@ type Handler interface {
 	//
 	// POST /migrate/sources/test
 	TestMigrateSource(ctx context.Context, req *MigrateSourceInput) (*MigrateTestResult, error)
+	// TestMusicDiscoveryProvider implements testMusicDiscoveryProvider operation.
+	//
+	// Check a provider with the stored keys (administrators).
+	//
+	// POST /settings/musicdiscovery/test
+	TestMusicDiscoveryProvider(ctx context.Context, req *TestMusicDiscoveryProviderReq) (*MusicDiscoveryTestResult, error)
 	// TestNotificationChannel implements testNotificationChannel operation.
 	//
 	// Always 200 with the outcome. With `id`, secrets left out are taken from that channel.
@@ -2033,6 +2085,12 @@ type Handler interface {
 	//
 	// PATCH /movies/{id}
 	UpdateMovie(ctx context.Context, req *MovieUpdate, params UpdateMovieParams) (*Movie, error)
+	// UpdateMusicDiscoverySettings implements updateMusicDiscoverySettings operation.
+	//
+	// Keys are checked with the provider first; a refused key is not stored (`metadata_key_invalid`).
+	//
+	// PUT /settings/musicdiscovery
+	UpdateMusicDiscoverySettings(ctx context.Context, req *MusicDiscoverySettingsInput) (*MusicDiscoverySettings, error)
 	// UpdateMusicSettings implements updateMusicSettings operation.
 	//
 	// Change music naming and import options (administrators).

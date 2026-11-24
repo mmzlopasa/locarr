@@ -47,6 +47,7 @@ import { MediaManagementPage } from "@/features/settings/MediaManagementPage";
 import { ImportListsPage, MetadataPage } from "@/features/settings/MetadataPage";
 import { ArtistsPage } from "@/features/music/ArtistsPage";
 import { AddArtistPage } from "@/features/music/AddArtistPage";
+import { DiscoverArtistsPage, validateDiscoverArtistsSearch } from "@/features/music/DiscoverArtistsPage";
 import { ArtistDetailPage } from "@/features/music/ArtistDetailPage";
 import { AlbumDetailPage } from "@/features/music/AlbumDetailPage";
 import { MusicImportPage } from "@/features/music/MusicImportPage";
@@ -168,6 +169,8 @@ const addSeriesRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad:
 const importSeriesRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/series/import", component: SeriesImportPage });
 const seriesDetailRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/series/$id", component: SeriesDetailPage });
 const musicRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music", component: ArtistsPage });
+const discoverArtistsRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music/discover",
+  validateSearch: validateDiscoverArtistsSearch, component: DiscoverArtistsPage });
 const addArtistRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music/add", component: AddArtistPage });
 const importMusicRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music/import", component: MusicImportPage });
 const artistRoute = createRoute({ getParentRoute: () => appRoute, beforeLoad: libraryOnly, path: "/music/artists/$id", component: ArtistDetailPage });
@@ -268,6 +271,7 @@ export const routeTree = rootRoute.addChildren([
     importSeriesRoute,
     seriesDetailRoute,
     musicRoute,
+    discoverArtistsRoute,
     addArtistRoute,
     importMusicRoute,
     artistRoute,

@@ -8,6 +8,8 @@ package metadata
 import (
 	"context"
 	"errors"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/settings"
@@ -105,3 +107,12 @@ const (
 	TTLList       = time.Hour
 	TTLConfig     = 24 * time.Hour
 )
+
+// SameHost is an http.Client CheckRedirect that follows at most five
+// redirects and only on the host the request went to.
+func SameHost(req *http.Request, via []*http.Request) error {
+	if len(via) >= 5 || !strings.EqualFold(req.URL.Host, via[0].URL.Host) {
+		return http.ErrUseLastResponse
+	}
+	return nil
+}

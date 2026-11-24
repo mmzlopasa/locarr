@@ -3,7 +3,8 @@
 // documentation. It serves a fixed discography:
 //
 //	GET {prefix}/ws/2/artist?query=…                 search
-//	GET {prefix}/ws/2/artist/{mbid}?inc=aliases+genres
+//	GET {prefix}/ws/2/artist/{mbid}?inc=aliases+genres(+artist-rels)
+//	GET {prefix}/ws/2/url?resource=…&inc=artist-rels  (the artist a page belongs to)
 //	GET {prefix}/ws/2/release-group?artist={mbid}    browse
 //	GET {prefix}/ws/2/release-group/{mbid}?inc=artist-credits
 //	GET {prefix}/ws/2/release-group?query=…          search (title words; artist:"…" narrows)
@@ -35,6 +36,10 @@ import (
 const (
 	ArtistOpen  = "5a8e07d5-d932-4484-a7f7-e700793a9c94" // "Open Source Artist"
 	ArtistOther = "5a8e07d5-d932-4484-a7f7-e700793a9c95" // "Open Source Artist" (jazz trio): the disambiguation case
+	// ArtistChoir is what music discovery suggests for ArtistOpen (related by a collaboration).
+	ArtistChoir = "5a8e07d5-d932-4484-a7f7-e700793a9c96" // "Creative Commons Choir"
+	// SpotifyChoir is the Spotify artist id linked to ArtistChoir (url-rels).
+	SpotifyChoir = "4ChoirSpotifyId00000000"
 )
 
 // Release group and release ids of the catalog.
@@ -46,6 +51,7 @@ const (
 	GroupRemixes    = "8c1e5a3e-0f4d-4a9c-8c43-0000000000a5"
 	GroupNextAlbum  = "8c1e5a3e-0f4d-4a9c-8c43-0000000000a6"
 	GroupTrioAlbum  = "8c1e5a3e-0f4d-4a9c-8c43-0000000000b1"
+	GroupChoral     = "8c1e5a3e-0f4d-4a9c-8c43-0000000000c1"
 	ReleaseStandard = "9d2f6b4f-1a5e-4bad-9d54-0000000000a1" // Free Album, digital, 5 tracks
 	ReleaseDeluxe   = "9d2f6b4f-1a5e-4bad-9d54-0000000000a2" // Free Album, 2 CDs, 5 + 3 tracks
 )
@@ -56,6 +62,9 @@ type Artist struct {
 	Aliases                                           []string
 	Genres                                            []string
 }
+
+// Relation is an artist-rels entry.
+type Relation struct{ Type, Artist string }
 
 // Group is a catalog release group.
 type Group struct {
@@ -97,7 +106,16 @@ var (
 			Country: "XW", Aliases: []string{"OSA", "Otvoreni Izvor"}, Genres: []string{"electronic", "ambient"}},
 		{ID: ArtistOther, Name: "Open Source Artist", SortName: "Open Source Artist", Disambiguation: "jazz trio from Zagreb", Type: "Group",
 			Country: "HR", Genres: []string{"jazz"}},
+		{ID: ArtistChoir, Name: "Creative Commons Choir", SortName: "Creative Commons Choir", Disambiguation: "vocal ensemble", Type: "Choir",
+			Country: "XW", Genres: []string{"choral", "ambient"}},
 	}
+	// Relations are artist-rels (artist id -> related artists).
+	Relations = map[string][]Relation{
+		ArtistOpen:  {{Type: "collaboration", Artist: ArtistChoir}},
+		ArtistChoir: {{Type: "collaboration", Artist: ArtistOpen}},
+	}
+	// URLs are the artist pages MusicBrainz links (resource -> artist id).
+	URLs   = map[string]string{"https://open.spotify.com/artist/" + SpotifyChoir: ArtistChoir}
 	Groups = []Group{
 		{ID: GroupFreeAlbum, Artist: ArtistOpen, Title: "Free Album", Primary: "Album", Date: "2020-03-14"},
 		{ID: GroupFreeEP, Artist: ArtistOpen, Title: "Free EP", Primary: "EP", Date: "2021-06-01"},
@@ -106,6 +124,7 @@ var (
 		{ID: GroupRemixes, Artist: ArtistOpen, Title: "Free Remixes", Primary: "Album", Secondary: []string{"Compilation", "Remix"}, Date: "2023-02-02"},
 		{ID: GroupNextAlbum, Artist: ArtistOpen, Title: "Next Album", Primary: "Album", Date: "2030-01-01"},
 		{ID: GroupTrioAlbum, Artist: ArtistOther, Title: "Trio Sessions", Primary: "Album", Date: "2015-05-05"},
+		{ID: GroupChoral, Artist: ArtistChoir, Title: "Choral Works", Primary: "Album", Date: "2018-04-04"},
 	}
 	freeAlbum = tracks("0000000a", "Opening", "Second Light", "Žuta Kuća", "Night Bus", "Closing")
 	Releases  = []Release{
@@ -128,6 +147,8 @@ var (
 			Media: []Medium{{Format: "Digital Media", Tracks: tracks("00000011", "Future One", "Future Two")}}},
 		{ID: "9d2f6b4f-1a5e-4bad-9d54-0000000000b1", Group: GroupTrioAlbum, Title: "Trio Sessions", Status: "Official", Date: "2015-05-05", Country: "HR",
 			Media: []Medium{{Format: "CD", Tracks: tracks("00000012", "Standard", "Blue")}}},
+		{ID: "9d2f6b4f-1a5e-4bad-9d54-0000000000c1", Group: GroupChoral, Title: "Choral Works", Status: "Official", Date: "2018-04-04", Country: "XW",
+			Media: []Medium{{Format: "Digital Media", Tracks: tracks("00000013", "Kyrie", "Gloria", "Credo")}}},
 	}
 )
 
@@ -227,7 +248,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case entity == "artist" && id == "":
 		s.searchArtists(w, q.Get("query"))
 	case entity == "artist":
-		s.artist(w, strings.ToLower(id))
+		s.artist(w, strings.ToLower(id), q.Get("inc"))
+	case entity == "url" && id == "":
+		s.url(w, q.Get("resource"))
 	case entity == "release-group" && id == "" && q.Get("query") != "":
 		s.searchGroups(w, q.Get("query"))
 	case entity == "release-group" && id != "":
@@ -307,14 +330,38 @@ func (s *Server) searchArtists(w http.ResponseWriter, query string) {
 	writeJSON(w, map[string]any{"created": time.Now().UTC().Format(time.RFC3339), "count": len(list), "offset": 0, "artists": list})
 }
 
-func (s *Server) artist(w http.ResponseWriter, id string) {
+func (s *Server) relationJSON(list []Relation) []map[string]any {
+	out := []map[string]any{}
+	for _, r := range list {
+		a := s.artistOf(r.Artist)
+		out = append(out, map[string]any{"type": r.Type, "target-type": "artist", "direction": "forward",
+			"artist": map[string]any{"id": a.ID, "name": a.Name, "disambiguation": a.Disambiguation, "type": a.Type}})
+	}
+	return out
+}
+
+func (s *Server) artist(w http.ResponseWriter, id, inc string) {
 	for _, a := range s.artists() {
 		if a.ID == id {
-			writeJSON(w, artistJSON(a, 0))
+			out := artistJSON(a, 0)
+			if strings.Contains(inc, "artist-rels") {
+				out["relations"] = s.relationJSON(Relations[a.ID])
+			}
+			writeJSON(w, out)
 			return
 		}
 	}
 	errorJSON(w, http.StatusNotFound, "Not Found")
+}
+
+func (s *Server) url(w http.ResponseWriter, resource string) {
+	id, ok := URLs[resource]
+	if !ok {
+		errorJSON(w, http.StatusNotFound, "Not Found")
+		return
+	}
+	writeJSON(w, map[string]any{"id": "0e1c2b3a-0000-4000-8000-000000000001", "resource": resource,
+		"relations": s.relationJSON([]Relation{{Type: "free streaming", Artist: id}})})
 }
 
 func groupJSON(g Group) map[string]any {

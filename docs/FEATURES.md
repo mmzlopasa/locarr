@@ -18,7 +18,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Prowlarr i Jackett kao izvor (uvoz svih njihovih indexera kao Torznab/Newznab) — pod „Napredno"; više nisu potrebni
 - [x] Prioriteti, oznake (tagovi), ograničenja zahtjeva (rate limit), dnevni limiti, backoff i zdravlje
 - [x] Paralelna pretraga svih indexera, rezultati čim stignu, ručna (interaktivna) pretraga
-- [x] Vlastiti preglednik za stranice iza provjere preglednika (D-101): neobavezni kontejner `locarr-browser` (compose profil `browser`), automatske provjere (JavaScript, čekaonica, managed) bez FlareSolverra, kolačići se ponovno koriste, CAPTCHA koja traži čovjeka se jasno prijavi; ploča stanja i test u Indexeri; FlareSolverr ostaje kao rezerva
+- [x] Vlastiti preglednik za stranice iza provjere preglednika (D-102): neobavezni kontejner `locarr-browser` (compose profil `browser`), automatske provjere (JavaScript, čekaonica, managed) bez FlareSolverra, kolačići se ponovno koriste, CAPTCHA koja traži čovjeka se jasno prijavi; ploča stanja i test u Indexeri; FlareSolverr ostaje kao rezerva
 - [ ] Proxyji po indexeru (HTTP/SOCKS5), FlareSolverr po izboru (ugrađeno; FlareSolverr testiran s lažnim servisom, proxyji još nisu testirani end-to-end)
 
 ## Parser i odluke (P2)
@@ -65,6 +65,8 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Uvoz s prepoznavanjem po tagovima, brojevima, naslovima i trajanju (bodovi, više diskova, izbor izdanja), djelomični albumi po izboru, preimenovanje, omoti (iz preuzimanja ili Cover Art Archive), zamjena u koš
 - [x] Uvoz postojeće glazbene biblioteke (datoteke ostaju na mjestu), kalendar izlazaka albuma, nedostajući albumi
 - [ ] Cue slike (jedna datoteka po albumu) i pisanje tagova osim FLAC-a (D-044)
+- [x] Otkrivanje izvođača: slični izvođači iz Last.fma, ListenBrainza, MusicBrainz veza (i Spotifyja gdje ga Spotify još daje), mapirani na MusicBrainz s pouzdanošću, bodovi i objašnjenje, filtri, „ne zanima me", dodavanje jednim klikom i skupno, slični izvođači na stranici izvođača, prijedlozi s „Zatraži" u Otkrivanju (D-101)
+- [ ] Otkrivanje izvođača u Android i iOS aplikaciji (API postoji: `GET /music/discover/artists`)
 
 ## Titlovi (P7)
 - [x] Jezični profili (redoslijed jezika, forsirani, za gluhe, zapisi u videu, granica), zadani po vrsti, po filmu/seriji i za cijelu biblioteku (D-065)

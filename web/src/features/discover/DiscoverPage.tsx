@@ -6,6 +6,8 @@ import { Search } from "lucide-react";
 import { api, imageUrl, queryKeys, unwrap, type DiscoverItem, type MediaRequest } from "@/api/client";
 import { Alert, ErrorAlert, Spinner } from "@/components/ui";
 import { RequestStatusBadge } from "@/features/requests/common";
+import { useCurrentUser } from "@/features/auth/hooks";
+import { RequestableArtists } from "@/features/music/discovery";
 import { AvailabilityBadge, itemLink, PosterImage, PosterRow } from "./common";
 
 export function useDiscoverHome() {
@@ -87,6 +89,7 @@ function RequestCard({ r }: { r: MediaRequest }) {
 export function DiscoverPage() {
   const { t } = useTranslation();
   const home = useDiscoverHome();
+  const me = useCurrentUser();
   const facets = useQuery({ queryKey: queryKeys.discoverFacets, queryFn: async () => unwrap(await api.GET("/discover/genres")),
     staleTime: 3_600_000, enabled: home.data?.metadataReady === true });
   const hero = home.data?.rows.find((r) => r.items.some((i) => i.backdrop))?.items.find((i) => i.backdrop);
@@ -120,6 +123,7 @@ export function DiscoverPage() {
             </Link>
           ) : undefined} />
       ))}
+      {home.data?.musicReady && (me.role === "admin" || me.permissions.requestMusic) ? <RequestableArtists /> : null}
       {facets.data ? (
         <section className="flex flex-col gap-4" data-testid="discover-facets">
           <FacetChips title={t("discover.movieGenres")} list="genre_movies" items={facets.data.movieGenres} />
