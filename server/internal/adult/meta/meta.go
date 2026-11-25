@@ -16,7 +16,13 @@ import (
 	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/metadata"
+	"github.com/mmzlopasa/locarr/server/internal/netx"
 )
+
+// imageTransport trusts the extra public roots too (netx.RootCAs): image
+// hosts such as ThePornDB's serve chains the runtime image cannot verify
+// otherwise, and every image then failed silently.
+var imageTransport = netx.Transport()
 
 // Source names.
 const (
@@ -81,12 +87,42 @@ func (s *Scene) Year() int {
 	return y
 }
 
+// Search orders.
+const (
+	SortNewest    = "newest"
+	SortOldest    = "oldest"
+	SortRelevance = "relevance"
+	SortTitle     = "title"
+)
+
+// PageSize is the number of search results per page.
+const PageSize = 25
+
+// Find is the order and page of a search.
+type Find struct {
+	Sort string // one of the Sort* constants; "" is newest
+	Page int    // from 1
+}
+
+// ScenePage is one page of search results.
+type ScenePage struct {
+	Scenes []Scene
+	// More: the source has another page.
+	More bool
+	// Ordered: the source returned this page in the requested order. When
+	// false (a source without that order), the caller orders the page.
+	Ordered bool
+}
+
 // Provider is one adult metadata source.
 type Provider interface {
 	Name() string
 	Validate(ctx context.Context, key string) error
 	SearchScenes(ctx context.Context, term string) ([]Scene, error)
 	SearchMovies(ctx context.Context, term string) ([]Scene, error)
+	// FindScenes is a scene (or with movie, movie) search with an order and
+	// a page, asking the source for that order where it has one.
+	FindScenes(ctx context.Context, term string, movie bool, o Find) (ScenePage, error)
 	SearchPerformers(ctx context.Context, term string) ([]Performer, error)
 	SearchStudios(ctx context.Context, term string) ([]Studio, error)
 	Scene(ctx context.Context, id string) (Scene, error)
@@ -117,7 +153,7 @@ type HTTP struct {
 
 func newHTTP(base string, key func(context.Context) (string, error), cache *metadata.Cache, rate float64) *HTTP {
 	h := &HTTP{Base: strings.TrimRight(base, "/"), Key: key, Cache: cache, Limiter: metadata.NewLimiter(rate, 2)}
-	h.Client = &http.Client{Timeout: timeout, CheckRedirect: func(req *http.Request, via []*http.Request) error {
+	h.Client = &http.Client{Timeout: timeout, Transport: netx.Transport(), CheckRedirect: func(req *http.Request, via []*http.Request) error {
 		if len(via) >= 3 || req.URL.Host != via[0].URL.Host {
 			return http.ErrUseLastResponse
 		}
@@ -207,7 +243,7 @@ func FetchImage(ctx context.Context, raw string) ([]byte, string, error) {
 	if err != nil || (u.Scheme != "https" && u.Scheme != "http") {
 		return nil, "", errors.New("bad image address")
 	}
-	c := &http.Client{Timeout: timeout, CheckRedirect: func(req *http.Request, via []*http.Request) error {
+	c := &http.Client{Timeout: timeout, Transport: imageTransport, CheckRedirect: func(req *http.Request, via []*http.Request) error {
 		if len(via) >= 3 || req.URL.Host != via[0].URL.Host {
 			return http.ErrUseLastResponse
 		}
@@ -217,6 +253,8 @@ func FetchImage(ctx context.Context, raw string) ([]byte, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
+	req.Header.Set("Accept", "image/*")
+	req.Header.Set("User-Agent", "Locarr")
 	res, err := c.Do(req)
 	if err != nil {
 		return nil, "", err
@@ -225,16 +263,18 @@ func FetchImage(ctx context.Context, raw string) ([]byte, string, error) {
 	if res.StatusCode != http.StatusOK {
 		return nil, "", fmt.Errorf("image answered HTTP %d", res.StatusCode)
 	}
-	ct := res.Header.Get("Content-Type")
-	if !strings.HasPrefix(ct, "image/") {
-		return nil, "", errors.New("not an image")
-	}
 	b, err := io.ReadAll(io.LimitReader(res.Body, maxImage+1))
 	if err != nil {
 		return nil, "", err
 	}
 	if len(b) > maxImage {
 		return nil, "", errors.New("image too large")
+	}
+	// Object stores often answer application/octet-stream or binary/octet-stream;
+	// the bytes decide.
+	ct := http.DetectContentType(b)
+	if !strings.HasPrefix(ct, "image/") {
+		return nil, "", errors.New("not an image")
 	}
 	return b, ct, nil
 }

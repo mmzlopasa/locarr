@@ -220,8 +220,10 @@ func securityHeaders(next http.Handler) http.Handler {
 }
 
 // webClientCSP allows only the server's own scripts, styles, images and API.
-// Inline styles are allowed for style attributes set by components.
-const webClientCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; " +
+// Inline styles are allowed for style attributes set by components. blob:
+// images are the private adult images the page fetches with the session and
+// shows as object URLs (D-110); only the page's own scripts can create them.
+const webClientCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; " +
 	"font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 
 func webClientHeaders(next http.Handler) http.Handler {
