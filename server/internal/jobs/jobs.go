@@ -482,7 +482,13 @@ func (q *Queue) run(ctx context.Context, j Job) {
 	defer cancel()
 	q.mu.Lock()
 	q.running[j.ID] = cancel
+	// Cancel can land between the claim (state running) and this point, when
+	// there was no cancel func to call yet: honour it now.
+	early := q.cancelled[j.ID]
 	q.mu.Unlock()
+	if early {
+		cancel()
+	}
 	defer func() {
 		q.mu.Lock()
 		delete(q.running, j.ID)
