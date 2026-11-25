@@ -11,7 +11,11 @@ export type Tab = {
 export function Tabs({ tabs, label }: { tabs: Tab[]; label: string }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname.replace(/\/$/, "") });
   return (
-    <nav aria-label={label} className="mb-4 flex gap-1 overflow-x-auto border-b border-line">
+    // Scrolls sideways on narrow screens. overflow-x makes overflow-y scroll
+    // too, so nothing may stick out below (the line is an inset shadow, not
+    // a border the tabs overlap) and the scrollbar itself stays hidden.
+    <nav aria-label={label}
+      className="mb-4 flex gap-1 overflow-x-auto overflow-y-hidden overscroll-x-contain shadow-[inset_0_-1px_0_var(--lc-border)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {tabs.map((tab) => {
         const active = pathname === tab.to;
         return (
@@ -19,7 +23,7 @@ export function Tabs({ tabs, label }: { tabs: Tab[]; label: string }) {
             key={tab.to}
             to={tab.to}
             aria-current={active ? "page" : undefined}
-            className={`-mb-px whitespace-nowrap border-b-2 px-3 py-2 text-[13px] transition-colors ${
+            className={`shrink-0 whitespace-nowrap border-b-2 px-3 py-2 text-[13px] transition-colors ${
               active ? "border-accent text-fg" : "border-transparent text-muted hover:text-fg"
             }`}
           >

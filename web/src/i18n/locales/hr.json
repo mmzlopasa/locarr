@@ -4100,17 +4100,13 @@
       "calendar": "Kalendar",
       "add": "Dodaj"
     },
-    "empty": "Ovdje još nema ničega.",
     "filter": "Filtar",
-    "have": "U biblioteci",
-    "missing": "Nedostaje",
     "monitored": "Prati se",
     "monitorNew": "Prati nove scene",
     "refresh": "Potraži nove scene",
     "trackPerformer": "Prati ovog izvođača",
     "trackPerformerHint": "Nove scene s ovim izvođačem postaju tražene.",
     "studioCounts": "{{scenes}} scena, {{files}} u biblioteci",
-    "calendarHint": "Datumi izlaska od {{start}} do {{end}}.",
     "searchNow": "Traži odmah",
     "rename": "Preimenuj datoteku",
     "history": "Zašto nije ovdje?",
@@ -4119,7 +4115,8 @@
     "image": {
       "reveal": "Prikaži sliku",
       "hide": "Zamuti sliku",
-      "tap": "Kliknite za prikaz"
+      "tap": "Kliknite za prikaz",
+      "unavailable": "Nema slike za {{name}}"
     },
     "add": {
       "title": "Dodaj iz StashDB-a ili ThePornDB-a",
@@ -4139,7 +4136,118 @@
       "default": "Zadano",
       "none": "Nema rezultata.",
       "inLibrary": "U biblioteci",
-      "add": "Dodaj"
+      "add": "Dodaj",
+      "sort": "Poredak",
+      "sorts": {
+        "newest": "Najnovije",
+        "oldest": "Najstarije",
+        "relevance": "Najbolje podudaranje",
+        "title": "Naslov"
+      },
+      "noneHint": "Pokušajte drukčije napisati, drugi izvor ili drugu vrstu.",
+      "addSelected": "Dodaj odabrano ({{count}})",
+      "someFailed": "Nije dodano: {{names}}"
+    },
+    "filterHint": "Naslov ili studio",
+    "all": "Sve",
+    "unmonitored": "Ne prati se",
+    "monitoredFilter": "Praćenje",
+    "statusFilter": "Stanje",
+    "status": {
+      "downloaded": "U biblioteci",
+      "downloading": "Preuzima se",
+      "wanted": "Traženo",
+      "missing": "Nedostaje"
+    },
+    "sort": {
+      "label": "Poredak",
+      "date": "Datum izlaska",
+      "added": "Datum dodavanja",
+      "title": "Naslov"
+    },
+    "view": {
+      "label": "Prikaz",
+      "grid": "Mreža",
+      "list": "Popis"
+    },
+    "select": {
+      "start": "Odaberi",
+      "done": "Gotovo",
+      "count": "Odabrano: {{count}}",
+      "all": "Odaberi sve",
+      "none": "Poništi",
+      "one": "Odaberi {{name}}"
+    },
+    "bulk": {
+      "monitor": "Prati",
+      "unmonitor": "Ne prati",
+      "remove": "Ukloni",
+      "removeTitle": "Ukloni odabrano ({{count}})",
+      "removeQuestion": "Ukloniti odabrane stavke iz biblioteke? Odabrano: {{count}}."
+    },
+    "count": "Stavki: {{count}}",
+    "loadMore": "Učitaj još",
+    "emptyFiltered": "Ništa ne odgovara ovim filtrima.",
+    "emptyHint": "Pratite studio ili izvođača i njihove nove scene pojavit će se ovdje, ili dodajte pojedinačne scene i filmove.",
+    "emptyScenes": "Još nema scena",
+    "emptyMovies": "Još nema filmova",
+    "emptyStudios": "Još nema studija",
+    "emptyPerformers": "Još nema izvođača",
+    "emptyWanted": "Trenutno se ništa ne traži",
+    "emptyWantedHint": "Praćene scene i filmovi bez datoteke prikazuju se ovdje dok se ne preuzmu.",
+    "emptyStudio": "Još nema scena ovog studija",
+    "emptyStudioHint": "Potražite nove scene da biste s izvora dohvatili najnovija izdanja.",
+    "emptyPerformer": "Još nema scena s ovim izvođačem",
+    "emptyPerformerHint": "Pratite izvođača i potražite nove scene da biste dohvatili najnovija izdanja.",
+    "addFollow": "Dodaj studio ili izvođača",
+    "addRoot": "Dodaj mapu",
+    "following": "Prati se",
+    "followingSince": "Prati se od {{date}}",
+    "tracked": "Prati se",
+    "trackedSince": "Prati se od {{date}}",
+    "onlyTracked": "Samo praćeni izvođači",
+    "sceneCount": "Scena: {{count}}",
+    "refreshedAt": "Provjereno {{when}}",
+    "refreshed": "Novih scena: {{count}}",
+    "searchQueued": "Pretraga je pokrenuta.",
+    "details": "Pojedinosti",
+    "addedAt": "Dodano",
+    "folder": "Mapa",
+    "tags": "Oznake na izvoru",
+    "file": {
+      "title": "Datoteka",
+      "path": "Putanja",
+      "size": "Veličina",
+      "quality": "Kvaliteta",
+      "group": "Grupa izdanja",
+      "added": "Uvezeno",
+      "release": "Ime izdanja"
+    },
+    "calendar": {
+      "previous": "Prethodni mjesec",
+      "next": "Sljedeći mjesec",
+      "today": "Ovaj mjesec",
+      "empty": "Ovaj mjesec nije izašlo ništa",
+      "emptyHint": "Ovdje se prikazuju datumi izlaska scena i filmova iz vaše biblioteke."
+    },
+    "remove": {
+      "button": "Ukloni",
+      "confirm": "Ukloni",
+      "itemTitle": "Ukloniti „{{title}}”?",
+      "itemQuestion": "Stavka izlazi iz biblioteke. Vremenska crta ostaje i stavku možete kasnije ponovno dodati.",
+      "exclude": "Ne zanima me: ne dodaj ponovno",
+      "excludeHint": "Osvježavanje praćenog studija ili izvođača je preskače. Možete to poništiti u Postavke → Sadržaj za odrasle.",
+      "excludeManyHint": "Osvježavanja praćenih studija i izvođača preskaču ove scene. Možete to poništiti u Postavke → Sadržaj za odrasle.",
+      "files": "Obriši i datoteku",
+      "filesHint": "Datoteka ide u koš za smeće, odakle se može vratiti dok se koš ne isprazni.",
+      "studioTitle": "Ukloniti studio „{{name}}”?",
+      "studioScenes": "Što se događa s njegovim scenama (scena: {{count}})?",
+      "performerTitle": "Ukloniti izvođača „{{name}}”?",
+      "performerScenes": "Što se događa s njegovim scenama (scena: {{count}})?",
+      "keepScenes": "Zadrži scene",
+      "keepScenesHint": "Ostaju u biblioteci bez stranice studija i više se ne osvježavaju.",
+      "keepPerformerHint": "Ostaju u biblioteci; zaboravlja se samo izvođač.",
+      "removeScenes": "Ukloni i scene (scena: {{count}})"
     }
   },
   "adultSettings": {
@@ -4212,6 +4320,13 @@
       "applied": "Promijenjeno stavki: {{count}}",
       "allOpen": "Sve stavke za odrasle koriste {{profile}}.",
       "missing": "Profil koji dopušta svaku kvalitetu je obrisan. Pod Zadano odaberite profil koji dopušta Unknown."
+    },
+    "exclusions": {
+      "title": "Ne zanima me",
+      "hint": "Scene i filmovi koje ste uklonili uz „Ne zanima me”. Osvježavanja praćenih studija i izvođača ih preskaču. Poništite unos i sljedeće osvježavanje ga može ponovno dodati.",
+      "empty": "Popis je prazan.",
+      "undo": "Poništi",
+      "added": "Dodano {{when}}"
     }
   },
   "discovery": {

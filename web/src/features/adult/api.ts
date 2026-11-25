@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, unwrap, type User } from "@/api/client";
 import type { components } from "@/api/schema.gen";
 
@@ -10,6 +10,8 @@ export type AdultSettings = S["AdultSettings"];
 export type AdultSettingsUpdate = S["AdultSettingsUpdate"];
 export type AdultLookupResult = S["AdultLookupResult"];
 export type AdultBlockTerm = S["AdultBlockTerm"];
+export type AdultExclusion = S["AdultExclusion"];
+export type AdultLookupPage = S["AdultLookupPage"];
 
 /** Every adult query lives under this key, so disabling drops them all at once. */
 export const adultKey = ["adult"] as const;
@@ -37,10 +39,125 @@ export function useSaveAdultSettings() {
   });
 }
 
-export function useAdultItems(query: { kind?: "scene" | "movie"; studioId?: number; performerId?: number; missing?: boolean; term?: string }) {
+export type ItemQuery = {
+  kind?: "scene" | "movie";
+  studioId?: number;
+  performerId?: number;
+  missing?: boolean;
+  term?: string;
+  status?: S["AdultItemStatus"];
+  monitored?: boolean;
+  sort?: "date" | "added" | "title";
+};
+
+export const ITEM_PAGE = 120;
+
+export function useAdultItems(query: ItemQuery) {
   return useQuery({
     queryKey: [...adultKey, "items", query],
     queryFn: async () => unwrap(await api.GET("/adult/items", { params: { query: { ...query, limit: 200 } } })),
+  });
+}
+
+/** Items page by page ("Load more"). */
+export function useAdultItemPages(query: ItemQuery) {
+  return useInfiniteQuery({
+    queryKey: [...adultKey, "items", "pages", query],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) =>
+      unwrap(await api.GET("/adult/items", { params: { query: { ...query, limit: ITEM_PAGE, offset: pageParam } } })),
+    getNextPageParam: (last, pages) => {
+      const loaded = pages.reduce((n, p) => n + p.items.length, 0);
+      return loaded < last.total ? loaded : undefined;
+    },
+    refetchInterval: 15_000,
+  });
+}
+
+export function useAdultCalendar(start: string, end: string) {
+  return useQuery({
+    queryKey: [...adultKey, "calendar", start, end],
+    queryFn: async () => unwrap(await api.GET("/adult/calendar", { params: { query: { start, end } } })),
+  });
+}
+
+export type LookupQuery = {
+  source: "stashdb" | "tpdb";
+  type: "scene" | "movie" | "performer" | "studio";
+  term: string;
+  sort: "newest" | "oldest" | "relevance" | "title";
+};
+
+/** Search results page by page; scenes and movies in the chosen order. */
+export function useAdultLookup(q: LookupQuery | null) {
+  return useInfiniteQuery({
+    queryKey: [...adultKey, "lookup", q],
+    enabled: !!q,
+    initialPageParam: 1,
+    queryFn: async ({ pageParam }) => {
+      const query = q!;
+      const ordered = query.type === "scene" || query.type === "movie";
+      return unwrap(await api.GET("/adult/lookup", {
+        params: { query: { source: query.source, type: query.type, term: query.term, page: pageParam, ...(ordered ? { sort: query.sort } : {}) } },
+      }));
+    },
+    getNextPageParam: (last) => (last.more ? last.page + 1 : undefined),
+    retry: false,
+    staleTime: 60_000,
+  });
+}
+
+export type RemoveChoice = { deleteFiles: boolean; exclude: boolean };
+
+export function useRemoveItem() {
+  const invalidate = useAdultInvalidate();
+  return useMutation({
+    mutationFn: async ({ id, ...q }: { id: number } & RemoveChoice) =>
+      unwrap(await api.DELETE("/adult/items/{id}", { params: { path: { id }, query: q } })),
+    onSuccess: () => invalidate(),
+  });
+}
+
+export function useBulkItems() {
+  const invalidate = useAdultInvalidate();
+  return useMutation({
+    mutationFn: async (body: S["AdultBulkRequest"]) => unwrap(await api.POST("/adult/items/bulk", { body })),
+    onSuccess: () => invalidate(),
+  });
+}
+
+export function useRemoveStudio() {
+  const invalidate = useAdultInvalidate();
+  return useMutation({
+    mutationFn: async ({ id, keepScenes, ...q }: { id: number; keepScenes: boolean } & RemoveChoice) =>
+      unwrap(await api.DELETE("/adult/studios/{id}", { params: { path: { id }, query: { keepScenes, ...q } } })),
+    onSuccess: () => invalidate(),
+  });
+}
+
+export function useRemovePerformer() {
+  const invalidate = useAdultInvalidate();
+  return useMutation({
+    mutationFn: async ({ id, removeScenes, ...q }: { id: number; removeScenes: boolean } & RemoveChoice) =>
+      unwrap(await api.DELETE("/adult/performers/{id}", { params: { path: { id }, query: { removeScenes, ...q } } })),
+    onSuccess: () => invalidate(),
+  });
+}
+
+export function useAdultExclusions(enabled = true) {
+  return useQuery({
+    queryKey: [...adultKey, "exclusions"],
+    queryFn: async () => unwrap(await api.GET("/adult/exclusions")),
+    enabled,
+    retry: false,
+  });
+}
+
+export function useDeleteExclusion() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => unwrap(await api.DELETE("/adult/exclusions/{id}", { params: { path: { id } } })),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [...adultKey, "exclusions"] }),
   });
 }
 

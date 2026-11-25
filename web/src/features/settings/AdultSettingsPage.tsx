@@ -6,7 +6,10 @@ import { Alert, Badge, Button, Checkbox, ConfirmButton, ErrorAlert, PageHeader, 
 import { inputFromIndexer } from "@/features/indexers/BuiltinIndexers";
 import { useQualityProfiles } from "@/features/movies/common";
 import { useCurrentUser } from "@/features/auth/hooks";
-import { adultKey, useAdultRootFolders, useAdultSettings, useSaveAdultSettings, type AdultSettings } from "@/features/adult/api";
+import {
+  adultKey, useAdultExclusions, useAdultRootFolders, useAdultSettings, useDeleteExclusion, useSaveAdultSettings, type AdultSettings,
+} from "@/features/adult/api";
+import { formatDateTime } from "@/components/format";
 
 /** Settings → Adult: off by default; enabling needs an explicit confirmation. */
 export function AdultSettingsPage() {
@@ -26,6 +29,7 @@ export function AdultSettingsPage() {
           <RootsPanel />
           <IndexersPanel />
           <div id="tag-blocklist" className="scroll-mt-4"><BlocklistPanel s={settings.data} /></div>
+          <ExclusionsPanel />
         </>
       ) : null}
     </div>
@@ -301,6 +305,43 @@ function BlocklistPanel({ s }: { s: AdultSettings }) {
         <Button type="submit" busy={add.isPending} disabled={term.trim().length < 2}>{t("adultSettings.blocklist.add")}</Button>
       </form>
       <ErrorAlert error={add.error ?? remove.error} />
+    </Panel>
+  );
+}
+
+/** "Not interested" entries (D-110): only for accounts that see adult content. */
+function ExclusionsPanel() {
+  const { t, i18n } = useTranslation();
+  const me = useCurrentUser();
+  const visible = !!me.adultVisible;
+  const list = useAdultExclusions(visible);
+  const undo = useDeleteExclusion();
+  const canManage = me.role === "admin" || !!me.permissions.manageLibrary;
+  if (!visible) return null;
+  return (
+    <Panel title={t("adultSettings.exclusions.title")} description={t("adultSettings.exclusions.hint")}>
+      {list.isPending ? <Spinner /> : null}
+      <ErrorAlert error={list.error ?? undo.error} />
+      {list.data?.length === 0 ? <p className="text-[12px] text-faint" data-testid="adult-exclusions-empty">{t("adultSettings.exclusions.empty")}</p> : null}
+      {list.data?.length ? (
+        <ul className="divide-y divide-line" data-testid="adult-exclusions">
+          {list.data.map((e) => (
+            <li key={e.id} className="flex items-center justify-between gap-3 py-2">
+              <div className="min-w-0 text-[13px]">
+                <p className="truncate text-fg">{e.title}</p>
+                <p className="truncate text-[12px] text-muted">
+                  {[e.studio, e.releaseDate, t("adultSettings.exclusions.added", { when: formatDateTime(e.addedAt, i18n.language) })].filter(Boolean).join(" · ")}
+                </p>
+              </div>
+              {canManage ? (
+                <Button variant="ghost" busy={undo.isPending && undo.variables === e.id} onClick={() => undo.mutate(e.id)} data-testid="adult-exclusion-undo">
+                  {t("adultSettings.exclusions.undo")}
+                </Button>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </Panel>
   );
 }
