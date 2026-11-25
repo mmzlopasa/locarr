@@ -25,8 +25,8 @@ func TestDeriveMapping(t *testing.T) {
 		{"/downloads/complete/Film", "/data/torrents/Film", "/downloads/complete", "/data/torrents", true},
 		{"/mnt/storage/downloads/Film", "/data/downloads/Film", "/mnt/storage", "/data", true},
 		{`D:\Torrents\Film`, "/data/torrents/Film", `D:\Torrents`, "/data/torrents", true},
-		{"/Film", "/data/downloads/Film", "", "", false},              // a single element cannot give a folder
-		{"/downloads/Film", "/data/downloads/Other", "", "", false},    // nothing in common
+		{"/Film", "/data/downloads/Film", "", "", false},                // a single element cannot give a folder
+		{"/downloads/Film", "/data/downloads/Other", "", "", false},     // nothing in common
 		{"/data/downloads/Film", "/data/downloads/Film", "", "", false}, // same path: nothing to map
 		{"/downloads/../etc/Film", "/data/etc/Film", "", "", false},
 		{"downloads/Film", "/data/downloads/Film", "", "", false},
