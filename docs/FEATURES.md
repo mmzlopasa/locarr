@@ -128,7 +128,10 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Traženo, automatska i ručna pretraga, grab, uvoz, preimenovanje, vremenska crta i „Zašto nije ovdje?” preko zajedničke jezgre
 - [x] Kvaliteta scena bez rezolucije: `SD`/`FullHD`/`FHD` u parseru, profil „Any (Unknown allowed)” zadan za nove stavke, prebacivanje postojećih jednim klikom, „Zašto nije ovdje?” imenuje kvalitetu i profil (D-109)
 - [x] Blokirani pojmovi: vlasnikov popis počinje prazan i ostaje kakav ga vlasnik ostavi; stalni popis samo za sadržaj s maloljetnicima, cijele riječi, umjetnička imena izvođača se ne računaju (D-109)
-- [ ] Web: odjeljak „Odrasli” (scene, filmovi, studiji, izvođači, traženo, kalendar, dodavanje), zamućene slike, Postavke → Sadržaj za odrasle — napravljeno, Playwright test u CI-ju
+- [x] Web: odjeljak „Odrasli” (scene, filmovi, studiji, izvođači, traženo, kalendar, dodavanje) u novom izgledu: kartice 16:9 sa stanjem i kvalitetom, filtri, poredak, mreža/popis, prazna stanja s idućim korakom; slike zamućene po postavci, bez slike neutralno polje s početnim slovom (D-110)
+- [x] Slike s ThePornDB-a (korijen ISRG Root YE), ponovno dohvaćanje slika koje nedostaju pri osvježavanju, slike izvođača (D-110)
+- [x] Uklanjanje scene, filma, studija (sa scenama ili bez) i izvođača, datoteke samo u koš uz izričit izbor; „Ne zanima me” koje osvježavanje poštuje, popis i poništavanje u Postavkama; način odabira sa skupnim praćenjem, nepraćenjem i uklanjanjem (D-110)
+- [x] Pretraga na Dodaj: najnovije prvo od samog izvora, poredak (najnovije, najstarije, relevantnost, naslov) zapamćen u pregledniku, „Učitaj još”, sličice, „Dodaj odabrano” (D-110)
 - [ ] Mobilne aplikacije (API je spreman; aplikacije ga zasad ne prikazuju)
 - [ ] Uparivanje datoteka po PHASH-u, ručni uvoz postojeće mape za odrasle, zasebna kategorija u download klijentu
 

@@ -3,6 +3,14 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: novi izgled odjeljka za odrasle, uklanjanje i „Ne zanima me” (branch `feat/adult-ui`)
+- Uzrok slika (D-110): ThePornDB-ov `*.metadataapi.net` šalje lanac do ISRG Root YE bez unakrsnog potpisa, a Debian trixie taj korijen nema; svaka slika je padala na TLS-u i stavka je ostajala bez slike, a web je to prikazivao kao zamućenu sliku. `netx.RootCAs` (ugrađeni ISRG Root YE i YR), slika po sadržaju, slike izvođača, ponovno dohvaćanje pri osvježavanju, brisanje nekorištenih slika nakon 7 dana.
+- Migracija `00019_adult_exclusions.sql`: `adult_exclusions`, indeks `adult_items_added`.
+- API: `exclude` na uklanjanju stavke, `keepScenes`/`exclude` na studiju, `removeScenes`/`deleteFiles`/`exclude` na izvođaču, `POST /adult/items/bulk`, `GET`/`DELETE /adult/exclusions`, `POST /adult/performers/{id}/refresh`, `AdultItem.status`, filtri `status`/`monitored`/`sort`, `GET /adult/lookup` sa `sort`, `page` i odgovorom `AdultLookupPage` (sličice).
+- Web (EN + HR): nove stranice Scene, Filmovi, Studiji, Izvođači, Traženo, Kalendar, Dodaj, studio, izvođač i scena; dijalozi uklanjanja; način odabira; „Ne zanima me” u Postavkama; traka kartica bez klizača (zajednički `Tabs`).
+- Testovi: `TestAdultRemoveExcludeBulk` (isključenja kroz osvježavanje studija i izvođača, poništavanje, ručno dodavanje, skupne radnje, filtri, datoteka ostaje, studio sa „Zadrži scene”, izvođač sa scenama, 404 bez `view_adult`, 403 bez upravljanja), proširena matrica curenja u `TestAdultLibraryEndToEnd`, `TestFindScenesAsksForNewestFirst`, `TestExtraRootsAreLoaded`, Vitest (`AdultPages.test.tsx`), Playwright (uklanjanje s isključenjem, osvježavanje, poništavanje, skupni odabir, 390 px).
+- Poznato: ThePornDB najstarije i naslov slažu samo učitane stranice; stavke dodane bez studija i praćenja ne dobivaju sliku same; mobilne aplikacije ne prikazuju sadržaj za odrasle. `TestServeLifecycle` na ovom (opterećenom) poslužitelju ne stigne u 3 s ni na `main`.
+
 ## Gotovo: kvaliteta scena, blokirani pojmovi, vremenska crta stavke (branch `fix/adult-quality-timeline`)
 - Uzrok „kvaliteta nije dopuštena”: imena scena bez rezolucije su Unknown, a stavke za odrasle su dobivale prvi filmski profil (uvezen iz Radarra), koji Unknown ne dopušta (D-109).
 - Parser čita `SD`, `FullHD`, `Full HD`, `FHD`; migracija `00018_adult_profile_blocklist.sql`: profil „Any (Unknown allowed)”, `adult.openProfileId`, zadani profil za nove stavke ako nije odabran, uklanjanje ranije upisanih blokiranih pojmova.
