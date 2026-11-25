@@ -53,6 +53,7 @@ type Service struct {
 	wake       chan struct{}
 	pollMu     sync.Mutex
 	block      *blockIndex
+	suggest    map[int64]*suggestEntry // path mapping suggestions per download
 }
 
 // New returns a Service.
@@ -76,6 +77,7 @@ func (s *Service) init() {
 		s.snapshots = map[int64]*Snapshot{}
 		s.categories = map[int64]map[string]bool{}
 		s.rr = map[string]int{}
+		s.suggest = map[int64]*suggestEntry{}
 		s.wake = make(chan struct{}, 1)
 	}
 	if s.Bus == nil {

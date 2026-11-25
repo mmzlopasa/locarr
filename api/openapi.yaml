@@ -1291,6 +1291,26 @@ paths:
                 $ref: "#/components/schemas/RemotePathMapping"
         default:
           $ref: "#/components/responses/Error"
+  /remotepathmappings/suggestions:
+    get:
+      operationId: listRemotePathMappingSuggestions
+      summary: Mappings Locarr suggests (administrators)
+      description: |
+        From finished downloads whose path the client reports but Locarr cannot see, found
+        again inside the data roots by name and size, and from client folders Locarr
+        cannot see. Nothing is added until the user adds it.
+      tags: [remotepathmappings]
+      responses:
+        "200":
+          description: Suggestions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PathMappingSuggestion"
+        default:
+          $ref: "#/components/responses/Error"
   /remotepathmappings/{id}:
     put:
       operationId: updateRemotePathMapping
@@ -9312,6 +9332,60 @@ components:
         freeSpaceBytes:
           type: integer
           format: int64
+        pathChecks:
+          type: array
+          description: The client's default and category folders and whether Locarr sees them (administrators only).
+          items:
+            $ref: "#/components/schemas/ClientPathCheck"
+    ClientPathCheck:
+      type: object
+      required: [clientPath, visible]
+      properties:
+        category:
+          type: string
+          description: Absent for the client's default folder.
+        clientPath:
+          type: string
+          description: The folder as the client sees it.
+        visible: {type: boolean}
+        localPath:
+          type: string
+          description: Where Locarr sees it (when visible).
+        suggestion:
+          $ref: "#/components/schemas/PathMappingSuggestion"
+    PathMappingSuggestion:
+      type: object
+      description: |
+        A remote path mapping Locarr worked out by itself. It is never added without the
+        user: add it with `POST /remotepathmappings` (or `PUT` on `replacesMappingId`).
+      required: [host, remotePath, localPath, clientPath, foundAt, source, downloadIds]
+      properties:
+        clientId:
+          type: integer
+          format: int64
+        clientName: {type: string}
+        host: {type: string}
+        remotePath: {type: string}
+        localPath: {type: string}
+        clientPath:
+          type: string
+          description: A path the client reported.
+        foundAt:
+          type: string
+          description: Where Locarr found the same content (or a folder of the same name).
+        source:
+          type: string
+          enum: [download, folder]
+          description: "`download`: a finished download matched by name and size; `folder`: only a folder of the same name."
+        replacesMappingId:
+          type: integer
+          format: int64
+          description: A mapping for the same host and remote path exists but points elsewhere.
+        downloadIds:
+          type: array
+          items:
+            type: integer
+            format: int64
     DownloadClient:
       type: object
       required: [id, name, implementation, protocol, enabled, priority, host, port, useTls, allowSelfSigned, urlBase, username,
@@ -9460,6 +9534,11 @@ components:
           type: array
           items: {type: string}
         canCreateCategories: {type: boolean}
+        pathChecks:
+          type: array
+          description: The client's default and category folders and whether Locarr sees them.
+          items:
+            $ref: "#/components/schemas/ClientPathCheck"
     CreatedCategories:
       type: object
       required: [categories]
@@ -9567,6 +9646,8 @@ components:
         contentPath: {type: string}
         localPath: {type: string}
         message: {type: string}
+        pathSuggestion:
+          $ref: "#/components/schemas/PathMappingSuggestion"
         itemRef:
           description: Opaque JSON from whoever grabbed the release.
         item:

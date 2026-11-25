@@ -985,6 +985,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/remotepathmappings/suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Mappings Locarr suggests (administrators)
+         * @description From finished downloads whose path the client reports but Locarr cannot see, found
+         *     again inside the data roots by name and size, and from client folders Locarr
+         *     cannot see. Nothing is added until the user adds it.
+         */
+        get: operations["listRemotePathMappingSuggestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/remotepathmappings/{id}": {
         parameters: {
             query?: never;
@@ -6825,6 +6847,45 @@ export interface components {
             version?: string;
             /** Format: int64 */
             freeSpaceBytes?: number;
+            /** @description The client's default and category folders and whether Locarr sees them (administrators only). */
+            pathChecks?: components["schemas"]["ClientPathCheck"][];
+        };
+        ClientPathCheck: {
+            /** @description Absent for the client's default folder. */
+            category?: string;
+            /** @description The folder as the client sees it. */
+            clientPath: string;
+            visible: boolean;
+            /** @description Where Locarr sees it (when visible). */
+            localPath?: string;
+            suggestion?: components["schemas"]["PathMappingSuggestion"];
+        };
+        /**
+         * @description A remote path mapping Locarr worked out by itself. It is never added without the
+         *     user: add it with `POST /remotepathmappings` (or `PUT` on `replacesMappingId`).
+         */
+        PathMappingSuggestion: {
+            /** Format: int64 */
+            clientId?: number;
+            clientName?: string;
+            host: string;
+            remotePath: string;
+            localPath: string;
+            /** @description A path the client reported. */
+            clientPath: string;
+            /** @description Where Locarr found the same content (or a folder of the same name). */
+            foundAt: string;
+            /**
+             * @description `download`: a finished download matched by name and size; `folder`: only a folder of the same name.
+             * @enum {string}
+             */
+            source: "download" | "folder";
+            /**
+             * Format: int64
+             * @description A mapping for the same host and remote path exists but points elsewhere.
+             */
+            replacesMappingId?: number;
+            downloadIds: number[];
         };
         DownloadClient: {
             /** Format: int64 */
@@ -6908,6 +6969,8 @@ export interface components {
             freeSpaceBytes?: number;
             missingCategories: string[];
             canCreateCategories: boolean;
+            /** @description The client's default and category folders and whether Locarr sees them. */
+            pathChecks?: components["schemas"]["ClientPathCheck"][];
         };
         CreatedCategories: {
             categories: string[];
@@ -6972,6 +7035,7 @@ export interface components {
             contentPath?: string;
             localPath?: string;
             message: string;
+            pathSuggestion?: components["schemas"]["PathMappingSuggestion"];
             /** @description Opaque JSON from whoever grabbed the release. */
             itemRef?: unknown;
             item?: components["schemas"]["QueueItemLink"];
@@ -12089,6 +12153,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RemotePathMapping"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listRemotePathMappingSuggestions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Suggestions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PathMappingSuggestion"][];
                 };
             };
             default: components["responses"]["Error"];

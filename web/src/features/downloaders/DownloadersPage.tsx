@@ -14,6 +14,7 @@ import {
 import { formatBytes } from "@/components/format";
 import { Alert, Badge, Button, ConfirmButton, EmptyState, ErrorAlert, PageHeader, Panel, Spinner, TextInput } from "@/components/ui";
 import { ClientForm } from "./ClientForm";
+import { PathChecks, SuggestionBox } from "./PathSuggestion";
 
 type Editing = { impl: DownloadClientImplementation; client?: DownloadClient } | "pick" | null;
 
@@ -108,6 +109,7 @@ export function DownloadersPage() {
                       <span className="font-mono text-[11px]">{c.status.error}</span>
                     </p>
                   ) : null}
+                  {c.enabled && c.status.ok ? <div className="mt-1.5"><PathChecks checks={c.status.pathChecks} /></div> : null}
                 </div>
                 {impl ? (
                   <Button onClick={() => setEditing({ impl, client: c })}>{t("downloaders.edit")}</Button>
@@ -145,6 +147,11 @@ function MappingsPanel() {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const list = useQuery({ queryKey: queryKeys.remotePathMappings, queryFn: async () => unwrap(await api.GET("/remotepathmappings")) });
+  const suggestions = useQuery({
+    queryKey: queryKeys.pathMappingSuggestions,
+    queryFn: async () => unwrap(await api.GET("/remotepathmappings/suggestions")),
+    refetchInterval: 15_000,
+  });
   const [host, setHost] = useState("");
   const [remote, setRemote] = useState("");
   const [local, setLocal] = useState("");
@@ -164,6 +171,14 @@ function MappingsPanel() {
   };
   return (
     <Panel title={t("mappings.title")} description={t("mappings.subtitle")}>
+      {suggestions.data?.length ? (
+        <div className="mb-3" data-testid="mapping-suggestions">
+          <p className="text-[12px] font-semibold uppercase tracking-wide text-muted">{t("mappings.suggest.title")}</p>
+          {suggestions.data.map((s) => (
+            <SuggestionBox key={`${s.host}:${s.remotePath}:${s.localPath}`} suggestion={s} testId="mapping-suggestion" />
+          ))}
+        </div>
+      ) : null}
       <form onSubmit={submit} className="mb-3 grid gap-3 sm:grid-cols-[1fr_1.5fr_1.5fr_auto] sm:items-end">
         <TextInput label={t("mappings.host")} value={host} onChange={(e) => setHost(e.target.value)} placeholder="seedbox" />
         <TextInput label={t("mappings.remotePath")} value={remote} onChange={(e) => setRemote(e.target.value)} className="font-mono"
@@ -176,6 +191,7 @@ function MappingsPanel() {
       </form>
       <ErrorAlert error={add.error ?? list.error} />
       {list.data?.length === 0 ? <EmptyState>{t("mappings.none")}</EmptyState> : null}
+      <p className="mt-2 text-[12px] text-faint">{t("mappings.when")}</p>
       <ul className="divide-y divide-line">
         {list.data?.map((m) => <MappingRow key={m.id} m={m} />)}
       </ul>

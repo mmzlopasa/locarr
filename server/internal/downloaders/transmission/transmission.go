@@ -149,7 +149,7 @@ func (c *Client) Test(ctx context.Context) (downloaders.Status, error) {
 	if s.RPCVersion != 0 && s.RPCVersion < 16 {
 		return downloaders.Status{}, downloaders.ClientError("Transmission %s is too old (3.00 or later is needed for labels)", s.Version)
 	}
-	st := downloaders.Status{Version: s.Version}
+	st := downloaders.Status{Version: s.Version, SavePath: s.DownloadDir}
 	if s.DownloadDir != "" {
 		var fs struct {
 			Size int64 `json:"size-bytes"`

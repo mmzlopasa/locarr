@@ -231,6 +231,7 @@ const (
 	ListQualityProfilesOperation               OperationName = "ListQualityProfiles"
 	ListQueueItemEventsOperation               OperationName = "ListQueueItemEvents"
 	ListReleaseProfilesOperation               OperationName = "ListReleaseProfiles"
+	ListRemotePathMappingSuggestionsOperation  OperationName = "ListRemotePathMappingSuggestions"
 	ListRemotePathMappingsOperation            OperationName = "ListRemotePathMappings"
 	ListRequestCommentsOperation               OperationName = "ListRequestComments"
 	ListRequestsOperation                      OperationName = "ListRequests"

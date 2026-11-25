@@ -70,8 +70,43 @@ func toClientStatus(sn downloads.Snapshot, ok bool) gen.DownloadClientStatus {
 	return st
 }
 
+func toSuggestion(p *downloads.PathSuggestion) gen.OptPathMappingSuggestion {
+	if p == nil {
+		return gen.OptPathMappingSuggestion{}
+	}
+	return gen.NewOptPathMappingSuggestion(toSuggestionValue(*p))
+}
+
+func toSuggestionValue(p downloads.PathSuggestion) gen.PathMappingSuggestion {
+	out := gen.PathMappingSuggestion{ClientName: optStr(p.ClientName), Host: p.Host, RemotePath: p.RemotePath, LocalPath: p.LocalPath,
+		ClientPath: p.ClientPath, FoundAt: p.FoundAt, Source: gen.PathMappingSuggestionSource(p.Source), DownloadIds: p.DownloadIDs}
+	if p.ClientID != 0 {
+		out.ClientId = gen.NewOptInt64(p.ClientID)
+	}
+	if p.ReplacesID != 0 {
+		out.ReplacesMappingId = gen.NewOptInt64(p.ReplacesID)
+	}
+	if out.DownloadIds == nil {
+		out.DownloadIds = []int64{}
+	}
+	return out
+}
+
+func toClientPathChecks(list []downloads.PathCheck) []gen.ClientPathCheck {
+	out := make([]gen.ClientPathCheck, 0, len(list))
+	for _, pc := range list {
+		out = append(out, gen.ClientPathCheck{Category: optStr(pc.Category), ClientPath: pc.ClientPath, Visible: pc.Visible,
+			LocalPath: optStr(pc.LocalPath), Suggestion: toSuggestion(pc.Suggestion)})
+	}
+	return out
+}
+
 func toDownloadClient(c downloads.Client, snaps map[int64]downloads.Snapshot) gen.DownloadClient {
 	sn, ok := snaps[c.ID]
+	st := toClientStatus(sn, ok)
+	if ok {
+		st.PathChecks = toClientPathChecks(sn.PathChecks)
+	}
 	return gen.DownloadClient{ID: c.ID, Name: c.Name, Implementation: c.Implementation, Protocol: gen.DownloadProtocol(c.Protocol),
 		Enabled: c.Enabled, Priority: c.Priority, Host: c.Host, Port: c.Port, UseTls: c.UseTLS, AllowSelfSigned: c.AllowSelfSigned,
 		UrlBase: c.URLBase, Username: c.Username, Password: gen.SecretState{Configured: c.PasswordSet},
@@ -79,7 +114,7 @@ func toDownloadClient(c downloads.Client, snaps map[int64]downloads.Snapshot) ge
 		Categories:     gen.DownloadClientCategories{Movies: c.CategoryMovies, Series: c.CategorySeries, Music: c.CategoryMusic},
 		RecentPriority: gen.QueuePriority(c.RecentPriority), OlderPriority: gen.QueuePriority(c.OlderPriority),
 		InitialState: gen.DownloadClientInitialState(c.InitialState), RemoveCompleted: c.RemoveCompleted,
-		Sequential: c.Sequential, FirstLastPiece: c.FirstLastPiece, Tags: c.Tags, Status: toClientStatus(sn, ok),
+		Sequential: c.Sequential, FirstLastPiece: c.FirstLastPiece, Tags: c.Tags, Status: st,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt}
 }
 
@@ -215,6 +250,7 @@ func (h *Handler) TestDownloadClient(ctx context.Context, req *gen.DownloadClien
 	if res.FreeSpace != nil {
 		out.FreeSpaceBytes = gen.NewOptInt64(*res.FreeSpace)
 	}
+	out.PathChecks = toClientPathChecks(res.PathChecks)
 	return out, nil
 }
 
@@ -289,6 +325,36 @@ func (h *Handler) ListRemotePathMappings(ctx context.Context) ([]gen.RemotePathM
 	return out, nil
 }
 
+// ListRemotePathMappingSuggestions implements GET /remotepathmappings/suggestions.
+func (h *Handler) ListRemotePathMappingSuggestions(ctx context.Context) ([]gen.PathMappingSuggestion, error) {
+	if _, err := admin(ctx); err != nil {
+		return nil, err
+	}
+	list, err := h.Downloads.Suggestions(ctx)
+	if err != nil {
+		return nil, err
+	}
+	hide := h.hidesAdult(ctx)
+	out := make([]gen.PathMappingSuggestion, 0, len(list))
+	for _, p := range list {
+		if hide && h.anyAdultDownload(ctx, p.DownloadIDs) {
+			// The example paths name the release; the mapping itself does not.
+			p.ClientPath, p.FoundAt = p.RemotePath, p.LocalPath
+		}
+		out = append(out, toSuggestionValue(p))
+	}
+	return out, nil
+}
+
+func (h *Handler) anyAdultDownload(ctx context.Context, ids []int64) bool {
+	for _, id := range ids {
+		if d, err := h.Downloads.Get(ctx, id); err == nil && isAdultDownload(d.ItemRef) {
+			return true
+		}
+	}
+	return false
+}
+
 // CreateRemotePathMapping implements POST /remotepathmappings.
 func (h *Handler) CreateRemotePathMapping(ctx context.Context, req *gen.RemotePathMappingInput) (*gen.RemotePathMapping, error) {
 	if _, err := admin(ctx); err != nil {
@@ -338,7 +404,7 @@ func toQueueItem(q downloads.QueueItem) gen.QueueItem {
 		Progress: d.Progress, SizeBytes: d.Size, DownloadedBytes: d.Downloaded, DownloadSpeed: d.DownloadSpeed,
 		UploadSpeed: d.UploadSpeed, Ratio: d.Ratio, SeedingSeconds: int64(d.SeedingTime / time.Second),
 		ContentPath: optStr(d.ContentPath), LocalPath: optStr(d.LocalPath), Message: d.Message, AddedAt: d.AddedAt,
-		UpdatedAt: d.UpdatedAt, CompletedAt: optTime(d.CompletedAt)}
+		UpdatedAt: d.UpdatedAt, CompletedAt: optTime(d.CompletedAt), PathSuggestion: toSuggestion(q.Suggestion)}
 	if !q.Unknown {
 		out.ItemRef = rawJSON(d.ItemRef)
 	}

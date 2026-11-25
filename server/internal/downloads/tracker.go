@@ -22,6 +22,9 @@ type Snapshot struct {
 	Version   string
 	FreeSpace *int64
 	TestedAt  time.Time
+	// PathChecks are the client's folders and whether Locarr sees them
+	// (refreshed with the connection test).
+	PathChecks []PathCheck
 	// Unknown are items in Locarr's categories that Locarr did not add; they
 	// are shown but never touched.
 	Unknown []downloaders.Item
@@ -132,7 +135,10 @@ func (s *Service) pollClient(ctx context.Context, c Client, mappings []Mapping, 
 		if err != nil {
 			return fail(err)
 		}
-		s.setSnapshot(c.ID, func(sn *Snapshot) { sn.Version, sn.FreeSpace, sn.TestedAt = st.Version, st.FreeSpace, s.now() })
+		checks := s.checkPaths(ctx, c, cl, st.SavePath, mappings)
+		s.setSnapshot(c.ID, func(sn *Snapshot) {
+			sn.Version, sn.FreeSpace, sn.TestedAt, sn.PathChecks = st.Version, st.FreeSpace, s.now(), checks
+		})
 	}
 	caps := cl.Capabilities()
 	cats := c.CategorySet()
@@ -291,8 +297,13 @@ func (s *Service) update(ctx context.Context, c Client, cl downloaders.Client, d
 				local, err := s.resolveLocal(mappings, c.Host, p)
 				if err != nil {
 					msg = fmt.Sprintf("finished, but %s is not visible to Locarr (add a remote path mapping or fix the /data mount)", p)
+					if sug := s.suggestFor(ctx, c, d, p, mappings); sug != nil {
+						msg = fmt.Sprintf("finished, but %s is not visible to Locarr; it was found at %s (suggested remote path mapping %s → %s)",
+							p, sug.FoundAt, sug.RemotePath, sug.LocalPath)
+					}
 					d.LocalPath = ""
 				} else {
+					s.dropSuggestion(d.ID)
 					d.LocalPath = local
 					d.Status, d.CompletedAt = StatusCompleted, &now
 					msg = ""
@@ -325,6 +336,9 @@ func (s *Service) update(ctx context.Context, c Client, cl downloaders.Client, d
 			}
 		}
 		d.Message = msg
+	}
+	if d.Status != StatusActive {
+		s.dropSuggestion(d.ID)
 	}
 	d.UpdatedAt = now
 	err := s.DB.Tx(ctx, func(tx *sqlTx) error {

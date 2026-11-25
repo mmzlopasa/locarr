@@ -7,6 +7,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/mmzlopasa/locarr/server/internal/db"
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
@@ -54,6 +55,18 @@ func (s *Service) validMapping(m *Mapping) error {
 	return nil
 }
 
+// mappingsChanged makes the next poll check the client folders again and
+// retry finished downloads at once.
+func (s *Service) mappingsChanged() {
+	s.mu.Lock()
+	s.init()
+	for _, sn := range s.snapshots {
+		sn.TestedAt = time.Time{}
+	}
+	s.mu.Unlock()
+	s.Kick()
+}
+
 // Mappings lists the remote path mappings.
 func (s *Service) Mappings(ctx context.Context) ([]Mapping, error) {
 	rows, err := s.DB.R.QueryContext(ctx, `SELECT id, host, remote_path, local_path FROM remote_path_mappings ORDER BY host, remote_path`)
@@ -82,6 +95,9 @@ func (s *Service) CreateMapping(ctx context.Context, m Mapping) (Mapping, error)
 	if isUnique(err) {
 		return m, invalid("a mapping for this host and remote path already exists")
 	}
+	if err == nil {
+		s.mappingsChanged()
+	}
 	return m, err
 }
 
@@ -101,6 +117,7 @@ func (s *Service) UpdateMapping(ctx context.Context, m Mapping) (Mapping, error)
 	if n, _ := res.RowsAffected(); n == 0 {
 		return m, ErrNotFound
 	}
+	s.mappingsChanged()
 	return m, nil
 }
 
@@ -113,6 +130,7 @@ func (s *Service) DeleteMapping(ctx context.Context, id int64) error {
 	if n, _ := res.RowsAffected(); n == 0 {
 		return ErrNotFound
 	}
+	s.mappingsChanged()
 	return nil
 }
 

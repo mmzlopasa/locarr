@@ -2091,6 +2091,17 @@ func (UnimplementedHandler) ListReleaseProfiles(ctx context.Context) (r []Releas
 	return r, ht.ErrNotImplemented
 }
 
+// ListRemotePathMappingSuggestions implements listRemotePathMappingSuggestions operation.
+//
+// From finished downloads whose path the client reports but Locarr cannot see, found again inside the
+// data roots by name and size, and from client folders Locarr cannot see. Nothing is added until the
+// user adds it.
+//
+// GET /remotepathmappings/suggestions
+func (UnimplementedHandler) ListRemotePathMappingSuggestions(ctx context.Context) (r []PathMappingSuggestion, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListRemotePathMappings implements listRemotePathMappings operation.
 //
 // Remote path mappings (administrators).

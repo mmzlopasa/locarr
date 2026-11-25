@@ -13,6 +13,7 @@ import {
   type QueuePriority,
 } from "@/api/client";
 import { formatBytes } from "@/components/format";
+import { PathChecks } from "./PathSuggestion";
 import { Alert, Button, Checkbox, ConfirmButton, ErrorAlert, Panel, SelectInput, TextInput } from "@/components/ui";
 
 const PRIORITIES: QueuePriority[] = ["normal", "top", "last"];
@@ -283,6 +284,7 @@ export function ClientForm({ impl, client, onDone }:
         </fieldset>
 
         {result ? <TestOutcome result={result} /> : null}
+        {result?.ok ? <PathChecks checks={result.pathChecks} /> : null}
         {client && result?.ok && result.missingCategories.length > 0 && result.canCreateCategories ? (
           <div>
             <Button onClick={() => createCats.mutate()} busy={createCats.isPending}>{t("downloaders.test.createCategories")}</Button>

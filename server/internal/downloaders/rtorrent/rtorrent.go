@@ -121,7 +121,13 @@ func (c *Client) Test(ctx context.Context) (downloaders.Status, error) {
 	if !ok || s == "" {
 		return downloaders.Status{}, fmt.Errorf("%w: unexpected version answer", downloaders.ErrWrongURL)
 	}
-	return downloaders.Status{Version: s}, nil
+	st := downloaders.Status{Version: s}
+	if d, err := c.call(ctx, "directory.default"); err == nil {
+		if ds, ok := d.(string); ok {
+			st.SavePath = ds
+		}
+	}
+	return st, nil
 }
 
 func priorityValue(p downloaders.Priority) int {

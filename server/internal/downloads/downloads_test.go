@@ -31,6 +31,7 @@ type fakeClient struct {
 	cats     []downloaders.Category
 	ensured  []string
 	listCats []string
+	savePath string
 }
 
 func newFake(p downloaders.Protocol) *fakeClient {
@@ -44,7 +45,7 @@ func (f *fakeClient) Test(context.Context) (downloaders.Status, error) {
 		return downloaders.Status{}, f.testErr
 	}
 	free := int64(1 << 40)
-	return downloaders.Status{Version: "1.0", FreeSpace: &free}, nil
+	return downloaders.Status{Version: "1.0", FreeSpace: &free, SavePath: f.savePath}, nil
 }
 
 func (f *fakeClient) Add(_ context.Context, r downloaders.AddRequest) (string, error) {

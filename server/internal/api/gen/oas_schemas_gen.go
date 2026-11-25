@@ -6278,6 +6278,68 @@ func (s *CheckMigratePathsReq) SetPathMappings(val []MigratePathMapping) {
 	s.PathMappings = val
 }
 
+// Ref: #/components/schemas/ClientPathCheck
+type ClientPathCheck struct {
+	// Absent for the client's default folder.
+	Category OptString `json:"category"`
+	// The folder as the client sees it.
+	ClientPath string `json:"clientPath"`
+	Visible    bool   `json:"visible"`
+	// Where Locarr sees it (when visible).
+	LocalPath  OptString                `json:"localPath"`
+	Suggestion OptPathMappingSuggestion `json:"suggestion"`
+}
+
+// GetCategory returns the value of Category.
+func (s *ClientPathCheck) GetCategory() OptString {
+	return s.Category
+}
+
+// GetClientPath returns the value of ClientPath.
+func (s *ClientPathCheck) GetClientPath() string {
+	return s.ClientPath
+}
+
+// GetVisible returns the value of Visible.
+func (s *ClientPathCheck) GetVisible() bool {
+	return s.Visible
+}
+
+// GetLocalPath returns the value of LocalPath.
+func (s *ClientPathCheck) GetLocalPath() OptString {
+	return s.LocalPath
+}
+
+// GetSuggestion returns the value of Suggestion.
+func (s *ClientPathCheck) GetSuggestion() OptPathMappingSuggestion {
+	return s.Suggestion
+}
+
+// SetCategory sets the value of Category.
+func (s *ClientPathCheck) SetCategory(val OptString) {
+	s.Category = val
+}
+
+// SetClientPath sets the value of ClientPath.
+func (s *ClientPathCheck) SetClientPath(val string) {
+	s.ClientPath = val
+}
+
+// SetVisible sets the value of Visible.
+func (s *ClientPathCheck) SetVisible(val bool) {
+	s.Visible = val
+}
+
+// SetLocalPath sets the value of LocalPath.
+func (s *ClientPathCheck) SetLocalPath(val OptString) {
+	s.LocalPath = val
+}
+
+// SetSuggestion sets the value of Suggestion.
+func (s *ClientPathCheck) SetSuggestion(val OptPathMappingSuggestion) {
+	s.Suggestion = val
+}
+
 // Ref: #/components/schemas/ColonReplacement
 type ColonReplacement string
 
@@ -9658,6 +9720,8 @@ type DownloadClientStatus struct {
 	Error          OptString   `json:"error"`
 	Version        OptString   `json:"version"`
 	FreeSpaceBytes OptInt64    `json:"freeSpaceBytes"`
+	// The client's default and category folders and whether Locarr sees them (administrators only).
+	PathChecks []ClientPathCheck `json:"pathChecks"`
 }
 
 // GetOk returns the value of Ok.
@@ -9690,6 +9754,11 @@ func (s *DownloadClientStatus) GetFreeSpaceBytes() OptInt64 {
 	return s.FreeSpaceBytes
 }
 
+// GetPathChecks returns the value of PathChecks.
+func (s *DownloadClientStatus) GetPathChecks() []ClientPathCheck {
+	return s.PathChecks
+}
+
 // SetOk sets the value of Ok.
 func (s *DownloadClientStatus) SetOk(val bool) {
 	s.Ok = val
@@ -9718,6 +9787,11 @@ func (s *DownloadClientStatus) SetVersion(val OptString) {
 // SetFreeSpaceBytes sets the value of FreeSpaceBytes.
 func (s *DownloadClientStatus) SetFreeSpaceBytes(val OptInt64) {
 	s.FreeSpaceBytes = val
+}
+
+// SetPathChecks sets the value of PathChecks.
+func (s *DownloadClientStatus) SetPathChecks(val []ClientPathCheck) {
+	s.PathChecks = val
 }
 
 // Ref: #/components/schemas/DownloadClientTestRequest
@@ -9756,6 +9830,8 @@ type DownloadClientTestResult struct {
 	FreeSpaceBytes      OptInt64  `json:"freeSpaceBytes"`
 	MissingCategories   []string  `json:"missingCategories"`
 	CanCreateCategories bool      `json:"canCreateCategories"`
+	// The client's default and category folders and whether Locarr sees them.
+	PathChecks []ClientPathCheck `json:"pathChecks"`
 }
 
 // GetOk returns the value of Ok.
@@ -9793,6 +9869,11 @@ func (s *DownloadClientTestResult) GetCanCreateCategories() bool {
 	return s.CanCreateCategories
 }
 
+// GetPathChecks returns the value of PathChecks.
+func (s *DownloadClientTestResult) GetPathChecks() []ClientPathCheck {
+	return s.PathChecks
+}
+
 // SetOk sets the value of Ok.
 func (s *DownloadClientTestResult) SetOk(val bool) {
 	s.Ok = val
@@ -9826,6 +9907,11 @@ func (s *DownloadClientTestResult) SetMissingCategories(val []string) {
 // SetCanCreateCategories sets the value of CanCreateCategories.
 func (s *DownloadClientTestResult) SetCanCreateCategories(val bool) {
 	s.CanCreateCategories = val
+}
+
+// SetPathChecks sets the value of PathChecks.
+func (s *DownloadClientTestResult) SetPathChecks(val []ClientPathCheck) {
+	s.PathChecks = val
 }
 
 // Ref: #/components/schemas/DownloadEvent
@@ -30689,6 +30775,52 @@ func (o OptParsedRevision) Or(d ParsedRevision) ParsedRevision {
 	return d
 }
 
+// NewOptPathMappingSuggestion returns new OptPathMappingSuggestion with value set to v.
+func NewOptPathMappingSuggestion(v PathMappingSuggestion) OptPathMappingSuggestion {
+	return OptPathMappingSuggestion{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptPathMappingSuggestion is optional PathMappingSuggestion.
+type OptPathMappingSuggestion struct {
+	Value PathMappingSuggestion
+	Set   bool
+}
+
+// IsSet returns true if OptPathMappingSuggestion was set.
+func (o OptPathMappingSuggestion) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptPathMappingSuggestion) Reset() {
+	var v PathMappingSuggestion
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptPathMappingSuggestion) SetTo(v PathMappingSuggestion) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptPathMappingSuggestion) Get() (v PathMappingSuggestion, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptPathMappingSuggestion) Or(d PathMappingSuggestion) PathMappingSuggestion {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptPermissions returns new OptPermissions with value set to v.
 func NewOptPermissions(v Permissions) OptPermissions {
 	return OptPermissions{
@@ -33499,6 +33631,168 @@ func (s *PathMapping) SetStreameroPath(val string) {
 	s.StreameroPath = val
 }
 
+// A remote path mapping Locarr worked out by itself. It is never added without the user: add it with
+// `POST /remotepathmappings` (or `PUT` on `replacesMappingId`).
+// Ref: #/components/schemas/PathMappingSuggestion
+type PathMappingSuggestion struct {
+	ClientId   OptInt64  `json:"clientId"`
+	ClientName OptString `json:"clientName"`
+	Host       string    `json:"host"`
+	RemotePath string    `json:"remotePath"`
+	LocalPath  string    `json:"localPath"`
+	// A path the client reported.
+	ClientPath string `json:"clientPath"`
+	// Where Locarr found the same content (or a folder of the same name).
+	FoundAt string `json:"foundAt"`
+	// `download`: a finished download matched by name and size; `folder`: only a folder of the same name.
+	Source PathMappingSuggestionSource `json:"source"`
+	// A mapping for the same host and remote path exists but points elsewhere.
+	ReplacesMappingId OptInt64 `json:"replacesMappingId"`
+	DownloadIds       []int64  `json:"downloadIds"`
+}
+
+// GetClientId returns the value of ClientId.
+func (s *PathMappingSuggestion) GetClientId() OptInt64 {
+	return s.ClientId
+}
+
+// GetClientName returns the value of ClientName.
+func (s *PathMappingSuggestion) GetClientName() OptString {
+	return s.ClientName
+}
+
+// GetHost returns the value of Host.
+func (s *PathMappingSuggestion) GetHost() string {
+	return s.Host
+}
+
+// GetRemotePath returns the value of RemotePath.
+func (s *PathMappingSuggestion) GetRemotePath() string {
+	return s.RemotePath
+}
+
+// GetLocalPath returns the value of LocalPath.
+func (s *PathMappingSuggestion) GetLocalPath() string {
+	return s.LocalPath
+}
+
+// GetClientPath returns the value of ClientPath.
+func (s *PathMappingSuggestion) GetClientPath() string {
+	return s.ClientPath
+}
+
+// GetFoundAt returns the value of FoundAt.
+func (s *PathMappingSuggestion) GetFoundAt() string {
+	return s.FoundAt
+}
+
+// GetSource returns the value of Source.
+func (s *PathMappingSuggestion) GetSource() PathMappingSuggestionSource {
+	return s.Source
+}
+
+// GetReplacesMappingId returns the value of ReplacesMappingId.
+func (s *PathMappingSuggestion) GetReplacesMappingId() OptInt64 {
+	return s.ReplacesMappingId
+}
+
+// GetDownloadIds returns the value of DownloadIds.
+func (s *PathMappingSuggestion) GetDownloadIds() []int64 {
+	return s.DownloadIds
+}
+
+// SetClientId sets the value of ClientId.
+func (s *PathMappingSuggestion) SetClientId(val OptInt64) {
+	s.ClientId = val
+}
+
+// SetClientName sets the value of ClientName.
+func (s *PathMappingSuggestion) SetClientName(val OptString) {
+	s.ClientName = val
+}
+
+// SetHost sets the value of Host.
+func (s *PathMappingSuggestion) SetHost(val string) {
+	s.Host = val
+}
+
+// SetRemotePath sets the value of RemotePath.
+func (s *PathMappingSuggestion) SetRemotePath(val string) {
+	s.RemotePath = val
+}
+
+// SetLocalPath sets the value of LocalPath.
+func (s *PathMappingSuggestion) SetLocalPath(val string) {
+	s.LocalPath = val
+}
+
+// SetClientPath sets the value of ClientPath.
+func (s *PathMappingSuggestion) SetClientPath(val string) {
+	s.ClientPath = val
+}
+
+// SetFoundAt sets the value of FoundAt.
+func (s *PathMappingSuggestion) SetFoundAt(val string) {
+	s.FoundAt = val
+}
+
+// SetSource sets the value of Source.
+func (s *PathMappingSuggestion) SetSource(val PathMappingSuggestionSource) {
+	s.Source = val
+}
+
+// SetReplacesMappingId sets the value of ReplacesMappingId.
+func (s *PathMappingSuggestion) SetReplacesMappingId(val OptInt64) {
+	s.ReplacesMappingId = val
+}
+
+// SetDownloadIds sets the value of DownloadIds.
+func (s *PathMappingSuggestion) SetDownloadIds(val []int64) {
+	s.DownloadIds = val
+}
+
+// `download`: a finished download matched by name and size; `folder`: only a folder of the same name.
+type PathMappingSuggestionSource string
+
+const (
+	PathMappingSuggestionSourceDownload PathMappingSuggestionSource = "download"
+	PathMappingSuggestionSourceFolder   PathMappingSuggestionSource = "folder"
+)
+
+// AllValues returns all PathMappingSuggestionSource values.
+func (PathMappingSuggestionSource) AllValues() []PathMappingSuggestionSource {
+	return []PathMappingSuggestionSource{
+		PathMappingSuggestionSourceDownload,
+		PathMappingSuggestionSourceFolder,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s PathMappingSuggestionSource) MarshalText() ([]byte, error) {
+	switch s {
+	case PathMappingSuggestionSourceDownload:
+		return []byte(s), nil
+	case PathMappingSuggestionSourceFolder:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *PathMappingSuggestionSource) UnmarshalText(data []byte) error {
+	switch PathMappingSuggestionSource(data) {
+	case PathMappingSuggestionSourceDownload:
+		*s = PathMappingSuggestionSourceDownload
+		return nil
+	case PathMappingSuggestionSourceFolder:
+		*s = PathMappingSuggestionSourceFolder
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // PauseQueueItemNoContent is response for PauseQueueItem operation.
 type PauseQueueItemNoContent struct{}
 
@@ -34393,30 +34687,31 @@ func (s *QueueClient) SetStatus(val DownloadClientStatus) {
 // Ref: #/components/schemas/QueueItem
 type QueueItem struct {
 	// 0 for unknown items (added outside Locarr).
-	ID              int64            `json:"id"`
-	Unknown         bool             `json:"unknown"`
-	ClientId        OptInt64         `json:"clientId"`
-	ClientName      string           `json:"clientName"`
-	ClientItemId    string           `json:"clientItemId"`
-	Protocol        DownloadProtocol `json:"protocol"`
-	Title           string           `json:"title"`
-	Indexer         OptString        `json:"indexer"`
-	MediaKind       OptString        `json:"mediaKind"`
-	Category        string           `json:"category"`
-	Status          DownloadStatus   `json:"status"`
-	State           DownloadState    `json:"state"`
-	RawState        string           `json:"rawState"`
-	Progress        float64          `json:"progress"`
-	SizeBytes       int64            `json:"sizeBytes"`
-	DownloadedBytes int64            `json:"downloadedBytes"`
-	DownloadSpeed   int64            `json:"downloadSpeed"`
-	UploadSpeed     int64            `json:"uploadSpeed"`
-	EtaSeconds      OptInt64         `json:"etaSeconds"`
-	Ratio           float64          `json:"ratio"`
-	SeedingSeconds  int64            `json:"seedingSeconds"`
-	ContentPath     OptString        `json:"contentPath"`
-	LocalPath       OptString        `json:"localPath"`
-	Message         string           `json:"message"`
+	ID              int64                    `json:"id"`
+	Unknown         bool                     `json:"unknown"`
+	ClientId        OptInt64                 `json:"clientId"`
+	ClientName      string                   `json:"clientName"`
+	ClientItemId    string                   `json:"clientItemId"`
+	Protocol        DownloadProtocol         `json:"protocol"`
+	Title           string                   `json:"title"`
+	Indexer         OptString                `json:"indexer"`
+	MediaKind       OptString                `json:"mediaKind"`
+	Category        string                   `json:"category"`
+	Status          DownloadStatus           `json:"status"`
+	State           DownloadState            `json:"state"`
+	RawState        string                   `json:"rawState"`
+	Progress        float64                  `json:"progress"`
+	SizeBytes       int64                    `json:"sizeBytes"`
+	DownloadedBytes int64                    `json:"downloadedBytes"`
+	DownloadSpeed   int64                    `json:"downloadSpeed"`
+	UploadSpeed     int64                    `json:"uploadSpeed"`
+	EtaSeconds      OptInt64                 `json:"etaSeconds"`
+	Ratio           float64                  `json:"ratio"`
+	SeedingSeconds  int64                    `json:"seedingSeconds"`
+	ContentPath     OptString                `json:"contentPath"`
+	LocalPath       OptString                `json:"localPath"`
+	Message         string                   `json:"message"`
+	PathSuggestion  OptPathMappingSuggestion `json:"pathSuggestion"`
 	// Opaque JSON from whoever grabbed the release.
 	ItemRef     jx.Raw           `json:"itemRef"`
 	Item        OptQueueItemLink `json:"item"`
@@ -34543,6 +34838,11 @@ func (s *QueueItem) GetLocalPath() OptString {
 // GetMessage returns the value of Message.
 func (s *QueueItem) GetMessage() string {
 	return s.Message
+}
+
+// GetPathSuggestion returns the value of PathSuggestion.
+func (s *QueueItem) GetPathSuggestion() OptPathMappingSuggestion {
+	return s.PathSuggestion
 }
 
 // GetItemRef returns the value of ItemRef.
@@ -34688,6 +34988,11 @@ func (s *QueueItem) SetLocalPath(val OptString) {
 // SetMessage sets the value of Message.
 func (s *QueueItem) SetMessage(val string) {
 	s.Message = val
+}
+
+// SetPathSuggestion sets the value of PathSuggestion.
+func (s *QueueItem) SetPathSuggestion(val OptPathMappingSuggestion) {
+	s.PathSuggestion = val
 }
 
 // SetItemRef sets the value of ItemRef.

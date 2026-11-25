@@ -42,6 +42,8 @@ export type DownloadClientStatus = Schemas["DownloadClientStatus"];
 export type DownloadClientTestResult = Schemas["DownloadClientTestResult"];
 export type DownloadSettings = Schemas["DownloadSettings"];
 export type RemotePathMapping = Schemas["RemotePathMapping"];
+export type PathMappingSuggestion = Schemas["PathMappingSuggestion"];
+export type ClientPathCheck = Schemas["ClientPathCheck"];
 export type QueueItem = Schemas["QueueItem"];
 export type QueueClient = Schemas["QueueClient"];
 export type Queue = Schemas["Queue"];
@@ -317,6 +319,7 @@ export const queryKeys = {
   downloadImplementations: ["downloadclients", "implementations"] as const,
   downloadSettings: ["downloadclients", "settings"] as const,
   remotePathMappings: ["remotepathmappings"] as const,
+  pathMappingSuggestions: ["remotepathmappings", "suggestions"] as const,
   queue: ["queue"] as const,
   blocklist: ["queue", "blocklist"] as const,
   indexers: ["indexers"] as const,

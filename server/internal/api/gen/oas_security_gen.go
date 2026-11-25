@@ -257,6 +257,7 @@ var operationRolesSessionToken = map[string][]string{
 	ListQualityProfilesOperation:               []string{},
 	ListQueueItemEventsOperation:               []string{},
 	ListReleaseProfilesOperation:               []string{},
+	ListRemotePathMappingSuggestionsOperation:  []string{},
 	ListRemotePathMappingsOperation:            []string{},
 	ListRequestCommentsOperation:               []string{},
 	ListRequestsOperation:                      []string{},

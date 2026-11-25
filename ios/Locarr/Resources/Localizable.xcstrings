@@ -6648,6 +6648,23 @@
         }
       }
     },
+    "health.codes.client_folder_not_visible": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download client {{name}} saves to {{path}}, which Locarr cannot see (remote path mapping or volume)."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download klijent {{name}} sprema u {{path}}, a Locarr tu mapu ne vidi (mapiranje udaljene putanje ili volumen)."
+          }
+        }
+      }
+    },
     "health.codes.client_low_space": {
       "extractionState": "manual",
       "localizations": {
@@ -6933,6 +6950,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mapiranje udaljene putanje za {{host}} vodi na {{localPath}}, a ta mapa ovdje ne postoji."
+          }
+        }
+      }
+    },
+    "health.codes.mapping_suggested": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locarr found files of {{client}} under {{localPath}}: add the remote path mapping {{remotePath}} → {{localPath}} for {{host}}."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locarr je našao datoteke klijenta {{client}} u {{localPath}}: dodaj mapiranje udaljene putanje {{remotePath}} → {{localPath}} za {{host}}."
           }
         }
       }
