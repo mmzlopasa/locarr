@@ -17,6 +17,15 @@
       "category": "utilities",
       "versions": [
         {
+          "version": "0.6.2",
+          "buildVersion": "602",
+          "date": "2026-11-25",
+          "downloadURL": "https://github.com/mmzlopasa/locarr/releases/download/v0.6.2/Locarr-v0.6.2.ipa",
+          "size": 2373076,
+          "localizedDescription": "Locarr 0.6.2",
+          "minOSVersion": "17.0"
+        },
+        {
           "version": "0.6.1",
           "buildVersion": "601",
           "date": "2026-11-24",
@@ -53,10 +62,10 @@
           "minOSVersion": "17.0"
         }
       ],
-      "version": "0.6.1",
-      "versionDate": "2026-11-24",
-      "downloadURL": "https://github.com/mmzlopasa/locarr/releases/download/v0.6.1/Locarr-v0.6.1.ipa",
-      "size": 2371423
+      "version": "0.6.2",
+      "versionDate": "2026-11-25",
+      "downloadURL": "https://github.com/mmzlopasa/locarr/releases/download/v0.6.2/Locarr-v0.6.2.ipa",
+      "size": 2373076
     }
   ],
   "news": []
