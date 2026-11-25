@@ -192,7 +192,7 @@ function CycleRow({ row, del }: { row: Extract<TimelineRow, { kind: "cycle" }>; 
     .join(", ");
   const tone = row.decision ? eventTone(row.decision) : "info";
   return (
-    <li className="relative pl-6" data-testid="timeline-cycle" data-searches={row.searches.length}>
+    <li className="relative pl-6" data-testid="timeline-cycle" data-type="search" data-searches={row.searches.length}>
       <Dot tone={tone} />
       <div className="flex flex-wrap items-start gap-x-3">
         <div className="min-w-0 flex-1 text-[13px] text-fg">
@@ -202,7 +202,7 @@ function CycleRow({ row, del }: { row: Extract<TimelineRow, { kind: "cycle" }>; 
             {sum.queries.length > 1 ? <span className="text-faint"> · {t("timeline.cycle.queriesCount", { count: sum.queries.length })}</span> : null}
           </p>
           {indexers ? <p className="break-words text-[12px] text-muted" data-testid="timeline-cycle-indexers">{indexers}</p> : null}
-          {row.decision ? <p className="mt-0.5 break-words text-[12px] text-muted" data-testid="timeline-cycle-decision">{describeEvent(t, row.decision, i18n.language)}</p> : null}
+          {row.decision ? <p className="mt-0.5 break-words text-[12px] text-muted" data-testid="timeline-cycle-decision" data-type="decision">{describeEvent(t, row.decision, i18n.language)}</p> : null}
         </div>
         <span className="flex items-center gap-1">
           <When at={head.at} />
