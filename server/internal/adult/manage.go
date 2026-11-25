@@ -274,6 +274,9 @@ func (s *Service) RefreshStudio(ctx context.Context, id int64) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+	if st.Image == "" {
+		s.backfillStudioImage(ctx, p, st.ID, sid)
+	}
 	list, err := p.StudioScenes(ctx, sid, 1)
 	if err != nil {
 		return 0, err
@@ -281,6 +284,9 @@ func (s *Service) RefreshStudio(ctx context.Context, id int64) (int, error) {
 	added := 0
 	for i := range list {
 		sc := &list[i]
+		if s.Excluded(ctx, source, sc.ID) {
+			continue
+		}
 		mon := st.Monitored && (st.MonitorSince == "" || sc.Date >= st.MonitorSince)
 		root := int64(0)
 		if st.RootFolderID != nil {
@@ -290,7 +296,9 @@ func (s *Service) RefreshStudio(ctx context.Context, id int64) (int, error) {
 		switch {
 		case err == nil:
 			added++
-		case errors.Is(err, ErrExists), errors.Is(err, ErrRemoved), errors.Is(err, ErrBlocked):
+		case errors.Is(err, ErrExists):
+			s.backfillItemImage(ctx, sc)
+		case errors.Is(err, ErrRemoved), errors.Is(err, ErrBlocked):
 		default:
 			return added, err
 		}
@@ -318,6 +326,8 @@ func (s *Service) AddItem(ctx context.Context, movie bool, o AddOptions) (Item, 
 	if err != nil {
 		return Item{}, err
 	}
+	// Adding by hand is an explicit choice: it lifts "not interested".
+	s.unexclude(ctx, sc.Source, sc.ID)
 	it, err := s.addItem(ctx, &sc, o, nil)
 	if err != nil {
 		return Item{}, err
@@ -374,6 +384,10 @@ func (s *Service) addItem(ctx context.Context, sc *meta.Scene, o AddOptions, stu
 	}
 	tags, _ := json.Marshal(nonNil(sc.Tags))
 	img := s.cacheImage(ctx, sc.Image)
+	perfImages := make([]string, len(sc.Performers))
+	for i := range sc.Performers {
+		perfImages[i] = s.cacheImage(ctx, sc.Performers[i].Image)
+	}
 	now := db.Millis(s.now())
 	var id int64
 	err = s.DB.Tx(ctx, func(tx *sql.Tx) error {
@@ -384,8 +398,8 @@ func (s *Service) addItem(ctx context.Context, sc *meta.Scene, o AddOptions, stu
 			o.RootFolderID, path, now, now).Scan(&id); err != nil {
 			return err
 		}
-		for _, p := range sc.Performers {
-			pid, err := s.ensurePerformer(ctx, tx, &p)
+		for i, p := range sc.Performers {
+			pid, err := s.ensurePerformer(ctx, tx, &p, perfImages[i])
 			if err != nil {
 				return err
 			}
@@ -406,20 +420,23 @@ func (s *Service) addItem(ctx context.Context, sc *meta.Scene, o AddOptions, stu
 	return it, nil
 }
 
-func (s *Service) ensurePerformer(ctx context.Context, tx *sql.Tx, p *meta.Performer) (int64, error) {
+func (s *Service) ensurePerformer(ctx context.Context, tx *sql.Tx, p *meta.Performer, img string) (int64, error) {
 	stash, tpdb := ids(p.Source, p.ID)
 	var id int64
 	err := tx.QueryRowContext(ctx, `SELECT id FROM adult_performers WHERE (stashdb_id <> '' AND stashdb_id = ?) OR (tpdb_id <> '' AND tpdb_id = ?)`,
 		stash, tpdb).Scan(&id)
 	if err == nil {
-		return id, nil
+		if img != "" {
+			_, err = tx.ExecContext(ctx, `UPDATE adult_performers SET image = ? WHERE id = ? AND image = ''`, img, id)
+		}
+		return id, err
 	}
 	if !errors.Is(err, sql.ErrNoRows) {
 		return 0, err
 	}
 	now := db.Millis(s.now())
 	err = tx.QueryRowContext(ctx, `INSERT INTO adult_performers (name, sort_name, disambiguation, stashdb_id, tpdb_id, image, monitored, added_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, '', 0, ?, ?) RETURNING id`, p.Name, sortName(p.Name), p.Disambiguation, stash, tpdb, now, now).Scan(&id)
+		VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?) RETURNING id`, p.Name, sortName(p.Name), p.Disambiguation, stash, tpdb, img, now, now).Scan(&id)
 	return id, err
 }
 
@@ -443,7 +460,7 @@ func (s *Service) AddPerformer(ctx context.Context, o AddOptions) (Performer, er
 	var id int64
 	err = s.DB.Tx(ctx, func(tx *sql.Tx) error {
 		var e error
-		if id, e = s.ensurePerformer(ctx, tx, &mp); e != nil {
+		if id, e = s.ensurePerformer(ctx, tx, &mp, img); e != nil {
 			return e
 		}
 		_, e = tx.ExecContext(ctx, `UPDATE adult_performers SET monitored = ?, monitor_since = ?, quality_profile_id = ?, root_folder_id = ?,
@@ -469,9 +486,6 @@ func (s *Service) RefreshPerformer(ctx context.Context, id int64) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	if !pf.Monitored {
-		return 0, nil
-	}
 	source, pid := meta.StashDB, pf.StashDBID
 	if pid == "" {
 		source, pid = meta.TPDB, pf.TPDBID
@@ -479,6 +493,12 @@ func (s *Service) RefreshPerformer(ctx context.Context, id int64) (int, error) {
 	p, err := s.Provider(source)
 	if err != nil {
 		return 0, err
+	}
+	if pf.Image == "" {
+		s.backfillPerformerImage(ctx, p, pf.ID, pid)
+	}
+	if !pf.Monitored {
+		return 0, nil
 	}
 	list, err := p.PerformerScenes(ctx, pid, 1)
 	if err != nil {
@@ -495,6 +515,9 @@ func (s *Service) RefreshPerformer(ctx context.Context, id int64) (int, error) {
 	added := 0
 	for i := range list {
 		sc := &list[i]
+		if s.Excluded(ctx, source, sc.ID) {
+			continue
+		}
 		o.Monitored = pf.MonitorSince == "" || sc.Date >= pf.MonitorSince
 		it, err := s.addItem(ctx, sc, o, nil)
 		switch {
@@ -503,7 +526,9 @@ func (s *Service) RefreshPerformer(ctx context.Context, id int64) (int, error) {
 			if it.Monitored && s.Wanted != nil {
 				_ = s.Wanted.Enqueue(ctx, it.Ref(), "added")
 			}
-		case errors.Is(err, ErrExists), errors.Is(err, ErrRemoved), errors.Is(err, ErrBlocked):
+		case errors.Is(err, ErrExists):
+			s.backfillItemImage(ctx, sc)
+		case errors.Is(err, ErrRemoved), errors.Is(err, ErrBlocked):
 		default:
 			return added, err
 		}
@@ -538,6 +563,9 @@ func (s *Service) RefreshAll(ctx context.Context) error {
 				s.Log.Warn("refresh performer", "performer", p.ID, "err", err)
 			}
 		}
+	}
+	if _, err := s.PruneImages(ctx); err != nil && s.Log != nil {
+		s.Log.Warn("prune adult images", "err", err)
 	}
 	return nil
 }
@@ -598,56 +626,6 @@ func (s *Service) EditPerformer(ctx context.Context, id int64, e Edit) (Performe
 		_, _ = s.DB.W.ExecContext(ctx, `UPDATE adult_performers SET quality_profile_id = ? WHERE id = ?`, *e.QualityProfileID, id)
 	}
 	return s.Performer(ctx, id)
-}
-
-// DeleteItem removes an item; with deleteFiles its file goes to the recycle bin.
-func (s *Service) DeleteItem(ctx context.Context, id int64, deleteFiles bool) error {
-	it, err := s.Item(ctx, id)
-	if err != nil {
-		return err
-	}
-	if deleteFiles && it.File != nil && s.Recycle != nil {
-		if _, err := s.Recycle.Recycle(ctx, it.File.Path, it.Ref().String(), "deleted"); err != nil {
-			return err
-		}
-	}
-	if _, err := s.DB.W.ExecContext(ctx, `DELETE FROM adult_items WHERE id = ?`, id); err != nil {
-		return err
-	}
-	_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM search_state WHERE item_ref = ?`, it.Ref().String())
-	_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM pending_releases WHERE item_ref = ?`, it.Ref().String())
-	return nil
-}
-
-// DeleteStudio removes a studio and its scenes (files go to the recycle bin
-// only with deleteFiles).
-func (s *Service) DeleteStudio(ctx context.Context, id int64, deleteFiles bool) error {
-	if _, err := s.Studio(ctx, id); err != nil {
-		return err
-	}
-	items, _, err := s.Items(ctx, ItemFilter{StudioID: id, Limit: -1})
-	if err != nil {
-		return err
-	}
-	for _, it := range items {
-		if err := s.DeleteItem(ctx, it.ID, deleteFiles); err != nil {
-			return err
-		}
-	}
-	_, err = s.DB.W.ExecContext(ctx, `DELETE FROM adult_studios WHERE id = ?`, id)
-	return err
-}
-
-// DeletePerformer forgets a performer (their items stay).
-func (s *Service) DeletePerformer(ctx context.Context, id int64) error {
-	res, err := s.DB.W.ExecContext(ctx, `DELETE FROM adult_performers WHERE id = ?`, id)
-	if err != nil {
-		return err
-	}
-	if n, _ := res.RowsAffected(); n == 0 {
-		return ErrNotFound
-	}
-	return nil
 }
 
 func yearStr(y int) string {

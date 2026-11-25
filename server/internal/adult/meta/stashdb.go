@@ -75,7 +75,7 @@ func (c *StashDBClient) query(ctx context.Context, cacheKey string, ttl time.Dur
 const stashSceneFields = `id title details release_date date duration deleted
 	images { url width height }
 	studio { id name }
-	performers { performer { id name disambiguation deleted } }
+	performers { performer { id name disambiguation deleted images { url } } }
 	tags { name }
 	fingerprints { hash algorithm }`
 
@@ -221,6 +221,40 @@ func scenes(list []stashScene) []Scene {
 		out = append(out, s.scene())
 	}
 	return out
+}
+
+// FindScenes implements Provider. Relevance is StashDB's text search
+// (searchScene, one page); the other orders use queryScenes with its text
+// filter and sort (DATE or TITLE, ascending or descending) and its count.
+func (c *StashDBClient) FindScenes(ctx context.Context, term string, movie bool, o Find) (ScenePage, error) {
+	if movie {
+		return ScenePage{Scenes: []Scene{}, Ordered: true}, nil
+	}
+	if o.Sort == SortRelevance {
+		list, err := c.SearchScenes(ctx, term)
+		return ScenePage{Scenes: list, Ordered: true}, err
+	}
+	sort, dir := "DATE", "DESC"
+	switch o.Sort {
+	case SortOldest:
+		dir = "ASC"
+	case SortTitle:
+		sort, dir = "TITLE", "ASC"
+	}
+	page := max(o.Page, 1)
+	var out struct {
+		Q struct {
+			Count  int          `json:"count"`
+			Scenes []stashScene `json:"scenes"`
+		} `json:"queryScenes"`
+	}
+	in := map[string]any{"text": term, "page": page, "per_page": PageSize, "sort": sort, "direction": dir}
+	if err := c.query(ctx, fmt.Sprintf("find-scene:%s:%s:%s:%d", term, sort, dir, page), time.Hour, "",
+		`query($input: SceneQueryInput!) { queryScenes(input: $input) { count scenes { `+stashSceneFields+` } } }`,
+		map[string]any{"input": in}, &out); err != nil {
+		return ScenePage{}, err
+	}
+	return ScenePage{Scenes: scenes(out.Q.Scenes), More: page*PageSize < out.Q.Count, Ordered: true}, nil
 }
 
 // SearchMovies implements Provider: StashDB has no movies.

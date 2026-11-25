@@ -92,7 +92,18 @@ type Item struct {
 	AddedAt          time.Time `json:"addedAt"`
 	Performers       []PerfRef `json:"performers"`
 	File             *File     `json:"file,omitempty"`
+	// Status: downloaded (in the library), downloading, wanted (monitored,
+	// no file) or missing (not monitored, no file).
+	Status string `json:"status"`
 }
+
+// Item statuses.
+const (
+	StatusDownloaded  = "downloaded"
+	StatusDownloading = "downloading"
+	StatusWanted      = "wanted"
+	StatusMissing     = "missing"
+)
 
 // PerfRef names a performer of an item.
 type PerfRef struct {
@@ -118,7 +129,14 @@ func ItemID(r library.Ref) (int64, bool) {
 
 const itemColumns = `i.id, i.kind, i.studio_id, i.studio_name, i.title, i.release_date, i.year, i.duration, i.overview, i.stashdb_id,
 	i.tpdb_id, i.phash, i.source_tags, i.image, i.monitored, i.quality_profile_id, i.root_folder_id, i.path, i.added_at,
-	f.id, f.path, f.size, f.quality, f.revision, f.score, f.release_group, f.scene_name, f.added_at`
+	f.id, f.path, f.size, f.quality, f.revision, f.score, f.release_group, f.scene_name, f.added_at, ` + itemStatus
+
+// itemStatus is computed per row; download_refs is keyed by item_ref.
+const itemStatus = `CASE WHEN f.id IS NOT NULL THEN 'downloaded'
+	WHEN EXISTS (SELECT 1 FROM download_refs r JOIN downloads d ON d.id = r.download_id
+		WHERE r.item_ref = (CASE i.kind WHEN 'movie' THEN 'adult_movie:' ELSE 'scene:' END) || i.id AND d.status IN ('active', 'completed'))
+		THEN 'downloading'
+	WHEN i.monitored = 1 THEN 'wanted' ELSE 'missing' END`
 
 const itemFrom = ` FROM adult_items i LEFT JOIN adult_files f ON f.item_id = i.id`
 
@@ -133,7 +151,7 @@ func scanItem(row interface{ Scan(...any) error }) (Item, error) {
 	)
 	if err := row.Scan(&it.ID, &it.Kind, &studio, &it.Studio, &it.Title, &it.ReleaseDate, &it.Year, &it.Duration, &it.Overview,
 		&it.StashDBID, &it.TPDBID, &it.PHash, &tags, &it.Image, &it.Monitored, &it.QualityProfileID, &root, &it.Path, &added,
-		&fid, &fpath, &fsize, &fq, &frev, &fscore, &fg, &fs, &fat); err != nil {
+		&fid, &fpath, &fsize, &fq, &frev, &fscore, &fg, &fs, &fat, &it.Status); err != nil {
 		return it, err
 	}
 	if studio.Valid {
@@ -164,9 +182,15 @@ type ItemFilter struct {
 	PerformerID int64
 	Term        string
 	Missing     bool
-	From, To    string // release date range (calendar)
-	Limit       int
-	Offset      int
+	// Status keeps only items with that status (see Item.Status).
+	Status string
+	// Monitored, when set, keeps only (un)monitored items.
+	Monitored *bool
+	// Sort: date (newest first, the default), added (newest first), title.
+	Sort     string
+	From, To string // release date range (calendar)
+	Limit    int
+	Offset   int
 }
 
 // Items lists items (scenes newest first, movies by title).
@@ -188,6 +212,12 @@ func (s *Service) Items(ctx context.Context, f ItemFilter) ([]Item, int, error) 
 	if f.Missing {
 		where = append(where, "i.monitored = 1 AND f.id IS NULL")
 	}
+	if f.Status != "" {
+		where, args = append(where, "("+itemStatus+") = ?"), append(args, f.Status)
+	}
+	if f.Monitored != nil {
+		where, args = append(where, "i.monitored = ?"), append(args, *f.Monitored)
+	}
 	if f.From != "" {
 		where, args = append(where, "i.release_date >= ?"), append(args, f.From)
 	}
@@ -206,7 +236,10 @@ func (s *Service) Items(ctx context.Context, f ItemFilter) ([]Item, int, error) 
 		f.Limit = 100
 	}
 	order := " ORDER BY i.release_date DESC, i.id DESC"
-	if f.Kind == KindMovie {
+	switch {
+	case f.Sort == "added":
+		order = " ORDER BY i.added_at DESC, i.id DESC"
+	case f.Sort == "title", f.Sort == "" && f.Kind == KindMovie:
 		order = " ORDER BY i.sort_title, i.id"
 	}
 	rows, err := s.DB.R.QueryContext(ctx, `SELECT `+itemColumns+itemFrom+cond+order+` LIMIT ? OFFSET ?`, append(args, f.Limit, f.Offset)...) // #nosec G202 -- fixed fragments, values bound

@@ -79,6 +79,7 @@ var (
 	ErrUnknownSource = errors.New("unknown metadata source")
 	ErrBadTerm       = errors.New("a blocklist term needs at least two letters")
 	ErrProtectedTerm = errors.New("this term is always blocked")
+	ErrBadAction     = errors.New("unknown bulk action")
 )
 
 // Service is the adult library.

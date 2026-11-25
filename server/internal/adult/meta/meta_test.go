@@ -2,8 +2,12 @@ package meta_test
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/mmzlopasa/locarr/server/internal/adult/meta"
@@ -110,5 +114,62 @@ func TestBadKey(t *testing.T) {
 	}
 	if _, err := meta.NewTPDB(srv.URL+"/tpdb", key(""), nil).SearchScenes(context.Background(), "x"); !errors.Is(err, meta.ErrNoKey) {
 		t.Errorf("no key: %v", err)
+	}
+}
+
+// TestFindScenesAsksForNewestFirst: the default order is requested from the
+// source itself, so the first page really holds the newest releases.
+func TestFindScenesAsksForNewestFirst(t *testing.T) {
+	var tpdbQuery url.Values
+	var stashInput map[string]any
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if strings.HasSuffix(r.URL.Path, "/graphql") {
+			var req struct {
+				Variables map[string]any `json:"variables"`
+			}
+			_ = json.NewDecoder(r.Body).Decode(&req)
+			stashInput, _ = req.Variables["input"].(map[string]any)
+			_, _ = w.Write([]byte(`{"data":{"queryScenes":{"count":60,"scenes":[]}}}`))
+			return
+		}
+		tpdbQuery = r.URL.Query()
+		_, _ = w.Write([]byte(`{"data":[],"meta":{"current_page":1,"last_page":3}}`))
+	}))
+	t.Cleanup(srv.Close)
+	ctx := context.Background()
+
+	tp, err := meta.NewTPDB(srv.URL+"/tpdb", key("k"), nil).FindScenes(ctx, "performer name", false, meta.Find{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tpdbQuery.Get("orderBy") != "recently_released" || tpdbQuery.Get("page") != "1" || tpdbQuery.Get("q") != "performer name" {
+		t.Fatalf("ThePornDB query: %v", tpdbQuery)
+	}
+	if !tp.More || !tp.Ordered {
+		t.Fatalf("page: %+v", tp)
+	}
+	if _, err := meta.NewTPDB(srv.URL+"/tpdb", key("k"), nil).FindScenes(ctx, "x", false, meta.Find{Sort: meta.SortRelevance, Page: 2}); err != nil {
+		t.Fatal(err)
+	}
+	if tpdbQuery.Has("orderBy") || tpdbQuery.Get("page") != "2" {
+		t.Fatalf("relevance query: %v", tpdbQuery)
+	}
+
+	st, err := meta.NewStashDB(srv.URL+"/graphql", key("k"), nil).FindScenes(ctx, "performer name", false, meta.Find{Sort: meta.SortNewest})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if stashInput["sort"] != "DATE" || stashInput["direction"] != "DESC" || stashInput["text"] != "performer name" {
+		t.Fatalf("StashDB input: %v", stashInput)
+	}
+	if !st.More {
+		t.Fatalf("page: %+v", st)
+	}
+	if _, err := meta.NewStashDB(srv.URL+"/graphql", key("k"), nil).FindScenes(ctx, "y", false, meta.Find{Sort: meta.SortOldest, Page: 3}); err != nil {
+		t.Fatal(err)
+	}
+	if stashInput["direction"] != "ASC" || stashInput["page"] != float64(3) {
+		t.Fatalf("oldest input: %v", stashInput)
 	}
 }

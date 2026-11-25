@@ -125,7 +125,8 @@ func adultGets(itemID, studioID, perfID int64, image string) []string {
 		"/api/v1/adult/items", "/api/v1/adult/items?missing=true", "/api/v1/adult/lookup?source=stashdb&type=scene&term=scene",
 		fmt.Sprintf("/api/v1/adult/studios/%d", studioID), fmt.Sprintf("/api/v1/adult/performers/%d", perfID),
 		fmt.Sprintf("/api/v1/adult/items/%d", itemID), fmt.Sprintf("/api/v1/adult/items/%d/timeline", itemID),
-		"/api/v1/adult/calendar?start=2024-01-01&end=2024-12-31", "/api/v1/adult/images/" + image}
+		"/api/v1/adult/calendar?start=2024-01-01&end=2024-12-31", "/api/v1/adult/images/" + image, "/api/v1/adult/exclusions",
+		"/api/v1/adult/items?status=wanted&sort=added&monitored=true"}
 }
 
 func adultWrites(itemID, studioID int64) [][2]string {
@@ -133,7 +134,9 @@ func adultWrites(itemID, studioID int64) [][2]string {
 		{"POST", "/api/v1/adult/rootfolders"}, {"PATCH", fmt.Sprintf("/api/v1/adult/items/%d", itemID)},
 		{"POST", fmt.Sprintf("/api/v1/adult/items/%d/search", itemID)}, {"GET", fmt.Sprintf("/api/v1/adult/items/%d/releases", itemID)},
 		{"POST", fmt.Sprintf("/api/v1/adult/items/%d/rename", itemID)}, {"DELETE", fmt.Sprintf("/api/v1/adult/items/%d", itemID)},
-		{"POST", fmt.Sprintf("/api/v1/adult/studios/%d/refresh", studioID)}, {"DELETE", fmt.Sprintf("/api/v1/adult/studios/%d", studioID)}}
+		{"POST", fmt.Sprintf("/api/v1/adult/studios/%d/refresh", studioID)}, {"DELETE", fmt.Sprintf("/api/v1/adult/studios/%d", studioID)},
+		{"POST", "/api/v1/adult/items/bulk"}, {"DELETE", "/api/v1/adult/exclusions/1"}, {"POST", "/api/v1/adult/performers/1/refresh"},
+		{"DELETE", "/api/v1/adult/performers/1?removeScenes=true"}}
 }
 
 type apiAdultItem struct {
@@ -235,15 +238,17 @@ func TestAdultLibraryEndToEnd(t *testing.T) {
 
 	// Root folder, then a studio: its scenes come in, removed and blocked ones do not.
 	ae.expect(ae.do("POST", "/api/v1/adult/rootfolders", map[string]any{"path": ae.adultRoot}), 201)
-	var lookup []struct {
-		ID, Name string
+	var lookup struct {
+		Results []struct {
+			ID, Name, Image string
+		}
 	}
 	ae.expect(ae.do("GET", "/api/v1/adult/lookup?source=stashdb&type=studio&term=studio", nil), 200).json(&lookup)
-	if len(lookup) != 1 {
+	if len(lookup.Results) != 1 || lookup.Results[0].Image == "" {
 		t.Fatalf("lookup %+v", lookup)
 	}
 	ae.expect(ae.do("GET", "/api/v1/adult/lookup?source=tpdb&type=scene&term=scene", nil), 200).json(&lookup)
-	for _, l := range lookup {
+	for _, l := range lookup.Results {
 		if l.Name == "Removed Scene" || l.Name == "Tagged Scene" {
 			t.Fatalf("lookup leaked %s", l.Name)
 		}
@@ -412,12 +417,12 @@ func mustItem(t *testing.T, ae *adultEnv, id int64) *adult.Item {
 
 func lookupID(t *testing.T, ae *adultEnv, typ string) string {
 	t.Helper()
-	var l []struct{ ID string }
+	var l struct{ Results []struct{ ID string } }
 	ae.expect(ae.do("GET", "/api/v1/adult/lookup?source=stashdb&type="+typ+"&term=studio", nil), 200).json(&l)
-	if len(l) == 0 {
+	if len(l.Results) == 0 {
 		t.Fatal("no lookup result")
 	}
-	return l[0].ID
+	return l.Results[0].ID
 }
 
 func (ae *adultEnv) adultDownloads() int {
@@ -441,7 +446,7 @@ func (ae *adultEnv) checkLeaks(t *testing.T, mgrTok, rqTok string, scene apiAdul
 			}
 		}
 		for _, w := range adultWrites(scene.ID, studioID) {
-			if r := ae.as(tok, w[0], w[1], map[string]any{"source": "stashdb", "id": "sc-1", "path": "/data/x"}); r.StatusCode != 404 && (tok != noFlag.Key || r.StatusCode != 403) {
+			if r := ae.as(tok, w[0], w[1], map[string]any{"source": "stashdb", "id": "sc-1", "path": "/data/x", "ids": []int64{scene.ID}, "action": "remove"}); r.StatusCode != 404 && (tok != noFlag.Key || r.StatusCode != 403) {
 				t.Fatalf("%s %s for %.8s: %d", w[0], w[1], tok, r.StatusCode)
 			}
 		}

@@ -71,6 +71,18 @@ func (s *AdultAddRequest) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *AdultBulkRequest) setDefaults() {
+	{
+		val := bool(false)
+		s.DeleteFiles.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.Exclude.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *DownloadClientInput) setDefaults() {
 	{
 		val := bool(true)

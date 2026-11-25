@@ -170,6 +170,15 @@ func (UnimplementedHandler) BrowseFilesystem(ctx context.Context, params BrowseF
 	return r, ht.ErrNotImplemented
 }
 
+// BulkAdultItems implements bulkAdultItems operation.
+//
+// Remove, monitor or unmonitor many items at once (managers).
+//
+// POST /adult/items/bulk
+func (UnimplementedHandler) BulkAdultItems(ctx context.Context, req *AdultBulkRequest) (r *AdultBulkResult, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CancelJob implements cancelJob operation.
 //
 // Cancel a queued or running job (administrators).
@@ -477,6 +486,15 @@ func (UnimplementedHandler) DeleteAdultBlocklistTerm(ctx context.Context, params
 	return ht.ErrNotImplemented
 }
 
+// DeleteAdultExclusion implements deleteAdultExclusion operation.
+//
+// Undo "not interested" (the next refresh may add the item again).
+//
+// DELETE /adult/exclusions/{id}
+func (UnimplementedHandler) DeleteAdultExclusion(ctx context.Context, params DeleteAdultExclusionParams) error {
+	return ht.ErrNotImplemented
+}
+
 // DeleteAdultItem implements deleteAdultItem operation.
 //
 // Remove an item (its file goes to the recycle bin only with deleteFiles).
@@ -488,7 +506,7 @@ func (UnimplementedHandler) DeleteAdultItem(ctx context.Context, params DeleteAd
 
 // DeleteAdultPerformer implements deleteAdultPerformer operation.
 //
-// Forget a performer (their scenes stay).
+// Forget a performer (their scenes stay unless removeScenes).
 //
 // DELETE /adult/performers/{id}
 func (UnimplementedHandler) DeleteAdultPerformer(ctx context.Context, params DeleteAdultPerformerParams) error {
@@ -506,7 +524,8 @@ func (UnimplementedHandler) DeleteAdultRootFolder(ctx context.Context, params De
 
 // DeleteAdultStudio implements deleteAdultStudio operation.
 //
-// Remove a studio and its scenes (files go to the recycle bin only with deleteFiles).
+// Remove a studio and (unless keepScenes) its scenes (files go to the recycle bin only with
+// deleteFiles).
 //
 // DELETE /adult/studios/{id}
 func (UnimplementedHandler) DeleteAdultStudio(ctx context.Context, params DeleteAdultStudioParams) error {
@@ -1678,6 +1697,15 @@ func (UnimplementedHandler) ListAdultBlocklist(ctx context.Context) (r []AdultBl
 	return r, ht.ErrNotImplemented
 }
 
+// ListAdultExclusions implements listAdultExclusions operation.
+//
+// The "not interested" list (newest first).
+//
+// GET /adult/exclusions
+func (UnimplementedHandler) ListAdultExclusions(ctx context.Context) (r []AdultExclusion, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListAdultItems implements listAdultItems operation.
 //
 // Scenes and movies.
@@ -2275,7 +2303,7 @@ func (UnimplementedHandler) Logout(ctx context.Context) (r *LogoutNoContent, _ e
 // images are never returned.
 //
 // GET /adult/lookup
-func (UnimplementedHandler) LookupAdult(ctx context.Context, params LookupAdultParams) (r []AdultLookupResult, _ error) {
+func (UnimplementedHandler) LookupAdult(ctx context.Context, params LookupAdultParams) (r *AdultLookupPage, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -2494,6 +2522,15 @@ func (UnimplementedHandler) PreviewSubtitle(ctx context.Context, params PreviewS
 //
 // PUT /settings/requests
 func (UnimplementedHandler) PutRequestSettings(ctx context.Context, req *RequestSettings) (r *RequestSettings, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RefreshAdultPerformer implements refreshAdultPerformer operation.
+//
+// Look for new scenes of a followed performer now (and fetch a missing image).
+//
+// POST /adult/performers/{id}/refresh
+func (UnimplementedHandler) RefreshAdultPerformer(ctx context.Context, params RefreshAdultPerformerParams) (r *QueuedCount, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

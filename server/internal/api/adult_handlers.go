@@ -44,6 +44,7 @@ func mapAdultError(err error) *StatusError {
 		{adult.ErrUnknownSource, http.StatusBadRequest, "validation"},
 		{adult.ErrBadTerm, http.StatusBadRequest, "validation"},
 		{adult.ErrProtectedTerm, http.StatusConflict, "protected_term"},
+		{adult.ErrBadAction, http.StatusBadRequest, "validation"},
 		{meta.ErrNoKey, http.StatusBadRequest, "metadata_key_missing"},
 		{meta.ErrBadKey, http.StatusBadRequest, "metadata_key_invalid"},
 		{meta.ErrNotFound, http.StatusNotFound, "not_found"},
@@ -335,18 +336,20 @@ func (h *Handler) DeleteAdultRootFolder(ctx context.Context, p gen.DeleteAdultRo
 }
 
 // LookupAdult implements GET /adult/lookup.
-func (h *Handler) LookupAdult(ctx context.Context, p gen.LookupAdultParams) ([]gen.AdultLookupResult, error) {
+func (h *Handler) LookupAdult(ctx context.Context, p gen.LookupAdultParams) (*gen.AdultLookupPage, error) {
 	if _, err := h.adultUser(ctx); err != nil {
 		return nil, err
 	}
-	list, err := h.Adult.Lookup(ctx, string(p.Source), string(p.Type), p.Term)
+	page, err := h.Adult.Lookup(ctx, string(p.Source), string(p.Type), p.Term,
+		meta.Find{Sort: string(p.Sort.Or(gen.LookupAdultSortNewest)), Page: p.Page.Or(1)})
 	if err != nil {
 		return nil, err
 	}
-	out := make([]gen.AdultLookupResult, 0, len(list))
-	for _, r := range list {
-		out = append(out, gen.AdultLookupResult{Source: gen.AdultLookupResultSource(r.Source), ID: r.ID, Type: gen.AdultLookupResultType(r.Type),
-			Name: r.Name, Date: optStr(r.Date), Studio: optStr(r.Studio), Performers: r.Performers, InLibrary: gen.NewOptBool(r.InLibrary)})
+	out := &gen.AdultLookupPage{Page: page.Page, More: page.More, Results: make([]gen.AdultLookupResult, 0, len(page.Results))}
+	for _, r := range page.Results {
+		out.Results = append(out.Results, gen.AdultLookupResult{Source: gen.AdultLookupResultSource(r.Source), ID: r.ID,
+			Type: gen.AdultLookupResultType(r.Type), Name: r.Name, Date: optStr(r.Date), Studio: optStr(r.Studio), Performers: r.Performers,
+			InLibrary: gen.NewOptBool(r.InLibrary), Image: optStr(r.Image)})
 	}
 	return out, nil
 }
@@ -383,7 +386,7 @@ func toAdultItem(it adult.Item) gen.AdultItem {
 	out := gen.AdultItem{ID: it.ID, Kind: gen.AdultItemKind(it.Kind), Ref: it.Ref().String(), StudioId: optID(it.StudioID), Studio: it.Studio,
 		Title: it.Title, ReleaseDate: optStr(it.ReleaseDate), Overview: optStr(it.Overview), StashdbId: optStr(it.StashDBID), TpdbId: optStr(it.TPDBID),
 		Image: optStr(it.Image), Monitored: it.Monitored, QualityProfileId: it.QualityProfileID, Path: it.Path, AddedAt: it.AddedAt,
-		SourceTags: it.SourceTags, Performers: make([]gen.AdultItemPerformersItem, 0, len(it.Performers))}
+		SourceTags: it.SourceTags, Performers: make([]gen.AdultItemPerformersItem, 0, len(it.Performers)), Status: gen.AdultItemStatus(it.Status)}
 	if it.Year > 0 {
 		out.Year = gen.NewOptInt(it.Year)
 	}
@@ -484,7 +487,7 @@ func (h *Handler) DeleteAdultStudio(ctx context.Context, p gen.DeleteAdultStudio
 	if _, err := h.adultManager(ctx); err != nil {
 		return err
 	}
-	return h.Adult.DeleteStudio(ctx, p.ID, p.DeleteFiles.Or(false))
+	return h.Adult.DeleteStudio(ctx, p.ID, p.KeepScenes.Or(false), adult.RemoveOptions{DeleteFiles: p.DeleteFiles.Or(false), Exclude: p.Exclude.Or(false)})
 }
 
 // RefreshAdultStudio implements POST /adult/studios/{id}/refresh.
@@ -565,7 +568,69 @@ func (h *Handler) DeleteAdultPerformer(ctx context.Context, p gen.DeleteAdultPer
 	if _, err := h.adultManager(ctx); err != nil {
 		return err
 	}
-	return h.Adult.DeletePerformer(ctx, p.ID)
+	return h.Adult.DeletePerformer(ctx, p.ID, p.RemoveScenes.Or(false),
+		adult.RemoveOptions{DeleteFiles: p.DeleteFiles.Or(false), Exclude: p.Exclude.Or(false)})
+}
+
+// RefreshAdultPerformer implements POST /adult/performers/{id}/refresh.
+func (h *Handler) RefreshAdultPerformer(ctx context.Context, p gen.RefreshAdultPerformerParams) (*gen.QueuedCount, error) {
+	if _, err := h.adultManager(ctx); err != nil {
+		return nil, err
+	}
+	n, err := h.Adult.RefreshPerformer(ctx, p.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &gen.QueuedCount{Count: n}, nil
+}
+
+// BulkAdultItems implements POST /adult/items/bulk.
+func (h *Handler) BulkAdultItems(ctx context.Context, req *gen.AdultBulkRequest) (*gen.AdultBulkResult, error) {
+	if _, err := h.adultManager(ctx); err != nil {
+		return nil, err
+	}
+	var refs []library.Ref
+	if req.Action == gen.AdultBulkRequestActionMonitor {
+		for _, id := range req.Ids {
+			if it, err := h.Adult.Item(ctx, id); err == nil {
+				refs = append(refs, it.Ref())
+			}
+		}
+	}
+	n, err := h.Adult.BulkItems(ctx, req.Ids, string(req.Action),
+		adult.RemoveOptions{DeleteFiles: req.DeleteFiles.Or(false), Exclude: req.Exclude.Or(false)})
+	if err != nil {
+		return nil, err
+	}
+	for _, r := range refs {
+		h.Wanted.ResetBackoff(ctx, r)
+	}
+	return &gen.AdultBulkResult{Changed: n}, nil
+}
+
+// ListAdultExclusions implements GET /adult/exclusions.
+func (h *Handler) ListAdultExclusions(ctx context.Context) ([]gen.AdultExclusion, error) {
+	if _, err := h.adultUser(ctx); err != nil {
+		return nil, err
+	}
+	list, err := h.Adult.Exclusions(ctx)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]gen.AdultExclusion, 0, len(list))
+	for _, e := range list {
+		out = append(out, gen.AdultExclusion{ID: e.ID, Kind: gen.AdultExclusionKind(e.Kind), StashdbId: optStr(e.StashDBID), TpdbId: optStr(e.TPDBID),
+			Title: e.Title, Studio: optStr(e.Studio), ReleaseDate: optStr(e.ReleaseDate), AddedAt: e.AddedAt})
+	}
+	return out, nil
+}
+
+// DeleteAdultExclusion implements DELETE /adult/exclusions/{id}.
+func (h *Handler) DeleteAdultExclusion(ctx context.Context, p gen.DeleteAdultExclusionParams) error {
+	if _, err := h.adultManager(ctx); err != nil {
+		return err
+	}
+	return h.Adult.DeleteExclusion(ctx, p.ID)
 }
 
 // ListAdultItems implements GET /adult/items.
@@ -574,7 +639,10 @@ func (h *Handler) ListAdultItems(ctx context.Context, p gen.ListAdultItemsParams
 		return nil, err
 	}
 	f := adult.ItemFilter{Kind: string(p.Kind.Or("")), StudioID: p.StudioId.Or(0), PerformerID: p.PerformerId.Or(0), Term: p.Term.Or(""),
-		Missing: p.Missing.Or(false), Limit: p.Limit.Or(100), Offset: p.Offset.Or(0)}
+		Missing: p.Missing.Or(false), Status: string(p.Status.Or("")), Sort: string(p.Sort.Or("")), Limit: p.Limit.Or(100), Offset: p.Offset.Or(0)}
+	if v, ok := p.Monitored.Get(); ok {
+		f.Monitored = &v
+	}
 	list, total, err := h.Adult.Items(ctx, f)
 	if err != nil {
 		return nil, err
@@ -631,7 +699,7 @@ func (h *Handler) DeleteAdultItem(ctx context.Context, p gen.DeleteAdultItemPara
 	if _, err := h.adultManager(ctx); err != nil {
 		return err
 	}
-	return h.Adult.DeleteItem(ctx, p.ID, p.DeleteFiles.Or(false))
+	return h.Adult.DeleteItem(ctx, p.ID, adult.RemoveOptions{DeleteFiles: p.DeleteFiles.Or(false), Exclude: p.Exclude.Or(false)})
 }
 
 func (h *Handler) adultRef(ctx context.Context, id int64) (library.Ref, error) {

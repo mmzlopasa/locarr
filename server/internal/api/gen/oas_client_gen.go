@@ -135,6 +135,12 @@ type Invoker interface {
 	//
 	// GET /filesystem
 	BrowseFilesystem(ctx context.Context, params BrowseFilesystemParams) (*FolderListing, error)
+	// BulkAdultItems invokes bulkAdultItems operation.
+	//
+	// Remove, monitor or unmonitor many items at once (managers).
+	//
+	// POST /adult/items/bulk
+	BulkAdultItems(ctx context.Context, request *AdultBulkRequest) (*AdultBulkResult, error)
 	// CancelJob invokes cancelJob operation.
 	//
 	// Cancel a queued or running job (administrators).
@@ -343,6 +349,12 @@ type Invoker interface {
 	//
 	// DELETE /adult/blocklist/{id}
 	DeleteAdultBlocklistTerm(ctx context.Context, params DeleteAdultBlocklistTermParams) error
+	// DeleteAdultExclusion invokes deleteAdultExclusion operation.
+	//
+	// Undo "not interested" (the next refresh may add the item again).
+	//
+	// DELETE /adult/exclusions/{id}
+	DeleteAdultExclusion(ctx context.Context, params DeleteAdultExclusionParams) error
 	// DeleteAdultItem invokes deleteAdultItem operation.
 	//
 	// Remove an item (its file goes to the recycle bin only with deleteFiles).
@@ -351,7 +363,7 @@ type Invoker interface {
 	DeleteAdultItem(ctx context.Context, params DeleteAdultItemParams) error
 	// DeleteAdultPerformer invokes deleteAdultPerformer operation.
 	//
-	// Forget a performer (their scenes stay).
+	// Forget a performer (their scenes stay unless removeScenes).
 	//
 	// DELETE /adult/performers/{id}
 	DeleteAdultPerformer(ctx context.Context, params DeleteAdultPerformerParams) error
@@ -363,7 +375,8 @@ type Invoker interface {
 	DeleteAdultRootFolder(ctx context.Context, params DeleteAdultRootFolderParams) error
 	// DeleteAdultStudio invokes deleteAdultStudio operation.
 	//
-	// Remove a studio and its scenes (files go to the recycle bin only with deleteFiles).
+	// Remove a studio and (unless keepScenes) its scenes (files go to the recycle bin only with
+	// deleteFiles).
 	//
 	// DELETE /adult/studios/{id}
 	DeleteAdultStudio(ctx context.Context, params DeleteAdultStudioParams) error
@@ -1154,6 +1167,12 @@ type Invoker interface {
 	//
 	// GET /adult/blocklist
 	ListAdultBlocklist(ctx context.Context) ([]AdultBlockTerm, error)
+	// ListAdultExclusions invokes listAdultExclusions operation.
+	//
+	// The "not interested" list (newest first).
+	//
+	// GET /adult/exclusions
+	ListAdultExclusions(ctx context.Context) ([]AdultExclusion, error)
 	// ListAdultItems invokes listAdultItems operation.
 	//
 	// Scenes and movies.
@@ -1559,7 +1578,7 @@ type Invoker interface {
 	// images are never returned.
 	//
 	// GET /adult/lookup
-	LookupAdult(ctx context.Context, params LookupAdultParams) ([]AdultLookupResult, error)
+	LookupAdult(ctx context.Context, params LookupAdultParams) (*AdultLookupPage, error)
 	// LookupArtists invokes lookupArtists operation.
 	//
 	// Search MusicBrainz for artists by name, or by id ("mbid:").
@@ -1706,6 +1725,12 @@ type Invoker interface {
 	//
 	// PUT /settings/requests
 	PutRequestSettings(ctx context.Context, request *RequestSettings) (*RequestSettings, error)
+	// RefreshAdultPerformer invokes refreshAdultPerformer operation.
+	//
+	// Look for new scenes of a followed performer now (and fetch a missing image).
+	//
+	// POST /adult/performers/{id}/refresh
+	RefreshAdultPerformer(ctx context.Context, params RefreshAdultPerformerParams) (*QueuedCount, error)
 	// RefreshAdultStudio invokes refreshAdultStudio operation.
 	//
 	// Look for new scenes of a studio now.
@@ -4571,6 +4596,122 @@ func (c *Client) sendBrowseFilesystem(ctx context.Context, params BrowseFilesyst
 
 	stage = "DecodeResponse"
 	result, err := decodeBrowseFilesystemResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// BulkAdultItems invokes bulkAdultItems operation.
+//
+// Remove, monitor or unmonitor many items at once (managers).
+//
+// POST /adult/items/bulk
+func (c *Client) BulkAdultItems(ctx context.Context, request *AdultBulkRequest) (*AdultBulkResult, error) {
+	res, err := c.sendBulkAdultItems(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendBulkAdultItems(ctx context.Context, request *AdultBulkRequest) (res *AdultBulkResult, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("bulkAdultItems"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/adult/items/bulk"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, BulkAdultItemsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/adult/items/bulk"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeBulkAdultItemsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, BulkAdultItemsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeBulkAdultItemsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -8510,6 +8651,137 @@ func (c *Client) sendDeleteAdultBlocklistTerm(ctx context.Context, params Delete
 	return result, nil
 }
 
+// DeleteAdultExclusion invokes deleteAdultExclusion operation.
+//
+// Undo "not interested" (the next refresh may add the item again).
+//
+// DELETE /adult/exclusions/{id}
+func (c *Client) DeleteAdultExclusion(ctx context.Context, params DeleteAdultExclusionParams) error {
+	_, err := c.sendDeleteAdultExclusion(ctx, params)
+	return err
+}
+
+func (c *Client) sendDeleteAdultExclusion(ctx context.Context, params DeleteAdultExclusionParams) (res *DeleteAdultExclusionNoContent, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteAdultExclusion"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/adult/exclusions/{id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteAdultExclusionOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/adult/exclusions/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, DeleteAdultExclusionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteAdultExclusionResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DeleteAdultItem invokes deleteAdultItem operation.
 //
 // Remove an item (its file goes to the recycle bin only with deleteFiles).
@@ -8598,6 +8870,23 @@ func (c *Client) sendDeleteAdultItem(ctx context.Context, params DeleteAdultItem
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "exclude" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "exclude",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Exclude.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -8664,7 +8953,7 @@ func (c *Client) sendDeleteAdultItem(ctx context.Context, params DeleteAdultItem
 
 // DeleteAdultPerformer invokes deleteAdultPerformer operation.
 //
-// Forget a performer (their scenes stay).
+// Forget a performer (their scenes stay unless removeScenes).
 //
 // DELETE /adult/performers/{id}
 func (c *Client) DeleteAdultPerformer(ctx context.Context, params DeleteAdultPerformerParams) error {
@@ -8730,6 +9019,61 @@ func (c *Client) sendDeleteAdultPerformer(ctx context.Context, params DeleteAdul
 		pathParts[1] = encoded
 	}
 	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "removeScenes" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "removeScenes",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.RemoveScenes.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "deleteFiles" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "deleteFiles",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.DeleteFiles.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "exclude" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "exclude",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Exclude.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "DELETE", u)
@@ -8926,7 +9270,8 @@ func (c *Client) sendDeleteAdultRootFolder(ctx context.Context, params DeleteAdu
 
 // DeleteAdultStudio invokes deleteAdultStudio operation.
 //
-// Remove a studio and its scenes (files go to the recycle bin only with deleteFiles).
+// Remove a studio and (unless keepScenes) its scenes (files go to the recycle bin only with
+// deleteFiles).
 //
 // DELETE /adult/studios/{id}
 func (c *Client) DeleteAdultStudio(ctx context.Context, params DeleteAdultStudioParams) error {
@@ -9005,6 +9350,40 @@ func (c *Client) sendDeleteAdultStudio(ctx context.Context, params DeleteAdultSt
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.DeleteFiles.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "keepScenes" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "keepScenes",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.KeepScenes.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "exclude" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "exclude",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Exclude.Get(); ok {
 				return e.EncodeValue(conv.BoolToString(val))
 			}
 			return nil
@@ -25346,6 +25725,119 @@ func (c *Client) sendListAdultBlocklist(ctx context.Context) (res []AdultBlockTe
 	return result, nil
 }
 
+// ListAdultExclusions invokes listAdultExclusions operation.
+//
+// The "not interested" list (newest first).
+//
+// GET /adult/exclusions
+func (c *Client) ListAdultExclusions(ctx context.Context) ([]AdultExclusion, error) {
+	res, err := c.sendListAdultExclusions(ctx)
+	return res, err
+}
+
+func (c *Client) sendListAdultExclusions(ctx context.Context) (res []AdultExclusion, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listAdultExclusions"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/adult/exclusions"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListAdultExclusionsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/adult/exclusions"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListAdultExclusionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListAdultExclusionsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ListAdultItems invokes listAdultItems operation.
 //
 // Scenes and movies.
@@ -25478,6 +25970,57 @@ func (c *Client) sendListAdultItems(ctx context.Context, params ListAdultItemsPa
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.Missing.Get(); ok {
 				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "status" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "status",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Status.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "monitored" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "monitored",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Monitored.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Sort.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
 			}
 			return nil
 		}); err != nil {
@@ -34265,12 +34808,12 @@ func (c *Client) sendLogout(ctx context.Context) (res *LogoutNoContent, err erro
 // images are never returned.
 //
 // GET /adult/lookup
-func (c *Client) LookupAdult(ctx context.Context, params LookupAdultParams) ([]AdultLookupResult, error) {
+func (c *Client) LookupAdult(ctx context.Context, params LookupAdultParams) (*AdultLookupPage, error) {
 	res, err := c.sendLookupAdult(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendLookupAdult(ctx context.Context, params LookupAdultParams) (res []AdultLookupResult, err error) {
+func (c *Client) sendLookupAdult(ctx context.Context, params LookupAdultParams) (res *AdultLookupPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("lookupAdult"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -34351,6 +34894,40 @@ func (c *Client) sendLookupAdult(ctx context.Context, params LookupAdultParams) 
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			return e.EncodeValue(conv.StringToString(params.Term))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Sort.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Page.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
 		}); err != nil {
 			return res, errors.Wrap(err, "encode query")
 		}
@@ -37462,6 +38039,138 @@ func (c *Client) sendPutRequestSettings(ctx context.Context, request *RequestSet
 
 	stage = "DecodeResponse"
 	result, err := decodePutRequestSettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RefreshAdultPerformer invokes refreshAdultPerformer operation.
+//
+// Look for new scenes of a followed performer now (and fetch a missing image).
+//
+// POST /adult/performers/{id}/refresh
+func (c *Client) RefreshAdultPerformer(ctx context.Context, params RefreshAdultPerformerParams) (*QueuedCount, error) {
+	res, err := c.sendRefreshAdultPerformer(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendRefreshAdultPerformer(ctx context.Context, params RefreshAdultPerformerParams) (res *QueuedCount, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("refreshAdultPerformer"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/adult/performers/{id}/refresh"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RefreshAdultPerformerOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/adult/performers/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/refresh"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, RefreshAdultPerformerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeRefreshAdultPerformerResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
