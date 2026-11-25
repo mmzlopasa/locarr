@@ -134,7 +134,8 @@
     "translation_nothing_missing": "Ne nedostaje nijedan traženi jezik.",
     "translation_file_exists": "Titl koji Locarr nije preveo već ima to ime; nikad se ne prepisuje.",
     "translation_unsupported_language": "Servis za prijevod ne nudi taj jezik.",
-    "translation_line_mismatch": "Servis za prijevod vratio je drugačiji broj redaka."
+    "translation_line_mismatch": "Servis za prijevod vratio je drugačiji broj redaka.",
+    "protected_term": "Ovaj pojam je uvijek blokiran i ne treba ga dodavati."
   },
   "errorPage": {
     "title": "Ova stranica se ne može prikazati",
@@ -1421,7 +1422,9 @@
     "protocol_disabled": "{{protocol}} je isključen u profilu kašnjenja {{profile}}.",
     "delayed": "Čeka se još {{remaining}} ({{protocol}} kašnjenje {{delay}}, {{profile}}).",
     "season_pack_not_wanted": "Sezonski paket, a traži se jedna epizoda",
-    "episode_not_wanted": "Ni jedna epizoda iz izdanja nije tražena"
+    "episode_not_wanted": "Ni jedna epizoda iz izdanja nije tražena",
+    "blocked_tag": "Ime sadrži „{{term}}” s vašeg popisa blokiranih pojmova.",
+    "blocked_tag_protected": "Ime sadrži „{{term}}”, što je uvijek blokirano (sadržaj s maloljetnicima)."
   },
   "languageNames": {
     "en": "engleski",
@@ -1642,7 +1645,16 @@
     "retrying": "Traženje…",
     "retryQueued": "Ponovno se traži. Ograničenja indexera i dalje vrijede.",
     "retryHint": "Poništava čekanje između automatskih pretraga i odmah traži.",
-    "indexerErrors": "U zadnjoj pretrazi nisu radili: {{list}}."
+    "indexerErrors": "U zadnjoj pretrazi nisu radili: {{list}}.",
+    "chips": {
+      "quality": "{{qualities}} nije dopušteno u {{profile}}",
+      "blockedOwn": "Blokirani pojam „{{term}}”",
+      "blockedProtected": "Uvijek blokirano: „{{term}}”",
+      "blocklistLink": "Otvori popis blokiranih pojmova"
+    },
+    "reasonQualityMany": "{{qualities}} nisu dopuštene u profilu {{profile}}",
+    "adultProfileHint": "Imena scena bez rezolucije broje se kao Unknown. Profil koji dopušta svaku kvalitetu nudi se u Postavke → Sadržaj za odrasle.",
+    "adultProfileLink": "Postavke sadržaja za odrasle"
   },
   "rejectionCodes": {
     "parse_failed": "ime nečitljivo",
@@ -1771,6 +1783,28 @@
       "already_queued": "Već je u redu preuzimanja.",
       "no_client": "Nijedan download klijent ne prima ovo izdanje.",
       "attempts_exhausted": "Zaustavljeno nakon {{attempts}} neuspjela pokušaja; sljedeća pretraga pokušava ponovno."
+    },
+    "cycle": {
+      "title": "{{source}} pretraga — rezultata: {{count}}",
+      "queriesCount": "upita: {{count}}",
+      "queries": "Upiti, redom kojim su isprobani",
+      "expand": "Prikaži upite i odbijena izdanja",
+      "rejected": "Odbijena izdanja"
+    },
+    "delete": {
+      "open": "Obriši",
+      "row": "Obriši ovaj redak",
+      "group": "Obriši ove retke ({{count}})",
+      "note": "Briše se samo vremenska crta; datoteke, popis blokiranih i preuzimanja ostaju."
+    },
+    "clear": {
+      "open": "Očisti povijest ove stavke",
+      "title": "Očisti povijest ove stavke",
+      "count": "Redaka za brisanje: {{count}}",
+      "none": "Nema ničega za brisanje.",
+      "what": "Briše se: svaki redak vremenske crte ove stavke — pretrage, odluke, preuzimanja, koraci preuzimanja, uvozi i bilješke. Pretrage nestaju i iz dnevnika pretraga.",
+      "kept": "Ostaju: datoteke, popis blokiranih, sama preuzimanja, raspored pretraga i profil kvalitete. Ovo se ne može poništiti.",
+      "confirm": "Obriši ({{count}})"
     }
   },
   "interactive": {
@@ -4160,9 +4194,24 @@
     },
     "blocklist": {
       "title": "Blokirani pojmovi",
-      "hint": "Izdanja, uvozi i unosi metapodataka koji sadrže neki od ovih pojmova se odbijaju (blocked_tag). Popis počinje pojmovima koji se često koriste za nezakonit sadržaj ili sadržaj bez pristanka.",
+      "hint": "Izdanja, uvozi i unosi metapodataka koji sadrže neki od vaših pojmova se odbijaju (blocked_tag). Samo cijele riječi, bez obzira na velika slova i razdjelnike. Sve ostalo je dopušteno.",
       "term": "Pojam",
-      "add": "Blokiraj pojam"
+      "add": "Blokiraj pojam",
+      "protectedTitle": "Uvijek blokirano: sadržaj s maloljetnicima",
+      "protectedHint": "Ovi pojmovi se ne mogu ukloniti. Umjetničko ime izvođača koje sadrži neki od njih se ne računa.",
+      "own": "Vaši pojmovi",
+      "empty": "Još nema pojmova."
+    },
+    "profile": {
+      "title": "Profil kvalitete za sadržaj za odrasle",
+      "hint": "Imena scena na javnim stranicama često nemaju rezoluciju ni izvor, pa se broje kao Unknown, što drugi profili odbijaju. {{profile}} dopušta svaku kvalitetu, i Unknown, i zadan je za nove stavke.",
+      "usage": "Na drugom profilu: stavki {{items}}, praćenih studija {{studios}}, praćenih izvođača {{performers}}.",
+      "apply": "Koristi {{profile}} za sve stavke za odrasle",
+      "applyConfirm": "Da, promijeni profil",
+      "applyNote": "Mijenja se samo profil kvalitete; datoteke, praćenje i povijest ostaju.",
+      "applied": "Promijenjeno stavki: {{count}}",
+      "allOpen": "Sve stavke za odrasle koriste {{profile}}.",
+      "missing": "Profil koji dopušta svaku kvalitetu je obrisan. Pod Zadano odaberite profil koji dopušta Unknown."
     }
   },
   "discovery": {

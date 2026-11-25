@@ -134,7 +134,8 @@
     "translation_nothing_missing": "No wanted language is missing.",
     "translation_file_exists": "A subtitle that Locarr did not translate already has this name; it is never overwritten.",
     "translation_unsupported_language": "The translation service does not offer this language.",
-    "translation_line_mismatch": "The translation service returned a different number of lines."
+    "translation_line_mismatch": "The translation service returned a different number of lines.",
+    "protected_term": "This term is always blocked and does not need to be added."
   },
   "errorPage": {
     "title": "This page could not be shown",
@@ -1421,7 +1422,9 @@
     "protocol_disabled": "{{protocol}} is turned off in delay profile {{profile}}.",
     "delayed": "Waiting {{remaining}} more ({{protocol}} delay {{delay}}, {{profile}}).",
     "season_pack_not_wanted": "A season pack; this search is for one episode",
-    "episode_not_wanted": "None of the release's episodes is wanted"
+    "episode_not_wanted": "None of the release's episodes is wanted",
+    "blocked_tag": "The name contains “{{term}}” from your blocklist.",
+    "blocked_tag_protected": "The name contains “{{term}}”, which is always blocked (content involving minors)."
   },
   "languageNames": {
     "en": "English",
@@ -1642,7 +1645,16 @@
     "retrying": "Searching…",
     "retryQueued": "Searching again now. Indexer limits still apply.",
     "retryHint": "Clears the wait between automatic searches and searches right away.",
-    "indexerErrors": "Failing in the last search: {{list}}."
+    "indexerErrors": "Failing in the last search: {{list}}.",
+    "chips": {
+      "quality": "{{qualities}} not allowed in {{profile}}",
+      "blockedOwn": "Blocked term “{{term}}”",
+      "blockedProtected": "Always blocked: “{{term}}”",
+      "blocklistLink": "Open the tag blocklist"
+    },
+    "reasonQualityMany": "{{qualities}} are not allowed in profile {{profile}}",
+    "adultProfileHint": "Scene names without a resolution count as Unknown. A profile that allows every quality is offered in Settings → Adult content.",
+    "adultProfileLink": "Adult content settings"
   },
   "rejectionCodes": {
     "parse_failed": "name not readable",
@@ -1771,6 +1783,28 @@
       "already_queued": "It is already in the download queue.",
       "no_client": "No download client takes this release.",
       "attempts_exhausted": "Stopped after {{attempts}} failed grabs; the next search tries again."
+    },
+    "cycle": {
+      "title": "{{source}} search — results: {{count}}",
+      "queriesCount": "queries: {{count}}",
+      "queries": "Queries, in the order tried",
+      "expand": "Show the queries and the rejected releases",
+      "rejected": "Rejected releases"
+    },
+    "delete": {
+      "open": "Delete",
+      "row": "Delete this row",
+      "group": "Delete these rows ({{count}})",
+      "note": "Only the timeline goes; files, the blocklist and downloads stay."
+    },
+    "clear": {
+      "open": "Clear this item's history",
+      "title": "Clear this item's history",
+      "count": "Rows to delete: {{count}}",
+      "none": "There is nothing to delete.",
+      "what": "Deleted: every row of this item's timeline — searches, decisions, grabs, download steps, imports and notes. Searches also leave the search log.",
+      "kept": "Kept: the files, the blocklist, the downloads themselves, the search schedule and the quality profile. This cannot be undone.",
+      "confirm": "Delete ({{count}})"
     }
   },
   "interactive": {
@@ -4160,9 +4194,24 @@
     },
     "blocklist": {
       "title": "Tag blocklist",
-      "hint": "Releases, imports and metadata entries containing one of these terms are refused (blocked_tag). The list starts with terms commonly used for illegal or non-consensual content.",
+      "hint": "Releases, imports and metadata entries containing one of your terms are refused (blocked_tag). Whole words only, in any case and with any separator. Everything else is allowed.",
       "term": "Term",
-      "add": "Block term"
+      "add": "Block term",
+      "protectedTitle": "Always blocked: content involving minors",
+      "protectedHint": "These terms cannot be removed. A performer's own stage name that contains one does not count.",
+      "own": "Your terms",
+      "empty": "No terms yet."
+    },
+    "profile": {
+      "title": "Quality profile for adult items",
+      "hint": "Scene names on public sites often have no resolution or source, so they count as Unknown, which other profiles refuse. {{profile}} allows every quality, Unknown included, and is the default for new items.",
+      "usage": "On another profile: {{items}} items, {{studios}} followed studios, {{performers}} followed performers.",
+      "apply": "Use {{profile}} for all adult items",
+      "applyConfirm": "Yes, change the profile",
+      "applyNote": "Only the quality profile changes; files, monitoring and history stay.",
+      "applied": "Items changed: {{count}}",
+      "allOpen": "Every adult item uses {{profile}}.",
+      "missing": "The profile that allows every quality was deleted. Pick a profile that allows Unknown under Defaults."
     }
   },
   "discovery": {

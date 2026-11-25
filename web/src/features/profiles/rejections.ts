@@ -50,6 +50,9 @@ export function describeRejection(t: TFunction, r: Rejection, locale: string): s
     case "indexer_limited":
       v.until = p.until ? new Intl.DateTimeFormat(locale, { dateStyle: "short", timeStyle: "short" }).format(new Date(String(p.until))) : "";
       break;
+    case "blocked_tag":
+      if (p.protected === true) return t("rejections.blocked_tag_protected", { ...v, defaultValue: r.message });
+      break;
     case "wrong_episode":
       if (!r.params || Object.keys(p).length === 0) return t("rejections.wrong_episode_none", { defaultValue: r.message });
       break;

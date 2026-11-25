@@ -1,5 +1,6 @@
 import type { TFunction } from "i18next";
-import type { Explanation, TimelineEvent } from "@/api/client";
+import type { Explanation, ReasonCount, TimelineEvent } from "@/api/client";
+import { describeRejection } from "@/features/profiles/rejections";
 import { formatDateTime } from "@/components/format";
 import { describeSubtitleEvent, subtitleEventTone } from "@/features/subtitles/common";
 
@@ -178,7 +179,7 @@ export function describeExplanation(t: TFunction, ex: Explanation, locale: strin
   const p = (ex.params ?? {}) as Data;
   const when = (v: unknown) => (v ? formatDateTime(str(v), locale) : t("explain.unknownTime"));
   const reason = ex.reasons[0];
-  const reasonText = reason ? t(`rejectionCodes.${reason.code}`, { defaultValue: reason.example }) : "";
+  const reasonText = reason ? reasonSentence(t, reason, locale).replace(/[.。]$/, "") : "";
   const vars = {
     progress: Math.round(Number(p.progress ?? 0) * 100),
     title: str(p.title),
@@ -203,4 +204,31 @@ export function describeExplanation(t: TFunction, ex: Explanation, locale: strin
     return `${text} ${t("explain.indexerErrors", { list })}`;
   }
   return text;
+}
+
+/**
+ * The most common rejection as a sentence: which quality and which profile,
+ * which blocked term (D-109). Summaries from before that only have the code.
+ */
+export function reasonSentence(t: TFunction, r: ReasonCount, locale: string): string {
+  const params = (r.params ?? {}) as Data;
+  const values = r.values ?? [];
+  if (Object.keys(params).length === 0) return t(`rejectionCodes.${r.code}`, { defaultValue: r.example });
+  if (r.code === "quality_not_allowed" && values.length > 1) {
+    return t("explain.reasonQualityMany", { qualities: values.join(", "), profile: str(params.profile) });
+  }
+  return describeRejection(t, { code: r.code, message: r.example, params }, locale);
+}
+
+/** A short chip for one rejection reason: the quality and profile, or the term. */
+export function reasonChip(t: TFunction, r: ReasonCount): string {
+  const params = (r.params ?? {}) as Data;
+  const values = r.values ?? [];
+  if (r.code === "quality_not_allowed" && values.length > 0 && params.profile) {
+    return t("explain.chips.quality", { qualities: values.join(", "), profile: str(params.profile) });
+  }
+  if (r.code === "blocked_tag" && values.length > 0) {
+    return t(params.protected === true ? "explain.chips.blockedProtected" : "explain.chips.blockedOwn", { term: values.join(", ") });
+  }
+  return t(`rejectionCodes.${r.code}`, { defaultValue: r.code });
 }

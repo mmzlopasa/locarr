@@ -5050,6 +5050,23 @@
         }
       }
     },
+    "errors.protected_term": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This term is always blocked and does not need to be added."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovaj pojam je uvijek blokiran i ne treba ga dodavati."
+          }
+        }
+      }
+    },
     "errors.provider_unavailable": {
       "extractionState": "manual",
       "localizations": {
@@ -5866,6 +5883,108 @@
         }
       }
     },
+    "explain.adultProfileHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scene names without a resolution count as Unknown. A profile that allows every quality is offered in Settings → Adult content."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imena scena bez rezolucije broje se kao Unknown. Profil koji dopušta svaku kvalitetu nudi se u Postavke → Sadržaj za odrasle."
+          }
+        }
+      }
+    },
+    "explain.adultProfileLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adult content settings"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postavke sadržaja za odrasle"
+          }
+        }
+      }
+    },
+    "explain.chips.blockedOwn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blocked term “{{term}}”"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blokirani pojam „{{term}}”"
+          }
+        }
+      }
+    },
+    "explain.chips.blockedProtected": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Always blocked: “{{term}}”"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvijek blokirano: „{{term}}”"
+          }
+        }
+      }
+    },
+    "explain.chips.blocklistLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the tag blocklist"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otvori popis blokiranih pojmova"
+          }
+        }
+      }
+    },
+    "explain.chips.quality": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{qualities}} not allowed in {{profile}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{qualities}} nije dopušteno u {{profile}}"
+          }
+        }
+      }
+    },
     "explain.codes.all_rejected": {
       "extractionState": "manual",
       "localizations": {
@@ -6151,6 +6270,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "U zadnjoj pretrazi nisu radili: {{list}}."
+          }
+        }
+      }
+    },
+    "explain.reasonQualityMany": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{qualities}} are not allowed in profile {{profile}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{qualities}} nisu dopuštene u profilu {{profile}}"
           }
         }
       }
@@ -18939,6 +19075,125 @@
         }
       }
     },
+    "timeline.clear.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete ({{count}})"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši ({{count}})"
+          }
+        }
+      }
+    },
+    "timeline.clear.count": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rows to delete: {{count}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redaka za brisanje: {{count}}"
+          }
+        }
+      }
+    },
+    "timeline.clear.kept": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kept: the files, the blocklist, the downloads themselves, the search schedule and the quality profile. This cannot be undone."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ostaju: datoteke, popis blokiranih, sama preuzimanja, raspored pretraga i profil kvalitete. Ovo se ne može poništiti."
+          }
+        }
+      }
+    },
+    "timeline.clear.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There is nothing to delete."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nema ničega za brisanje."
+          }
+        }
+      }
+    },
+    "timeline.clear.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear this item's history"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Očisti povijest ove stavke"
+          }
+        }
+      }
+    },
+    "timeline.clear.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear this item's history"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Očisti povijest ove stavke"
+          }
+        }
+      }
+    },
+    "timeline.clear.what": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted: every row of this item's timeline — searches, decisions, grabs, download steps, imports and notes. Searches also leave the search log."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Briše se: svaki redak vremenske crte ove stavke — pretrage, odluke, preuzimanja, koraci preuzimanja, uvozi i bilješke. Pretrage nestaju i iz dnevnika pretraga."
+          }
+        }
+      }
+    },
     "timeline.coverSources.download": {
       "extractionState": "manual",
       "localizations": {
@@ -18952,6 +19207,159 @@
           "stringUnit": {
             "state": "translated",
             "value": "iz preuzimanja"
+          }
+        }
+      }
+    },
+    "timeline.cycle.expand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show the queries and the rejected releases"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži upite i odbijena izdanja"
+          }
+        }
+      }
+    },
+    "timeline.cycle.queries": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queries, in the order tried"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upiti, redom kojim su isprobani"
+          }
+        }
+      }
+    },
+    "timeline.cycle.queriesCount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "queries: {{count}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "upita: {{count}}"
+          }
+        }
+      }
+    },
+    "timeline.cycle.rejected": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rejected releases"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odbijena izdanja"
+          }
+        }
+      }
+    },
+    "timeline.cycle.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{source}} search — results: {{count}}"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{{source}} pretraga — rezultata: {{count}}"
+          }
+        }
+      }
+    },
+    "timeline.delete.group": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete these rows ({{count}})"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši ove retke ({{count}})"
+          }
+        }
+      }
+    },
+    "timeline.delete.note": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only the timeline goes; files, the blocklist and downloads stay."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Briše se samo vremenska crta; datoteke, popis blokiranih i preuzimanja ostaju."
+          }
+        }
+      }
+    },
+    "timeline.delete.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši"
+          }
+        }
+      }
+    },
+    "timeline.delete.row": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete this row"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obriši ovaj redak"
           }
         }
       }
