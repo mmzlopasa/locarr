@@ -39,7 +39,7 @@ Unosi koje izvor vodi kao obrisane ili sporne nikad se ne prikazuju ni ne uvoze.
 
 - **Mape za odrasle** su odvojene od mapa za filmove, serije i glazbu (npr. `/data/media/adult`).
 - **Indexeri**: kategorije 6000 (XXX) se ne koriste dok za pojedini indexer ne uključite „Indexeri s kategorijama za odrasle”.
-  Izdanja iz tih kategorija nikad se ne pojavljuju u običnim pretragama. Koji javni indexeri rade, vidi odjeljak 9.
+  Izdanja iz tih kategorija nikad se ne pojavljuju u običnim pretragama. Koji javni indexeri rade, vidi odjeljak 11.
 - **Imena**: predlošci za mapu i datoteku scene i filma, s oznakama `{Studio}`, `{Date}`, `{Title}`, `{Performers}`, `{Year}`,
   `{Quality}`, `{ReleaseGroup}`. Zadano: `{Studio}/{Studio} - {Date} - {Title} [Izvođači] {Quality}`.
 
@@ -54,11 +54,46 @@ Odrasli → **Dodaj**: odaberite izvor i vrstu (studio, scena, film, izvođač) 
 ## 7. Blokirani pojmovi
 
 Postavke → Sadržaj za odrasle → **Blokirani pojmovi**. Izdanja (pretraga, RSS, ručni grab), uvozi i unosi metapodataka koji
-sadrže neki od pojmova odbijaju se s razlogom `blocked_tag`. Pri prvom uključivanju popis se puni konzervativnim pojmovima
-koji se često koriste za nezakonit sadržaj ili sadržaj bez pristanka; možete dodavati svoje. Ako popis ispraznite, i dalje
-vrijede zadani pojmovi.
+sadrže neki od pojmova odbijaju se s razlogom `blocked_tag`.
 
-## 8. Privatnost
+- **Uvijek blokirano: sadržaj s maloljetnicima.** Mali stalni popis (underage, under age, child, children, preteen,
+  pre teen, jailbait, lolita, loli, shota, pthc) vrijedi uvijek, prikazan je kao nepromjenjive oznake i ne može se ukloniti
+  ni dodati na vlastiti popis.
+- **Vaši pojmovi.** Popis je na početku prazan: sve ostalo je dopušteno dok sami ne dodate pojam. Što uklonite, ostaje
+  uklonjeno (ni ponovno uključivanje, ni ponovno pokretanje, ni nadogradnja ništa ne vraćaju).
+- **Kako se uspoređuje.** Samo cijele riječi, bez obzira na velika i mala slova; točke, podvlake i crtice broje se kao razmaci,
+  a pojam od više riječi hvata se i napisan zajedno (`under.age`, `UnderAge`). „Childs” ili „Lolipop” se ne hvataju.
+  Umjetničko ime izvođača koje metapodaci navode za tu scenu (npr. „Lolita Cherry”) ne aktivira stalni popis.
+- Kad je izdanje odbijeno, „Zašto nije ovdje?” i odluka na vremenskoj crti kažu koji je pojam pogođen i je li s vašeg popisa
+  ili sa stalnog; administrator klikom na oznaku otvara ovaj popis.
+
+Nadogradnja s v0.6.1: ranije zadano upisani pojmovi uklonjeni su s popisa (i „teen”/„teens” koji su hvatali studije poput
+„Broken Teens”); pojmovi koje ste dodali sami ostaju.
+
+## 8. Kvaliteta
+
+Javne stranice scene često imenuju bez rezolucije i izvora (`Studio.24.01.15.Izvođač.Naslov.XXX.MP4-GRUPA`), pa je kvaliteta
+**Unknown**, a profili uvezeni iz drugih aplikacija (i Locarrov „Any”) Unknown ne dopuštaju. Rezultat je bio „kvaliteta nije
+dopuštena” za gotovo svako izdanje.
+
+- Locarr sada čita i `SD` (kao 480p), `FullHD`/`Full HD`/`FHD` (1080p), `UHD`/`4K` (2160p) i dimenzije poput `1920x1080`.
+- Profil **Any (Unknown allowed)** dopušta svaku kvalitetu, i Unknown. Zadan je za nove stavke za odrasle, osim ako ste
+  pod Zadano sami odabrali drugi profil. Ime je namjerno neutralno jer se vidi na popisu profila svima.
+- Postojeće stavke zadržavaju svoj profil. U Postavke → Sadržaj za odrasle → **Profil kvalitete za sadržaj za odrasle**
+  vidi se koliko stavki, praćenih studija i izvođača je na drugom profilu, a gumb **„Koristi Any (Unknown allowed) za sve
+  stavke za odrasle”** ih prebacuje jednim klikom (mijenja se samo profil).
+- „Zašto nije ovdje?” sada kaže koja je kvaliteta nađena i koji ju je profil odbio, npr. „Unknown nije dopušteno u HD-1080p”.
+
+## 9. Vremenska crta i brisanje
+
+Jedan ciklus pretrage (svi oblici upita iz odjeljka 11) prikazuje se kao **jedan redak** „Automatska pretraga — rezultata: N”
+s brojem po indexeru zbrojenim preko upita i odlukom ispod; strelica otvara upite redom kojim su isprobani i odbijena izdanja.
+Upravitelji biblioteke s dozvolom za sadržaj za odrasle mogu obrisati redak ili cijeli ciklus (ikona koša) i **„Očisti
+povijest ove stavke”** (potvrda kaže koliko redaka odlazi). Brišu se samo zapisi vremenske crte (pretrage nestaju i iz
+dnevnika pretraga); datoteke, blokirani pojmovi, preuzimanja i raspored pretraga ostaju. Bez dozvole za sadržaj za odrasle
+ti zapisi se ne vide i ne mogu obrisati, ni preko API-ja.
+
+## 10. Privatnost
 
 - Slike se spremaju na poslužitelj (`/config/adult/images`) i poslužuju samo korisnicima s dozvolom, s `Cache-Control: private, no-store`;
   nema javnih adresa slika.
@@ -71,7 +106,7 @@ vrijede zadani pojmovi.
 - Mobilne aplikacije zasad ne prikazuju sadržaj za odrasle.
 - Dnevnici poslužitelja (vidi ih samo administrator) mogu sadržavati imena izdanja.
 
-## 9. Javni indexeri za odrasle
+## 11. Javni indexeri za odrasle
 
 Pretraga za odrasle radi i samo s Locarrovim ugrađenim javnim stranicama, bez ikakvog računa:
 
