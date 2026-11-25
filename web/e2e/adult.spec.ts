@@ -42,7 +42,9 @@ test("adult content: off by default, enable with confirmation, grant, blurred im
   await page.getByTestId("adult-confirm").check();
   await page.getByTestId("adult-enable-confirm").click();
   await expect(page.getByText("On", { exact: true })).toBeVisible();
-  await expect(page.getByTestId("adult-blocklist")).toContainText("underage");
+  // The protected terms are fixed; the owner's own list starts empty (D-109).
+  await expect(page.getByTestId("adult-blocklist-protected")).toContainText("underage");
+  await expect(page.getByTestId("adult-blocklist-empty")).toBeVisible();
 
   // Enabled, but the administrator holds no view_adult yet: still hidden.
   expect((await page.request.get("/api/v1/adult/items")).status()).toBe(404);

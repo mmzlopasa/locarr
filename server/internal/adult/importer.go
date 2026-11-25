@@ -133,7 +133,11 @@ func (s *Service) ImportFile(ctx context.Context, it *Item, path, release string
 	if err != nil {
 		return "", err
 	}
-	if term, ok := s.BlockedText(ctx, release, filepath.Base(src)); ok {
+	names := make([]string, 0, len(it.Performers))
+	for _, p := range it.Performers {
+		names = append(names, p.Name)
+	}
+	if term, _, ok := s.BlockedMatch(ctx, names, release, filepath.Base(src)); ok {
 		return "", refuse(decision.CodeBlockedTag, "not imported: the name contains the blocked term %q", term)
 	}
 	name := release

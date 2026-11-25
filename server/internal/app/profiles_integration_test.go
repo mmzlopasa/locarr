@@ -34,7 +34,7 @@ func TestQualityProfilesAPI(t *testing.T) {
 	}
 	var profiles []apiProfile
 	e.expect(e.do("GET", "/api/v1/qualityprofiles", nil), 200).json(&profiles)
-	if len(profiles) != 11 {
+	if len(profiles) != 12 { // the defaults and the open profile of migration 00018
 		t.Fatalf("%d seeded profiles", len(profiles))
 	}
 	var hd apiProfile

@@ -92,9 +92,17 @@ type AddOptions struct {
 
 func (s *Service) defaults(ctx context.Context, o *AddOptions) error {
 	if o.QualityProfileID == 0 {
-		var err error
-		if o.QualityProfileID, err = getInt(ctx, s, DefaultProfile); err != nil {
-			return err
+		// The chosen default, else the open profile (D-109), else the first
+		// movie profile; a default that was deleted is skipped.
+		for _, k := range []settings.Key[int64]{DefaultProfile, OpenProfile} {
+			id, err := getInt(ctx, s, k)
+			if err != nil {
+				return err
+			}
+			if id != 0 && s.movieProfile(ctx, id) {
+				o.QualityProfileID = id
+				break
+			}
 		}
 	}
 	if o.RootFolderID == 0 {
@@ -113,14 +121,64 @@ func (s *Service) defaults(ctx context.Context, o *AddOptions) error {
 	if o.QualityProfileID == 0 {
 		_ = s.DB.R.QueryRowContext(ctx, `SELECT id FROM quality_profiles WHERE kind = 'movies' ORDER BY id LIMIT 1`).Scan(&o.QualityProfileID)
 	}
-	var n int
-	if err := s.DB.R.QueryRowContext(ctx, `SELECT count(*) FROM quality_profiles WHERE id = ? AND kind = 'movies'`, o.QualityProfileID).Scan(&n); err != nil {
-		return err
-	}
-	if n == 0 {
+	if !s.movieProfile(ctx, o.QualityProfileID) {
 		return ErrNoProfile
 	}
 	return nil
+}
+
+func (s *Service) movieProfile(ctx context.Context, id int64) bool {
+	var n int
+	_ = s.DB.R.QueryRowContext(ctx, `SELECT count(*) FROM quality_profiles WHERE id = ? AND kind = 'movies'`, id).Scan(&n)
+	return n > 0
+}
+
+// ProfileUsage is how the adult library uses quality profiles (D-109).
+type ProfileUsage struct {
+	// OpenProfileID is the profile that allows every quality (0 = gone).
+	OpenProfileID int64
+	// Items, Studios, Performers on another profile.
+	Items, Studios, Performers int
+}
+
+// ProfileUsage counts the items, followed studios and performers whose
+// profile is not the open one.
+func (s *Service) ProfileUsage(ctx context.Context) (ProfileUsage, error) {
+	var u ProfileUsage
+	if id, _ := getInt(ctx, s, OpenProfile); id != 0 && s.movieProfile(ctx, id) {
+		u.OpenProfileID = id
+	}
+	err := s.DB.R.QueryRowContext(ctx, `SELECT
+		(SELECT count(*) FROM adult_items WHERE quality_profile_id <> ?1),
+		(SELECT count(*) FROM adult_studios WHERE quality_profile_id <> ?1),
+		(SELECT count(*) FROM adult_performers WHERE quality_profile_id IS NOT NULL AND quality_profile_id <> ?1)`, u.OpenProfileID).
+		Scan(&u.Items, &u.Studios, &u.Performers)
+	return u, err
+}
+
+// UseProfileForAll puts every adult item, followed studio and performer on
+// one movie profile and returns how many items changed. Files, monitoring
+// and everything else stay.
+func (s *Service) UseProfileForAll(ctx context.Context, profileID int64) (int64, error) {
+	if !s.movieProfile(ctx, profileID) {
+		return 0, ErrNoProfile
+	}
+	var n int64
+	err := s.DB.Tx(ctx, func(tx *sql.Tx) error {
+		res, err := tx.ExecContext(ctx, `UPDATE adult_items SET quality_profile_id = ?, updated_at = ? WHERE quality_profile_id <> ?`,
+			profileID, db.Millis(s.now()), profileID)
+		if err != nil {
+			return err
+		}
+		n, _ = res.RowsAffected()
+		if _, err := tx.ExecContext(ctx, `UPDATE adult_studios SET quality_profile_id = ? WHERE quality_profile_id <> ?`, profileID, profileID); err != nil {
+			return err
+		}
+		_, err = tx.ExecContext(ctx, `UPDATE adult_performers SET quality_profile_id = ? WHERE quality_profile_id IS NOT NULL AND quality_profile_id <> ?`,
+			profileID, profileID)
+		return err
+	})
+	return n, err
 }
 
 // checkEntry refuses removed/disputed entries and blocked tags (D-103).
@@ -129,7 +187,11 @@ func (s *Service) checkEntry(ctx context.Context, sc *meta.Scene) error {
 		return ErrRemoved
 	}
 	texts := append([]string{sc.Title}, sc.Tags...)
-	if term, ok := s.BlockedText(ctx, texts...); ok {
+	names := make([]string, 0, len(sc.Performers))
+	for _, p := range sc.Performers {
+		names = append(names, p.Name)
+	}
+	if term, _, ok := s.BlockedMatch(ctx, names, texts...); ok {
 		return fmt.Errorf("%w (%q)", ErrBlocked, term)
 	}
 	return nil

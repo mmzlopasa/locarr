@@ -221,15 +221,15 @@ func TestAdultLibraryEndToEnd(t *testing.T) {
 		t.Fatal("adultVisible")
 	}
 
-	// Blocklist: seeded on enable; add a term the fake data uses.
+	// Blocklist: the owner's list starts empty (D-109); add a term the fake data uses.
 	var terms []struct {
 		ID      int64
 		Term    string
 		Builtin bool
 	}
 	ae.expect(ae.do("GET", "/api/v1/adult/blocklist", nil), 200).json(&terms)
-	if len(terms) < 20 {
-		t.Fatalf("seed: %d", len(terms))
+	if len(terms) != 0 {
+		t.Fatalf("seeded terms: %+v", terms)
 	}
 	ae.expect(ae.do("POST", "/api/v1/adult/blocklist", map[string]any{"term": "Blockedtagexample"}), 201)
 

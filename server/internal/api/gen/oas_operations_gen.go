@@ -325,6 +325,7 @@ const (
 	SearchSeriesBulkOperation                  OperationName = "SearchSeriesBulk"
 	SearchStreamOperation                      OperationName = "SearchStream"
 	SearchWantedSubtitlesOperation             OperationName = "SearchWantedSubtitles"
+	SetAdultQualityProfileForAllOperation      OperationName = "SetAdultQualityProfileForAll"
 	SetQueueItemPriorityOperation              OperationName = "SetQueueItemPriority"
 	SetUserQuotasOperation                     OperationName = "SetUserQuotas"
 	SetupOperation                             OperationName = "Setup"

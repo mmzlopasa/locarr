@@ -3,6 +3,16 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: kvaliteta scena, blokirani pojmovi, vremenska crta stavke (branch `fix/adult-quality-timeline`)
+- Uzrok „kvaliteta nije dopuštena”: imena scena bez rezolucije su Unknown, a stavke za odrasle su dobivale prvi filmski profil (uvezen iz Radarra), koji Unknown ne dopušta (D-109).
+- Parser čita `SD`, `FullHD`, `Full HD`, `FHD`; migracija `00018_adult_profile_blocklist.sql`: profil „Any (Unknown allowed)”, `adult.openProfileId`, zadani profil za nove stavke ako nije odabran, uklanjanje ranije upisanih blokiranih pojmova.
+- API: `ReasonCount.params`/`values`, `TimelineEvent.itemRef`, `AdultSettings.protectedTerms`/`openProfileId`/`profileUsage`, `POST /adult/items/quality-profile`, `item` i `ids` na `POST /history/clear`, `item` i `s:` na `DELETE /history/{id}`; greška `protected_term`.
+- Blokirani pojmovi: vlasnikov popis prazan i bez ponovnog punjenja, stalni popis samo za maloljetnike (`decision.ProtectedAdultTerms`), cijele riječi, izuzeta umjetnička imena izvođača; odbijanje kaže pojam i popis.
+- Web (EN + HR): grupirana vremenska crta, brisanje retka/ciklusa, „Očisti povijest ove stavke”, oznake s kvalitetom/profilom i pojmom (poveznica na popis), ploča profila i stalni pojmovi u Postavke → Sadržaj za odrasle.
+- Testovi: golden kvaliteta scena, parser scene, odluka (cijele riječi, stalni pojmovi, umjetnička imena, poruka kvalitete), sažetak razloga, migracija 18 na staroj shemi, integracijski `TestAdultOpenProfileAndBlocklist` i `TestItemTimelineClear` (uključujući pravilo `view_adult`), Vitest (grupiranje, brisanje, postavke), Playwright `e2e/timeline.spec.ts`.
+- Nakon nadogradnje: postojeće stavke za odrasle ostaju na svom profilu dok vlasnik ne klikne „Koristi Any (Unknown allowed) za sve stavke za odrasle”; pojmove koje želi blokirati dodaje sam.
+- Poznato: mobilne aplikacije ne grupiraju i ne brišu retke vremenske crte; starije odluke nemaju parametre razloga.
+
 ## Gotovo: javni indexeri za odrasle (branch `feat/adult-public-indexers`)
 - D-108: kategorije za odrasle na The Pirate Bay (500–599), Knaben (XXX, `hide_xxx` samo izvan pretraga za odrasle), BitSearch (10) i 1337x (XXX); nove definicije samo za odrasle `sukebei` i `xxxclub` (polje `adult: true`); `Indexer.adultCapable` i `IndexerDefinition.adult` u API-ju; pretraga za odrasle preskače indexere bez kategorija za odrasle, obične pretrage preskaču stranice samo za odrasle; web prikazuje indexere bez kategorija za odrasle zasebno.
 - Pretraga scene s više oblika upita (`wanted.Item.AltTerms`, rano zaustavljanje); `ParseScene` čita `[Studio] … (DD.MM.YYYY)`; odluka za imena bez datuma (naslov + izvođač/studio, godina) i za više scena istog studija i dana.

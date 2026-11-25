@@ -66,7 +66,8 @@ func (s *Service) Lookup(ctx context.Context, source, typ, term string) ([]Looku
 			return nil, err
 		}
 		for _, pf := range list {
-			if _, blocked := s.BlockedText(ctx, pf.Name); blocked {
+			// A stage name is the performer's own name: only the owner's terms apply to it.
+			if _, _, blocked := s.BlockedMatch(ctx, []string{pf.Name}, pf.Name); blocked {
 				continue
 			}
 			var n int

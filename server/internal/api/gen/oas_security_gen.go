@@ -349,6 +349,7 @@ var operationRolesSessionToken = map[string][]string{
 	SearchSeriesBulkOperation:                  []string{},
 	SearchStreamOperation:                      []string{},
 	SearchWantedSubtitlesOperation:             []string{},
+	SetAdultQualityProfileForAllOperation:      []string{},
 	SetQueueItemPriorityOperation:              []string{},
 	SetUserQuotasOperation:                     []string{},
 	ShiftSubtitleOperation:                     []string{},

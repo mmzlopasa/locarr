@@ -105,6 +105,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] „Zašto nije stiglo?": ploča svih nedostajućih filmova, epizoda, albuma i titlova po razlogu, sa zbrojenim razlozima odbijanja, poveznicom za popravak i skupnim radnjama (D-081)
 - [x] Aktivnost (red preuzimanja), povijest cijele biblioteke, blokirana izdanja (i brisanje svih), statistika po indexeru i klijentu, nedostajuće/ispod granice (D-082)
 - [x] Povijest: naslov kakav je bio, ID-jevi se ne ponavljaju, poruke bez tokena, grupirani neuspjesi, brisanje zapisa i čišćenje s potvrdom, zadržavanje N dana (D-107)
+- [x] Vremenska crta stavke: jedan redak po ciklusu pretrage (upiti i brojevi po indexeru zbrojeni, odluka u istom retku), brisanje retka ili ciklusa i „Očisti povijest ove stavke” s potvrdom i brojem, za upravitelje; za odrasle samo uz `view_adult` (D-109)
 - [x] Zdravlje sustava (indexeri, klijenti, kategorije, putanje, root mape i prostor, koš, zapeli uvozi, metapodaci, titlovi, Streamero, sat, baza, kopije, nova verzija) s uputama (D-083), logovi s pretragom, uživo i rotiranim datotekama (D-084), zadaci
 - [x] `/api/stats` za nadzorne ploče, Prometheus metrike, održavanje baze i predmemorije (D-086)
 
@@ -125,6 +126,8 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Indexeri s kategorijama 6xxx samo uz izričit izbor po indexeru; parser imena scena s golden testovima (D-105)
 - [x] Pretraga za odrasle preko javnih ugrađenih indexera: kategorije za odrasle na The Pirate Bay, Knaben, BitSearch i 1337x, nove stranice samo za odrasle Sukebei i XXXClub, indexeri bez kategorija za odrasle se ne nude ni ne pitaju, više oblika upita po sceni redom, scene istog studija i dana se razlikuju (D-108)
 - [x] Traženo, automatska i ručna pretraga, grab, uvoz, preimenovanje, vremenska crta i „Zašto nije ovdje?” preko zajedničke jezgre
+- [x] Kvaliteta scena bez rezolucije: `SD`/`FullHD`/`FHD` u parseru, profil „Any (Unknown allowed)” zadan za nove stavke, prebacivanje postojećih jednim klikom, „Zašto nije ovdje?” imenuje kvalitetu i profil (D-109)
+- [x] Blokirani pojmovi: vlasnikov popis počinje prazan i ostaje kakav ga vlasnik ostavi; stalni popis samo za sadržaj s maloljetnicima, cijele riječi, umjetnička imena izvođača se ne računaju (D-109)
 - [ ] Web: odjeljak „Odrasli” (scene, filmovi, studiji, izvođači, traženo, kalendar, dodavanje), zamućene slike, Postavke → Sadržaj za odrasle — napravljeno, Playwright test u CI-ju
 - [ ] Mobilne aplikacije (API je spreman; aplikacije ga zasad ne prikazuju)
 - [ ] Uparivanje datoteka po PHASH-u, ručni uvoz postojeće mape za odrasle, zasebna kategorija u download klijentu

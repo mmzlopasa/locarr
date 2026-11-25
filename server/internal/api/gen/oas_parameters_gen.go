@@ -2192,6 +2192,8 @@ func decodeDeleteDownloadClientParams(args [1]string, argsEscaped bool, r *http.
 // DeleteHistoryEntryParams is parameters of deleteHistoryEntry operation.
 type DeleteHistoryEntryParams struct {
 	ID string
+	// Item ref ("movie:42").
+	Item OptString `json:",omitempty,omitzero"`
 }
 
 func unpackDeleteHistoryEntryParams(packed middleware.Parameters) (params DeleteHistoryEntryParams) {
@@ -2202,10 +2204,20 @@ func unpackDeleteHistoryEntryParams(packed middleware.Parameters) (params Delete
 		}
 		params.ID = packed[key].(string)
 	}
+	{
+		key := middleware.ParameterKey{
+			Name: "item",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Item = v.(OptString)
+		}
+	}
 	return params
 }
 
 func decodeDeleteHistoryEntryParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteHistoryEntryParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]
@@ -2248,7 +2260,7 @@ func decodeDeleteHistoryEntryParams(args [1]string, argsEscaped bool, r *http.Re
 					MaxLengthSet:  false,
 					Email:         false,
 					Hostname:      false,
-					Regex:         regexMap["^[td]:[0-9]{1,19}$"],
+					Regex:         regexMap["^[tds]:[0-9]{1,19}$"],
 					MinNumeric:    0,
 					MinNumericSet: false,
 					MaxNumeric:    0,
@@ -2268,6 +2280,74 @@ func decodeDeleteHistoryEntryParams(args [1]string, argsEscaped bool, r *http.Re
 		return params, &ogenerrors.DecodeParamError{
 			Name: "id",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: item.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "item",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotItemVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotItemVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Item.SetTo(paramsDotItemVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Item.Get(); ok {
+					if err := func() error {
+						if err := (validate.String{
+							MinLength:     0,
+							MinLengthSet:  false,
+							MaxLength:     64,
+							MaxLengthSet:  true,
+							Email:         false,
+							Hostname:      false,
+							Regex:         nil,
+							MinNumeric:    0,
+							MinNumericSet: false,
+							MaxNumeric:    0,
+							MaxNumericSet: false,
+						}).Validate(string(value)); err != nil {
+							return errors.Wrap(err, "string")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "item",
+			In:   "query",
 			Err:  err,
 		}
 	}

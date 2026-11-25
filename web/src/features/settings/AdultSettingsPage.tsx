@@ -21,10 +21,11 @@ export function AdultSettingsPage() {
       {settings.data.enabled ? (
         <>
           <KeysPanel s={settings.data} />
+          <ProfilePanel s={settings.data} />
           <DefaultsPanel s={settings.data} />
           <RootsPanel />
           <IndexersPanel />
-          <BlocklistPanel />
+          <div id="tag-blocklist" className="scroll-mt-4"><BlocklistPanel s={settings.data} /></div>
         </>
       ) : null}
     </div>
@@ -85,6 +86,44 @@ function KeysPanel({ s }: { s: AdultSettings }) {
         <div className="sm:col-span-2"><Button type="submit" variant="primary" busy={save.isPending} disabled={!stash && !tpdb}>{t("common.save")}</Button></div>
       </form>
       <ErrorAlert error={save.error} />
+    </Panel>
+  );
+}
+
+/**
+ * The profile that allows every quality (D-109): new adult items use it;
+ * items still on another profile are counted and can be moved in one step.
+ */
+function ProfilePanel({ s }: { s: AdultSettings }) {
+  const { t } = useTranslation();
+  const qc = useQueryClient();
+  const profiles = useQualityProfiles();
+  const open = s.openProfileId;
+  const name = (profiles.data ?? []).find((p) => p.id === open)?.name ?? "";
+  const apply = useMutation({
+    mutationFn: async () => unwrap(await api.POST("/adult/items/quality-profile", { body: { profileId: open ?? 0 } })),
+    onSuccess: () => qc.invalidateQueries({ queryKey: adultKey }),
+  });
+  const u = s.profileUsage;
+  const others = u ? u.items + u.studios + u.performers : 0;
+  return (
+    <Panel title={t("adultSettings.profile.title")} description={t("adultSettings.profile.hint", { profile: name || "Any (Unknown allowed)" })}>
+      <div data-testid="adult-profile">
+        {open === undefined ? <Alert tone="warning">{t("adultSettings.profile.missing")}</Alert> : null}
+        {open !== undefined && u && others > 0 ? (
+          <div className="space-y-2">
+            <p className="text-[13px] text-fg" data-testid="adult-profile-usage">{t("adultSettings.profile.usage", { items: u.items, studios: u.studios, performers: u.performers })}</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <ConfirmButton label={t("adultSettings.profile.apply", { profile: name })} confirmLabel={t("adultSettings.profile.applyConfirm")}
+                busy={apply.isPending} onConfirm={() => apply.mutate()} testId="adult-profile-apply" />
+              <span className="text-[12px] text-faint">{t("adultSettings.profile.applyNote")}</span>
+            </div>
+          </div>
+        ) : null}
+        {open !== undefined && u && others === 0 ? <p className="text-[13px] text-muted">{t("adultSettings.profile.allOpen", { profile: name })}</p> : null}
+        {apply.data ? <p role="status" className="mt-2 text-[12px] text-muted">{t("adultSettings.profile.applied", { count: apply.data.updated })}</p> : null}
+        <ErrorAlert error={apply.error} />
+      </div>
     </Panel>
   );
 }
@@ -222,7 +261,7 @@ function IndexersPanel() {
   );
 }
 
-function BlocklistPanel() {
+function BlocklistPanel({ s }: { s: AdultSettings }) {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const key = [...adultKey, "blocklist"];
@@ -238,18 +277,29 @@ function BlocklistPanel() {
   });
   return (
     <Panel title={t("adultSettings.blocklist.title")} description={t("adultSettings.blocklist.hint")}>
-      <form className="mb-3 flex flex-wrap items-end gap-2" onSubmit={(e) => { e.preventDefault(); if (term.trim().length >= 2) add.mutate(); }}>
-        <div className="min-w-48 flex-1"><TextInput label={t("adultSettings.blocklist.term")} value={term} maxLength={100} onChange={(e) => setTerm(e.target.value)} /></div>
-        <Button type="submit" busy={add.isPending} disabled={term.trim().length < 2}>{t("adultSettings.blocklist.add")}</Button>
-      </form>
+      <div className="mb-4" data-testid="adult-blocklist-protected">
+        <p className="text-[12px] font-medium text-fg">{t("adultSettings.blocklist.protectedTitle")}</p>
+        <p className="mb-1.5 text-[12px] text-faint">{t("adultSettings.blocklist.protectedHint")}</p>
+        <ul className="flex flex-wrap gap-1.5">
+          {(s.protectedTerms ?? []).map((x) => (
+            <li key={x} className="rounded border border-line bg-surface-3 px-1.5 py-0.5 text-[12px] text-muted">{x}</li>
+          ))}
+        </ul>
+      </div>
+      <p className="mb-1.5 text-[12px] font-medium text-fg">{t("adultSettings.blocklist.own")}</p>
+      {list.data && list.data.length === 0 ? <p className="text-[12px] text-faint" data-testid="adult-blocklist-empty">{t("adultSettings.blocklist.empty")}</p> : null}
       <ul className="flex flex-wrap gap-1.5" data-testid="adult-blocklist">
         {list.data?.map((b) => (
           <li key={b.id} className="flex items-center gap-1 rounded border border-line-strong bg-surface px-1.5 py-0.5 text-[12px]">
             {b.term}
-            <button type="button" className="text-faint hover:text-danger" aria-label={t("common.remove")} onClick={() => remove.mutate(b.id)}>×</button>
+            <button type="button" className="px-0.5 text-faint hover:text-danger" aria-label={`${t("common.remove")} ${b.term}`} onClick={() => remove.mutate(b.id)}>×</button>
           </li>
         ))}
       </ul>
+      <form className="mt-3 flex flex-wrap items-end gap-2" onSubmit={(e) => { e.preventDefault(); if (term.trim().length >= 2) add.mutate(); }}>
+        <div className="min-w-48 flex-1"><TextInput label={t("adultSettings.blocklist.term")} value={term} maxLength={100} onChange={(e) => setTerm(e.target.value)} /></div>
+        <Button type="submit" busy={add.isPending} disabled={term.trim().length < 2}>{t("adultSettings.blocklist.add")}</Button>
+      </form>
       <ErrorAlert error={add.error ?? remove.error} />
     </Panel>
   );

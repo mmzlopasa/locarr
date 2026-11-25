@@ -2,6 +2,7 @@ package adult
 
 import (
 	"context"
+	"slices"
 	"strings"
 	"unicode/utf8"
 
@@ -9,44 +10,16 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/decision"
 )
 
-// DefaultBlocklist is the conservative seed list (D-103): terms commonly
-// used for content involving minors or without consent. It is applied to
-// searches, RSS, imports and metadata entries; the administrator may add
-// terms and remove seeded ones.
-var DefaultBlocklist = []string{
-	"underage", "under age", "minor", "minors", "child", "children", "kid", "kids", "preteen", "pre teen", "teen", "teens",
-	"barely legal", "jailbait", "lolita", "loli", "shota", "pthc", "schoolgirl", "school girl", "age play", "ageplay",
-	"rape", "raped", "non consensual", "nonconsensual", "noncon", "forced", "drugged", "unconscious", "passed out",
-	"hidden cam", "hidden camera", "spycam", "spy cam", "upskirt", "voyeur", "leaked", "revenge porn", "stolen",
-	"blackmail", "trafficking", "snuff", "bestiality",
-}
-
-// Term is one blocklist entry.
+// Term is one entry of the owner's blocklist.
 type Term struct {
 	ID      int64  `json:"id"`
 	Term    string `json:"term"`
 	Builtin bool   `json:"builtin"`
 }
 
-// SeedBlocklist inserts the default terms once (the first time the feature
-// is enabled, or when the list is empty).
-func (s *Service) SeedBlocklist(ctx context.Context) error {
-	var n int
-	if err := s.DB.R.QueryRowContext(ctx, `SELECT count(*) FROM adult_tag_blocklist`).Scan(&n); err != nil {
-		return err
-	}
-	if n > 0 {
-		return nil
-	}
-	now := db.Millis(s.now())
-	for _, t := range DefaultBlocklist {
-		if _, err := s.DB.W.ExecContext(ctx, `INSERT INTO adult_tag_blocklist (term, builtin, added_at) VALUES (?, 1, ?) ON CONFLICT DO NOTHING`,
-			t, now); err != nil {
-			return err
-		}
-	}
-	return nil
-}
+// ProtectedTerms are always blocked and cannot be removed (D-109); the
+// editable list holds only the owner's own terms and starts empty.
+func ProtectedTerms() []string { return append([]string(nil), decision.ProtectedAdultTerms...) }
 
 // Blocklist lists the terms.
 func (s *Service) Blocklist(ctx context.Context) ([]Term, error) {
@@ -66,12 +39,11 @@ func (s *Service) Blocklist(ctx context.Context) ([]Term, error) {
 	return out, rows.Err()
 }
 
-// Terms is the blocklist as plain terms. An empty table (never enabled)
-// still blocks the defaults.
-func (s *Service) Terms(ctx context.Context) []string {
+// OwnTerms are the owner's terms (the protected ones are applied apart).
+func (s *Service) OwnTerms(ctx context.Context) []string {
 	list, err := s.Blocklist(ctx)
-	if err != nil || len(list) == 0 {
-		return DefaultBlocklist
+	if err != nil {
+		return nil
 	}
 	out := make([]string, 0, len(list))
 	for _, t := range list {
@@ -80,14 +52,19 @@ func (s *Service) Terms(ctx context.Context) []string {
 	return out
 }
 
+// Terms is every blocked term: the protected ones and the owner's.
+func (s *Service) Terms(ctx context.Context) []string {
+	return append(ProtectedTerms(), s.OwnTerms(ctx)...)
+}
+
 // AddTerm adds a term (lower case, words only).
 func (s *Service) AddTerm(ctx context.Context, term string) (Term, error) {
 	term = decision.NormWords(term)
 	if utf8.RuneCountInString(strings.ReplaceAll(term, " ", "")) < 2 {
 		return Term{}, ErrBadTerm
 	}
-	if err := s.SeedBlocklist(ctx); err != nil {
-		return Term{}, err
+	if slices.Contains(decision.ProtectedAdultTerms, term) {
+		return Term{}, ErrProtectedTerm
 	}
 	t := Term{Term: term}
 	err := s.DB.W.QueryRowContext(ctx, `INSERT INTO adult_tag_blocklist (term, builtin, added_at) VALUES (?, 0, ?)
@@ -109,11 +86,22 @@ func (s *Service) RemoveTerm(ctx context.Context, id int64) error {
 
 // BlockedText returns the blocked term found in any of the texts.
 func (s *Service) BlockedText(ctx context.Context, texts ...string) (string, bool) {
-	terms := s.Terms(ctx)
+	term, _, ok := s.BlockedMatch(ctx, nil, texts...)
+	return term, ok
+}
+
+// BlockedMatch is BlockedText that also says whether the term is one of the
+// protected ones. Protected terms inside one of the performer names (the
+// ones the metadata source lists for the scene) do not count (D-109).
+func (s *Service) BlockedMatch(ctx context.Context, performers []string, texts ...string) (term string, protected, ok bool) {
+	own := s.OwnTerms(ctx)
 	for _, t := range texts {
-		if term, ok := decision.BlockedTerm(t, terms); ok {
-			return term, true
+		if term, ok := decision.BlockedTermExcept(t, decision.ProtectedAdultTerms, performers); ok {
+			return term, true, true
+		}
+		if term, ok := decision.BlockedTerm(t, own); ok {
+			return term, false, true
 		}
 	}
-	return "", false
+	return "", false, false
 }

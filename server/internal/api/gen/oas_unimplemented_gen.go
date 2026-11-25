@@ -236,7 +236,8 @@ func (UnimplementedHandler) ClearBlocklist(ctx context.Context) (r *BlocklistCle
 // ClearHistory implements clearHistory operation.
 //
 // The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
-// `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+// `count` says how many entries would go. Entries of adult items are never counted or deleted here,
+// except with `item` (one item's timeline, D-109) by callers with the adult permission.
 //
 // POST /history/clear
 func (UnimplementedHandler) ClearHistory(ctx context.Context, req *HistoryClearRequest) (r *HistoryClearResult, _ error) {
@@ -588,6 +589,9 @@ func (UnimplementedHandler) DeleteDownloadClient(ctx context.Context, params Del
 //
 // The entry is the same row the item's timeline shows, so it disappears there too. Files, the
 // blocklist, searches and release decisions are not touched.
+//
+// With `item`, the row is one of that item's timeline (D-109): any event type, a search (`s:`) or a
+// download step. Adult items need the adult permission; otherwise the answer is 404.
 //
 // DELETE /history/{id}
 func (UnimplementedHandler) DeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) error {
@@ -1666,7 +1670,8 @@ func (UnimplementedHandler) LinkUserIdentity(ctx context.Context, req *LinkIdent
 
 // ListAdultBlocklist implements listAdultBlocklist operation.
 //
-// The adult tag blocklist (administrators).
+// Only the owner's own terms; the list starts empty (D-109). The terms that are always blocked are in
+// `AdultSettings.protectedTerms` and cannot be added or removed here.
 //
 // GET /adult/blocklist
 func (UnimplementedHandler) ListAdultBlocklist(ctx context.Context) (r []AdultBlockTerm, _ error) {
@@ -2959,6 +2964,15 @@ func (UnimplementedHandler) SearchStream(ctx context.Context, params SearchStrea
 //
 // POST /subtitles/wanted/search
 func (UnimplementedHandler) SearchWantedSubtitles(ctx context.Context, req *SearchWantedSubtitlesReq) (r *SubtitleCount, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SetAdultQualityProfileForAll implements setAdultQualityProfileForAll operation.
+//
+// Only the quality profile changes; files, monitoring and history stay.
+//
+// POST /adult/items/quality-profile
+func (UnimplementedHandler) SetAdultQualityProfileForAll(ctx context.Context, req *SetAdultQualityProfileForAllReq) (r *SetAdultQualityProfileForAllOK, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

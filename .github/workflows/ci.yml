@@ -37,7 +37,9 @@ jobs:
           working-directory: server
       - name: ffmpeg for the subtitle sync tests
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
-      - run: go test ./... -race
+      # The app package runs the full integration suite; under -race on a
+      # shared runner it takes 6-10 minutes, past go test's 10-minute default.
+      - run: go test ./... -race -timeout 25m
 
   web:
     runs-on: ubuntu-latest

@@ -159,7 +159,8 @@ type Handler interface {
 	// ClearHistory implements clearHistory operation.
 	//
 	// The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
-	// `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+	// `count` says how many entries would go. Entries of adult items are never counted or deleted here,
+	// except with `item` (one item's timeline, D-109) by callers with the adult permission.
 	//
 	// POST /history/clear
 	ClearHistory(ctx context.Context, req *HistoryClearRequest) (*HistoryClearResult, error)
@@ -397,6 +398,9 @@ type Handler interface {
 	//
 	// The entry is the same row the item's timeline shows, so it disappears there too. Files, the
 	// blocklist, searches and release decisions are not touched.
+	//
+	// With `item`, the row is one of that item's timeline (D-109): any event type, a search (`s:`) or a
+	// download step. Adult items need the adult permission; otherwise the answer is 404.
 	//
 	// DELETE /history/{id}
 	DeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) error
@@ -1124,7 +1128,8 @@ type Handler interface {
 	LinkUserIdentity(ctx context.Context, req *LinkIdentityRequest, params LinkUserIdentityParams) (*LinkedIdentity, error)
 	// ListAdultBlocklist implements listAdultBlocklist operation.
 	//
-	// The adult tag blocklist (administrators).
+	// Only the owner's own terms; the list starts empty (D-109). The terms that are always blocked are in
+	// `AdultSettings.protectedTerms` and cannot be added or removed here.
 	//
 	// GET /adult/blocklist
 	ListAdultBlocklist(ctx context.Context) ([]AdultBlockTerm, error)
@@ -2000,6 +2005,12 @@ type Handler interface {
 	//
 	// POST /subtitles/wanted/search
 	SearchWantedSubtitles(ctx context.Context, req *SearchWantedSubtitlesReq) (*SubtitleCount, error)
+	// SetAdultQualityProfileForAll implements setAdultQualityProfileForAll operation.
+	//
+	// Only the quality profile changes; files, monitoring and history stay.
+	//
+	// POST /adult/items/quality-profile
+	SetAdultQualityProfileForAll(ctx context.Context, req *SetAdultQualityProfileForAllReq) (*SetAdultQualityProfileForAllOK, error)
 	// SetQueueItemPriority implements setQueueItemPriority operation.
 	//
 	// Move a download in its client's queue (library managers).

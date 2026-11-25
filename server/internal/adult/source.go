@@ -76,7 +76,7 @@ func (w Source) toItem(ctx context.Context, it *Item, p *quality.Profile) wanted
 	today := w.S.now().UTC().Format("2006-01-02")
 	out := wanted.Item{Ref: it.Ref(), Title: it.Title, Monitored: it.Monitored, Available: it.ReleaseDate == "" || it.ReleaseDate <= today,
 		HasFile: it.File != nil, CutoffMet: cutoffMet(p, it.File), ProfileID: it.QualityProfileID, MediaKind: downloads.KindAdult,
-		BlockedTerms: w.S.Terms(ctx)}
+		BlockedTerms: w.S.OwnTerms(ctx)}
 	var perfs []string
 	for _, pf := range it.Performers {
 		perfs = append(perfs, pf.Name)

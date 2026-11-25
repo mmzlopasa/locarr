@@ -322,3 +322,20 @@ func DefaultProfiles() []Profile {
 	}
 	return out
 }
+
+// OpenProfileName is the name of the profile that allows every video
+// quality, Unknown included (D-109). It is the default for adult items:
+// general sites often name scenes without a resolution or source.
+const OpenProfileName = "Any (Unknown allowed)"
+
+// OpenProfile allows every video quality, best first, with Unknown last.
+// Migration 00018 stores exactly this profile.
+func OpenProfile() Profile {
+	all := ForKind(Movies)
+	p := Profile{Name: OpenProfileName, Kind: Movies, Cutoff: "webdl-1080p", UpgradesAllowed: true}
+	for i := len(all) - 1; i >= 0; i-- {
+		p.Items = append(p.Items, single(all[i].ID, true))
+	}
+	p.Normalize()
+	return p
+}

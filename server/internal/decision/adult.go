@@ -28,13 +28,29 @@ func NormWords(s string) string {
 }
 
 // BlockedTerm returns the first term of the blocklist that text contains as
-// a whole word or phrase (terms and text are compared as NormWords).
+// a whole word or phrase: case and separators (".", "_", "-", …) do not
+// matter, and a phrase also matches written together ("Some.Term" and
+// "SomeTerm" for "some term"), but never inside a longer word.
 func BlockedTerm(text string, terms []string) (string, bool) {
+	return BlockedTermExcept(text, terms, nil)
+}
+
+// BlockedTermExcept is BlockedTerm that ignores the words of the given names
+// (the performers the metadata source lists for the scene), so a stage name
+// that happens to contain a term does not block it (D-109).
+func BlockedTermExcept(text string, terms, names []string) (string, bool) {
 	if len(terms) == 0 {
 		return "", false
 	}
 	t := " " + NormWords(text) + " "
-	joined := " " + strings.ReplaceAll(strings.TrimSpace(t), " ", "") + " "
+	for _, n := range names {
+		if w := NormWords(n); w != "" {
+			for strings.Contains(t, " "+w+" ") {
+				t = strings.Replace(t, " "+w+" ", " | ", 1)
+			}
+		}
+	}
+	words := strings.Fields(t)
 	for _, term := range terms {
 		n := NormWords(term)
 		if n == "" {
@@ -43,17 +59,51 @@ func BlockedTerm(text string, terms []string) (string, bool) {
 		if strings.Contains(t, " "+n+" ") {
 			return term, true
 		}
-		// "Some.Term" written together ("someterm") is caught too.
-		if strings.Contains(n, " ") && strings.Contains(joined, strings.ReplaceAll(n, " ", "")) {
+		if joined := strings.ReplaceAll(n, " ", ""); joinedMatch(words, joined) {
 			return term, true
 		}
 	}
 	return "", false
 }
 
+// joinedMatch reports whether consecutive words written together are
+// exactly target ("under", "age" or "underage" for "underage").
+func joinedMatch(words []string, target string) bool {
+	for i := range words {
+		acc := ""
+		for j := i; j < len(words) && len(acc) < len(target); j++ {
+			if words[j] == "|" {
+				break
+			}
+			acc += words[j]
+			if acc == target {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// ProtectedAdultTerms are always blocked for adult content and cannot be
+// removed (D-109): unambiguous markers of content involving minors.
+// Everything else is the owner's own list, which starts empty.
+var ProtectedAdultTerms = []string{
+	"underage", "under age", "child", "children", "preteen", "pre teen", "jailbait", "lolita", "loli", "shota", "pthc",
+}
+
+// specBlockedTag refuses adult releases that name a protected term or one of
+// the owner's blocked terms; the rejection says which term and which list.
+// A protected term inside one of the scene's performer names does not count.
 func specBlockedTag(e *eval) {
+	if a := e.ctx.Wanted.Adult; a != nil {
+		if term, ok := BlockedTermExcept(e.c.Title, ProtectedAdultTerms, a.Performers); ok {
+			e.reject(CodeBlockedTag, fmt.Sprintf("the name contains %q, which is always blocked", term),
+				map[string]any{"term": term, "protected": true})
+			return
+		}
+	}
 	if term, ok := BlockedTerm(e.c.Title, e.ctx.BlockedTerms); ok {
-		e.reject(CodeBlockedTag, fmt.Sprintf("the name contains the blocked term %q", term), map[string]any{"term": term})
+		e.reject(CodeBlockedTag, fmt.Sprintf("the name contains %q from the blocklist", term), map[string]any{"term": term, "protected": false})
 	}
 }
 

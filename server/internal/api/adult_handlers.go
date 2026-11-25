@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/mmzlopasa/locarr/server/internal/adult"
@@ -42,6 +43,7 @@ func mapAdultError(err error) *StatusError {
 		{adult.ErrNoProfile, http.StatusBadRequest, "validation"},
 		{adult.ErrUnknownSource, http.StatusBadRequest, "validation"},
 		{adult.ErrBadTerm, http.StatusBadRequest, "validation"},
+		{adult.ErrProtectedTerm, http.StatusConflict, "protected_term"},
 		{meta.ErrNoKey, http.StatusBadRequest, "metadata_key_missing"},
 		{meta.ErrBadKey, http.StatusBadRequest, "metadata_key_invalid"},
 		{meta.ErrNotFound, http.StatusNotFound, "not_found"},
@@ -124,7 +126,35 @@ func (h *Handler) adultSettings(ctx context.Context) (*gen.AdultSettings, error)
 	get(func() (e error) { out.MovieFile, e = settings.Get(ctx, s, adult.MovieFile); return })
 	get(func() (e error) { out.StatsAggregate, e = settings.Get(ctx, s, adult.StatsAggregate); return })
 	get(func() (e error) { out.NotifyStreamero, e = settings.Get(ctx, s, adult.NotifyStreamero); return })
-	return out, err
+	out.ProtectedTerms = adult.ProtectedTerms()
+	if err != nil {
+		return out, err
+	}
+	u, err := h.Adult.ProfileUsage(ctx)
+	if err != nil {
+		return out, err
+	}
+	if u.OpenProfileID != 0 {
+		out.OpenProfileId = gen.NewOptInt64(u.OpenProfileID)
+	}
+	// How many items use which profile is adult data: only for callers who
+	// may see it (D-103).
+	if p, perr := principal(ctx); perr == nil && h.Adult.Visible(ctx, p) {
+		out.ProfileUsage = gen.NewOptAdultProfileUsage(gen.AdultProfileUsage{Items: u.Items, Studios: u.Studios, Performers: u.Performers})
+	}
+	return out, nil
+}
+
+// SetAdultQualityProfileForAll implements POST /adult/items/quality-profile.
+func (h *Handler) SetAdultQualityProfileForAll(ctx context.Context, req *gen.SetAdultQualityProfileForAllReq) (*gen.SetAdultQualityProfileForAllOK, error) {
+	if _, err := h.adultManager(ctx); err != nil {
+		return nil, err
+	}
+	n, err := h.Adult.UseProfileForAll(ctx, req.ProfileId)
+	if err != nil {
+		return nil, err
+	}
+	return &gen.SetAdultQualityProfileForAllOK{Updated: n}, nil
 }
 
 // GetAdultSettings implements GET /adult/settings.
@@ -213,9 +243,6 @@ func (h *Handler) UpdateAdultSettings(ctx context.Context, req *gen.AdultSetting
 // ListAdultBlocklist implements GET /adult/blocklist.
 func (h *Handler) ListAdultBlocklist(ctx context.Context) ([]gen.AdultBlockTerm, error) {
 	if _, err := h.adultAdmin(ctx); err != nil {
-		return nil, err
-	}
-	if err := h.Adult.SeedBlocklist(ctx); err != nil {
 		return nil, err
 	}
 	list, err := h.Adult.Blocklist(ctx)
@@ -656,8 +683,18 @@ func (h *Handler) GrabAdultRelease(ctx context.Context, req *gen.ManualGrabReque
 	if err != nil {
 		return nil, err
 	}
-	if term, blocked := h.Adult.BlockedText(ctx, req.Title); blocked {
-		return nil, &StatusError{Status: http.StatusUnprocessableEntity, Code: "blocked_tag", Message: "the release name contains the blocked term " + term}
+	var names []string
+	if it, err := h.Adult.Item(ctx, p.ID); err == nil {
+		for _, pf := range it.Performers {
+			names = append(names, pf.Name)
+		}
+	}
+	if term, protected, blocked := h.Adult.BlockedMatch(ctx, names, req.Title); blocked {
+		msg := "the release name contains " + strconv.Quote(term) + " from the blocklist"
+		if protected {
+			msg = "the release name contains " + strconv.Quote(term) + ", which is always blocked"
+		}
+		return nil, &StatusError{Status: http.StatusUnprocessableEntity, Code: "blocked_tag", Message: msg}
 	}
 	g := wanted.ManualGrab{IndexerID: req.IndexerId, DownloadToken: req.DownloadToken.Or(""), MagnetURL: req.MagnetUrl.Or(""),
 		Title: req.Title, Protocol: string(req.Protocol), GUID: req.GUID.Or("")}
@@ -691,7 +728,7 @@ func (h *Handler) GetAdultItemTimeline(ctx context.Context, p gen.GetAdultItemTi
 	out := &gen.Timeline{Item: it.Ref().String(), Title: optStr(it.Title), Explanation: ge, Events: make([]gen.TimelineEvent, 0, len(events))}
 	for _, e := range events {
 		out.Events = append(out.Events, gen.TimelineEvent{ID: e.ID, At: e.At, Type: e.Type, Source: gen.TimelineEventSource(e.Source),
-			Message: e.Message, Data: rawJSON(e.Data), DownloadId: optI64(e.DownloadID)})
+			ItemRef: optStr(e.ItemRef), Message: e.Message, Data: rawJSON(e.Data), DownloadId: optI64(e.DownloadID)})
 	}
 	return out, nil
 }
