@@ -28,7 +28,7 @@ var regexMap = map[string]ogenregex.Regexp{
 	"^[A-Za-z0-9_-]{1,80}\\.(jpg|jpeg|png|webp)$": ogenregex.MustCompile("^[A-Za-z0-9_-]{1,80}\\.(jpg|jpeg|png|webp)$"),
 	"^[a-z0-9-]{1,32}$":                           ogenregex.MustCompile("^[a-z0-9-]{1,32}$"),
 	"^[a-z]{2}(-[A-Z]{2})?$":                      ogenregex.MustCompile("^[a-z]{2}(-[A-Z]{2})?$"),
-	"^[td]:[0-9]{1,19}$":                          ogenregex.MustCompile("^[td]:[0-9]{1,19}$"),
+	"^[tds]:[0-9]{1,19}$":                         ogenregex.MustCompile("^[tds]:[0-9]{1,19}$"),
 	"^locarr(\\.[0-9]{1,3})?\\.log$":              ogenregex.MustCompile("^locarr(\\.[0-9]{1,3})?\\.log$"),
 	"^locarr_backup_[0-9a-z_-]{1,80}\\.zip$":      ogenregex.MustCompile("^locarr_backup_[0-9a-z_-]{1,80}\\.zip$"),
 }

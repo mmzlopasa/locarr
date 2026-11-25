@@ -22,6 +22,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/history"
 	"github.com/mmzlopasa/locarr/server/internal/indexers"
 	"github.com/mmzlopasa/locarr/server/internal/jobs"
+	"github.com/mmzlopasa/locarr/server/internal/library"
 	"github.com/mmzlopasa/locarr/server/internal/logging"
 	"github.com/mmzlopasa/locarr/server/internal/settings"
 	"github.com/mmzlopasa/locarr/server/internal/stats"
@@ -48,7 +49,11 @@ func mapOperationsError(err error) *StatusError {
 func reasons(list []timeline.ReasonCount) []gen.ReasonCount {
 	out := make([]gen.ReasonCount, 0, len(list))
 	for _, r := range list {
-		out = append(out, gen.ReasonCount{Code: r.Code, Count: r.Count, Example: r.Example})
+		g, err := convert[gen.ReasonCount](r)
+		if err != nil {
+			g = gen.ReasonCount{Code: r.Code, Count: r.Count, Example: r.Example}
+		}
+		out = append(out, g)
 	}
 	return out
 }
@@ -171,7 +176,33 @@ func (h *Handler) DeleteHistoryEntry(ctx context.Context, p gen.DeleteHistoryEnt
 	if _, err := manager(ctx); err != nil {
 		return err
 	}
+	if item, ok := p.Item.Get(); ok {
+		ref, err := h.timelineRef(ctx, item)
+		if err != nil {
+			return err
+		}
+		return h.History.DeleteItemEntry(ctx, ref, p.ID)
+	}
 	return h.History.Delete(ctx, p.ID)
+}
+
+// timelineRef checks an item ref for deleting timeline rows (D-109): adult
+// refs only for callers who may see adult content (D-103), otherwise the
+// same 404 as an unknown entry.
+func (h *Handler) timelineRef(ctx context.Context, item string) (string, error) {
+	ref, err := library.ParseRef(item)
+	if err != nil {
+		return "", history.ErrNotFound
+	}
+	if library.IsAdult(ref.Kind) {
+		if h.Adult == nil {
+			return "", history.ErrNotFound
+		}
+		if _, err := h.adultManager(ctx); err != nil {
+			return "", history.ErrNotFound
+		}
+	}
+	return ref.String(), nil
 }
 
 // ClearHistory implements POST /history/clear.
@@ -179,10 +210,27 @@ func (h *Handler) ClearHistory(ctx context.Context, req *gen.HistoryClearRequest
 	if _, err := manager(ctx); err != nil {
 		return nil, err
 	}
-	f := history.Filter{Category: string(req.Category.Or("")), Kind: string(req.Kind.Or("")), Query: req.Q.Or("")}
+	var before time.Time
 	if d, ok := req.OlderThanDays.Get(); ok {
-		f.Before = time.Now().Add(-time.Duration(d) * 24 * time.Hour)
+		before = time.Now().Add(-time.Duration(d) * 24 * time.Hour)
 	}
+	if item, ok := req.Item.Get(); ok {
+		ref, err := h.timelineRef(ctx, item)
+		if err != nil {
+			return nil, err
+		}
+		f := history.ItemFilter{Ref: ref, IDs: req.Ids, Before: before}
+		if req.DryRun.Or(false) {
+			n, err := h.History.CountItem(ctx, f)
+			return &gen.HistoryClearResult{Count: n}, err
+		}
+		n, err := h.History.ClearItem(ctx, f)
+		if err != nil {
+			return nil, err
+		}
+		return &gen.HistoryClearResult{Count: n, Deleted: true}, nil
+	}
+	f := history.Filter{Category: string(req.Category.Or("")), Kind: string(req.Kind.Or("")), Query: req.Q.Or(""), Before: before}
 	if req.DryRun.Or(false) {
 		n, err := h.History.Count(ctx, f)
 		return &gen.HistoryClearResult{Count: n}, err

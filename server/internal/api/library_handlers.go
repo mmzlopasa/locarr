@@ -326,7 +326,7 @@ func (h *Handler) GetTimeline(ctx context.Context, p gen.GetTimelineParams) (*ge
 	out := &gen.Timeline{Item: ref.String(), Title: optStr(title), Explanation: ge, Events: make([]gen.TimelineEvent, 0, len(events))}
 	for _, e := range events {
 		out.Events = append(out.Events, gen.TimelineEvent{ID: e.ID, At: e.At, Type: e.Type, Source: gen.TimelineEventSource(e.Source),
-			Message: e.Message, Data: rawJSON(e.Data), DownloadId: optI64(e.DownloadID)})
+			ItemRef: optStr(e.ItemRef), Message: e.Message, Data: rawJSON(e.Data), DownloadId: optI64(e.DownloadID)})
 	}
 	return out, nil
 }

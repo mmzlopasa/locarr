@@ -709,9 +709,10 @@ func (s *AdultAddRequestSource) UnmarshalText(data []byte) error {
 
 // Ref: #/components/schemas/AdultBlockTerm
 type AdultBlockTerm struct {
-	ID      int64  `json:"id"`
-	Term    string `json:"term"`
-	Builtin bool   `json:"builtin"`
+	ID   int64  `json:"id"`
+	Term string `json:"term"`
+	// Always false since D-109 (nothing is seeded).
+	Builtin bool `json:"builtin"`
 }
 
 // GetID returns the value of ID.
@@ -1508,6 +1509,45 @@ func (s *AdultPreferences) SetBlur(val bool) {
 	s.Blur = val
 }
 
+// Only for callers who may see adult content.
+// Ref: #/components/schemas/AdultProfileUsage
+type AdultProfileUsage struct {
+	// Adult items on another profile than openProfileId.
+	Items      int `json:"items"`
+	Studios    int `json:"studios"`
+	Performers int `json:"performers"`
+}
+
+// GetItems returns the value of Items.
+func (s *AdultProfileUsage) GetItems() int {
+	return s.Items
+}
+
+// GetStudios returns the value of Studios.
+func (s *AdultProfileUsage) GetStudios() int {
+	return s.Studios
+}
+
+// GetPerformers returns the value of Performers.
+func (s *AdultProfileUsage) GetPerformers() int {
+	return s.Performers
+}
+
+// SetItems sets the value of Items.
+func (s *AdultProfileUsage) SetItems(val int) {
+	s.Items = val
+}
+
+// SetStudios sets the value of Studios.
+func (s *AdultProfileUsage) SetStudios(val int) {
+	s.Studios = val
+}
+
+// SetPerformers sets the value of Performers.
+func (s *AdultProfileUsage) SetPerformers(val int) {
+	s.Performers = val
+}
+
 // Ref: #/components/schemas/AdultRename
 type AdultRename struct {
 	ItemId int64  `json:"itemId"`
@@ -1590,6 +1630,12 @@ type AdultSettings struct {
 	// Tell Streamero about adult imports (only with an adult Streamero library mapped).
 	NotifyStreamero bool     `json:"notifyStreamero"`
 	Tokens          []string `json:"tokens"`
+	// Terms that are always blocked and cannot be removed (content involving minors or recorded without
+	// consent).
+	ProtectedTerms []string `json:"protectedTerms"`
+	// The quality profile that allows every quality, Unknown included (D-109); absent when it was deleted.
+	OpenProfileId OptInt64             `json:"openProfileId"`
+	ProfileUsage  OptAdultProfileUsage `json:"profileUsage"`
 }
 
 // GetEnabled returns the value of Enabled.
@@ -1662,6 +1708,21 @@ func (s *AdultSettings) GetTokens() []string {
 	return s.Tokens
 }
 
+// GetProtectedTerms returns the value of ProtectedTerms.
+func (s *AdultSettings) GetProtectedTerms() []string {
+	return s.ProtectedTerms
+}
+
+// GetOpenProfileId returns the value of OpenProfileId.
+func (s *AdultSettings) GetOpenProfileId() OptInt64 {
+	return s.OpenProfileId
+}
+
+// GetProfileUsage returns the value of ProfileUsage.
+func (s *AdultSettings) GetProfileUsage() OptAdultProfileUsage {
+	return s.ProfileUsage
+}
+
 // SetEnabled sets the value of Enabled.
 func (s *AdultSettings) SetEnabled(val bool) {
 	s.Enabled = val
@@ -1730,6 +1791,21 @@ func (s *AdultSettings) SetNotifyStreamero(val bool) {
 // SetTokens sets the value of Tokens.
 func (s *AdultSettings) SetTokens(val []string) {
 	s.Tokens = val
+}
+
+// SetProtectedTerms sets the value of ProtectedTerms.
+func (s *AdultSettings) SetProtectedTerms(val []string) {
+	s.ProtectedTerms = val
+}
+
+// SetOpenProfileId sets the value of OpenProfileId.
+func (s *AdultSettings) SetOpenProfileId(val OptInt64) {
+	s.OpenProfileId = val
+}
+
+// SetProfileUsage sets the value of ProfileUsage.
+func (s *AdultSettings) SetProfileUsage(val OptAdultProfileUsage) {
+	s.ProfileUsage = val
 }
 
 type AdultSettingsDefaultSource string
@@ -12045,6 +12121,11 @@ type HistoryClearRequest struct {
 	// Only entries older than this many days.
 	OlderThanDays OptInt  `json:"olderThanDays"`
 	DryRun        OptBool `json:"dryRun"`
+	// Clear one item's timeline instead (D-109): every row it shows for the item (events, searches,
+	// download steps); `category`, `kind` and `q` are ignored. Adult items need the adult permission.
+	Item OptString `json:"item"`
+	// With `item`, only these rows (one group of the timeline).
+	Ids []string `json:"ids"`
 }
 
 // GetCategory returns the value of Category.
@@ -12072,6 +12153,16 @@ func (s *HistoryClearRequest) GetDryRun() OptBool {
 	return s.DryRun
 }
 
+// GetItem returns the value of Item.
+func (s *HistoryClearRequest) GetItem() OptString {
+	return s.Item
+}
+
+// GetIds returns the value of Ids.
+func (s *HistoryClearRequest) GetIds() []string {
+	return s.Ids
+}
+
 // SetCategory sets the value of Category.
 func (s *HistoryClearRequest) SetCategory(val OptHistoryCategory) {
 	s.Category = val
@@ -12095,6 +12186,16 @@ func (s *HistoryClearRequest) SetOlderThanDays(val OptInt) {
 // SetDryRun sets the value of DryRun.
 func (s *HistoryClearRequest) SetDryRun(val OptBool) {
 	s.DryRun = val
+}
+
+// SetItem sets the value of Item.
+func (s *HistoryClearRequest) SetItem(val OptString) {
+	s.Item = val
+}
+
+// SetIds sets the value of Ids.
+func (s *HistoryClearRequest) SetIds(val []string) {
+	s.Ids = val
 }
 
 // Ref: #/components/schemas/HistoryClearResult
@@ -26575,6 +26676,52 @@ func (o OptAdultFile) Or(d AdultFile) AdultFile {
 	return d
 }
 
+// NewOptAdultProfileUsage returns new OptAdultProfileUsage with value set to v.
+func NewOptAdultProfileUsage(v AdultProfileUsage) OptAdultProfileUsage {
+	return OptAdultProfileUsage{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAdultProfileUsage is optional AdultProfileUsage.
+type OptAdultProfileUsage struct {
+	Value AdultProfileUsage
+	Set   bool
+}
+
+// IsSet returns true if OptAdultProfileUsage was set.
+func (o OptAdultProfileUsage) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAdultProfileUsage) Reset() {
+	var v AdultProfileUsage
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAdultProfileUsage) SetTo(v AdultProfileUsage) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAdultProfileUsage) Get() (v AdultProfileUsage, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAdultProfileUsage) Or(d AdultProfileUsage) AdultProfileUsage {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptAdultSettingsUpdateDefaultSource returns new OptAdultSettingsUpdateDefaultSource with value set to v.
 func NewOptAdultSettingsUpdateDefaultSource(v AdultSettingsUpdateDefaultSource) OptAdultSettingsUpdateDefaultSource {
 	return OptAdultSettingsUpdateDefaultSource{
@@ -30249,6 +30396,52 @@ func (o OptQuotaRule) Get() (v QuotaRule, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptQuotaRule) Or(d QuotaRule) QuotaRule {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptReasonCountParams returns new OptReasonCountParams with value set to v.
+func NewOptReasonCountParams(v ReasonCountParams) OptReasonCountParams {
+	return OptReasonCountParams{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptReasonCountParams is optional ReasonCountParams.
+type OptReasonCountParams struct {
+	Value ReasonCountParams
+	Set   bool
+}
+
+// IsSet returns true if OptReasonCountParams was set.
+func (o OptReasonCountParams) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptReasonCountParams) Reset() {
+	var v ReasonCountParams
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptReasonCountParams) SetTo(v ReasonCountParams) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptReasonCountParams) Get() (v ReasonCountParams, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptReasonCountParams) Or(d ReasonCountParams) ReasonCountParams {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -34319,6 +34512,10 @@ type ReasonCount struct {
 	Code    string `json:"code"`
 	Count   int    `json:"count"`
 	Example string `json:"example"`
+	// The example rejection's parameters (quality and profile, blocked term and whether it is protected).
+	Params OptReasonCountParams `json:"params"`
+	// Distinct qualities (quality_not_allowed) or terms (blocked_tag) behind the count, at most 5.
+	Values []string `json:"values"`
 }
 
 // GetCode returns the value of Code.
@@ -34336,6 +34533,16 @@ func (s *ReasonCount) GetExample() string {
 	return s.Example
 }
 
+// GetParams returns the value of Params.
+func (s *ReasonCount) GetParams() OptReasonCountParams {
+	return s.Params
+}
+
+// GetValues returns the value of Values.
+func (s *ReasonCount) GetValues() []string {
+	return s.Values
+}
+
 // SetCode sets the value of Code.
 func (s *ReasonCount) SetCode(val string) {
 	s.Code = val
@@ -34349,6 +34556,28 @@ func (s *ReasonCount) SetCount(val int) {
 // SetExample sets the value of Example.
 func (s *ReasonCount) SetExample(val string) {
 	s.Example = val
+}
+
+// SetParams sets the value of Params.
+func (s *ReasonCount) SetParams(val OptReasonCountParams) {
+	s.Params = val
+}
+
+// SetValues sets the value of Values.
+func (s *ReasonCount) SetValues(val []string) {
+	s.Values = val
+}
+
+// The example rejection's parameters (quality and profile, blocked term and whether it is protected).
+type ReasonCountParams map[string]jx.Raw
+
+func (s *ReasonCountParams) init() ReasonCountParams {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
 }
 
 // Ref: #/components/schemas/RecoveryCodes
@@ -39306,6 +39535,34 @@ func (s *SessionToken) SetToken(val string) {
 // SetRoles sets the value of Roles.
 func (s *SessionToken) SetRoles(val []string) {
 	s.Roles = val
+}
+
+type SetAdultQualityProfileForAllOK struct {
+	Updated int64 `json:"updated"`
+}
+
+// GetUpdated returns the value of Updated.
+func (s *SetAdultQualityProfileForAllOK) GetUpdated() int64 {
+	return s.Updated
+}
+
+// SetUpdated sets the value of Updated.
+func (s *SetAdultQualityProfileForAllOK) SetUpdated(val int64) {
+	s.Updated = val
+}
+
+type SetAdultQualityProfileForAllReq struct {
+	ProfileId int64 `json:"profileId"`
+}
+
+// GetProfileId returns the value of ProfileId.
+func (s *SetAdultQualityProfileForAllReq) GetProfileId() int64 {
+	return s.ProfileId
+}
+
+// SetProfileId sets the value of ProfileId.
+func (s *SetAdultQualityProfileForAllReq) SetProfileId(val int64) {
+	s.ProfileId = val
 }
 
 // SetQueueItemPriorityNoContent is response for SetQueueItemPriority operation.
@@ -45002,6 +45259,8 @@ type TimelineEvent struct {
 	// import_failed, renamed, upgraded, recycled, deleted, notified.
 	Type   string              `json:"type"`
 	Source TimelineEventSource `json:"source"`
+	// The item the row belongs to (an episode's timeline also shows its season's and series' rows).
+	ItemRef OptString `json:"itemRef"`
 	// English summary; clients render `type` and `data` themselves.
 	Message string `json:"message"`
 	// Event details (shape depends on the type).
@@ -45027,6 +45286,11 @@ func (s *TimelineEvent) GetType() string {
 // GetSource returns the value of Source.
 func (s *TimelineEvent) GetSource() TimelineEventSource {
 	return s.Source
+}
+
+// GetItemRef returns the value of ItemRef.
+func (s *TimelineEvent) GetItemRef() OptString {
+	return s.ItemRef
 }
 
 // GetMessage returns the value of Message.
@@ -45062,6 +45326,11 @@ func (s *TimelineEvent) SetType(val string) {
 // SetSource sets the value of Source.
 func (s *TimelineEvent) SetSource(val TimelineEventSource) {
 	s.Source = val
+}
+
+// SetItemRef sets the value of ItemRef.
+func (s *TimelineEvent) SetItemRef(val OptString) {
+	s.ItemRef = val
 }
 
 // SetMessage sets the value of Message.

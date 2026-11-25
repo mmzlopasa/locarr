@@ -180,7 +180,8 @@ type Invoker interface {
 	// ClearHistory invokes clearHistory operation.
 	//
 	// The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
-	// `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+	// `count` says how many entries would go. Entries of adult items are never counted or deleted here,
+	// except with `item` (one item's timeline, D-109) by callers with the adult permission.
 	//
 	// POST /history/clear
 	ClearHistory(ctx context.Context, request *HistoryClearRequest) (*HistoryClearResult, error)
@@ -418,6 +419,9 @@ type Invoker interface {
 	//
 	// The entry is the same row the item's timeline shows, so it disappears there too. Files, the
 	// blocklist, searches and release decisions are not touched.
+	//
+	// With `item`, the row is one of that item's timeline (D-109): any event type, a search (`s:`) or a
+	// download step. Adult items need the adult permission; otherwise the answer is 404.
 	//
 	// DELETE /history/{id}
 	DeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) error
@@ -1145,7 +1149,8 @@ type Invoker interface {
 	LinkUserIdentity(ctx context.Context, request *LinkIdentityRequest, params LinkUserIdentityParams) (*LinkedIdentity, error)
 	// ListAdultBlocklist invokes listAdultBlocklist operation.
 	//
-	// The adult tag blocklist (administrators).
+	// Only the owner's own terms; the list starts empty (D-109). The terms that are always blocked are in
+	// `AdultSettings.protectedTerms` and cannot be added or removed here.
 	//
 	// GET /adult/blocklist
 	ListAdultBlocklist(ctx context.Context) ([]AdultBlockTerm, error)
@@ -2021,6 +2026,12 @@ type Invoker interface {
 	//
 	// POST /subtitles/wanted/search
 	SearchWantedSubtitles(ctx context.Context, request *SearchWantedSubtitlesReq) (*SubtitleCount, error)
+	// SetAdultQualityProfileForAll invokes setAdultQualityProfileForAll operation.
+	//
+	// Only the quality profile changes; files, monitoring and history stay.
+	//
+	// POST /adult/items/quality-profile
+	SetAdultQualityProfileForAll(ctx context.Context, request *SetAdultQualityProfileForAllReq) (*SetAdultQualityProfileForAllOK, error)
 	// SetQueueItemPriority invokes setQueueItemPriority operation.
 	//
 	// Move a download in its client's queue (library managers).
@@ -5413,7 +5424,8 @@ func (c *Client) sendClearBlocklist(ctx context.Context) (res *BlocklistCleared,
 // ClearHistory invokes clearHistory operation.
 //
 // The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
-// `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+// `count` says how many entries would go. Entries of adult items are never counted or deleted here,
+// except with `item` (one item's timeline, D-109) by callers with the adult permission.
 //
 // POST /history/clear
 func (c *Client) ClearHistory(ctx context.Context, request *HistoryClearRequest) (*HistoryClearResult, error) {
@@ -10120,6 +10132,9 @@ func (c *Client) sendDeleteDownloadClient(ctx context.Context, params DeleteDown
 // The entry is the same row the item's timeline shows, so it disappears there too. Files, the
 // blocklist, searches and release decisions are not touched.
 //
+// With `item`, the row is one of that item's timeline (D-109): any event type, a search (`s:`) or a
+// download step. Adult items need the adult permission; otherwise the answer is 404.
+//
 // DELETE /history/{id}
 func (c *Client) DeleteHistoryEntry(ctx context.Context, params DeleteHistoryEntryParams) error {
 	_, err := c.sendDeleteHistoryEntry(ctx, params)
@@ -10184,6 +10199,27 @@ func (c *Client) sendDeleteHistoryEntry(ctx context.Context, params DeleteHistor
 		pathParts[1] = encoded
 	}
 	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "item" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "item",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Item.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "DELETE", u)
@@ -25198,7 +25234,8 @@ func (c *Client) sendLinkUserIdentity(ctx context.Context, request *LinkIdentity
 
 // ListAdultBlocklist invokes listAdultBlocklist operation.
 //
-// The adult tag blocklist (administrators).
+// Only the owner's own terms; the list starts empty (D-109). The terms that are always blocked are in
+// `AdultSettings.protectedTerms` and cannot be added or removed here.
 //
 // GET /adult/blocklist
 func (c *Client) ListAdultBlocklist(ctx context.Context) ([]AdultBlockTerm, error) {
@@ -44437,6 +44474,122 @@ func (c *Client) sendSearchWantedSubtitles(ctx context.Context, request *SearchW
 
 	stage = "DecodeResponse"
 	result, err := decodeSearchWantedSubtitlesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SetAdultQualityProfileForAll invokes setAdultQualityProfileForAll operation.
+//
+// Only the quality profile changes; files, monitoring and history stay.
+//
+// POST /adult/items/quality-profile
+func (c *Client) SetAdultQualityProfileForAll(ctx context.Context, request *SetAdultQualityProfileForAllReq) (*SetAdultQualityProfileForAllOK, error) {
+	res, err := c.sendSetAdultQualityProfileForAll(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendSetAdultQualityProfileForAll(ctx context.Context, request *SetAdultQualityProfileForAllReq) (res *SetAdultQualityProfileForAllOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("setAdultQualityProfileForAll"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/adult/items/quality-profile"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SetAdultQualityProfileForAllOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/adult/items/quality-profile"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeSetAdultQualityProfileForAllRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, SetAdultQualityProfileForAllOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeSetAdultQualityProfileForAllResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

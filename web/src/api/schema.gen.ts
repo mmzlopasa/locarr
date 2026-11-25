@@ -4849,9 +4849,12 @@ export interface paths {
         put?: never;
         post?: never;
         /**
-         * Delete one history entry (library managers)
+         * Delete one history entry or one row of an item's timeline (library managers)
          * @description The entry is the same row the item's timeline shows, so it disappears there too. Files, the
          *     blocklist, searches and release decisions are not touched.
+         *
+         *     With `item`, the row is one of that item's timeline (D-109): any event type, a search (`s:`) or a
+         *     download step. Adult items need the adult permission; otherwise the answer is 404.
          */
         delete: operations["deleteHistoryEntry"];
         options?: never;
@@ -4871,7 +4874,8 @@ export interface paths {
         /**
          * Delete the history entries that match a filter, or count them first (library managers)
          * @description The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
-         *     `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+         *     `count` says how many entries would go. Entries of adult items are never counted or deleted here,
+         *     except with `item` (one item's timeline, D-109) by callers with the adult permission.
          */
         post: operations["clearHistory"];
         delete?: never;
@@ -5157,7 +5161,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** The adult tag blocklist (administrators) */
+        /**
+         * The owner's adult tag blocklist (administrators)
+         * @description Only the owner's own terms; the list starts empty (D-109). The terms that are always blocked are in
+         *     `AdultSettings.protectedTerms` and cannot be added or removed here.
+         */
         get: operations["listAdultBlocklist"];
         put?: never;
         /** Add a blocked term (administrators) */
@@ -5182,6 +5190,26 @@ export interface paths {
         post?: never;
         /** Remove a blocked term (administrators) */
         delete: operations["deleteAdultBlocklistTerm"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/items/quality-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Put every adult item, followed studio and performer on one quality profile (permitted library managers)
+         * @description Only the quality profile changes; files, monitoring and history stay.
+         */
+        post: operations["setAdultQualityProfileForAll"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -5534,6 +5562,21 @@ export interface components {
             /** @description Tell Streamero about adult imports (only with an adult Streamero library mapped). */
             notifyStreamero: boolean;
             tokens: string[];
+            /** @description Terms that are always blocked and cannot be removed (content involving minors or recorded without consent). */
+            protectedTerms?: string[];
+            /**
+             * Format: int64
+             * @description The quality profile that allows every quality, Unknown included (D-109); absent when it was deleted.
+             */
+            openProfileId?: number;
+            profileUsage?: components["schemas"]["AdultProfileUsage"];
+        };
+        /** @description Only for callers who may see adult content. */
+        AdultProfileUsage: {
+            /** @description Adult items on another profile than openProfileId. */
+            items: number;
+            studios: number;
+            performers: number;
         };
         AdultSettingsUpdate: {
             enabled?: boolean;
@@ -5559,6 +5602,7 @@ export interface components {
             /** Format: int64 */
             id: number;
             term: string;
+            /** @description Always false since D-109 (nothing is seeded). */
             builtin: boolean;
         };
         AdultPreferences: {
@@ -7697,6 +7741,8 @@ export interface components {
             type: string;
             /** @enum {string} */
             source: "timeline" | "search" | "download";
+            /** @description The item the row belongs to (an episode's timeline also shows its season's and series' rows). */
+            itemRef?: string;
             /** @description English summary; clients render `type` and `data` themselves. */
             message: string;
             /** @description Event details (shape depends on the type). */
@@ -7708,6 +7754,12 @@ export interface components {
             code: string;
             count: number;
             example: string;
+            /** @description The example rejection's parameters (quality and profile, blocked term and whether it is protected). */
+            params?: {
+                [key: string]: unknown;
+            };
+            /** @description Distinct qualities (quality_not_allowed) or terms (blocked_tag) behind the count, at most 5. */
+            values?: string[];
         };
         Explanation: {
             /**
@@ -10105,6 +10157,13 @@ export interface components {
             olderThanDays?: number;
             /** @default false */
             dryRun: boolean;
+            /**
+             * @description Clear one item's timeline instead (D-109): every row it shows for the item (events, searches,
+             *     download steps); `category`, `kind` and `q` are ignored. Adult items need the adult permission.
+             */
+            item?: string;
+            /** @description With `item`, only these rows (one group of the timeline). */
+            ids?: string[];
         };
         HistoryClearResult: {
             /** Format: int64 */
@@ -18421,7 +18480,10 @@ export interface operations {
     };
     deleteHistoryEntry: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Item ref ("movie:42"). */
+                item?: string;
+            };
             header?: never;
             path: {
                 id: string;
@@ -18940,6 +19002,37 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    setAdultQualityProfileForAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: int64 */
+                    profileId: number;
+                };
+            };
+        };
+        responses: {
+            /** @description How many items changed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: int64 */
+                        updated: number;
+                    };
+                };
             };
             default: components["responses"]["Error"];
         };

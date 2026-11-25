@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -19,7 +20,17 @@ type ReasonCount struct {
 	Code    string `json:"code"`
 	Count   int    `json:"count"`
 	Example string `json:"example"`
+	// Params are the example's rejection parameters (D-109), so clients can
+	// say "Unknown is not allowed in profile HD-1080p" in their language.
+	Params map[string]any `json:"params,omitempty"`
+	// Values are the distinct qualities (quality_not_allowed) or terms
+	// (blocked_tag) behind the count.
+	Values []string `json:"values,omitempty"`
 }
+
+// reasonValueKey is the rejection parameter that tells the releases of one
+// code apart.
+var reasonValueKey = map[string]string{decision.CodeQualityNotAllowed: "quality", decision.CodeBlockedTag: "term"}
 
 // RejectedRelease is one of the best rejected releases with its reasons.
 type RejectedRelease struct {
@@ -62,10 +73,15 @@ func Summarize(rep decision.Report) DecisionSummary {
 		for _, r := range d.Rejections {
 			rc := counts[r.Code]
 			if rc == nil {
-				rc = &ReasonCount{Code: r.Code, Example: r.Message}
+				rc = &ReasonCount{Code: r.Code, Example: r.Message, Params: r.Params}
 				counts[r.Code] = rc
 			}
 			rc.Count++
+			if k, ok := reasonValueKey[r.Code]; ok {
+				if v, ok := r.Params[k].(string); ok && v != "" && !slices.Contains(rc.Values, v) && len(rc.Values) < 5 {
+					rc.Values = append(rc.Values, v)
+				}
+			}
 		}
 		if len(s.TopRejects) < TopN {
 			s.TopRejects = append(s.TopRejects, RejectedRelease{Title: d.Candidate.Title, Indexer: d.Candidate.IndexerName,

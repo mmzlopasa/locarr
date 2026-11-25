@@ -89,3 +89,29 @@ func TestExplainNothingFoundNamesFailingIndexers(t *testing.T) {
 		t.Fatalf("%+v", e.Params)
 	}
 }
+
+// TestSummarizeReasonValues: the summary keeps the example's parameters and
+// the distinct qualities and terms behind a count (D-109).
+func TestSummarizeReasonValues(t *testing.T) {
+	qr := func(q string) decision.Rejection {
+		return decision.Rejection{Code: decision.CodeQualityNotAllowed, Message: q + " is not allowed in profile HD-1080p",
+			Params: map[string]any{"quality": q, "profile": "HD-1080p"}}
+	}
+	rep := decision.Report{Rejected: 3, Decisions: []decision.Decision{
+		{Status: decision.StatusRejected, Rejections: []decision.Rejection{qr("Unknown")}},
+		{Status: decision.StatusRejected, Rejections: []decision.Rejection{qr("WEBDL-480p"),
+			{Code: decision.CodeBlockedTag, Message: "x", Params: map[string]any{"term": "ownterm", "protected": false}}}},
+		{Status: decision.StatusRejected, Rejections: []decision.Rejection{qr("Unknown")}},
+	}}
+	s := Summarize(rep)
+	if len(s.Reasons) != 2 || s.Reasons[0].Code != decision.CodeQualityNotAllowed || s.Reasons[0].Count != 3 {
+		t.Fatalf("reasons %+v", s.Reasons)
+	}
+	q := s.Reasons[0]
+	if strings.Join(q.Values, ",") != "Unknown,WEBDL-480p" || q.Params["profile"] != "HD-1080p" {
+		t.Errorf("quality reason %+v", q)
+	}
+	if b := s.Reasons[1]; strings.Join(b.Values, ",") != "ownterm" || b.Params["protected"] != false {
+		t.Errorf("blocked reason %+v", b)
+	}
+}

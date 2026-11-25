@@ -6211,13 +6211,17 @@ paths:
   /history/{id}:
     delete:
       operationId: deleteHistoryEntry
-      summary: Delete one history entry (library managers)
+      summary: Delete one history entry or one row of an item's timeline (library managers)
       description: |
         The entry is the same row the item's timeline shows, so it disappears there too. Files, the
         blocklist, searches and release decisions are not touched.
+
+        With `item`, the row is one of that item's timeline (D-109): any event type, a search (`s:`) or a
+        download step. Adult items need the adult permission; otherwise the answer is 404.
       tags: [history]
       parameters:
-        - {name: id, in: path, required: true, schema: {type: string, pattern: "^[td]:[0-9]{1,19}$"}}
+        - {name: id, in: path, required: true, schema: {type: string, pattern: "^[tds]:[0-9]{1,19}$"}}
+        - {name: item, in: query, required: false, schema: {type: string, maxLength: 64}, description: "Item ref (\"movie:42\")."}
       responses:
         "204":
           description: Deleted
@@ -6229,7 +6233,8 @@ paths:
       summary: Delete the history entries that match a filter, or count them first (library managers)
       description: |
         The filter is the one of `GET /history` plus `olderThanDays`. With `dryRun` nothing is deleted and
-        `count` says how many entries would go. Entries of adult items are never counted or deleted here.
+        `count` says how many entries would go. Entries of adult items are never counted or deleted here,
+        except with `item` (one item's timeline, D-109) by callers with the adult permission.
       tags: [history]
       requestBody:
         required: true
@@ -6545,7 +6550,10 @@ paths:
   /adult/blocklist:
     get:
       operationId: listAdultBlocklist
-      summary: The adult tag blocklist (administrators)
+      summary: The owner's adult tag blocklist (administrators)
+      description: |
+        Only the owner's own terms; the list starts empty (D-109). The terms that are always blocked are in
+        `AdultSettings.protectedTerms` and cannot be added or removed here.
       tags: [adult]
       responses:
         "200":
@@ -6588,6 +6596,33 @@ paths:
       responses:
         "204":
           description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/items/quality-profile:
+    post:
+      operationId: setAdultQualityProfileForAll
+      summary: Put every adult item, followed studio and performer on one quality profile (permitted library managers)
+      description: Only the quality profile changes; files, monitoring and history stay.
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [profileId]
+              properties:
+                profileId: {type: integer, format: int64}
+      responses:
+        "200":
+          description: How many items changed
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [updated]
+                properties:
+                  updated: {type: integer, format: int64}
         default:
           $ref: "#/components/responses/Error"
   /adult/preferences:
@@ -7284,6 +7319,24 @@ components:
         tokens:
           type: array
           items: {type: string}
+        protectedTerms:
+          type: array
+          items: {type: string}
+          description: Terms that are always blocked and cannot be removed (content involving minors or recorded without consent).
+        openProfileId:
+          type: integer
+          format: int64
+          description: The quality profile that allows every quality, Unknown included (D-109); absent when it was deleted.
+        profileUsage:
+          $ref: "#/components/schemas/AdultProfileUsage"
+    AdultProfileUsage:
+      type: object
+      description: Only for callers who may see adult content.
+      required: [items, studios, performers]
+      properties:
+        items: {type: integer, description: "Adult items on another profile than openProfileId."}
+        studios: {type: integer}
+        performers: {type: integer}
     AdultSettingsUpdate:
       type: object
       properties:
@@ -7306,7 +7359,7 @@ components:
       properties:
         id: {type: integer, format: int64}
         term: {type: string}
-        builtin: {type: boolean}
+        builtin: {type: boolean, description: "Always false since D-109 (nothing is seeded)."}
     AdultPreferences:
       type: object
       required: [blur]
@@ -10864,6 +10917,7 @@ components:
             download_removed, download_imported, download_import_failed, download_blocklisted,
             file_imported, file_found, import_failed, renamed, upgraded, recycled, deleted, notified.
         source: {type: string, enum: [timeline, search, download]}
+        itemRef: {type: string, description: "The item the row belongs to (an episode's timeline also shows its season's and series' rows)."}
         message: {type: string, description: English summary; clients render `type` and `data` themselves.}
         data: {description: Event details (shape depends on the type).}
         downloadId: {type: integer, format: int64}
@@ -10874,6 +10928,14 @@ components:
         code: {type: string}
         count: {type: integer}
         example: {type: string}
+        params:
+          type: object
+          additionalProperties: true
+          description: The example rejection's parameters (quality and profile, blocked term and whether it is protected).
+        values:
+          type: array
+          items: {type: string}
+          description: Distinct qualities (quality_not_allowed) or terms (blocked_tag) behind the count, at most 5.
     Explanation:
       type: object
       required: [code, tone, message, params, reasons]
@@ -13494,6 +13556,17 @@ components:
         q: {type: string, maxLength: 200}
         olderThanDays: {type: integer, minimum: 1, maximum: 36500, description: "Only entries older than this many days."}
         dryRun: {type: boolean, default: false}
+        item:
+          type: string
+          maxLength: 64
+          description: |
+            Clear one item's timeline instead (D-109): every row it shows for the item (events, searches,
+            download steps); `category`, `kind` and `q` are ignored. Adult items need the adult permission.
+        ids:
+          type: array
+          maxItems: 500
+          items: {type: string, pattern: "^[tds]:[0-9]{1,19}$"}
+          description: With `item`, only these rows (one group of the timeline).
     HistoryClearResult:
       type: object
       required: [count, deleted]
