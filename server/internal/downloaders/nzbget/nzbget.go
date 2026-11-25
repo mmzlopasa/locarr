@@ -171,7 +171,31 @@ func (c *Client) Test(ctx context.Context) (downloaders.Status, error) {
 		free = s.FreeDiskSpaceMB << 20
 	}
 	st.FreeSpace = &free
+	st.SavePath = c.destDir(ctx)
 	return st, nil
+}
+
+// destDir is NZBGet's DestDir option with ${MainDir} filled in ("" when unknown).
+func (c *Client) destDir(ctx context.Context) string {
+	var opts []struct {
+		Name  string `json:"Name"`
+		Value string `json:"Value"`
+	}
+	if c.call(ctx, "config", nil, &opts) != nil {
+		return ""
+	}
+	vals := map[string]string{}
+	for _, o := range opts {
+		vals[strings.ToLower(o.Name)] = o.Value
+	}
+	d := vals["destdir"]
+	if strings.Contains(d, "${MainDir}") {
+		d = strings.ReplaceAll(d, "${MainDir}", vals["maindir"])
+	}
+	if strings.Contains(d, "${") {
+		return ""
+	}
+	return d
 }
 
 type group struct {

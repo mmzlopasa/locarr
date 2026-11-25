@@ -123,9 +123,20 @@ Klijent javlja manje slobodnog prostora od praga (zadano 10 GB). Oslobodi prosto
 prag u **Postavke → Nadzor**.
 
 <a id="remote-path-mapping"></a>
-### Putanja preuzimanja nije vidljiva (`path_not_visible`, `mapping_local_missing`)
+### Putanja preuzimanja nije vidljiva (`path_not_visible`, `mapping_suggested`, `client_folder_not_visible`, `mapping_local_missing`)
 Klijent javlja da je preuzimanje u `/downloads/film`, a Locarr tu mapu ne vidi jer klijent i
-Locarr imaju različite mape u kontejnerima. Dva rješenja:
+Locarr imaju različite mape u kontejnerima. Primjer: qBittorrent ima `/mnt/data/downloads → /downloads`,
+a Locarr `/mnt/data → /data`; ista datoteka je za klijenta `/downloads/film`, a za Locarr `/data/downloads/film`.
+
+**Locarr to najčešće riješi sam:** potraži isto preuzimanje (ime i veličina) unutar `/data` i predloži
+mapiranje, npr. `/downloads → /data/downloads` za host klijenta. Prijedlog se vidi u retku reda
+(**Aktivnost → Red**), u **Download klijenti → Mapiranja udaljenih putanja** i u **Sustav → Zdravlje**
+(`mapping_suggested`). Klikni **Dodaj mapiranje** (samo administrator); preuzimanje se uvozi pri
+sljedećoj provjeri. Locarr mapiranje nikad ne dodaje sam. Test klijenta i spremanje klijenta provjeravaju
+i zadanu mapu klijenta i mape kategorija; mapa koju Locarr ne vidi, a za koju nema prijedloga, javlja se
+kao `client_folder_not_visible`.
+
+Ako prijedloga nema (datoteke su dublje od 4 razine ili ih Locarr uopće ne vidi), dva rješenja:
 1. **Isti pogled (preporučeno):** montiraj isti disk na istu putanju u oba kontejnera (npr. oba
    vide `/data/downloads`). Tada mapiranje ne treba, a uvoz može koristiti hardlinkove.
 2. **Mapiranje putanja:** **Download klijenti → Mapiranja udaljenih putanja**: host klijenta,

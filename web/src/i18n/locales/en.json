@@ -667,9 +667,25 @@
     "remotePath": "Path in the client",
     "localPath": "Path in Locarr",
     "add": "Add mapping",
-    "none": "No mappings. With the single /data mount (see the setup guide) none are needed.",
+    "none": "No mappings yet.",
     "remove": "Remove",
-    "removeConfirm": "Remove it"
+    "removeConfirm": "Remove it",
+    "when": "A mapping is needed when the download client runs in another container or on another machine and sees the same files under a different path (for example the client has /downloads, Locarr has /data/downloads). When both see the files under the same path, none is needed. Locarr suggests a mapping by itself when it finds a finished download under another path.",
+    "suggest": {
+      "title": "Suggested by Locarr",
+      "download": "Locarr found this download at {{foundAt}}. Add mapping {{remotePath}} → {{localPath}} for {{host}}?",
+      "folder": "Locarr has a folder of the same name at {{foundAt}}. Likely mapping: {{remotePath}} → {{localPath}} for {{host}}.",
+      "add": "Add mapping",
+      "replace": "Replace mapping",
+      "added": "Mapping added. The download is picked up on the next check.",
+      "replacesHint": "A mapping for this path already exists but points to a folder where the files are not.",
+      "askAdmin": "An administrator can add it in Download clients → Remote path mappings."
+    },
+    "check": {
+      "default": "The client saves to {{path}}, which Locarr cannot see.",
+      "category": "Category {{category}} saves to {{path}}, which Locarr cannot see.",
+      "noSuggestion": "Add a remote path mapping, or mount the same folder in both containers."
+    }
   },
   "tracking": {
     "title": "Download tracking",
@@ -3597,7 +3613,9 @@
       "indexer_challenge_browser_missing": "Indexer {{name}} sits behind a browser check and the built-in browser is not running. Start it with: {{command}}",
       "indexer_challenge_browser_failed": "The built-in browser could not pass the check of indexer {{name}}: {{detail}}",
       "indexer_challenge_human": "Indexer {{name}} needs a human check (a CAPTCHA). Open the site in your browser; Locarr does not solve these and tries again later.",
-      "indexer_challenge_blocked": "The site of indexer {{name}} refuses the built-in browser (blocked, not a check)."
+      "indexer_challenge_blocked": "The site of indexer {{name}} refuses the built-in browser (blocked, not a check).",
+      "mapping_suggested": "Locarr found files of {{client}} under {{localPath}}: add the remote path mapping {{remotePath}} → {{localPath}} for {{host}}.",
+      "client_folder_not_visible": "Download client {{name}} saves to {{path}}, which Locarr cannot see (remote path mapping or volume)."
     }
   },
   "logs": {

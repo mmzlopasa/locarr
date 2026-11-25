@@ -150,7 +150,11 @@ func (c *Client) Test(ctx context.Context) (downloaders.Status, error) {
 	if v.Version == "" {
 		return downloaders.Status{}, fmt.Errorf("%w: no version in the answer", downloaders.ErrWrongURL)
 	}
-	return downloaders.Status{Version: v.Version}, nil
+	st := downloaders.Status{Version: v.Version}
+	if d, err := c.baseDir(ctx); err == nil && d != "." {
+		st.SavePath = d
+	}
+	return st, nil
 }
 
 // baseDir is the configured download folder, or aria2's global "dir".

@@ -18,6 +18,9 @@ type sqlTx = sql.Tx
 type QueueItem struct {
 	Download Download
 	Unknown  bool
+	// Suggestion is a remote path mapping that would make a finished
+	// download visible.
+	Suggestion *PathSuggestion
 }
 
 // Queue returns the downloads that are still in a client (not yet imported,
@@ -30,13 +33,21 @@ func (s *Service) Queue(ctx context.Context, includeUnknown bool) ([]QueueItem, 
 		return nil, err
 	}
 	defer rows.Close()
+	mappings, err := s.Mappings(ctx)
+	if err != nil {
+		return nil, err
+	}
 	out := []QueueItem{}
 	for rows.Next() {
 		d, err := scanDownload(rows)
 		if err != nil {
 			return nil, err
 		}
-		out = append(out, QueueItem{Download: d})
+		q := QueueItem{Download: d}
+		if sug := s.DownloadSuggestion(d.ID); sug != nil && d.Status == StatusActive && !covered(mappings, *sug) {
+			q.Suggestion = sug
+		}
+		out = append(out, q)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -205,6 +216,8 @@ type TestResult struct {
 	FreeSpace         *int64
 	MissingCategories []string
 	CanCreate         bool
+	// PathChecks: the client's folders and whether Locarr sees them.
+	PathChecks []PathCheck
 }
 
 // Test checks a client configuration. With id set, secrets left nil come from
@@ -268,6 +281,12 @@ func (s *Service) Test(ctx context.Context, id int64, in ClientInput) (TestResul
 	}
 	if len(res.MissingCategories) > 0 {
 		res.ErrorCode = "category_missing"
+	}
+	if mappings, err := s.Mappings(ctx); err == nil {
+		c.ID = id
+		c.Name = in.Name
+		c.Host = strings.ToLower(strings.TrimSpace(in.Host))
+		res.PathChecks = s.checkPaths(tctx, c, cl, st.SavePath, mappings)
 	}
 	return res, nil
 }

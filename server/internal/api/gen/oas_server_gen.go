@@ -1411,6 +1411,14 @@ type Handler interface {
 	//
 	// GET /releaseprofiles
 	ListReleaseProfiles(ctx context.Context) ([]ReleaseProfile, error)
+	// ListRemotePathMappingSuggestions implements listRemotePathMappingSuggestions operation.
+	//
+	// From finished downloads whose path the client reports but Locarr cannot see, found again inside the
+	// data roots by name and size, and from client folders Locarr cannot see. Nothing is added until the
+	// user adds it.
+	//
+	// GET /remotepathmappings/suggestions
+	ListRemotePathMappingSuggestions(ctx context.Context) ([]PathMappingSuggestion, error)
 	// ListRemotePathMappings implements listRemotePathMappings operation.
 	//
 	// Remote path mappings (administrators).

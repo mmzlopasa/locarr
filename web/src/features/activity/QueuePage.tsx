@@ -6,6 +6,7 @@ import { ArrowDownToLine, ArrowUpToLine, Pause, Play, RefreshCw } from "lucide-r
 import { api, queryKeys, unwrap, type DownloadState, type QueueClient, type QueueItem } from "@/api/client";
 import { formatBytes, formatDuration } from "@/components/format";
 import { Alert, Badge, Button, ConfirmButton, EmptyState, ErrorAlert, Panel, SelectInput, Spinner, TextInput } from "@/components/ui";
+import { SuggestionBox } from "@/features/downloaders/PathSuggestion";
 
 const STATES: DownloadState[] = ["queued", "downloading", "paused", "seeding", "completed", "failed", "warning"];
 
@@ -211,7 +212,8 @@ export function QueuePage() {
                         {[it.indexer, it.category].filter(Boolean).join(" · ")}
                         {it.unknown ? <span className="ml-1"><Badge>{t("queue.notOurs")}</Badge></span> : null}
                       </p>
-                      {it.message ? <p className="mt-0.5 break-words text-[12px] text-warning">{it.message}</p> : null}
+                      {it.message && !it.pathSuggestion ? <p className="mt-0.5 break-words text-[12px] text-warning">{it.message}</p> : null}
+                      {it.pathSuggestion ? <SuggestionBox suggestion={it.pathSuggestion} testId={`path-suggestion-${it.id}`} /> : null}
                     </td>
                     <td className="py-2 pr-3 text-muted">{it.clientName}</td>
                     <td className="py-2 pr-3"><StateBadge item={it} /></td>

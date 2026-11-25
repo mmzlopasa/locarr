@@ -667,9 +667,25 @@
     "remotePath": "Putanja u klijentu",
     "localPath": "Putanja u Locarru",
     "add": "Dodaj mapiranje",
-    "none": "Nema mapiranja. S jednom /data montažom (vidi upute za postavljanje) nisu potrebna.",
+    "none": "Još nema mapiranja.",
     "remove": "Ukloni",
-    "removeConfirm": "Ukloni"
+    "removeConfirm": "Ukloni",
+    "when": "Mapiranje treba kad download klijent radi u drugom kontejneru ili na drugom stroju i iste datoteke vidi pod drugom putanjom (npr. klijent ima /downloads, a Locarr /data/downloads). Kad oba vide datoteke pod istom putanjom, mapiranje ne treba. Locarr sam predlaže mapiranje kad gotovo preuzimanje nađe pod drugom putanjom.",
+    "suggest": {
+      "title": "Locarr predlaže",
+      "download": "Locarr je ovo preuzimanje našao u {{foundAt}}. Dodati mapiranje {{remotePath}} → {{localPath}} za {{host}}?",
+      "folder": "Locarr ima mapu istog imena u {{foundAt}}. Vjerojatno mapiranje: {{remotePath}} → {{localPath}} za {{host}}.",
+      "add": "Dodaj mapiranje",
+      "replace": "Zamijeni mapiranje",
+      "added": "Mapiranje je dodano. Preuzimanje se preuzima pri sljedećoj provjeri.",
+      "replacesHint": "Mapiranje za ovu putanju već postoji, ali vodi u mapu u kojoj datoteka nema.",
+      "askAdmin": "Administrator ga može dodati u Download klijenti → Mapiranja udaljenih putanja."
+    },
+    "check": {
+      "default": "Klijent sprema u {{path}}, a Locarr tu mapu ne vidi.",
+      "category": "Kategorija {{category}} sprema u {{path}}, a Locarr tu mapu ne vidi.",
+      "noSuggestion": "Dodaj mapiranje udaljene putanje ili montiraj istu mapu u oba kontejnera."
+    }
   },
   "tracking": {
     "title": "Praćenje preuzimanja",
@@ -3597,7 +3613,9 @@
       "indexer_challenge_browser_missing": "Indexer {{name}} je iza provjere preglednika, a ugrađeni preglednik nije pokrenut. Pokreni ga naredbom: {{command}}",
       "indexer_challenge_browser_failed": "Ugrađeni preglednik nije prošao provjeru indexera {{name}}: {{detail}}",
       "indexer_challenge_human": "Indexer {{name}} traži ljudsku provjeru (CAPTCHA). Otvori stranicu u svom pregledniku; Locarr takve provjere ne rješava i pokušat će ponovno kasnije.",
-      "indexer_challenge_blocked": "Stranica indexera {{name}} odbija ugrađeni preglednik (blokada, ne provjera)."
+      "indexer_challenge_blocked": "Stranica indexera {{name}} odbija ugrađeni preglednik (blokada, ne provjera).",
+      "mapping_suggested": "Locarr je našao datoteke klijenta {{client}} u {{localPath}}: dodaj mapiranje udaljene putanje {{remotePath}} → {{localPath}} za {{host}}.",
+      "client_folder_not_visible": "Download klijent {{name}} sprema u {{path}}, a Locarr tu mapu ne vidi (mapiranje udaljene putanje ili volumen)."
     }
   },
   "logs": {

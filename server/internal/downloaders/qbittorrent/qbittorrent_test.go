@@ -83,6 +83,8 @@ func (f *fake) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = io.WriteString(w, "v5.0.2")
 	case "app/webapiVersion":
 		_, _ = io.WriteString(w, f.apiVer)
+	case "app/defaultSavePath":
+		_, _ = io.WriteString(w, "/downloads")
 	case "sync/maindata":
 		_, _ = io.WriteString(w, `{"rid":1,"server_state":{"free_space_on_disk":123456789}}`)
 	case "torrents/info":
@@ -141,7 +143,7 @@ func TestLoginAndTest(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if st.Version != "v5.0.2" || st.FreeSpace == nil || *st.FreeSpace != 123456789 {
+	if st.Version != "v5.0.2" || st.FreeSpace == nil || *st.FreeSpace != 123456789 || st.SavePath != "/downloads" {
 		t.Fatalf("status = %+v", st)
 	}
 	if f.logins != 1 {

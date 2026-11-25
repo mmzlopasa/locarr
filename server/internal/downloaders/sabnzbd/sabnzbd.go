@@ -185,6 +185,18 @@ func (c *Client) Test(ctx context.Context) (downloaders.Status, error) {
 		free := int64(gb * (1 << 30))
 		st.FreeSpace = &free
 	}
+	var cfg struct {
+		Config struct {
+			Misc struct {
+				CompleteDir string `json:"complete_dir"`
+			} `json:"misc"`
+		} `json:"config"`
+	}
+	// A relative folder is relative to SABnzbd's own base folder, which the API does not give.
+	if c.get(ctx, "get_config", url.Values{"section": {"misc"}, "keyword": {"complete_dir"}}, &cfg) == nil &&
+		(strings.HasPrefix(cfg.Config.Misc.CompleteDir, "/") || (len(cfg.Config.Misc.CompleteDir) > 2 && cfg.Config.Misc.CompleteDir[1] == ':')) {
+		st.SavePath = cfg.Config.Misc.CompleteDir
+	}
 	return st, nil
 }
 

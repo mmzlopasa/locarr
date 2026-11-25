@@ -3,6 +3,14 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: prijedlozi mapiranja udaljenih putanja (branch `feat/path-mapping-suggest`)
+- D-111: kad gotovo preuzimanje nije vidljivo, Locarr ga traži unutar data rootova (ime i veličina; vjerojatna mjesta pa ograničena šetnja, bez simboličkih veza, kroz `fs.MustExist`) i izvodi mapiranje iz najduljeg zajedničkog završetka (`/downloads → /data/downloads`).
+- Prijedlog u retku reda (`QueueItem.pathSuggestion`), iznad popisa mapiranja (`GET /remotepathmappings/suggestions`) i u zdravlju (`mapping_suggested`, `client_folder_not_visible`); gumb „Dodaj mapiranje”/„Zamijeni mapiranje” samo administratorima; ništa se ne dodaje samo.
+- Klijenti javljaju zadanu mapu (`Status.SavePath`); test i provjera klijenta vraćaju `pathChecks` za zadanu mapu i mape kategorija, s vjerojatnim mapiranjem.
+- Ispravljen tekst „none are needed” (EN + HR).
+- Testovi: `TestDeriveMapping` (vlasnikov slučaj, kose crte na kraju, Windows), `TestSuggestsMappingForInvisibleDownload`, `TestSuggestionWalkFindsDeepFolderAndStaysInDataRoots`, `TestClientFolderChecks`, integracijski `TestPathMappingSuggestionToImport` (prijedlog → dodavanje → uvoz), qBittorrent `defaultSavePath`, Vitest `PathSuggestion.test.tsx`.
+- Poznato: bez Playwright testa (CI-jev Transmission vidi `/data` pod istom putanjom); mobilne aplikacije nemaju gumb za dodavanje; šetnja ide do dubine 4.
+
 ## Gotovo: novi izgled odjeljka za odrasle, uklanjanje i „Ne zanima me” (branch `feat/adult-ui`)
 - Uzrok slika (D-110): ThePornDB-ov `*.metadataapi.net` šalje lanac do ISRG Root YE bez unakrsnog potpisa, a Debian trixie taj korijen nema; svaka slika je padala na TLS-u i stavka je ostajala bez slike, a web je to prikazivao kao zamućenu sliku. `netx.RootCAs` (ugrađeni ISRG Root YE i YR), slika po sadržaju, slike izvođača, ponovno dohvaćanje pri osvježavanju, brisanje nekorištenih slika nakon 7 dana.
 - Migracija `00019_adult_exclusions.sql`: `adult_exclusions`, indeks `adult_items_added`.

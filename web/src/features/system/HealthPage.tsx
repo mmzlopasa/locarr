@@ -6,6 +6,7 @@ import { api, queryKeys, unwrap, type HealthIssue } from "@/api/client";
 import { formatRelative } from "@/components/format";
 import { Badge, Button, ErrorAlert, PageHeader, Panel, Spinner } from "@/components/ui";
 import { DOCS_BASE } from "@/features/board/board";
+import { AddMappingButton } from "@/features/downloaders/PathSuggestion";
 import { describeHealth, severityTone } from "./health";
 
 const ORDER = { error: 0, warning: 1, info: 2 } as const;
@@ -71,6 +72,7 @@ export function IssueRow({ issue, compact = false }: { issue: HealthIssue; compa
         ) : null}
       </div>
       <span className="flex items-center gap-3 text-[12px]">
+        {issue.code === "mapping_suggested" ? <SuggestedMapping params={issue.params} /> : null}
         {issue.fixRoute ? <Link to={issue.fixRoute} className="text-info hover:underline">{t("health.fixHere")}</Link> : null}
         {!compact && issue.docs ? (
           <a href={`${DOCS_BASE}#${issue.docs}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-muted hover:text-fg">
@@ -81,4 +83,13 @@ export function IssueRow({ issue, compact = false }: { issue: HealthIssue; compa
       </span>
     </li>
   );
+}
+
+/** The one-click add for a mapping_suggested issue. */
+function SuggestedMapping({ params }: { params?: HealthIssue["params"] }) {
+  const p = (params ?? {}) as Record<string, unknown>;
+  if (typeof p.host !== "string" || typeof p.remotePath !== "string" || typeof p.localPath !== "string") return null;
+  const replaces = typeof p.replacesMappingId === "number" && p.replacesMappingId > 0 ? p.replacesMappingId : undefined;
+  return <AddMappingButton mapping={{ host: p.host, remotePath: p.remotePath, localPath: p.localPath, replacesMappingId: replaces }}
+    testId="health-add-mapping" />;
 }

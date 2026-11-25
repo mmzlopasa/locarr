@@ -14320,6 +14320,170 @@ func (s *CheckMigratePathsReq) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode implements json.Marshaler.
+func (s *ClientPathCheck) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *ClientPathCheck) encodeFields(e *jx.Encoder) {
+	{
+		if s.Category.Set {
+			e.FieldStart("category")
+			s.Category.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("clientPath")
+		e.Str(s.ClientPath)
+	}
+	{
+		e.FieldStart("visible")
+		e.Bool(s.Visible)
+	}
+	{
+		if s.LocalPath.Set {
+			e.FieldStart("localPath")
+			s.LocalPath.Encode(e)
+		}
+	}
+	{
+		if s.Suggestion.Set {
+			e.FieldStart("suggestion")
+			s.Suggestion.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfClientPathCheck = [5]string{
+	0: "category",
+	1: "clientPath",
+	2: "visible",
+	3: "localPath",
+	4: "suggestion",
+}
+
+// Decode decodes ClientPathCheck from json.
+func (s *ClientPathCheck) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ClientPathCheck to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "category":
+			if err := func() error {
+				s.Category.Reset()
+				if err := s.Category.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"category\"")
+			}
+		case "clientPath":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.ClientPath = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"clientPath\"")
+			}
+		case "visible":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Bool()
+				s.Visible = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"visible\"")
+			}
+		case "localPath":
+			if err := func() error {
+				s.LocalPath.Reset()
+				if err := s.LocalPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"localPath\"")
+			}
+		case "suggestion":
+			if err := func() error {
+				s.Suggestion.Reset()
+				if err := s.Suggestion.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"suggestion\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode ClientPathCheck")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000110,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfClientPathCheck) {
+					name = jsonFieldsNameOfClientPathCheck[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *ClientPathCheck) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ClientPathCheck) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes ColonReplacement as json.
 func (s ColonReplacement) Encode(e *jx.Encoder) {
 	e.Str(string(s))
@@ -21318,15 +21482,26 @@ func (s *DownloadClientStatus) encodeFields(e *jx.Encoder) {
 			s.FreeSpaceBytes.Encode(e)
 		}
 	}
+	{
+		if s.PathChecks != nil {
+			e.FieldStart("pathChecks")
+			e.ArrStart()
+			for _, elem := range s.PathChecks {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
 }
 
-var jsonFieldsNameOfDownloadClientStatus = [6]string{
+var jsonFieldsNameOfDownloadClientStatus = [7]string{
 	0: "ok",
 	1: "checkedAt",
 	2: "errorCode",
 	3: "error",
 	4: "version",
 	5: "freeSpaceBytes",
+	6: "pathChecks",
 }
 
 // Decode decodes DownloadClientStatus from json.
@@ -21399,6 +21574,23 @@ func (s *DownloadClientStatus) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"freeSpaceBytes\"")
+			}
+		case "pathChecks":
+			if err := func() error {
+				s.PathChecks = make([]ClientPathCheck, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem ClientPathCheck
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.PathChecks = append(s.PathChecks, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"pathChecks\"")
 			}
 		default:
 			return d.Skip()
@@ -21616,9 +21808,19 @@ func (s *DownloadClientTestResult) encodeFields(e *jx.Encoder) {
 		e.FieldStart("canCreateCategories")
 		e.Bool(s.CanCreateCategories)
 	}
+	{
+		if s.PathChecks != nil {
+			e.FieldStart("pathChecks")
+			e.ArrStart()
+			for _, elem := range s.PathChecks {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
 }
 
-var jsonFieldsNameOfDownloadClientTestResult = [7]string{
+var jsonFieldsNameOfDownloadClientTestResult = [8]string{
 	0: "ok",
 	1: "errorCode",
 	2: "message",
@@ -21626,6 +21828,7 @@ var jsonFieldsNameOfDownloadClientTestResult = [7]string{
 	4: "freeSpaceBytes",
 	5: "missingCategories",
 	6: "canCreateCategories",
+	7: "pathChecks",
 }
 
 // Decode decodes DownloadClientTestResult from json.
@@ -21720,6 +21923,23 @@ func (s *DownloadClientTestResult) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"canCreateCategories\"")
+			}
+		case "pathChecks":
+			if err := func() error {
+				s.PathChecks = make([]ClientPathCheck, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem ClientPathCheck
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.PathChecks = append(s.PathChecks, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"pathChecks\"")
 			}
 		default:
 			return d.Skip()
@@ -58587,6 +58807,39 @@ func (s *OptParsedRevision) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes PathMappingSuggestion as json.
+func (o OptPathMappingSuggestion) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes PathMappingSuggestion from json.
+func (o *OptPathMappingSuggestion) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptPathMappingSuggestion to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptPathMappingSuggestion) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptPathMappingSuggestion) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes Permissions as json.
 func (o OptPermissions) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -62010,6 +62263,306 @@ func (s *PathMapping) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *PathMappingSuggestion) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *PathMappingSuggestion) encodeFields(e *jx.Encoder) {
+	{
+		if s.ClientId.Set {
+			e.FieldStart("clientId")
+			s.ClientId.Encode(e)
+		}
+	}
+	{
+		if s.ClientName.Set {
+			e.FieldStart("clientName")
+			s.ClientName.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("host")
+		e.Str(s.Host)
+	}
+	{
+		e.FieldStart("remotePath")
+		e.Str(s.RemotePath)
+	}
+	{
+		e.FieldStart("localPath")
+		e.Str(s.LocalPath)
+	}
+	{
+		e.FieldStart("clientPath")
+		e.Str(s.ClientPath)
+	}
+	{
+		e.FieldStart("foundAt")
+		e.Str(s.FoundAt)
+	}
+	{
+		e.FieldStart("source")
+		s.Source.Encode(e)
+	}
+	{
+		if s.ReplacesMappingId.Set {
+			e.FieldStart("replacesMappingId")
+			s.ReplacesMappingId.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("downloadIds")
+		e.ArrStart()
+		for _, elem := range s.DownloadIds {
+			e.Int64(elem)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfPathMappingSuggestion = [10]string{
+	0: "clientId",
+	1: "clientName",
+	2: "host",
+	3: "remotePath",
+	4: "localPath",
+	5: "clientPath",
+	6: "foundAt",
+	7: "source",
+	8: "replacesMappingId",
+	9: "downloadIds",
+}
+
+// Decode decodes PathMappingSuggestion from json.
+func (s *PathMappingSuggestion) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PathMappingSuggestion to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "clientId":
+			if err := func() error {
+				s.ClientId.Reset()
+				if err := s.ClientId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"clientId\"")
+			}
+		case "clientName":
+			if err := func() error {
+				s.ClientName.Reset()
+				if err := s.ClientName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"clientName\"")
+			}
+		case "host":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Host = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"host\"")
+			}
+		case "remotePath":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.RemotePath = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"remotePath\"")
+			}
+		case "localPath":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Str()
+				s.LocalPath = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"localPath\"")
+			}
+		case "clientPath":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Str()
+				s.ClientPath = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"clientPath\"")
+			}
+		case "foundAt":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Str()
+				s.FoundAt = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"foundAt\"")
+			}
+		case "source":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				if err := s.Source.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"source\"")
+			}
+		case "replacesMappingId":
+			if err := func() error {
+				s.ReplacesMappingId.Reset()
+				if err := s.ReplacesMappingId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"replacesMappingId\"")
+			}
+		case "downloadIds":
+			requiredBitSet[1] |= 1 << 1
+			if err := func() error {
+				s.DownloadIds = make([]int64, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int64
+					v, err := d.Int64()
+					elem = int64(v)
+					if err != nil {
+						return err
+					}
+					s.DownloadIds = append(s.DownloadIds, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"downloadIds\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode PathMappingSuggestion")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b11111100,
+		0b00000010,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfPathMappingSuggestion) {
+					name = jsonFieldsNameOfPathMappingSuggestion[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *PathMappingSuggestion) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PathMappingSuggestion) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes PathMappingSuggestionSource as json.
+func (s PathMappingSuggestionSource) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes PathMappingSuggestionSource from json.
+func (s *PathMappingSuggestionSource) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PathMappingSuggestionSource to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch PathMappingSuggestionSource(v) {
+	case PathMappingSuggestionSourceDownload:
+		*s = PathMappingSuggestionSourceDownload
+	case PathMappingSuggestionSourceFolder:
+		*s = PathMappingSuggestionSourceFolder
+	default:
+		*s = PathMappingSuggestionSource(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s PathMappingSuggestionSource) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PathMappingSuggestionSource) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *Permissions) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -64422,6 +64975,12 @@ func (s *QueueItem) encodeFields(e *jx.Encoder) {
 		e.Str(s.Message)
 	}
 	{
+		if s.PathSuggestion.Set {
+			e.FieldStart("pathSuggestion")
+			s.PathSuggestion.Encode(e)
+		}
+	}
+	{
 		if len(s.ItemRef) != 0 {
 			e.FieldStart("itemRef")
 			e.Raw(s.ItemRef)
@@ -64449,7 +65008,7 @@ func (s *QueueItem) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfQueueItem = [29]string{
+var jsonFieldsNameOfQueueItem = [30]string{
 	0:  "id",
 	1:  "unknown",
 	2:  "clientId",
@@ -64474,11 +65033,12 @@ var jsonFieldsNameOfQueueItem = [29]string{
 	21: "contentPath",
 	22: "localPath",
 	23: "message",
-	24: "itemRef",
-	25: "item",
-	26: "addedAt",
-	27: "updatedAt",
-	28: "completedAt",
+	24: "pathSuggestion",
+	25: "itemRef",
+	26: "item",
+	27: "addedAt",
+	28: "updatedAt",
+	29: "completedAt",
 }
 
 // Decode decodes QueueItem from json.
@@ -64760,6 +65320,16 @@ func (s *QueueItem) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"message\"")
 			}
+		case "pathSuggestion":
+			if err := func() error {
+				s.PathSuggestion.Reset()
+				if err := s.PathSuggestion.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"pathSuggestion\"")
+			}
 		case "itemRef":
 			if err := func() error {
 				v, err := d.RawAppend(nil)
@@ -64782,7 +65352,7 @@ func (s *QueueItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"item\"")
 			}
 		case "addedAt":
-			requiredBitSet[3] |= 1 << 2
+			requiredBitSet[3] |= 1 << 3
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.AddedAt = v
@@ -64794,7 +65364,7 @@ func (s *QueueItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"addedAt\"")
 			}
 		case "updatedAt":
-			requiredBitSet[3] |= 1 << 3
+			requiredBitSet[3] |= 1 << 4
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.UpdatedAt = v
@@ -64828,7 +65398,7 @@ func (s *QueueItem) Decode(d *jx.Decoder) error {
 		0b01111011,
 		0b11111110,
 		0b10011011,
-		0b00001100,
+		0b00011000,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

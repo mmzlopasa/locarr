@@ -252,6 +252,39 @@ func (d *Deps) checkPaths(ctx context.Context) ([]Issue, error) {
 			Message: fmt.Sprintf("%s finished in %s but Locarr cannot see %s", title, client, p), Docs: "remote-path-mapping", FixRoute: "/downloaders"})
 	}
 	_ = rows.Close()
+	sugs, err := d.Downloads.Suggestions(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, sg := range sugs {
+		out = append(out, Issue{Key: "mapping:suggest:" + sg.Host + ":" + sg.RemotePath, Severity: SeverityWarning, Code: "mapping_suggested",
+			// No item paths: they name the release, and health warnings reach shared channels (D-103).
+			Params: map[string]any{"client": sg.ClientName, "host": sg.Host, "remotePath": sg.RemotePath, "localPath": sg.LocalPath,
+				"source": sg.Source, "count": len(sg.DownloadIDs), "replacesMappingId": sg.ReplacesID},
+			Message: fmt.Sprintf("Locarr found files of %s under %s: add the remote path mapping %s → %s for %s", sg.ClientName, sg.LocalPath,
+				sg.RemotePath, sg.LocalPath, sg.Host),
+			Docs: "remote-path-mapping", FixRoute: "/downloaders"})
+	}
+	clients, err := d.Downloads.Clients(ctx)
+	if err != nil {
+		return nil, err
+	}
+	snaps := d.Downloads.Snapshots()
+	for _, c := range clients {
+		if !c.Enabled {
+			continue
+		}
+		for _, pc := range snaps[c.ID].PathChecks {
+			if pc.Visible || pc.Suggestion != nil {
+				continue // a suggestion has its own entry
+			}
+			out = append(out, Issue{Key: "client:" + strconv.FormatInt(c.ID, 10) + ":folder:" + pc.ClientPath, Severity: SeverityWarning,
+				Code:    "client_folder_not_visible",
+				Params:  map[string]any{"name": c.Name, "path": pc.ClientPath, "category": pc.Category},
+				Message: fmt.Sprintf("download client %s saves to %s, which Locarr cannot see", c.Name, pc.ClientPath),
+				Docs:    "remote-path-mapping", FixRoute: "/downloaders"})
+		}
+	}
 	maps, err := d.Downloads.Mappings(ctx)
 	if err != nil {
 		return nil, err

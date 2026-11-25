@@ -1432,6 +1432,14 @@ type Invoker interface {
 	//
 	// GET /releaseprofiles
 	ListReleaseProfiles(ctx context.Context) ([]ReleaseProfile, error)
+	// ListRemotePathMappingSuggestions invokes listRemotePathMappingSuggestions operation.
+	//
+	// From finished downloads whose path the client reports but Locarr cannot see, found again inside the
+	// data roots by name and size, and from client folders Locarr cannot see. Nothing is added until the
+	// user adds it.
+	//
+	// GET /remotepathmappings/suggestions
+	ListRemotePathMappingSuggestions(ctx context.Context) ([]PathMappingSuggestion, error)
 	// ListRemotePathMappings invokes listRemotePathMappings operation.
 	//
 	// Remote path mappings (administrators).
@@ -31764,6 +31772,121 @@ func (c *Client) sendListReleaseProfiles(ctx context.Context) (res []ReleaseProf
 
 	stage = "DecodeResponse"
 	result, err := decodeListReleaseProfilesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListRemotePathMappingSuggestions invokes listRemotePathMappingSuggestions operation.
+//
+// From finished downloads whose path the client reports but Locarr cannot see, found again inside the
+// data roots by name and size, and from client folders Locarr cannot see. Nothing is added until the
+// user adds it.
+//
+// GET /remotepathmappings/suggestions
+func (c *Client) ListRemotePathMappingSuggestions(ctx context.Context) ([]PathMappingSuggestion, error) {
+	res, err := c.sendListRemotePathMappingSuggestions(ctx)
+	return res, err
+}
+
+func (c *Client) sendListRemotePathMappingSuggestions(ctx context.Context) (res []PathMappingSuggestion, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listRemotePathMappingSuggestions"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/remotepathmappings/suggestions"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListRemotePathMappingSuggestionsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/remotepathmappings/suggestions"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListRemotePathMappingSuggestionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListRemotePathMappingSuggestionsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

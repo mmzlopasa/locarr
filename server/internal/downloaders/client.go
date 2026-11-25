@@ -179,6 +179,9 @@ type Category struct {
 type Status struct {
 	Version   string
 	FreeSpace *int64 // bytes in the default download folder, when the client reports it
+	// SavePath is the client's default download folder as the client sees it
+	// ("" when its API does not say).
+	SavePath string
 }
 
 // Client is a download client. Implementations are safe for concurrent use.

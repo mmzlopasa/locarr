@@ -243,6 +243,11 @@ func (c *Client) Test(ctx context.Context) (downloaders.Status, error) {
 			st.FreeSpace = md.ServerState.FreeSpace
 		}
 	}
+	if b, err := c.get(ctx, "app/defaultSavePath", nil); err == nil {
+		if p := strings.TrimSpace(string(b)); p != "" && !strings.Contains(p, "<") {
+			st.SavePath = p
+		}
+	}
 	return st, nil
 }
 

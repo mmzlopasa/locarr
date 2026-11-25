@@ -45,7 +45,12 @@ i adrese metapodataka u oblaku (npr. `169.254.169.254`) su zabranjene.
 
 ## Mapiranje udaljenih putanja
 Ako klijent radi na drugom stroju ili u kontejneru s drugačijim montažama, putanja koju javlja ne postoji u
-Locarru. Tada preuzimanje u redu stoji kao gotovo uz poruku da putanja nije vidljiva. Dodaj mapiranje:
+Locarru. Tada preuzimanje u redu stoji kao gotovo uz poruku da putanja nije vidljiva. Mapiranje ne treba kad
+klijent i Locarr iste datoteke vide pod istom putanjom.
+
+Locarr gotovo preuzimanje koje ne vidi potraži unutar `/data` po imenu i veličini i predloži mapiranje
+(u retku reda, iznad popisa mapiranja i u Zdravlju) s gumbom **Dodaj mapiranje**. Test i spremanje klijenta
+provjeravaju zadanu mapu klijenta i mape kategorija i upozore s vjerojatnim mapiranjem. Ručno dodavanje:
 
 - **Host** — kako je klijent upisan u Locarru (npr. `seedbox.lan`)
 - **Udaljena putanja** — kako je vidi klijent (npr. `/downloads`)

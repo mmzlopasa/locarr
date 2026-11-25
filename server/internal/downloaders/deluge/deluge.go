@@ -219,6 +219,10 @@ func (c *Client) Test(ctx context.Context) (downloaders.Status, error) {
 	if c.call(ctx, "core.get_free_space", nil, &free) == nil && free >= 0 {
 		st.FreeSpace = &free
 	}
+	var dir string
+	if c.call(ctx, "core.get_config_value", []any{"download_location"}, &dir) == nil {
+		st.SavePath = dir
+	}
 	return st, nil
 }
 
