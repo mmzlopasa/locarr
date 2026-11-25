@@ -4100,17 +4100,13 @@
       "calendar": "Calendar",
       "add": "Add"
     },
-    "empty": "Nothing here yet.",
     "filter": "Filter",
-    "have": "In library",
-    "missing": "Missing",
     "monitored": "Monitored",
     "monitorNew": "Monitor new scenes",
     "refresh": "Look for new scenes",
     "trackPerformer": "Track this performer",
     "trackPerformerHint": "New scenes with this performer become wanted.",
     "studioCounts": "{{scenes}} scenes, {{files}} in library",
-    "calendarHint": "Release dates from {{start}} to {{end}}.",
     "searchNow": "Search now",
     "rename": "Rename file",
     "history": "Why isn't it here?",
@@ -4119,7 +4115,8 @@
     "image": {
       "reveal": "Show image",
       "hide": "Blur image",
-      "tap": "Click to show"
+      "tap": "Click to show",
+      "unavailable": "No image for {{name}}"
     },
     "add": {
       "title": "Add from StashDB or ThePornDB",
@@ -4139,7 +4136,118 @@
       "default": "Default",
       "none": "No results.",
       "inLibrary": "In library",
-      "add": "Add"
+      "add": "Add",
+      "sort": "Order",
+      "sorts": {
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "relevance": "Relevance",
+        "title": "Title"
+      },
+      "noneHint": "Try another spelling, the other source or another type.",
+      "addSelected": "Add selected ({{count}})",
+      "someFailed": "Could not add: {{names}}"
+    },
+    "filterHint": "Title or studio",
+    "all": "All",
+    "unmonitored": "Not monitored",
+    "monitoredFilter": "Monitoring",
+    "statusFilter": "Status",
+    "status": {
+      "downloaded": "In library",
+      "downloading": "Downloading",
+      "wanted": "Wanted",
+      "missing": "Missing"
+    },
+    "sort": {
+      "label": "Sort",
+      "date": "Release date",
+      "added": "Date added",
+      "title": "Title"
+    },
+    "view": {
+      "label": "View",
+      "grid": "Grid",
+      "list": "List"
+    },
+    "select": {
+      "start": "Select",
+      "done": "Done",
+      "count": "Selected: {{count}}",
+      "all": "Select all",
+      "none": "Clear",
+      "one": "Select {{name}}"
+    },
+    "bulk": {
+      "monitor": "Monitor",
+      "unmonitor": "Unmonitor",
+      "remove": "Remove",
+      "removeTitle": "Remove selected ({{count}})",
+      "removeQuestion": "Remove the selected items from the library? Selected: {{count}}."
+    },
+    "count": "Items: {{count}}",
+    "loadMore": "Load more",
+    "emptyFiltered": "Nothing matches these filters.",
+    "emptyHint": "Follow a studio or a performer and their new scenes show up here, or add single scenes and movies.",
+    "emptyScenes": "No scenes yet",
+    "emptyMovies": "No movies yet",
+    "emptyStudios": "No studios yet",
+    "emptyPerformers": "No performers yet",
+    "emptyWanted": "Nothing is wanted right now",
+    "emptyWantedHint": "Monitored scenes and movies without a file show up here until they are downloaded.",
+    "emptyStudio": "No scenes from this studio yet",
+    "emptyStudioHint": "Look for new scenes to fetch its newest releases from the source.",
+    "emptyPerformer": "No scenes with this performer yet",
+    "emptyPerformerHint": "Track the performer and look for new scenes to fetch their newest releases.",
+    "addFollow": "Add a studio or performer",
+    "addRoot": "Add a root folder",
+    "following": "Followed",
+    "followingSince": "Followed since {{date}}",
+    "tracked": "Tracked",
+    "trackedSince": "Tracked since {{date}}",
+    "onlyTracked": "Only tracked performers",
+    "sceneCount": "Scenes: {{count}}",
+    "refreshedAt": "Checked {{when}}",
+    "refreshed": "New scenes: {{count}}",
+    "searchQueued": "Search started.",
+    "details": "Details",
+    "addedAt": "Added",
+    "folder": "Folder",
+    "tags": "Tags at the source",
+    "file": {
+      "title": "File",
+      "path": "Path",
+      "size": "Size",
+      "quality": "Quality",
+      "group": "Release group",
+      "added": "Imported",
+      "release": "Release name"
+    },
+    "calendar": {
+      "previous": "Previous month",
+      "next": "Next month",
+      "today": "This month",
+      "empty": "Nothing released this month",
+      "emptyHint": "Release dates of scenes and movies in your library show up here."
+    },
+    "remove": {
+      "button": "Remove",
+      "confirm": "Remove",
+      "itemTitle": "Remove “{{title}}”?",
+      "itemQuestion": "It leaves the library. Its timeline stays, and you can add it again later.",
+      "exclude": "Not interested: don't add it again",
+      "excludeHint": "A refresh of a followed studio or performer skips it. You can undo this in Settings → Adult content.",
+      "excludeManyHint": "Refreshes of followed studios and performers skip these scenes. You can undo this in Settings → Adult content.",
+      "files": "Also delete the file",
+      "filesHint": "The file goes to the recycle bin, where it can be restored until the bin is emptied.",
+      "studioTitle": "Remove the studio “{{name}}”?",
+      "studioScenes": "What happens to its scenes (scenes: {{count}})?",
+      "performerTitle": "Remove the performer “{{name}}”?",
+      "performerScenes": "What happens to their scenes (scenes: {{count}})?",
+      "keepScenes": "Keep the scenes",
+      "keepScenesHint": "They stay in the library without a studio page and are no longer refreshed.",
+      "keepPerformerHint": "They stay in the library; only the performer is forgotten.",
+      "removeScenes": "Remove the scenes too (scenes: {{count}})"
     }
   },
   "adultSettings": {
@@ -4212,6 +4320,13 @@
       "applied": "Items changed: {{count}}",
       "allOpen": "Every adult item uses {{profile}}.",
       "missing": "The profile that allows every quality was deleted. Pick a profile that allows Unknown under Defaults."
+    },
+    "exclusions": {
+      "title": "Not interested",
+      "hint": "Scenes and movies you removed with “Not interested”. Refreshes of followed studios and performers skip them. Undo an entry and the next refresh may add it again.",
+      "empty": "The list is empty.",
+      "undo": "Undo",
+      "added": "Added {{when}}"
     }
   },
   "discovery": {

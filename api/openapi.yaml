@@ -6713,14 +6713,20 @@ paths:
         - {name: source, in: query, required: true, schema: {type: string, enum: [stashdb, tpdb]}}
         - {name: type, in: query, required: true, schema: {type: string, enum: [scene, movie, performer, studio]}}
         - {name: term, in: query, required: true, schema: {type: string, minLength: 1, maxLength: 200}}
+        - name: sort
+          in: query
+          required: false
+          description: >-
+            Order of scenes and movies (newest release first by default). Asked of the source where it has
+            that order; otherwise the page is ordered after it arrives.
+          schema: {type: string, enum: [newest, oldest, relevance, title], default: newest}
+        - {name: page, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 100, default: 1}}
       responses:
         "200":
-          description: Results
+          description: One page of results
           content:
             application/json:
-              schema:
-                type: array
-                items: {$ref: "#/components/schemas/AdultLookupResult"}
+              schema: {$ref: "#/components/schemas/AdultLookupPage"}
         default:
           $ref: "#/components/responses/Error"
   /adult/studios:
@@ -6789,10 +6795,12 @@ paths:
           $ref: "#/components/responses/Error"
     delete:
       operationId: deleteAdultStudio
-      summary: Remove a studio and its scenes (files go to the recycle bin only with deleteFiles)
+      summary: Remove a studio and (unless keepScenes) its scenes (files go to the recycle bin only with deleteFiles)
       tags: [adult]
       parameters:
         - {name: deleteFiles, in: query, required: false, schema: {type: boolean, default: false}}
+        - {name: keepScenes, in: query, required: false, description: "Scenes stay in the library without a studio.", schema: {type: boolean, default: false}}
+        - {name: exclude, in: query, required: false, description: "Removed scenes are not added again by a refresh.", schema: {type: boolean, default: false}}
       responses:
         "204":
           description: Removed
@@ -6879,8 +6887,12 @@ paths:
           $ref: "#/components/responses/Error"
     delete:
       operationId: deleteAdultPerformer
-      summary: Forget a performer (their scenes stay)
+      summary: Forget a performer (their scenes stay unless removeScenes)
       tags: [adult]
+      parameters:
+        - {name: removeScenes, in: query, required: false, schema: {type: boolean, default: false}}
+        - {name: deleteFiles, in: query, required: false, schema: {type: boolean, default: false}}
+        - {name: exclude, in: query, required: false, description: "Removed scenes are not added again by a refresh.", schema: {type: boolean, default: false}}
       responses:
         "204":
           description: Removed
@@ -6897,6 +6909,9 @@ paths:
         - {name: performerId, in: query, required: false, schema: {type: integer, format: int64}}
         - {name: term, in: query, required: false, schema: {type: string, maxLength: 200}}
         - {name: missing, in: query, required: false, schema: {type: boolean}}
+        - {name: status, in: query, required: false, schema: {$ref: "#/components/schemas/AdultItemStatus"}}
+        - {name: monitored, in: query, required: false, schema: {type: boolean}}
+        - {name: sort, in: query, required: false, description: "date and added: newest first; title: A-Z (movies default to title).", schema: {type: string, enum: [date, added, title]}}
         - {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 500, default: 100}}
         - {name: offset, in: query, required: false, schema: {type: integer, minimum: 0, default: 0}}
       responses:
@@ -6922,6 +6937,66 @@ paths:
           content:
             application/json:
               schema: {$ref: "#/components/schemas/AdultItem"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/items/bulk:
+    post:
+      operationId: bulkAdultItems
+      summary: Remove, monitor or unmonitor many items at once (managers)
+      tags: [adult]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AdultBulkRequest"}
+      responses:
+        "200":
+          description: How many items changed
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AdultBulkResult"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/exclusions:
+    get:
+      operationId: listAdultExclusions
+      summary: The "not interested" list (newest first)
+      tags: [adult]
+      responses:
+        "200":
+          description: Exclusions
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/AdultExclusion"}
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/exclusions/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    delete:
+      operationId: deleteAdultExclusion
+      summary: Undo "not interested" (the next refresh may add the item again)
+      tags: [adult]
+      responses:
+        "204":
+          description: Removed
+        default:
+          $ref: "#/components/responses/Error"
+  /adult/performers/{id}/refresh:
+    parameters:
+      - $ref: "#/components/parameters/ID"
+    post:
+      operationId: refreshAdultPerformer
+      summary: Look for new scenes of a followed performer now (and fetch a missing image)
+      tags: [adult]
+      responses:
+        "200":
+          description: Added scenes
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/QueuedCount"}
         default:
           $ref: "#/components/responses/Error"
   /adult/items/{id}:
@@ -6962,6 +7037,7 @@ paths:
       tags: [adult]
       parameters:
         - {name: deleteFiles, in: query, required: false, schema: {type: boolean, default: false}}
+        - {name: exclude, in: query, required: false, description: "Not interested: a refresh of a followed studio or performer does not add it again.", schema: {type: boolean, default: false}}
       responses:
         "204":
           description: Removed
@@ -7385,6 +7461,49 @@ components:
           type: array
           items: {type: string}
         inLibrary: {type: boolean}
+        image: {type: string, description: "Key for /adult/images/{key}."}
+    AdultLookupPage:
+      type: object
+      required: [results, page, more]
+      properties:
+        results:
+          type: array
+          items: {$ref: "#/components/schemas/AdultLookupResult"}
+        page: {type: integer}
+        more: {type: boolean, description: "The source has another page."}
+    AdultItemStatus:
+      type: string
+      description: "downloaded: in the library; downloading; wanted: monitored without a file; missing: not monitored, no file."
+      enum: [downloaded, downloading, wanted, missing]
+    AdultBulkRequest:
+      type: object
+      required: [ids, action]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items: {type: integer, format: int64}
+        action: {type: string, enum: [remove, monitor, unmonitor]}
+        deleteFiles: {type: boolean, default: false, description: "remove: files go to the recycle bin."}
+        exclude: {type: boolean, default: false, description: "remove: not interested, a refresh does not add them again."}
+    AdultBulkResult:
+      type: object
+      required: [changed]
+      properties:
+        changed: {type: integer}
+    AdultExclusion:
+      type: object
+      required: [id, kind, title, addedAt]
+      properties:
+        id: {type: integer, format: int64}
+        kind: {type: string, enum: [scene, movie]}
+        stashdbId: {type: string}
+        tpdbId: {type: string}
+        title: {type: string}
+        studio: {type: string}
+        releaseDate: {type: string}
+        addedAt: {type: string, format: date-time}
     AdultAddRequest:
       type: object
       required: [source, id]
@@ -7449,7 +7568,7 @@ components:
         addedAt: {type: string, format: date-time}
     AdultItem:
       type: object
-      required: [id, kind, ref, studio, title, monitored, qualityProfileId, path, addedAt, performers, sourceTags]
+      required: [id, kind, ref, studio, title, monitored, qualityProfileId, path, addedAt, performers, sourceTags, status]
       properties:
         id: {type: integer, format: int64}
         kind: {type: string, enum: [scene, movie]}
@@ -7480,6 +7599,7 @@ components:
               id: {type: integer, format: int64}
               name: {type: string}
         file: {$ref: "#/components/schemas/AdultFile"}
+        status: {$ref: "#/components/schemas/AdultItemStatus"}
     AdultItemPage:
       type: object
       required: [items, total]

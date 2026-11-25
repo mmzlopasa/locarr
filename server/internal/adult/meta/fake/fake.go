@@ -11,6 +11,8 @@ import (
 	"image/png"
 	"net/http"
 	"regexp"
+	"sort"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -200,8 +202,16 @@ func (s *Server) stash(w http.ResponseWriter, r *http.Request) {
 	case "queryScenes":
 		in, _ := req.Variables["input"].(map[string]any)
 		out := []map[string]any{}
-		for _, sc := range s.list() {
+		list := s.list()
+		sortBy, _ := in["sort"].(string)
+		dir, _ := in["direction"].(string)
+		sortScenes(list, sortBy == "TITLE", dir == "ASC")
+		text, _ := in["text"].(string)
+		for _, sc := range list {
 			if sc.Movie {
+				continue
+			}
+			if text != "" && !strings.Contains(strings.ToLower(sc.Title+" "+sc.Studio+" "+strings.Join(sc.Performers, " ")), strings.ToLower(text)) {
 				continue
 			}
 			if f, ok := in["studios"].(map[string]any); ok && !hasValue(f, "st-"+slug(sc.Studio)) {
@@ -218,12 +228,45 @@ func (s *Server) stash(w http.ResponseWriter, r *http.Request) {
 			}
 			out = append(out, s.stashScene(sc))
 		}
-		data["queryScenes"] = map[string]any{"count": len(out), "scenes": out}
+		page, per := num(in["page"], 1), num(in["per_page"], 25)
+		data["queryScenes"] = map[string]any{"count": len(out), "scenes": pageOf(out, page, per)}
 	default:
 		writeJSON(w, map[string]any{"errors": []map[string]any{{"message": "unknown field " + m[1]}}})
 		return
 	}
 	writeJSON(w, map[string]any{"data": data})
+}
+
+// sortScenes orders by date (newest first unless asc) or title.
+func sortScenes(list []Scene, byTitle, asc bool) {
+	sort.SliceStable(list, func(i, j int) bool {
+		a, b := list[i].Date, list[j].Date
+		if byTitle {
+			a, b = list[i].Title, list[j].Title
+		}
+		if asc {
+			return a < b
+		}
+		return a > b
+	})
+}
+
+func num(v any, def int) int {
+	switch n := v.(type) {
+	case float64:
+		return int(n)
+	case string:
+		if i, err := strconv.Atoi(n); err == nil {
+			return i
+		}
+	}
+	return def
+}
+
+func pageOf(list []map[string]any, page, per int) []map[string]any {
+	page, per = max(page, 1), max(per, 1)
+	from := min((page-1)*per, len(list))
+	return list[from:min(from+per, len(list))]
 }
 
 func hasValue(f map[string]any, id string) bool {
@@ -287,7 +330,11 @@ func (s *Server) tpdb(w http.ResponseWriter, r *http.Request) {
 	case len(parts) == 1 && (parts[0] == "scenes" || parts[0] == "movies"):
 		movie := parts[0] == "movies"
 		out := []map[string]any{}
-		for _, sc := range s.list() {
+		list := s.list()
+		if q.Get("orderBy") == "recently_released" {
+			sortScenes(list, false, false)
+		}
+		for _, sc := range list {
 			if sc.Movie != movie {
 				continue
 			}
@@ -308,7 +355,9 @@ func (s *Server) tpdb(w http.ResponseWriter, r *http.Request) {
 			}
 			out = append(out, s.tpdbScene(sc))
 		}
-		writeJSON(w, map[string]any{"data": out, "meta": map[string]any{"total": len(out)}})
+		page, per := num(q.Get("page"), 1), num(q.Get("per_page"), 25)
+		last := max((len(out)+max(per, 1)-1)/max(per, 1), 1)
+		writeJSON(w, map[string]any{"data": pageOf(out, page, per), "meta": map[string]any{"total": len(out), "current_page": page, "last_page": last}})
 	case len(parts) == 2 && (parts[0] == "scenes" || parts[0] == "movies"):
 		for _, sc := range s.list() {
 			if sc.TPDBID == parts[1] {

@@ -80,6 +80,8 @@ test("adult content: off by default, enable with confirmation, grant, blurred im
   const image = page.getByTestId("adult-image").first();
   await expect(image).toHaveAttribute("data-blurred", "true");
   await expect(image.locator("img")).toBeVisible();
+  // The image really decodes (the page's CSP must allow the blob: URL it is shown from).
+  await expect.poll(() => image.locator("img").evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   await image.click();
   await expect(image).toHaveAttribute("data-blurred", "false");
 
@@ -95,4 +97,83 @@ test("adult content: off by default, enable with confirmation, grant, blurred im
   await page.goto("/");
   await expect(page.getByRole("link", { name: "Adult", exact: true })).toHaveCount(0);
   expect((await page.request.get("/api/v1/adult/items")).status()).toBe(404);
+});
+
+test("adult content: remove a scene as not interested, it stays gone after a refresh; bulk select", async ({ page }) => {
+  test.setTimeout(120_000);
+  await signInAsAdmin(page);
+  const on = await page.request.put("/api/v1/adult/settings", { data: { enabled: true, confirmAdults: true, stashdbKey: stashKey } });
+  expect(on.ok(), await on.text()).toBeTruthy();
+  const me = await (await page.request.get("/api/v1/auth/me")).json();
+  await page.request.patch(`/api/v1/users/${me.id}`, { data: { permissions: { ...me.permissions, viewAdult: true } } });
+  const rf = await page.request.post("/api/v1/adult/rootfolders", { data: { path: adultRoot } });
+  expect([201, 409].includes(rf.status()), await rf.text()).toBeTruthy();
+  const st = await page.request.post("/api/v1/adult/studios", { data: { source: "stashdb", id: "st-studio-a", monitored: true, search: false } });
+  expect([201, 409].includes(st.status()), await st.text()).toBeTruthy();
+  const studios = await (await page.request.get("/api/v1/adult/studios")).json();
+  const studioId = studios.find((s: { name: string }) => s.name === "Studio A").id;
+  // Start clean: undo exclusions an earlier run left behind and bring the scenes back.
+  for (const e of await (await page.request.get("/api/v1/adult/exclusions")).json()) {
+    await page.request.delete(`/api/v1/adult/exclusions/${e.id}`);
+  }
+  await page.request.post(`/api/v1/adult/studios/${studioId}/refresh`);
+
+  await page.goto("/adult");
+  const grid = page.getByTestId("adult-items");
+  await expect(grid).toContainText("Second Scene");
+  await grid.getByRole("link", { name: "Second Scene" }).click();
+  await page.waitForURL(/\/adult\/items\/\d+/);
+  await page.getByTestId("adult-remove").click();
+  const dialog = page.getByTestId("adult-remove-dialog");
+  await expect(dialog.getByTestId("adult-remove-exclude")).toBeChecked();
+  await dialog.getByTestId("adult-remove-confirm").click();
+  await page.waitForURL(/\/adult$/);
+  await expect(grid).toContainText("Scene Title");
+  await expect(grid).not.toContainText("Second Scene");
+
+  // Refreshing the followed studio does not bring it back.
+  await page.goto(`/adult/studios/${studioId}`);
+  await page.getByRole("button", { name: "Look for new scenes" }).click();
+  await expect(page.getByText(/New scenes: \d+/)).toBeVisible();
+  await expect(page.getByTestId("adult-items")).not.toContainText("Second Scene");
+
+  // Settings → Adult content lists it; undo, and the next refresh adds it again.
+  await page.goto("/settings/adult");
+  const exclusions = page.getByTestId("adult-exclusions");
+  await expect(exclusions).toContainText("Second Scene");
+  await exclusions.getByTestId("adult-exclusion-undo").first().click();
+  await expect(page.getByTestId("adult-exclusions-empty")).toBeVisible();
+  await page.goto(`/adult/studios/${studioId}`);
+  await page.getByRole("button", { name: "Look for new scenes" }).click();
+  await expect(page.getByTestId("adult-items")).toContainText("Second Scene");
+
+  // Bulk: select two scenes and monitor them, then unmonitor.
+  await page.goto("/adult");
+  await page.getByTestId("adult-status-filter").selectOption("missing");
+  await expect(page.getByTestId("adult-card").first()).toBeVisible();
+  await page.getByTestId("adult-select").click();
+  await page.getByTestId("adult-card").nth(0).click();
+  await page.getByTestId("adult-card").nth(1).click();
+  await expect(page.getByTestId("adult-selected-count")).toHaveText("Selected: 2");
+  await page.getByTestId("adult-bulk-monitor").click();
+  await page.getByTestId("adult-select").click();
+  await page.getByTestId("adult-status-filter").selectOption("wanted");
+  await expect(page.getByTestId("adult-card")).toHaveCount(2);
+  await page.getByTestId("adult-select").click();
+  await page.getByTestId("adult-selection-bar").getByRole("button", { name: "Select all" }).click();
+  await page.getByTestId("adult-bulk-unmonitor").click();
+  await expect(page.getByTestId("adult-empty")).toBeVisible();
+
+  // The tab bar scrolls sideways on a phone without a scrollbar of its own and the page does not.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/adult");
+  await expect(page.getByTestId("adult-card").first()).toBeVisible();
+  const nav = page.getByRole("navigation", { name: "Adult" });
+  const box = await nav.evaluate((el) => ({ h: el.scrollHeight - el.clientHeight, overflowY: getComputedStyle(el).overflowY }));
+  expect(box.h).toBe(0);
+  expect(box.overflowY).toBe("hidden");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+
+  const off = await page.request.put("/api/v1/adult/settings", { data: { enabled: false } });
+  expect(off.ok()).toBeTruthy();
 });

@@ -114,6 +114,12 @@ type Handler interface {
 	//
 	// GET /filesystem
 	BrowseFilesystem(ctx context.Context, params BrowseFilesystemParams) (*FolderListing, error)
+	// BulkAdultItems implements bulkAdultItems operation.
+	//
+	// Remove, monitor or unmonitor many items at once (managers).
+	//
+	// POST /adult/items/bulk
+	BulkAdultItems(ctx context.Context, req *AdultBulkRequest) (*AdultBulkResult, error)
 	// CancelJob implements cancelJob operation.
 	//
 	// Cancel a queued or running job (administrators).
@@ -322,6 +328,12 @@ type Handler interface {
 	//
 	// DELETE /adult/blocklist/{id}
 	DeleteAdultBlocklistTerm(ctx context.Context, params DeleteAdultBlocklistTermParams) error
+	// DeleteAdultExclusion implements deleteAdultExclusion operation.
+	//
+	// Undo "not interested" (the next refresh may add the item again).
+	//
+	// DELETE /adult/exclusions/{id}
+	DeleteAdultExclusion(ctx context.Context, params DeleteAdultExclusionParams) error
 	// DeleteAdultItem implements deleteAdultItem operation.
 	//
 	// Remove an item (its file goes to the recycle bin only with deleteFiles).
@@ -330,7 +342,7 @@ type Handler interface {
 	DeleteAdultItem(ctx context.Context, params DeleteAdultItemParams) error
 	// DeleteAdultPerformer implements deleteAdultPerformer operation.
 	//
-	// Forget a performer (their scenes stay).
+	// Forget a performer (their scenes stay unless removeScenes).
 	//
 	// DELETE /adult/performers/{id}
 	DeleteAdultPerformer(ctx context.Context, params DeleteAdultPerformerParams) error
@@ -342,7 +354,8 @@ type Handler interface {
 	DeleteAdultRootFolder(ctx context.Context, params DeleteAdultRootFolderParams) error
 	// DeleteAdultStudio implements deleteAdultStudio operation.
 	//
-	// Remove a studio and its scenes (files go to the recycle bin only with deleteFiles).
+	// Remove a studio and (unless keepScenes) its scenes (files go to the recycle bin only with
+	// deleteFiles).
 	//
 	// DELETE /adult/studios/{id}
 	DeleteAdultStudio(ctx context.Context, params DeleteAdultStudioParams) error
@@ -1133,6 +1146,12 @@ type Handler interface {
 	//
 	// GET /adult/blocklist
 	ListAdultBlocklist(ctx context.Context) ([]AdultBlockTerm, error)
+	// ListAdultExclusions implements listAdultExclusions operation.
+	//
+	// The "not interested" list (newest first).
+	//
+	// GET /adult/exclusions
+	ListAdultExclusions(ctx context.Context) ([]AdultExclusion, error)
 	// ListAdultItems implements listAdultItems operation.
 	//
 	// Scenes and movies.
@@ -1538,7 +1557,7 @@ type Handler interface {
 	// images are never returned.
 	//
 	// GET /adult/lookup
-	LookupAdult(ctx context.Context, params LookupAdultParams) ([]AdultLookupResult, error)
+	LookupAdult(ctx context.Context, params LookupAdultParams) (*AdultLookupPage, error)
 	// LookupArtists implements lookupArtists operation.
 	//
 	// Search MusicBrainz for artists by name, or by id ("mbid:").
@@ -1685,6 +1704,12 @@ type Handler interface {
 	//
 	// PUT /settings/requests
 	PutRequestSettings(ctx context.Context, req *RequestSettings) (*RequestSettings, error)
+	// RefreshAdultPerformer implements refreshAdultPerformer operation.
+	//
+	// Look for new scenes of a followed performer now (and fetch a missing image).
+	//
+	// POST /adult/performers/{id}/refresh
+	RefreshAdultPerformer(ctx context.Context, params RefreshAdultPerformerParams) (*QueuedCount, error)
 	// RefreshAdultStudio implements refreshAdultStudio operation.
 	//
 	// Look for new scenes of a studio now.

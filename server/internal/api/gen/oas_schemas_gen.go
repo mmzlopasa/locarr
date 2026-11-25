@@ -745,6 +745,119 @@ func (s *AdultBlockTerm) SetBuiltin(val bool) {
 	s.Builtin = val
 }
 
+// Ref: #/components/schemas/AdultBulkRequest
+type AdultBulkRequest struct {
+	Ids    []int64                `json:"ids"`
+	Action AdultBulkRequestAction `json:"action"`
+	// Remove: files go to the recycle bin.
+	DeleteFiles OptBool `json:"deleteFiles"`
+	// Remove: not interested, a refresh does not add them again.
+	Exclude OptBool `json:"exclude"`
+}
+
+// GetIds returns the value of Ids.
+func (s *AdultBulkRequest) GetIds() []int64 {
+	return s.Ids
+}
+
+// GetAction returns the value of Action.
+func (s *AdultBulkRequest) GetAction() AdultBulkRequestAction {
+	return s.Action
+}
+
+// GetDeleteFiles returns the value of DeleteFiles.
+func (s *AdultBulkRequest) GetDeleteFiles() OptBool {
+	return s.DeleteFiles
+}
+
+// GetExclude returns the value of Exclude.
+func (s *AdultBulkRequest) GetExclude() OptBool {
+	return s.Exclude
+}
+
+// SetIds sets the value of Ids.
+func (s *AdultBulkRequest) SetIds(val []int64) {
+	s.Ids = val
+}
+
+// SetAction sets the value of Action.
+func (s *AdultBulkRequest) SetAction(val AdultBulkRequestAction) {
+	s.Action = val
+}
+
+// SetDeleteFiles sets the value of DeleteFiles.
+func (s *AdultBulkRequest) SetDeleteFiles(val OptBool) {
+	s.DeleteFiles = val
+}
+
+// SetExclude sets the value of Exclude.
+func (s *AdultBulkRequest) SetExclude(val OptBool) {
+	s.Exclude = val
+}
+
+type AdultBulkRequestAction string
+
+const (
+	AdultBulkRequestActionRemove    AdultBulkRequestAction = "remove"
+	AdultBulkRequestActionMonitor   AdultBulkRequestAction = "monitor"
+	AdultBulkRequestActionUnmonitor AdultBulkRequestAction = "unmonitor"
+)
+
+// AllValues returns all AdultBulkRequestAction values.
+func (AdultBulkRequestAction) AllValues() []AdultBulkRequestAction {
+	return []AdultBulkRequestAction{
+		AdultBulkRequestActionRemove,
+		AdultBulkRequestActionMonitor,
+		AdultBulkRequestActionUnmonitor,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultBulkRequestAction) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultBulkRequestActionRemove:
+		return []byte(s), nil
+	case AdultBulkRequestActionMonitor:
+		return []byte(s), nil
+	case AdultBulkRequestActionUnmonitor:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultBulkRequestAction) UnmarshalText(data []byte) error {
+	switch AdultBulkRequestAction(data) {
+	case AdultBulkRequestActionRemove:
+		*s = AdultBulkRequestActionRemove
+		return nil
+	case AdultBulkRequestActionMonitor:
+		*s = AdultBulkRequestActionMonitor
+		return nil
+	case AdultBulkRequestActionUnmonitor:
+		*s = AdultBulkRequestActionUnmonitor
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AdultBulkResult
+type AdultBulkResult struct {
+	Changed int `json:"changed"`
+}
+
+// GetChanged returns the value of Changed.
+func (s *AdultBulkResult) GetChanged() int {
+	return s.Changed
+}
+
+// SetChanged sets the value of Changed.
+func (s *AdultBulkResult) SetChanged(val int) {
+	s.Changed = val
+}
+
 // Ref: #/components/schemas/AdultEditRequest
 type AdultEditRequest struct {
 	Monitored        OptBool  `json:"monitored"`
@@ -769,6 +882,139 @@ func (s *AdultEditRequest) SetMonitored(val OptBool) {
 // SetQualityProfileId sets the value of QualityProfileId.
 func (s *AdultEditRequest) SetQualityProfileId(val OptInt64) {
 	s.QualityProfileId = val
+}
+
+// Ref: #/components/schemas/AdultExclusion
+type AdultExclusion struct {
+	ID          int64              `json:"id"`
+	Kind        AdultExclusionKind `json:"kind"`
+	StashdbId   OptString          `json:"stashdbId"`
+	TpdbId      OptString          `json:"tpdbId"`
+	Title       string             `json:"title"`
+	Studio      OptString          `json:"studio"`
+	ReleaseDate OptString          `json:"releaseDate"`
+	AddedAt     time.Time          `json:"addedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *AdultExclusion) GetID() int64 {
+	return s.ID
+}
+
+// GetKind returns the value of Kind.
+func (s *AdultExclusion) GetKind() AdultExclusionKind {
+	return s.Kind
+}
+
+// GetStashdbId returns the value of StashdbId.
+func (s *AdultExclusion) GetStashdbId() OptString {
+	return s.StashdbId
+}
+
+// GetTpdbId returns the value of TpdbId.
+func (s *AdultExclusion) GetTpdbId() OptString {
+	return s.TpdbId
+}
+
+// GetTitle returns the value of Title.
+func (s *AdultExclusion) GetTitle() string {
+	return s.Title
+}
+
+// GetStudio returns the value of Studio.
+func (s *AdultExclusion) GetStudio() OptString {
+	return s.Studio
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *AdultExclusion) GetReleaseDate() OptString {
+	return s.ReleaseDate
+}
+
+// GetAddedAt returns the value of AddedAt.
+func (s *AdultExclusion) GetAddedAt() time.Time {
+	return s.AddedAt
+}
+
+// SetID sets the value of ID.
+func (s *AdultExclusion) SetID(val int64) {
+	s.ID = val
+}
+
+// SetKind sets the value of Kind.
+func (s *AdultExclusion) SetKind(val AdultExclusionKind) {
+	s.Kind = val
+}
+
+// SetStashdbId sets the value of StashdbId.
+func (s *AdultExclusion) SetStashdbId(val OptString) {
+	s.StashdbId = val
+}
+
+// SetTpdbId sets the value of TpdbId.
+func (s *AdultExclusion) SetTpdbId(val OptString) {
+	s.TpdbId = val
+}
+
+// SetTitle sets the value of Title.
+func (s *AdultExclusion) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetStudio sets the value of Studio.
+func (s *AdultExclusion) SetStudio(val OptString) {
+	s.Studio = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *AdultExclusion) SetReleaseDate(val OptString) {
+	s.ReleaseDate = val
+}
+
+// SetAddedAt sets the value of AddedAt.
+func (s *AdultExclusion) SetAddedAt(val time.Time) {
+	s.AddedAt = val
+}
+
+type AdultExclusionKind string
+
+const (
+	AdultExclusionKindScene AdultExclusionKind = "scene"
+	AdultExclusionKindMovie AdultExclusionKind = "movie"
+)
+
+// AllValues returns all AdultExclusionKind values.
+func (AdultExclusionKind) AllValues() []AdultExclusionKind {
+	return []AdultExclusionKind{
+		AdultExclusionKindScene,
+		AdultExclusionKindMovie,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultExclusionKind) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultExclusionKindScene:
+		return []byte(s), nil
+	case AdultExclusionKindMovie:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultExclusionKind) UnmarshalText(data []byte) error {
+	switch AdultExclusionKind(data) {
+	case AdultExclusionKindScene:
+		*s = AdultExclusionKindScene
+		return nil
+	case AdultExclusionKindMovie:
+		*s = AdultExclusionKindMovie
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/AdultFile
@@ -875,6 +1121,7 @@ type AdultItem struct {
 	SourceTags       []string                  `json:"sourceTags"`
 	Performers       []AdultItemPerformersItem `json:"performers"`
 	File             OptAdultFile              `json:"file"`
+	Status           AdultItemStatus           `json:"status"`
 }
 
 // GetID returns the value of ID.
@@ -977,6 +1224,11 @@ func (s *AdultItem) GetFile() OptAdultFile {
 	return s.File
 }
 
+// GetStatus returns the value of Status.
+func (s *AdultItem) GetStatus() AdultItemStatus {
+	return s.Status
+}
+
 // SetID sets the value of ID.
 func (s *AdultItem) SetID(val int64) {
 	s.ID = val
@@ -1077,6 +1329,11 @@ func (s *AdultItem) SetFile(val OptAdultFile) {
 	s.File = val
 }
 
+// SetStatus sets the value of Status.
+func (s *AdultItem) SetStatus(val AdultItemStatus) {
+	s.Status = val
+}
+
 type AdultItemKind string
 
 const (
@@ -1169,6 +1426,102 @@ func (s *AdultItemPerformersItem) SetName(val string) {
 	s.Name = val
 }
 
+// Downloaded: in the library; downloading; wanted: monitored without a file; missing: not monitored,
+// no file.
+// Ref: #/components/schemas/AdultItemStatus
+type AdultItemStatus string
+
+const (
+	AdultItemStatusDownloaded  AdultItemStatus = "downloaded"
+	AdultItemStatusDownloading AdultItemStatus = "downloading"
+	AdultItemStatusWanted      AdultItemStatus = "wanted"
+	AdultItemStatusMissing     AdultItemStatus = "missing"
+)
+
+// AllValues returns all AdultItemStatus values.
+func (AdultItemStatus) AllValues() []AdultItemStatus {
+	return []AdultItemStatus{
+		AdultItemStatusDownloaded,
+		AdultItemStatusDownloading,
+		AdultItemStatusWanted,
+		AdultItemStatusMissing,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdultItemStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case AdultItemStatusDownloaded:
+		return []byte(s), nil
+	case AdultItemStatusDownloading:
+		return []byte(s), nil
+	case AdultItemStatusWanted:
+		return []byte(s), nil
+	case AdultItemStatusMissing:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdultItemStatus) UnmarshalText(data []byte) error {
+	switch AdultItemStatus(data) {
+	case AdultItemStatusDownloaded:
+		*s = AdultItemStatusDownloaded
+		return nil
+	case AdultItemStatusDownloading:
+		*s = AdultItemStatusDownloading
+		return nil
+	case AdultItemStatusWanted:
+		*s = AdultItemStatusWanted
+		return nil
+	case AdultItemStatusMissing:
+		*s = AdultItemStatusMissing
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/AdultLookupPage
+type AdultLookupPage struct {
+	Results []AdultLookupResult `json:"results"`
+	Page    int                 `json:"page"`
+	// The source has another page.
+	More bool `json:"more"`
+}
+
+// GetResults returns the value of Results.
+func (s *AdultLookupPage) GetResults() []AdultLookupResult {
+	return s.Results
+}
+
+// GetPage returns the value of Page.
+func (s *AdultLookupPage) GetPage() int {
+	return s.Page
+}
+
+// GetMore returns the value of More.
+func (s *AdultLookupPage) GetMore() bool {
+	return s.More
+}
+
+// SetResults sets the value of Results.
+func (s *AdultLookupPage) SetResults(val []AdultLookupResult) {
+	s.Results = val
+}
+
+// SetPage sets the value of Page.
+func (s *AdultLookupPage) SetPage(val int) {
+	s.Page = val
+}
+
+// SetMore sets the value of More.
+func (s *AdultLookupPage) SetMore(val bool) {
+	s.More = val
+}
+
 // Ref: #/components/schemas/AdultLookupResult
 type AdultLookupResult struct {
 	Source     AdultLookupResultSource `json:"source"`
@@ -1179,6 +1532,8 @@ type AdultLookupResult struct {
 	Studio     OptString               `json:"studio"`
 	Performers []string                `json:"performers"`
 	InLibrary  OptBool                 `json:"inLibrary"`
+	// Key for /adult/images/{key}.
+	Image OptString `json:"image"`
 }
 
 // GetSource returns the value of Source.
@@ -1221,6 +1576,11 @@ func (s *AdultLookupResult) GetInLibrary() OptBool {
 	return s.InLibrary
 }
 
+// GetImage returns the value of Image.
+func (s *AdultLookupResult) GetImage() OptString {
+	return s.Image
+}
+
 // SetSource sets the value of Source.
 func (s *AdultLookupResult) SetSource(val AdultLookupResultSource) {
 	s.Source = val
@@ -1259,6 +1619,11 @@ func (s *AdultLookupResult) SetPerformers(val []string) {
 // SetInLibrary sets the value of InLibrary.
 func (s *AdultLookupResult) SetInLibrary(val OptBool) {
 	s.InLibrary = val
+}
+
+// SetImage sets the value of Image.
+func (s *AdultLookupResult) SetImage(val OptString) {
+	s.Image = val
 }
 
 type AdultLookupResultSource string
@@ -7475,6 +7840,9 @@ func (s *DelayProfileInput) SetTags(val []string) {
 
 // DeleteAdultBlocklistTermNoContent is response for DeleteAdultBlocklistTerm operation.
 type DeleteAdultBlocklistTermNoContent struct{}
+
+// DeleteAdultExclusionNoContent is response for DeleteAdultExclusion operation.
+type DeleteAdultExclusionNoContent struct{}
 
 // DeleteAdultItemNoContent is response for DeleteAdultItem operation.
 type DeleteAdultItemNoContent struct{}
@@ -17990,6 +18358,54 @@ func (s *ListAdultItemsKind) UnmarshalText(data []byte) error {
 	}
 }
 
+type ListAdultItemsSort string
+
+const (
+	ListAdultItemsSortDate  ListAdultItemsSort = "date"
+	ListAdultItemsSortAdded ListAdultItemsSort = "added"
+	ListAdultItemsSortTitle ListAdultItemsSort = "title"
+)
+
+// AllValues returns all ListAdultItemsSort values.
+func (ListAdultItemsSort) AllValues() []ListAdultItemsSort {
+	return []ListAdultItemsSort{
+		ListAdultItemsSortDate,
+		ListAdultItemsSortAdded,
+		ListAdultItemsSortTitle,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListAdultItemsSort) MarshalText() ([]byte, error) {
+	switch s {
+	case ListAdultItemsSortDate:
+		return []byte(s), nil
+	case ListAdultItemsSortAdded:
+		return []byte(s), nil
+	case ListAdultItemsSortTitle:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListAdultItemsSort) UnmarshalText(data []byte) error {
+	switch ListAdultItemsSort(data) {
+	case ListAdultItemsSortDate:
+		*s = ListAdultItemsSortDate
+		return nil
+	case ListAdultItemsSortAdded:
+		*s = ListAdultItemsSortAdded
+		return nil
+	case ListAdultItemsSortTitle:
+		*s = ListAdultItemsSortTitle
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 type ListArtistsSort string
 
 const (
@@ -18594,6 +19010,61 @@ func (s *LogoutNoContent) GetSetCookie() OptString {
 // SetSetCookie sets the value of SetCookie.
 func (s *LogoutNoContent) SetSetCookie(val OptString) {
 	s.SetCookie = val
+}
+
+type LookupAdultSort string
+
+const (
+	LookupAdultSortNewest    LookupAdultSort = "newest"
+	LookupAdultSortOldest    LookupAdultSort = "oldest"
+	LookupAdultSortRelevance LookupAdultSort = "relevance"
+	LookupAdultSortTitle     LookupAdultSort = "title"
+)
+
+// AllValues returns all LookupAdultSort values.
+func (LookupAdultSort) AllValues() []LookupAdultSort {
+	return []LookupAdultSort{
+		LookupAdultSortNewest,
+		LookupAdultSortOldest,
+		LookupAdultSortRelevance,
+		LookupAdultSortTitle,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LookupAdultSort) MarshalText() ([]byte, error) {
+	switch s {
+	case LookupAdultSortNewest:
+		return []byte(s), nil
+	case LookupAdultSortOldest:
+		return []byte(s), nil
+	case LookupAdultSortRelevance:
+		return []byte(s), nil
+	case LookupAdultSortTitle:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LookupAdultSort) UnmarshalText(data []byte) error {
+	switch LookupAdultSort(data) {
+	case LookupAdultSortNewest:
+		*s = LookupAdultSortNewest
+		return nil
+	case LookupAdultSortOldest:
+		*s = LookupAdultSortOldest
+		return nil
+	case LookupAdultSortRelevance:
+		*s = LookupAdultSortRelevance
+		return nil
+	case LookupAdultSortTitle:
+		*s = LookupAdultSortTitle
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 type LookupAdultSource string
@@ -26676,6 +27147,52 @@ func (o OptAdultFile) Or(d AdultFile) AdultFile {
 	return d
 }
 
+// NewOptAdultItemStatus returns new OptAdultItemStatus with value set to v.
+func NewOptAdultItemStatus(v AdultItemStatus) OptAdultItemStatus {
+	return OptAdultItemStatus{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAdultItemStatus is optional AdultItemStatus.
+type OptAdultItemStatus struct {
+	Value AdultItemStatus
+	Set   bool
+}
+
+// IsSet returns true if OptAdultItemStatus was set.
+func (o OptAdultItemStatus) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAdultItemStatus) Reset() {
+	var v AdultItemStatus
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAdultItemStatus) SetTo(v AdultItemStatus) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAdultItemStatus) Get() (v AdultItemStatus, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAdultItemStatus) Or(d AdultItemStatus) AdultItemStatus {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptAdultProfileUsage returns new OptAdultProfileUsage with value set to v.
 func NewOptAdultProfileUsage(v AdultProfileUsage) OptAdultProfileUsage {
 	return OptAdultProfileUsage{
@@ -28516,6 +29033,52 @@ func (o OptListAdultItemsKind) Or(d ListAdultItemsKind) ListAdultItemsKind {
 	return d
 }
 
+// NewOptListAdultItemsSort returns new OptListAdultItemsSort with value set to v.
+func NewOptListAdultItemsSort(v ListAdultItemsSort) OptListAdultItemsSort {
+	return OptListAdultItemsSort{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListAdultItemsSort is optional ListAdultItemsSort.
+type OptListAdultItemsSort struct {
+	Value ListAdultItemsSort
+	Set   bool
+}
+
+// IsSet returns true if OptListAdultItemsSort was set.
+func (o OptListAdultItemsSort) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListAdultItemsSort) Reset() {
+	var v ListAdultItemsSort
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListAdultItemsSort) SetTo(v ListAdultItemsSort) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListAdultItemsSort) Get() (v ListAdultItemsSort, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListAdultItemsSort) Or(d ListAdultItemsSort) ListAdultItemsSort {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptListArtistsSort returns new OptListArtistsSort with value set to v.
 func NewOptListArtistsSort(v ListArtistsSort) OptListArtistsSort {
 	return OptListArtistsSort{
@@ -28832,6 +29395,52 @@ func (o OptLogLevel) Get() (v LogLevel, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptLogLevel) Or(d LogLevel) LogLevel {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptLookupAdultSort returns new OptLookupAdultSort with value set to v.
+func NewOptLookupAdultSort(v LookupAdultSort) OptLookupAdultSort {
+	return OptLookupAdultSort{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptLookupAdultSort is optional LookupAdultSort.
+type OptLookupAdultSort struct {
+	Value LookupAdultSort
+	Set   bool
+}
+
+// IsSet returns true if OptLookupAdultSort was set.
+func (o OptLookupAdultSort) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptLookupAdultSort) Reset() {
+	var v LookupAdultSort
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptLookupAdultSort) SetTo(v LookupAdultSort) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptLookupAdultSort) Get() (v LookupAdultSort, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptLookupAdultSort) Or(d LookupAdultSort) LookupAdultSort {
 	if v, ok := o.Get(); ok {
 		return v
 	}

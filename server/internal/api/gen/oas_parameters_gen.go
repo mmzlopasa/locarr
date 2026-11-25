@@ -1103,10 +1103,95 @@ func decodeDeleteAdultBlocklistTermParams(args [1]string, argsEscaped bool, r *h
 	return params, nil
 }
 
+// DeleteAdultExclusionParams is parameters of deleteAdultExclusion operation.
+type DeleteAdultExclusionParams struct {
+	ID int64
+}
+
+func unpackDeleteAdultExclusionParams(packed middleware.Parameters) (params DeleteAdultExclusionParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeDeleteAdultExclusionParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteAdultExclusionParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // DeleteAdultItemParams is parameters of deleteAdultItem operation.
 type DeleteAdultItemParams struct {
 	DeleteFiles OptBool `json:",omitempty,omitzero"`
-	ID          int64
+	// Not interested: a refresh of a followed studio or performer does not add it again.
+	Exclude OptBool `json:",omitempty,omitzero"`
+	ID      int64
 }
 
 func unpackDeleteAdultItemParams(packed middleware.Parameters) (params DeleteAdultItemParams) {
@@ -1117,6 +1202,15 @@ func unpackDeleteAdultItemParams(packed middleware.Parameters) (params DeleteAdu
 		}
 		if v, ok := packed[key]; ok {
 			params.DeleteFiles = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "exclude",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Exclude = v.(OptBool)
 		}
 	}
 	{
@@ -1173,6 +1267,52 @@ func decodeDeleteAdultItemParams(args [1]string, argsEscaped bool, r *http.Reque
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "deleteFiles",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: exclude.
+	{
+		val := bool(false)
+		params.Exclude.SetTo(val)
+	}
+	// Decode query: exclude.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "exclude",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotExcludeVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotExcludeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Exclude.SetTo(paramsDotExcludeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "exclude",
 			In:   "query",
 			Err:  err,
 		}
@@ -1245,10 +1385,41 @@ func decodeDeleteAdultItemParams(args [1]string, argsEscaped bool, r *http.Reque
 
 // DeleteAdultPerformerParams is parameters of deleteAdultPerformer operation.
 type DeleteAdultPerformerParams struct {
-	ID int64
+	RemoveScenes OptBool `json:",omitempty,omitzero"`
+	DeleteFiles  OptBool `json:",omitempty,omitzero"`
+	// Removed scenes are not added again by a refresh.
+	Exclude OptBool `json:",omitempty,omitzero"`
+	ID      int64
 }
 
 func unpackDeleteAdultPerformerParams(packed middleware.Parameters) (params DeleteAdultPerformerParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "removeScenes",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.RemoveScenes = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "deleteFiles",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.DeleteFiles = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "exclude",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Exclude = v.(OptBool)
+		}
+	}
 	{
 		key := middleware.ParameterKey{
 			Name: "id",
@@ -1260,6 +1431,145 @@ func unpackDeleteAdultPerformerParams(packed middleware.Parameters) (params Dele
 }
 
 func decodeDeleteAdultPerformerParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteAdultPerformerParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Set default value for query: removeScenes.
+	{
+		val := bool(false)
+		params.RemoveScenes.SetTo(val)
+	}
+	// Decode query: removeScenes.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "removeScenes",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotRemoveScenesVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotRemoveScenesVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.RemoveScenes.SetTo(paramsDotRemoveScenesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "removeScenes",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: deleteFiles.
+	{
+		val := bool(false)
+		params.DeleteFiles.SetTo(val)
+	}
+	// Decode query: deleteFiles.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "deleteFiles",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotDeleteFilesVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotDeleteFilesVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.DeleteFiles.SetTo(paramsDotDeleteFilesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "deleteFiles",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: exclude.
+	{
+		val := bool(false)
+		params.Exclude.SetTo(val)
+	}
+	// Decode query: exclude.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "exclude",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotExcludeVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotExcludeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Exclude.SetTo(paramsDotExcludeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "exclude",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]
@@ -1412,7 +1722,11 @@ func decodeDeleteAdultRootFolderParams(args [1]string, argsEscaped bool, r *http
 // DeleteAdultStudioParams is parameters of deleteAdultStudio operation.
 type DeleteAdultStudioParams struct {
 	DeleteFiles OptBool `json:",omitempty,omitzero"`
-	ID          int64
+	// Scenes stay in the library without a studio.
+	KeepScenes OptBool `json:",omitempty,omitzero"`
+	// Removed scenes are not added again by a refresh.
+	Exclude OptBool `json:",omitempty,omitzero"`
+	ID      int64
 }
 
 func unpackDeleteAdultStudioParams(packed middleware.Parameters) (params DeleteAdultStudioParams) {
@@ -1423,6 +1737,24 @@ func unpackDeleteAdultStudioParams(packed middleware.Parameters) (params DeleteA
 		}
 		if v, ok := packed[key]; ok {
 			params.DeleteFiles = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "keepScenes",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.KeepScenes = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "exclude",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Exclude = v.(OptBool)
 		}
 	}
 	{
@@ -1479,6 +1811,98 @@ func decodeDeleteAdultStudioParams(args [1]string, argsEscaped bool, r *http.Req
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "deleteFiles",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: keepScenes.
+	{
+		val := bool(false)
+		params.KeepScenes.SetTo(val)
+	}
+	// Decode query: keepScenes.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "keepScenes",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotKeepScenesVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotKeepScenesVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.KeepScenes.SetTo(paramsDotKeepScenesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "keepScenes",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: exclude.
+	{
+		val := bool(false)
+		params.Exclude.SetTo(val)
+	}
+	// Decode query: exclude.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "exclude",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotExcludeVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotExcludeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Exclude.SetTo(paramsDotExcludeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "exclude",
 			In:   "query",
 			Err:  err,
 		}
@@ -10159,8 +10583,12 @@ type ListAdultItemsParams struct {
 	PerformerId OptInt64              `json:",omitempty,omitzero"`
 	Term        OptString             `json:",omitempty,omitzero"`
 	Missing     OptBool               `json:",omitempty,omitzero"`
-	Limit       OptInt                `json:",omitempty,omitzero"`
-	Offset      OptInt                `json:",omitempty,omitzero"`
+	Status      OptAdultItemStatus    `json:",omitempty,omitzero"`
+	Monitored   OptBool               `json:",omitempty,omitzero"`
+	// Date and added: newest first; title: A-Z (movies default to title).
+	Sort   OptListAdultItemsSort `json:",omitempty,omitzero"`
+	Limit  OptInt                `json:",omitempty,omitzero"`
+	Offset OptInt                `json:",omitempty,omitzero"`
 }
 
 func unpackListAdultItemsParams(packed middleware.Parameters) (params ListAdultItemsParams) {
@@ -10207,6 +10635,33 @@ func unpackListAdultItemsParams(packed middleware.Parameters) (params ListAdultI
 		}
 		if v, ok := packed[key]; ok {
 			params.Missing = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "status",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Status = v.(OptAdultItemStatus)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "monitored",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Monitored = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Sort = v.(OptListAdultItemsSort)
 		}
 	}
 	{
@@ -10475,6 +10930,159 @@ func decodeListAdultItemsParams(args [0]string, argsEscaped bool, r *http.Reques
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "missing",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: status.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "status",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotStatusVal AdultItemStatus
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotStatusVal = AdultItemStatus(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Status.SetTo(paramsDotStatusVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Status.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "status",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: monitored.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "monitored",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotMonitoredVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotMonitoredVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Monitored.SetTo(paramsDotMonitoredVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "monitored",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sort.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortVal ListAdultItemsSort
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortVal = ListAdultItemsSort(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Sort.SetTo(paramsDotSortVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Sort.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort",
 			In:   "query",
 			Err:  err,
 		}
@@ -17402,6 +18010,10 @@ type LookupAdultParams struct {
 	Source LookupAdultSource
 	Type   LookupAdultType
 	Term   string
+	// Order of scenes and movies (newest release first by default). Asked of the source where it has that
+	// order; otherwise the page is ordered after it arrives.
+	Sort OptLookupAdultSort `json:",omitempty,omitzero"`
+	Page OptInt             `json:",omitempty,omitzero"`
 }
 
 func unpackLookupAdultParams(packed middleware.Parameters) (params LookupAdultParams) {
@@ -17425,6 +18037,24 @@ func unpackLookupAdultParams(packed middleware.Parameters) (params LookupAdultPa
 			In:   "query",
 		}
 		params.Term = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Sort = v.(OptLookupAdultSort)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt)
+		}
 	}
 	return params
 }
@@ -17571,6 +18201,138 @@ func decodeLookupAdultParams(args [0]string, argsEscaped bool, r *http.Request) 
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "term",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: sort.
+	{
+		val := LookupAdultSort("newest")
+		params.Sort.SetTo(val)
+	}
+	// Decode query: sort.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortVal LookupAdultSort
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortVal = LookupAdultSort(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Sort.SetTo(paramsDotSortVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Sort.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page.
+	{
+		val := int(1)
+		params.Page.SetTo(val)
+	}
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Page.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
 			In:   "query",
 			Err:  err,
 		}
@@ -18668,6 +19430,89 @@ func decodePreviewSubtitleParams(args [1]string, argsEscaped bool, r *http.Reque
 			Err:  err,
 		}
 	}
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           1,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+					Pattern:       nil,
+				}).Validate(int64(params.ID)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RefreshAdultPerformerParams is parameters of refreshAdultPerformer operation.
+type RefreshAdultPerformerParams struct {
+	ID int64
+}
+
+func unpackRefreshAdultPerformerParams(packed middleware.Parameters) (params RefreshAdultPerformerParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeRefreshAdultPerformerParams(args [1]string, argsEscaped bool, r *http.Request) (params RefreshAdultPerformerParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]

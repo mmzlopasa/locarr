@@ -385,6 +385,10 @@ func TestTasksAPI(t *testing.T) {
 func TestHTTPHardening(t *testing.T) {
 	e := newEnv(t, nil)
 	r := e.expect(e.do("GET", "/", nil), 200)
+	// blob: images are the private adult images (D-110); scripts stay self only.
+	if csp := r.Header.Get("Content-Security-Policy"); !strings.Contains(csp, "img-src 'self' data: blob:;") || strings.Contains(csp, "script-src 'self' blob:") {
+		t.Fatalf("csp %q", csp)
+	}
 	if !strings.Contains(r.Header.Get("Content-Security-Policy"), "script-src 'self'") ||
 		r.Header.Get("X-Frame-Options") != "DENY" || r.Header.Get("X-Content-Type-Options") != "nosniff" {
 		t.Fatalf("headers %v", r.Header)

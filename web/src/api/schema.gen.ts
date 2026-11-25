@@ -5321,7 +5321,7 @@ export interface paths {
         get: operations["getAdultStudio"];
         put?: never;
         post?: never;
-        /** Remove a studio and its scenes (files go to the recycle bin only with deleteFiles) */
+        /** Remove a studio and (unless keepScenes) its scenes (files go to the recycle bin only with deleteFiles) */
         delete: operations["deleteAdultStudio"];
         options?: never;
         head?: never;
@@ -5379,7 +5379,7 @@ export interface paths {
         get: operations["getAdultPerformer"];
         put?: never;
         post?: never;
-        /** Forget a performer (their scenes stay) */
+        /** Forget a performer (their scenes stay unless removeScenes) */
         delete: operations["deleteAdultPerformer"];
         options?: never;
         head?: never;
@@ -5399,6 +5399,78 @@ export interface paths {
         put?: never;
         /** Add a scene or movie from a source */
         post: operations["addAdultItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/items/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Remove, monitor or unmonitor many items at once (managers) */
+        post: operations["bulkAdultItems"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/exclusions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The "not interested" list (newest first) */
+        get: operations["listAdultExclusions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/exclusions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Undo "not interested" (the next refresh may add the item again) */
+        delete: operations["deleteAdultExclusion"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/performers/{id}/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Look for new scenes of a followed performer now (and fetch a missing image) */
+        post: operations["refreshAdultPerformer"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5625,6 +5697,50 @@ export interface components {
             studio?: string;
             performers?: string[];
             inLibrary?: boolean;
+            /** @description Key for /adult/images/{key}. */
+            image?: string;
+        };
+        AdultLookupPage: {
+            results: components["schemas"]["AdultLookupResult"][];
+            page: number;
+            /** @description The source has another page. */
+            more: boolean;
+        };
+        /**
+         * @description downloaded: in the library; downloading; wanted: monitored without a file; missing: not monitored, no file.
+         * @enum {string}
+         */
+        AdultItemStatus: "downloaded" | "downloading" | "wanted" | "missing";
+        AdultBulkRequest: {
+            ids: number[];
+            /** @enum {string} */
+            action: "remove" | "monitor" | "unmonitor";
+            /**
+             * @description remove: files go to the recycle bin.
+             * @default false
+             */
+            deleteFiles: boolean;
+            /**
+             * @description remove: not interested, a refresh does not add them again.
+             * @default false
+             */
+            exclude: boolean;
+        };
+        AdultBulkResult: {
+            changed: number;
+        };
+        AdultExclusion: {
+            /** Format: int64 */
+            id: number;
+            /** @enum {string} */
+            kind: "scene" | "movie";
+            stashdbId?: string;
+            tpdbId?: string;
+            title: string;
+            studio?: string;
+            releaseDate?: string;
+            /** Format: date-time */
+            addedAt: string;
         };
         AdultAddRequest: {
             /** @enum {string} */
@@ -5733,6 +5849,7 @@ export interface components {
                 name: string;
             }[];
             file?: components["schemas"]["AdultFile"];
+            status: components["schemas"]["AdultItemStatus"];
         };
         AdultItemPage: {
             items: components["schemas"]["AdultItem"][];
@@ -19158,6 +19275,9 @@ export interface operations {
                 source: "stashdb" | "tpdb";
                 type: "scene" | "movie" | "performer" | "studio";
                 term: string;
+                /** @description Order of scenes and movies (newest release first by default). Asked of the source where it has that order; otherwise the page is ordered after it arrives. */
+                sort?: "newest" | "oldest" | "relevance" | "title";
+                page?: number;
             };
             header?: never;
             path?: never;
@@ -19165,13 +19285,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Results */
+            /** @description One page of results */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AdultLookupResult"][];
+                    "application/json": components["schemas"]["AdultLookupPage"];
                 };
             };
             default: components["responses"]["Error"];
@@ -19250,6 +19370,10 @@ export interface operations {
         parameters: {
             query?: {
                 deleteFiles?: boolean;
+                /** @description Scenes stay in the library without a studio. */
+                keepScenes?: boolean;
+                /** @description Removed scenes are not added again by a refresh. */
+                exclude?: boolean;
             };
             header?: never;
             path: {
@@ -19390,7 +19514,12 @@ export interface operations {
     };
     deleteAdultPerformer: {
         parameters: {
-            query?: never;
+            query?: {
+                removeScenes?: boolean;
+                deleteFiles?: boolean;
+                /** @description Removed scenes are not added again by a refresh. */
+                exclude?: boolean;
+            };
             header?: never;
             path: {
                 id: components["parameters"]["ID"];
@@ -19444,6 +19573,10 @@ export interface operations {
                 performerId?: number;
                 term?: string;
                 missing?: boolean;
+                status?: components["schemas"]["AdultItemStatus"];
+                monitored?: boolean;
+                /** @description date and added: newest first; title: A-Z (movies default to title). */
+                sort?: "date" | "added" | "title";
                 limit?: number;
                 offset?: number;
             };
@@ -19490,6 +19623,96 @@ export interface operations {
             default: components["responses"]["Error"];
         };
     };
+    bulkAdultItems: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultBulkRequest"];
+            };
+        };
+        responses: {
+            /** @description How many items changed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultBulkResult"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listAdultExclusions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exclusions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultExclusion"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    deleteAdultExclusion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    refreshAdultPerformer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Added scenes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedCount"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
     getAdultItem: {
         parameters: {
             query?: never;
@@ -19517,6 +19740,8 @@ export interface operations {
         parameters: {
             query?: {
                 deleteFiles?: boolean;
+                /** @description Not interested: a refresh of a followed studio or performer does not add it again. */
+                exclude?: boolean;
             };
             header?: never;
             path: {

@@ -184,24 +184,59 @@ func (c *TPDBClient) Validate(ctx context.Context, key string) error {
 	return c.get(ctx, "/scenes", url.Values{"q": {"a"}, "per_page": {"1"}}, 0, key, &out)
 }
 
-func (c *TPDBClient) search(ctx context.Context, path, term string, movie bool) ([]Scene, error) {
+// tpdbOrder is ThePornDB's orderBy for a search order. Its documented
+// order is newest release first (recently_released); relevance is its
+// default for a text search. Other orders have no documented value, so the
+// page comes back in relevance order and the caller orders it.
+func tpdbOrder(sort string) (string, bool) {
+	switch sort {
+	case "", SortNewest:
+		return "recently_released", true
+	case SortRelevance:
+		return "", true
+	}
+	return "", false
+}
+
+// FindScenes implements Provider.
+func (c *TPDBClient) FindScenes(ctx context.Context, term string, movie bool, o Find) (ScenePage, error) {
 	var out struct {
 		Data []tpdbScene `json:"data"`
+		Meta struct {
+			CurrentPage int `json:"current_page"`
+			LastPage    int `json:"last_page"`
+		} `json:"meta"`
 	}
-	if err := c.get(ctx, path, url.Values{"q": {term}, "per_page": {"25"}}, time.Hour, "", &out); err != nil {
-		return nil, err
+	path := "/scenes"
+	if movie {
+		path = "/movies"
 	}
-	return listScenes(out.Data, movie), nil
+	page := max(o.Page, 1)
+	q := url.Values{"q": {term}, "per_page": {strconv.Itoa(PageSize)}, "page": {strconv.Itoa(page)}}
+	order, ordered := tpdbOrder(o.Sort)
+	if order != "" {
+		q.Set("orderBy", order)
+	}
+	if err := c.get(ctx, path, q, time.Hour, "", &out); err != nil {
+		return ScenePage{}, err
+	}
+	more := len(out.Data) >= PageSize
+	if out.Meta.LastPage > 0 {
+		more = page < out.Meta.LastPage
+	}
+	return ScenePage{Scenes: listScenes(out.Data, movie), More: more, Ordered: ordered}, nil
 }
 
-// SearchScenes implements Provider.
+// SearchScenes implements Provider (relevance, first page).
 func (c *TPDBClient) SearchScenes(ctx context.Context, term string) ([]Scene, error) {
-	return c.search(ctx, "/scenes", term, false)
+	p, err := c.FindScenes(ctx, term, false, Find{Sort: SortRelevance})
+	return p.Scenes, err
 }
 
-// SearchMovies implements Provider.
+// SearchMovies implements Provider (relevance, first page).
 func (c *TPDBClient) SearchMovies(ctx context.Context, term string) ([]Scene, error) {
-	return c.search(ctx, "/movies", term, true)
+	p, err := c.FindScenes(ctx, term, true, Find{Sort: SortRelevance})
+	return p.Scenes, err
 }
 
 // SearchPerformers implements Provider.

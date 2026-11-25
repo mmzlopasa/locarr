@@ -240,6 +240,19 @@ func encodeBrowseFilesystemResponse(response *FolderListing, w http.ResponseWrit
 	return nil
 }
 
+func encodeBulkAdultItemsResponse(response *AdultBulkResult, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
 func encodeCancelJobResponse(response *CancelJobNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 
@@ -647,6 +660,12 @@ func encodeDeclineRequestResponse(response *MediaRequest, w http.ResponseWriter,
 }
 
 func encodeDeleteAdultBlocklistTermResponse(response *DeleteAdultBlocklistTermNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
+
+	return nil
+}
+
+func encodeDeleteAdultExclusionResponse(response *DeleteAdultExclusionNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 
 	return nil
@@ -2438,6 +2457,23 @@ func encodeListAdultBlocklistResponse(response []AdultBlockTerm, w http.Response
 	return nil
 }
 
+func encodeListAdultExclusionsResponse(response []AdultExclusion, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	e.ArrStart()
+	for _, elem := range response {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
 func encodeListAdultItemsResponse(response *AdultItemPage, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
@@ -3503,16 +3539,12 @@ func encodeLogoutResponse(response *LogoutNoContent, w http.ResponseWriter, span
 	return nil
 }
 
-func encodeLookupAdultResponse(response []AdultLookupResult, w http.ResponseWriter, span trace.Span) error {
+func encodeLookupAdultResponse(response *AdultLookupPage, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 
 	e := new(jx.Encoder)
-	e.ArrStart()
-	for _, elem := range response {
-		elem.Encode(e)
-	}
-	e.ArrEnd()
+	response.Encode(e)
 	if _, err := e.WriteTo(w); err != nil {
 		return errors.Wrap(err, "write")
 	}
@@ -3849,6 +3881,19 @@ func encodePreviewSubtitleResponse(response *SubtitlePreview, w http.ResponseWri
 }
 
 func encodePutRequestSettingsResponse(response *RequestSettings, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeRefreshAdultPerformerResponse(response *QueuedCount, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 

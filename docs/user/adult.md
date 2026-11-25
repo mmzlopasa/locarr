@@ -51,7 +51,40 @@ Odrasli → **Dodaj**: odaberite izvor i vrstu (studio, scena, film, izvođač) 
 - **Izvođač**: „Prati ovog izvođača” — nove scene s njim postaju tražene.
 - Svaka scena i film imaju „Zašto nije ovdje?”, vremensku crtu, ručnu pretragu i „Traži odmah”, kao filmovi.
 
-## 7. Blokirani pojmovi
+### Pretraga na Dodaj
+
+- Scene i filmovi dolaze **najnoviji prvi**; Locarr to traži od samog izvora, pa prva stranica stvarno ima najnovija izdanja.
+  **Poredak** nudi još Najstarije, Najbolje podudaranje i Naslov; izbor se pamti u vašem pregledniku.
+  ThePornDB nema dokumentiran poredak za najstarije i naslov, pa se tada slaže samo ono što je učitano.
+- **Učitaj još** dohvaća sljedeću stranicu.
+- Svaki rezultat ima malu sličicu (zamućenu po vašoj postavci), studio, datum, izvođače i oznaku **U biblioteci**.
+- Označite više rezultata i kliknite **Dodaj odabrano**: svi se dodaju s profilom i mapom odabranima iznad.
+
+### Popisi
+
+Scene, Filmovi, Traženo i popisi na stranici studija i izvođača imaju filtar po naslovu ili studiju, poredak (datum izlaska,
+datum dodavanja, naslov), stanje (Traženo, Preuzima se, U biblioteci, Nedostaje), praćenje i prikaz kao mreža ili popis.
+Na kartici je oznaka stanja, a za scenu u biblioteci i kvaliteta datoteke. „Traženo” znači praćeno bez datoteke,
+„Nedostaje” nepraćeno bez datoteke.
+
+## 7. Uklanjanje i „Ne zanima me”
+
+Uklanjati mogu samo upravitelji biblioteke s dozvolom za sadržaj za odrasle.
+
+- **Scena ili film:** na stranici stavke **Ukloni**. U potvrdi:
+  - **Ne zanima me: ne dodaj ponovno** (zadano uključeno) — osvježavanje praćenog studija ili izvođača tu scenu preskače.
+  - **Obriši i datoteku** (zadano isključeno) — datoteka ide u **koš za smeće**, odakle se može vratiti. Bez te kvačice
+    datoteka ostaje na disku.
+- **Studio:** potvrda kaže koliko scena ima i nudi **Zadrži scene** (zadano; ostaju u biblioteci bez stranice studija i više
+  se ne osvježavaju) ili **Ukloni i scene** (uz iste izbore „Ne zanima me” i „Obriši i datoteku”).
+- **Izvođač:** isto, a zadano se zaboravlja samo izvođač, scene ostaju.
+- **Više odjednom:** na popisu kliknite **Odaberi**, označite kartice (ili **Odaberi sve**) i odaberite **Prati**, **Ne prati**
+  ili **Ukloni**.
+
+Popis „Ne zanima me” je u Postavke → Sadržaj za odrasle → **Ne zanima me**. **Poništi** uklanja unos; sljedeće osvježavanje
+može scenu ponovno dodati. Ako scenu dodate sami preko Dodaj, unos se uklanja i bez toga.
+
+## 7a. Blokirani pojmovi
 
 Postavke → Sadržaj za odrasle → **Blokirani pojmovi**. Izdanja (pretraga, RSS, ručni grab), uvozi i unosi metapodataka koji
 sadrže neki od pojmova odbijaju se s razlogom `blocked_tag`.
@@ -98,6 +131,11 @@ ti zapisi se ne vide i ne mogu obrisati, ni preko API-ja.
 - Slike se spremaju na poslužitelj (`/config/adult/images`) i poslužuju samo korisnicima s dozvolom, s `Cache-Control: private, no-store`;
   nema javnih adresa slika.
 - U webu su slike **zamućene** dok ih ne kliknete; zamućivanje možete isključiti za sebe (Odrasli → „Zamuti slike”).
+  Precrtano oko znači samo „zamućeno”. Kad slike nema (izvor je nema ili je nije bilo moguće dohvatiti), vidi se neutralno
+  polje s početnim slovom studija ili imena.
+- Slike s ThePornDB-a do v0.6.2 nisu stizale (njihov poslužitelj slika koristi novi Let's Encryptov korijen koji slika
+  Locarra nije poznavala). Nedostajuće slike dohvaćaju se pri sljedećem osvježavanju studija ili izvođača (svakih 12 sati ili
+  gumbom **Potraži nove scene**).
   Na pregledu i drugim stranicama nema slika za odrasle.
 - Sadržaj za odrasle nije u Otkrivanju, zahtjevima, kalendaru i iCal feedu, povijesti, ploči „Zašto nije stiglo?”, statistici
   ni Streamero rutama. U `/api/stats` je samo ukupan broj (`adultItems`) i to samo ako ga uključite.
