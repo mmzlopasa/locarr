@@ -27,7 +27,7 @@ var (
 	// [Studio] Rest (15.01.2024) or Studio - Rest [15.01.2024]: a day-first
 	// date in brackets, as uploaders of general sites write it.
 	sceneTrailingDMY = regexp.MustCompile(`^(?:\[(?P<studio>[^\]]+)\]|(?P<studio2>[^-\[(]+?)\s+-)\s*(?P<rest>.+?)\s*[\[(](?P<d>\d{2})\.(?P<m>\d{2})\.(?P<y>(?:19|20)\d{2})[\])](?:[ ._-]+.*)?$`)
-	sceneTail     = regexp.MustCompile(`(?i)^(?:xxx|\d{3,4}p|4k|uhd|mp4|wmv|mkv|avi|web(?:-?dl|-?rip)?|hdtv|x26[45]|h\.?26[45]|hevc|avc|aac|prt|ktr|imageset|split[_ ]?scenes)$`)
+	sceneTail        = regexp.MustCompile(`(?i)^(?:xxx|\d{3,4}p|4k|uhd|sd|fhd|fullhd|mp4|wmv|mkv|avi|web(?:-?dl|-?rip)?|hdtv|x26[45]|h\.?26[45]|hevc|avc|aac|prt|ktr|imageset|split[_ ]?scenes)$`)
 )
 
 // ParseScene reads a scene name such as

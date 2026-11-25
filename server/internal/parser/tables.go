@@ -50,6 +50,9 @@ type def struct {
 
 // single maps a lower-cased token (apostrophes removed) to its meaning.
 var single = map[string]def{
+	// Resolution words that general uploaders use instead of "1080p" (D-109).
+	"fullhd": {f: fResolution, n: 1080, primary: true},
+	"sd":     {f: fResolution, n: 480, primary: true, upper: true},
 	// sources
 	"remux": {f: fSource, val: string(SourceRemux), primary: true}, "bdremux": {f: fSource, val: string(SourceRemux), primary: true},
 	"bd-remux": {f: fSource, val: string(SourceRemux), primary: true},
@@ -196,6 +199,7 @@ type phrase struct {
 }
 
 var phraseList = []phrase{
+	{[]string{"full", "hd"}, def{f: fResolution, n: 1080, primary: true}},
 	{[]string{"web", "dl"}, def{f: fSource, val: string(SourceWEBDL), primary: true}},
 	{[]string{"web", "rip"}, def{f: fSource, val: string(SourceWEBRip), primary: true}},
 	{[]string{"blu", "ray"}, def{f: fSource, val: string(SourceBluRay), primary: true}},
