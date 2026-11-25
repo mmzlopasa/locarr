@@ -153,7 +153,7 @@ func TestStore(t *testing.T) {
 		t.Fatal("seeding twice:", err)
 	}
 	profiles, err := s.Profiles(ctx)
-	if err != nil || len(profiles) != len(DefaultProfiles()) {
+	if err != nil || len(profiles) != len(DefaultProfiles())+1 { // + the open profile of migration 00018
 		t.Fatalf("profiles %d %v", len(profiles), err)
 	}
 	// Deleting every profile does not bring the defaults back.

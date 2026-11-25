@@ -39,6 +39,9 @@ var (
 	// DefaultProfile and DefaultRoot preselect Add.
 	DefaultProfile = settings.Key[int64]{Name: "adult.defaultProfileId", Default: 0}
 	DefaultRoot    = settings.Key[int64]{Name: "adult.defaultRootFolderId", Default: 0}
+	// OpenProfile is the profile that allows every quality, Unknown
+	// included (D-109), recorded by migration 00018.
+	OpenProfile = settings.Key[int64]{Name: "adult.openProfileId", Default: 0}
 	// Naming templates (D-106).
 	SceneFolder = settings.Key[string]{Name: "adult.sceneFolder", Default: "{Studio}"}
 	SceneFile   = settings.Key[string]{Name: "adult.sceneFile", Default: "{Studio} - {Date} - {Title}{ [Performers]} {Quality}"}
@@ -75,6 +78,7 @@ var (
 	ErrNoProfile     = errors.New("unknown quality profile")
 	ErrUnknownSource = errors.New("unknown metadata source")
 	ErrBadTerm       = errors.New("a blocklist term needs at least two letters")
+	ErrProtectedTerm = errors.New("this term is always blocked")
 )
 
 // Service is the adult library.
@@ -141,10 +145,7 @@ func (s *Service) Enable(ctx context.Context, by int64, on, confirmed bool) erro
 		if err := settings.Set(ctx, s.Settings, s.DB.W, ConfirmedAt, s.now().UTC().Format(time.RFC3339)); err != nil {
 			return err
 		}
-		if err := settings.Set(ctx, s.Settings, s.DB.W, ConfirmedBy, by); err != nil {
-			return err
-		}
-		return s.SeedBlocklist(ctx)
+		return settings.Set(ctx, s.Settings, s.DB.W, ConfirmedBy, by)
 	}
 	return nil
 }
