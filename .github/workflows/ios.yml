@@ -1,12 +1,6 @@
 name: ios
 on:
-  push:
-    branches: [main]
-    # Path filters are not evaluated for tag pushes, so every v* tag builds the release .ipa.
-    tags: ["v*"]
-    paths: ["ios/**", "web/src/i18n/locales/**", "scripts/ios-*.py", "scripts/update-feather-source.py", ".github/workflows/ios.yml"]
-  pull_request:
-    paths: ["ios/**", "web/src/i18n/locales/**", "scripts/ios-*.py", "scripts/update-feather-source.py", ".github/workflows/ios.yml"]
+  # iOS is no longer built or shipped (D-112); kept for a manual build only.
   workflow_dispatch:
 
 # A newer push to the same pull request replaces the run in progress.
