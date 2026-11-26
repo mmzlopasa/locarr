@@ -383,3 +383,20 @@ func TestSourcesImportAndSync(t *testing.T) {
 		t.Fatal("deleting a source removed indexers")
 	}
 }
+
+// TestCreateKeepsAdultOnly: an indexer created with only adult categories
+// gets the defaults from its capabilities and keeps the adult opt-in.
+func TestCreateKeepsAdultOnly(t *testing.T) {
+	s, _, base := newService(t)
+	in := DefaultInput()
+	key := "fakekey"
+	in.Name, in.Kind, in.BaseURL, in.APIKey = "Adult", Torznab, base+"/torznab", &key
+	in.Categories = &Categories{Adult: []int{6000}}
+	i, err := s.Create(context.Background(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(i.Categories.Adult, []int{6000}) || !slices.Contains(i.Categories.Movies, 2040) {
+		t.Fatalf("categories %+v", i.Categories)
+	}
+}

@@ -144,9 +144,14 @@ func TestAdultGalleryEndToEnd(t *testing.T) {
 	}
 
 	// Search: the image set is taken, never the scene's video.
-	if _, err := ae.deps.DB.W.Exec(`UPDATE indexers SET categories = json_set(categories, '$.adult', json('[6000]'))`); err != nil {
-		t.Fatal(err)
+	// Like the e2e flow: a second indexer for the same fake, opted in to adult through the API.
+	var ixs []struct {
+		ID      int64
+		BaseURL string `json:"baseUrl"`
 	}
+	ae.expect(ae.do("GET", "/api/v1/indexers", nil), 200).json(&ixs)
+	ae.expect(ae.do("POST", "/api/v1/indexers", map[string]any{"name": "Fake adult indexer", "kind": "torznab", "baseUrl": ixs[0].BaseURL,
+		"apiKey": "fakekey", "categories": map[string]any{"movies": []int{}, "tv": []int{}, "music": []int{}, "books": []int{}, "adult": []int{6000}}}), 201)
 	ae.expect(ae.do("POST", fmt.Sprintf("/api/v1/adult/items/%d/search", g.ID), nil), 202)
 	var title string
 	waitFor(t, "the gallery grab", func() bool {
