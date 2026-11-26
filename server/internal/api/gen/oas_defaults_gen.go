@@ -68,6 +68,10 @@ func (s *AdultAddRequest) setDefaults() {
 		val := bool(true)
 		s.Search.SetTo(val)
 	}
+	{
+		val := bool(false)
+		s.Gallery.SetTo(val)
+	}
 }
 
 // setDefaults set default value of fields.
@@ -79,6 +83,18 @@ func (s *AdultBulkRequest) setDefaults() {
 	{
 		val := bool(false)
 		s.Exclude.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *AdultGalleryRequest) setDefaults() {
+	{
+		val := bool(true)
+		s.Monitored.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.Search.SetTo(val)
 	}
 }
 

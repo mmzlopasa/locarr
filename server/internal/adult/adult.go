@@ -47,6 +47,15 @@ var (
 	SceneFile   = settings.Key[string]{Name: "adult.sceneFile", Default: "{Studio} - {Date} - {Title}{ [Performers]} {Quality}"}
 	MovieFolder = settings.Key[string]{Name: "adult.movieFolder", Default: "{Title} ({Year})"}
 	MovieFile   = settings.Key[string]{Name: "adult.movieFile", Default: "{Title} ({Year}) {Quality}"}
+	// Galleries (D-112): one folder per gallery directly in the adult root
+	// folder, named like a scene file; images renamed 0001.jpg, 0002.png …
+	// (GalleryRename) with an optional cover.<ext> (GalleryCover).
+	GalleryFolder = settings.Key[string]{Name: "adult.galleryFolder", Default: "{Studio} - {Date} - {Title}{ [Performers]}"}
+	GalleryRename = settings.Key[bool]{Name: "adult.galleryRename", Default: true}
+	GalleryCover  = settings.Key[bool]{Name: "adult.galleryCover", Default: true}
+	// GalleryMinMB and GalleryMaxMB bound an image set release (0 = none).
+	GalleryMinMB = settings.Key[int]{Name: "adult.galleryMinMB", Default: 1}
+	GalleryMaxMB = settings.Key[int]{Name: "adult.galleryMaxMB", Default: 20480}
 	// StatsAggregate adds one total count of adult items to /api/stats
 	// (never a breakdown).
 	StatsAggregate = settings.Key[bool]{Name: "adult.statsAggregate", Default: false}

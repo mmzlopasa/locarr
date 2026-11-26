@@ -16,8 +16,9 @@ import (
 
 // Item kinds.
 const (
-	KindScene = "scene"
-	KindMovie = "movie"
+	KindScene   = "scene"
+	KindMovie   = "movie"
+	KindGallery = "gallery"
 )
 
 // Studio is a studio or site.
@@ -54,6 +55,9 @@ type Performer struct {
 	AddedAt          time.Time  `json:"addedAt"`
 	RefreshedAt      *time.Time `json:"refreshedAt,omitempty"`
 	Items            int        `json:"items"`
+	// Galleries: each new scene of a followed performer also gets its
+	// photo set as a wanted gallery (D-112).
+	Galleries bool `json:"galleries"`
 }
 
 // File is a scene's or movie's file.
@@ -67,6 +71,9 @@ type File struct {
 	ReleaseGroup string          `json:"releaseGroup,omitempty"`
 	SceneName    string          `json:"sceneName,omitempty"`
 	AddedAt      time.Time       `json:"addedAt"`
+	// ImageCount is a gallery's number of images (Path is its folder, Size
+	// their total).
+	ImageCount int `json:"imageCount,omitempty"`
 }
 
 // Item is a scene or a movie.
@@ -92,6 +99,8 @@ type Item struct {
 	AddedAt          time.Time `json:"addedAt"`
 	Performers       []PerfRef `json:"performers"`
 	File             *File     `json:"file,omitempty"`
+	// SceneID links a gallery to the scene it is the photo set of.
+	SceneID *int64 `json:"sceneId,omitempty"`
 	// Status: downloaded (in the library), downloading, wanted (monitored,
 	// no file) or missing (not monitored, no file).
 	Status string `json:"status"`
@@ -113,8 +122,11 @@ type PerfRef struct {
 
 // Ref is the item's timeline/download ref.
 func (it *Item) Ref() library.Ref {
-	if it.Kind == KindMovie {
+	switch it.Kind {
+	case KindMovie:
 		return library.Ref{Kind: library.RefAdultMovie, ID: it.ID}
+	case KindGallery:
+		return library.Ref{Kind: library.RefAdultGallery, ID: it.ID}
 	}
 	return library.Ref{Kind: library.RefScene, ID: it.ID}
 }
@@ -129,12 +141,12 @@ func ItemID(r library.Ref) (int64, bool) {
 
 const itemColumns = `i.id, i.kind, i.studio_id, i.studio_name, i.title, i.release_date, i.year, i.duration, i.overview, i.stashdb_id,
 	i.tpdb_id, i.phash, i.source_tags, i.image, i.monitored, i.quality_profile_id, i.root_folder_id, i.path, i.added_at,
-	f.id, f.path, f.size, f.quality, f.revision, f.score, f.release_group, f.scene_name, f.added_at, ` + itemStatus
+	f.id, f.path, f.size, f.quality, f.revision, f.score, f.release_group, f.scene_name, f.added_at, f.image_count, i.scene_id, ` + itemStatus
 
 // itemStatus is computed per row; download_refs is keyed by item_ref.
 const itemStatus = `CASE WHEN f.id IS NOT NULL THEN 'downloaded'
 	WHEN EXISTS (SELECT 1 FROM download_refs r JOIN downloads d ON d.id = r.download_id
-		WHERE r.item_ref = (CASE i.kind WHEN 'movie' THEN 'adult_movie:' ELSE 'scene:' END) || i.id AND d.status IN ('active', 'completed'))
+		WHERE r.item_ref = (CASE i.kind WHEN 'movie' THEN 'adult_movie:' WHEN 'gallery' THEN 'adult_gallery:' ELSE 'scene:' END) || i.id AND d.status IN ('active', 'completed'))
 		THEN 'downloading'
 	WHEN i.monitored = 1 THEN 'wanted' ELSE 'missing' END`
 
@@ -147,11 +159,12 @@ func scanItem(row interface{ Scan(...any) error }) (Item, error) {
 		tags                    string
 		added                   int64
 		fid, fsize, fscore, fat sql.NullInt64
+		fcount, sceneID         sql.NullInt64
 		fpath, fq, frev, fg, fs sql.NullString
 	)
 	if err := row.Scan(&it.ID, &it.Kind, &studio, &it.Studio, &it.Title, &it.ReleaseDate, &it.Year, &it.Duration, &it.Overview,
 		&it.StashDBID, &it.TPDBID, &it.PHash, &tags, &it.Image, &it.Monitored, &it.QualityProfileID, &root, &it.Path, &added,
-		&fid, &fpath, &fsize, &fq, &frev, &fscore, &fg, &fs, &fat, &it.Status); err != nil {
+		&fid, &fpath, &fsize, &fq, &frev, &fscore, &fg, &fs, &fat, &fcount, &sceneID, &it.Status); err != nil {
 		return it, err
 	}
 	if studio.Valid {
@@ -159,6 +172,9 @@ func scanItem(row interface{ Scan(...any) error }) (Item, error) {
 	}
 	if root.Valid {
 		it.RootFolderID = &root.Int64
+	}
+	if sceneID.Valid {
+		it.SceneID = &sceneID.Int64
 	}
 	_ = json.Unmarshal([]byte(tags), &it.SourceTags)
 	if it.SourceTags == nil {
@@ -168,7 +184,7 @@ func scanItem(row interface{ Scan(...any) error }) (Item, error) {
 	it.Performers = []PerfRef{}
 	if fid.Valid {
 		f := &File{ID: fid.Int64, Path: fpath.String, Size: fsize.Int64, Quality: fq.String, Score: int(fscore.Int64),
-			ReleaseGroup: fg.String, SceneName: fs.String, AddedAt: db.Time(fat.Int64)}
+			ReleaseGroup: fg.String, SceneName: fs.String, AddedAt: db.Time(fat.Int64), ImageCount: int(fcount.Int64)}
 		_ = json.Unmarshal([]byte(frev.String), &f.Revision)
 		it.File = f
 	}
@@ -179,6 +195,8 @@ func scanItem(row interface{ Scan(...any) error }) (Item, error) {
 type ItemFilter struct {
 	Kind        string
 	StudioID    int64
+	// SceneID keeps the galleries linked to one scene.
+	SceneID     int64
 	PerformerID int64
 	Term        string
 	Missing     bool
@@ -202,6 +220,9 @@ func (s *Service) Items(ctx context.Context, f ItemFilter) ([]Item, int, error) 
 	}
 	if f.StudioID > 0 {
 		where, args = append(where, "i.studio_id = ?"), append(args, f.StudioID)
+	}
+	if f.SceneID > 0 {
+		where, args = append(where, "i.scene_id = ?"), append(args, f.SceneID)
 	}
 	if f.PerformerID > 0 {
 		where, args = append(where, "i.id IN (SELECT item_id FROM adult_item_performers WHERE performer_id = ?)"), append(args, f.PerformerID)
@@ -297,8 +318,8 @@ func (s *Service) Item(ctx context.Context, id int64) (Item, error) {
 
 const studioColumns = `s.id, s.name, s.stashdb_id, s.tpdb_id, s.url, s.image, s.monitored, s.monitor_since, s.quality_profile_id, s.root_folder_id,
 	s.path, s.added_at, s.refreshed_at,
-	(SELECT count(*) FROM adult_items i WHERE i.studio_id = s.id),
-	(SELECT count(*) FROM adult_items i JOIN adult_files f ON f.item_id = i.id WHERE i.studio_id = s.id)`
+	(SELECT count(*) FROM adult_items i WHERE i.studio_id = s.id AND i.kind <> 'gallery'),
+	(SELECT count(*) FROM adult_items i JOIN adult_files f ON f.item_id = i.id WHERE i.studio_id = s.id AND i.kind <> 'gallery')`
 
 func scanStudio(row interface{ Scan(...any) error }) (Studio, error) {
 	var (
@@ -344,7 +365,7 @@ func (s *Service) Studio(ctx context.Context, id int64) (Studio, error) {
 
 const performerColumns = `p.id, p.name, p.disambiguation, p.stashdb_id, p.tpdb_id, p.image, p.monitored, p.monitor_since,
 	COALESCE(p.quality_profile_id, 0), p.root_folder_id, p.added_at, p.refreshed_at,
-	(SELECT count(*) FROM adult_item_performers ip WHERE ip.performer_id = p.id)`
+	(SELECT count(*) FROM adult_item_performers ip WHERE ip.performer_id = p.id), p.galleries`
 
 func scanPerformer(row interface{ Scan(...any) error }) (Performer, error) {
 	var (
@@ -353,7 +374,7 @@ func scanPerformer(row interface{ Scan(...any) error }) (Performer, error) {
 		added     int64
 	)
 	err := row.Scan(&p.ID, &p.Name, &p.Disambiguation, &p.StashDBID, &p.TPDBID, &p.Image, &p.Monitored, &p.MonitorSince, &p.QualityProfileID,
-		&root, &added, &ref, &p.Items)
+		&root, &added, &ref, &p.Items, &p.Galleries)
 	if root.Valid {
 		p.RootFolderID = &root.Int64
 	}

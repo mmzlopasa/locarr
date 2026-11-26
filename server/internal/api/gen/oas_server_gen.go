@@ -14,6 +14,15 @@ type Handler interface {
 	//
 	// POST /adult/blocklist
 	AddAdultBlocklistTerm(ctx context.Context, req *AddAdultBlocklistTermReq) (*AdultBlockTerm, error)
+	// AddAdultGallery implements addAdultGallery operation.
+	//
+	// Neither StashDB nor ThePornDB lists image sets (D-112). With `sceneId` the gallery is that scene's
+	// photo set (title, studio, date and performers come from it); with `performerId` and no title it is
+	// the performer's set; otherwise `title` is required. Managers with the adult permission only; 404
+	// otherwise.
+	//
+	// POST /adult/galleries
+	AddAdultGallery(ctx context.Context, req *AdultGalleryRequest) (*AdultItem, error)
 	// AddAdultItem implements addAdultItem operation.
 	//
 	// Add a scene or movie from a source.
@@ -614,6 +623,12 @@ type Handler interface {
 	//
 	// GET /adult/calendar
 	GetAdultCalendar(ctx context.Context, params GetAdultCalendarParams) ([]AdultItem, error)
+	// GetAdultGalleryImage implements getAdultGalleryImage operation.
+	//
+	// One image of a gallery (permitted users only; Cache-Control private).
+	//
+	// GET /adult/items/{id}/images/{index}
+	GetAdultGalleryImage(ctx context.Context, params GetAdultGalleryImageParams) (*GetAdultGalleryImageOKHeaders, error)
 	// GetAdultImage implements getAdultImage operation.
 	//
 	// A cached adult image (permitted users only; Cache-Control private).
@@ -1152,9 +1167,15 @@ type Handler interface {
 	//
 	// GET /adult/exclusions
 	ListAdultExclusions(ctx context.Context) ([]AdultExclusion, error)
+	// ListAdultGalleryImages implements listAdultGalleryImages operation.
+	//
+	// The images of a gallery, in name order (permitted users only).
+	//
+	// GET /adult/items/{id}/images
+	ListAdultGalleryImages(ctx context.Context, params ListAdultGalleryImagesParams) ([]AdultGalleryImage, error)
 	// ListAdultItems implements listAdultItems operation.
 	//
-	// Scenes and movies.
+	// Scenes, movies and galleries.
 	//
 	// GET /adult/items
 	ListAdultItems(ctx context.Context, params ListAdultItemsParams) (*AdultItemPage, error)

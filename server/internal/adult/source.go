@@ -12,6 +12,7 @@ import (
 	"github.com/mmzlopasa/locarr/server/internal/library/naming"
 	"github.com/mmzlopasa/locarr/server/internal/parser"
 	"github.com/mmzlopasa/locarr/server/internal/quality"
+	"github.com/mmzlopasa/locarr/server/internal/settings"
 	"github.com/mmzlopasa/locarr/server/internal/wanted"
 )
 
@@ -20,6 +21,8 @@ import (
 type Source struct {
 	S     *Service
 	Movie bool
+	// Gallery: image sets (D-112).
+	Gallery bool
 }
 
 var (
@@ -32,14 +35,20 @@ func (Source) Adult() bool { return true }
 
 // Kind implements wanted.Source.
 func (w Source) Kind() string {
-	if w.Movie {
+	switch {
+	case w.Gallery:
+		return library.RefAdultGallery
+	case w.Movie:
 		return library.RefAdultMovie
 	}
 	return library.RefScene
 }
 
 func (w Source) kind() string {
-	if w.Movie {
+	switch {
+	case w.Gallery:
+		return KindGallery
+	case w.Movie:
 		return KindMovie
 	}
 	return KindScene
@@ -49,6 +58,9 @@ func (w Source) kind() string {
 func cutoffMet(p *quality.Profile, f *File) bool {
 	if f == nil || p == nil {
 		return false
+	}
+	if f.ImageCount > 0 || f.Quality == GalleryQuality {
+		return true // a gallery has no upgrades (D-112)
 	}
 	pos, _ := p.Position(f.Quality)
 	if !p.UpgradesAllowed {
@@ -91,10 +103,25 @@ func (w Source) toItem(ctx context.Context, it *Item, p *quality.Profile) wanted
 	out.Wanted = decision.Wanted{Kind: quality.Movies, Title: it.Title, Year: it.Year, RuntimeMinutes: runtime,
 		Adult: &decision.Adult{Scene: it.Kind == KindScene, Studios: []string{it.Studio}, Date: it.ReleaseDate, Title: it.Title, Year: it.Year,
 			Performers: perfs}}
-	if it.File != nil {
+	if it.Kind == KindGallery {
+		a := out.Wanted.Adult
+		a.Scene, a.Gallery = false, true
+		if it.Studio == "" {
+			a.Studios = nil
+		}
+		minMB, _ := settings.Get(ctx, w.S.Settings, GalleryMinMB)
+		maxMB, _ := settings.Get(ctx, w.S.Settings, GalleryMaxMB)
+		a.MinSize, a.MaxSize = int64(max(minMB, 0))<<20, int64(max(maxMB, 0))<<20
+		out.CutoffMet = it.File != nil
+	} else if it.File != nil {
 		out.Wanted.Current = &decision.Current{Quality: it.File.Quality, Revision: it.File.Revision, Score: it.File.Score}
 	}
-	terms := searchTerms(it.Kind == KindScene, it.Studio, it.ReleaseDate, it.Title, it.Year, perfs)
+	terms := searchTerms(it.Kind != KindMovie, it.Studio, it.ReleaseDate, it.Title, it.Year, perfs)
+	if it.Kind == KindGallery {
+		// Public sites name sets "Studio.24.01.15.Performer.Title.XXX.IMAGESET";
+		// asking for the word first finds them among the videos.
+		terms = append([]string{terms[0] + " imageset"}, terms...)
+	}
 	out.Query = indexers.Query{Type: indexers.SearchAdult, Term: terms[0]}
 	out.AltTerms = terms[1:]
 	return out
@@ -252,8 +279,8 @@ func (w Source) Matcher(ctx context.Context) (wanted.Matcher, error) {
 		if !it.Monitored {
 			continue
 		}
-		if it.Kind == KindScene {
-			k := compact(it.Studio) + "|" + it.ReleaseDate
+		if it.Kind != KindMovie {
+			k := decision.StudioKey(it.Studio) + "|" + it.ReleaseDate
 			byKey[k] = append(byKey[k], it.Ref())
 		} else {
 			movies = append(movies, movie{it.Ref(), compact(it.Title), it.Year})
@@ -274,7 +301,13 @@ func (w Source) Matcher(ctx context.Context) (wanted.Matcher, error) {
 		if !ok {
 			return nil
 		}
-		return byKey[compact(sc.Studio)+"|"+sc.Date]
+		// Image sets go to galleries, videos to scenes.
+		g := parser.ParseGallery(r.Title)
+		set := (g.Images || slices.Contains(r.Categories, decision.ImageSetCategory)) && !g.Video
+		if set != w.Gallery {
+			return nil
+		}
+		return byKey[decision.StudioKey(sc.Studio)+"|"+sc.Date]
 	}, nil
 }
 

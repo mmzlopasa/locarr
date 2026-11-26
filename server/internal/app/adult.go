@@ -53,6 +53,7 @@ func buildAdult(_ context.Context, d *Deps, cfg config.Config, log *slog.Logger)
 	}
 	d.Wanted.Register(adult.Source{S: a})
 	d.Wanted.Register(adult.Source{S: a, Movie: true})
+	d.Wanted.Register(adult.Source{S: a, Gallery: true})
 
 	d.Jobs.Register(TaskImportAdult, func(ctx context.Context, j *jobs.Job) error {
 		var args importArgs

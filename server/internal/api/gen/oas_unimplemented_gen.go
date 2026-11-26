@@ -22,6 +22,18 @@ func (UnimplementedHandler) AddAdultBlocklistTerm(ctx context.Context, req *AddA
 	return r, ht.ErrNotImplemented
 }
 
+// AddAdultGallery implements addAdultGallery operation.
+//
+// Neither StashDB nor ThePornDB lists image sets (D-112). With `sceneId` the gallery is that scene's
+// photo set (title, studio, date and performers come from it); with `performerId` and no title it is
+// the performer's set; otherwise `title` is required. Managers with the adult permission only; 404
+// otherwise.
+//
+// POST /adult/galleries
+func (UnimplementedHandler) AddAdultGallery(ctx context.Context, req *AdultGalleryRequest) (r *AdultItem, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AddAdultItem implements addAdultItem operation.
 //
 // Add a scene or movie from a source.
@@ -910,6 +922,15 @@ func (UnimplementedHandler) GetAdultCalendar(ctx context.Context, params GetAdul
 	return r, ht.ErrNotImplemented
 }
 
+// GetAdultGalleryImage implements getAdultGalleryImage operation.
+//
+// One image of a gallery (permitted users only; Cache-Control private).
+//
+// GET /adult/items/{id}/images/{index}
+func (UnimplementedHandler) GetAdultGalleryImage(ctx context.Context, params GetAdultGalleryImageParams) (r *GetAdultGalleryImageOKHeaders, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetAdultImage implements getAdultImage operation.
 //
 // A cached adult image (permitted users only; Cache-Control private).
@@ -1706,9 +1727,18 @@ func (UnimplementedHandler) ListAdultExclusions(ctx context.Context) (r []AdultE
 	return r, ht.ErrNotImplemented
 }
 
+// ListAdultGalleryImages implements listAdultGalleryImages operation.
+//
+// The images of a gallery, in name order (permitted users only).
+//
+// GET /adult/items/{id}/images
+func (UnimplementedHandler) ListAdultGalleryImages(ctx context.Context, params ListAdultGalleryImagesParams) (r []AdultGalleryImage, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListAdultItems implements listAdultItems operation.
 //
-// Scenes and movies.
+// Scenes, movies and galleries.
 //
 // GET /adult/items
 func (UnimplementedHandler) ListAdultItems(ctx context.Context, params ListAdultItemsParams) (r *AdultItemPage, _ error) {

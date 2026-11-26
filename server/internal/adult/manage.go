@@ -88,6 +88,9 @@ type AddOptions struct {
 	RootFolderID     int64
 	Monitored        bool
 	Search           bool
+	// Gallery: a scene also gets its photo set as a gallery; a performer
+	// asks for the photo set of every new scene (D-112).
+	Gallery bool
 }
 
 func (s *Service) defaults(ctx context.Context, o *AddOptions) error {
@@ -335,6 +338,9 @@ func (s *Service) AddItem(ctx context.Context, movie bool, o AddOptions) (Item, 
 	if o.Search && it.Monitored && s.Wanted != nil {
 		_ = s.Wanted.Enqueue(ctx, it.Ref(), "added")
 	}
+	if o.Gallery && it.Kind == KindScene {
+		s.AutoGallery(ctx, &it, o.Search)
+	}
 	return it, nil
 }
 
@@ -464,8 +470,8 @@ func (s *Service) AddPerformer(ctx context.Context, o AddOptions) (Performer, er
 			return e
 		}
 		_, e = tx.ExecContext(ctx, `UPDATE adult_performers SET monitored = ?, monitor_since = ?, quality_profile_id = ?, root_folder_id = ?,
-			image = CASE WHEN ? <> '' THEN ? ELSE image END, updated_at = ? WHERE id = ?`, o.Monitored, s.now().UTC().Format("2006-01-02"),
-			o.QualityProfileID, o.RootFolderID, img, img, db.Millis(s.now()), id)
+			image = CASE WHEN ? <> '' THEN ? ELSE image END, galleries = ?, updated_at = ? WHERE id = ?`, o.Monitored, s.now().UTC().Format("2006-01-02"),
+			o.QualityProfileID, o.RootFolderID, img, img, o.Gallery, db.Millis(s.now()), id)
 		return e
 	})
 	if err != nil {
@@ -526,6 +532,9 @@ func (s *Service) RefreshPerformer(ctx context.Context, id int64) (int, error) {
 			if it.Monitored && s.Wanted != nil {
 				_ = s.Wanted.Enqueue(ctx, it.Ref(), "added")
 			}
+			if pf.Galleries {
+				s.AutoGallery(ctx, &it, true)
+			}
 		case errors.Is(err, ErrExists):
 			s.backfillItemImage(ctx, sc)
 		case errors.Is(err, ErrRemoved), errors.Is(err, ErrBlocked):
@@ -574,6 +583,8 @@ func (s *Service) RefreshAll(ctx context.Context) error {
 type Edit struct {
 	Monitored        *bool
 	QualityProfileID *int64
+	// Galleries (performers): also look for the photo set of new scenes.
+	Galleries *bool
 }
 
 // EditItem changes an item.
@@ -624,6 +635,11 @@ func (s *Service) EditPerformer(ctx context.Context, id int64, e Edit) (Performe
 	}
 	if e.QualityProfileID != nil {
 		_, _ = s.DB.W.ExecContext(ctx, `UPDATE adult_performers SET quality_profile_id = ? WHERE id = ?`, *e.QualityProfileID, id)
+	}
+	if e.Galleries != nil {
+		if err := s.SetPerformerGalleries(ctx, id, *e.Galleries); err != nil {
+			return Performer{}, err
+		}
 	}
 	return s.Performer(ctx, id)
 }

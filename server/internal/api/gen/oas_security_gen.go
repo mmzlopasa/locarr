@@ -37,6 +37,7 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 // operationRolesSessionToken is a private map storing roles per operation.
 var operationRolesSessionToken = map[string][]string{
 	AddAdultBlocklistTermOperation:             []string{},
+	AddAdultGalleryOperation:                   []string{},
 	AddAdultItemOperation:                      []string{},
 	AddAdultPerformerOperation:                 []string{},
 	AddAdultRootFolderOperation:                []string{},
@@ -132,6 +133,7 @@ var operationRolesSessionToken = map[string][]string{
 	ExportCustomFormatOperation:                []string{},
 	GetActivityStatsOperation:                  []string{},
 	GetAdultCalendarOperation:                  []string{},
+	GetAdultGalleryImageOperation:              []string{},
 	GetAdultImageOperation:                     []string{},
 	GetAdultItemOperation:                      []string{},
 	GetAdultItemTimelineOperation:              []string{},
@@ -216,6 +218,7 @@ var operationRolesSessionToken = map[string][]string{
 	LinkUserIdentityOperation:                  []string{},
 	ListAdultBlocklistOperation:                []string{},
 	ListAdultExclusionsOperation:               []string{},
+	ListAdultGalleryImagesOperation:            []string{},
 	ListAdultItemsOperation:                    []string{},
 	ListAdultPerformersOperation:               []string{},
 	ListAdultRootFoldersOperation:              []string{},

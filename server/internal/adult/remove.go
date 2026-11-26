@@ -42,9 +42,20 @@ func (s *Service) DeleteItem(ctx context.Context, id int64, o RemoveOptions) err
 			return err
 		}
 	}
+	ex := it
+	if it.Kind == KindGallery {
+		// A gallery has no source ids of its own: "not interested" remembers
+		// its scene's, so the scene's photo set is not added again.
+		ex.StashDBID, ex.TPDBID = "", ""
+		if it.SceneID != nil {
+			if sc, err := s.Item(ctx, *it.SceneID); err == nil {
+				ex.StashDBID, ex.TPDBID = sc.StashDBID, sc.TPDBID
+			}
+		}
+	}
 	err = s.DB.Tx(ctx, func(tx *sql.Tx) error {
-		if o.Exclude && (it.StashDBID != "" || it.TPDBID != "") {
-			if err := excludeTx(ctx, tx, &it, db.Millis(s.now())); err != nil {
+		if o.Exclude && (ex.StashDBID != "" || ex.TPDBID != "") {
+			if err := excludeTx(ctx, tx, &ex, db.Millis(s.now())); err != nil {
 				return err
 			}
 		}
@@ -62,8 +73,8 @@ func (s *Service) DeleteItem(ctx context.Context, id int64, o RemoveOptions) err
 func excludeTx(ctx context.Context, tx *sql.Tx, it *Item, now int64) error {
 	// Either ID may already be listed (the other source added later): merge.
 	var id int64
-	err := tx.QueryRowContext(ctx, `SELECT id FROM adult_exclusions WHERE (stashdb_id <> '' AND stashdb_id = ?) OR (tpdb_id <> '' AND tpdb_id = ?)
-		LIMIT 1`, it.StashDBID, it.TPDBID).Scan(&id)
+	err := tx.QueryRowContext(ctx, `SELECT id FROM adult_exclusions WHERE (kind = 'gallery') = ? AND
+		((stashdb_id <> '' AND stashdb_id = ?) OR (tpdb_id <> '' AND tpdb_id = ?)) LIMIT 1`, it.Kind == KindGallery, it.StashDBID, it.TPDBID).Scan(&id)
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
 		_, err = tx.ExecContext(ctx, `INSERT INTO adult_exclusions (kind, stashdb_id, tpdb_id, title, studio_name, release_date, added_at)
@@ -81,16 +92,28 @@ func excludeTx(ctx context.Context, tx *sql.Tx, it *Item, now int64) error {
 func (s *Service) Excluded(ctx context.Context, source, id string) bool {
 	stash, tpdb := ids(source, id)
 	var n int
-	_ = s.DB.R.QueryRowContext(ctx, `SELECT count(*) FROM adult_exclusions WHERE (stashdb_id <> '' AND stashdb_id = ?) OR (tpdb_id <> '' AND tpdb_id = ?)`,
-		stash, tpdb).Scan(&n)
+	_ = s.DB.R.QueryRowContext(ctx, `SELECT count(*) FROM adult_exclusions WHERE kind <> 'gallery' AND
+		((stashdb_id <> '' AND stashdb_id = ?) OR (tpdb_id <> '' AND tpdb_id = ?))`, stash, tpdb).Scan(&n)
+	return n > 0
+}
+
+// excludedGallery reports a scene whose photo set is on the "not
+// interested" list (by the scene's source ids).
+func (s *Service) excludedGallery(ctx context.Context, stash, tpdb string) bool {
+	if stash == "" && tpdb == "" {
+		return false
+	}
+	var n int
+	_ = s.DB.R.QueryRowContext(ctx, `SELECT count(*) FROM adult_exclusions WHERE kind = 'gallery' AND
+		((stashdb_id <> '' AND stashdb_id = ?) OR (tpdb_id <> '' AND tpdb_id = ?))`, stash, tpdb).Scan(&n)
 	return n > 0
 }
 
 // unexclude forgets an entry (adding it by hand is an explicit choice).
 func (s *Service) unexclude(ctx context.Context, source, id string) {
 	stash, tpdb := ids(source, id)
-	_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM adult_exclusions WHERE (stashdb_id <> '' AND stashdb_id = ?) OR (tpdb_id <> '' AND tpdb_id = ?)`,
-		stash, tpdb)
+	_, _ = s.DB.W.ExecContext(ctx, `DELETE FROM adult_exclusions WHERE kind <> 'gallery' AND
+		((stashdb_id <> '' AND stashdb_id = ?) OR (tpdb_id <> '' AND tpdb_id = ?))`, stash, tpdb)
 }
 
 // Exclusions lists the "not interested" entries, newest first.
