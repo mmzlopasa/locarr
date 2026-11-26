@@ -1,6 +1,6 @@
 -- +goose NO TRANSACTION
 -- +goose Up
--- Adult image sets (galleries, D-112): a third kind of adult item next to
+-- Adult image sets (galleries, D-113): a third kind of adult item next to
 -- scenes and movies, with the ref "adult_gallery:<id>". A gallery may be
 -- linked to the scene it belongs to (scene_id); its file row is the gallery
 -- folder with the image count and total size. Performers can ask for the

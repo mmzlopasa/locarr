@@ -47,7 +47,7 @@ var (
 	SceneFile   = settings.Key[string]{Name: "adult.sceneFile", Default: "{Studio} - {Date} - {Title}{ [Performers]} {Quality}"}
 	MovieFolder = settings.Key[string]{Name: "adult.movieFolder", Default: "{Title} ({Year})"}
 	MovieFile   = settings.Key[string]{Name: "adult.movieFile", Default: "{Title} ({Year}) {Quality}"}
-	// Galleries (D-112): one folder per gallery directly in the adult root
+	// Galleries (D-113): one folder per gallery directly in the adult root
 	// folder, named like a scene file; images renamed 0001.jpg, 0002.png …
 	// (GalleryRename) with an optional cover.<ext> (GalleryCover).
 	GalleryFolder = settings.Key[string]{Name: "adult.galleryFolder", Default: "{Studio} - {Date} - {Title}{ [Performers]}"}

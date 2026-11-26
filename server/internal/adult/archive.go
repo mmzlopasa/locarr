@@ -16,7 +16,7 @@ import (
 	lfs "github.com/mmzlopasa/locarr/server/internal/fs"
 )
 
-// ImageExtensions are the image files a gallery takes (D-112).
+// ImageExtensions are the image files a gallery takes (D-113).
 var ImageExtensions = map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".webp": true, ".gif": true, ".avif": true, ".heic": true}
 
 // archiveExtensions are read for images when a download has no loose ones.

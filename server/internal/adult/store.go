@@ -56,7 +56,7 @@ type Performer struct {
 	RefreshedAt      *time.Time `json:"refreshedAt,omitempty"`
 	Items            int        `json:"items"`
 	// Galleries: each new scene of a followed performer also gets its
-	// photo set as a wanted gallery (D-112).
+	// photo set as a wanted gallery (D-113).
 	Galleries bool `json:"galleries"`
 }
 

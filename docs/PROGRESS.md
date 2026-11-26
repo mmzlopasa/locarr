@@ -4,7 +4,7 @@
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
 ## Gotovo: galerije (skupovi slika) za odrasle (branch `feat/adult-galleries`)
-- D-112: vrsta `gallery` (`adult_gallery:<id>`), migracija `00020_adult_galleries.sql` (preslagivanje `adult_items` i `adult_exclusions`, `scene_id`, `adult_files.image_count`, `adult_performers.galleries`). StashDB i ThePornDB nemaju skupove slika (provjereno u njihovim javnim shemama), pa se galerija stvara iz scene, izvođača ili ručno.
+- D-113: vrsta `gallery` (`adult_gallery:<id>`), migracija `00020_adult_galleries.sql` (preslagivanje `adult_items` i `adult_exclusions`, `scene_id`, `adult_files.image_count`, `adult_performers.galleries`). StashDB i ThePornDB nemaju skupove slika (provjereno u njihovim javnim shemama), pa se galerija stvara iz scene, izvođača ili ručno.
 - Pretraga: `adult.Source{Gallery: true}`, upit „… imageset” pa oblici scene; `parser.ParseGallery` (golden `testdata/galleries.json`), `decision.specImageSet` (`not_image_set`, `image_set` za scene), `decision.StudioKey` (bez `.com`), raspon veličine; kategorije slika ugrađenih stranica ponovno provjerene.
 - Uvoz: mapa slika ili zip/rar (`rardecode/v2`), sigurna ekstrakcija (`archive.go`), `0001.ext` i `cover.ext`, hardlink, koš za stari skup, sličice; API `POST /adult/galleries`, `GET /adult/items/{id}/images[/{index}]`, postavke `adult.gallery*`.
 - Web (EN + HR): kartica Galerije, stranica s mrežom i pregledom, Dodaj → Galerija, „Traži skup fotografija” na sceni, opcije na izvođaču i postavkama. Android: samo novi kodovi odbijanja (`gen-codes.py`).

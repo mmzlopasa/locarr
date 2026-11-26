@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Gallery is what a release name says about an image set (D-112): whether
+// Gallery is what a release name says about an image set (D-113): whether
 // it calls itself one, how many images it has and how large they are, and
 // whether it rather looks like a video.
 type Gallery struct {

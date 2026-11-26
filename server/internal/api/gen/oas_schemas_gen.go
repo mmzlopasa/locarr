@@ -2231,7 +2231,7 @@ type AdultSettings struct {
 	SceneFile           string                     `json:"sceneFile"`
 	MovieFolder         string                     `json:"movieFolder"`
 	MovieFile           string                     `json:"movieFile"`
-	// Folder of a gallery, directly in the adult root folder (D-112).
+	// Folder of a gallery, directly in the adult root folder (D-113).
 	GalleryFolder string `json:"galleryFolder"`
 	// Rename images to 0001.jpg, 0002.jpg … (otherwise original names).
 	GalleryRename bool `json:"galleryRename"`

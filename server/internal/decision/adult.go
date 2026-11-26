@@ -301,7 +301,7 @@ const ImageSetCategory = 6060
 
 func (e *eval) gallery() bool { return e.ctx.Wanted.Adult != nil && e.ctx.Wanted.Adult.Gallery }
 
-// specImageSet keeps image sets and videos apart for adult items (D-112). A
+// specImageSet keeps image sets and videos apart for adult items (D-113). A
 // gallery takes a release in the image set category or one whose name says
 // image set, pictures, photos or gives an image count ("x150"), within the
 // size range. A scene or movie refuses such a release unless the name also

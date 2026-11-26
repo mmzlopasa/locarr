@@ -121,7 +121,7 @@ type Wanted struct {
 // Adult is what an adult release must name.
 type Adult struct {
 	Scene bool `json:"scene"`
-	// Gallery: an image set (D-112). It is matched like a scene (studio,
+	// Gallery: an image set (D-113). It is matched like a scene (studio,
 	// date, title, performers) and must be an image set; no video quality
 	// applies, only the size range.
 	Gallery bool `json:"gallery,omitempty"`

@@ -21,7 +21,7 @@ import (
 type Source struct {
 	S     *Service
 	Movie bool
-	// Gallery: image sets (D-112).
+	// Gallery: image sets (D-113).
 	Gallery bool
 }
 
@@ -60,7 +60,7 @@ func cutoffMet(p *quality.Profile, f *File) bool {
 		return false
 	}
 	if f.ImageCount > 0 || f.Quality == GalleryQuality {
-		return true // a gallery has no upgrades (D-112)
+		return true // a gallery has no upgrades (D-113)
 	}
 	pos, _ := p.Position(f.Quality)
 	if !p.UpgradesAllowed {

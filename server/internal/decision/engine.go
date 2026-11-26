@@ -54,7 +54,7 @@ const (
 	// CodeWrongScene: an adult release names another studio, date or title.
 	CodeWrongScene = "wrong_scene"
 	// CodeNotImageSet: a release for an adult gallery is not an image set
-	// (a video, or nothing says it holds images; D-112).
+	// (a video, or nothing says it holds images; D-113).
 	CodeNotImageSet = "not_image_set"
 	// CodeImageSet: a release for an adult scene or movie is an image set.
 	CodeImageSet = "image_set"
@@ -412,7 +412,7 @@ func specEpisodes(e *eval) {
 
 func specQuality(e *eval) {
 	if e.gallery() {
-		return // images have no video quality (D-112)
+		return // images have no video quality (D-113)
 	}
 	if e.pos < 0 || !e.allowed {
 		e.reject(CodeQualityNotAllowed, fmt.Sprintf("%s is not allowed in profile %s", e.q.Name, e.ctx.Profile.Name),

@@ -112,7 +112,7 @@ type galleryImage struct {
 	size    int64
 }
 
-// ImportGallery places an image set for a gallery (D-112): the images of a
+// ImportGallery places an image set for a gallery (D-113): the images of a
 // folder (or a single image), or when it has none the images inside its zip
 // and rar archives. Archives are read with the safe-name, link, size and
 // count rules of archive.go and stay where they are (seeding). Files go to

@@ -16,7 +16,7 @@ type Handler interface {
 	AddAdultBlocklistTerm(ctx context.Context, req *AddAdultBlocklistTermReq) (*AdultBlockTerm, error)
 	// AddAdultGallery implements addAdultGallery operation.
 	//
-	// Neither StashDB nor ThePornDB lists image sets (D-112). With `sceneId` the gallery is that scene's
+	// Neither StashDB nor ThePornDB lists image sets (D-113). With `sceneId` the gallery is that scene's
 	// photo set (title, studio, date and performers come from it); with `performerId` and no title it is
 	// the performer's set; otherwise `title` is required. Managers with the adult permission only; 404
 	// otherwise.

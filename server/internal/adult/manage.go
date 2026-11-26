@@ -89,7 +89,7 @@ type AddOptions struct {
 	Monitored        bool
 	Search           bool
 	// Gallery: a scene also gets its photo set as a gallery; a performer
-	// asks for the photo set of every new scene (D-112).
+	// asks for the photo set of every new scene (D-113).
 	Gallery bool
 }
 

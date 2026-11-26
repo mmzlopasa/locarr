@@ -14,7 +14,7 @@ import (
 )
 
 // GalleryQuality is the quality recorded for a gallery's file row: images
-// have no video quality (D-112).
+// have no video quality (D-113).
 const GalleryQuality = "images"
 
 // Gallery errors.
@@ -25,7 +25,7 @@ var (
 )
 
 // GalleryOptions create a gallery by hand or from a scene or performer.
-// Neither StashDB nor ThePornDB lists image sets (D-112), so a gallery is
+// Neither StashDB nor ThePornDB lists image sets (D-113), so a gallery is
 // either the photo set of a scene in the library (SceneID: title, studio,
 // date and performers come from it), a performer's set (PerformerID with no
 // title: the performer's name) or typed in.

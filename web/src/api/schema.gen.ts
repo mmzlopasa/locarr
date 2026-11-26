@@ -5438,7 +5438,7 @@ export interface paths {
         put?: never;
         /**
          * Add a gallery (image set) by hand, from a scene or from a performer
-         * @description Neither StashDB nor ThePornDB lists image sets (D-112). With `sceneId` the gallery is that scene's photo set
+         * @description Neither StashDB nor ThePornDB lists image sets (D-113). With `sceneId` the gallery is that scene's photo set
          *     (title, studio, date and performers come from it); with `performerId` and no title it is the performer's set;
          *     otherwise `title` is required. Managers with the adult permission only; 404 otherwise.
          */
@@ -5712,7 +5712,7 @@ export interface components {
             sceneFile: string;
             movieFolder: string;
             movieFile: string;
-            /** @description Folder of a gallery, directly in the adult root folder (D-112). */
+            /** @description Folder of a gallery, directly in the adult root folder (D-113). */
             galleryFolder: string;
             /** @description Rename images to 0001.jpg, 0002.jpg … (otherwise original names). */
             galleryRename: boolean;
