@@ -52,7 +52,7 @@ func Flags(r *indexers.Release) []string {
 // Candidate adapts an indexer result to the decision engine's input. ind may
 // be nil when the indexer is unknown (deleted since).
 func Candidate(r *indexers.Release, ind *indexers.Indexer) decision.Candidate {
-	c := decision.Candidate{GUID: r.GUID, Title: r.Title, Size: r.Size, Protocol: string(r.Protocol), IndexerID: r.IndexerID,
+	c := decision.Candidate{GUID: r.GUID, Title: r.Title, Size: r.Size, Protocol: string(r.Protocol), IndexerID: r.IndexerID, Categories: r.Categories,
 		IndexerName: r.IndexerName, IndexerPriority: r.IndexerPriority, IndexerFlags: Flags(r), Seeders: r.Seeders, Peers: r.Peers,
 		PublishDate: r.PublishDate, InfoURL: r.InfoURL, InfoHash: r.InfoHash,
 		IDs: decision.IDs{TMDb: int(r.TMDBID), TVDb: int(r.TVDBID), IMDb: r.IMDBID}}
