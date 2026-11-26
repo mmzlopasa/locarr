@@ -60,6 +60,8 @@ func main() {
 	addr := env("LOCARR_FAKES_ADDR", ":9117")
 	ix := fake.New(env("LOCARR_FAKES_API_KEY", "fakekey"), env("LOCARR_FAKES_SOURCE_KEY", "sourcekey"))
 	ix.SeedDir = os.Getenv("LOCARR_FAKES_SEED_DIR")
+	// The adult e2e flow's image set (6060), only in the fakes binary.
+	fake.Catalog = append(fake.Catalog, fake.AdultCatalog...)
 	mux := http.NewServeMux()
 	mux.Handle("/tmdb/", tmdbfake.New())
 	mb := mbfake.New()

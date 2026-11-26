@@ -15,12 +15,16 @@
 package fake
 
 import (
+	"archive/zip"
 	"bytes"
 	"compress/gzip"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"html"
+	"image"
+	"image/color"
+	"image/png"
 	"net/http"
 	"net/url"
 	"os"
@@ -95,6 +99,14 @@ var Catalog = []Release{
 		Author: "Public Domain Author", Hash: "a3b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 30 * time.Hour},
 	{Title: "Open Source Artist - Free Album (2020) [MP3 320]", Cat: 3000, Size: 41_943_040, Seeders: 20, Peers: 22, Grabs: 70,
 		Artist: "Open Source Artist", Album: "Free Album", Hash: "a4b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 50 * time.Hour},
+}
+
+// AdultCatalog is added by the fakes binary (scripts/dev-fakes.sh) for the
+// adult e2e tests: an image set of the fake StashDB's "Scene Title"
+// (synthetic name; a zip of generated pictures when seeded).
+var AdultCatalog = []Release{
+	{Title: "StudioA.24.01.15.Performer.One.Scene.Title.XXX.IMAGESET-LOCARR", Cat: 6060, Size: 52_428_800, Seeders: 11, Peers: 12, Grabs: 20,
+		Hash: "a6b2c3d4e5f60718293a4b5c6d7e8f9012345678", Age: 30 * time.Hour, Files: []string{"Scene.Title.Set.zip", "release.nfo"}},
 }
 
 // Server is the fake. Change its fields only before serving or under Lock.
@@ -567,6 +579,9 @@ func SeedPack(dir, title string, files []string) ([]byte, error) {
 	var tf []testkit.TorrentFile
 	for _, f := range files {
 		data := SeedPayload(title + "/" + f)
+		if strings.HasSuffix(f, ".zip") {
+			data = SeedImageZip(title)
+		}
 		if strings.HasSuffix(f, ".srt") || strings.HasSuffix(f, ".nfo") || strings.Contains(strings.ToLower(f), "sample") {
 			data = data[:16<<10]
 		}
@@ -639,4 +654,29 @@ func SeedAlbum(dir, title string, mp3 bool) ([]byte, error) {
 	}
 	_ = os.Chmod(filepath.Join(dir, title), 0o777) // #nosec G302 -- see SeedTorrent
 	return testkit.MakeFolderTorrent(title, tf).File, nil
+}
+
+// SeedImageZip is a deterministic zip of three generated pictures (colour
+// gradients, no real content) for a seeded image set.
+func SeedImageZip(title string) []byte {
+	var b bytes.Buffer
+	w := zip.NewWriter(&b)
+	sum := sha256.Sum256([]byte(title))
+	for i := 1; i <= 3; i++ {
+		img := image.NewRGBA(image.Rect(0, 0, 96, 64))
+		for y := 0; y < 64; y++ {
+			for x := 0; x < 96; x++ {
+				img.Set(x, y, color.RGBA{R: sum[i] ^ uint8(x), G: uint8(y * 3), B: uint8(i * 70), A: 255}) // #nosec G115 -- small values
+			}
+		}
+		var p bytes.Buffer
+		_ = png.Encode(&p, img)
+		fw, err := w.CreateHeader(&zip.FileHeader{Name: fmt.Sprintf("set/%d.png", i), Method: zip.Store, Modified: time.Date(2024, 1, 15, 0, 0, 0, 0, time.UTC)})
+		if err != nil {
+			return nil
+		}
+		_, _ = fw.Write(p.Bytes())
+	}
+	_ = w.Close()
+	return b.Bytes()
 }
