@@ -5416,11 +5416,72 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Scenes and movies */
+        /** Scenes, movies and galleries */
         get: operations["listAdultItems"];
         put?: never;
         /** Add a scene or movie from a source */
         post: operations["addAdultItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/galleries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a gallery (image set) by hand, from a scene or from a performer
+         * @description Neither StashDB nor ThePornDB lists image sets (D-113). With `sceneId` the gallery is that scene's photo set
+         *     (title, studio, date and performers come from it); with `performerId` and no title it is the performer's set;
+         *     otherwise `title` is required. Managers with the adult permission only; 404 otherwise.
+         */
+        post: operations["addAdultGallery"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/items/{id}/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        /** The images of a gallery, in name order (permitted users only) */
+        get: operations["listAdultGalleryImages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/adult/items/{id}/images/{index}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                index: number;
+            };
+            cookie?: never;
+        };
+        /** One image of a gallery (permitted users only; Cache-Control private) */
+        get: operations["getAdultGalleryImage"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -5651,6 +5712,16 @@ export interface components {
             sceneFile: string;
             movieFolder: string;
             movieFile: string;
+            /** @description Folder of a gallery, directly in the adult root folder (D-113). */
+            galleryFolder: string;
+            /** @description Rename images to 0001.jpg, 0002.jpg … (otherwise original names). */
+            galleryRename: boolean;
+            /** @description Add cover.<ext> (the set's own cover or its first image). */
+            galleryCover: boolean;
+            /** @description Smallest image set release taken (0 = no bound). */
+            galleryMinMB: number;
+            /** @description Largest image set release taken (0 = no bound). */
+            galleryMaxMB: number;
             /** @description Add one total count of adult items to /api/stats (never a breakdown). */
             statsAggregate: boolean;
             /** @description Tell Streamero about adult imports (only with an adult Streamero library mapped). */
@@ -5689,6 +5760,11 @@ export interface components {
             sceneFile?: string;
             movieFolder?: string;
             movieFile?: string;
+            galleryFolder?: string;
+            galleryRename?: boolean;
+            galleryCover?: boolean;
+            galleryMinMB?: number;
+            galleryMaxMB?: number;
             statsAggregate?: boolean;
             notifyStreamero?: boolean;
         };
@@ -5754,8 +5830,11 @@ export interface components {
         AdultExclusion: {
             /** Format: int64 */
             id: number;
-            /** @enum {string} */
-            kind: "scene" | "movie";
+            /**
+             * @description gallery: the photo set of the scene with these ids.
+             * @enum {string}
+             */
+            kind: "scene" | "movie" | "gallery";
             stashdbId?: string;
             tpdbId?: string;
             title: string;
@@ -5781,11 +5860,46 @@ export interface components {
             monitored: boolean;
             /** @default true */
             search: boolean;
+            /**
+             * @description A scene: also add its photo set as a gallery. A performer: also add the photo set of every new scene.
+             * @default false
+             */
+            gallery: boolean;
+        };
+        AdultGalleryRequest: {
+            title?: string;
+            /** Format: int64 */
+            studioId?: number;
+            /** @description A studio name when it is not in the library. */
+            studio?: string;
+            /** @description YYYY-MM-DD */
+            releaseDate?: string;
+            performerIds?: number[];
+            /** Format: int64 */
+            sceneId?: number;
+            /** Format: int64 */
+            performerId?: number;
+            /** Format: int64 */
+            qualityProfileId?: number;
+            /** Format: int64 */
+            rootFolderId?: number;
+            /** @default true */
+            monitored: boolean;
+            /** @default true */
+            search: boolean;
+        };
+        AdultGalleryImage: {
+            index: number;
+            name: string;
+            /** Format: int64 */
+            size: number;
         };
         AdultEditRequest: {
             monitored?: boolean;
             /** Format: int64 */
             qualityProfileId?: number;
+            /** @description Performers: also add the photo set of every new scene. */
+            galleries?: boolean;
         };
         AdultStudio: {
             /** Format: int64 */
@@ -5827,6 +5941,8 @@ export interface components {
             /** Format: date-time */
             refreshedAt?: string;
             items: number;
+            /** @description New scenes also get their photo set as a gallery. */
+            galleries?: boolean;
         };
         AdultFile: {
             /** Format: int64 */
@@ -5839,14 +5955,21 @@ export interface components {
             sceneName?: string;
             /** Format: date-time */
             addedAt?: string;
+            /** @description Galleries: the number of images (path is the folder, size their total). */
+            imageCount?: number;
         };
         AdultItem: {
             /** Format: int64 */
             id: number;
             /** @enum {string} */
-            kind: "scene" | "movie";
-            /** @description scene:<id> or adult_movie:<id> */
+            kind: "scene" | "movie" | "gallery";
+            /** @description scene:<id>, adult_movie:<id> or adult_gallery:<id> */
             ref: string;
+            /**
+             * Format: int64
+             * @description Galleries: the scene this is the photo set of.
+             */
+            sceneId?: number;
             /** Format: int64 */
             studioId?: number;
             studio: string;
@@ -19653,8 +19776,10 @@ export interface operations {
     listAdultItems: {
         parameters: {
             query?: {
-                kind?: "scene" | "movie";
+                kind?: "scene" | "movie" | "gallery";
                 studioId?: number;
+                /** @description Galleries linked to this scene. */
+                sceneId?: number;
                 performerId?: number;
                 term?: string;
                 missing?: boolean;
@@ -19703,6 +19828,82 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdultItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    addAdultGallery: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultGalleryRequest"];
+            };
+        };
+        responses: {
+            /** @description Added */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultItem"];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    listAdultGalleryImages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Images */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdultGalleryImage"][];
+                };
+            };
+            default: components["responses"]["Error"];
+        };
+    };
+    getAdultGalleryImage: {
+        parameters: {
+            query?: {
+                /** @description A small JPEG preview (JPEG, PNG and GIF; other formats as they are). */
+                thumb?: boolean;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["ID"];
+                index: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The image */
+            200: {
+                headers: {
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/*": string;
                 };
             };
             default: components["responses"]["Error"];

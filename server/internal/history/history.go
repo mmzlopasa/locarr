@@ -162,7 +162,7 @@ func parts(f Filter) (tl, dl *part) {
 		}
 	}
 	refFilter := func(col string) (string, []any) {
-		out := " AND " + col + " NOT LIKE 'scene:%' AND " + col + " NOT LIKE 'adult_movie:%'"
+		out := " AND " + col + " NOT LIKE 'scene:%' AND " + col + " NOT LIKE 'adult_movie:%' AND " + col + " NOT LIKE 'adult_gallery:%'"
 		var ors []string
 		var args []any
 		for _, p := range refPrefixes(f.Kind) {
@@ -436,7 +436,7 @@ func (s *Store) Stats(ctx context.Context, since time.Time) (indexers, clients [
 		rows, err := s.DB.R.QueryContext(ctx, `SELECT `+idCol+`, `+nameCol+`, COUNT(*), SUM(status = 'imported'), SUM(status = 'failed'),
 			SUM(status IN ('active', 'completed')), AVG(CASE WHEN status = 'imported' AND finished_at IS NOT NULL THEN finished_at - added_at END)
 			FROM downloads WHERE added_at >= ?
-			AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'
+			AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_gallery:%'
 			GROUP BY `+idCol+`, `+nameCol+` ORDER BY COUNT(*) DESC, `+nameCol, db.Millis(since)) // #nosec G202 -- constant columns
 		if err != nil {
 			return nil, err

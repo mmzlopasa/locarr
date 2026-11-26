@@ -1415,9 +1415,15 @@ func (s *AdultAddRequest) encodeFields(e *jx.Encoder) {
 			s.Search.Encode(e)
 		}
 	}
+	{
+		if s.Gallery.Set {
+			e.FieldStart("gallery")
+			s.Gallery.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfAdultAddRequest = [7]string{
+var jsonFieldsNameOfAdultAddRequest = [8]string{
 	0: "source",
 	1: "id",
 	2: "kind",
@@ -1425,6 +1431,7 @@ var jsonFieldsNameOfAdultAddRequest = [7]string{
 	4: "rootFolderId",
 	5: "monitored",
 	6: "search",
+	7: "gallery",
 }
 
 // Decode decodes AdultAddRequest from json.
@@ -1508,6 +1515,16 @@ func (s *AdultAddRequest) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"search\"")
+			}
+		case "gallery":
+			if err := func() error {
+				s.Gallery.Reset()
+				if err := s.Gallery.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"gallery\"")
 			}
 		default:
 			return d.Skip()
@@ -2092,11 +2109,18 @@ func (s *AdultEditRequest) encodeFields(e *jx.Encoder) {
 			s.QualityProfileId.Encode(e)
 		}
 	}
+	{
+		if s.Galleries.Set {
+			e.FieldStart("galleries")
+			s.Galleries.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfAdultEditRequest = [2]string{
+var jsonFieldsNameOfAdultEditRequest = [3]string{
 	0: "monitored",
 	1: "qualityProfileId",
+	2: "galleries",
 }
 
 // Decode decodes AdultEditRequest from json.
@@ -2126,6 +2150,16 @@ func (s *AdultEditRequest) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"qualityProfileId\"")
+			}
+		case "galleries":
+			if err := func() error {
+				s.Galleries.Reset()
+				if err := s.Galleries.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleries\"")
 			}
 		default:
 			return d.Skip()
@@ -2384,6 +2418,8 @@ func (s *AdultExclusionKind) Decode(d *jx.Decoder) error {
 		*s = AdultExclusionKindScene
 	case AdultExclusionKindMovie:
 		*s = AdultExclusionKindMovie
+	case AdultExclusionKindGallery:
+		*s = AdultExclusionKindGallery
 	default:
 		*s = AdultExclusionKind(v)
 	}
@@ -2447,9 +2483,15 @@ func (s *AdultFile) encodeFields(e *jx.Encoder) {
 			s.AddedAt.Encode(e, json.EncodeDateTime)
 		}
 	}
+	{
+		if s.ImageCount.Set {
+			e.FieldStart("imageCount")
+			s.ImageCount.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfAdultFile = [7]string{
+var jsonFieldsNameOfAdultFile = [8]string{
 	0: "id",
 	1: "path",
 	2: "size",
@@ -2457,6 +2499,7 @@ var jsonFieldsNameOfAdultFile = [7]string{
 	4: "releaseGroup",
 	5: "sceneName",
 	6: "addedAt",
+	7: "imageCount",
 }
 
 // Decode decodes AdultFile from json.
@@ -2546,6 +2589,16 @@ func (s *AdultFile) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"addedAt\"")
 			}
+		case "imageCount":
+			if err := func() error {
+				s.ImageCount.Reset()
+				if err := s.ImageCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imageCount\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -2603,6 +2656,383 @@ func (s *AdultFile) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *AdultGalleryImage) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *AdultGalleryImage) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("index")
+		e.Int(s.Index)
+	}
+	{
+		e.FieldStart("name")
+		e.Str(s.Name)
+	}
+	{
+		e.FieldStart("size")
+		e.Int64(s.Size)
+	}
+}
+
+var jsonFieldsNameOfAdultGalleryImage = [3]string{
+	0: "index",
+	1: "name",
+	2: "size",
+}
+
+// Decode decodes AdultGalleryImage from json.
+func (s *AdultGalleryImage) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdultGalleryImage to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "index":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.Index = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"index\"")
+			}
+		case "name":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Name = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "size":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Int64()
+				s.Size = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"size\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode AdultGalleryImage")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfAdultGalleryImage) {
+					name = jsonFieldsNameOfAdultGalleryImage[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdultGalleryImage) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdultGalleryImage) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *AdultGalleryRequest) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *AdultGalleryRequest) encodeFields(e *jx.Encoder) {
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		if s.StudioId.Set {
+			e.FieldStart("studioId")
+			s.StudioId.Encode(e)
+		}
+	}
+	{
+		if s.Studio.Set {
+			e.FieldStart("studio")
+			s.Studio.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseDate.Set {
+			e.FieldStart("releaseDate")
+			s.ReleaseDate.Encode(e)
+		}
+	}
+	{
+		if s.PerformerIds != nil {
+			e.FieldStart("performerIds")
+			e.ArrStart()
+			for _, elem := range s.PerformerIds {
+				e.Int64(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.SceneId.Set {
+			e.FieldStart("sceneId")
+			s.SceneId.Encode(e)
+		}
+	}
+	{
+		if s.PerformerId.Set {
+			e.FieldStart("performerId")
+			s.PerformerId.Encode(e)
+		}
+	}
+	{
+		if s.QualityProfileId.Set {
+			e.FieldStart("qualityProfileId")
+			s.QualityProfileId.Encode(e)
+		}
+	}
+	{
+		if s.RootFolderId.Set {
+			e.FieldStart("rootFolderId")
+			s.RootFolderId.Encode(e)
+		}
+	}
+	{
+		if s.Monitored.Set {
+			e.FieldStart("monitored")
+			s.Monitored.Encode(e)
+		}
+	}
+	{
+		if s.Search.Set {
+			e.FieldStart("search")
+			s.Search.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfAdultGalleryRequest = [11]string{
+	0:  "title",
+	1:  "studioId",
+	2:  "studio",
+	3:  "releaseDate",
+	4:  "performerIds",
+	5:  "sceneId",
+	6:  "performerId",
+	7:  "qualityProfileId",
+	8:  "rootFolderId",
+	9:  "monitored",
+	10: "search",
+}
+
+// Decode decodes AdultGalleryRequest from json.
+func (s *AdultGalleryRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdultGalleryRequest to nil")
+	}
+	s.setDefaults()
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "studioId":
+			if err := func() error {
+				s.StudioId.Reset()
+				if err := s.StudioId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"studioId\"")
+			}
+		case "studio":
+			if err := func() error {
+				s.Studio.Reset()
+				if err := s.Studio.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"studio\"")
+			}
+		case "releaseDate":
+			if err := func() error {
+				s.ReleaseDate.Reset()
+				if err := s.ReleaseDate.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"releaseDate\"")
+			}
+		case "performerIds":
+			if err := func() error {
+				s.PerformerIds = make([]int64, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int64
+					v, err := d.Int64()
+					elem = int64(v)
+					if err != nil {
+						return err
+					}
+					s.PerformerIds = append(s.PerformerIds, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"performerIds\"")
+			}
+		case "sceneId":
+			if err := func() error {
+				s.SceneId.Reset()
+				if err := s.SceneId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneId\"")
+			}
+		case "performerId":
+			if err := func() error {
+				s.PerformerId.Reset()
+				if err := s.PerformerId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"performerId\"")
+			}
+		case "qualityProfileId":
+			if err := func() error {
+				s.QualityProfileId.Reset()
+				if err := s.QualityProfileId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qualityProfileId\"")
+			}
+		case "rootFolderId":
+			if err := func() error {
+				s.RootFolderId.Reset()
+				if err := s.RootFolderId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"rootFolderId\"")
+			}
+		case "monitored":
+			if err := func() error {
+				s.Monitored.Reset()
+				if err := s.Monitored.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"monitored\"")
+			}
+		case "search":
+			if err := func() error {
+				s.Search.Reset()
+				if err := s.Search.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"search\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode AdultGalleryRequest")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdultGalleryRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdultGalleryRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *AdultItem) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -2622,6 +3052,12 @@ func (s *AdultItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("ref")
 		e.Str(s.Ref)
+	}
+	{
+		if s.SceneId.Set {
+			e.FieldStart("sceneId")
+			s.SceneId.Encode(e)
+		}
 	}
 	{
 		if s.StudioId.Set {
@@ -2723,28 +3159,29 @@ func (s *AdultItem) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfAdultItem = [21]string{
+var jsonFieldsNameOfAdultItem = [22]string{
 	0:  "id",
 	1:  "kind",
 	2:  "ref",
-	3:  "studioId",
-	4:  "studio",
-	5:  "title",
-	6:  "releaseDate",
-	7:  "year",
-	8:  "duration",
-	9:  "overview",
-	10: "stashdbId",
-	11: "tpdbId",
-	12: "image",
-	13: "monitored",
-	14: "qualityProfileId",
-	15: "path",
-	16: "addedAt",
-	17: "sourceTags",
-	18: "performers",
-	19: "file",
-	20: "status",
+	3:  "sceneId",
+	4:  "studioId",
+	5:  "studio",
+	6:  "title",
+	7:  "releaseDate",
+	8:  "year",
+	9:  "duration",
+	10: "overview",
+	11: "stashdbId",
+	12: "tpdbId",
+	13: "image",
+	14: "monitored",
+	15: "qualityProfileId",
+	16: "path",
+	17: "addedAt",
+	18: "sourceTags",
+	19: "performers",
+	20: "file",
+	21: "status",
 }
 
 // Decode decodes AdultItem from json.
@@ -2790,6 +3227,16 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"ref\"")
 			}
+		case "sceneId":
+			if err := func() error {
+				s.SceneId.Reset()
+				if err := s.SceneId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sceneId\"")
+			}
 		case "studioId":
 			if err := func() error {
 				s.StudioId.Reset()
@@ -2801,7 +3248,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"studioId\"")
 			}
 		case "studio":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Str()
 				s.Studio = string(v)
@@ -2813,7 +3260,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"studio\"")
 			}
 		case "title":
-			requiredBitSet[0] |= 1 << 5
+			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				v, err := d.Str()
 				s.Title = string(v)
@@ -2895,7 +3342,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"image\"")
 			}
 		case "monitored":
-			requiredBitSet[1] |= 1 << 5
+			requiredBitSet[1] |= 1 << 6
 			if err := func() error {
 				v, err := d.Bool()
 				s.Monitored = bool(v)
@@ -2907,7 +3354,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"monitored\"")
 			}
 		case "qualityProfileId":
-			requiredBitSet[1] |= 1 << 6
+			requiredBitSet[1] |= 1 << 7
 			if err := func() error {
 				v, err := d.Int64()
 				s.QualityProfileId = int64(v)
@@ -2919,7 +3366,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"qualityProfileId\"")
 			}
 		case "path":
-			requiredBitSet[1] |= 1 << 7
+			requiredBitSet[2] |= 1 << 0
 			if err := func() error {
 				v, err := d.Str()
 				s.Path = string(v)
@@ -2931,7 +3378,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"path\"")
 			}
 		case "addedAt":
-			requiredBitSet[2] |= 1 << 0
+			requiredBitSet[2] |= 1 << 1
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.AddedAt = v
@@ -2943,7 +3390,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"addedAt\"")
 			}
 		case "sourceTags":
-			requiredBitSet[2] |= 1 << 1
+			requiredBitSet[2] |= 1 << 2
 			if err := func() error {
 				s.SourceTags = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -2963,7 +3410,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"sourceTags\"")
 			}
 		case "performers":
-			requiredBitSet[2] |= 1 << 2
+			requiredBitSet[2] |= 1 << 3
 			if err := func() error {
 				s.Performers = make([]AdultItemPerformersItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -2991,7 +3438,7 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"file\"")
 			}
 		case "status":
-			requiredBitSet[2] |= 1 << 4
+			requiredBitSet[2] |= 1 << 5
 			if err := func() error {
 				if err := s.Status.Decode(d); err != nil {
 					return err
@@ -3010,9 +3457,9 @@ func (s *AdultItem) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [3]uint8{
-		0b00110111,
-		0b11100000,
-		0b00010111,
+		0b01100111,
+		0b11000000,
+		0b00101111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -3078,6 +3525,8 @@ func (s *AdultItemKind) Decode(d *jx.Decoder) error {
 		*s = AdultItemKindScene
 	case AdultItemKindMovie:
 		*s = AdultItemKindMovie
+	case AdultItemKindGallery:
+		*s = AdultItemKindGallery
 	default:
 		*s = AdultItemKind(v)
 	}
@@ -3915,9 +4364,15 @@ func (s *AdultPerformer) encodeFields(e *jx.Encoder) {
 		e.FieldStart("items")
 		e.Int(s.Items)
 	}
+	{
+		if s.Galleries.Set {
+			e.FieldStart("galleries")
+			s.Galleries.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfAdultPerformer = [12]string{
+var jsonFieldsNameOfAdultPerformer = [13]string{
 	0:  "id",
 	1:  "name",
 	2:  "disambiguation",
@@ -3930,6 +4385,7 @@ var jsonFieldsNameOfAdultPerformer = [12]string{
 	9:  "addedAt",
 	10: "refreshedAt",
 	11: "items",
+	12: "galleries",
 }
 
 // Decode decodes AdultPerformer from json.
@@ -4070,6 +4526,16 @@ func (s *AdultPerformer) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"items\"")
+			}
+		case "galleries":
+			if err := func() error {
+				s.Galleries.Reset()
+				if err := s.Galleries.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleries\"")
 			}
 		default:
 			return d.Skip()
@@ -4653,6 +5119,26 @@ func (s *AdultSettings) encodeFields(e *jx.Encoder) {
 		e.Str(s.MovieFile)
 	}
 	{
+		e.FieldStart("galleryFolder")
+		e.Str(s.GalleryFolder)
+	}
+	{
+		e.FieldStart("galleryRename")
+		e.Bool(s.GalleryRename)
+	}
+	{
+		e.FieldStart("galleryCover")
+		e.Bool(s.GalleryCover)
+	}
+	{
+		e.FieldStart("galleryMinMB")
+		e.Int(s.GalleryMinMB)
+	}
+	{
+		e.FieldStart("galleryMaxMB")
+		e.Int(s.GalleryMaxMB)
+	}
+	{
 		e.FieldStart("statsAggregate")
 		e.Bool(s.StatsAggregate)
 	}
@@ -4692,7 +5178,7 @@ func (s *AdultSettings) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfAdultSettings = [17]string{
+var jsonFieldsNameOfAdultSettings = [22]string{
 	0:  "enabled",
 	1:  "confirmedAt",
 	2:  "stashdbKeySet",
@@ -4704,12 +5190,17 @@ var jsonFieldsNameOfAdultSettings = [17]string{
 	8:  "sceneFile",
 	9:  "movieFolder",
 	10: "movieFile",
-	11: "statsAggregate",
-	12: "notifyStreamero",
-	13: "tokens",
-	14: "protectedTerms",
-	15: "openProfileId",
-	16: "profileUsage",
+	11: "galleryFolder",
+	12: "galleryRename",
+	13: "galleryCover",
+	14: "galleryMinMB",
+	15: "galleryMaxMB",
+	16: "statsAggregate",
+	17: "notifyStreamero",
+	18: "tokens",
+	19: "protectedTerms",
+	20: "openProfileId",
+	21: "profileUsage",
 }
 
 // Decode decodes AdultSettings from json.
@@ -4849,8 +5340,68 @@ func (s *AdultSettings) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"movieFile\"")
 			}
-		case "statsAggregate":
+		case "galleryFolder":
 			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.GalleryFolder = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryFolder\"")
+			}
+		case "galleryRename":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				v, err := d.Bool()
+				s.GalleryRename = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryRename\"")
+			}
+		case "galleryCover":
+			requiredBitSet[1] |= 1 << 5
+			if err := func() error {
+				v, err := d.Bool()
+				s.GalleryCover = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryCover\"")
+			}
+		case "galleryMinMB":
+			requiredBitSet[1] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int()
+				s.GalleryMinMB = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryMinMB\"")
+			}
+		case "galleryMaxMB":
+			requiredBitSet[1] |= 1 << 7
+			if err := func() error {
+				v, err := d.Int()
+				s.GalleryMaxMB = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryMaxMB\"")
+			}
+		case "statsAggregate":
+			requiredBitSet[2] |= 1 << 0
 			if err := func() error {
 				v, err := d.Bool()
 				s.StatsAggregate = bool(v)
@@ -4862,7 +5413,7 @@ func (s *AdultSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"statsAggregate\"")
 			}
 		case "notifyStreamero":
-			requiredBitSet[1] |= 1 << 4
+			requiredBitSet[2] |= 1 << 1
 			if err := func() error {
 				v, err := d.Bool()
 				s.NotifyStreamero = bool(v)
@@ -4874,7 +5425,7 @@ func (s *AdultSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"notifyStreamero\"")
 			}
 		case "tokens":
-			requiredBitSet[1] |= 1 << 5
+			requiredBitSet[2] |= 1 << 2
 			if err := func() error {
 				s.Tokens = make([]string, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -4943,8 +5494,8 @@ func (s *AdultSettings) Decode(d *jx.Decoder) error {
 	var failures []validate.FieldError
 	for i, mask := range [3]uint8{
 		0b11111101,
-		0b00111111,
-		0b00000000,
+		0b11111111,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -5106,6 +5657,36 @@ func (s *AdultSettingsUpdate) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.GalleryFolder.Set {
+			e.FieldStart("galleryFolder")
+			s.GalleryFolder.Encode(e)
+		}
+	}
+	{
+		if s.GalleryRename.Set {
+			e.FieldStart("galleryRename")
+			s.GalleryRename.Encode(e)
+		}
+	}
+	{
+		if s.GalleryCover.Set {
+			e.FieldStart("galleryCover")
+			s.GalleryCover.Encode(e)
+		}
+	}
+	{
+		if s.GalleryMinMB.Set {
+			e.FieldStart("galleryMinMB")
+			s.GalleryMinMB.Encode(e)
+		}
+	}
+	{
+		if s.GalleryMaxMB.Set {
+			e.FieldStart("galleryMaxMB")
+			s.GalleryMaxMB.Encode(e)
+		}
+	}
+	{
 		if s.StatsAggregate.Set {
 			e.FieldStart("statsAggregate")
 			s.StatsAggregate.Encode(e)
@@ -5119,7 +5700,7 @@ func (s *AdultSettingsUpdate) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfAdultSettingsUpdate = [13]string{
+var jsonFieldsNameOfAdultSettingsUpdate = [18]string{
 	0:  "enabled",
 	1:  "confirmAdults",
 	2:  "stashdbKey",
@@ -5131,8 +5712,13 @@ var jsonFieldsNameOfAdultSettingsUpdate = [13]string{
 	8:  "sceneFile",
 	9:  "movieFolder",
 	10: "movieFile",
-	11: "statsAggregate",
-	12: "notifyStreamero",
+	11: "galleryFolder",
+	12: "galleryRename",
+	13: "galleryCover",
+	14: "galleryMinMB",
+	15: "galleryMaxMB",
+	16: "statsAggregate",
+	17: "notifyStreamero",
 }
 
 // Decode decodes AdultSettingsUpdate from json.
@@ -5252,6 +5838,56 @@ func (s *AdultSettingsUpdate) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"movieFile\"")
+			}
+		case "galleryFolder":
+			if err := func() error {
+				s.GalleryFolder.Reset()
+				if err := s.GalleryFolder.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryFolder\"")
+			}
+		case "galleryRename":
+			if err := func() error {
+				s.GalleryRename.Reset()
+				if err := s.GalleryRename.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryRename\"")
+			}
+		case "galleryCover":
+			if err := func() error {
+				s.GalleryCover.Reset()
+				if err := s.GalleryCover.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryCover\"")
+			}
+		case "galleryMinMB":
+			if err := func() error {
+				s.GalleryMinMB.Reset()
+				if err := s.GalleryMinMB.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryMinMB\"")
+			}
+		case "galleryMaxMB":
+			if err := func() error {
+				s.GalleryMaxMB.Reset()
+				if err := s.GalleryMaxMB.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"galleryMaxMB\"")
 			}
 		case "statsAggregate":
 			if err := func() error {

@@ -10,6 +10,7 @@ require (
 	github.com/go-chi/chi/v5 v5.5.0
 	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
+	github.com/nwaples/rardecode/v2 v2.4.6
 	github.com/ogen-go/ogen v1.24.0
 	github.com/pressly/goose/v3 v3.29.0
 	go.opentelemetry.io/otel v1.47.0

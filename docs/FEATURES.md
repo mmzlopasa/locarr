@@ -134,6 +134,7 @@ Oznake: `[ ]` nije gotovo, `[x]` radi end-to-end i testirano. Faza u zagradi.
 - [x] Uklanjanje scene, filma, studija (sa scenama ili bez) i izvođača, datoteke samo u koš uz izričit izbor; „Ne zanima me” koje osvježavanje poštuje, popis i poništavanje u Postavkama; način odabira sa skupnim praćenjem, nepraćenjem i uklanjanjem (D-110)
 - [x] Pretraga na Dodaj: najnovije prvo od samog izvora, poredak (najnovije, najstarije, relevantnost, naslov) zapamćen u pregledniku, „Učitaj još”, sličice, „Dodaj odabrano” (D-110)
 - [ ] Mobilne aplikacije (API je spreman; aplikacije ga zasad ne prikazuju)
+- [x] Galerije (skupovi slika): stavka `adult_gallery`, iz scene, izvođača ili ručno; pretraga i odluka po studiju, datumu i izvođačima uz provjeru skupa slika (kategorija 6060 ili ime) i raspon veličine; siguran uvoz mape, zip i rar (putanje, veze, ograničenja, samo slike), mapa po galeriji s `0001.jpg`… i `cover`; mreža sličica i pregled; ništa ne curi (D-113)
 - [ ] Uparivanje datoteka po PHASH-u, ručni uvoz postojeće mape za odrasle, zasebna kategorija u download klijentu
 
 ## Kvaliteta (P13)

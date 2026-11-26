@@ -45,7 +45,7 @@ Unosi koje izvor vodi kao obrisane ili sporne nikad se ne prikazuju ni ne uvoze.
 
 ## 6. Dodavanje i praćenje
 
-Odrasli → **Dodaj**: odaberite izvor i vrstu (studio, scena, film, izvođač) i pretražite.
+Odrasli → **Dodaj**: odaberite izvor i vrstu (studio, scena, film, izvođač, galerija) i pretražite.
 
 - **Studio**: dodaju se njegove najnovije scene; praćeni studio nove scene (od dana praćenja) traži sam.
 - **Izvođač**: „Prati ovog izvođača” — nove scene s njim postaju tražene.
@@ -177,3 +177,49 @@ i staje čim nađe izdanje koje može uzeti. Izdanje mora biti ta scena: sa stud
 ako ime nakon datuma nešto kaže, izvođač ili većina naslova (studio istog dana objavljuje više scena); bez datuma ime mora
 imati naslov uz izvođača ili studio, a godina u imenu mora odgovarati.
 
+
+## 12. Galerije (skupovi slika)
+
+Osim videa Locarr preuzima i **skupove slika**. Galerija je stavka kao scena: ima studio, datum, naslov i izvođače,
+traži se, preuzima, uvozi i ima vremensku crtu i „Zašto nije ovdje?”.
+
+**Kako nastaje galerija.** StashDB i ThePornDB nemaju skupove slika, pa se galerija ne traži na Dodaj nego:
+
+- **iz scene**: na stranici scene **Traži skup fotografija** (ili pri dodavanju scene označite **Traži i skup fotografija**);
+  naslov, studio, datum i izvođači preuzimaju se od scene, a galerija je vezana uz nju;
+- **iz izvođača**: na stranici izvođača **Dodaj skup fotografija**, a **Traži i skupove fotografija** znači da svaka nova scena
+  praćenog izvođača dobiva i svoju galeriju;
+- **ručno**: Odrasli → Galerije → **Nova galerija** (ili Dodaj → Vrsta: Galerija): naslov, studio, datum i izvođači.
+
+**Pretraga.** Locarr traži kao za scenu (studio i datum, izvođač i naslov…), prvo s riječi „imageset”. Uzima samo izdanje koje je
+skup slika: kategorija XXX/ImageSet (6060) ili ime koje to kaže (`IMAGESET`, `pics`, `photos`, `x150`…). Video (1080p, mp4…)
+se za galeriju odbija, a skup slika za scenu. Kvaliteta videa ne vrijedi; vrijedi samo raspon veličine (Postavke → Sadržaj za
+odrasle, zadano 1 MB – 20 GB). Blokirani pojmovi vrijede isto kao za scene.
+
+**Indexeri sa skupovima slika:** The Pirate Bay (Porn → Pictures), Knaben (XXX → ImageSet), XXXClub (IMAGESET) i Torznab/Newznab
+indexeri s kategorijom 6060. BitSearch ih ima pod XXX, a Locarr ih prepoznaje po imenu.
+
+**Uvoz.** Preuzimanje može imati slike (jpg, jpeg, png, webp, gif, avif, heic) ili zip/rar arhivu sa slikama. Arhiva se
+raspakira sigurno: unos s opasnim imenom (npr. `../`) odbija cijelu arhivu, veze i datoteke koje nisu slike se preskaču,
+a prevelike arhive (više od 10 000 slika, 200 MB po slici, 32 GB ukupno ili sumnjivo dobro sažete) se ne raspakiraju.
+Arhiva ostaje u mapi preuzimanja radi seedanja. Slike idu u **jednu mapu po galeriji** izravno u korijenskoj mapi za odrasle:
+
+```
+/data/media/adult/
+  Studio A - 2024-01-15 - Naslov scene [Izvođač Jedan]/
+    0001.jpg
+    0002.jpg
+    …
+    cover.jpg
+```
+
+Ime mape slijedi predložak „Mapa galerije” (zadano `{Studio} - {Date} - {Title}{ [Performers]}`). Slike se preimenuju u
+`0001`, `0002`… redom skupa (isključite „Preimenuj slike” za izvorna imena), a `cover` je naslovnica skupa ili prva slika.
+Ako postoji mapa istog imena s drugim sadržajem, ne dira se: galerija dobiva ime s „ (2)”. Novi skup iste galerije stari šalje
+u koš. Streamero se obavještava kao za scene (samo ako je to uključeno).
+
+**Pregled.** Stranica galerije ima mrežu sličica (zamućenih po vašoj postavci; klik otkriva, drugi klik otvara) i pregled
+preko cijelog zaslona: strelice ili tipke ← →, Escape zatvara. Slike se poslužuju samo onima s dozvolom za sadržaj za odrasle.
+
+**Uklanjanje.** Kao za scenu: datoteke samo u koš i samo uz izbor, „Ne zanima me” znači da se skup te scene više ne dodaje sam
+(ručno dodavanje to poništava). Skupne radnje rade i na kartici Galerije.

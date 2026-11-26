@@ -110,20 +110,40 @@ func specBlockedTag(e *eval) {
 // compact compares names without spaces ("Studio A" = "StudioA").
 func compact(s string) string { return strings.ReplaceAll(NormWords(s), " ", "") }
 
+// StudioKey compares studio names without spaces and without a web address
+// ending: uploaders write "Studio.com_24.01.15…" for the site "Studio", and
+// some metadata names the site "Studio.com".
+func StudioKey(s string) string {
+	words := strings.Fields(NormWords(s))
+	if n := len(words); n > 1 {
+		switch words[n-1] {
+		case "com", "net", "org":
+			words = words[:n-1]
+		}
+	}
+	return strings.Join(words, "")
+}
+
 func specAdult(e *eval) {
 	a := e.ctx.Wanted.Adult
 	if a == nil {
 		return
 	}
 	sc, dated := parser.ParseScene(e.c.Title)
-	if a.Scene {
+	if a.Scene || a.Gallery {
+		if a.Gallery && len(a.Studios) == 0 && a.Date == "" {
+			// A performer's or a hand-made set without studio and date:
+			// judged by its title (and performers) alone.
+			undatedScene(e, a)
+			return
+		}
 		if !dated {
 			undatedScene(e, a)
 			return
 		}
-		studioOK := false
+		studioOK := len(a.Studios) == 0
 		for _, s := range a.Studios {
-			if compact(s) != "" && compact(s) == compact(sc.Studio) {
+			if StudioKey(s) != "" && StudioKey(s) == StudioKey(sc.Studio) {
 				studioOK = true
 			}
 		}
@@ -274,4 +294,50 @@ func sceneRestMatches(rest string, a *Adult) bool {
 		}
 	}
 	return found*2 >= len(words)
+}
+
+// ImageSetCategory is the Newznab/Torznab category of adult image sets.
+const ImageSetCategory = 6060
+
+func (e *eval) gallery() bool { return e.ctx.Wanted.Adult != nil && e.ctx.Wanted.Adult.Gallery }
+
+// specImageSet keeps image sets and videos apart for adult items (D-113). A
+// gallery takes a release in the image set category or one whose name says
+// image set, pictures, photos or gives an image count ("x150"), within the
+// size range. A scene or movie refuses such a release unless the name also
+// names a video (a resolution, a container).
+func specImageSet(e *eval) {
+	a := e.ctx.Wanted.Adult
+	if a == nil {
+		return
+	}
+	g := parser.ParseGallery(e.c.Title)
+	inCat := slices.Contains(e.c.Categories, ImageSetCategory)
+	if !a.Gallery {
+		if (inCat || g.Images) && !g.Video {
+			e.reject(CodeImageSet, "this is an image set, not a video", nil)
+		}
+		return
+	}
+	switch {
+	case inCat || g.Images:
+	case g.Video:
+		e.reject(CodeNotImageSet, "this is a video, not an image set", map[string]any{"video": true})
+		return
+	default:
+		e.reject(CodeNotImageSet, "nothing in the name or category says this is an image set", nil)
+		return
+	}
+	if e.c.Size <= 0 {
+		return
+	}
+	params := func(limit int64) map[string]any {
+		return map[string]any{"size": e.c.Size, "limit": limit, "quality": "images", "gallery": true}
+	}
+	if a.MinSize > 0 && e.c.Size < a.MinSize {
+		e.reject(CodeSizeTooSmall, fmt.Sprintf("%s < %s min for an image set", formatSize(e.c.Size), formatSize(a.MinSize)), params(a.MinSize))
+	}
+	if a.MaxSize > 0 && e.c.Size > a.MaxSize {
+		e.reject(CodeSizeTooLarge, fmt.Sprintf("%s > %s max for an image set", formatSize(e.c.Size), formatSize(a.MaxSize)), params(a.MaxSize))
+	}
 }

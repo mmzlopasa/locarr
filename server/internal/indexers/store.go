@@ -450,6 +450,10 @@ func (s *Service) Create(ctx context.Context, in Input) (Indexer, error) {
 		if c, err := s.capsFor(cctx, in, nil); err == nil {
 			caps = c
 			def := DefaultCategories(c)
+			// An explicit adult opt-in survives the defaults (Empty ignores it).
+			if in.Categories != nil {
+				def.Adult = in.Categories.Adult
+			}
 			in.Categories = &def
 		}
 		cancel()

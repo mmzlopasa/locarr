@@ -552,6 +552,9 @@ type AdultAddRequest struct {
 	RootFolderId     OptInt64               `json:"rootFolderId"`
 	Monitored        OptBool                `json:"monitored"`
 	Search           OptBool                `json:"search"`
+	// A scene: also add its photo set as a gallery. A performer: also add the photo set of every new
+	// scene.
+	Gallery OptBool `json:"gallery"`
 }
 
 // GetSource returns the value of Source.
@@ -589,6 +592,11 @@ func (s *AdultAddRequest) GetSearch() OptBool {
 	return s.Search
 }
 
+// GetGallery returns the value of Gallery.
+func (s *AdultAddRequest) GetGallery() OptBool {
+	return s.Gallery
+}
+
 // SetSource sets the value of Source.
 func (s *AdultAddRequest) SetSource(val AdultAddRequestSource) {
 	s.Source = val
@@ -622,6 +630,11 @@ func (s *AdultAddRequest) SetMonitored(val OptBool) {
 // SetSearch sets the value of Search.
 func (s *AdultAddRequest) SetSearch(val OptBool) {
 	s.Search = val
+}
+
+// SetGallery sets the value of Gallery.
+func (s *AdultAddRequest) SetGallery(val OptBool) {
+	s.Gallery = val
 }
 
 // For items.
@@ -862,6 +875,8 @@ func (s *AdultBulkResult) SetChanged(val int) {
 type AdultEditRequest struct {
 	Monitored        OptBool  `json:"monitored"`
 	QualityProfileId OptInt64 `json:"qualityProfileId"`
+	// Performers: also add the photo set of every new scene.
+	Galleries OptBool `json:"galleries"`
 }
 
 // GetMonitored returns the value of Monitored.
@@ -874,6 +889,11 @@ func (s *AdultEditRequest) GetQualityProfileId() OptInt64 {
 	return s.QualityProfileId
 }
 
+// GetGalleries returns the value of Galleries.
+func (s *AdultEditRequest) GetGalleries() OptBool {
+	return s.Galleries
+}
+
 // SetMonitored sets the value of Monitored.
 func (s *AdultEditRequest) SetMonitored(val OptBool) {
 	s.Monitored = val
@@ -884,9 +904,15 @@ func (s *AdultEditRequest) SetQualityProfileId(val OptInt64) {
 	s.QualityProfileId = val
 }
 
+// SetGalleries sets the value of Galleries.
+func (s *AdultEditRequest) SetGalleries(val OptBool) {
+	s.Galleries = val
+}
+
 // Ref: #/components/schemas/AdultExclusion
 type AdultExclusion struct {
-	ID          int64              `json:"id"`
+	ID int64 `json:"id"`
+	// Gallery: the photo set of the scene with these ids.
 	Kind        AdultExclusionKind `json:"kind"`
 	StashdbId   OptString          `json:"stashdbId"`
 	TpdbId      OptString          `json:"tpdbId"`
@@ -976,11 +1002,13 @@ func (s *AdultExclusion) SetAddedAt(val time.Time) {
 	s.AddedAt = val
 }
 
+// Gallery: the photo set of the scene with these ids.
 type AdultExclusionKind string
 
 const (
-	AdultExclusionKindScene AdultExclusionKind = "scene"
-	AdultExclusionKindMovie AdultExclusionKind = "movie"
+	AdultExclusionKindScene   AdultExclusionKind = "scene"
+	AdultExclusionKindMovie   AdultExclusionKind = "movie"
+	AdultExclusionKindGallery AdultExclusionKind = "gallery"
 )
 
 // AllValues returns all AdultExclusionKind values.
@@ -988,6 +1016,7 @@ func (AdultExclusionKind) AllValues() []AdultExclusionKind {
 	return []AdultExclusionKind{
 		AdultExclusionKindScene,
 		AdultExclusionKindMovie,
+		AdultExclusionKindGallery,
 	}
 }
 
@@ -997,6 +1026,8 @@ func (s AdultExclusionKind) MarshalText() ([]byte, error) {
 	case AdultExclusionKindScene:
 		return []byte(s), nil
 	case AdultExclusionKindMovie:
+		return []byte(s), nil
+	case AdultExclusionKindGallery:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -1012,6 +1043,9 @@ func (s *AdultExclusionKind) UnmarshalText(data []byte) error {
 	case AdultExclusionKindMovie:
 		*s = AdultExclusionKindMovie
 		return nil
+	case AdultExclusionKindGallery:
+		*s = AdultExclusionKindGallery
+		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
@@ -1026,6 +1060,8 @@ type AdultFile struct {
 	ReleaseGroup OptString   `json:"releaseGroup"`
 	SceneName    OptString   `json:"sceneName"`
 	AddedAt      OptDateTime `json:"addedAt"`
+	// Galleries: the number of images (path is the folder, size their total).
+	ImageCount OptInt `json:"imageCount"`
 }
 
 // GetID returns the value of ID.
@@ -1063,6 +1099,11 @@ func (s *AdultFile) GetAddedAt() OptDateTime {
 	return s.AddedAt
 }
 
+// GetImageCount returns the value of ImageCount.
+func (s *AdultFile) GetImageCount() OptInt {
+	return s.ImageCount
+}
+
 // SetID sets the value of ID.
 func (s *AdultFile) SetID(val int64) {
 	s.ID = val
@@ -1098,12 +1139,183 @@ func (s *AdultFile) SetAddedAt(val OptDateTime) {
 	s.AddedAt = val
 }
 
+// SetImageCount sets the value of ImageCount.
+func (s *AdultFile) SetImageCount(val OptInt) {
+	s.ImageCount = val
+}
+
+// Ref: #/components/schemas/AdultGalleryImage
+type AdultGalleryImage struct {
+	Index int    `json:"index"`
+	Name  string `json:"name"`
+	Size  int64  `json:"size"`
+}
+
+// GetIndex returns the value of Index.
+func (s *AdultGalleryImage) GetIndex() int {
+	return s.Index
+}
+
+// GetName returns the value of Name.
+func (s *AdultGalleryImage) GetName() string {
+	return s.Name
+}
+
+// GetSize returns the value of Size.
+func (s *AdultGalleryImage) GetSize() int64 {
+	return s.Size
+}
+
+// SetIndex sets the value of Index.
+func (s *AdultGalleryImage) SetIndex(val int) {
+	s.Index = val
+}
+
+// SetName sets the value of Name.
+func (s *AdultGalleryImage) SetName(val string) {
+	s.Name = val
+}
+
+// SetSize sets the value of Size.
+func (s *AdultGalleryImage) SetSize(val int64) {
+	s.Size = val
+}
+
+// Ref: #/components/schemas/AdultGalleryRequest
+type AdultGalleryRequest struct {
+	Title    OptString `json:"title"`
+	StudioId OptInt64  `json:"studioId"`
+	// A studio name when it is not in the library.
+	Studio OptString `json:"studio"`
+	// YYYY-MM-DD.
+	ReleaseDate      OptString `json:"releaseDate"`
+	PerformerIds     []int64   `json:"performerIds"`
+	SceneId          OptInt64  `json:"sceneId"`
+	PerformerId      OptInt64  `json:"performerId"`
+	QualityProfileId OptInt64  `json:"qualityProfileId"`
+	RootFolderId     OptInt64  `json:"rootFolderId"`
+	Monitored        OptBool   `json:"monitored"`
+	Search           OptBool   `json:"search"`
+}
+
+// GetTitle returns the value of Title.
+func (s *AdultGalleryRequest) GetTitle() OptString {
+	return s.Title
+}
+
+// GetStudioId returns the value of StudioId.
+func (s *AdultGalleryRequest) GetStudioId() OptInt64 {
+	return s.StudioId
+}
+
+// GetStudio returns the value of Studio.
+func (s *AdultGalleryRequest) GetStudio() OptString {
+	return s.Studio
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *AdultGalleryRequest) GetReleaseDate() OptString {
+	return s.ReleaseDate
+}
+
+// GetPerformerIds returns the value of PerformerIds.
+func (s *AdultGalleryRequest) GetPerformerIds() []int64 {
+	return s.PerformerIds
+}
+
+// GetSceneId returns the value of SceneId.
+func (s *AdultGalleryRequest) GetSceneId() OptInt64 {
+	return s.SceneId
+}
+
+// GetPerformerId returns the value of PerformerId.
+func (s *AdultGalleryRequest) GetPerformerId() OptInt64 {
+	return s.PerformerId
+}
+
+// GetQualityProfileId returns the value of QualityProfileId.
+func (s *AdultGalleryRequest) GetQualityProfileId() OptInt64 {
+	return s.QualityProfileId
+}
+
+// GetRootFolderId returns the value of RootFolderId.
+func (s *AdultGalleryRequest) GetRootFolderId() OptInt64 {
+	return s.RootFolderId
+}
+
+// GetMonitored returns the value of Monitored.
+func (s *AdultGalleryRequest) GetMonitored() OptBool {
+	return s.Monitored
+}
+
+// GetSearch returns the value of Search.
+func (s *AdultGalleryRequest) GetSearch() OptBool {
+	return s.Search
+}
+
+// SetTitle sets the value of Title.
+func (s *AdultGalleryRequest) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetStudioId sets the value of StudioId.
+func (s *AdultGalleryRequest) SetStudioId(val OptInt64) {
+	s.StudioId = val
+}
+
+// SetStudio sets the value of Studio.
+func (s *AdultGalleryRequest) SetStudio(val OptString) {
+	s.Studio = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *AdultGalleryRequest) SetReleaseDate(val OptString) {
+	s.ReleaseDate = val
+}
+
+// SetPerformerIds sets the value of PerformerIds.
+func (s *AdultGalleryRequest) SetPerformerIds(val []int64) {
+	s.PerformerIds = val
+}
+
+// SetSceneId sets the value of SceneId.
+func (s *AdultGalleryRequest) SetSceneId(val OptInt64) {
+	s.SceneId = val
+}
+
+// SetPerformerId sets the value of PerformerId.
+func (s *AdultGalleryRequest) SetPerformerId(val OptInt64) {
+	s.PerformerId = val
+}
+
+// SetQualityProfileId sets the value of QualityProfileId.
+func (s *AdultGalleryRequest) SetQualityProfileId(val OptInt64) {
+	s.QualityProfileId = val
+}
+
+// SetRootFolderId sets the value of RootFolderId.
+func (s *AdultGalleryRequest) SetRootFolderId(val OptInt64) {
+	s.RootFolderId = val
+}
+
+// SetMonitored sets the value of Monitored.
+func (s *AdultGalleryRequest) SetMonitored(val OptBool) {
+	s.Monitored = val
+}
+
+// SetSearch sets the value of Search.
+func (s *AdultGalleryRequest) SetSearch(val OptBool) {
+	s.Search = val
+}
+
 // Ref: #/components/schemas/AdultItem
 type AdultItem struct {
 	ID   int64         `json:"id"`
 	Kind AdultItemKind `json:"kind"`
-	// Scene: or adult_movie:.
-	Ref              string                    `json:"ref"`
+	// Scene:, adult_movie: or adult_gallery:.
+	Ref string `json:"ref"`
+	// Galleries: the scene this is the photo set of.
+	SceneId          OptInt64                  `json:"sceneId"`
 	StudioId         OptInt64                  `json:"studioId"`
 	Studio           string                    `json:"studio"`
 	Title            string                    `json:"title"`
@@ -1137,6 +1349,11 @@ func (s *AdultItem) GetKind() AdultItemKind {
 // GetRef returns the value of Ref.
 func (s *AdultItem) GetRef() string {
 	return s.Ref
+}
+
+// GetSceneId returns the value of SceneId.
+func (s *AdultItem) GetSceneId() OptInt64 {
+	return s.SceneId
 }
 
 // GetStudioId returns the value of StudioId.
@@ -1244,6 +1461,11 @@ func (s *AdultItem) SetRef(val string) {
 	s.Ref = val
 }
 
+// SetSceneId sets the value of SceneId.
+func (s *AdultItem) SetSceneId(val OptInt64) {
+	s.SceneId = val
+}
+
 // SetStudioId sets the value of StudioId.
 func (s *AdultItem) SetStudioId(val OptInt64) {
 	s.StudioId = val
@@ -1337,8 +1559,9 @@ func (s *AdultItem) SetStatus(val AdultItemStatus) {
 type AdultItemKind string
 
 const (
-	AdultItemKindScene AdultItemKind = "scene"
-	AdultItemKindMovie AdultItemKind = "movie"
+	AdultItemKindScene   AdultItemKind = "scene"
+	AdultItemKindMovie   AdultItemKind = "movie"
+	AdultItemKindGallery AdultItemKind = "gallery"
 )
 
 // AllValues returns all AdultItemKind values.
@@ -1346,6 +1569,7 @@ func (AdultItemKind) AllValues() []AdultItemKind {
 	return []AdultItemKind{
 		AdultItemKindScene,
 		AdultItemKindMovie,
+		AdultItemKindGallery,
 	}
 }
 
@@ -1355,6 +1579,8 @@ func (s AdultItemKind) MarshalText() ([]byte, error) {
 	case AdultItemKindScene:
 		return []byte(s), nil
 	case AdultItemKindMovie:
+		return []byte(s), nil
+	case AdultItemKindGallery:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -1369,6 +1595,9 @@ func (s *AdultItemKind) UnmarshalText(data []byte) error {
 		return nil
 	case AdultItemKindMovie:
 		*s = AdultItemKindMovie
+		return nil
+	case AdultItemKindGallery:
+		*s = AdultItemKindGallery
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -1736,6 +1965,8 @@ type AdultPerformer struct {
 	AddedAt          time.Time   `json:"addedAt"`
 	RefreshedAt      OptDateTime `json:"refreshedAt"`
 	Items            int         `json:"items"`
+	// New scenes also get their photo set as a gallery.
+	Galleries OptBool `json:"galleries"`
 }
 
 // GetID returns the value of ID.
@@ -1798,6 +2029,11 @@ func (s *AdultPerformer) GetItems() int {
 	return s.Items
 }
 
+// GetGalleries returns the value of Galleries.
+func (s *AdultPerformer) GetGalleries() OptBool {
+	return s.Galleries
+}
+
 // SetID sets the value of ID.
 func (s *AdultPerformer) SetID(val int64) {
 	s.ID = val
@@ -1856,6 +2092,11 @@ func (s *AdultPerformer) SetRefreshedAt(val OptDateTime) {
 // SetItems sets the value of Items.
 func (s *AdultPerformer) SetItems(val int) {
 	s.Items = val
+}
+
+// SetGalleries sets the value of Galleries.
+func (s *AdultPerformer) SetGalleries(val OptBool) {
+	s.Galleries = val
 }
 
 // Ref: #/components/schemas/AdultPreferences
@@ -1990,6 +2231,16 @@ type AdultSettings struct {
 	SceneFile           string                     `json:"sceneFile"`
 	MovieFolder         string                     `json:"movieFolder"`
 	MovieFile           string                     `json:"movieFile"`
+	// Folder of a gallery, directly in the adult root folder (D-113).
+	GalleryFolder string `json:"galleryFolder"`
+	// Rename images to 0001.jpg, 0002.jpg … (otherwise original names).
+	GalleryRename bool `json:"galleryRename"`
+	// Add cover. (the set's own cover or its first image).
+	GalleryCover bool `json:"galleryCover"`
+	// Smallest image set release taken (0 = no bound).
+	GalleryMinMB int `json:"galleryMinMB"`
+	// Largest image set release taken (0 = no bound).
+	GalleryMaxMB int `json:"galleryMaxMB"`
 	// Add one total count of adult items to /api/stats (never a breakdown).
 	StatsAggregate bool `json:"statsAggregate"`
 	// Tell Streamero about adult imports (only with an adult Streamero library mapped).
@@ -2056,6 +2307,31 @@ func (s *AdultSettings) GetMovieFolder() string {
 // GetMovieFile returns the value of MovieFile.
 func (s *AdultSettings) GetMovieFile() string {
 	return s.MovieFile
+}
+
+// GetGalleryFolder returns the value of GalleryFolder.
+func (s *AdultSettings) GetGalleryFolder() string {
+	return s.GalleryFolder
+}
+
+// GetGalleryRename returns the value of GalleryRename.
+func (s *AdultSettings) GetGalleryRename() bool {
+	return s.GalleryRename
+}
+
+// GetGalleryCover returns the value of GalleryCover.
+func (s *AdultSettings) GetGalleryCover() bool {
+	return s.GalleryCover
+}
+
+// GetGalleryMinMB returns the value of GalleryMinMB.
+func (s *AdultSettings) GetGalleryMinMB() int {
+	return s.GalleryMinMB
+}
+
+// GetGalleryMaxMB returns the value of GalleryMaxMB.
+func (s *AdultSettings) GetGalleryMaxMB() int {
+	return s.GalleryMaxMB
 }
 
 // GetStatsAggregate returns the value of StatsAggregate.
@@ -2141,6 +2417,31 @@ func (s *AdultSettings) SetMovieFolder(val string) {
 // SetMovieFile sets the value of MovieFile.
 func (s *AdultSettings) SetMovieFile(val string) {
 	s.MovieFile = val
+}
+
+// SetGalleryFolder sets the value of GalleryFolder.
+func (s *AdultSettings) SetGalleryFolder(val string) {
+	s.GalleryFolder = val
+}
+
+// SetGalleryRename sets the value of GalleryRename.
+func (s *AdultSettings) SetGalleryRename(val bool) {
+	s.GalleryRename = val
+}
+
+// SetGalleryCover sets the value of GalleryCover.
+func (s *AdultSettings) SetGalleryCover(val bool) {
+	s.GalleryCover = val
+}
+
+// SetGalleryMinMB sets the value of GalleryMinMB.
+func (s *AdultSettings) SetGalleryMinMB(val int) {
+	s.GalleryMinMB = val
+}
+
+// SetGalleryMaxMB sets the value of GalleryMaxMB.
+func (s *AdultSettings) SetGalleryMaxMB(val int) {
+	s.GalleryMaxMB = val
 }
 
 // SetStatsAggregate sets the value of StatsAggregate.
@@ -2229,6 +2530,11 @@ type AdultSettingsUpdate struct {
 	SceneFile           OptString                           `json:"sceneFile"`
 	MovieFolder         OptString                           `json:"movieFolder"`
 	MovieFile           OptString                           `json:"movieFile"`
+	GalleryFolder       OptString                           `json:"galleryFolder"`
+	GalleryRename       OptBool                             `json:"galleryRename"`
+	GalleryCover        OptBool                             `json:"galleryCover"`
+	GalleryMinMB        OptInt                              `json:"galleryMinMB"`
+	GalleryMaxMB        OptInt                              `json:"galleryMaxMB"`
 	StatsAggregate      OptBool                             `json:"statsAggregate"`
 	NotifyStreamero     OptBool                             `json:"notifyStreamero"`
 }
@@ -2286,6 +2592,31 @@ func (s *AdultSettingsUpdate) GetMovieFolder() OptString {
 // GetMovieFile returns the value of MovieFile.
 func (s *AdultSettingsUpdate) GetMovieFile() OptString {
 	return s.MovieFile
+}
+
+// GetGalleryFolder returns the value of GalleryFolder.
+func (s *AdultSettingsUpdate) GetGalleryFolder() OptString {
+	return s.GalleryFolder
+}
+
+// GetGalleryRename returns the value of GalleryRename.
+func (s *AdultSettingsUpdate) GetGalleryRename() OptBool {
+	return s.GalleryRename
+}
+
+// GetGalleryCover returns the value of GalleryCover.
+func (s *AdultSettingsUpdate) GetGalleryCover() OptBool {
+	return s.GalleryCover
+}
+
+// GetGalleryMinMB returns the value of GalleryMinMB.
+func (s *AdultSettingsUpdate) GetGalleryMinMB() OptInt {
+	return s.GalleryMinMB
+}
+
+// GetGalleryMaxMB returns the value of GalleryMaxMB.
+func (s *AdultSettingsUpdate) GetGalleryMaxMB() OptInt {
+	return s.GalleryMaxMB
 }
 
 // GetStatsAggregate returns the value of StatsAggregate.
@@ -2351,6 +2682,31 @@ func (s *AdultSettingsUpdate) SetMovieFolder(val OptString) {
 // SetMovieFile sets the value of MovieFile.
 func (s *AdultSettingsUpdate) SetMovieFile(val OptString) {
 	s.MovieFile = val
+}
+
+// SetGalleryFolder sets the value of GalleryFolder.
+func (s *AdultSettingsUpdate) SetGalleryFolder(val OptString) {
+	s.GalleryFolder = val
+}
+
+// SetGalleryRename sets the value of GalleryRename.
+func (s *AdultSettingsUpdate) SetGalleryRename(val OptBool) {
+	s.GalleryRename = val
+}
+
+// SetGalleryCover sets the value of GalleryCover.
+func (s *AdultSettingsUpdate) SetGalleryCover(val OptBool) {
+	s.GalleryCover = val
+}
+
+// SetGalleryMinMB sets the value of GalleryMinMB.
+func (s *AdultSettingsUpdate) SetGalleryMinMB(val OptInt) {
+	s.GalleryMinMB = val
+}
+
+// SetGalleryMaxMB sets the value of GalleryMaxMB.
+func (s *AdultSettingsUpdate) SetGalleryMaxMB(val OptInt) {
+	s.GalleryMaxMB = val
 }
 
 // SetStatsAggregate sets the value of StatsAggregate.
@@ -11738,6 +12094,57 @@ func (s *FormatScore) SetScore(val int) {
 	s.Score = val
 }
 
+type GetAdultGalleryImageOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s GetAdultGalleryImageOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+// GetAdultGalleryImageOKHeaders wraps GetAdultGalleryImageOK with response headers.
+type GetAdultGalleryImageOKHeaders struct {
+	CacheControl OptString
+	ContentType  string
+	Response     GetAdultGalleryImageOK
+}
+
+// GetCacheControl returns the value of CacheControl.
+func (s *GetAdultGalleryImageOKHeaders) GetCacheControl() OptString {
+	return s.CacheControl
+}
+
+// GetContentType returns the value of ContentType.
+func (s *GetAdultGalleryImageOKHeaders) GetContentType() string {
+	return s.ContentType
+}
+
+// GetResponse returns the value of Response.
+func (s *GetAdultGalleryImageOKHeaders) GetResponse() GetAdultGalleryImageOK {
+	return s.Response
+}
+
+// SetCacheControl sets the value of CacheControl.
+func (s *GetAdultGalleryImageOKHeaders) SetCacheControl(val OptString) {
+	s.CacheControl = val
+}
+
+// SetContentType sets the value of ContentType.
+func (s *GetAdultGalleryImageOKHeaders) SetContentType(val string) {
+	s.ContentType = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetAdultGalleryImageOKHeaders) SetResponse(val GetAdultGalleryImageOK) {
+	s.Response = val
+}
+
 type GetAdultImageOK struct {
 	Data io.Reader
 }
@@ -18406,8 +18813,9 @@ func (s *LinkedIdentity) SetLastLoginAt(val OptDateTime) {
 type ListAdultItemsKind string
 
 const (
-	ListAdultItemsKindScene ListAdultItemsKind = "scene"
-	ListAdultItemsKindMovie ListAdultItemsKind = "movie"
+	ListAdultItemsKindScene   ListAdultItemsKind = "scene"
+	ListAdultItemsKindMovie   ListAdultItemsKind = "movie"
+	ListAdultItemsKindGallery ListAdultItemsKind = "gallery"
 )
 
 // AllValues returns all ListAdultItemsKind values.
@@ -18415,6 +18823,7 @@ func (ListAdultItemsKind) AllValues() []ListAdultItemsKind {
 	return []ListAdultItemsKind{
 		ListAdultItemsKindScene,
 		ListAdultItemsKindMovie,
+		ListAdultItemsKindGallery,
 	}
 }
 
@@ -18424,6 +18833,8 @@ func (s ListAdultItemsKind) MarshalText() ([]byte, error) {
 	case ListAdultItemsKindScene:
 		return []byte(s), nil
 	case ListAdultItemsKindMovie:
+		return []byte(s), nil
+	case ListAdultItemsKindGallery:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -18438,6 +18849,9 @@ func (s *ListAdultItemsKind) UnmarshalText(data []byte) error {
 		return nil
 	case ListAdultItemsKindMovie:
 		*s = ListAdultItemsKindMovie
+		return nil
+	case ListAdultItemsKindGallery:
+		*s = ListAdultItemsKindGallery
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)

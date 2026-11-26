@@ -64,10 +64,13 @@ func Title(ctx context.Context, q db.Querier, raw string) (title, kind string) {
 			title = artist + " - " + title
 		}
 		return title, TitleKindMusic
-	case RefScene, RefAdultMovie:
+	case RefScene, RefAdultMovie, RefAdultGallery:
 		kind := "scene"
-		if r.Kind == RefAdultMovie {
+		switch r.Kind {
+		case RefAdultMovie:
 			kind = "movie"
+		case RefAdultGallery:
+			kind = "gallery"
 		}
 		if q.QueryRowContext(ctx, `SELECT title, year FROM adult_items WHERE id = ? AND kind = ?`, r.ID, kind).Scan(&title, &year) == nil && year > 0 {
 			title = fmt.Sprintf("%s (%d)", title, year)
@@ -98,7 +101,7 @@ func KindOfRef(raw string) string {
 		return TitleKindSeries
 	case RefArtist, RefAlbum:
 		return TitleKindMusic
-	case RefScene, RefAdultMovie:
+	case RefScene, RefAdultMovie, RefAdultGallery:
 		return TitleKindAdult
 	}
 	return ""

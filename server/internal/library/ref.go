@@ -24,12 +24,15 @@ const (
 	RefAlbum   = "album"
 	// Adult kinds (D-103): only visible when the adult library is enabled
 	// and the caller holds view_adult.
-	RefScene      = "scene"
-	RefAdultMovie = "adult_movie"
+	RefScene        = "scene"
+	RefAdultMovie   = "adult_movie"
+	RefAdultGallery = "adult_gallery"
 )
 
 // IsAdult reports an adult ref kind.
-func IsAdult(kind string) bool { return kind == RefScene || kind == RefAdultMovie }
+func IsAdult(kind string) bool {
+	return kind == RefScene || kind == RefAdultMovie || kind == RefAdultGallery
+}
 
 // IsAdultRef reports whether a ref string ("scene:3") names an adult item.
 func IsAdultRef(ref string) bool {
@@ -67,7 +70,7 @@ func (r Ref) IsZero() bool { return r.Kind == "" && r.ID == 0 }
 
 func validKind(k string) bool {
 	switch k {
-	case RefMovie, RefSeries, RefSeason, RefEpisode, RefArtist, RefAlbum, RefScene, RefAdultMovie:
+	case RefMovie, RefSeries, RefSeason, RefEpisode, RefArtist, RefAlbum, RefScene, RefAdultMovie, RefAdultGallery:
 		return true
 	}
 	return false
@@ -138,4 +141,15 @@ func RefFromJSON(raw json.RawMessage) Ref {
 		return Ref{}
 	}
 	return r
+}
+
+// NotAdultSQL is a WHERE fragment that keeps rows whose ref column (an SQL
+// expression yielding "kind:id") names no adult item (D-103).
+func NotAdultSQL(col string) string {
+	return col + " NOT LIKE 'scene:%' AND " + col + " NOT LIKE 'adult_movie:%' AND " + col + " NOT LIKE 'adult_gallery:%'"
+}
+
+// IsAdultSQL is the opposite of NotAdultSQL.
+func IsAdultSQL(col string) string {
+	return "(" + col + " LIKE 'scene:%' OR " + col + " LIKE 'adult_movie:%' OR " + col + " LIKE 'adult_gallery:%')"
 }

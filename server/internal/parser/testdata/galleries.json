@@ -1,0 +1,13 @@
+[
+  {"name": "StudioA.com_24.01.15.Performer.One.Garden.Set.XXX.IMAGESET-GRP[XC]", "ok": true, "studio": "StudioA com", "date": "2024-01-15", "rest": "Performer One Garden Set", "images": true},
+  {"name": "StudioA.24.01.15.Performer.One.Garden.Set.XXX.iMAGESET-GRP", "ok": true, "studio": "StudioA", "date": "2024-01-15", "rest": "Performer One Garden Set", "images": true},
+  {"name": "Studio.B.23.11.02.Performer.Two.Window.Light.x120.3000px.jpg-GRP", "ok": true, "studio": "Studio B", "date": "2023-11-02", "rest": "Performer Two Window Light", "images": true, "count": 120, "pixels": 3000},
+  {"name": "[StudioC] Performer Three - Blue Room (2022-06-01) [85 pics]", "ok": true, "studio": "StudioC", "date": "2022-06-01", "rest": "Performer Three Blue Room", "images": true, "count": 85},
+  {"name": "StudioD - Morning Coffee [15.03.2021] 240 Photos 4000x6000", "ok": true, "studio": "StudioD", "date": "2021-03-15", "rest": "Morning Coffee", "images": true, "count": 240, "pixels": 6000},
+  {"name": "Performer Four - Studio E - Photoset 2020", "ok": false, "images": true},
+  {"name": "StudioA.24.01.15.Performer.One.Garden.Set.XXX.1080p.MP4-GRP", "ok": true, "studio": "StudioA", "date": "2024-01-15", "rest": "Performer One Garden Set", "video": true},
+  {"name": "StudioA.24.01.15.Performer.One.Garden.Set.1920x1080.x264-GRP", "ok": true, "studio": "StudioA", "date": "2024-01-15", "rest": "Performer One Garden Set 1920x1080", "video": true},
+  {"name": "StudioF.24.02.10.Performer.Five.Pictures.150x-GRP", "ok": true, "studio": "StudioF", "date": "2024-02-10", "rest": "Performer Five", "images": true, "count": 150},
+  {"name": "StudioG.24.03.03.Performer.Six.Topics.Of.Today.XXX-GRP", "ok": true, "studio": "StudioG", "date": "2024-03-03", "rest": "Performer Six Topics Of Today"},
+  {"name": "StudioH.24.04.04.Performer.Seven.Set.Zip.Pics-GRP", "ok": true, "studio": "StudioH", "date": "2024-04-04", "rest": "Performer Seven Set", "images": true}
+]

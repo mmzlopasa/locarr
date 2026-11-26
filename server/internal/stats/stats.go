@@ -142,10 +142,10 @@ func (s *Service) compute(ctx context.Context) (Stats, error) {
 		{&st.AlbumsHave, `SELECT COUNT(DISTINCT album_id) FROM album_files`, nil},
 		{&st.AlbumsMissing, `SELECT COUNT(*) FROM albums a JOIN media_items i ON i.id = a.artist_id WHERE a.monitored = 1 AND i.monitored = 1
 			AND a.release_date <> '' AND a.release_date <= ? AND NOT EXISTS (SELECT 1 FROM album_files f WHERE f.album_id = a.id)`, []any{today}},
-		{&st.QueueSize, `SELECT COUNT(*) FROM downloads WHERE status IN ('active', 'completed') AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'`, nil},
-		{&st.ActiveDownloads, `SELECT COUNT(*) FROM downloads WHERE status = 'active' AND state = 'downloading' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'`, nil},
+		{&st.QueueSize, `SELECT COUNT(*) FROM downloads WHERE status IN ('active', 'completed') AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_gallery:%'`, nil},
+		{&st.ActiveDownloads, `SELECT COUNT(*) FROM downloads WHERE status = 'active' AND state = 'downloading' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_gallery:%'`, nil},
 		{&st.FailedImports, `SELECT COUNT(*) FROM downloads d WHERE d.status = 'completed' AND EXISTS (SELECT 1 FROM download_events e
-			WHERE e.download_id = d.id AND e.type = 'import_failed') AND COALESCE(json_extract(d.item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(d.item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'`, nil},
+			WHERE e.download_id = d.id AND e.type = 'import_failed') AND COALESCE(json_extract(d.item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(d.item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%' AND COALESCE(json_extract(d.item_ref, '$.ref'), '') NOT LIKE 'adult_gallery:%'`, nil},
 		{&st.RequestsPending, `SELECT COUNT(*) FROM requests WHERE status = 'pending'`, nil},
 		{&st.SubtitlesMissing, `SELECT COUNT(*) FROM subtitle_state WHERE missing_count > 0`, nil},
 	}
@@ -167,7 +167,7 @@ func (s *Service) compute(ctx context.Context) (Stats, error) {
 		}
 		st.WantedMovies = n
 	}
-	if err := s.DB.R.QueryRowContext(ctx, `SELECT COALESCE(SUM(download_speed), 0) FROM downloads WHERE status = 'active' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%'`).
+	if err := s.DB.R.QueryRowContext(ctx, `SELECT COALESCE(SUM(download_speed), 0) FROM downloads WHERE status = 'active' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'scene:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_movie:%' AND COALESCE(json_extract(item_ref, '$.ref'), '') NOT LIKE 'adult_gallery:%'`).
 		Scan(&st.DownloadSpeedBytes); err != nil {
 		return st, err
 	}

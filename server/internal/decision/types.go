@@ -59,6 +59,8 @@ type Candidate struct {
 	InfoURL     string    `json:"infoUrl,omitempty"`
 	// InfoHash (torrents) lets the blocklist match a release by hash.
 	InfoHash string `json:"infoHash,omitempty"`
+	// Categories are the indexer's (Newznab/Torznab) categories of the result.
+	Categories []int `json:"categories,omitempty"`
 }
 
 // Mode is why releases are being evaluated.
@@ -119,6 +121,13 @@ type Wanted struct {
 // Adult is what an adult release must name.
 type Adult struct {
 	Scene bool `json:"scene"`
+	// Gallery: an image set (D-113). It is matched like a scene (studio,
+	// date, title, performers) and must be an image set; no video quality
+	// applies, only the size range.
+	Gallery bool `json:"gallery,omitempty"`
+	// MinSize and MaxSize bound a gallery release (bytes, 0 = no bound).
+	MinSize int64 `json:"minSize,omitempty"`
+	MaxSize int64 `json:"maxSize,omitempty"`
 	// Studios lists the studio name and its aliases.
 	Studios []string `json:"studios,omitempty"`
 	// Date is the scene's release date (YYYY-MM-DD).

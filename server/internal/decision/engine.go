@@ -53,6 +53,11 @@ const (
 	CodeBlockedTag = "blocked_tag"
 	// CodeWrongScene: an adult release names another studio, date or title.
 	CodeWrongScene = "wrong_scene"
+	// CodeNotImageSet: a release for an adult gallery is not an image set
+	// (a video, or nothing says it holds images; D-113).
+	CodeNotImageSet = "not_image_set"
+	// CodeImageSet: a release for an adult scene or movie is an image set.
+	CodeImageSet = "image_set"
 )
 
 // Codes lists every rejection code (for documentation and clients).
@@ -60,7 +65,7 @@ var Codes = []string{CodeParseFailed, CodeWrongKind, CodeWrongIDs, CodeWrongTitl
 	CodeWrongEpisode, CodeQualityNotAllowed, CodeUpgradesDisabled, CodeCutoffMet, CodeNotAnUpgrade, CodeScoreTooLow,
 	CodeSizeTooSmall, CodeSizeTooLarge, CodeLanguage, CodeMustContain, CodeMustNotContain, CodeBlocklisted, CodeSeeders,
 	CodeTooOld, CodeTooNew, CodeSample, CodeHardcodedSubs, CodeThreeD, CodeIndexerDisabled, CodeIndexerLimited,
-	CodeProtocolDisabled, CodeDelayed, CodeSeasonPack, CodeEpisodeNotWanted, CodeBlockedTag, CodeWrongScene}
+	CodeProtocolDisabled, CodeDelayed, CodeSeasonPack, CodeEpisodeNotWanted, CodeBlockedTag, CodeWrongScene, CodeNotImageSet, CodeImageSet}
 
 // Typical runtimes when the wanted item does not say.
 var defaultRuntime = map[quality.Kind]int{quality.Movies: 110, quality.Series: 45, quality.Music: 45}
@@ -92,7 +97,7 @@ type spec func(e *eval)
 
 // specs run in this order on every candidate; all of them run, so a
 // rejected candidate lists every reason.
-var specs = []spec{specParse, specBlockedTag, specAdult, specKind, specIdentity, specYear, specEpisodes, specQuality, specUpgrade, specScore,
+var specs = []spec{specParse, specBlockedTag, specAdult, specImageSet, specKind, specIdentity, specYear, specEpisodes, specQuality, specUpgrade, specScore,
 	specSize, specLanguage, specReleaseProfiles, specBlocklist, specSeeders, specAge, specContent, specIndexer, specDelay}
 
 // Evaluate decides on every candidate and ranks the accepted ones.
@@ -406,6 +411,9 @@ func specEpisodes(e *eval) {
 }
 
 func specQuality(e *eval) {
+	if e.gallery() {
+		return // images have no video quality (D-113)
+	}
 	if e.pos < 0 || !e.allowed {
 		e.reject(CodeQualityNotAllowed, fmt.Sprintf("%s is not allowed in profile %s", e.q.Name, e.ctx.Profile.Name),
 			map[string]any{"quality": e.q.Name, "profile": e.ctx.Profile.Name})
@@ -416,7 +424,7 @@ func revisionValue(r parser.Revision) int { return r.Version*10 + r.Real }
 
 func specUpgrade(e *eval) {
 	cur := e.ctx.Wanted.Current
-	if cur == nil {
+	if cur == nil || e.gallery() {
 		return
 	}
 	p := &e.ctx.Profile
@@ -502,8 +510,8 @@ func (e *eval) definition() (quality.Definition, bool) {
 const mb = 1 << 20
 
 func specSize(e *eval) {
-	if e.c.Size <= 0 {
-		return
+	if e.c.Size <= 0 || e.gallery() {
+		return // galleries: a plain size range in specImageSet
 	}
 	def, ok := e.definition()
 	if !ok {
@@ -724,13 +732,17 @@ func (e *eval) rankKey() RankKey {
 	if k.IndexerPriority == 0 {
 		k.IndexerPriority = 25
 	}
+	if e.gallery() {
+		// No video quality: more images rank first.
+		k.QualityPosition = -parser.ParseGallery(e.c.Title).Count
+	}
 	if d := e.delayProfile(); d != nil {
 		k.ProtocolPreferred = d.PreferredProtocol == e.c.Protocol
 	}
 	if e.c.Protocol == Torrent && e.c.Seeders != nil {
 		k.Seeders = *e.c.Seeders
 	}
-	if def, ok := e.definition(); ok && def.Preferred > 0 && e.c.Size > 0 {
+	if def, ok := e.definition(); ok && def.Preferred > 0 && e.c.Size > 0 && !e.gallery() {
 		rt, _ := e.runtime()
 		pref := int64(def.Preferred * float64(rt) * mb)
 		dist := e.c.Size - pref

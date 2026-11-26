@@ -106,6 +106,13 @@ func (s *Service) ImportDownload(ctx context.Context, downloadID int64) error {
 		return err
 	}
 	it = &item
+	if it.Kind == KindGallery {
+		res, err := s.ImportGallery(ctx, it, d.LocalPath, d.Title, &d.ID)
+		if err != nil {
+			return fail(err)
+		}
+		return s.Downloads.MarkImported(ctx, d.ID, fmt.Sprintf("imported %d images to %s", res.Images, res.Folder))
+	}
 	extras, _ := settings.Get(ctx, s.Settings, library.ExtraExtensions)
 	disc, err := importer.Discover(d.LocalPath, extras)
 	if err != nil {
@@ -129,6 +136,10 @@ func (s *Service) ImportDownload(ctx context.Context, downloadID int64) error {
 // ImportFile places one file for an item: blocklist, upgrade check,
 // transfer, rename, recycle the old file, timeline.
 func (s *Service) ImportFile(ctx context.Context, it *Item, path, release string, sidecars []string, dl *int64) (string, error) {
+	if it.Kind == KindGallery {
+		res, err := s.ImportGallery(ctx, it, path, release, dl)
+		return res.Folder, err
+	}
 	src, err := lfs.MustExist(s.DataRoots, path)
 	if err != nil {
 		return "", err
@@ -243,6 +254,9 @@ func (s *Service) Rename(ctx context.Context, id int64, apply bool) (RenamePrevi
 	}
 	if it.File == nil {
 		return RenamePreview{}, refuse("no_file", "the item has no file")
+	}
+	if it.Kind == KindGallery {
+		return RenamePreview{ItemID: it.ID, From: it.File.Path, To: it.File.Path}, nil
 	}
 	qn := it.File.Quality
 	if q, ok := quality.ByID(qn); ok {

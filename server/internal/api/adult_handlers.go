@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -45,6 +46,9 @@ func mapAdultError(err error) *StatusError {
 		{adult.ErrBadTerm, http.StatusBadRequest, "validation"},
 		{adult.ErrProtectedTerm, http.StatusConflict, "protected_term"},
 		{adult.ErrBadAction, http.StatusBadRequest, "validation"},
+		{adult.ErrGalleryTitle, http.StatusBadRequest, "validation"},
+		{adult.ErrGalleryDate, http.StatusBadRequest, "validation"},
+		{adult.ErrNotScene, http.StatusBadRequest, "validation"},
 		{meta.ErrNoKey, http.StatusBadRequest, "metadata_key_missing"},
 		{meta.ErrBadKey, http.StatusBadRequest, "metadata_key_invalid"},
 		{meta.ErrNotFound, http.StatusNotFound, "not_found"},
@@ -125,6 +129,11 @@ func (h *Handler) adultSettings(ctx context.Context) (*gen.AdultSettings, error)
 	get(func() (e error) { out.SceneFile, e = settings.Get(ctx, s, adult.SceneFile); return })
 	get(func() (e error) { out.MovieFolder, e = settings.Get(ctx, s, adult.MovieFolder); return })
 	get(func() (e error) { out.MovieFile, e = settings.Get(ctx, s, adult.MovieFile); return })
+	get(func() (e error) { out.GalleryFolder, e = settings.Get(ctx, s, adult.GalleryFolder); return })
+	get(func() (e error) { out.GalleryRename, e = settings.Get(ctx, s, adult.GalleryRename); return })
+	get(func() (e error) { out.GalleryCover, e = settings.Get(ctx, s, adult.GalleryCover); return })
+	get(func() (e error) { out.GalleryMinMB, e = settings.Get(ctx, s, adult.GalleryMinMB); return })
+	get(func() (e error) { out.GalleryMaxMB, e = settings.Get(ctx, s, adult.GalleryMaxMB); return })
 	get(func() (e error) { out.StatsAggregate, e = settings.Get(ctx, s, adult.StatsAggregate); return })
 	get(func() (e error) { out.NotifyStreamero, e = settings.Get(ctx, s, adult.NotifyStreamero); return })
 	out.ProtectedTerms = adult.ProtectedTerms()
@@ -198,7 +207,8 @@ func (h *Handler) UpdateAdultSettings(ctx context.Context, req *gen.AdultSetting
 	for _, t := range []struct {
 		v   gen.OptString
 		key settings.Key[string]
-	}{{req.SceneFolder, adult.SceneFolder}, {req.SceneFile, adult.SceneFile}, {req.MovieFolder, adult.MovieFolder}, {req.MovieFile, adult.MovieFile}} {
+	}{{req.SceneFolder, adult.SceneFolder}, {req.SceneFile, adult.SceneFile}, {req.MovieFolder, adult.MovieFolder}, {req.MovieFile, adult.MovieFile},
+		{req.GalleryFolder, adult.GalleryFolder}} {
 		if v, ok := t.v.Get(); ok {
 			if err := naming.Validate(v, adult.Tokens); err != nil {
 				return nil, &StatusError{Status: http.StatusBadRequest, Code: "invalid_template", Message: err.Error()}
@@ -226,7 +236,18 @@ func (h *Handler) UpdateAdultSettings(ctx context.Context, req *gen.AdultSetting
 	for _, t := range []struct {
 		v   gen.OptBool
 		key settings.Key[bool]
-	}{{req.StatsAggregate, adult.StatsAggregate}, {req.NotifyStreamero, adult.NotifyStreamero}} {
+	}{{req.StatsAggregate, adult.StatsAggregate}, {req.NotifyStreamero, adult.NotifyStreamero}, {req.GalleryRename, adult.GalleryRename},
+		{req.GalleryCover, adult.GalleryCover}} {
+		if v, ok := t.v.Get(); ok {
+			if err := settings.Set(ctx, h.Settings, h.DB.W, t.key, v); err != nil {
+				return nil, err
+			}
+		}
+	}
+	for _, t := range []struct {
+		v   gen.OptInt
+		key settings.Key[int]
+	}{{req.GalleryMinMB, adult.GalleryMinMB}, {req.GalleryMaxMB, adult.GalleryMaxMB}} {
 		if v, ok := t.v.Get(); ok {
 			if err := settings.Set(ctx, h.Settings, h.DB.W, t.key, v); err != nil {
 				return nil, err
@@ -356,7 +377,7 @@ func (h *Handler) LookupAdult(ctx context.Context, p gen.LookupAdultParams) (*ge
 
 func addOptions(req *gen.AdultAddRequest) adult.AddOptions {
 	return adult.AddOptions{Source: string(req.Source), ID: req.ID, QualityProfileID: req.QualityProfileId.Or(0), RootFolderID: req.RootFolderId.Or(0),
-		Monitored: req.Monitored.Or(true), Search: req.Search.Or(true)}
+		Monitored: req.Monitored.Or(true), Search: req.Search.Or(true), Gallery: req.Gallery.Or(false)}
 }
 
 func optID(p *int64) gen.OptInt64 {
@@ -375,7 +396,7 @@ func toAdultStudio(s adult.Studio) gen.AdultStudio {
 func toAdultPerformer(p adult.Performer) gen.AdultPerformer {
 	out := gen.AdultPerformer{ID: p.ID, Name: p.Name, Disambiguation: optStr(p.Disambiguation), StashdbId: optStr(p.StashDBID), TpdbId: optStr(p.TPDBID),
 		Image: optStr(p.Image), Monitored: p.Monitored, MonitorSince: optStr(p.MonitorSince), AddedAt: p.AddedAt, RefreshedAt: optTime(p.RefreshedAt),
-		Items: p.Items}
+		Items: p.Items, Galleries: gen.NewOptBool(p.Galleries)}
 	if p.QualityProfileID > 0 {
 		out.QualityProfileId = gen.NewOptInt64(p.QualityProfileID)
 	}
@@ -386,7 +407,8 @@ func toAdultItem(it adult.Item) gen.AdultItem {
 	out := gen.AdultItem{ID: it.ID, Kind: gen.AdultItemKind(it.Kind), Ref: it.Ref().String(), StudioId: optID(it.StudioID), Studio: it.Studio,
 		Title: it.Title, ReleaseDate: optStr(it.ReleaseDate), Overview: optStr(it.Overview), StashdbId: optStr(it.StashDBID), TpdbId: optStr(it.TPDBID),
 		Image: optStr(it.Image), Monitored: it.Monitored, QualityProfileId: it.QualityProfileID, Path: it.Path, AddedAt: it.AddedAt,
-		SourceTags: it.SourceTags, Performers: make([]gen.AdultItemPerformersItem, 0, len(it.Performers)), Status: gen.AdultItemStatus(it.Status)}
+		SourceTags: it.SourceTags, Performers: make([]gen.AdultItemPerformersItem, 0, len(it.Performers)), Status: gen.AdultItemStatus(it.Status),
+		SceneId: optID(it.SceneID)}
 	if it.Year > 0 {
 		out.Year = gen.NewOptInt(it.Year)
 	}
@@ -399,6 +421,9 @@ func toAdultItem(it adult.Item) gen.AdultItem {
 	if f := it.File; f != nil {
 		out.File = gen.NewOptAdultFile(gen.AdultFile{ID: f.ID, Path: f.Path, Size: f.Size, Quality: f.Quality, ReleaseGroup: optStr(f.ReleaseGroup),
 			SceneName: optStr(f.SceneName), AddedAt: gen.NewOptDateTime(f.AddedAt)})
+		if f.ImageCount > 0 {
+			out.File.Value.ImageCount = gen.NewOptInt(f.ImageCount)
+		}
 	}
 	return out
 }
@@ -465,6 +490,9 @@ func edit(req *gen.AdultEditRequest) adult.Edit {
 	}
 	if v, ok := req.QualityProfileId.Get(); ok {
 		e.QualityProfileID = &v
+	}
+	if v, ok := req.Galleries.Get(); ok {
+		e.Galleries = &v
 	}
 	return e
 }
@@ -638,7 +666,7 @@ func (h *Handler) ListAdultItems(ctx context.Context, p gen.ListAdultItemsParams
 	if _, err := h.adultUser(ctx); err != nil {
 		return nil, err
 	}
-	f := adult.ItemFilter{Kind: string(p.Kind.Or("")), StudioID: p.StudioId.Or(0), PerformerID: p.PerformerId.Or(0), Term: p.Term.Or(""),
+	f := adult.ItemFilter{Kind: string(p.Kind.Or("")), StudioID: p.StudioId.Or(0), SceneID: p.SceneId.Or(0), PerformerID: p.PerformerId.Or(0), Term: p.Term.Or(""),
 		Missing: p.Missing.Or(false), Status: string(p.Status.Or("")), Sort: string(p.Sort.Or("")), Limit: p.Limit.Or(100), Offset: p.Offset.Or(0)}
 	if v, ok := p.Monitored.Get(); ok {
 		f.Monitored = &v
@@ -859,3 +887,81 @@ func (h *Handler) hidesAdult(ctx context.Context) bool {
 
 // isAdultDownload reports a download grabbed for an adult item.
 func isAdultDownload(itemRef []byte) bool { return library.IsAdult(library.RefFromJSON(itemRef).Kind) }
+
+// AddAdultGallery implements POST /adult/galleries.
+func (h *Handler) AddAdultGallery(ctx context.Context, req *gen.AdultGalleryRequest) (*gen.AdultItem, error) {
+	if _, err := h.adultManager(ctx); err != nil {
+		return nil, err
+	}
+	it, err := h.Adult.AddGalleryByHand(ctx, adult.GalleryOptions{Title: req.Title.Or(""), StudioID: req.StudioId.Or(0), Studio: req.Studio.Or(""),
+		ReleaseDate: req.ReleaseDate.Or(""), PerformerIDs: req.PerformerIds, SceneID: req.SceneId.Or(0), PerformerID: req.PerformerId.Or(0),
+		QualityProfileID: req.QualityProfileId.Or(0), RootFolderID: req.RootFolderId.Or(0), Monitored: req.Monitored.Or(true),
+		Search: req.Search.Or(true)})
+	if err != nil {
+		return nil, err
+	}
+	out := toAdultItem(it)
+	return &out, nil
+}
+
+// ListAdultGalleryImages implements GET /adult/items/{id}/images.
+func (h *Handler) ListAdultGalleryImages(ctx context.Context, p gen.ListAdultGalleryImagesParams) ([]gen.AdultGalleryImage, error) {
+	if _, err := h.adultUser(ctx); err != nil {
+		return nil, err
+	}
+	_, list, err := h.Adult.GalleryImages(ctx, p.ID)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]gen.AdultGalleryImage, 0, len(list))
+	for _, im := range list {
+		out = append(out, gen.AdultGalleryImage{Index: im.Index, Name: im.Name, Size: im.Size})
+	}
+	return out, nil
+}
+
+// GetAdultGalleryImage implements GET /adult/items/{id}/images/{index}:
+// permitted users only, never cached by shared caches (D-103).
+func (h *Handler) GetAdultGalleryImage(ctx context.Context, p gen.GetAdultGalleryImageParams) (*gen.GetAdultGalleryImageOKHeaders, error) {
+	if _, err := h.adultUser(ctx); err != nil {
+		return nil, err
+	}
+	var (
+		path string
+		err  error
+	)
+	if p.Thumb.Or(false) {
+		path, err = h.Adult.GalleryThumbPath(ctx, p.ID, p.Index)
+	} else {
+		path, err = h.Adult.GalleryImagePath(ctx, p.ID, p.Index)
+	}
+	if err != nil {
+		return nil, err
+	}
+	f, err := os.Open(path) // #nosec G304 -- a gallery image or thumbnail checked by the adult service
+	if err != nil {
+		return nil, adult.ErrNotFound
+	}
+	buf := make([]byte, 512)
+	n, _ := f.Read(buf)
+	_, _ = f.Seek(0, 0)
+	ct := http.DetectContentType(buf[:n])
+	if !strings.HasPrefix(ct, "image/") {
+		ct = galleryContentType(path)
+	}
+	return &gen.GetAdultGalleryImageOKHeaders{CacheControl: gen.NewOptString("private, no-store"), ContentType: ct,
+		Response: gen.GetAdultGalleryImageOK{Data: f}}, nil
+}
+
+// galleryContentType names the formats content sniffing does not know.
+func galleryContentType(path string) string {
+	switch strings.ToLower(filepath.Ext(path)) {
+	case ".avif":
+		return "image/avif"
+	case ".heic":
+		return "image/heic"
+	case ".webp":
+		return "image/webp"
+	}
+	return "application/octet-stream"
+}

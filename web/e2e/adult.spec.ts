@@ -8,6 +8,10 @@ const adminUser = process.env.E2E_ADMIN_USER ?? "admin";
 const adminPassword = process.env.E2E_ADMIN_PASSWORD ?? "e2e-password-123";
 const stashKey = "stash-test-key";
 const adultRoot = process.env.E2E_ADULT_ROOT ?? "/data/media/adult";
+const tmHost = process.env.E2E_TRANSMISSION_HOST ?? "transmission";
+const tmUser = process.env.E2E_TRANSMISSION_USER ?? "locarr";
+const tmPass = process.env.E2E_TRANSMISSION_PASS ?? "locarr-e2e";
+const indexerUrl = process.env.E2E_INDEXER_URL ?? "http://fake-indexer:9117/torznab";
 
 async function signInAsAdmin(page: Page) {
   await page.addInitScript(() => localStorage.setItem("locarr.lang", "en"));
@@ -176,4 +180,73 @@ test("adult content: remove a scene as not interested, it stays gone after a ref
 
   const off = await page.request.put("/api/v1/adult/settings", { data: { enabled: false } });
   expect(off.ok()).toBeTruthy();
+});
+
+test("adult galleries: a scene's photo set is searched, grabbed (fake), extracted and viewed", async ({ page }) => {
+  test.skip(tmHost === "none", "no Transmission instance for this run");
+  test.setTimeout(180_000);
+  await signInAsAdmin(page);
+  const ok = (status: number) => [200, 201, 409].includes(status);
+  const on = await page.request.put("/api/v1/adult/settings", { data: { enabled: true, confirmAdults: true, stashdbKey: stashKey } });
+  expect(on.ok(), await on.text()).toBeTruthy();
+  const me = await (await page.request.get("/api/v1/auth/me")).json();
+  await page.request.patch(`/api/v1/users/${me.id}`, { data: { permissions: { ...me.permissions, viewAdult: true } } });
+  expect(ok((await page.request.post("/api/v1/adult/rootfolders", { data: { path: adultRoot } })).status())).toBeTruthy();
+  // A fake indexer opted in to adult categories and the Transmission of the e2e job.
+  const ix = await page.request.post("/api/v1/indexers", { data: { name: "Fake adult indexer", kind: "torznab", baseUrl: indexerUrl, apiKey: "fakekey",
+    categories: { movies: [], tv: [], music: [], books: [], adult: [6000] } } });
+  expect(ok(ix.status()), await ix.text()).toBeTruthy();
+  const cl = await page.request.post("/api/v1/downloadclients", { data: { name: "Transmission movies", implementation: "transmission",
+    host: tmHost, port: 9091, username: tmUser, password: tmPass, categories: { movies: "locarr-movies", series: "", music: "" } } });
+  expect(ok(cl.status()), await cl.text()).toBeTruthy();
+  const st = await page.request.post("/api/v1/adult/studios", { data: { source: "stashdb", id: "st-studio-a", monitored: false, search: false } });
+  expect(ok(st.status()), await st.text()).toBeTruthy();
+  const scenes = await (await page.request.get("/api/v1/adult/items?kind=scene&term=Scene%20Title")).json();
+  const scene = scenes.items.find((i: { title: string }) => i.title === "Scene Title");
+  expect(scene).toBeTruthy();
+  // Start clean: a photo set left by an earlier run goes (to the recycle bin with its files).
+  for (const g of (await (await page.request.get(`/api/v1/adult/items?kind=gallery&sceneId=${scene.id}`)).json()).items) {
+    await page.request.delete(`/api/v1/adult/items/${g.id}?deleteFiles=true`);
+  }
+
+  // The scene page offers its photo set; it becomes a wanted gallery linked to the scene.
+  await page.goto(`/adult/items/${scene.id}`);
+  await page.getByTestId("adult-find-photo-set").click();
+  await page.getByTestId("adult-scene-gallery").click();
+  await expect(page.getByTestId("adult-gallery-scene")).toBeVisible();
+  const galleryId = Number(new URL(page.url()).pathname.split("/").pop());
+
+  // Search now: the image set (category 6060) is grabbed, not the scene's video.
+  await page.getByTestId("adult-search-now").click();
+  await expect.poll(async () => {
+    const it = await (await page.request.get(`/api/v1/adult/items/${galleryId}`)).json();
+    return it.file?.imageCount ?? 0;
+  }, { timeout: 120_000, intervals: [2_000] }).toBe(3);
+  const it = await (await page.request.get(`/api/v1/adult/items/${galleryId}`)).json();
+  expect(it.file.path).toBe(`${adultRoot}/Studio A - 2024-01-15 - Scene Title [Performer One]`);
+
+  // The gallery page: thumbnails blurred until clicked, then the viewer.
+  await page.goto(`/adult/items/${galleryId}`);
+  await expect(page.getByText("Images: 3").first()).toBeVisible();
+  const thumbs = page.getByTestId("adult-gallery-grid").getByTestId("adult-image");
+  await expect(thumbs).toHaveCount(3);
+  await expect(thumbs.first()).toHaveAttribute("data-blurred", "true");
+  await expect.poll(() => thumbs.first().locator("img").evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  await thumbs.first().click();
+  await expect(thumbs.first()).toHaveAttribute("data-blurred", "false");
+  await thumbs.first().click();
+  const box = page.getByTestId("adult-lightbox");
+  await expect(box.getByTestId("adult-lightbox-pos")).toHaveText("1 / 3");
+  await expect.poll(() => box.locator("img").evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  await page.keyboard.press("ArrowRight");
+  await expect(box.getByTestId("adult-lightbox-pos")).toHaveText("2 / 3");
+  await page.keyboard.press("Escape");
+  await expect(box).toHaveCount(0);
+  await page.getByRole("link", { name: "Galleries", exact: true }).click();
+  await expect(page.getByTestId("adult-galleries")).toContainText("Scene Title");
+
+  // Off again: the images answer 404 like everything adult.
+  const off = await page.request.put("/api/v1/adult/settings", { data: { enabled: false } });
+  expect(off.ok()).toBeTruthy();
+  expect((await page.request.get(`/api/v1/adult/items/${galleryId}/images/1`)).status()).toBe(404);
 });

@@ -126,7 +126,9 @@ func adultGets(itemID, studioID, perfID int64, image string) []string {
 		fmt.Sprintf("/api/v1/adult/studios/%d", studioID), fmt.Sprintf("/api/v1/adult/performers/%d", perfID),
 		fmt.Sprintf("/api/v1/adult/items/%d", itemID), fmt.Sprintf("/api/v1/adult/items/%d/timeline", itemID),
 		"/api/v1/adult/calendar?start=2024-01-01&end=2024-12-31", "/api/v1/adult/images/" + image, "/api/v1/adult/exclusions",
-		"/api/v1/adult/items?status=wanted&sort=added&monitored=true"}
+		"/api/v1/adult/items?status=wanted&sort=added&monitored=true", "/api/v1/adult/items?kind=gallery",
+		fmt.Sprintf("/api/v1/adult/items/%d/images", itemID), fmt.Sprintf("/api/v1/adult/items/%d/images/1", itemID),
+		fmt.Sprintf("/api/v1/adult/items/%d/images/1?thumb=true", itemID)}
 }
 
 func adultWrites(itemID, studioID int64) [][2]string {
@@ -136,7 +138,8 @@ func adultWrites(itemID, studioID int64) [][2]string {
 		{"POST", fmt.Sprintf("/api/v1/adult/items/%d/rename", itemID)}, {"DELETE", fmt.Sprintf("/api/v1/adult/items/%d", itemID)},
 		{"POST", fmt.Sprintf("/api/v1/adult/studios/%d/refresh", studioID)}, {"DELETE", fmt.Sprintf("/api/v1/adult/studios/%d", studioID)},
 		{"POST", "/api/v1/adult/items/bulk"}, {"DELETE", "/api/v1/adult/exclusions/1"}, {"POST", "/api/v1/adult/performers/1/refresh"},
-		{"DELETE", "/api/v1/adult/performers/1?removeScenes=true"}}
+		{"DELETE", "/api/v1/adult/performers/1?removeScenes=true"}, {"POST", "/api/v1/adult/galleries"},
+		{"PATCH", "/api/v1/adult/performers/1"}}
 }
 
 type apiAdultItem struct {

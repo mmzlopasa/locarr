@@ -35,6 +35,15 @@ type Invoker interface {
 	//
 	// POST /adult/blocklist
 	AddAdultBlocklistTerm(ctx context.Context, request *AddAdultBlocklistTermReq) (*AdultBlockTerm, error)
+	// AddAdultGallery invokes addAdultGallery operation.
+	//
+	// Neither StashDB nor ThePornDB lists image sets (D-113). With `sceneId` the gallery is that scene's
+	// photo set (title, studio, date and performers come from it); with `performerId` and no title it is
+	// the performer's set; otherwise `title` is required. Managers with the adult permission only; 404
+	// otherwise.
+	//
+	// POST /adult/galleries
+	AddAdultGallery(ctx context.Context, request *AdultGalleryRequest) (*AdultItem, error)
 	// AddAdultItem invokes addAdultItem operation.
 	//
 	// Add a scene or movie from a source.
@@ -635,6 +644,12 @@ type Invoker interface {
 	//
 	// GET /adult/calendar
 	GetAdultCalendar(ctx context.Context, params GetAdultCalendarParams) ([]AdultItem, error)
+	// GetAdultGalleryImage invokes getAdultGalleryImage operation.
+	//
+	// One image of a gallery (permitted users only; Cache-Control private).
+	//
+	// GET /adult/items/{id}/images/{index}
+	GetAdultGalleryImage(ctx context.Context, params GetAdultGalleryImageParams) (*GetAdultGalleryImageOKHeaders, error)
 	// GetAdultImage invokes getAdultImage operation.
 	//
 	// A cached adult image (permitted users only; Cache-Control private).
@@ -1173,9 +1188,15 @@ type Invoker interface {
 	//
 	// GET /adult/exclusions
 	ListAdultExclusions(ctx context.Context) ([]AdultExclusion, error)
+	// ListAdultGalleryImages invokes listAdultGalleryImages operation.
+	//
+	// The images of a gallery, in name order (permitted users only).
+	//
+	// GET /adult/items/{id}/images
+	ListAdultGalleryImages(ctx context.Context, params ListAdultGalleryImagesParams) ([]AdultGalleryImage, error)
 	// ListAdultItems invokes listAdultItems operation.
 	//
-	// Scenes and movies.
+	// Scenes, movies and galleries.
 	//
 	// GET /adult/items
 	ListAdultItems(ctx context.Context, params ListAdultItemsParams) (*AdultItemPage, error)
@@ -2651,6 +2672,125 @@ func (c *Client) sendAddAdultBlocklistTerm(ctx context.Context, request *AddAdul
 
 	stage = "DecodeResponse"
 	result, err := decodeAddAdultBlocklistTermResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AddAdultGallery invokes addAdultGallery operation.
+//
+// Neither StashDB nor ThePornDB lists image sets (D-113). With `sceneId` the gallery is that scene's
+// photo set (title, studio, date and performers come from it); with `performerId` and no title it is
+// the performer's set; otherwise `title` is required. Managers with the adult permission only; 404
+// otherwise.
+//
+// POST /adult/galleries
+func (c *Client) AddAdultGallery(ctx context.Context, request *AdultGalleryRequest) (*AdultItem, error) {
+	res, err := c.sendAddAdultGallery(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendAddAdultGallery(ctx context.Context, request *AdultGalleryRequest) (res *AdultItem, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("addAdultGallery"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/adult/galleries"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AddAdultGalleryOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/adult/galleries"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeAddAdultGalleryRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, AddAdultGalleryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAddAdultGalleryResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -14948,6 +15088,177 @@ func (c *Client) sendGetAdultCalendar(ctx context.Context, params GetAdultCalend
 	return result, nil
 }
 
+// GetAdultGalleryImage invokes getAdultGalleryImage operation.
+//
+// One image of a gallery (permitted users only; Cache-Control private).
+//
+// GET /adult/items/{id}/images/{index}
+func (c *Client) GetAdultGalleryImage(ctx context.Context, params GetAdultGalleryImageParams) (*GetAdultGalleryImageOKHeaders, error) {
+	res, err := c.sendGetAdultGalleryImage(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetAdultGalleryImage(ctx context.Context, params GetAdultGalleryImageParams) (res *GetAdultGalleryImageOKHeaders, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getAdultGalleryImage"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/adult/items/{id}/images/{index}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetAdultGalleryImageOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/adult/items/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/images/"
+	{
+		// Encode "index" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "index",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.Index))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "thumb" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "thumb",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Thumb.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, GetAdultGalleryImageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetAdultGalleryImageResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetAdultImage invokes getAdultImage operation.
 //
 // A cached adult image (permitted users only; Cache-Control private).
@@ -25846,9 +26157,141 @@ func (c *Client) sendListAdultExclusions(ctx context.Context) (res []AdultExclus
 	return result, nil
 }
 
+// ListAdultGalleryImages invokes listAdultGalleryImages operation.
+//
+// The images of a gallery, in name order (permitted users only).
+//
+// GET /adult/items/{id}/images
+func (c *Client) ListAdultGalleryImages(ctx context.Context, params ListAdultGalleryImagesParams) ([]AdultGalleryImage, error) {
+	res, err := c.sendListAdultGalleryImages(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListAdultGalleryImages(ctx context.Context, params ListAdultGalleryImagesParams) (res []AdultGalleryImage, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listAdultGalleryImages"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/adult/items/{id}/images"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListAdultGalleryImagesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/adult/items/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int64ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/images"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:SessionToken"
+			switch err := c.securitySessionToken(ctx, ListAdultGalleryImagesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"SessionToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeListAdultGalleryImagesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ListAdultItems invokes listAdultItems operation.
 //
-// Scenes and movies.
+// Scenes, movies and galleries.
 //
 // GET /adult/items
 func (c *Client) ListAdultItems(ctx context.Context, params ListAdultItemsParams) (*AdultItemPage, error) {
@@ -25926,6 +26369,23 @@ func (c *Client) sendListAdultItems(ctx context.Context, params ListAdultItemsPa
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.StudioId.Get(); ok {
+				return e.EncodeValue(conv.Int64ToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sceneId" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sceneId",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SceneId.Get(); ok {
 				return e.EncodeValue(conv.Int64ToString(val))
 			}
 			return nil

@@ -7,6 +7,7 @@ type OperationName = string
 
 const (
 	AddAdultBlocklistTermOperation             OperationName = "AddAdultBlocklistTerm"
+	AddAdultGalleryOperation                   OperationName = "AddAdultGallery"
 	AddAdultItemOperation                      OperationName = "AddAdultItem"
 	AddAdultPerformerOperation                 OperationName = "AddAdultPerformer"
 	AddAdultRootFolderOperation                OperationName = "AddAdultRootFolder"
@@ -103,6 +104,7 @@ const (
 	ExportCustomFormatOperation                OperationName = "ExportCustomFormat"
 	GetActivityStatsOperation                  OperationName = "GetActivityStats"
 	GetAdultCalendarOperation                  OperationName = "GetAdultCalendar"
+	GetAdultGalleryImageOperation              OperationName = "GetAdultGalleryImage"
 	GetAdultImageOperation                     OperationName = "GetAdultImage"
 	GetAdultItemOperation                      OperationName = "GetAdultItem"
 	GetAdultItemTimelineOperation              OperationName = "GetAdultItemTimeline"
@@ -189,6 +191,7 @@ const (
 	LinkUserIdentityOperation                  OperationName = "LinkUserIdentity"
 	ListAdultBlocklistOperation                OperationName = "ListAdultBlocklist"
 	ListAdultExclusionsOperation               OperationName = "ListAdultExclusions"
+	ListAdultGalleryImagesOperation            OperationName = "ListAdultGalleryImages"
 	ListAdultItemsOperation                    OperationName = "ListAdultItems"
 	ListAdultPerformersOperation               OperationName = "ListAdultPerformers"
 	ListAdultRootFoldersOperation              OperationName = "ListAdultRootFolders"

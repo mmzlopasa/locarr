@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { Link, Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, Plus, RefreshCw, Search, Settings2, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Images, Plus, RefreshCw, Search, Settings2, Trash2 } from "lucide-react";
 import { api, unwrap } from "@/api/client";
 import { Tabs } from "@/components/Tabs";
 import { formatBytes, formatDateTime, formatDuration } from "@/components/format";
@@ -12,10 +12,11 @@ import { InteractiveSearch, type ReleaseSource } from "@/features/movies/Interac
 import { useQualityProfiles } from "@/features/movies/common";
 import {
   adultKey, useAdultCalendar, useAdultInvalidate, useAdultItem, useAdultLookup, useAdultPerformer, useAdultPerformers, useAdultPreferences,
-  useAdultRootFolders, useAdultStudio, useAdultStudios, useRemoveItem, useRemovePerformer, useRemoveStudio, useSetBlur,
+  useAddGallery, useAdultItems, useAdultRootFolders, useAdultStudio, useAdultStudios, useRemoveItem, useRemovePerformer, useRemoveStudio, useSetBlur,
   type AdultLookupResult, type LookupQuery, type RemoveChoice,
 } from "./api";
 import { BlurImage } from "./BlurImage";
+import { GalleryGrid, NewGalleryForm } from "./Gallery";
 import { EmptyAdult, ItemBrowser, RemoveChoices, RemoveDialog, StatusBadge, linkButton, primaryLink, useCanManageAdult } from "./components";
 import { LOOKUP_SORTS, PREF, loadPref, savePref, type LookupSort } from "./logic";
 
@@ -43,6 +44,7 @@ export function AdultLayout() {
       <Tabs label={t("adult.title")} tabs={[
         { to: "/adult", label: t("adult.tabs.scenes") },
         { to: "/adult/movies", label: t("adult.tabs.movies") },
+        { to: "/adult/galleries", label: t("adult.tabs.galleries") },
         { to: "/adult/studios", label: t("adult.tabs.studios") },
         { to: "/adult/performers", label: t("adult.tabs.performers") },
         { to: "/adult/wanted", label: t("adult.tabs.wanted") },
@@ -82,6 +84,24 @@ export const AdultMoviesPage = () => {
   const { t } = useTranslation();
   return <ItemBrowser base={{ kind: "movie" }} empty={<StartHere title={t("adult.emptyMovies")} />} />;
 };
+
+export function AdultGalleriesPage() {
+  const { t } = useTranslation();
+  const canManage = useCanManageAdult();
+  const [creating, setCreating] = useState(false);
+  return (
+    <div>
+      {canManage ? (
+        <div className="mb-3 flex justify-end">
+          <Button onClick={() => setCreating(true)} data-testid="adult-gallery-new-open"><Plus className="size-3.5" aria-hidden /> {t("adult.gallery.new")}</Button>
+        </div>
+      ) : null}
+      <ItemBrowser base={{ kind: "gallery" }} testId="adult-galleries"
+        empty={<EmptyAdult title={t("adult.emptyGalleries")} hint={t("adult.emptyGalleriesHint")} />} />
+      {creating ? <NewGalleryForm onClose={() => setCreating(false)} /> : null}
+    </div>
+  );
+}
 
 export const AdultWantedPage = () => {
   const { t } = useTranslation();
@@ -337,6 +357,11 @@ export function AdultPerformerPage() {
     mutationFn: async (monitored: boolean) => unwrap(await api.PATCH("/adult/performers/{id}", { params: { path: { id: pid } }, body: { monitored } })),
     onSuccess: () => invalidate(),
   });
+  const sets = useMutation({
+    mutationFn: async (galleries: boolean) => unwrap(await api.PATCH("/adult/performers/{id}", { params: { path: { id: pid } }, body: { galleries } })),
+    onSuccess: () => invalidate(),
+  });
+  const addSet = useAddGallery();
   const refresh = useMutation({
     mutationFn: async () => unwrap(await api.POST("/adult/performers/{id}/refresh", { params: { path: { id: pid } } })),
     onSuccess: () => invalidate(),
@@ -357,11 +382,21 @@ export function AdultPerformerPage() {
         }
         actions={canManage ? (
           <OwnerActions onRemove={() => setRemoving(true)}
-            monitor={<Checkbox label={t("adult.trackPerformer")} description={t("adult.trackPerformerHint")} checked={p.monitored}
-              onChange={(e) => toggle.mutate(e.target.checked)} />}
+            monitor={
+              <>
+                <Checkbox label={t("adult.trackPerformer")} description={t("adult.trackPerformerHint")} checked={p.monitored}
+                  onChange={(e) => toggle.mutate(e.target.checked)} />
+                <Checkbox label={t("adult.gallery.performerSets")} description={t("adult.gallery.performerSetsHint")} checked={!!p.galleries}
+                  onChange={(e) => sets.mutate(e.target.checked)} data-testid="adult-performer-galleries" />
+                <Button busy={addSet.isPending} data-testid="adult-performer-add-set"
+                  onClick={() => addSet.mutate({ performerId: pid, monitored: true, search: true }, { onSuccess: (it) => void navigate({ to: "/adult/items/$id", params: { id: String(it.id) } }) })}>
+                  <Images className="size-3.5" aria-hidden /> {t("adult.gallery.performerAdd")}
+                </Button>
+              </>
+            }
             refresh={{ busy: refresh.isPending, run: () => refresh.mutate(), count: refresh.data?.count }} />
         ) : null} />
-      <ErrorAlert error={toggle.error ?? refresh.error} />
+      <ErrorAlert error={toggle.error ?? refresh.error ?? sets.error ?? addSet.error} />
       <ItemBrowser base={{ performerId: pid }} empty={<EmptyAdult title={t("adult.emptyPerformer")} hint={t("adult.emptyPerformerHint")} />} />
       {removing ? (
         <RemoveDialog title={t("adult.remove.performerTitle", { name: p.name })} busy={remove.isPending} error={remove.error}
@@ -419,15 +454,20 @@ export function AdultItemPage() {
     mutationFn: async () => unwrap(await api.POST("/adult/items/{id}/rename", { params: { path: { id: iid }, query: { apply: true } } })),
     onSuccess: () => invalidate(),
   });
+  const isScene = item.data?.kind === "scene";
+  const sets = useAdultItems({ kind: "gallery", sceneId: iid }, isScene);
+  const addSet = useAddGallery();
   if (item.isPending) return <Spinner />;
   if (!item.data) return <ErrorAlert error={item.error} />;
   const it = item.data;
+  const gallery = it.kind === "gallery";
   const profile = profiles.data?.find((p) => p.id === it.qualityProfileId);
-  const back = it.kind === "movie" ? "/adult/movies" : "/adult";
+  const back = it.kind === "movie" ? "/adult/movies" : gallery ? "/adult/galleries" : "/adult";
+  const photoSet = sets.data?.items[0];
   return (
     <div data-testid="adult-item">
       <div className="mb-5 grid gap-4 lg:grid-cols-[minmax(0,480px)_minmax(0,1fr)]">
-        <BlurImage image={it.image} alt={it.title} fallback={it.studio || it.title} className="aspect-video w-full" />
+        <BlurImage image={it.image} alt={it.title} fallback={it.studio || it.title} className={gallery ? "aspect-[3/4] w-full max-w-xs" : "aspect-video w-full"} />
         <div className="min-w-0">
           <div className="mb-1.5"><StatusBadge item={it} /></div>
           <h2 className="break-words text-[20px] font-semibold leading-tight tracking-tight text-fg">{it.title}</h2>
@@ -435,7 +475,20 @@ export function AdultItemPage() {
             {it.studioId ? <Link to="/adult/studios/$id" params={{ id: String(it.studioId) }} className="text-fg hover:text-accent">{it.studio}</Link> : it.studio}
             {it.releaseDate ? <span className="tabular-nums"> · {it.releaseDate}</span> : null}
             {it.duration ? <span> · {formatDuration(it.duration, i18n.language)}</span> : null}
+            {gallery && it.file?.imageCount ? <span> · {t("adult.gallery.images", { count: it.file.imageCount })}</span> : null}
           </p>
+          {gallery && it.sceneId ? (
+            <p className="mt-1 text-[12px] text-muted">
+              <Link to="/adult/items/$id" params={{ id: String(it.sceneId) }} className="text-fg hover:text-accent" data-testid="adult-gallery-scene">{t("adult.gallery.ofScene")}</Link>
+            </p>
+          ) : null}
+          {isScene && photoSet ? (
+            <p className="mt-1 text-[12px] text-muted">
+              <Link to="/adult/items/$id" params={{ id: String(photoSet.id) }} className="inline-flex items-center gap-1 text-fg hover:text-accent" data-testid="adult-scene-gallery">
+                <Images className="size-3.5" aria-hidden /> {t("adult.gallery.photoSet")}
+              </Link>
+            </p>
+          ) : null}
           {it.performers.length ? (
             <ul className="mt-2 flex flex-wrap gap-1.5">
               {it.performers.map((p) => (
@@ -453,13 +506,18 @@ export function AdultItemPage() {
                 <Search className="size-3.5" aria-hidden /> {t("adult.searchNow")}
               </Button>
               <Button onClick={() => setTab("search")}>{t("adult.interactive")}</Button>
-              {it.file ? <Button busy={rename.isPending} onClick={() => rename.mutate()}>{t("adult.rename")}</Button> : null}
+              {it.file && !gallery ? <Button busy={rename.isPending} onClick={() => rename.mutate()}>{t("adult.rename")}</Button> : null}
+              {isScene && sets.data && !photoSet ? (
+                <Button busy={addSet.isPending} onClick={() => addSet.mutate({ sceneId: iid, monitored: true, search: true })} data-testid="adult-find-photo-set">
+                  <Images className="size-3.5" aria-hidden /> {t("adult.gallery.findPhotoSet")}
+                </Button>
+              ) : null}
               <Button variant="ghost" onClick={() => setRemoving(true)} data-testid="adult-remove"><Trash2 className="size-3.5" aria-hidden /> {t("adult.remove.button")}</Button>
               <span className="w-full sm:w-auto"><Checkbox label={t("adult.monitored")} checked={it.monitored} onChange={(e) => edit.mutate(e.target.checked)} /></span>
             </div>
           ) : null}
           {search.isSuccess ? <p role="status" className="mt-2 text-[12px] text-muted">{t("adult.searchQueued")}</p> : null}
-          <div className="mt-2"><ErrorAlert error={edit.error ?? search.error ?? rename.error} /></div>
+          <div className="mt-2"><ErrorAlert error={edit.error ?? search.error ?? rename.error ?? addSet.error} /></div>
         </div>
       </div>
 
@@ -469,7 +527,7 @@ export function AdultItemPage() {
             <dl className="grid grid-cols-2 gap-3" data-testid="adult-file">
               <div className="col-span-2"><Fact label={t("adult.file.path")}><span className="break-all font-mono text-[12px]">{it.file.path}</span></Fact></div>
               <Fact label={t("adult.file.size")}>{formatBytes(it.file.size, i18n.language)}</Fact>
-              <Fact label={t("adult.file.quality")}>{it.file.quality}</Fact>
+              {gallery ? <Fact label={t("adult.gallery.count")}>{it.file.imageCount ?? 0}</Fact> : <Fact label={t("adult.file.quality")}>{it.file.quality}</Fact>}
               {it.file.releaseGroup ? <Fact label={t("adult.file.group")}>{it.file.releaseGroup}</Fact> : null}
               {it.file.addedAt ? <Fact label={t("adult.file.added")}>{formatDateTime(it.file.addedAt, i18n.language)}</Fact> : null}
               {it.file.sceneName ? <div className="col-span-2"><Fact label={t("adult.file.release")}><span className="break-all font-mono text-[12px]">{it.file.sceneName}</span></Fact></div> : null}
@@ -485,6 +543,13 @@ export function AdultItemPage() {
           </dl>
         </Panel>
       </div>
+
+      {gallery ? (
+        <div className="mb-5">
+          <h3 className="mb-2 text-[14px] font-semibold text-fg">{t("adult.gallery.imagesTitle")}</h3>
+          <GalleryGrid id={iid} title={it.title} hasFile={!!it.file} />
+        </div>
+      ) : null}
 
       <div className="mb-3 flex gap-1 overflow-x-auto overflow-y-hidden border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist">
         {(["history", "search"] as const).map((k) => (
@@ -513,7 +578,8 @@ export function AdultItemPage() {
 }
 
 type AddType = LookupQuery["type"];
-const ADD_TYPES: AddType[] = ["studio", "performer", "scene", "movie"];
+type AddChoice = AddType | "gallery";
+const ADD_TYPES: AddChoice[] = ["studio", "performer", "scene", "movie", "gallery"];
 const keyOf = (r: AdultLookupResult) => `${r.source}:${r.type}:${r.id}`;
 
 export function AdultAddPage() {
@@ -521,7 +587,10 @@ export function AdultAddPage() {
   const navigate = useNavigate();
   const canManage = useCanManageAdult();
   const [source, setSource] = useState<"stashdb" | "tpdb">("stashdb");
-  const [type, setType] = useState<AddType>("studio");
+  const [choiceType, setType] = useState<AddChoice>("studio");
+  const type: AddType = choiceType === "gallery" ? "scene" : choiceType;
+  const [alsoSet, setAlsoSet] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [term, setTerm] = useState("");
   const [sort, setSortState] = useState<LookupSort>(() => loadPref(PREF.lookupSort, LOOKUP_SORTS, "newest"));
   const [submitted, setSubmitted] = useState<LookupQuery | null>(null);
@@ -541,6 +610,7 @@ export function AdultAddPage() {
   };
   const addOne = async (r: AdultLookupResult) => {
     const body = { source: r.source, id: r.id, monitored: true, search: true, kind: r.type === "movie" ? "movie" as const : "scene" as const,
+      gallery: alsoSet && (r.type === "scene" || r.type === "performer"),
       ...(profileId ? { qualityProfileId: profileId } : {}), ...(rootId ? { rootFolderId: rootId } : {}) };
     if (r.type === "studio") return { to: "studio" as const, v: unwrap(await api.POST("/adult/studios", { body })) };
     if (r.type === "performer") return { to: "performer" as const, v: unwrap(await api.POST("/adult/performers", { body })) };
@@ -578,6 +648,22 @@ export function AdultAddPage() {
   return (
     <div className="space-y-4">
       {roots.data?.length === 0 ? <Alert tone="warning">{t("adult.noRoot")}</Alert> : null}
+      {choiceType === "gallery" ? (
+        <Panel title={t("adult.gallery.addTitle")} description={t("adult.gallery.addHint")}>
+          <div className="flex flex-wrap items-end gap-3">
+            <SelectInput label={t("adult.add.type")} value={choiceType} onChange={(e) => setType(e.target.value as AddChoice)} data-testid="adult-add-type">
+              {ADD_TYPES.map((k) => <option key={k} value={k}>{t(`adult.add.types.${k}`)}</option>)}
+            </SelectInput>
+            {canManage ? (
+              <Button variant="primary" onClick={() => setCreating(true)} data-testid="adult-gallery-new-open">
+                <Plus className="size-3.5" aria-hidden /> {t("adult.gallery.new")}
+              </Button>
+            ) : null}
+          </div>
+          {creating ? <NewGalleryForm onClose={() => setCreating(false)} /> : null}
+        </Panel>
+      ) : null}
+      {choiceType === "gallery" ? null : (
       <Panel title={t("adult.add.title")} description={t("adult.add.hint")}>
         <form className="grid grid-cols-2 gap-3 md:grid-cols-[auto_auto_minmax(0,1fr)_auto_auto] md:items-end"
           onSubmit={(e) => { e.preventDefault(); if (term.trim()) { setSelected(new Set()); setSubmitted({ source, type, term: term.trim(), sort }); } }}>
@@ -585,7 +671,7 @@ export function AdultAddPage() {
             <option value="stashdb">StashDB</option>
             <option value="tpdb">ThePornDB</option>
           </SelectInput>
-          <SelectInput label={t("adult.add.type")} value={type} onChange={(e) => setType(e.target.value as AddType)}>
+          <SelectInput label={t("adult.add.type")} value={choiceType} onChange={(e) => setType(e.target.value as AddChoice)} data-testid="adult-add-type">
             {ADD_TYPES.map((k) => <option key={k} value={k}>{t(`adult.add.types.${k}`)}</option>)}
           </SelectInput>
           <div className="col-span-2 md:col-span-1"><TextInput label={t("adult.add.term")} value={term} maxLength={200} onChange={(e) => setTerm(e.target.value)} /></div>
@@ -607,8 +693,15 @@ export function AdultAddPage() {
             <option value={0}>{t("adult.add.default")}</option>
             {roots.data?.map((r) => <option key={r.id} value={r.id}>{r.path}</option>)}
           </SelectInput>
+          {type === "scene" || type === "performer" ? (
+            <div className="sm:col-span-2">
+              <Checkbox label={t("adult.gallery.alsoSet")} checked={alsoSet} onChange={(e) => setAlsoSet(e.target.checked)}
+                description={type === "scene" ? t("adult.gallery.alsoSetScene") : t("adult.gallery.alsoSetPerformer")} data-testid="adult-also-set" />
+            </div>
+          ) : null}
         </div>
       </Panel>
+      )}
       <ErrorAlert error={lookup.error ?? add.error ?? addMany.error} />
       {addMany.data?.length ? <Alert tone="warning">{t("adult.add.someFailed", { names: addMany.data.join(", ") })}</Alert> : null}
       {lookup.data && results.length === 0 ? <EmptyAdult title={t("adult.add.none")} hint={t("adult.add.noneHint")} /> : null}

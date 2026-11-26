@@ -3,6 +3,14 @@
 ## Trenutna faza
 P0–P11 gotovi. P12: iOS i Android aplikacija (Android: tokovi s pravim podacima i obavijesti još za provjeru na mobitelu).
 
+## Gotovo: galerije (skupovi slika) za odrasle (branch `feat/adult-galleries`)
+- D-113: vrsta `gallery` (`adult_gallery:<id>`), migracija `00020_adult_galleries.sql` (preslagivanje `adult_items` i `adult_exclusions`, `scene_id`, `adult_files.image_count`, `adult_performers.galleries`). StashDB i ThePornDB nemaju skupove slika (provjereno u njihovim javnim shemama), pa se galerija stvara iz scene, izvođača ili ručno.
+- Pretraga: `adult.Source{Gallery: true}`, upit „… imageset” pa oblici scene; `parser.ParseGallery` (golden `testdata/galleries.json`), `decision.specImageSet` (`not_image_set`, `image_set` za scene), `decision.StudioKey` (bez `.com`), raspon veličine; kategorije slika ugrađenih stranica ponovno provjerene.
+- Uvoz: mapa slika ili zip/rar (`rardecode/v2`), sigurna ekstrakcija (`archive.go`), `0001.ext` i `cover.ext`, hardlink, koš za stari skup, sličice; API `POST /adult/galleries`, `GET /adult/items/{id}/images[/{index}]`, postavke `adult.gallery*`.
+- Web (EN + HR): kartica Galerije, stranica s mrežom i pregledom, Dodaj → Galerija, „Traži skup fotografija” na sceni, opcije na izvođaču i postavkama. Android: samo novi kodovi odbijanja (`gen-codes.py`).
+- Testovi: `TestGalleryGolden`, `TestGalleryDecision` i ostali odlučivanja, `archive_test.go` (putanje, veze, zip bomba, ne-slike, ograničenja), `TestMigration20AdultGalleries`, integracijski `TestAdultGalleryEndToEnd` (lažni klijent, sintetički zip generiranih slika), proširena matrica curenja, Vitest `Gallery.test.tsx`, Playwright „adult galleries” (lažni seed zip kroz Transmission).
+- Poznato: mobilne aplikacije ne prikazuju galerije; sličice samo za JPEG/PNG/GIF; RAR bez testa na pravoj arhivi.
+
 ## Gotovo: prijedlozi mapiranja udaljenih putanja (branch `feat/path-mapping-suggest`)
 - D-111: kad gotovo preuzimanje nije vidljivo, Locarr ga traži unutar data rootova (ime i veličina; vjerojatna mjesta pa ograničena šetnja, bez simboličkih veza, kroz `fs.MustExist`) i izvodi mapiranje iz najduljeg zajedničkog završetka (`/downloads → /data/downloads`).
 - Prijedlog u retku reda (`QueueItem.pathSuggestion`), iznad popisa mapiranja (`GET /remotepathmappings/suggestions`) i u zdravlju (`mapping_suggested`, `client_folder_not_visible`); gumb „Dodaj mapiranje”/„Zamijeni mapiranje” samo administratorima; ništa se ne dodaje samo.

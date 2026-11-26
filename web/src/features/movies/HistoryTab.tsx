@@ -47,7 +47,7 @@ function RetryNow({ itemRef }: { itemRef: string }) {
 export function WhyBox({ ex, itemRef }: { ex: Explanation; itemRef?: string }) {
   const { t, i18n } = useTranslation();
   const { data: me } = useMe();
-  const adult = itemRef !== undefined && /^(scene|adult_movie):/.test(itemRef);
+  const adult = itemRef !== undefined && /^(scene|adult_movie|adult_gallery):/.test(itemRef);
   const admin = me?.role === "admin";
   const canRetry = itemRef !== undefined && /^(movie|episode|season|album):/.test(itemRef) && retryable.has(ex.code);
   const Icon = ex.tone === "success" ? CheckCircle2 : ex.tone === "danger" ? XCircle : ex.tone === "warning" ? AlertTriangle : Info;
@@ -279,7 +279,7 @@ export function HistoryTab({ itemRef, load }: { itemRef: string; load?: () => Pr
   useEffect(() => {
     if (code === undefined) return;
     const kind = itemRef.split(":")[0];
-    const key = kind === "movie" ? "movies" : kind === "album" || kind === "artist" ? "music" : kind === "scene" || kind === "adult_movie" ? "adult" : "series";
+    const key = kind === "movie" ? "movies" : kind === "album" || kind === "artist" ? "music" : kind === "scene" || kind === "adult_movie" || kind === "adult_gallery" ? "adult" : "series";
     void qc.invalidateQueries({ queryKey: [key] });
   }, [code, count, qc, itemRef]);
   const rows = useMemo(() => groupTimeline(tl.data?.events ?? []), [tl.data]);
