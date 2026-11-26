@@ -55,7 +55,7 @@ import { MetadataProfilesPage } from "@/features/music/MetadataProfilesPage";
 import { SubtitleSettingsPage } from "@/features/subtitles/SubtitleSettingsPage";
 import { AdultSettingsPage } from "@/features/settings/AdultSettingsPage";
 import {
-  AdultAddPage, AdultCalendarPage, AdultItemPage, AdultLayout, AdultMoviesPage, AdultPerformerPage, AdultPerformersPage, AdultScenesPage,
+  AdultAddPage, AdultCalendarPage, AdultGalleriesPage, AdultItemPage, AdultLayout, AdultMoviesPage, AdultPerformerPage, AdultPerformersPage, AdultScenesPage,
   AdultStudioPage, AdultStudiosPage, AdultWantedPage,
 } from "@/features/adult/AdultPages";
 import { MigratePage } from "@/features/migrate/MigratePage";
@@ -246,6 +246,7 @@ const adultRoute = createRoute({
 });
 const adultScenesRoute = createRoute({ getParentRoute: () => adultRoute, path: "/", component: AdultScenesPage });
 const adultMoviesRoute = createRoute({ getParentRoute: () => adultRoute, path: "/movies", component: AdultMoviesPage });
+const adultGalleriesRoute = createRoute({ getParentRoute: () => adultRoute, path: "/galleries", component: AdultGalleriesPage });
 const adultStudiosRoute = createRoute({ getParentRoute: () => adultRoute, path: "/studios", component: AdultStudiosPage });
 const adultStudioRoute = createRoute({ getParentRoute: () => adultRoute, path: "/studios/$id", component: AdultStudioPage });
 const adultPerformersRoute = createRoute({ getParentRoute: () => adultRoute, path: "/performers", component: AdultPerformersPage });
@@ -307,7 +308,7 @@ export const routeTree = rootRoute.addChildren([
     activityRoute.addChildren([activityIndexRoute, queueRoute, boardRoute, historyRoute, blocklistRoute, activityStatsRoute]),
     searchRoute,
     accountRoute,
-    adultRoute.addChildren([adultScenesRoute, adultMoviesRoute, adultStudiosRoute, adultStudioRoute, adultPerformersRoute, adultPerformerRoute,
+    adultRoute.addChildren([adultScenesRoute, adultMoviesRoute, adultGalleriesRoute, adultStudiosRoute, adultStudioRoute, adultPerformersRoute, adultPerformerRoute,
       adultItemRoute, adultWantedRoute, adultCalendarRoute, adultAddRoute]),
     adminRoute.addChildren([
       downloadersRoute,

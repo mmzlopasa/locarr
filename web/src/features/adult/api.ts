@@ -12,6 +12,8 @@ export type AdultLookupResult = S["AdultLookupResult"];
 export type AdultBlockTerm = S["AdultBlockTerm"];
 export type AdultExclusion = S["AdultExclusion"];
 export type AdultLookupPage = S["AdultLookupPage"];
+export type AdultGalleryRequest = S["AdultGalleryRequest"];
+export type AdultGalleryImage = S["AdultGalleryImage"];
 
 /** Every adult query lives under this key, so disabling drops them all at once. */
 export const adultKey = ["adult"] as const;
@@ -40,8 +42,9 @@ export function useSaveAdultSettings() {
 }
 
 export type ItemQuery = {
-  kind?: "scene" | "movie";
+  kind?: "scene" | "movie" | "gallery";
   studioId?: number;
+  sceneId?: number;
   performerId?: number;
   missing?: boolean;
   term?: string;
@@ -52,8 +55,9 @@ export type ItemQuery = {
 
 export const ITEM_PAGE = 120;
 
-export function useAdultItems(query: ItemQuery) {
+export function useAdultItems(query: ItemQuery, enabled = true) {
   return useQuery({
+    enabled,
     queryKey: [...adultKey, "items", query],
     queryFn: async () => unwrap(await api.GET("/adult/items", { params: { query: { ...query, limit: 200 } } })),
   });
@@ -223,3 +227,25 @@ export function useAdultInvalidate() {
   const qc = useQueryClient();
   return () => qc.invalidateQueries({ queryKey: adultKey });
 }
+
+/** The images of a gallery (empty until a set is imported). */
+export function useGalleryImages(id: number, enabled = true) {
+  return useQuery({
+    queryKey: [...adultKey, "item", id, "images"],
+    queryFn: async () => unwrap(await api.GET("/adult/items/{id}/images", { params: { path: { id } } })),
+    enabled,
+  });
+}
+
+/** Add a gallery: by hand, a scene's photo set or a performer's set. */
+export function useAddGallery() {
+  const invalidate = useAdultInvalidate();
+  return useMutation({
+    mutationFn: async (body: AdultGalleryRequest) => unwrap(await api.POST("/adult/galleries", { body })),
+    onSuccess: () => invalidate(),
+  });
+}
+
+/** Path of one gallery image (fetched with the session, never a public URL). */
+export const galleryImagePath = (id: number, index: number, thumb = false) =>
+  `/api/v1/adult/items/${id}/images/${index}${thumb ? "?thumb=true" : ""}`;

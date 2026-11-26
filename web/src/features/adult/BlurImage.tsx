@@ -12,14 +12,24 @@ export type AdultLink =
 
 const keyPattern = /^[0-9a-f]{32}$/;
 
+const galleryPath = /^\/api\/v1\/adult\/items\/\d+\/images\/\d+(\?thumb=true)?$/;
+
+/** The address of an image key or a gallery image path (both private). */
+function imageURL(image: string | undefined): string | null {
+  if (!image) return null;
+  if (keyPattern.test(image)) return `/api/v1/adult/images/${image}`;
+  return galleryPath.test(image) ? image : null;
+}
+
 /** Loads a private image with the session (never a public URL). */
-function useAdultImage(image: string | undefined) {
+export function useAdultImage(image: string | undefined) {
   const [state, setState] = useState<{ key?: string; src: string | null; failed: boolean }>({ src: null, failed: false });
   useEffect(() => {
-    if (!image || !keyPattern.test(image)) return;
+    const address = imageURL(image);
+    if (!address) return;
     let url: string | null = null;
     let cancelled = false;
-    fetch(`/api/v1/adult/images/${image}`, { credentials: "same-origin" })
+    fetch(address, { credentials: "same-origin" })
       .then(async (r) => {
         if (cancelled) return;
         if (!r.ok) {
@@ -38,20 +48,22 @@ function useAdultImage(image: string | undefined) {
       if (url) URL.revokeObjectURL(url);
     };
   }, [image]);
-  const valid = !!image && keyPattern.test(image);
+  const valid = imageURL(image) !== null;
   if (!valid) return { src: null, unavailable: true, loading: false };
   const current = state.key === image;
   return { src: current ? state.src : null, unavailable: current && state.failed, loading: !current };
 }
 
 /**
- * An adult image. Blurred until clicked when the viewer's preference says so
+ * An adult image (a cache key, or a gallery image path). Blurred until clicked when the viewer's preference says so
  * (the default); the eye-slash marks only a blurred image. Without an image
  * (none at the source, or it could not be fetched) a neutral placeholder
  * shows the initial of `fallback`. Revealed or unblurred, it links to `link`.
  */
-export function BlurImage({ image, alt, fallback, className = "", fit = "cover", link, children }:
-  { image?: string; alt: string; fallback?: string; className?: string; fit?: "cover" | "contain"; link?: AdultLink; children?: ReactNode }) {
+export function BlurImage({ image, alt, fallback, className = "", fit = "cover", link, onOpen, children }:
+  { image?: string; alt: string; fallback?: string; className?: string; fit?: "cover" | "contain"; link?: AdultLink;
+    /** Opens the image (a lightbox) once it is not blurred. */
+    onOpen?: () => void; children?: ReactNode }) {
   const { t } = useTranslation();
   const prefs = useAdultPreferences();
   const blur = prefs.data?.blur ?? true;
@@ -74,6 +86,9 @@ export function BlurImage({ image, alt, fallback, className = "", fit = "cover",
     );
     const label = unavailable ? t("adult.image.unavailable", { name: alt }) : alt;
     const state = loading ? "loading" : "placeholder";
+    if (onOpen && !loading) {
+      return <button type="button" className={box} aria-label={label} data-testid="adult-image" data-state={state} onClick={onOpen}>{inner}</button>;
+    }
     return link ? (
       // Every image link sits next to a text link to the same page: keep it out of the tab order and the accessibility tree.
       <Link {...link} className={box} tabIndex={-1} aria-hidden data-testid="adult-image" data-state={state}>{inner}</Link>
@@ -106,6 +121,14 @@ export function BlurImage({ image, alt, fallback, className = "", fit = "cover",
         {img}
         {children}
       </Link>
+    );
+  }
+  if (onOpen) {
+    return (
+      <button type="button" className={box} data-testid="adult-image" data-blurred="false" data-state="image" onClick={onOpen} aria-label={alt}>
+        {img}
+        {children}
+      </button>
     );
   }
   return (

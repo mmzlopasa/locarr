@@ -1704,7 +1704,9 @@
     "season_pack_not_wanted": "Season pack for one episode",
     "episode_not_wanted": "No wanted episode",
     "blocked_tag": "Contains a blocked term",
-    "wrong_scene": "Different studio, date or title"
+    "wrong_scene": "Different studio, date or title",
+    "not_image_set": "Not an image set",
+    "image_set": "An image set, not a video"
   },
   "timeline": {
     "title": "Timeline",
@@ -4112,6 +4114,7 @@
     "tabs": {
       "scenes": "Scenes",
       "movies": "Movies",
+      "galleries": "Galleries",
       "studios": "Studios",
       "performers": "Performers",
       "wanted": "Wanted",
@@ -4147,7 +4150,8 @@
         "studio": "Studio / site",
         "scene": "Scene",
         "movie": "Movie",
-        "performer": "Performer"
+        "performer": "Performer",
+        "gallery": "Gallery (image set)"
       },
       "profile": "Quality profile",
       "root": "Root folder",
@@ -4266,7 +4270,42 @@
       "keepScenesHint": "They stay in the library without a studio page and are no longer refreshed.",
       "keepPerformerHint": "They stay in the library; only the performer is forgotten.",
       "removeScenes": "Remove the scenes too (scenes: {{count}})"
-    }
+    },
+    "gallery": {
+      "new": "New gallery",
+      "newTitle": "New gallery",
+      "create": "Add gallery",
+      "newHint": "StashDB and ThePornDB do not list image sets, so a gallery is typed in here, or made from a scene or performer page. Its folder is named like a scene.",
+      "title": "Title",
+      "studio": "Studio in the library",
+      "noStudio": "None / another studio",
+      "studioName": "Studio name",
+      "date": "Date",
+      "performers": "Performers",
+      "images": "Images: {{count}}",
+      "count": "Images",
+      "imagesTitle": "Images",
+      "imageAlt": "{{title}}, image {{n}}",
+      "position": "{{n}} / {{total}}",
+      "previous": "Previous image",
+      "next": "Next image",
+      "noImages": "No images yet",
+      "noImagesHint": "Once an image set is found and downloaded, its pictures show here.",
+      "missingHint": "The gallery folder is empty or was moved.",
+      "ofScene": "The scene of this photo set",
+      "photoSet": "Photo set",
+      "findPhotoSet": "Look for the photo set",
+      "performerSets": "Also look for photo sets",
+      "performerSetsHint": "Every new scene of this performer also gets its photo set as a wanted gallery.",
+      "performerAdd": "Add a photo set",
+      "alsoSet": "Also look for the photo set",
+      "alsoSetScene": "Adds the scene's image set as a gallery next to the scene.",
+      "alsoSetPerformer": "Every new scene of the performer also gets its image set as a gallery.",
+      "addTitle": "Add a gallery",
+      "addHint": "StashDB and ThePornDB have no image sets to search. Add a gallery by hand here, or open a scene and choose “Look for the photo set”."
+    },
+    "emptyGalleries": "No galleries yet",
+    "emptyGalleriesHint": "Add one by hand, or choose “Also look for the photo set” when adding a scene or following a performer."
   },
   "adultSettings": {
     "title": "Adult content",
@@ -4303,7 +4342,15 @@
       "stats": "Total count in /api/stats",
       "statsHint": "Adds one number (adultItems) for dashboards. Nothing is ever broken down.",
       "streamero": "Tell Streamero about imports",
-      "streameroHint": "Only if you mapped a separate adult library in Streamero."
+      "streameroHint": "Only if you mapped a separate adult library in Streamero.",
+      "galleryFolder": "Gallery folder",
+      "galleryFolderHint": "One folder per gallery, directly in the adult root folder.",
+      "galleryMin": "Smallest image set (MB)",
+      "galleryMax": "Largest image set (MB)",
+      "galleryRename": "Rename images",
+      "galleryRenameHint": "0001.jpg, 0002.jpg … in the set's order; off keeps the original names.",
+      "galleryCover": "Add a cover",
+      "galleryCoverHint": "cover.jpg (or .png …): the set's own cover, else its first image."
     },
     "roots": {
       "title": "Adult root folders",

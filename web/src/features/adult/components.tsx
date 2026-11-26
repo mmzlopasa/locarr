@@ -21,7 +21,7 @@ export function StatusBadge({ item }: { item: AdultItem }) {
   return (
     <span className="inline-flex items-center gap-1" data-testid="adult-status" data-status={item.status}>
       <Badge tone={STATUS_TONE[item.status]}>{t(`adult.status.${item.status}`)}</Badge>
-      {item.file ? <Badge>{item.file.quality}</Badge> : null}
+      {item.file ? <Badge>{item.kind === "gallery" ? t("adult.gallery.images", { count: item.file.imageCount ?? 0 }) : item.file.quality}</Badge> : null}
     </span>
   );
 }
@@ -49,17 +49,21 @@ function SelectMark({ on }: { on: boolean }) {
   );
 }
 
-/** A 16:9 scene or movie card: image, status, two-line title, studio, date, performers. */
-export function SceneCard({ item, selecting, selected, onSelect }:
-  { item: AdultItem; selecting?: boolean; selected?: boolean; onSelect?: () => void }) {
+/**
+ * A scene, movie or gallery card: image (16:9, or 3:4 for galleries), status,
+ * two-line title, studio, date, performers.
+ */
+export function SceneCard({ item, portrait, selecting, selected, onSelect }:
+  { item: AdultItem; portrait?: boolean; selecting?: boolean; selected?: boolean; onSelect?: () => void }) {
   const link = { to: "/adult/items/$id" as const, params: { id: String(item.id) } };
+  const aspect = portrait ? "aspect-[3/4]" : "aspect-video";
   const body = (
     <>
       <div className="relative">
         {selecting ? (
-          <BlurImage image={item.image} alt={item.title} fallback={item.studio || item.title} className="pointer-events-none aspect-video w-full" />
+          <BlurImage image={item.image} alt={item.title} fallback={item.studio || item.title} className={`pointer-events-none ${aspect} w-full`} />
         ) : (
-          <BlurImage image={item.image} alt={item.title} fallback={item.studio || item.title} className="aspect-video w-full" link={link} />
+          <BlurImage image={item.image} alt={item.title} fallback={item.studio || item.title} className={`${aspect} w-full`} link={link} />
         )}
         <span className="pointer-events-none absolute bottom-1.5 left-1.5"><StatusBadge item={item} /></span>
         {!item.monitored && !selecting ? (
@@ -187,6 +191,7 @@ export function ItemBrowser({ base, empty, showStatusFilter = true, testId = "ad
   const [status, setStatus] = useState<ItemQuery["status"] | "">("");
   const [monitored, setMonitored] = useState<"" | "true" | "false">("");
   const defaultSort: ItemSort = base.kind === "movie" ? "title" : "date";
+  const portrait = base.kind === "gallery";
   const [sort, setSortState] = useState<ItemSort>(() => loadPref(`${PREF.itemSort}.${base.kind ?? "all"}`, ITEM_SORTS, defaultSort));
   const [view, setViewState] = useState<ViewMode>(() => loadPref(PREF.view, ["grid", "list"] as const, "grid"));
   const [selecting, setSelecting] = useState(false);
@@ -267,7 +272,7 @@ export function ItemBrowser({ base, empty, showStatusFilter = true, testId = "ad
         <ul className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {items.map((it) => (
             <li key={it.id} className="min-w-0">
-              <SceneCard item={it} selecting={selecting} selected={selected.has(it.id)} onSelect={() => setSelected((s) => toggled(s, it.id))} />
+              <SceneCard item={it} portrait={portrait} selecting={selecting} selected={selected.has(it.id)} onSelect={() => setSelected((s) => toggled(s, it.id))} />
             </li>
           ))}
         </ul>

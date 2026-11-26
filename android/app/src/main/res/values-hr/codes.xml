@@ -109,6 +109,8 @@
     <string name="c_health_codes_indexer_challenge_browser_failed" formatted="false">Ugrađeni preglednik nije prošao provjeru indexera {{name}}: {{detail}}</string>
     <string name="c_health_codes_indexer_challenge_human" formatted="false">Indexer {{name}} traži ljudsku provjeru (CAPTCHA). Otvori stranicu u svom pregledniku; Locarr takve provjere ne rješava i pokušat će ponovno kasnije.</string>
     <string name="c_health_codes_indexer_challenge_blocked" formatted="false">Stranica indexera {{name}} odbija ugrađeni preglednik (blokada, ne provjera).</string>
+    <string name="c_health_codes_mapping_suggested" formatted="false">Locarr je našao datoteke klijenta {{client}} u {{localPath}}: dodaj mapiranje udaljene putanje {{remotePath}} → {{localPath}} za {{host}}.</string>
+    <string name="c_health_codes_client_folder_not_visible" formatted="false">Download klijent {{name}} sprema u {{path}}, a Locarr tu mapu ne vidi (mapiranje udaljene putanje ili volumen).</string>
     <string name="c_notifications_types_request_created" formatted="false">{{actor}} je zatražio {{title}}.</string>
     <string name="c_notifications_types_request_approved" formatted="false">Tvoj zahtjev za {{title}} je odobren.</string>
     <string name="c_notifications_types_request_declined" formatted="false">Tvoj zahtjev za {{title}} je odbijen.</string>
@@ -152,6 +154,8 @@
     <string name="c_rejectioncodes_episode_not_wanted" formatted="false">Nema tražene epizode</string>
     <string name="c_rejectioncodes_blocked_tag" formatted="false">Sadrži blokirani pojam</string>
     <string name="c_rejectioncodes_wrong_scene" formatted="false">Drugi studio, datum ili naslov</string>
+    <string name="c_rejectioncodes_not_image_set" formatted="false">Nije skup slika</string>
+    <string name="c_rejectioncodes_image_set" formatted="false">Skup slika, a ne video</string>
     <string name="c_downloadstates_queued" formatted="false">Na čekanju</string>
     <string name="c_downloadstates_downloading" formatted="false">Preuzima se</string>
     <string name="c_downloadstates_paused" formatted="false">Pauzirano</string>

@@ -1704,7 +1704,9 @@
     "season_pack_not_wanted": "Sezonski paket za jednu epizodu",
     "episode_not_wanted": "Nema tražene epizode",
     "blocked_tag": "Sadrži blokirani pojam",
-    "wrong_scene": "Drugi studio, datum ili naslov"
+    "wrong_scene": "Drugi studio, datum ili naslov",
+    "not_image_set": "Nije skup slika",
+    "image_set": "Skup slika, a ne video"
   },
   "timeline": {
     "title": "Vremenska crta",
@@ -4112,6 +4114,7 @@
     "tabs": {
       "scenes": "Scene",
       "movies": "Filmovi",
+      "galleries": "Galerije",
       "studios": "Studiji",
       "performers": "Izvođači",
       "wanted": "Traženo",
@@ -4147,7 +4150,8 @@
         "studio": "Studio / stranica",
         "scene": "Scena",
         "movie": "Film",
-        "performer": "Izvođač"
+        "performer": "Izvođač",
+        "gallery": "Galerija (skup slika)"
       },
       "profile": "Profil kvalitete",
       "root": "Mapa",
@@ -4266,7 +4270,42 @@
       "keepScenesHint": "Ostaju u biblioteci bez stranice studija i više se ne osvježavaju.",
       "keepPerformerHint": "Ostaju u biblioteci; zaboravlja se samo izvođač.",
       "removeScenes": "Ukloni i scene (scena: {{count}})"
-    }
+    },
+    "gallery": {
+      "new": "Nova galerija",
+      "newTitle": "Nova galerija",
+      "create": "Dodaj galeriju",
+      "newHint": "StashDB i ThePornDB ne navode skupove slika, pa se galerija upisuje ovdje ili stvara sa stranice scene ili izvođača. Mapa joj se zove kao scena.",
+      "title": "Naslov",
+      "studio": "Studio u biblioteci",
+      "noStudio": "Nijedan / drugi studio",
+      "studioName": "Ime studija",
+      "date": "Datum",
+      "performers": "Izvođači",
+      "images": "Slika: {{count}}",
+      "count": "Slike",
+      "imagesTitle": "Slike",
+      "imageAlt": "{{title}}, slika {{n}}",
+      "position": "{{n}} / {{total}}",
+      "previous": "Prethodna slika",
+      "next": "Sljedeća slika",
+      "noImages": "Još nema slika",
+      "noImagesHint": "Kad se skup slika pronađe i preuzme, slike se prikazuju ovdje.",
+      "missingHint": "Mapa galerije je prazna ili premještena.",
+      "ofScene": "Scena ovog skupa fotografija",
+      "photoSet": "Skup fotografija",
+      "findPhotoSet": "Traži skup fotografija",
+      "performerSets": "Traži i skupove fotografija",
+      "performerSetsHint": "Svaka nova scena ovog izvođača dobiva i svoj skup fotografija kao traženu galeriju.",
+      "performerAdd": "Dodaj skup fotografija",
+      "alsoSet": "Traži i skup fotografija",
+      "alsoSetScene": "Uz scenu dodaje i njezin skup slika kao galeriju.",
+      "alsoSetPerformer": "Svaka nova scena izvođača dobiva i svoj skup slika kao galeriju.",
+      "addTitle": "Dodaj galeriju",
+      "addHint": "StashDB i ThePornDB nemaju skupove slika za pretragu. Galeriju dodajte ručno ovdje ili otvorite scenu i odaberite „Traži skup fotografija”."
+    },
+    "emptyGalleries": "Još nema galerija",
+    "emptyGalleriesHint": "Dodajte je ručno ili odaberite „Traži i skup fotografija” pri dodavanju scene ili praćenju izvođača."
   },
   "adultSettings": {
     "title": "Sadržaj za odrasle",
@@ -4303,7 +4342,15 @@
       "stats": "Ukupan broj u /api/stats",
       "statsHint": "Dodaje jedan broj (adultItems) za nadzorne ploče. Ništa se nikad ne razlaže po stavkama.",
       "streamero": "Javi Streameru za uvoze",
-      "streameroHint": "Samo ako ste u Streameru postavili zasebnu biblioteku za odrasle."
+      "streameroHint": "Samo ako ste u Streameru postavili zasebnu biblioteku za odrasle.",
+      "galleryFolder": "Mapa galerije",
+      "galleryFolderHint": "Jedna mapa po galeriji, izravno u korijenskoj mapi za odrasle.",
+      "galleryMin": "Najmanji skup slika (MB)",
+      "galleryMax": "Najveći skup slika (MB)",
+      "galleryRename": "Preimenuj slike",
+      "galleryRenameHint": "0001.jpg, 0002.jpg … redom skupa; isključeno zadržava izvorna imena.",
+      "galleryCover": "Dodaj naslovnicu",
+      "galleryCoverHint": "cover.jpg (ili .png …): vlastita naslovnica skupa, inače prva slika."
     },
     "roots": {
       "title": "Mape za odrasle",

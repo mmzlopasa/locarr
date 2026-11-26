@@ -159,6 +159,18 @@ function DefaultsPanel({ s }: { s: AdultSettings }) {
         <TextInput label={t("adultSettings.defaults.sceneFile")} value={v.sceneFile} onChange={(e) => setV({ ...v, sceneFile: e.target.value })} />
         <TextInput label={t("adultSettings.defaults.movieFolder")} value={v.movieFolder} onChange={(e) => setV({ ...v, movieFolder: e.target.value })} />
         <TextInput label={t("adultSettings.defaults.movieFile")} value={v.movieFile} onChange={(e) => setV({ ...v, movieFile: e.target.value })} />
+        <TextInput label={t("adultSettings.defaults.galleryFolder")} hint={t("adultSettings.defaults.galleryFolderHint")} value={v.galleryFolder}
+          onChange={(e) => setV({ ...v, galleryFolder: e.target.value })} data-testid="adult-gallery-folder" />
+        <div className="grid grid-cols-2 gap-3">
+          <TextInput label={t("adultSettings.defaults.galleryMin")} type="number" min={0} value={v.galleryMinMB}
+            onChange={(e) => setV({ ...v, galleryMinMB: Math.max(0, Number(e.target.value) || 0) })} />
+          <TextInput label={t("adultSettings.defaults.galleryMax")} type="number" min={0} value={v.galleryMaxMB}
+            onChange={(e) => setV({ ...v, galleryMaxMB: Math.max(0, Number(e.target.value) || 0) })} />
+        </div>
+        <Checkbox label={t("adultSettings.defaults.galleryRename")} description={t("adultSettings.defaults.galleryRenameHint")} checked={v.galleryRename}
+          onChange={(e) => setV({ ...v, galleryRename: e.target.checked })} />
+        <Checkbox label={t("adultSettings.defaults.galleryCover")} description={t("adultSettings.defaults.galleryCoverHint")} checked={v.galleryCover}
+          onChange={(e) => setV({ ...v, galleryCover: e.target.checked })} />
         <Checkbox label={t("adultSettings.defaults.stats")} description={t("adultSettings.defaults.statsHint")} checked={v.statsAggregate}
           onChange={(e) => setV({ ...v, statsAggregate: e.target.checked })} />
         <Checkbox label={t("adultSettings.defaults.streamero")} description={t("adultSettings.defaults.streameroHint")} checked={v.notifyStreamero}
@@ -167,7 +179,8 @@ function DefaultsPanel({ s }: { s: AdultSettings }) {
       <div className="mt-3">
         <Button variant="primary" busy={save.isPending} onClick={() => save.mutate({ defaultSource: v.defaultSource, defaultProfileId: v.defaultProfileId,
           defaultRootFolderId: v.defaultRootFolderId, sceneFolder: v.sceneFolder, sceneFile: v.sceneFile, movieFolder: v.movieFolder,
-          movieFile: v.movieFile, statsAggregate: v.statsAggregate, notifyStreamero: v.notifyStreamero })}>{t("common.save")}</Button>
+          movieFile: v.movieFile, galleryFolder: v.galleryFolder, galleryRename: v.galleryRename, galleryCover: v.galleryCover,
+          galleryMinMB: v.galleryMinMB, galleryMaxMB: v.galleryMaxMB, statsAggregate: v.statsAggregate, notifyStreamero: v.notifyStreamero })}>{t("common.save")}</Button>
       </div>
       <ErrorAlert error={save.error} />
     </Panel>

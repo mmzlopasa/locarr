@@ -109,6 +109,8 @@
     <string name="c_health_codes_indexer_challenge_browser_failed" formatted="false">The built-in browser could not pass the check of indexer {{name}}: {{detail}}</string>
     <string name="c_health_codes_indexer_challenge_human" formatted="false">Indexer {{name}} needs a human check (a CAPTCHA). Open the site in your browser; Locarr does not solve these and tries again later.</string>
     <string name="c_health_codes_indexer_challenge_blocked" formatted="false">The site of indexer {{name}} refuses the built-in browser (blocked, not a check).</string>
+    <string name="c_health_codes_mapping_suggested" formatted="false">Locarr found files of {{client}} under {{localPath}}: add the remote path mapping {{remotePath}} → {{localPath}} for {{host}}.</string>
+    <string name="c_health_codes_client_folder_not_visible" formatted="false">Download client {{name}} saves to {{path}}, which Locarr cannot see (remote path mapping or volume).</string>
     <string name="c_notifications_types_request_created" formatted="false">{{actor}} requested {{title}}.</string>
     <string name="c_notifications_types_request_approved" formatted="false">Your request for {{title}} was approved.</string>
     <string name="c_notifications_types_request_declined" formatted="false">Your request for {{title}} was declined.</string>
@@ -152,6 +154,8 @@
     <string name="c_rejectioncodes_episode_not_wanted" formatted="false">No wanted episode</string>
     <string name="c_rejectioncodes_blocked_tag" formatted="false">Contains a blocked term</string>
     <string name="c_rejectioncodes_wrong_scene" formatted="false">Different studio, date or title</string>
+    <string name="c_rejectioncodes_not_image_set" formatted="false">Not an image set</string>
+    <string name="c_rejectioncodes_image_set" formatted="false">An image set, not a video</string>
     <string name="c_downloadstates_queued" formatted="false">Queued</string>
     <string name="c_downloadstates_downloading" formatted="false">Downloading</string>
     <string name="c_downloadstates_paused" formatted="false">Paused</string>
